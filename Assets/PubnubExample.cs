@@ -2,12 +2,10 @@ using UnityEngine;
 using System.Collections;
 using System.Text.RegularExpressions;
 using PubNubMessaging.Core;
-//using System.Collections.Concurrent;
 using System;
 using System.Reflection;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
-//using System.Threading;
 using System.Text;
 using System.Linq;
 using System.Collections.Generic;
@@ -319,7 +317,7 @@ public class PubnubExample : MonoBehaviour
 
     void DoTextWindow (int windowID)
     {
-        string title = "";
+		string title = "";
         string buttonTitle = "";
         string label1 = "";
         string label2 = "";
@@ -411,7 +409,6 @@ public class PubnubExample : MonoBehaviour
                 AddToPubnubResultContainer ("Running Set User State Key Value");
                 int valueInt;
                 double valueDouble;
-                string currentState = "";
                 string stateKey = text2;
                 if (Int32.TryParse (text3, out valueInt)) {
                     /*ThreadPool.QueueUserWorkItem (new WaitCallback (
@@ -593,7 +590,7 @@ public class PubnubExample : MonoBehaviour
 
     void DoGrantWindow (int windowID)
     {
-        string title = "";
+		string title = "";
         string buttonTitle = "";
         string toggleTitle1 = "";
         string toggleTitle2 = "";
@@ -819,7 +816,7 @@ public class PubnubExample : MonoBehaviour
             InstantiatePubnub ();
             pubnub.Publish<string> (channel, 1, storeInHistory, DisplayReturnMessage, DisplayErrorMessage);
             pubnub.Publish<string> (channel, 1.2f, storeInHistory, DisplayReturnMessage, DisplayErrorMessage);
-            pubnub.Publish<string> (channel, 14248827499560120, storeInHistory, DisplayReturnMessage, DisplayErrorMessage);
+            pubnub.Publish<string> (channel, 14248827499560123, storeInHistory, DisplayReturnMessage, DisplayErrorMessage);
         }
     }
 

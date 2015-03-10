@@ -1,6 +1,6 @@
 # Please direct all Support Questions and Concerns to Support@PubNub.com
 
-## PubNub 3.6.2b Web Data Push Cloud-Hosted API for Unity 4 and Unity 5
+## PubNub 3.6.3b Web Data Push Cloud-Hosted API for Unity 4 and Unity 5
 ### Supports PC, Mac, Linux, iOS, Android, WebPlayer and WebGL
 
 ### View this First!
@@ -12,11 +12,11 @@ After checking out the general setup video, [For iOS targets](https://vimeo.com/
 - This code uses Unity's www class and coroutines all around for network communication. This means all the calls to the PubNub SDK should be made from the main thread.
 - Updated the JsonFx version with the latest one from here (mod by TowerOBricks, https://bitbucket.org/TowerOfBricks/jsonfx-for-unity3d-git).  
 - Detailed History call now supports time token retrieval.
+- 3.6.3b Resume on reconnect fixed
 
 ### There are some known issues and limitations (mostly due to WebGL support)
 - Generic calls to the SDKs methods support only `<string>` and `<object>`. This is because `MakeGenericMethod` throws an exception on WebGL.
 - Time response is treated as string instead of long. If treated as long we get an exception from il2cpp on WebGL.
-- Resume on reconnect looks broken, working on it.
 
 #### Changes in the earlier versions
 - We have removed the separate versions for Unity, and made this as a common version which  works on all unity distros. The update is an optimized version of the code which was used for Unity iOS. This version uses the JsonFx 1.4 library (mod by TowerOBricks, https://bitbucket.org/TowerOfBricks/jsonfx-for-unity3d-git).  
