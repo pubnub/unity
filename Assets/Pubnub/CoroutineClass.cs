@@ -337,7 +337,7 @@ namespace PubNubMessaging.Core
 		{
 			try {
 				if (www != null) {
-
+					LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Before set complete sub {1}", DateTime.Now.ToString (), cp.crt.ToString ()), LoggingMethod.LevelInfo);
 					SetComplete (cp.crt);
 					LoggingMethod.WriteToLog (string.Format ("DateTime {0}, After set complete sub {1}", DateTime.Now.ToString (), cp.crt.ToString ()), LoggingMethod.LevelInfo);
 					string message = "";
