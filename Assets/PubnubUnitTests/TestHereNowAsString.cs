@@ -5,15 +5,15 @@ using PubNubMessaging.Core;
 
 namespace PubNubMessaging.Tests
 {
-	[IntegrationTest.DynamicTestAttribute ("TestHereNow")]
-	public class TestHereNow: MonoBehaviour
+	[IntegrationTest.DynamicTestAttribute ("TestHereNowAsString")]
+	public class TestHereNowAsString: MonoBehaviour
 	{
 		public IEnumerator Start ()
 		{
 			CommonIntergrationTests common = new CommonIntergrationTests ();
-			string TestName = "TestHereNow";
+			string TestName = "TestHereNowAsString";
 
-			yield return StartCoroutine(common.DoSubscribeThenHereNowAndParse(false, TestName, false));
+			yield return StartCoroutine(common.DoSubscribeThenHereNowAndParse(false, TestName, true));
 			UnityEngine.Debug.Log (string.Format("{0}: After StartCoroutine", TestName));
 			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls);
 

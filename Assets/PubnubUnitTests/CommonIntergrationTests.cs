@@ -80,7 +80,158 @@ namespace PubNubMessaging.Tests
 			DeliveryStatus = true;
 		}
 
-		public IEnumerator DoSubscribeHereNowAndParse (bool ssl, string testName)
+		private string Init(string testName, bool ssl){
+			this.DeliveryStatus = false;
+			this.TimedOut = false;
+			this.Response = null;
+			this.Name = testName;
+
+			System.Random r = new System.Random ();
+			string channel = "hello_world_hn" + r.Next (100);
+
+			pubnub = new Pubnub (CommonIntergrationTests.PublishKey,
+				CommonIntergrationTests.SubscribeKey,
+				CommonIntergrationTests.SecretKey, 
+				"", 
+				ssl);
+
+			return channel;
+		}
+
+		private void SubscribeUsingSeparateCommon(string channel, string testName){
+			UnityEngine.Debug.Log (string.Format("{0} {1}: Running Subscribe ", DateTime.Now.ToString (), testName));
+			CommonIntergrationTests commonSubscribe = new CommonIntergrationTests ();
+			commonSubscribe.DeliveryStatus = false;
+			commonSubscribe.Response = null;
+			commonSubscribe.Name = string.Format("{0} Subs", testName);
+
+			UnityEngine.Debug.Log (string.Format("{0} {1}: Start coroutine ", DateTime.Now.ToString (), testName));
+			try {
+				pubnub.Subscribe<string> (channel, commonSubscribe.DisplayReturnMessage, commonSubscribe.DisplayReturnMessage, commonSubscribe.DisplayErrorMessage);
+			} catch (Exception ex) {
+				UnityEngine.Debug.Log (string.Format("{0} {1}: exception ", ex.ToString (), testName));
+			}
+		}
+
+		public IEnumerator DoSubscribeThenDoGlobalHereNowAndParse (bool ssl, string testName, bool parseAsString)
+		{
+			string channel = Init (testName, ssl);
+
+			SubscribeUsingSeparateCommon (channel, testName);
+
+			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
+
+			UnityEngine.Debug.Log (string.Format("{0} {1}: Waiting ", DateTime.Now.ToString (), testName));
+			if (parseAsString) {
+				pubnub.GlobalHereNow<string> (true, true, this.DisplayReturnMessage, this.DisplayErrorMessage);
+			} else {
+				pubnub.GlobalHereNow<object> (true, true, this.DisplayReturnMessage, this.DisplayErrorMessage);
+			}
+
+			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls);
+
+			UnityEngine.Debug.Log (string.Format("{0} {1}: After Wait ", DateTime.Now.ToString (), testName));
+			if (this.Response == null) {
+				IntegrationTest.Fail (string.Format("{0}: Null response", testName)); 
+			} else {
+				bool found = false;
+				if (parseAsString) {
+					if (this.Response.ToString ().Contains (pubnub.SessionUUID)
+						&& this.Response.ToString ().Contains (channel)) {
+						found = true;
+					}
+				} else {
+				}
+				if (found) {
+					IntegrationTest.Pass (); 
+				} else {
+					IntegrationTest.Fail (string.Format("{0}: {1}", testName, this.Response.ToString ())); 
+				}
+			}
+
+			pubnub.Unsubscribe<string> (channel, this.DisplayReturnMessage, this.DisplayReturnMessage, this.DisplayReturnMessage, this.DisplayErrorMessage);
+			pubnub.EndPendingRequests ();
+		}
+
+		public IEnumerator DoSubscribeThenDoWhereNowAndParse (bool ssl, string testName, bool parseAsString)
+		{
+			string channel = Init (testName, ssl);
+
+			SubscribeUsingSeparateCommon (channel, testName);
+
+			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
+
+			UnityEngine.Debug.Log (string.Format("{0} {1}: Waiting ", DateTime.Now.ToString (), testName));
+			if (parseAsString) {
+				pubnub.WhereNow<string> ("", this.DisplayReturnMessage, this.DisplayErrorMessage);
+			} else {
+				pubnub.WhereNow<object> ("", this.DisplayReturnMessage, this.DisplayErrorMessage);
+			}
+
+			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls);
+
+			UnityEngine.Debug.Log (string.Format("{0} {1}: After Wait ", DateTime.Now.ToString (), testName));
+			if (this.Response == null) {
+				IntegrationTest.Fail (string.Format("{0}: Null response", testName)); 
+			} else {
+				bool found = false;
+				if (parseAsString) {
+					if (this.Response.ToString ().Contains (pubnub.SessionUUID)
+					    && this.Response.ToString ().Contains (channel)) {
+						found = true;
+					}
+				} else {
+					IList responseFields = this.Response as IList;
+					UnityEngine.Debug.Log (string.Format ("{0}: responseFields: {1}", testName, responseFields.ToString ())); 
+					if (responseFields.Count >= 2) {
+						var item = responseFields [0];
+						UnityEngine.Debug.Log (string.Format ("{0}: item: {1}", testName, item.ToString ())); 
+						if (item is Dictionary<string, object>) {
+							Dictionary<string, object> message = (Dictionary<string, object>)item;
+							foreach (KeyValuePair<string, object> k in message) {
+								UnityEngine.Debug.Log (string.Format ("objs:{0} {1}", k.Key, k.Value));
+							}
+							if (message.ContainsValue (channel)) {
+								UnityEngine.Debug.Log (string.Format ("{0}: responseFields[1]: {1}", testName, responseFields[1].ToString ())); 
+								if(responseFields[1].ToString().Equals(pubnub.SessionUUID)){
+
+									found = true;
+								}
+							}
+						}
+					}
+					/*foreach (object item in responseFields) {
+						UnityEngine.Debug.Log (string.Format ("{0}: item: {1}", testName, item.ToString ())); 
+						if (item is Dictionary<string, object>) {
+							Dictionary<string, object> message = (Dictionary<string, object>)item;
+							//#if (USE_MiniJSON)
+							foreach (KeyValuePair<string, object> k in message) {
+								UnityEngine.Debug.Log (string.Format ("objs:{0} {1}", k.Key, k.Value));
+								if (k.Value.Equals (channel)) {
+									found = ParseDict (pubnub, k.Value);
+								}
+							}
+							//#else
+							if (message.ContainsValue (channel)) {
+								//object uuids = message ["uuids"];
+								//found = ParseDict (pubnub, uuids);
+							}
+							//#endif
+						}
+					}*/
+				}
+				if (found) {
+					IntegrationTest.Pass (); 
+				} else {
+					IntegrationTest.Fail (string.Format("{0}: {1}", testName, this.Response.ToString ())); 
+				}
+			}
+
+			pubnub.Unsubscribe<string> (channel, this.DisplayReturnMessage, this.DisplayReturnMessage, this.DisplayReturnMessage, this.DisplayErrorMessage);
+			pubnub.EndPendingRequests ();
+		}
+
+		/*public IEnumerator DoSubscribeThenHereNowAsStringAndParse (bool ssl, string testName, bool parseAsString)
 		{
 			this.DeliveryStatus = false;
 			this.TimedOut = false;
@@ -94,7 +245,7 @@ namespace PubNubMessaging.Tests
 				CommonIntergrationTests.SubscribeKey,
 				CommonIntergrationTests.SecretKey, 
 				"", 
-				false);
+				ssl);
 
 			UnityEngine.Debug.Log (string.Format("{0} {1}: Running Subscribe ", DateTime.Now.ToString (), testName));
 			CommonIntergrationTests commonSubscribe = new CommonIntergrationTests ();
@@ -109,35 +260,77 @@ namespace PubNubMessaging.Tests
 				UnityEngine.Debug.Log (string.Format("{0} {1}: exception ", ex.ToString (), testName));
 			}
 
-			UnityEngine.Debug.Log (string.Format("{0} {1}: Waiting ", DateTime.Now.ToString (), testName));
 			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
 
-			pubnub.HereNow (channel, this.DisplayReturnMessage, this.DisplayErrorMessage);
+			UnityEngine.Debug.Log (string.Format("{0} {1}: Waiting ", DateTime.Now.ToString (), testName));
+			pubnub.HereNow<string> (channel, this.DisplayReturnMessage, this.DisplayErrorMessage);
+
+			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls);
 
 			UnityEngine.Debug.Log (string.Format("{0} {1}: After Wait ", DateTime.Now.ToString (), testName));
-			if (this.Response.Equals (null)) {
+			if (this.Response == null) {
+				IntegrationTest.Fail (string.Format("{0}: Null response", testName)); 
+			} else {
+				if (this.Response.ToString().Contains(pubnub.SessionUUID)) {
+					IntegrationTest.Pass (); 
+				} else {
+					IntegrationTest.Fail (string.Format("{0}: {1}", testName, this.Response.ToString ())); 
+				}
+			}
+
+			pubnub.Unsubscribe<string> (channel, this.DisplayReturnMessage, this.DisplayReturnMessage, this.DisplayReturnMessage, this.DisplayErrorMessage);
+			pubnub.EndPendingRequests ();
+		}*/
+
+		public IEnumerator DoSubscribeThenHereNowAndParse (bool ssl, string testName, bool parseAsString)
+		{
+			string channel = Init (testName, ssl);
+
+			SubscribeUsingSeparateCommon (channel, testName);
+
+			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
+
+			UnityEngine.Debug.Log (string.Format("{0} {1}: Waiting ", DateTime.Now.ToString (), testName));
+			if (parseAsString) {
+				pubnub.HereNow<string> (channel, this.DisplayReturnMessage, this.DisplayErrorMessage);
+			} else {
+				pubnub.HereNow<object> (channel, this.DisplayReturnMessage, this.DisplayErrorMessage);
+			}
+
+			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls);
+
+			UnityEngine.Debug.Log (string.Format("{0} {1}: After Wait ", DateTime.Now.ToString (), testName));
+			if (this.Response == null) {
 				IntegrationTest.Fail (string.Format("{0}: Null response", testName)); 
 			} else {
 				bool found = false;
-				IList<object> responseFields = this.Response as IList<object>;
-				UnityEngine.Debug.Log (string.Format("{0}: responseFields: {1}", testName, responseFields.ToString ())); 
-				foreach (object item in responseFields) {
-					UnityEngine.Debug.Log (string.Format("{0}: item: {1}", testName, item.ToString ())); 
-					if (item is Dictionary<string, object>) {
-						Dictionary<string, object> message = (Dictionary<string, object>)item;
-						#if (USE_MiniJSON)
+				if (parseAsString) {
+					if (this.Response.ToString ().Contains (pubnub.SessionUUID)) {
+						found = true;
+					} 
+				} else {
+
+					IList responseFields = this.Response as IList;
+
+					UnityEngine.Debug.Log (string.Format ("{0}: responseFields: {1}", testName, responseFields.ToString ())); 
+					foreach (object item in responseFields) {
+						UnityEngine.Debug.Log (string.Format ("{0}: item: {1}", testName, item.ToString ())); 
+						if (item is Dictionary<string, object>) {
+							Dictionary<string, object> message = (Dictionary<string, object>)item;
+							#if (USE_MiniJSON)
 						foreach (KeyValuePair<string, object> k in message) {
 						UnityEngine.Debug.Log (string.Format ("objs:{0} {1}", k.Key, k.Value));
 						if (k.Key.Equals ("uuids")) {
 						found = ParseDict (pubnub, k.Value);
 						}
 						}
-						#else
-						if (message.ContainsKey ("uuids")) {
-							object uuids = message ["uuids"];
-							found = ParseDict (pubnub, uuids);
+							#else
+							if (message.ContainsKey ("uuids")) {
+								object uuids = message ["uuids"];
+								found = ParseDict (pubnub, uuids);
+							}
+							#endif
 						}
-						#endif
 					}
 				}
 				if (found) {
@@ -165,68 +358,6 @@ namespace PubNubMessaging.Tests
 
 			pubnub.Unsubscribe<string> (channel, this.DisplayReturnMessage, this.DisplayReturnMessage, this.DisplayReturnMessage, this.DisplayErrorMessage);
 			pubnub.EndPendingRequests ();
-		}
-
-		public void DoSubscribeHereNowAndParse (bool ssl, string testName, string channel, Pubnub pn)
-		{
-			this.DeliveryStatus = false;
-			this.TimedOut = false;
-			this.Response = null;
-			this.Name = testName;
-
-			pn.HereNow (channel, this.DisplayReturnMessage, this.DisplayErrorMessage);
-
-			UnityEngine.Debug.Log (string.Format("{0} {1}: After Wait ", DateTime.Now.ToString (), testName));
-			if (this.Response.Equals (null)) {
-				IntegrationTest.Fail (string.Format("{0}: Null response", testName)); 
-			} else {
-				bool found = false;
-				IList<object> responseFields = this.Response as IList<object>;
-				UnityEngine.Debug.Log (string.Format("{0}: responseFields: {1}", testName, responseFields.ToString ())); 
-				foreach (object item in responseFields) {
-					UnityEngine.Debug.Log (string.Format("{0}: item: {1}", testName, item.ToString ())); 
-					if (item is Dictionary<string, object>) {
-						Dictionary<string, object> message = (Dictionary<string, object>)item;
-						#if (USE_MiniJSON)
-						foreach (KeyValuePair<string, object> k in message) {
-						UnityEngine.Debug.Log (string.Format ("objs:{0} {1}", k.Key, k.Value));
-						if (k.Key.Equals ("uuids")) {
-						found = ParseDict (pubnub, k.Value);
-						}
-						}
-						#else
-						if (message.ContainsKey ("uuids")) {
-							object uuids = message ["uuids"];
-							found = ParseDict (pubnub, uuids);
-						}
-						#endif
-					}
-				}
-				if (found) {
-					IntegrationTest.Pass (); 
-				} else {
-					IntegrationTest.Fail (string.Format("{0}: {1}", testName, this.Response.ToString ())); 
-				}
-				/*								foreach (object item in responseFields) {
-                                        response = item.ToString ();
-                                        Console.WriteLine ("Response:" + response);
-                                        Assert.NotNull (response);
-                                }
-                                Dictionary<string, object> message = (Dictionary<string, object>)responseFields [0];
-                                foreach (KeyValuePair<String, object> entry in message) {
-                                        Console.WriteLine ("value:" + entry.Value + "  " + "key:" + entry.Key);
-                                }*/
-
-				/*object[] objUuid = (object[])message["uuids"];
-				foreach (object obj in objUuid)
-				{
-					Console.WriteLine(obj.ToString()); 
-				}*/
-				//Assert.AreNotEqual(0, message["occupancy"]);
-			}
-
-			pn.Unsubscribe<string> (channel, this.DisplayReturnMessage, this.DisplayReturnMessage, this.DisplayReturnMessage, this.DisplayErrorMessage);
-			pn.EndPendingRequests ();
 		}
 
 		bool ParseDict (Pubnub pubnub, object uuids)

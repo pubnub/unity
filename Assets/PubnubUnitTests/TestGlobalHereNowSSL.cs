@@ -5,19 +5,19 @@ using PubNubMessaging.Core;
 
 namespace PubNubMessaging.Tests
 {
-	[IntegrationTest.DynamicTestAttribute ("TestHereNow")]
-	public class TestHereNow: MonoBehaviour
+	[IntegrationTest.DynamicTestAttribute ("TestGlobalHereNowSSL")]
+	public class TestGlobalHereNowSSL: MonoBehaviour
 	{
 		public IEnumerator Start ()
 		{
 			CommonIntergrationTests common = new CommonIntergrationTests ();
-			string TestName = "TestHereNow";
+			string TestName = "TestGlobalHereNowSSL";
 
-			yield return StartCoroutine(common.DoSubscribeThenHereNowAndParse(false, TestName, false));
+			yield return StartCoroutine(common.DoSubscribeThenDoGlobalHereNowAndParse(true, TestName, true));
 			UnityEngine.Debug.Log (string.Format("{0}: After StartCoroutine", TestName));
 			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls);
-
 		}
 	}
 }
+
 

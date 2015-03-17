@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace PubNubMessaging.Tests
 {
-	[IntegrationTest.DynamicTestAttribute ("TestSubscribeJoinSSL")]
-	public class TestSubscribeJoinSSL: MonoBehaviour
+	[IntegrationTest.DynamicTestAttribute ("TestSubscribeJoinSSLAsString")]
+	public class TestSubscribeJoinSSLAsString: MonoBehaviour
 	{
 		CommonIntergrationTests common = new CommonIntergrationTests ();
-		string TestName = "TestSubscribeJoinSSL";
+		string TestName = "TestSubscribeJoinSSLAsString";
 
 		public IEnumerator Start ()
 		{
