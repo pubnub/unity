@@ -7,17 +7,15 @@ namespace PubNubMessaging.Tests
 	[IntegrationTest.DynamicTestAttribute ("TestSetAndGetGlobalState")]
 	public class TestSetAndGetGlobalState: MonoBehaviour
 	{
-		CommonIntergrationTests common = new CommonIntergrationTests ();
-		string TestName = "TestSetAndGetGlobalState";
-
 		public IEnumerator Start ()
 		{
-			yield return StartCoroutine(common.DoPresenceSubscribeAndParse(false, TestName));
-			UnityEngine.Debug.Log (string.Format("{0}: After StartCoroutine", TestName));
+			CommonIntergrationTests common = new CommonIntergrationTests ();
+			string testName = "TestSetAndGetGlobalState";
+
+			yield return StartCoroutine(common.SetAndGetStateAndParse(false, testName));
+			UnityEngine.Debug.Log (string.Format("{0}: After StartCoroutine", testName));
 			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls);
-
 		}
-
 	}
 }
 

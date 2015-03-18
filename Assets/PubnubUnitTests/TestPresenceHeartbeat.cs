@@ -10,7 +10,7 @@ namespace PubNubMessaging.Tests
 	{
 		public IEnumerator Start ()
 		{
-			CommonIntergrationTests common = new CommonIntergrationTests ();
+			//CommonIntergrationTests common = new CommonIntergrationTests ();
 			string TestName = "TestPresenceHeartbeat";
 
 			//yield return StartCoroutine(common.DoSubscribeThenHereNowAsObjectAndParse(false, TestName));

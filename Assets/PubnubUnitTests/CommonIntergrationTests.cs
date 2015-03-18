@@ -113,6 +113,95 @@ namespace PubNubMessaging.Tests
 			}
 		}
 
+		private void SetState(string channel, string testName, string state){
+			UnityEngine.Debug.Log (string.Format("{0} {1}: Running Set State ", DateTime.Now.ToString (), testName));
+			CommonIntergrationTests commonState = new CommonIntergrationTests ();
+			commonState.DeliveryStatus = false;
+			commonState.Response = null;
+			commonState.Name = string.Format("{0} State", testName);
+
+			pubnub.SetUserState<string> (channel, state, commonState.DisplayReturnMessage, commonState.DisplayErrorMessage);
+		}
+
+		public IEnumerator SetAndDeleteStateAndParse (bool ssl, string testName)
+		{
+			string channel = Init (testName, ssl);
+
+			KeyValuePair<string, object> kvp = new KeyValuePair<string, object> ("k", "v");
+
+			UnityEngine.Debug.Log (string.Format("{0} {1}: Running Set State ", DateTime.Now.ToString (), testName));
+			CommonIntergrationTests commonState = new CommonIntergrationTests ();
+			commonState.DeliveryStatus = false;
+			commonState.Response = null;
+			commonState.Name = string.Format("{0} State", testName);
+
+			pubnub.SetUserState<string> (channel, kvp, commonState.DisplayReturnMessage, commonState.DisplayErrorMessage);
+			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls);
+
+			KeyValuePair<string, object> kvp2 = new KeyValuePair<string, object> ("k2", "v2");
+			commonState.DeliveryStatus = false;
+			commonState.Response = null;
+
+			pubnub.SetUserState<string> (channel, kvp2, commonState.DisplayReturnMessage, commonState.DisplayErrorMessage);
+			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
+
+			pubnub.GetUserState<string> (channel, this.DisplayReturnMessage, this.DisplayErrorMessage);
+			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
+
+			pubnub.SetUserState<string> (channel, new KeyValuePair<string, object> ("k2", null), commonState.DisplayReturnMessage, commonState.DisplayErrorMessage);
+			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
+
+			pubnub.GetUserState<string> (channel, this.DisplayReturnMessage, this.DisplayErrorMessage);
+			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
+
+			if (this.Response == null) {
+				IntegrationTest.Fail (string.Format ("{0}: Null response", testName)); 
+			} else {
+				bool found = false;
+				UnityEngine.Debug.Log (string.Format("{0}: {1} Response {2}", DateTime.Now.ToString (), testName, this.Response.ToString ()));
+				if (this.Response.ToString ().Contains ("{\"k\":\"v\"}")) {
+					found = true;
+				}
+				if (found) {
+					IntegrationTest.Pass (); 
+				} else {
+					IntegrationTest.Fail (string.Format("{0}: {1}", testName, this.Response.ToString ())); 
+				}
+			}
+
+			pubnub.EndPendingRequests ();
+		}
+
+		public IEnumerator SetAndGetStateAndParse (bool ssl, string testName)
+		{
+			string channel = Init (testName, ssl);
+
+			string state = "{\"testkey\":\"testval\"}";
+			SetState (channel, testName, state);
+			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
+
+			pubnub.GetUserState<string> (channel, this.DisplayReturnMessage, this.DisplayErrorMessage);
+
+			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
+
+			if (this.Response == null) {
+				IntegrationTest.Fail (string.Format ("{0}: Null response", testName)); 
+			} else {
+				bool found = false;
+				UnityEngine.Debug.Log (string.Format("{0}: {1} Response {2}", DateTime.Now.ToString (), testName, this.Response.ToString ()));
+				if (this.Response.ToString ().Contains (state)) {
+					found = true;
+				}
+				if (found) {
+					IntegrationTest.Pass (); 
+				} else {
+					IntegrationTest.Fail (string.Format("{0}: {1}", testName, this.Response.ToString ())); 
+				}
+			}
+
+			pubnub.EndPendingRequests ();
+		}
+
 		public IEnumerator DoSubscribeThenDoGlobalHereNowAndParse (bool ssl, string testName, bool parseAsString)
 		{
 			string channel = Init (testName, ssl);
@@ -141,6 +230,45 @@ namespace PubNubMessaging.Tests
 						found = true;
 					}
 				} else {
+					//TODO: refactor
+					IList responseFields = this.Response as IList;
+					UnityEngine.Debug.Log (string.Format ("{0}: responseFields: {1}", testName, responseFields.ToString ())); 
+					if (responseFields.Count >= 1) {
+						var item = responseFields [0];
+						UnityEngine.Debug.Log (string.Format ("{0}: item: {1}", testName, item.ToString ())); 
+						if (item is Dictionary<string, object>) {
+							Dictionary<string, object> message = (Dictionary<string, object>)item;
+							foreach (KeyValuePair<string, object> k in message) {
+								//UnityEngine.Debug.Log (string.Format ("objs:{0} {1}", k.Key, k.Value));
+								if (k.Key.Equals("payload")) {
+									//UnityEngine.Debug.Log (string.Format ("in objs:{0} {1}", k.Key, k.Value));
+									Dictionary<string, object> message2 = (Dictionary<string, object>)k.Value;
+									//UnityEngine.Debug.Log (string.Format ("objs:{0} {1}", k.Key, message2 ["channels"]));
+									Dictionary<string, object> message3 = (Dictionary<string, object>)message2 ["channels"];
+									Dictionary<string, object> message4 = (Dictionary<string, object>)message3 [channel];
+									if (message4 != null) {
+										foreach (KeyValuePair<string, object> k2 in message4) {
+											UnityEngine.Debug.Log (string.Format ("objs2:{0} {1}", k2.Key, k2.Value));
+											if (k2.Key.Equals ("uuids")) {
+												UnityEngine.Debug.Log (string.Format ("in objs2:{0} {1}", k2.Key, k2.Value));
+												Dictionary<string, object>[] message5 = (Dictionary<string, object>[])k2.Value;
+												var arr = message5 [0] as Dictionary<string, object>;
+												foreach (KeyValuePair<string, object> k3 in arr) {
+													UnityEngine.Debug.Log (string.Format ("objs3:{0} {1}", k3.Key, k3.Value));
+													if (k3.Value.Equals (pubnub.SessionUUID)) {
+														found = true;
+														break;
+													}
+												}
+											}
+										}
+									} else {
+										UnityEngine.Debug.Log ("msg4 null");
+									}
+								}
+							}
+						}
+					}
 				}
 				if (found) {
 					IntegrationTest.Pass (); 
@@ -181,6 +309,7 @@ namespace PubNubMessaging.Tests
 						found = true;
 					}
 				} else {
+					//TODO: refactor
 					IList responseFields = this.Response as IList;
 					UnityEngine.Debug.Log (string.Format ("{0}: responseFields: {1}", testName, responseFields.ToString ())); 
 					if (responseFields.Count >= 2) {
@@ -190,35 +319,21 @@ namespace PubNubMessaging.Tests
 							Dictionary<string, object> message = (Dictionary<string, object>)item;
 							foreach (KeyValuePair<string, object> k in message) {
 								UnityEngine.Debug.Log (string.Format ("objs:{0} {1}", k.Key, k.Value));
-							}
-							if (message.ContainsValue (channel)) {
-								UnityEngine.Debug.Log (string.Format ("{0}: responseFields[1]: {1}", testName, responseFields[1].ToString ())); 
-								if(responseFields[1].ToString().Equals(pubnub.SessionUUID)){
-
-									found = true;
+								if (k.Key.Equals("payload")) {
+									UnityEngine.Debug.Log (string.Format ("in objs:{0} {1}", k.Key, k.Value));
+									Dictionary<string, object> message2 = (Dictionary<string, object>)k.Value;
+									UnityEngine.Debug.Log (string.Format ("objs:{0} {1}", k.Key, message2 ["channels"]));
+									var arr = message2 ["channels"] as string[];
+									foreach (string ch in arr) {
+										if (ch.Equals(channel)) {
+											found = true;
+											break;
+										}
+									}
 								}
 							}
 						}
 					}
-					/*foreach (object item in responseFields) {
-						UnityEngine.Debug.Log (string.Format ("{0}: item: {1}", testName, item.ToString ())); 
-						if (item is Dictionary<string, object>) {
-							Dictionary<string, object> message = (Dictionary<string, object>)item;
-							//#if (USE_MiniJSON)
-							foreach (KeyValuePair<string, object> k in message) {
-								UnityEngine.Debug.Log (string.Format ("objs:{0} {1}", k.Key, k.Value));
-								if (k.Value.Equals (channel)) {
-									found = ParseDict (pubnub, k.Value);
-								}
-							}
-							//#else
-							if (message.ContainsValue (channel)) {
-								//object uuids = message ["uuids"];
-								//found = ParseDict (pubnub, uuids);
-							}
-							//#endif
-						}
-					}*/
 				}
 				if (found) {
 					IntegrationTest.Pass (); 
@@ -282,16 +397,27 @@ namespace PubNubMessaging.Tests
 			pubnub.EndPendingRequests ();
 		}*/
 
-		public IEnumerator DoSubscribeThenHereNowAndParse (bool ssl, string testName, bool parseAsString)
+		public IEnumerator DoSubscribeThenHereNowAndParse (bool ssl, string testName, bool parseAsString, bool doWithState, string customUUID)
 		{
 			string channel = Init (testName, ssl);
+
+			string matchUUID = pubnub.SessionUUID;
+			if (!customUUID.Equals("")) {
+				pubnub.SessionUUID = customUUID;
+				matchUUID = customUUID;
+			}
 
 			SubscribeUsingSeparateCommon (channel, testName);
 
 			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
 
 			UnityEngine.Debug.Log (string.Format("{0} {1}: Waiting ", DateTime.Now.ToString (), testName));
-			if (parseAsString) {
+			string state = "{\"testkey\":\"testval\"}";
+			if (doWithState) {
+				SetState (channel, testName, state);
+				yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
+				pubnub.HereNow<string> (channel, true, true, this.DisplayReturnMessage, this.DisplayErrorMessage);
+			} else if (parseAsString) {
 				pubnub.HereNow<string> (channel, this.DisplayReturnMessage, this.DisplayErrorMessage);
 			} else {
 				pubnub.HereNow<object> (channel, this.DisplayReturnMessage, this.DisplayErrorMessage);
@@ -304,8 +430,12 @@ namespace PubNubMessaging.Tests
 				IntegrationTest.Fail (string.Format("{0}: Null response", testName)); 
 			} else {
 				bool found = false;
-				if (parseAsString) {
-					if (this.Response.ToString ().Contains (pubnub.SessionUUID)) {
+				if (doWithState) {
+					if (this.Response.ToString ().Contains (matchUUID) && this.Response.ToString().Contains(state)) {
+						found = true;
+					} 
+				} else if (parseAsString) {
+					if (this.Response.ToString ().Contains (matchUUID)) {
 						found = true;
 					} 
 				} else {
@@ -327,7 +457,7 @@ namespace PubNubMessaging.Tests
 							#else
 							if (message.ContainsKey ("uuids")) {
 								object uuids = message ["uuids"];
-								found = ParseDict (pubnub, uuids);
+								found = ParseDict (matchUUID, uuids);
 							}
 							#endif
 						}
@@ -360,7 +490,7 @@ namespace PubNubMessaging.Tests
 			pubnub.EndPendingRequests ();
 		}
 
-		bool ParseDict (Pubnub pubnub, object uuids)
+		bool ParseDict (string matchUUID, object uuids)
 		{
 			object[] objUuid = null;
 			UnityEngine.Debug.Log ("uuids:" + uuids);
@@ -379,7 +509,7 @@ namespace PubNubMessaging.Tests
 			}
 			foreach (object obj in objUuid) {
 				UnityEngine.Debug.Log ("session:" + obj.ToString ()); 
-				if (obj.Equals (pubnub.SessionUUID)) {
+				if (obj.Equals (matchUUID)) {
 					return true;
 				}
 			}

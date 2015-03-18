@@ -13,7 +13,7 @@ namespace PubNubMessaging.Tests
 			CommonIntergrationTests common = new CommonIntergrationTests ();
 			string TestName = "TestHereNowSSL";
 
-			yield return StartCoroutine(common.DoSubscribeThenHereNowAndParse(true, TestName, false));
+			yield return StartCoroutine(common.DoSubscribeThenHereNowAndParse(true, TestName, false, false, ""));
 			UnityEngine.Debug.Log (string.Format("{0}: After StartCoroutine", TestName));
 			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls);
 		}

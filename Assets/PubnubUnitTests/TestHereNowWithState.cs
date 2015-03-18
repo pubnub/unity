@@ -13,7 +13,7 @@ namespace PubNubMessaging.Tests
 			CommonIntergrationTests common = new CommonIntergrationTests ();
 			string TestName = "TestHereNowWithState";
 
-			yield return StartCoroutine(common.DoSubscribeThenHereNowAndParse(false, TestName, false));
+			yield return StartCoroutine(common.DoSubscribeThenHereNowAndParse(false, TestName, false, true, ""));
 			UnityEngine.Debug.Log (string.Format("{0}: After StartCoroutine", TestName));
 			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls);
 

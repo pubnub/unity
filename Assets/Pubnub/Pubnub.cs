@@ -760,9 +760,9 @@ namespace PubNubMessaging.Core
 			return HereNow<T> (channel, true, false, userCallback, errorCallback);
 		}
 
-		public bool HereNow<T> (string channel, bool showUUIDList, bool includeUserState, Action<object> userCallback, Action<PubnubClientError> errorCallback)
+		public bool HereNow (string channel, bool showUUIDList, bool includeUserState, Action<object> userCallback, Action<PubnubClientError> errorCallback)
 		{
-			return HereNow<T> (channel, showUUIDList, includeUserState, userCallback, errorCallback);
+			return HereNow<object> (channel, showUUIDList, includeUserState, userCallback, errorCallback);
 		}
 
 		public bool HereNow<T> (string channel, bool showUUIDList, bool includeUserState, Action<T> userCallback, Action<PubnubClientError> errorCallback)
@@ -3315,7 +3315,7 @@ namespace PubNubMessaging.Core
 						if (result1 != null && result1.Count > 0) {
 							result = result1;
 						}
-						LoggingMethod.WriteToLog (string.Format ("DateTime {0}, after result", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+
 						switch (type) {
 						case ResponseType.Publish:
 							result.Add (multiChannel);

@@ -11,10 +11,10 @@ namespace PubNubMessaging.Tests
 		public IEnumerator Start ()
 		{
 			CommonIntergrationTests common = new CommonIntergrationTests ();
-			string TestName = "TestCustomUUID";
+			string testName = "TestCustomUUID";
 
-			//yield return StartCoroutine(common.DoSubscribeThenHereNowAsObjectAndParse(false, TestName));
-			UnityEngine.Debug.Log (string.Format("{0}: After StartCoroutine", TestName));
+			yield return StartCoroutine(common.DoSubscribeThenHereNowAndParse(false, testName, true, false, testName));
+			UnityEngine.Debug.Log (string.Format("{0}: After StartCoroutine", testName));
 			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls);
 
 		}
