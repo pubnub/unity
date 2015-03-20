@@ -93,7 +93,6 @@ namespace PubNubMessaging.Core
 
 		public object GetStoredRequestState (CurrentRequestType aKey)
 		{
-			LoggingMethod.WriteToLog (string.Format ("DateTime {0}, akey", DateTime.Now.ToString (), aKey.ToString ()), LoggingMethod.LevelInfo);
 			if (requestStates.ContainsKey (aKey)) {
 				if (requestStates.ContainsKey (aKey)) {
 					return requestStates [aKey];

@@ -5,6 +5,7 @@ using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
 
 #if (USE_JSONFX) || (USE_JSONFX_UNITY)
 using JsonFx.Json;
@@ -28,6 +29,46 @@ using Newtonsoft.Json.Converters;
 
 namespace PubNubMessaging.Tests
 {
+	class CustomClass
+	{
+		public string foo = "hi!";
+		public int[] bar = { 1, 2, 3, 4, 5 };
+	}
+
+	[Serializable]
+	class PubnubDemoObject
+	{
+		public double VersionID = 3.4;
+		public long Timetoken = 13601488652764619;
+		public string OperationName = "Publish";
+		public string[] Channels = { "ch1" };
+		public PubnubDemoMessage DemoMessage = new PubnubDemoMessage ();
+		public PubnubDemoMessage CustomMessage = new PubnubDemoMessage ("This is a demo message");
+		public XmlDocument SampleXml = new PubnubDemoMessage ().TryXmlDemo ();
+	}
+
+	[Serializable]
+	class PubnubDemoMessage
+	{
+		public string DefaultMessage = "~!@#$%^&*()_+ `1234567890-= qwertyuiop[]\\ {}| asdfghjkl;' :\" zxcvbnm,./ <>? ";
+		//public string DefaultMessage = "\"";
+		public PubnubDemoMessage ()
+		{
+		}
+
+		public PubnubDemoMessage (string message)
+		{
+			DefaultMessage = message;
+		}
+
+		public XmlDocument TryXmlDemo ()
+		{
+			XmlDocument xmlDocument = new XmlDocument ();
+			xmlDocument.LoadXml ("<DemoRoot><Person ID='ABCD123'><Name><First>John</First><Middle>P.</Middle><Last>Doe</Last></Name><Address><Street>123 Duck Street</Street><City>New City</City><State>New York</State><Country>United States</Country></Address></Person><Person ID='ABCD456'><Name><First>Peter</First><Middle>Z.</Middle><Last>Smith</Last></Name><Address><Street>12 Hollow Street</Street><City>Philadelphia</City><State>Pennsylvania</State><Country>United States</Country></Address></Person></DemoRoot>");
+
+			return xmlDocument;
+		}
+	}
 	public class CommonIntergrationTests
 	{
 		public static string PublishKey = "demo-36";
@@ -80,7 +121,7 @@ namespace PubNubMessaging.Tests
 			DeliveryStatus = true;
 		}
 
-		private string Init(string testName, bool ssl){
+		private string Init(string testName, bool ssl, bool withCipher){
 			this.DeliveryStatus = false;
 			this.TimedOut = false;
 			this.Response = null;
@@ -88,14 +129,64 @@ namespace PubNubMessaging.Tests
 
 			System.Random r = new System.Random ();
 			string channel = "hello_world_hn" + r.Next (100);
-
+			var cipher = "";
+			if (withCipher) {
+				cipher = "enigma";
+			}
 			pubnub = new Pubnub (CommonIntergrationTests.PublishKey,
 				CommonIntergrationTests.SubscribeKey,
 				CommonIntergrationTests.SecretKey, 
-				"", 
+				cipher, 
 				ssl);
 
 			return channel;
+		}
+
+		private string Init(string testName, bool ssl){
+			return Init (testName, ssl, false);
+		}
+
+		public IEnumerator DoPublishAndParse(bool ssl, string testName, object message, string expected, bool asObject){
+			yield return DoPublishAndParse (ssl, testName, message, expected, asObject, false);
+		}
+
+		public IEnumerator DoPublishAndParse(bool ssl, string testName, object message, string expected, bool asObject, bool withCipher){
+			string channel = Init (testName, ssl, withCipher);
+
+			if (asObject) {
+				pubnub.Publish<object> (channel, message, this.DisplayReturnMessage, this.DisplayReturnMessage);
+			}else {
+				pubnub.Publish<string> (channel, message, this.DisplayReturnMessage, this.DisplayReturnMessage);
+			}
+
+			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
+
+			if (this.Response == null) {
+				IntegrationTest.Fail (string.Format ("{0}: Null response", testName)); 
+			} else {
+				bool found = false;
+				UnityEngine.Debug.Log (string.Format("{0}: {1} Response {2}", DateTime.Now.ToString (), testName, this.Response.ToString ()));
+				if (asObject) {
+					IList<object> fields = this.Response as IList<object>;
+					string sent = fields [1].ToString ();
+					string one = fields [0].ToString ();
+					if (sent.Equals (expected)) {
+						found = true;
+					}
+				} else {
+					if (this.Response.ToString ().Contains (expected)) {
+						found = true;
+					}
+				}
+
+				if (found) {
+					IntegrationTest.Pass (); 
+				} else {
+					IntegrationTest.Fail (string.Format("{0}: {1}", testName, this.Response.ToString ())); 
+				}
+			}
+
+			pubnub.EndPendingRequests ();
 		}
 
 		private void SubscribeUsingSeparateCommon(string channel, string testName){
