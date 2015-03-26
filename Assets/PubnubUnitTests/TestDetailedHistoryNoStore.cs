@@ -13,7 +13,8 @@ namespace PubNubMessaging.Tests
 			CommonIntergrationTests common = new CommonIntergrationTests ();
 			string TestName = "TestDetailedHistoryNoStore";
 
-			yield return StartCoroutine(common.DoPublishThenDetailedHistoryAndParse(true, TestName, "Simple message test No Store", false, false, true, 1));
+			object[] message = {"Simple message test No Store"};
+			yield return StartCoroutine(common.DoPublishThenDetailedHistoryAndParse(true, TestName, message, false, false, true, message.Length, false));
 			UnityEngine.Debug.Log (string.Format("{0}: After StartCoroutine", TestName));
 			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls);
 

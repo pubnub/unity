@@ -75,6 +75,7 @@ namespace PubNubMessaging.Tests
 		public static string SubscribeKey = "demo-36";
 		public static string SecretKey = "demo-36";
 		public static float WaitTimeBetweenCalls = 5;
+		public static float WaitTimeBetweenCallsLow = 1;
 		public static float WaitTimeToReadResponse = 15;
 		public static float WaitTime = 20;
 		Pubnub pubnub;
@@ -134,7 +135,7 @@ namespace PubNubMessaging.Tests
 			this.Name = testName;
 
 			System.Random r = new System.Random ();
-			string channel = "hello_world_hn" + r.Next (100);
+			string channel = "UnityIntegrationTests_" + r.Next (100);
 			var cipher = "";
 			if (withCipher) {
 				cipher = "enigma";
@@ -161,7 +162,17 @@ namespace PubNubMessaging.Tests
 			return Init (testName, ssl, false);
 		}
 
-		public IEnumerator DoPublishThenDetailedHistoryAndParse(bool ssl, string testName, object message, bool asObject, bool withCipher, bool noStore, int numberOfMessages){
+		public void GetTimeFromServerUsingNewPubNub(string testName, bool ssl){
+			Pubnub pubnub = new Pubnub (CommonIntergrationTests.PublishKey,
+				CommonIntergrationTests.SubscribeKey,
+				CommonIntergrationTests.SecretKey, 
+				"", 
+				ssl);
+			pubnub.Time<object> (this.DisplayReturnMessage, this.DisplayErrorMessage);
+		}
+			
+		public IEnumerator DoPublishThenDetailedHistoryAndParse(bool ssl, string testName, object[] messages, bool asObject, bool withCipher, bool noStore, int numberOfMessages, bool isParamsTest){
+
 			string channel = Init (testName, ssl, withCipher);
 
 			CommonIntergrationTests commonPublish = new CommonIntergrationTests ();
@@ -176,35 +187,247 @@ namespace PubNubMessaging.Tests
 				storeInHistory = false;
 			}
 
+			//string starttime = GetTimeFromServerUsingNewPubNub(testName, ssl);
+			this.DeliveryStatus = false;
+			this.Response = null;
+
+			GetTimeFromServerUsingNewPubNub(testName, ssl);
+			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
+			UnityEngine.Debug.Log (string.Format("{0}: {1} this.Response {2}", DateTime.Now.ToString (), testName, this.Response));
+			IList<object> fields = this.Response as IList<object>;
+
+			UnityEngine.Debug.Log (string.Format("{0}: {1} Time", DateTime.Now.ToString (), fields [0].ToString ()));
+			long starttime = Convert.ToInt64 (fields [0].ToString ());
+
+			long midtime = starttime;
+			int count = 0;
+			UnityEngine.Debug.Log (string.Format("{0}: {1} numberOfMessages: {2}", DateTime.Now.ToString (), testName, numberOfMessages));
 			if (asObject) {
-				pubnub.Publish<object> (channel, message, storeInHistory, commonPublish.DisplayReturnMessage, commonPublish.DisplayReturnMessage);
+				foreach (object message in messages) {
+					pubnub.Publish<object> (channel, message, storeInHistory, commonPublish.DisplayReturnMessage, commonPublish.DisplayReturnMessage);
+
+					if (numberOfMessages/2 == count) {
+						this.DeliveryStatus = false;
+						this.Response = null;
+
+						GetTimeFromServerUsingNewPubNub(testName, ssl);
+						yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
+						fields = this.Response as IList<object>;
+						midtime = Convert.ToInt64 (fields [0].ToString ());
+					}
+					count++;
+					yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCallsLow); 
+				}
 			}else {
-				pubnub.Publish<string> (channel, message, storeInHistory, commonPublish.DisplayReturnMessage, commonPublish.DisplayReturnMessage);
+				foreach (object message in messages) {
+					pubnub.Publish<string> (channel, message, storeInHistory, commonPublish.DisplayReturnMessage, commonPublish.DisplayReturnMessage);
+					if (numberOfMessages/2 == count) {
+						this.DeliveryStatus = false;
+						this.Response = null;
+
+						GetTimeFromServerUsingNewPubNub(testName, ssl);
+						yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
+						fields = this.Response as IList<object>;
+						midtime = Convert.ToInt64 (fields [0].ToString ());
+					}
+					count++;
+
+					yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCallsLow); 
+				}
 			}
 			UnityEngine.Debug.Log (string.Format("{0}: {1} After Publish", DateTime.Now.ToString (), testName));
 			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
 
-			if (asObject) {
-				pubnub.DetailedHistory<object> (channel, numberOfMessages, this.DisplayReturnMessage, this.DisplayReturnMessageDummy);
+			if (isParamsTest) {
+				UnityEngine.Debug.Log (string.Format("{0}: {1} starttime: {2}, midtime {3}", DateTime.Now.ToString (), testName, starttime, midtime));
+				if (asObject) {
+					pubnub.DetailedHistory<object> (channel, starttime, midtime, numberOfMessages / 2, true, this.DisplayReturnMessage, this.DisplayReturnMessageDummy);
+				} else {
+					pubnub.DetailedHistory<string> (channel, starttime, midtime, numberOfMessages / 2, true, this.DisplayReturnMessage, this.DisplayReturnMessageDummy);
+				}
 			} else {
-				pubnub.DetailedHistory<string> (channel, numberOfMessages, this.DisplayReturnMessage, this.DisplayReturnMessageDummy);
+				if (asObject) {
+					pubnub.DetailedHistory<object> (channel, numberOfMessages, this.DisplayReturnMessage, this.DisplayReturnMessageDummy);
+				} else {
+					pubnub.DetailedHistory<string> (channel, numberOfMessages, this.DisplayReturnMessage, this.DisplayReturnMessageDummy);
+				}
 			}
 			UnityEngine.Debug.Log (string.Format("{0}: {1} Waiting for response", DateTime.Now.ToString (), testName));
 			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
 			UnityEngine.Debug.Log (string.Format("{0}: {1} After wait", DateTime.Now.ToString (), testName));
+
 			if (this.Response == null) {
 				IntegrationTest.Fail (string.Format ("{0}: Null response", testName)); 
 			} else {
-				UnityEngine.Debug.Log (string.Format("{0}: {1} Response {2}", DateTime.Now.ToString (), testName, this.Response.ToString()));
-				if (noStore) {
-					ParseResponseNoStore (message.ToString(), testName);
+				bool passed = false;
+				if (isParamsTest) {
+					passed = ParseDetailedHistoryResponse (0, 0, messages, testName, asObject);
+
+					if (passed) {
+						this.DeliveryStatus = false;
+						this.Response = null;
+
+						if (asObject) {
+							UnityEngine.Debug.Log (string.Format ("{0}: {1} midtime: {2}", DateTime.Now.ToString (), testName, midtime));
+							pubnub.DetailedHistory<object> (channel, midtime, -1, numberOfMessages / 2, true, this.DisplayReturnMessage, this.DisplayReturnMessageDummy);
+						} else {
+							pubnub.DetailedHistory<string> (channel, midtime, -1, numberOfMessages / 2, true, this.DisplayReturnMessage, this.DisplayReturnMessageDummy);
+						}
+						UnityEngine.Debug.Log (string.Format ("{0}: {1} Waiting for response2 ", DateTime.Now.ToString (), testName));
+						yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
+						UnityEngine.Debug.Log (string.Format ("{0}: {1} After wait2 ", DateTime.Now.ToString (), testName));
+
+						passed = ParseDetailedHistoryResponse (0, 0, messages, testName, asObject);
+
+						if (this.Response == null) {
+							IntegrationTest.Fail (string.Format ("{0}: Null response 2", testName)); 
+						} else {
+							passed = ParseDetailedHistoryResponse (0, 0, messages, testName, asObject);
+						}
+					} else {
+						IntegrationTest.Fail (string.Format ("{0}: failed one", testName)); 
+					}
 				} else {
-					ParseDetailedHistoryResponse (0, 0, message.ToString(), testName, asObject);
+
+					UnityEngine.Debug.Log (string.Format ("{0}: {1} Response {2}", DateTime.Now.ToString (), testName, this.Response.ToString ()));
+
+					if (noStore) {
+						passed = ParseResponseNoStore (messages, testName);
+					} else {
+						passed = ParseDetailedHistoryResponse (0, 0, messages, testName, asObject);
+					}
+				}
+				if (passed) {
+					IntegrationTest.Pass ();
+				} else {
+					IntegrationTest.Fail (string.Format("{0}: Not found in {1}", testName, this.Response.ToString ())); 
+				}
+			}
+			pubnub.EndPendingRequests ();
+		}
+
+		public bool ParseDetailedHistoryResponse (int messageStart, int messageEnd, object[] messages, string testName, bool asObject)
+		{
+			if (asObject) {
+				IList<object> fields = this.Response as IList<object>;
+
+				UnityEngine.Debug.Log (string.Format ("{0}: {1} fields.Count {2}", DateTime.Now.ToString (), testName, fields.Count));
+				if (fields [0] != null) {
+					return ParseFields (fields, messageStart, messageEnd, messages, testName);
+				} else {
+					return false;
+				}
+			} else {
+				/*for (messageStart; messageStart <= messageEnd; messageStart++) {
+					if (this.Response.ToString ().Contains (message)) {
+					}
+				}*/
+				var found = false;
+				var count = 0;
+				string resp = this.Response.ToString();
+				foreach (var message in messages) {
+					if (resp.Contains (message.ToString())) {
+						found = true;
+					} else {
+						found = false;
+					}
+					count++;
+				}
+				if (found) {
+					//IntegrationTest.Pass ();
+					return true;
+				} else {
+					//IntegrationTest.Fail (string.Format("{0}: Not found in {1}", testName, this.Response.ToString ())); 
+					return false;
 				}
 			}
 		}
 
-		public void ParseDetailedHistoryResponse (int messageStart, int messageEnd, string message, string testName, bool asObject)
+		public bool ParseFields (IList<object> fields, int messageStart, int messageEnd, object[] messages, string testName)
+		{
+			string response = "";
+
+			var myObjectArray = (from item in fields
+				select item as object).ToArray ();
+			IList<object> enumerable = myObjectArray [0] as IList<object>;
+			bool found = false;
+			if ((enumerable != null) && (enumerable.Count > 0)) {
+				foreach (var message in messages) {
+					bool mfound = false;
+					foreach (object element in enumerable) {	
+						response = element.ToString ();
+						UnityEngine.Debug.Log (string.Format ("{0}: {1} message: {2}, response: {3}", DateTime.Now.ToString (), testName, message, response));
+						if (message.ToString().Equals (response)) {
+							mfound = true;
+						}
+					}
+					if (!mfound) {
+						found = false;
+						break;
+					} else {
+						found = true;
+					}
+					/*if (messageStart != messageEnd) {
+						Console.WriteLine (String.Format ("response :{0} :: j: {1}", response, j));
+						if (j < messageEnd) {
+							if(j.ToString ().Equals(response)){
+								found = true;
+								break;
+							}
+						}
+						j++;
+					} else if (!message.Equals ("")) {
+
+						Console.WriteLine ("Response:" + response);
+						if(message.Equals(response)){
+							found = true;
+							break;
+						}
+					} else {
+						Console.WriteLine ("Response:" + response);
+						//Assert.IsNotEmpty (response);
+						if(!string.IsNullOrEmpty(response)){
+							found = true;
+							break;
+						}
+					}*/
+				}
+				if (found) {
+					//IntegrationTest.Pass ();
+					return true;
+				} else {
+					//IntegrationTest.Fail (string.Format("{0}: Not found in {1}", testName, this.Response.ToString ())); 
+					return false;
+				}
+			} else {
+				//IntegrationTest.Fail (string.Format("{0}: {1}", testName, this.Response.ToString ())); 
+				return false;
+			}
+		}
+
+		public bool ParseResponseNoStore (object[] messages, string testName)
+		{
+			bool found = false;
+			string resp = this.Response.ToString();
+			foreach (var message in messages) { 
+				if (resp.Contains (message.ToString())) {
+					found = true;
+				} else {
+					found = false;
+				}
+			}
+			if (!found) {
+				//IntegrationTest.Pass (); 
+				return true;
+			} else {
+				//IntegrationTest.Fail (string.Format ("{0}: {1}", testName, this.Response.ToString ())); 
+				return false;
+			}
+
+		}
+
+
+		/*public void ParseDetailedHistoryResponse (int messageStart, int messageEnd, string message, string testName, bool asObject)
 		{
 			if (asObject) {
 				IList<object> fields = this.Response as IList<object>;
@@ -218,7 +441,7 @@ namespace PubNubMessaging.Tests
 					if (this.Response.ToString ().Contains (message)) {
 					}
 				}*/
-				if (this.Response.ToString ().Contains (message)) {
+				/*if (this.Response.ToString ().Contains (message)) {
 					IntegrationTest.Pass ();
 				} else {
 					IntegrationTest.Fail (string.Format("{0}: Not found in {1}", testName, this.Response.ToString ())); 
@@ -279,7 +502,7 @@ namespace PubNubMessaging.Tests
 			} else {
 				IntegrationTest.Fail (string.Format("{0}: {1}", testName, this.Response.ToString ())); 
 			}
-		}
+		}*/
 
 
 		public IEnumerator DoPublishAndParse(bool ssl, string testName, object message, string expected, bool asObject){

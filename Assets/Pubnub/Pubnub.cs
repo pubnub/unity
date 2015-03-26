@@ -1044,13 +1044,6 @@ namespace PubNubMessaging.Core
 
 		#region "PAM"
 
-		public static long TranslateDateTimeToSeconds (DateTime dotNetUTCDateTime)
-		{
-			TimeSpan timeSpan = dotNetUTCDateTime - new DateTime (1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-			long timeStamp = Convert.ToInt64 (timeSpan.TotalSeconds);
-			return timeStamp;
-		}
-
 		private Uri BuildGrantAccessRequest (string channel, string authenticationKey, bool read, bool write, int ttl)
 		{
 			string signature = "0";
@@ -1467,14 +1460,35 @@ namespace PubNubMessaging.Core
 			return Guid.NewGuid ();
 		}
 
-		public static long TranslateDateTimeToPubnubUnixNanoSeconds (DateTime dotNetUTCDateTime)
+		public static long TranslateDateTimeToSeconds (DateTime dotNetUTCDateTime)
 		{
-			return TranslateDateTimeToPubnubUnixNanoSeconds (dotNetUTCDateTime);
+			TimeSpan timeSpan = dotNetUTCDateTime - new DateTime (1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+			long timeStamp = Convert.ToInt64 (timeSpan.TotalSeconds);
+			return timeStamp;
 		}
 
+		/// <summary>
+		/// Convert the UTC/GMT DateTime to Unix Nano Seconds format
+		/// </summary>
+		/// <param name="dotNetUTCDateTime"></param>
+		/// <returns></returns>
+		public static long TranslateDateTimeToPubnubUnixNanoSeconds (DateTime dotNetUTCDateTime)
+		{
+			TimeSpan timeSpan = dotNetUTCDateTime - new DateTime (1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+			long timeStamp = Convert.ToInt64 (timeSpan.TotalSeconds) * 10000000;
+			return timeStamp;
+		}
+
+		/// <summary>
+		/// Convert the Unix Nano Seconds format time to UTC/GMT DateTime
+		/// </summary>
+		/// <param name="unixNanoSecondTime"></param>
+		/// <returns></returns>
 		public static DateTime TranslatePubnubUnixNanoSecondsToDateTime (long unixNanoSecondTime)
 		{
-			return TranslatePubnubUnixNanoSecondsToDateTime (unixNanoSecondTime);
+			double timeStamp = unixNanoSecondTime / 10000000;
+			DateTime dateTime = new DateTime (1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds (timeStamp);
+			return dateTime;
 		}
 
 		#endregion
