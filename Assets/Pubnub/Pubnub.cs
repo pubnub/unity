@@ -3369,11 +3369,13 @@ namespace PubNubMessaging.Core
 							break;
 						case ResponseType.Time:
 							Int64[] c = deSerializedResult as Int64[];
-							string s = c [0].ToString ();
+							if((c != null) && (c.Length > 0)){
+								string s = c [0].ToString ();
 
-							result = new List<object> ();
-							result.Add (s);
-							LoggingMethod.WriteToLog (string.Format ("DateTime {0}, added to result ", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+								result = new List<object> ();
+								result.Add (s);
+								LoggingMethod.WriteToLog (string.Format ("DateTime {0}, added to result ", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+							}
                             /*var messages = (from item in deSerializedResult
                                 select item as object).ToArray ();
                             if (messages != null && messages.Length > 0) {

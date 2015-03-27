@@ -75,7 +75,7 @@ namespace PubNubMessaging.Tests
 		public static string SubscribeKey = "demo-36";
 		public static string SecretKey = "demo-36";
 		public static float WaitTimeBetweenCalls = 5;
-		public static float WaitTimeBetweenCallsLow = 1;
+		public static float WaitTimeBetweenCallsLow = 2;
 		public static float WaitTimeToReadResponse = 15;
 		public static float WaitTime = 20;
 		Pubnub pubnub;
@@ -205,7 +205,7 @@ namespace PubNubMessaging.Tests
 			if (asObject) {
 				foreach (object message in messages) {
 					pubnub.Publish<object> (channel, message, storeInHistory, commonPublish.DisplayReturnMessage, commonPublish.DisplayReturnMessage);
-
+					count++;
 					if (numberOfMessages/2 == count) {
 						this.DeliveryStatus = false;
 						this.Response = null;
@@ -215,12 +215,13 @@ namespace PubNubMessaging.Tests
 						fields = this.Response as IList<object>;
 						midtime = Convert.ToInt64 (fields [0].ToString ());
 					}
-					count++;
+
 					yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCallsLow); 
 				}
 			}else {
 				foreach (object message in messages) {
 					pubnub.Publish<string> (channel, message, storeInHistory, commonPublish.DisplayReturnMessage, commonPublish.DisplayReturnMessage);
+					count++;
 					if (numberOfMessages/2 == count) {
 						this.DeliveryStatus = false;
 						this.Response = null;
@@ -230,7 +231,6 @@ namespace PubNubMessaging.Tests
 						fields = this.Response as IList<object>;
 						midtime = Convert.ToInt64 (fields [0].ToString ());
 					}
-					count++;
 
 					yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCallsLow); 
 				}
@@ -261,7 +261,7 @@ namespace PubNubMessaging.Tests
 			} else {
 				bool passed = false;
 				if (isParamsTest) {
-					passed = ParseDetailedHistoryResponse (0, 0, messages, testName, asObject);
+					passed = ParseDetailedHistoryResponse (messages, testName, asObject, 0, numberOfMessages/2);
 
 					if (passed) {
 						this.DeliveryStatus = false;
@@ -277,12 +277,10 @@ namespace PubNubMessaging.Tests
 						yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
 						UnityEngine.Debug.Log (string.Format ("{0}: {1} After wait2 ", DateTime.Now.ToString (), testName));
 
-						passed = ParseDetailedHistoryResponse (0, 0, messages, testName, asObject);
-
 						if (this.Response == null) {
 							IntegrationTest.Fail (string.Format ("{0}: Null response 2", testName)); 
 						} else {
-							passed = ParseDetailedHistoryResponse (0, 0, messages, testName, asObject);
+							passed = ParseDetailedHistoryResponse (messages, testName, asObject, numberOfMessages/2, numberOfMessages);
 						}
 					} else {
 						IntegrationTest.Fail (string.Format ("{0}: failed one", testName)); 
@@ -294,7 +292,7 @@ namespace PubNubMessaging.Tests
 					if (noStore) {
 						passed = ParseResponseNoStore (messages, testName);
 					} else {
-						passed = ParseDetailedHistoryResponse (0, 0, messages, testName, asObject);
+						passed = ParseDetailedHistoryResponse (messages, testName, asObject, 0, numberOfMessages);
 					}
 				}
 				if (passed) {
@@ -306,14 +304,14 @@ namespace PubNubMessaging.Tests
 			pubnub.EndPendingRequests ();
 		}
 
-		public bool ParseDetailedHistoryResponse (int messageStart, int messageEnd, object[] messages, string testName, bool asObject)
+		public bool ParseDetailedHistoryResponse (object[] messages, string testName, bool asObject, int messageStart, int messageEnd)
 		{
 			if (asObject) {
 				IList<object> fields = this.Response as IList<object>;
 
 				UnityEngine.Debug.Log (string.Format ("{0}: {1} fields.Count {2}", DateTime.Now.ToString (), testName, fields.Count));
 				if (fields [0] != null) {
-					return ParseFields (fields, messageStart, messageEnd, messages, testName);
+					return ParseFields (fields, messages, testName, messageStart, messageEnd);
 				} else {
 					return false;
 				}
@@ -325,8 +323,9 @@ namespace PubNubMessaging.Tests
 				var found = false;
 				var count = 0;
 				string resp = this.Response.ToString();
-				foreach (var message in messages) {
-					if (resp.Contains (message.ToString())) {
+				//foreach (var message in messages) {
+				for (int i= messageStart; i < messageEnd; i++) {
+					if (resp.Contains (messages[i].ToString())) {
 						found = true;
 					} else {
 						found = false;
@@ -343,30 +342,44 @@ namespace PubNubMessaging.Tests
 			}
 		}
 
-		public bool ParseFields (IList<object> fields, int messageStart, int messageEnd, object[] messages, string testName)
+		public bool ParseFields (IList<object> fields, object[] messages, string testName, int messageStart, int messageEnd)
 		{
 			string response = "";
-
+			UnityEngine.Debug.Log (string.Format ("{0}: {1} messageStart: {2}, messageEnd: {3}", DateTime.Now.ToString (), testName, messageStart, messageEnd));
 			var myObjectArray = (from item in fields
 				select item as object).ToArray ();
 			IList<object> enumerable = myObjectArray [0] as IList<object>;
 			bool found = false;
+
 			if ((enumerable != null) && (enumerable.Count > 0)) {
-				foreach (var message in messages) {
+				//foreach (var message in messages) {
+				//int count = 0;
+				//foreach (var message in messages) {
+				for (int i= messageStart; i < messageEnd; i++) {
+					/*if (count <= messageStart-1) {
+						continue;
+					}*/
+					var message = messages[i]; 
 					bool mfound = false;
 					foreach (object element in enumerable) {	
 						response = element.ToString ();
-						UnityEngine.Debug.Log (string.Format ("{0}: {1} message: {2}, response: {3}", DateTime.Now.ToString (), testName, message, response));
 						if (message.ToString().Equals (response)) {
+							UnityEngine.Debug.Log (string.Format ("{0}: {1} message: {2}, response: {3}", DateTime.Now.ToString (), testName, message, response));
 							mfound = true;
+							break;
 						}
 					}
 					if (!mfound) {
+						UnityEngine.Debug.Log (string.Format ("{0}: {1} message: {2}", DateTime.Now.ToString (), testName, message));
 						found = false;
 						break;
 					} else {
 						found = true;
 					}
+					/*count++;
+					if (count >= messageEnd) {
+						break;
+					}*/
 					/*if (messageStart != messageEnd) {
 						Console.WriteLine (String.Format ("response :{0} :: j: {1}", response, j));
 						if (j < messageEnd) {
@@ -425,7 +438,6 @@ namespace PubNubMessaging.Tests
 			}
 
 		}
-
 
 		/*public void ParseDetailedHistoryResponse (int messageStart, int messageEnd, string message, string testName, bool asObject)
 		{
