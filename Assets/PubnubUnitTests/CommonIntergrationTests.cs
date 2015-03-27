@@ -170,6 +170,105 @@ namespace PubNubMessaging.Tests
 				ssl);
 			pubnub.Time<object> (this.DisplayReturnMessage, this.DisplayErrorMessage);
 		}
+
+		public IEnumerator DoSubscribeThenPublishAndParse(bool ssl, string testName, bool asObject, bool withCipher, object message){
+			string channel = Init (testName, ssl, withCipher);
+
+			UnityEngine.Debug.Log (string.Format("{0} {1}: Start coroutine ", DateTime.Now.ToString (), testName));
+			if (asObject) {
+				pubnub.Subscribe<object> (channel, this.DisplayReturnMessage, this.DisplayReturnMessage, this.DisplayErrorMessage);
+			} else {
+				pubnub.Subscribe<string> (channel, this.DisplayReturnMessage, this.DisplayReturnMessage, this.DisplayErrorMessage);
+			}
+
+			UnityEngine.Debug.Log (string.Format("{0} {1}: Waiting ", DateTime.Now.ToString (), testName));
+			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
+
+			CommonIntergrationTests commonPublish = new CommonIntergrationTests ();
+			commonPublish.DeliveryStatus = false;
+			commonPublish.Response = null;
+			commonPublish.Name = string.Format("{0} Pubs", testName);
+
+			UnityEngine.Debug.Log (string.Format("{0}: {1} Publishing", DateTime.Now.ToString (), testName));
+			if (asObject) {
+				pubnub.Publish<object> (channel, message, true, commonPublish.DisplayReturnMessage, commonPublish.DisplayReturnMessage);
+			} else {
+				pubnub.Publish<string> (channel, message, true, commonPublish.DisplayReturnMessage, commonPublish.DisplayReturnMessage);
+			}
+
+			UnityEngine.Debug.Log (string.Format("{0}: {1} Waiting for response", DateTime.Now.ToString (), testName));
+			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
+			UnityEngine.Debug.Log (string.Format("{0}: {1} After wait", DateTime.Now.ToString (), testName));
+
+			if (this.Response == null) {
+				IntegrationTest.Fail (string.Format ("{0}: Null response", testName)); 
+			} else {
+				bool passed = false;
+				if (asObject) {
+					UnityEngine.Debug.Log (string.Format ("{0}: {1} Response:", DateTime.Now.ToString (), this.Response));
+					IList<object> fields = this.Response as IList<object>;
+					if ((fields != null) && (message.Equals (fields [0].ToString ()))){
+						passed = true;
+					}
+				} else {
+					UnityEngine.Debug.Log (string.Format ("{0}: {1} Response:", DateTime.Now.ToString (), this.Response));
+					object[] deserializedMessage = Deserialize<object[]> (this.Response.ToString ());
+					if ((deserializedMessage != null) && (message.Equals (deserializedMessage [0].ToString ()))){
+						passed = true;
+					}
+				}
+
+				if (passed) {
+					IntegrationTest.Pass ();
+				} else {
+					IntegrationTest.Fail (string.Format("{0}: Not found in {1}", testName, this.Response.ToString ())); 
+				}
+			}
+			pubnub.Unsubscribe<string> (channel, this.DisplayReturnMessage, this.DisplayReturnMessage, this.DisplayReturnMessage, this.DisplayErrorMessage);
+			pubnub.EndPendingRequests ();
+		}
+
+		public IEnumerator DoTimeAndParse(bool ssl, string testName, bool asObject){
+			Init (testName, ssl);
+			this.DeliveryStatus = false;
+			this.Response = null;
+
+			if (asObject) {
+				pubnub.Time<object> (this.DisplayReturnMessage, this.DisplayErrorMessage);
+			} else {
+				pubnub.Time<string> (this.DisplayReturnMessage, this.DisplayErrorMessage);
+			}
+
+			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
+
+			if (this.Response == null) {
+				IntegrationTest.Fail (string.Format ("{0}: Null response", testName)); 
+			} else {
+				UnityEngine.Debug.Log (string.Format ("{0}: {1} this.Response {2}", DateTime.Now.ToString (), testName, this.Response));
+				bool passed = false;
+				if (asObject) {
+					IList<object> fields = this.Response as IList<object>;
+
+					UnityEngine.Debug.Log (string.Format ("{0}: {1} Time", DateTime.Now.ToString (), fields [0].ToString ()));
+					if (!Convert.ToInt64 (fields [0].ToString ()).Equals (0)) {
+						passed = true;
+					}
+				} else {
+					if(!this.Response.ToString().Equals("") 
+						&& !(this.Response.ToString().Equals("[]")) 
+						&& !(this.Response.ToString().Equals("[0]"))
+						&& !(this.Response.ToString().Equals("0"))){
+						passed = true;
+					}
+				}
+				if (passed) {
+					IntegrationTest.Pass ();
+				} else {
+					IntegrationTest.Fail (string.Format ("{0}: Not found in {1}", testName, this.Response.ToString ())); 
+				}
+			}
+			pubnub.EndPendingRequests ();
+		}
 			
 		public IEnumerator DoPublishThenDetailedHistoryAndParse(bool ssl, string testName, object[] messages, bool asObject, bool withCipher, bool noStore, int numberOfMessages, bool isParamsTest){
 

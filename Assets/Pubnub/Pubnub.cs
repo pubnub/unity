@@ -1659,8 +1659,9 @@ namespace PubNubMessaging.Core
             //var a = (specificListType)pnRequestState.Type;*/
 
 			//Debug.Log ("In handler of event cea " + cea.CurrRequestType.ToString());
-			LoggingMethod.WriteToLog (string.Format ("DateTime {0}, In handler of event cea {1}", DateTime.Now.ToString (), cea.PubnubRequestState.Type.ToString ()), LoggingMethod.LevelInfo);
+
 			try {
+				LoggingMethod.WriteToLog (string.Format ("DateTime {0}, In handler of event cea {1}", DateTime.Now.ToString (), cea.PubnubRequestState.Type.ToString ()), LoggingMethod.LevelInfo);
 				LoggingMethod.WriteToLog (string.Format ("DateTime {0}, RequestType CoroutineCompleteHandler {1}", DateTime.Now.ToString (), typeof(T)), LoggingMethod.LevelInfo);
 				if (cea.PubnubRequestState.Type == ResponseType.Heartbeat) {
 
