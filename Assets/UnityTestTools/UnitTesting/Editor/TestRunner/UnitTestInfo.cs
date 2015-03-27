@@ -1,95 +1,104 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using NUnit.Core;
+using UnityEngine;
 using Object = System.Object;
 
 namespace UnityTest
 {
-	[Serializable]
-	public class UnitTestInfo
-	{
-		public UnitTestInfo (string methodPath)
-		{
-			if(string.IsNullOrEmpty(methodPath))
-				throw new ArgumentException();
+    [Serializable]
+    public class UnitTestInfo
+    {
+        public string ParamName { get; private set; }
+        public string MethodName { get; private set; }
+        public string FullMethodName { get; private set; }
+        public string ClassName { get; private set; }
+        public string FullClassName { get; private set; }
+        public string Namespace { get; private set; }
+        public string FullName { get; private set; }
+        public string[] Categories { get; private set; }
+        public string AssemblyPath { get; private set; }
+        public string Id { get; private set; }
+        public bool IsIgnored { get; private set; }
 
-			FullName = methodPath;
+        public UnitTestInfo(TestMethod testMethod)
+        {
+            if (testMethod == null)
+                throw new ArgumentException();
 
-			var idx = methodPath.IndexOf ('(');
-			if (idx > 0)
-			{
-				ParamName = methodPath.Substring (idx + 1,
-												methodPath.Length - idx - 2);
-				methodPath = methodPath.Substring (0,
-													methodPath.IndexOf ('('));
-			}
-			else
-			{
-				ParamName = "";
-			}
+            MethodName = testMethod.MethodName;
+            FullMethodName = testMethod.Method.ToString();
+            ClassName = testMethod.FixtureType.Name;
+            FullClassName = testMethod.ClassName;
+            Namespace = testMethod.Method.ReflectedType.Namespace;
+            FullName = testMethod.TestName.FullName;
+            ParamName = ExtractMethodCallParametersString(FullName);
+            Id = testMethod.TestName.TestID.ToString();
 
-			MethodName = methodPath.Substring (methodPath.LastIndexOf ('.') + 1);
+            Categories = testMethod.Categories.Cast<string>().ToArray();
 
-			methodPath = methodPath.Substring (0,
-												methodPath.LastIndexOf ('.'));
+            AssemblyPath = GetAssemblyPath(testMethod);
+            
+            IsIgnored = (testMethod.RunState == RunState.Ignored);
+        }
 
-			if (methodPath.LastIndexOf ('.') > -1)
-			{
-				FullClassName = methodPath;
-				ClassName = methodPath.Substring (methodPath.LastIndexOf ('.') + 1);
+        private string GetAssemblyPath(TestMethod testMethod)
+        {
+            var parent = testMethod as Test;
+            var assemblyPath = "";
+            while (parent != null)
+            {
+                parent = parent.Parent;
+                if (!(parent is TestAssembly)) continue;
+                var path = (parent as TestAssembly).TestName.FullName;
+                if (!File.Exists(path)) continue;
+                assemblyPath = path;
+                break;
+            }
+            return assemblyPath;
+        }
 
-				methodPath = methodPath.Substring (0,
-													methodPath.LastIndexOf ('.'));
-				Namespace = methodPath;
-			}
-			else
-			{
-				ClassName = methodPath;
-				FullClassName = methodPath;
-				Namespace = "";
-			}
-		}
+        public UnitTestInfo(string id)
+        {
+            Id = id;
+        }
 
-		public string ParamName { get; private set; }
-		public string MethodName { get; private set; }
-		public string ClassName { get; private set; }
-		public string FullClassName { get; private set; }
-		public string Namespace { get; private set; }
-		public string FullName { get; private set; }
+        public override bool Equals(Object obj)
+        {
+            if (!(obj is UnitTestInfo)) return false;
 
-		public override bool Equals (Object obj)
-		{
-			if (!(obj is UnitTestInfo)) return false;
+            var testInfo = (UnitTestInfo)obj;
+            return Id == testInfo.Id;
+        }
 
-			var testInfo = (UnitTestInfo) obj;
-			return FullName == testInfo.FullName;
-		}
+        public static bool operator ==(UnitTestInfo a, UnitTestInfo b)
+        {
+            if (((object)a == null) || ((object)b == null)) return false;
+            return a.Id == b.Id;
+        }
 
-		public override int GetHashCode ()
-		{
-			return FullName.GetHashCode ();
-		}
+        public static bool operator !=(UnitTestInfo a, UnitTestInfo b)
+        {
+            return !(a == b);
+        }
 
-		public static bool operator == (UnitTestInfo a, UnitTestInfo b)
-		{
-			// If both are null, or both are same instance, return true.
-			if (ReferenceEquals (a,
-								b))
-			{
-				return true;
-			}
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
 
-			// If one is null, but not both, return false.
-			if (((object) a == null) || ((object) b == null))
-			{
-				return false;
-			}
-
-			// Return true if the fields match:
-			return a.Equals (b);
-		}
-
-		public static bool operator != (UnitTestInfo a, UnitTestInfo b)
-		{
-			return !(a == b);
-		}
-	}
+        static string ExtractMethodCallParametersString(string methodFullName)
+        {
+            var match = Regex.Match(methodFullName, @"\((.*)\)");
+            string result = "";
+            if (match.Groups[1].Success)
+            {
+                result = match.Groups[1].Captures[0].Value;
+            }
+            return result;
+        }
+    }
 }

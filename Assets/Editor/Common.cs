@@ -35,6 +35,9 @@ namespace PubNubMessaging.Tests
         public static string PublishKey = "demo-36";
         public static string SubscribeKey = "demo-36";
         public static string SecretKey = "demo-36";
+		public static float WaitTimeBetweenCalls = 5;
+		public static float WaitTimeToReadResponse = 15;
+
 
         public object Response { get; set; }
         public string ErrorResponse { get; set; }

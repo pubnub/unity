@@ -1,363 +1,447 @@
+// #define IMITATE_BATCH_MODE //uncomment if you want to imitate batch mode behaviour in non-batch mode mode run
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using UnityTest.IntegrationTestRunner;
 
 namespace UnityTest
 {
-	[Serializable]
-	public class TestRunner : MonoBehaviour
-	{
-		private bool imitateBatchMode = false; //set true if you want to imitate batch mode behaviour in non-batch mode mode run
+    [Serializable]
+    public class TestRunner : MonoBehaviour
+    {
+        static private readonly TestResultRenderer k_ResultRenderer = new TestResultRenderer();
 
-		private TestResult currentTest;
+        public TestComponent currentTest;
+        private List<TestResult> m_ResultList = new List<TestResult>();
+        private List<TestComponent> m_TestComponents;
 
-		public List<TestResult> testToRun = new List<TestResult>();
-		private Queue<TestResult> testToRunQueue = new Queue<TestResult> ();
-
-		public bool isInitializedByRunner
-		{
-			get
-			{
-#if UNITY_EDITOR
-				if (!UnityEditorInternal.InternalEditorUtility.inBatchMode && !imitateBatchMode) return true;
+        public bool isInitializedByRunner
+        {
+            get
+            {
+#if !IMITATE_BATCH_MODE
+                if (Application.isEditor && !IsBatchMode())
+                    return true;
 #endif
-				return false;
-			}
-		}
+                return false;
+            }
+        }
 
-		private double startTime;
-		private bool readyToRun;
+        private double m_StartTime;
+        private bool m_ReadyToRun;
 
-		private AssertionComponent[] assertionsToCheck = null;
-		private string testMessages;
-		private string stacktrace;
-		private TestState testState = TestState.Running;
+        private string m_TestMessages;
+        private string m_Stacktrace;
+        private TestState m_TestState = TestState.Running;
 
-		public TestRunnerCallbackList TestRunnerCallback = new TestRunnerCallbackList();
+        private TestRunnerConfigurator m_Configurator;
 
-		private const string startedMessage = "IntegrationTest started";
-		private const string finishedMessage = "IntegrationTest finished";
-		private const string timeoutMessage = "IntegrationTest timeout";
-		private const string failedMessage = "IntegrationTest failed";
-		private const string failedExceptionMessage = "IntegrationTest failed with exception";
-		private const string ignoredMessage = "IntegrationTest ignored";
-		private const string interruptedMessage = "IntegrationTest Run interrupted";
+        public TestRunnerCallbackList TestRunnerCallback = new TestRunnerCallbackList();
+        private IntegrationTestsProvider m_TestsProvider;
 
-		public void Awake ()
-		{
-#if UNITY_EDITOR
-			if (!UnityEditorInternal.InternalEditorUtility.inBatchMode && !imitateBatchMode) return;
-#endif
-			DisableAllTests ();
-		}
+        private const string k_Prefix = "IntegrationTest";
+        private const string k_StartedMessage = k_Prefix + " Started";
+        private const string k_FinishedMessage = k_Prefix + " Finished";
+        private const string k_TimeoutMessage = k_Prefix + " Timeout";
+        private const string k_FailedMessage = k_Prefix + " Failed";
+        private const string k_FailedExceptionMessage = k_Prefix + " Failed with exception";
+        private const string k_IgnoredMessage = k_Prefix + " Ignored";
+        private const string k_InterruptedMessage = k_Prefix + " Run interrupted";
 
-		private void DisableAllTests()
-		{
-			foreach (var t in FindAllTests ())
-			{
-				t.go.hideFlags = 0;
-				t.go.SetActive(false);
-			}
-		}
 
-		public void Start()
-		{
-#if UNITY_EDITOR
-			if (!UnityEditorInternal.InternalEditorUtility.inBatchMode && !imitateBatchMode) return;
-#endif
-			var tests = FindAllTests();
-			InitRunner(tests);
-		}
+        public void Awake()
+        {
+            m_Configurator = new TestRunnerConfigurator();
+            if (isInitializedByRunner) return;
+            TestComponent.DisableAllTests();
+        }
 
-		private List<TestResult> FindAllTests ()
-		{
-			var resultArray = Resources.FindObjectsOfTypeAll(typeof(TestComponent)) as TestComponent[];
-			var foundTestList = new List<TestResult>(resultArray.Select(component => new TestResult(component.gameObject)));
-			return foundTestList;
-		}
+        public void Start()
+        {
+            if (isInitializedByRunner) return;
 
-		public void InitRunner(List<TestResult> tests)
-		{
-			Application.RegisterLogCallback(LogHandler);
-			if (isInitializedByRunner)
-				tests.Sort((o1,o2) =>o1.go.name.CompareTo (o2.go.name));
-			testToRun = tests;
-			testToRunQueue = new Queue<TestResult>(testToRun);
-			readyToRun = true;
-		}
+            if (m_Configurator.sendResultsOverNetwork)
+            {
+                var nrs = m_Configurator.ResolveNetworkConnection();
+                if (nrs != null)
+                    TestRunnerCallback.Add(nrs);
+            }
 
-		public void Update ()
-		{
-			if (readyToRun  && Time.frameCount > 1)
-			{
-				readyToRun = false;
-				StartCoroutine ("StateMachine");
-			}
-		}
+            TestComponent.DestroyAllDynamicTests();
+            var dynamicTestTypes = TestComponent.GetTypesWithHelpAttribute(Application.loadedLevelName);
+            foreach (var dynamicTestType in dynamicTestTypes)
+                TestComponent.CreateDynamicTest(dynamicTestType);
 
-		public void OnDestroy()
-		{
-			var test = currentTest;
-			if (currentTest != null)
-			{
-				test.messages += "Test run interrupted (crash?)";
-				LogMessage(interruptedMessage);
-				FinishTest(TestResult.ResultType.Failed);
-			}
-			if (test != null || testToRunQueue.Any())
-				TestRunnerCallback.TestRunInterrupted(testToRunQueue.ToList ());
-			Application.RegisterLogCallback(null);
-		}
+            var tests = TestComponent.FindAllTestsOnScene();
 
-		private void LogHandler (string condition, string stacktrace, LogType type)
-		{
-			testMessages += condition + "\n";
-			if (type == LogType.Exception)
-			{
-				var exceptionType = condition.Substring (0, condition.IndexOf(':'));
-				if (currentTest.TestComponent.IsExceptionExpected (exceptionType))
-				{
-					testMessages += exceptionType + " was expected\n";
-					if (currentTest.TestComponent.succeedWhenExceptionIsThrown)
-					{
-						testState = TestState.Success;
-					}
-				}
-				else
-				{
-					testState = TestState.Exception;
-					this.stacktrace = stacktrace;
-				}
-			}
-			else if (type == LogType.Log)
-			{
-				if (condition.StartsWith (IntegrationTest.passMessage))
-				{
-					testState = TestState.Success;
-				}
-				if (condition.StartsWith(IntegrationTest.failMessage))
-				{
-					testState = TestState.Failure;
-				}
-			}
-		}
+            InitRunner(tests, dynamicTestTypes.Select(type => type.AssemblyQualifiedName).ToList());
+        }
 
-		public IEnumerator StateMachine ()
-		{
-			TestRunnerCallback.RunStarted(Application.platform.ToString(), testToRun);
-			while (true)
-			{
-				if (testToRunQueue.Count == 0 && currentTest == null)
-				{
-					FinishTestRun ();
-					break;
-				}
-				if (currentTest == null)
-				{
-					StartNewTest ();
-				}
-				if (currentTest != null)
-				{
-					if (testState == TestState.Running)
-					{
-						if (assertionsToCheck != null && assertionsToCheck.All (a => a.checksPerformed > 0))
+        public void InitRunner(List<TestComponent> tests, List<string> dynamicTestsToRun)
+        {
+            m_CurrentlyRegisteredLogCallback = GetLogCallbackField();
+            m_LogCallback = LogHandler;
+            Application.RegisterLogCallback(m_LogCallback);
+
+            // Init dynamic tests
+            foreach (var typeName in dynamicTestsToRun)
+            {
+                var t = Type.GetType(typeName);
+                if (t == null) continue;
+                var scriptComponents = Resources.FindObjectsOfTypeAll(t) as MonoBehaviour[];
+                if (scriptComponents.Length == 0)
+                {
+                    Debug.LogWarning(t + " not found. Skipping.");
+                    continue;
+                }
+                if (scriptComponents.Length > 1) Debug.LogWarning("Multiple GameObjects refer to " + typeName);
+                tests.Add(scriptComponents.First().GetComponent<TestComponent>());
+            }
+            // create test structure
+            m_TestComponents = ParseListForGroups(tests).ToList();
+            // create results for tests
+            m_ResultList = m_TestComponents.Select(component => new TestResult(component)).ToList();
+            // init test provider
+            m_TestsProvider = new IntegrationTestsProvider(m_ResultList.Select(result => result.TestComponent as ITestComponent));
+            m_ReadyToRun = true;
+        }
+
+        private static IEnumerable<TestComponent> ParseListForGroups(IEnumerable<TestComponent> tests)
+        {
+            var results = new HashSet<TestComponent>();
+            foreach (var testResult in tests)
+            {
+                if (testResult.IsTestGroup())
+                {
+                    var childrenTestResult = testResult.gameObject.GetComponentsInChildren(typeof(TestComponent), true)
+                                             .Where(t => t != testResult)
+                                             .Cast<TestComponent>()
+                                             .ToArray();
+                    foreach (var result in childrenTestResult)
+                    {
+                        if (!result.IsTestGroup())
+                            results.Add(result);
+                    }
+                    continue;
+                }
+                results.Add(testResult);
+            }
+            return results;
+        }
+
+        public void Update()
+        {
+            if (m_ReadyToRun  && Time.frameCount > 1)
+            {
+                m_ReadyToRun = false;
+                StartCoroutine("StateMachine");
+            }
+            LogCallbackStillRegistered();
+        }
+
+        public void OnDestroy()
+        {
+            if (currentTest != null)
+            {
+                var testResult = m_ResultList.Single(result => result.TestComponent == currentTest);
+                testResult.messages += "Test run interrupted (crash?)";
+                LogMessage(k_InterruptedMessage);
+                FinishTest(TestResult.ResultType.Failed);
+            }
+            if (currentTest != null || (m_TestsProvider != null && m_TestsProvider.AnyTestsLeft()))
+            {
+                var remainingTests = m_TestsProvider.GetRemainingTests();
+                TestRunnerCallback.TestRunInterrupted(remainingTests.ToList());
+            }
+            Application.RegisterLogCallback(null);
+        }
+
+        private void LogHandler(string condition, string stacktrace, LogType type)
+        {
+            if (!condition.StartsWith(k_StartedMessage) && !condition.StartsWith(k_FinishedMessage))
+            {
+                var msg = condition;
+                if (msg.StartsWith(k_Prefix)) msg = msg.Substring(k_Prefix.Length + 1);
+                if (currentTest != null && msg.EndsWith("(" + currentTest.name + ')')) msg = msg.Substring(0, msg.LastIndexOf('('));
+                m_TestMessages += msg + "\n";
+            }
+            switch (type)
+            {
+                case LogType.Exception:
+                {
+                    var exceptionType = condition.Substring(0, condition.IndexOf(':'));
+                    if (currentTest != null && currentTest.IsExceptionExpected(exceptionType))
+                    {
+                        m_TestMessages += exceptionType + " was expected\n";
+                        if (currentTest.ShouldSucceedOnException())
+                        {
+                            m_TestState = TestState.Success;
+                        }
+                    }
+                    else
+                    {
+                        m_TestState = TestState.Exception;
+                        m_Stacktrace = stacktrace;
+                    }
+                }
+                    break;
+                case LogType.Assert:
+                case LogType.Error:
+                    m_TestState = TestState.Failure;
+                    m_Stacktrace = stacktrace;
+                    break;
+                case LogType.Log:
+                    if (m_TestState ==  TestState.Running && condition.StartsWith(IntegrationTest.passMessage))
+                    {
+                        m_TestState = TestState.Success;
+                    }
+                    if (condition.StartsWith(IntegrationTest.failMessage))
+                    {
+                        m_TestState = TestState.Failure;
+                    }
+                    break;
+            }
+        }
+
+        public IEnumerator StateMachine()
+        {
+            TestRunnerCallback.RunStarted(Application.platform.ToString(), m_TestComponents);
+            while (true)
+            {
+                if (!m_TestsProvider.AnyTestsLeft() && currentTest == null)
+                {
+                    FinishTestRun();
+                    yield break;
+                }
+                if (currentTest == null)
+                {
+                    StartNewTest();
+                }
+                if (currentTest != null)
+                {
+                    if (m_TestState == TestState.Running)
+                    {
+						if(currentTest.ShouldSucceedOnAssertions())
 						{
-							IntegrationTest.Pass (currentTest.go);
-							testState = TestState.Success;
+							var assertionsToCheck = currentTest.gameObject.GetComponentsInChildren<AssertionComponent>().Where(a => a.enabled).ToArray();
+	                        if (assertionsToCheck.All(a => a.checksPerformed > 0))
+	                        {
+	                            IntegrationTest.Pass(currentTest.gameObject);
+	                            m_TestState = TestState.Success;
+	                        }
 						}
-						if (currentTest != null && Time.time > startTime + currentTest.TestComponent.timeout)
-						{
-							testState = TestState.Timeout;
-						}
-					}
+                        if (currentTest != null && Time.time > m_StartTime + currentTest.GetTimeout())
+                        {
+                            m_TestState = TestState.Timeout;
+                        }
+                    }
 
-					switch (testState)
-					{
-						case TestState.Success:
-							LogMessage (finishedMessage);
-							FinishTest (TestResult.ResultType.Success);
-							break;
-						case TestState.Failure:
-							LogMessage (failedMessage);
-							FinishTest (TestResult.ResultType.Failed);
-							break;
-						case TestState.Exception:
-							LogMessage (failedExceptionMessage);
-							FinishTest (TestResult.ResultType.FailedException);
-							break;
-						case TestState.Timeout:
-							LogMessage(timeoutMessage);
-							FinishTest(TestResult.ResultType.Timeout);
-							break;
-						case TestState.Ignored:
-							LogMessage (ignoredMessage);
-							FinishTest(TestResult.ResultType.Ignored);
-							break;
-					}
-				}
-				yield return null;
-			}
-		}
+                    switch (m_TestState)
+                    {
+                        case TestState.Success:
+                            LogMessage(k_FinishedMessage);
+                            FinishTest(TestResult.ResultType.Success);
+                            break;
+                        case TestState.Failure:
+                            LogMessage(k_FailedMessage);
+                            FinishTest(TestResult.ResultType.Failed);
+                            break;
+                        case TestState.Exception:
+                            LogMessage(k_FailedExceptionMessage);
+                            FinishTest(TestResult.ResultType.FailedException);
+                            break;
+                        case TestState.Timeout:
+                            LogMessage(k_TimeoutMessage);
+                            FinishTest(TestResult.ResultType.Timeout);
+                            break;
+                        case TestState.Ignored:
+                            LogMessage(k_IgnoredMessage);
+                            FinishTest(TestResult.ResultType.Ignored);
+                            break;
+                    }
+                }
+                yield return null;
+            }
+        }
 
-		private void LogMessage(string message)
-		{
-			if (currentTest != null)
-				Debug.Log (message + " (" + currentTest.name + ")",
-							currentTest.go);
-			else
-				Debug.Log (message);
-		}
+        private void LogMessage(string message)
+        {
+            if (currentTest != null)
+                Debug.Log(message + " (" + currentTest.Name + ")", currentTest.gameObject);
+            else
+                Debug.Log(message);
+        }
 
-		private void FinishTestRun ()
-		{
-			PrintResultToLog ();
-#if UNITY_EDITOR || UNITY_STANDALONE
-			WriteResultsToFile();
-#endif
-			TestRunnerCallback.RunFinished (testToRun);
-			LoadNextLevelOrQuit ();
-		}
+        private void FinishTestRun()
+        {
+            PrintResultToLog();
+            TestRunnerCallback.RunFinished(m_ResultList);
+            LoadNextLevelOrQuit();
+        }
 
-		private void PrintResultToLog ()
-		{
-			var resultString = "";
-			resultString += "Passed: " + testToRun.Count (t => t.IsSuccess);
-			if (testToRun.Any (result => result.IsFailure))
-			{
-				resultString += " Failed: " + testToRun.Count (t => t.IsFailure);
-				Debug.Log ("Failed tests: " + string.Join (", ", testToRun.Where (t => t.IsFailure).Select (result => result.name).ToArray ()));
-			}
-			if (testToRun.Any (result => result.IsIgnored))
-			{
-				resultString += " Ignored: " + testToRun.Count (t => t.IsIgnored);
-				Debug.Log ("Ignored tests: " + string.Join (", ",
-															testToRun.Where (t => t.IsIgnored).Select (result => result.name).ToArray ()));
-			}
-			Debug.Log (resultString);
-		}
+        private void PrintResultToLog()
+        {
+            var resultString = "";
+            resultString += "Passed: " + m_ResultList.Count(t => t.IsSuccess);
+            if (m_ResultList.Any(result => result.IsFailure))
+            {
+                resultString += " Failed: " + m_ResultList.Count(t => t.IsFailure);
+                Debug.Log("Failed tests: " + string.Join(", ", m_ResultList.Where(t => t.IsFailure).Select(result => result.Name).ToArray()));
+            }
+            if (m_ResultList.Any(result => result.IsIgnored))
+            {
+                resultString += " Ignored: " + m_ResultList.Count(t => t.IsIgnored);
+                Debug.Log("Ignored tests: " + string.Join(", ",
+                                                          m_ResultList.Where(t => t.IsIgnored).Select(result => result.Name).ToArray()));
+            }
+            Debug.Log(resultString);
+        }
 
-		private void LoadNextLevelOrQuit ()
-		{
-#if UNITY_EDITOR
-			if (UnityEditorInternal.InternalEditorUtility.inBatchMode || imitateBatchMode)
-			{
-				if (Application.loadedLevel < Application.levelCount - 1)
-					Application.LoadLevel (Application.loadedLevel + 1);
-				else
-					UnityEditor.EditorApplication.Exit (0);
-			}
+        private void LoadNextLevelOrQuit()
+        {
+            if (isInitializedByRunner) return;
+
+            if (Application.loadedLevel < Application.levelCount - 1)
+                Application.LoadLevel(Application.loadedLevel + 1);
+            else
+            {
+                k_ResultRenderer.ShowResults();
+                if (m_Configurator.isBatchRun && m_Configurator.sendResultsOverNetwork)
+                    Application.Quit();
+            }
+        }
+
+        public void OnGUI()
+        {
+            k_ResultRenderer.Draw();
+        }
+
+        private void StartNewTest()
+        {
+            m_TestMessages = "";
+            m_Stacktrace = "";
+            m_TestState = TestState.Running;
+
+            m_StartTime = Time.time;
+            currentTest = m_TestsProvider.GetNextTest() as TestComponent;
+
+            var testResult = m_ResultList.Single(result => result.TestComponent == currentTest);
+
+            if (currentTest != null && currentTest.IsExludedOnThisPlatform())
+            {
+                m_TestState = TestState.Ignored;
+                Debug.Log(currentTest.gameObject.name + " is excluded on this platform");
+            }
+
+            // don't ignore test if user initiated it from the runner and it's the only test that is being run
+            if (currentTest != null
+                && (currentTest.IsIgnored()
+                    && !(isInitializedByRunner && m_ResultList.Count == 1)))
+                m_TestState = TestState.Ignored;
+
+            LogMessage(k_StartedMessage);
+            TestRunnerCallback.TestStarted(testResult);
+        }
+
+        private void FinishTest(TestResult.ResultType result)
+        {
+            m_TestsProvider.FinishTest(currentTest);
+            var testResult = m_ResultList.Single(t => t.GameObject == currentTest.gameObject);
+            testResult.resultType = result;
+            testResult.duration = Time.time - m_StartTime;
+            testResult.messages = m_TestMessages;
+            testResult.stacktrace = m_Stacktrace;
+            TestRunnerCallback.TestFinished(testResult);
+            currentTest = null;
+            if (!testResult.IsSuccess
+                && testResult.Executed
+                && !testResult.IsIgnored) k_ResultRenderer.AddResults(Application.loadedLevelName, testResult);
+        }
+
+        #region Test Runner Helpers
+
+        public static TestRunner GetTestRunner()
+        {
+            TestRunner testRunnerComponent = null;
+            var testRunnerComponents = Resources.FindObjectsOfTypeAll(typeof(TestRunner));
+
+            if (testRunnerComponents.Count() > 1)
+                foreach (var t in testRunnerComponents) DestroyImmediate(((TestRunner)t).gameObject);
+            else if (!testRunnerComponents.Any())
+                testRunnerComponent = Create().GetComponent<TestRunner>();
+            else
+                testRunnerComponent = testRunnerComponents.Single() as TestRunner;
+
+            return testRunnerComponent;
+        }
+
+        private static GameObject Create()
+        {
+            var runner = new GameObject("TestRunner");
+            runner.AddComponent<TestRunner>();
+            Debug.Log("Created Test Runner");
+            return runner;
+        }
+
+        private static bool IsBatchMode()
+        {
+#if !UNITY_METRO
+            const string internalEditorUtilityClassName = "UnityEditorInternal.InternalEditorUtility, UnityEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null";
+
+            var t = Type.GetType(internalEditorUtilityClassName, false);
+            if (t == null) return false;
+
+            const string inBatchModeProperty = "inBatchMode";
+            var prop = t.GetProperty(inBatchModeProperty);
+            return (bool)prop.GetValue(null, null);
+#else   // if !UNITY_METRO
+            return false;
+#endif  // if !UNITY_METRO
+        }
+
+        #endregion
+
+        #region LogCallback check
+        private Application.LogCallback m_LogCallback;
+        private FieldInfo m_CurrentlyRegisteredLogCallback;
+
+        public void LogCallbackStillRegistered()
+        {
+            if (Application.platform == RuntimePlatform.OSXWebPlayer
+                || Application.platform == RuntimePlatform.WindowsWebPlayer)
+                return;
+            if (m_CurrentlyRegisteredLogCallback == null) return;
+            var v = (Application.LogCallback)m_CurrentlyRegisteredLogCallback.GetValue(null);
+            if (v == m_LogCallback) return;
+            Debug.LogError("Log callback got changed. This may be caused by other tools using RegisterLogCallback.");
+            Application.RegisterLogCallback(m_LogCallback);
+        }
+
+        private FieldInfo GetLogCallbackField()
+        {
+#if !UNITY_METRO
+            var type = typeof(Application);
+            var f = type.GetFields(BindingFlags.Static | BindingFlags.NonPublic).Where(p => p.Name == "s_LogCallback");
+            if (f.Count() != 1) return null;
+            return f.Single();
 #else
-			if(Application.loadedLevel < Application.levelCount - 1)
-				Application.LoadLevel (Application.loadedLevel + 1);
-			else
-				Application.Quit ();
+            return null;
 #endif
-		}
+        }
+        #endregion
 
-		private void WriteResultsToFile()
-		{
-			var path = System.IO.Path.Combine (Application.dataPath,
-												Application.loadedLevelName + "-TestResults.xml");
-			Debug.Log ("Saving results in " + path);
-			var resultWriter = new XmlResultWriter(path);
-			resultWriter.SaveTestResult (Application.loadedLevelName, testToRun.ToArray ());
-		}
-
-		private void StartNewTest ()
-		{
-			this.testMessages = "";
-			this.stacktrace = "";
-			testState = TestState.Running;
-			assertionsToCheck = null;
-
-			startTime = Time.time;
-			currentTest = testToRunQueue.Dequeue ();
-			currentTest.isRunning = true;
-			currentTest.go.SetActive (true);
-			
-			if (currentTest.TestComponent.succeedAfterAllAssertionsAreExecuted)
-			{
-				var assertionList = currentTest.go.GetComponentsInChildren<AssertionComponent> ().Where (a => a.enabled);
-				if(assertionList.Any())
-					assertionsToCheck = assertionList.ToArray();
-			}
-
-			if (currentTest.TestComponent.IsExludedOnThisPlatform ())
-			{
-				testState = TestState.Ignored;
-				Debug.Log(currentTest.name + " is excluded on this platform");
-			}
-
-			//do not run ignored tests only when it's batch mode
-			//test runner in the editor will not pass ignored tests to run, unless is expected to
-			if (!isInitializedByRunner && currentTest.TestComponent.ignored)
-				testState = TestState.Ignored;
-			LogMessage(startedMessage);
-			TestRunnerCallback.TestStarted(currentTest);
-		}
-
-		private void FinishTest(TestResult.ResultType result)
-		{
-			testToRun.Find(results => results == currentTest).resultType = result;
-			if (currentTest.go!=null)
-				currentTest.go.gameObject.SetActive(false);
-			currentTest.isRunning = false;
-			currentTest.duration = Time.time - startTime;
-			currentTest.messages = testMessages;
-			currentTest.stacktrace = stacktrace;
-			TestRunnerCallback.TestFinished (currentTest);
-			currentTest = null;
-		}
-
-		#region Test Runner Helpers
-		
-		public static TestRunner GetTestRunner ()
-		{
-			TestRunner testRunnerComponent = null;
-			var testRunnerComponents = Resources.FindObjectsOfTypeAll(typeof(TestRunner));
-
-			if (testRunnerComponents.Count () > 1)
-				foreach (var t in testRunnerComponents) DestroyImmediate((t as TestRunner).gameObject);
-			else if (!testRunnerComponents.Any())
-				testRunnerComponent = Create().GetComponent<TestRunner>();
-			else
-				testRunnerComponent = testRunnerComponents.Single() as TestRunner;
-
-			return testRunnerComponent;
-		}
-
-		private static GameObject Create()
-		{
-			var runner = new GameObject ("TestRunner");
-			var component = runner.AddComponent<TestRunner> ();
-			component.hideFlags = HideFlags.NotEditable;
-			Debug.Log ("Created Test Runner");
-			return runner;
-		}
-
-		public bool HasResultFor(GameObject testInfo)
-		{
-			return testToRun.Any(result => result.go == testInfo);
-		}
-
-		public TestResult GetResultFor(GameObject testInfo)
-		{
-			return testToRun.Find(result => result.go == testInfo);
-		}
-
-		#endregion
-
-		enum TestState
-		{
-			Running,
-			Success,
-			Failure,
-			Exception,
-			Timeout,
-			Ignored
-		}
-	}
+        enum TestState
+        {
+            Running,
+            Success,
+            Failure,
+            Exception,
+            Timeout,
+            Ignored
+        }
+    }
 }
