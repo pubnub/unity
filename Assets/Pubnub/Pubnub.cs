@@ -1427,8 +1427,11 @@ namespace PubNubMessaging.Core
 		{
 			RemoveChannelCallback ();
 			RemoveUserState ();
-			coroutine.BounceRequest<string> (CurrentRequestType.Subscribe, null, false);
-			coroutine.BounceRequest<string> (CurrentRequestType.NonSubscribe, null, false);
+			LoggingMethod.WriteToLog (string.Format ("DateTime {0} ending open requests.", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+			RequestState<string> reqStateSub = StoredRequestState.Instance.GetStoredRequestState (CurrentRequestType.Subscribe) as RequestState<string>;
+			coroutine.BounceRequest<string> (CurrentRequestType.Subscribe, reqStateSub, false);
+			RequestState<string> reqStateNonSub = StoredRequestState.Instance.GetStoredRequestState (CurrentRequestType.NonSubscribe) as RequestState<string>;
+			coroutine.BounceRequest<string> (CurrentRequestType.NonSubscribe, reqStateNonSub, false);
 
 			LoggingMethod.WriteToLog (string.Format ("DateTime {0} Request bounced.", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
 			StopHeartbeat ();
@@ -1661,76 +1664,84 @@ namespace PubNubMessaging.Core
 			//Debug.Log ("In handler of event cea " + cea.CurrRequestType.ToString());
 
 			try {
-				LoggingMethod.WriteToLog (string.Format ("DateTime {0}, In handler of event cea {1}", DateTime.Now.ToString (), cea.PubnubRequestState.Type.ToString ()), LoggingMethod.LevelInfo);
-				LoggingMethod.WriteToLog (string.Format ("DateTime {0}, RequestType CoroutineCompleteHandler {1}", DateTime.Now.ToString (), typeof(T)), LoggingMethod.LevelInfo);
-				if (cea.PubnubRequestState.Type == ResponseType.Heartbeat) {
+				if(cea != null){
+					if(cea.PubnubRequestState != null){
+						LoggingMethod.WriteToLog (string.Format ("DateTime {0}, In handler of event cea {1}", DateTime.Now.ToString (), cea.PubnubRequestState.Type.ToString ()), LoggingMethod.LevelInfo);
+						LoggingMethod.WriteToLog (string.Format ("DateTime {0}, RequestType CoroutineCompleteHandler {1}", DateTime.Now.ToString (), typeof(T)), LoggingMethod.LevelInfo);
+						if (cea.PubnubRequestState.Type == ResponseType.Heartbeat) {
 
-					if (cea.IsTimeout || cea.IsError) {
-						RetryLoop<T> (cea.PubnubRequestState);
-						LoggingMethod.WriteToLog (string.Format ("DateTime {0} Heartbeat timeout={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelError);
-					} else {
-						internetStatus = true;
-						retriesExceeded = false;
+							if (cea.IsTimeout || cea.IsError) {
+								RetryLoop<T> (cea.PubnubRequestState);
+								LoggingMethod.WriteToLog (string.Format ("DateTime {0} Heartbeat timeout={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelError);
+							} else {
+								internetStatus = true;
+								retriesExceeded = false;
 
-						if (retryCount > 0) {
-							string cbMessage = string.Format ("DateTime {0} Internet Connection Available.", DateTime.Now.ToString ());
-							LoggingMethod.WriteToLog (cbMessage, LoggingMethod.LevelInfo);
-							string multiChannel = string.Join (",", cea.PubnubRequestState.Channels);
-							CallErrorCallback (PubnubErrorSeverity.Info, PubnubMessageSource.Client,
-								multiChannel, cea.PubnubRequestState.ErrorCallback, 
-								cbMessage, PubnubErrorCode.YesInternet, null, null);
-							string[] activeChannels = multiChannelSubscribe.Keys.ToArray<string> ();
-							MultiplexExceptionHandler<T> (ResponseType.Subscribe, activeChannels, cea.PubnubRequestState.UserCallback, cea.PubnubRequestState.ConnectCallback, cea.PubnubRequestState.ErrorCallback, false, EnableResumeOnReconnect);
+								if (retryCount > 0) {
+									string cbMessage = string.Format ("DateTime {0} Internet Connection Available.", DateTime.Now.ToString ());
+									LoggingMethod.WriteToLog (cbMessage, LoggingMethod.LevelInfo);
+									string multiChannel = string.Join (",", cea.PubnubRequestState.Channels);
+									CallErrorCallback (PubnubErrorSeverity.Info, PubnubMessageSource.Client,
+										multiChannel, cea.PubnubRequestState.ErrorCallback, 
+										cbMessage, PubnubErrorCode.YesInternet, null, null);
+									string[] activeChannels = multiChannelSubscribe.Keys.ToArray<string> ();
+									MultiplexExceptionHandler<T> (ResponseType.Subscribe, activeChannels, cea.PubnubRequestState.UserCallback, cea.PubnubRequestState.ConnectCallback, cea.PubnubRequestState.ErrorCallback, false, EnableResumeOnReconnect);
+								}
+								retryCount = 0;
+							}
+							isHearbeatRunning = false;
+							if (keepHearbeatRunning) {
+								LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Restarting Heartbeat ", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+
+								if (internetStatus) {
+									RunHeartbeat<T> (true, LocalClientHeartbeatInterval, cea.PubnubRequestState);
+								} else {
+									RunHeartbeat<T> (true, NetworkCheckRetryInterval, cea.PubnubRequestState);
+								}
+							}
 						}
-						retryCount = 0;
-					}
-					isHearbeatRunning = false;
-					if (keepHearbeatRunning) {
-						LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Restarting Heartbeat ", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+						if (cea.PubnubRequestState.Type == ResponseType.PresenceHeartbeat) {
+							isPresenceHearbeatRunning = false;
+							if (cea.IsTimeout || cea.IsError) {
+								LoggingMethod.WriteToLog (string.Format ("DateTime {0} Presence Heartbeat timeout={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelError);
+							} else {
+								LoggingMethod.WriteToLog (string.Format ("DateTime {0} Presence Heartbeat response: {1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelInfo);
+							}
+							if (keepPresenceHearbeatRunning) {
+								LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Restarting PresenceHeartbeat ", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+								RunPresenceHeartbeat<T> (true, PresenceHeartbeatInterval, cea.PubnubRequestState);
+							}
 
-						if (internetStatus) {
-							RunHeartbeat<T> (true, LocalClientHeartbeatInterval, cea.PubnubRequestState);
+						} else if (cea.PubnubRequestState.Type == ResponseType.Subscribe || cea.PubnubRequestState.Type == ResponseType.Presence) {
+							if (cea.IsTimeout) {
+								LoggingMethod.WriteToLog (string.Format ("DateTime {0} Sub timeout={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelError);
+							} else if (cea.IsError) {
+								LoggingMethod.WriteToLog (string.Format ("DateTime {0} Sub Error={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelError);
+							}    
+							UrlProcessResponseCallbackNonAsync<T> (cea);
 						} else {
-							RunHeartbeat<T> (true, NetworkCheckRetryInterval, cea.PubnubRequestState);
+							if (cea.IsTimeout) {
+								LoggingMethod.WriteToLog (string.Format ("DateTime {0} NonSub timeout={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelError);
+								UrlRequestCommonExceptionHandler<T> (cea.PubnubRequestState.Type, cea.PubnubRequestState.Channels, true, cea.PubnubRequestState.UserCallback, cea.PubnubRequestState.ConnectCallback, cea.PubnubRequestState.ErrorCallback, false);
+							} else if (cea.IsError) {
+								LoggingMethod.WriteToLog (string.Format ("DateTime {0} NonSub Error={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelError);
+								UrlRequestCommonExceptionHandler<T> (cea.PubnubRequestState.Type, cea.PubnubRequestState.Channels, false, cea.PubnubRequestState.UserCallback, cea.PubnubRequestState.ConnectCallback, cea.PubnubRequestState.ErrorCallback, false);
+							} else {
+								var result = WrapResultBasedOnResponseType<T> (cea.PubnubRequestState.Type, cea.Message, cea.PubnubRequestState.Channels, cea.PubnubRequestState.Reconnect, cea.PubnubRequestState.Timetoken, cea.PubnubRequestState.ErrorCallback);
+								ProcessResponseCallbacks<T> (result, cea.PubnubRequestState);            
+							}
 						}
+					}else {
+						LoggingMethod.WriteToLog (string.Format ("DateTime {0} PubnubRequestState null", DateTime.Now.ToString ()), LoggingMethod.LevelError);
 					}
-				}
-				if (cea.PubnubRequestState.Type == ResponseType.PresenceHeartbeat) {
-					isPresenceHearbeatRunning = false;
-					if (cea.IsTimeout || cea.IsError) {
-						LoggingMethod.WriteToLog (string.Format ("DateTime {0} Presence Heartbeat timeout={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelError);
-					} else {
-						LoggingMethod.WriteToLog (string.Format ("DateTime {0} Presence Heartbeat response: {1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelInfo);
-					}
-					if (keepPresenceHearbeatRunning) {
-						LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Restarting PresenceHeartbeat ", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
-						RunPresenceHeartbeat<T> (true, PresenceHeartbeatInterval, cea.PubnubRequestState);
-					}
-
-				} else if (cea.PubnubRequestState.Type == ResponseType.Subscribe || cea.PubnubRequestState.Type == ResponseType.Presence) {
-					if (cea.IsTimeout) {
-						LoggingMethod.WriteToLog (string.Format ("DateTime {0} Sub timeout={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelError);
-					} else if (cea.IsError) {
-						LoggingMethod.WriteToLog (string.Format ("DateTime {0} Sub Error={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelError);
-					}    
-					UrlProcessResponseCallbackNonAsync<T> (cea);
 				} else {
-					if (cea.IsTimeout) {
-						LoggingMethod.WriteToLog (string.Format ("DateTime {0} NonSub timeout={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelError);
-						UrlRequestCommonExceptionHandler<T> (cea.PubnubRequestState.Type, cea.PubnubRequestState.Channels, true, cea.PubnubRequestState.UserCallback, cea.PubnubRequestState.ConnectCallback, cea.PubnubRequestState.ErrorCallback, false);
-					} else if (cea.IsError) {
-						LoggingMethod.WriteToLog (string.Format ("DateTime {0} NonSub Error={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelError);
-						UrlRequestCommonExceptionHandler<T> (cea.PubnubRequestState.Type, cea.PubnubRequestState.Channels, false, cea.PubnubRequestState.UserCallback, cea.PubnubRequestState.ConnectCallback, cea.PubnubRequestState.ErrorCallback, false);
-					} else {
-						var result = WrapResultBasedOnResponseType<T> (cea.PubnubRequestState.Type, cea.Message, cea.PubnubRequestState.Channels, cea.PubnubRequestState.Reconnect, cea.PubnubRequestState.Timetoken, cea.PubnubRequestState.ErrorCallback);
-						ProcessResponseCallbacks<T> (result, cea.PubnubRequestState);            
-					}
+					LoggingMethod.WriteToLog (string.Format ("DateTime {0} cea null", DateTime.Now.ToString ()), LoggingMethod.LevelError);
 				}
 			} catch (Exception ex) {
 				LoggingMethod.WriteToLog (string.Format ("DateTime {0} Exception={1}", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
 				UrlRequestCommonExceptionHandler<T> (cea.PubnubRequestState.Type, cea.PubnubRequestState.Channels, false, cea.PubnubRequestState.UserCallback, cea.PubnubRequestState.ConnectCallback, cea.PubnubRequestState.ErrorCallback, false);
 			} finally {
-				if (cea.CurrRequestType == CurrentRequestType.NonSubscribe) {
+				if ((cea!= null) && (cea.CurrRequestType == CurrentRequestType.NonSubscribe)) {
 					coroutine.NonSubCoroutineComplete -= CoroutineCompleteHandler<T>;
 				} 
 			}

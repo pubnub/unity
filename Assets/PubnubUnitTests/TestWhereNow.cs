@@ -5,19 +5,17 @@ using PubNubMessaging.Core;
 
 namespace PubNubMessaging.Tests
 {
-	[IntegrationTest.DynamicTestAttribute ("TestWhereNow")]
 	public class TestWhereNow: MonoBehaviour
 	{
+		public bool SslOn = false;
+		public bool CipherOn = false;
+		public bool AsObject = false;
 		public IEnumerator Start ()
 		{
 			CommonIntergrationTests common = new CommonIntergrationTests ();
-			string TestName = "TestWhereNow";
-
-			yield return StartCoroutine(common.DoSubscribeThenDoWhereNowAndParse(false, TestName, true));
-			UnityEngine.Debug.Log (string.Format("{0}: After StartCoroutine", TestName));
+			yield return StartCoroutine (common.DoSubscribeThenDoWhereNowAndParse (SslOn, this.name, !AsObject));
+			UnityEngine.Debug.Log (string.Format("{0}: After StartCoroutine", this.name));
 			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls);
 		}
 	}
 }
-
-

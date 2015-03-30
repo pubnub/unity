@@ -352,12 +352,24 @@ namespace PubNubMessaging.Core
 						message = www.error;
 						isError = true;
 					} 
-					;
+					
 					if (cp.typeParameterType == typeof(string)) {
 						var requestState = StoredRequestState.Instance.GetStoredRequestState (cp.crt) as RequestState<string>;
+						if (requestState == null) {
+							LoggingMethod.WriteToLog (string.Format ("DateTime {0}, WWW Sub request null", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+						} else {
+							LoggingMethod.WriteToLog (string.Format ("DateTime {0}, WWW Sub request1 {1} {2}", DateTime.Now.ToString (), requestState.Type, cp.crt), LoggingMethod.LevelInfo);
+						}
 						FireEvent (message, isError, false, requestState, cp.crt);
 					} else if (cp.typeParameterType == typeof(object)) {
 						var requestState = StoredRequestState.Instance.GetStoredRequestState (cp.crt) as RequestState<object>;
+						if (requestState == null) {
+							LoggingMethod.WriteToLog (string.Format ("DateTime {0}, WWW Sub request null2", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+						} else {
+							LoggingMethod.WriteToLog (string.Format ("DateTime {0}, WWW Sub request2 {1} {2}", DateTime.Now.ToString (), requestState.Type, cp.crt), LoggingMethod.LevelInfo);
+
+						}
+
 						FireEvent (message, isError, false, requestState, cp.crt);
 					} else {
 						throw new Exception ("'string' and 'object' are the only types supported in generic method calls.");
@@ -615,7 +627,7 @@ namespace PubNubMessaging.Core
 				} else if ((crt == CurrentRequestType.Subscribe) && (subscribeWww != null) && (!subscribeWww.isDone)) {
 					subscribeWww = null;
 					StopCoroutine ("SendRequestSub");
-
+					
 					SetComplete (CurrentRequestType.Subscribe);
 				} else if ((crt == CurrentRequestType.NonSubscribe) && (nonSubscribeWww != null) && (!nonSubscribeWww.isDone)) {
 					LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Dispose nonSubscribeWww: ", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);

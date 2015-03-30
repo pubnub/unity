@@ -5,20 +5,19 @@ using PubNubMessaging.Core;
 
 namespace PubNubMessaging.Tests
 {
-	[IntegrationTest.DynamicTestAttribute ("TestSubscribeComplexMessage")]
 	public class TestSubscribeComplexMessage: MonoBehaviour
 	{
+		public bool SslOn = false;
+		public bool CipherOn = false;
+		public bool AsObject = false;
 		public IEnumerator Start ()
 		{
+			object Message = new PubnubDemoObject ();
 			CommonIntergrationTests common = new CommonIntergrationTests ();
-			string TestName = "TestSubscribeComplexMessage";
-
-			object message = new PubnubDemoObject ();
-
-			yield return StartCoroutine(common.DoSubscribeThenPublishAndParse(false, TestName, false, false, message));
-			UnityEngine.Debug.Log (string.Format("{0}: After StartCoroutine", TestName));
+			yield return StartCoroutine(common.DoSubscribeThenPublishAndParse(SslOn, this.name, AsObject, CipherOn, Message, "\"VersionID\":3.4", true));
+			UnityEngine.Debug.Log (string.Format("{0}: After StartCoroutine", this.name));
 			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls);
-
 		}
 	}
 }
+

@@ -5,18 +5,17 @@ using PubNubMessaging.Core;
 
 namespace PubNubMessaging.Tests
 {
-	[IntegrationTest.DynamicTestAttribute ("TestTimeResponse")]
 	public class TestTimeResponse: MonoBehaviour
 	{
+		public bool SslOn = false;
+		public bool CipherOn = false;
+		public bool AsObject = false;
 		public IEnumerator Start ()
 		{
 			CommonIntergrationTests common = new CommonIntergrationTests ();
-			string TestName = "TestTimeResponse";
-
-			yield return StartCoroutine(common.DoTimeAndParse(false, TestName, true));
-			UnityEngine.Debug.Log (string.Format("{0}: After StartCoroutine", TestName));
+			yield return StartCoroutine(common.DoTimeAndParse(SslOn, this.name, AsObject));
+			UnityEngine.Debug.Log (string.Format("{0}: After StartCoroutine", this.name));
 			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls);
-
 		}
 	}
 }
