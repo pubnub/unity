@@ -69,7 +69,7 @@ public class PubnubExample : MonoBehaviour
     string pubnubApiResult = "";
 
     #if(UNITY_IOS)
-   	bool requestInProcess = false;
+       bool requestInProcess = false;
     #endif
     bool showPublishPopupWindow = false;
     bool showGrantWindow = false;
@@ -317,7 +317,7 @@ public class PubnubExample : MonoBehaviour
 
     void DoTextWindow (int windowID)
     {
-		string title = "";
+        string title = "";
         string buttonTitle = "";
         string label1 = "";
         string label2 = "";
@@ -590,7 +590,7 @@ public class PubnubExample : MonoBehaviour
 
     void DoGrantWindow (int windowID)
     {
-		string title = "";
+        string title = "";
         string buttonTitle = "";
         string toggleTitle1 = "";
         string toggleTitle2 = "";
@@ -766,11 +766,11 @@ public class PubnubExample : MonoBehaviour
             showTextWindow = true;
         }
         /*fTop = fTopInit + 8 * fRowHeight + 10;
-				if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "View Local State")) {
-						InstantiatePubnub ();
-						AsyncOrNonAsyncCall (PubnubState.ViewLocalUserState);
-						showActionsPopupWindow = false;
-				}*/
+                if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "View Local State")) {
+                        InstantiatePubnub ();
+                        AsyncOrNonAsyncCall (PubnubState.ViewLocalUserState);
+                        showActionsPopupWindow = false;
+                }*/
         fTop = fTopInit + 8 * fRowHeight + 10;
         if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Del User State")) {
             InstantiatePubnub ();
@@ -924,7 +924,7 @@ public class PubnubExample : MonoBehaviour
             showAuthWindow = true;
         }
         #if(UNITY_IOS || UNITY_ANDROID)
-				GUI.enabled = false;
+                GUI.enabled = false;
         #endif
 
         fTop = fTopInit + 12 * fRowHeight + 10;
@@ -941,7 +941,7 @@ public class PubnubExample : MonoBehaviour
         }
 
         #if(UNITY_IOS || UNITY_ANDROID)
-				GUI.enabled = true;
+                GUI.enabled = true;
         #endif
 
     }
@@ -1050,10 +1050,10 @@ public class PubnubExample : MonoBehaviour
                 foreach (string channelToCall in channels) {
                     //string currentUserStateView = pubnub.GetLocalUserState (channelToCall);
                     /*if (!string.IsNullOrEmpty (currentUserStateView)) {
-												AddToPubnubResultContainer (string.Format("User state for channel {0}:{1}", channelToCall, currentUserStateView));
-										} else {
-												AddToPubnubResultContainer (string.Format("No User State Exists for channel {0}", channelToCall));
-										}*/
+                                                AddToPubnubResultContainer (string.Format("User state for channel {0}:{1}", channelToCall, currentUserStateView));
+                                        } else {
+                                                AddToPubnubResultContainer (string.Format("No User State Exists for channel {0}", channelToCall));
+                                        }*/
                 }
             } else if ((PubnubState)pubnubState == PubnubState.DisconnectRetry) {
                 AddToPubnubResultContainer ("Running Disconnect Retry");
@@ -1093,7 +1093,7 @@ public class PubnubExample : MonoBehaviour
         GUI.Label (new Rect (10, 25, 100, 25), "Enter Message");
 
         publishedMessage = GUI.TextArea (new Rect (110, 25, 150, 60), publishedMessage, 2000);
-		storeInHistory = GUI.Toggle (new Rect (10, 100, 150, 25), storeInHistory, "Store in History");
+        storeInHistory = GUI.Toggle (new Rect (10, 100, 150, 25), storeInHistory, "Store in History");
 
         //publishedMessage = "Text with 😜 emoji 🎉.";
         string stringMessage = publishedMessage;
@@ -1168,18 +1168,18 @@ public class PubnubExample : MonoBehaviour
 
             //if (recordQueue.TryPeek (out recordTest)) {
             //recordTest = recordQueue.Peek ();
-			if(recordQueue.Count > 0){
+            if(recordQueue.Count > 0){
             //if (!recordTest.Equals(null)) {
                 string currentRecord = "";
                 //while (recordQueue.TryDequeue (out currentRecord)) {
-				lock(recordQueue){
-					do
-				    {
-						currentRecord = recordQueue.Dequeue();
+                lock(recordQueue){
+                    do
+                    {
+                        currentRecord = recordQueue.Dequeue();
                         //Debug.Log( "currentRecord: " + currentRecord );
-						sbResult.AppendLine (currentRecord);
-					} while (recordQueue.Count != 0);
-				}
+                        sbResult.AppendLine (currentRecord);
+                    } while (recordQueue.Count != 0);
+                }
 
                 pubnubApiResult = sbResult.ToString ();
 
@@ -1437,10 +1437,10 @@ public class PubnubExample : MonoBehaviour
     {
         //UnityEngine.Debug.Log ("result:" + result);
         //recordQueue.Enqueue (result);
-		lock (recordQueue) {
-			//UnityEngine.Debug.Log (string.Format ("Enqueuing {0}", result)); 
-			recordQueue.Enqueue (result);
-		}
+        lock (recordQueue) {
+            //UnityEngine.Debug.Log (string.Format ("Enqueuing {0}", result)); 
+            recordQueue.Enqueue (result);
+        }
     }
 }
 
