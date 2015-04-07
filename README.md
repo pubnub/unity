@@ -12,9 +12,9 @@ After checking out the general setup video, [For iOS targets](https://vimeo.com/
  * The PubNub code has been moved to the [Assets/Scripts](Assets/Scripts) folder. 
  * The third party libs required by PubNub SDK are in the [Assets/ThirdParty](Assets/ThirdParty) 
  * You need to import both Scripts and ThirdParty folder in your project.
- * PubNub SDK for Unity has the support for 2 JSON serialization libs, [jsonfx-for-unity3d](https://bitbucket.org/TowerOfBricks/jsonfx-for-unity3d-git) and MiniJSON. By default jsonfx-for-unity3d is used. To use MiniJSON you need to replace the directive `#define USE_JSONFX_UNITY_IOS` with `#define USE_MiniJSON` in the files Scripts/PubNub/PubNub.cs and Scripts/PubnubUnitTests/CommonIntergrationTests.cs
+ * PubNub SDK for Unity has the support for 2 JSON serialization libs, [jsonfx-for-unity3d](https://bitbucket.org/TowerOfBricks/jsonfx-for-unity3d-git) and MiniJSON. By default jsonfx-for-unity3d is used. To use MiniJSON you need to replace the directive `#define USE_JSONFX_UNITY_IOS` with `#define USE_MiniJSON` in the files [Pubnub.cs](Scripts/PubNub/Pubnub.cs) and [CommonIntergrationTests.cs] (Scripts/PubnubUnitTests/CommonIntergrationTests.cs)
  * To run PubNub Unit and Integration tests you need to add the folder [Assets/UnityTestTools](Assets/UnityTestTools), [Assets/Scrips/Editor](Assets/Scripts/Editor) and [Assets/Scrips/PubnubUnitTests](Assets/Scripts/PubnubUnitTests) to your project.
- * Assets/PubnubExample.cs and Assets/ExampleScene.unity are the demo example scene and script.
+ * [PubnubExample.cs](Assets/PubnubExample.cs) and [ExampleScene.unity](Assets/ExampleScene.unity) are the demo example scene and script.
 * Removed dependency on System.Threading.
 * This code uses Unity's www class and coroutines all around for network communication. This means all the calls to the PubNub SDK should be made from the main thread.
 * Updated the JsonFx version with the latest one from here (mod by TowerOBricks, https://bitbucket.org/TowerOfBricks/jsonfx-for-unity3d-git).  
@@ -22,8 +22,7 @@ After checking out the general setup video, [For iOS targets](https://vimeo.com/
 * 3.6.3b Resume on reconnect fixed
 
 ### There are some known issues and limitations (mostly due to WebGL support)
-- Generic calls to the SDKs methods support only `<string>` and `<object>`. This is because `MakeGenericMethod` throws an exception on WebGL.
-- Time response is treated as string instead of long. If treated as long we get an exception from il2cpp on WebGL.
+- Time response is treated as string instead of long (when using jsonfx-for-unity3d). If treated as long we get an exception from il2cpp on WebGL.
 
 #### Changes in the earlier versions
 - We have removed the separate versions for Unity, and made this as a common version which  works on all unity distros. The update is an optimized version of the code which was used for Unity iOS. This version uses the JsonFx 1.4 library (mod by TowerOBricks, https://bitbucket.org/TowerOfBricks/jsonfx-for-unity3d-git).  
