@@ -8,14 +8,13 @@ We've made a [screencast](https://vimeo.com/69591819) that will walk you through
 After checking out the general setup video, [For iOS targets](https://vimeo.com/71549964) be sure to view this walkthrough next. Check it out!
 
 ### Important changes from previous version
-* Folder reorganization:
-** The PubNub code has been moved to the [Assets/Scripts](Assets/Scripts) folder. 
-** The third party libs required by PubNub SDK are in the [Assets/ThirdParty](Assets/ThirdParty) 
-** You need to import both Scripts and ThirdParty folder in your project.
-** PubNub SDK for Unity has the support for 2 JSON serialization libs, [jsonfx-for-unity3d](https://bitbucket.org/TowerOfBricks/jsonfx-for-unity3d-git) and MiniJSON. By default jsonfx-for-unity3d is used. To use MiniJSON you need to replace the directive `#define USE_JSONFX_UNITY_IOS` with `#define USE_MiniJSON` in the files Scripts/PubNub/PubNub.cs and Scripts/PubnubUnitTests/CommonIntergrationTests.cs
-** To run PubNub Unit and Integration tests you need to add the folder [Assets/UnityTestTools](Assets/UnityTestTools) and [Assets/Scrips/PubnubUnitTests](Assets/Scrips/PubnubUnitTests) to your project
-** PubnubExample.cs and ExampleScene.unity are the demo example scene and script.
-
+* Folder reorganization
+ * The PubNub code has been moved to the [Assets/Scripts](Assets/Scripts) folder. 
+ * The third party libs required by PubNub SDK are in the [Assets/ThirdParty](Assets/ThirdParty) 
+ * You need to import both Scripts and ThirdParty folder in your project.
+ * PubNub SDK for Unity has the support for 2 JSON serialization libs, [jsonfx-for-unity3d](https://bitbucket.org/TowerOfBricks/jsonfx-for-unity3d-git) and MiniJSON. By default jsonfx-for-unity3d is used. To use MiniJSON you need to replace the directive `#define USE_JSONFX_UNITY_IOS` with `#define USE_MiniJSON` in the files Scripts/PubNub/PubNub.cs and Scripts/PubnubUnitTests/CommonIntergrationTests.cs
+ * To run PubNub Unit and Integration tests you need to add the folder [Assets/UnityTestTools](Assets/UnityTestTools), [Assets/Scrips/Editor](Assets/Scripts/Editor) and [Assets/Scrips/PubnubUnitTests](Assets/Scripts/PubnubUnitTests) to your project.
+ * Assets/PubnubExample.cs and Assets/ExampleScene.unity are the demo example scene and script.
 * Removed dependency on System.Threading.
 * This code uses Unity's www class and coroutines all around for network communication. This means all the calls to the PubNub SDK should be made from the main thread.
 * Updated the JsonFx version with the latest one from here (mod by TowerOBricks, https://bitbucket.org/TowerOfBricks/jsonfx-for-unity3d-git).  
