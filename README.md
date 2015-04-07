@@ -8,7 +8,7 @@ We've made a [screencast](https://vimeo.com/69591819) that will walk you through
 After checking out the general setup video, [For iOS targets](https://vimeo.com/71549964) be sure to view this walkthrough next. Check it out!
 
 ### Important changes from previous version
-* Folder reorganization
+* Reorganization of code:
  * The PubNub code has been moved to the [Assets/Scripts](Assets/Scripts) folder. 
  * The third party libs required by PubNub SDK are in the [Assets/ThirdParty](Assets/ThirdParty) 
  * You need to import both Scripts and ThirdParty folder in your project.
