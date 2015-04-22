@@ -9,6 +9,7 @@ namespace UnityTest
     {
         public bool addNewGameObjectUnderSelectedTest;
         public bool blockUIWhenRunning = true;
+        public bool pauseOnTestFailure;
 
         public void ToggleAddNewGameObjectUnderSelectedTest ()
         {
@@ -19,6 +20,12 @@ namespace UnityTest
         public void ToggleBlockUIWhenRunning ()
         {
             blockUIWhenRunning = !blockUIWhenRunning;
+            Save ();
+        }
+        
+        public void TogglePauseOnTestFailure()
+        {
+            pauseOnTestFailure = !pauseOnTestFailure;
             Save ();
         }
     }

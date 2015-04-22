@@ -228,7 +228,7 @@ namespace UnityTest
 						if(currentTest.ShouldSucceedOnAssertions())
 						{
 							var assertionsToCheck = currentTest.gameObject.GetComponentsInChildren<AssertionComponent>().Where(a => a.enabled).ToArray();
-	                        if (assertionsToCheck.All(a => a.checksPerformed > 0))
+							if (assertionsToCheck.Any () && assertionsToCheck.All(a => a.checksPerformed > 0))
 	                        {
 	                            IntegrationTest.Pass(currentTest.gameObject);
 	                            m_TestState = TestState.Success;

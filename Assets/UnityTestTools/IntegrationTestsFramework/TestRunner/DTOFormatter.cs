@@ -88,7 +88,7 @@ namespace UnityTest
             transfer.Transfer(ref dto.loadedLevel);
             transfer.Transfer(ref dto.loadedLevelName);
             
-            if(dto.messageType == ResultDTO.MessageType.Ping
+			if(dto.messageType == ResultDTO.MessageType.Ping
                || dto.messageType == ResultDTO.MessageType.RunStarted
                || dto.messageType == ResultDTO.MessageType.RunFinished
                || dto.messageType == ResultDTO.MessageType.RunInterrupted)
@@ -97,8 +97,11 @@ namespace UnityTest
             transfer.Transfer(ref dto.testName);
             transfer.Transfer(ref dto.testTimeout);
             
-            if(transfer is Reader)
-                dto.testResult = new SerializableTestResult();
+			if(dto.messageType == ResultDTO.MessageType.TestStarted)
+				return;
+			
+			if(transfer is Reader)
+				dto.testResult = new SerializableTestResult();
             SerializableTestResult str = (SerializableTestResult)dto.testResult;
             
             transfer.Transfer(ref str.resultState);

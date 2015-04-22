@@ -57,8 +57,11 @@ namespace UnityTest
 
         protected void OnSelect()
         {
-			if (!Event.current.control && !Event.current.command) SelectedLines.Clear();
-
+			if (!Event.current.control && !Event.current.command)
+			{
+				SelectedLines.Clear();
+				GUIUtility.keyboardControl = 0;
+			}
 			if ((Event.current.control || Event.current.command) && SelectedLines.Contains(this))
                 SelectedLines.Remove(this);
             else

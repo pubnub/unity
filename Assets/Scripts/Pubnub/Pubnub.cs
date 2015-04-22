@@ -1,5 +1,5 @@
-//Build Date: Apr 4, 2015
-//ver3.6.4b/Unity5
+//Build Date: Apr 22, 2015
+//ver3.6.5b/Unity5
 #if (UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_ANDROID || UNITY_IOS || UNITY_5 || UNITY_WEBGL)
 #define USE_JSONFX_UNITY_IOS
 //#define USE_MiniJSON
@@ -392,21 +392,21 @@ namespace PubNubMessaging.Core
             #endif
 
             #if(UNITY_IOS)
-            this.Version = "PubNub-CSharp-UnityIOS/3.6.4b";
+            this.Version = "PubNub-CSharp-UnityIOS/3.6.5b";
             #elif(UNITY_STANDALONE_WIN)
-            this.Version = "PubNub-CSharp-UnityWin/3.6.4b";
+            this.Version = "PubNub-CSharp-UnityWin/3.6.5b";
             #elif(UNITY_STANDALONE_OSX)
-            this.Version = "PubNub-CSharp-UnityOSX/3.6.4b";
+            this.Version = "PubNub-CSharp-UnityOSX/3.6.5b";
             #elif(UNITY_ANDROID)
-            this.Version = "PubNub-CSharp-UnityAndroid/3.6.4b";
+            this.Version = "PubNub-CSharp-UnityAndroid/3.6.5b";
             #elif(UNITY_STANDALONE_LINUX)
-            this.Version = "PubNub-CSharp-UnityLinux/3.6.4b";
+            this.Version = "PubNub-CSharp-UnityLinux/3.6.5b";
             #elif(UNITY_WEBPLAYER)
-            this.Version = "PubNub-CSharp-UnityWeb/3.6.4b";
+            this.Version = "PubNub-CSharp-UnityWeb/3.6.5b";
             #elif(UNITY_WEBGL)
-            this.Version = "PubNub-CSharp-UnityWebGL/3.6.4b";
+            this.Version = "PubNub-CSharp-UnityWebGL/3.6.5b";
             #else
-            this.Version = "PubNub-CSharp-Unity5/3.6.4b";
+            this.Version = "PubNub-CSharp-Unity5/3.6.5b";
             #endif
             LoggingMethod.WriteToLog (this.Version, LoggingMethod.LevelInfo);
 
@@ -1428,8 +1428,12 @@ namespace PubNubMessaging.Core
 
         public void TerminateCurrentSubscriberRequest<T> ()
         {
-            RequestState<T> reqState = StoredRequestState.Instance.GetStoredRequestState (CurrentRequestType.Subscribe) as RequestState<T>;
-            coroutine.BounceRequest<T> (CurrentRequestType.Subscribe, reqState, true);
+			StopHeartbeat ();
+			LoggingMethod.WriteToLog (string.Format ("DateTime {0} StopHeartbeat.", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+			StopPresenceHeartbeat ();
+			LoggingMethod.WriteToLog (string.Format ("DateTime {0} StopPresenceHeartbeat.", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+			RequestState<T> reqState = StoredRequestState.Instance.GetStoredRequestState (CurrentRequestType.Subscribe) as RequestState<T>;
+			coroutine.BounceRequest<T> (CurrentRequestType.Subscribe, reqState, true);
         }
 
         public void EndPendingRequests ()
@@ -1800,7 +1804,7 @@ namespace PubNubMessaging.Core
                         CallErrorCallback (PubnubErrorSeverity.Warn, PubnubMessageSource.Client, channel, requestState.ErrorCallback, cea.Message, PubnubErrorCode.NoInternetRetryConnect, null, null);
                     } else if (cea.IsTimeout) {
                         //CallErrorCallback (PubnubErrorSeverity.Warn, PubnubMessageSource.Client, channel, requestState.ErrorCallback, cea.Message, PubnubErrorCode.NoInternetRetryConnect, null, null);
-                    } else if (cea.Message.Contains ("403")) {
+					} else if ((cea.Message.Contains ("403")) || (cea.Message.Contains("java.io.FileNotFoundException"))) {
                         PubnubClientError error = new PubnubClientError (403, PubnubErrorSeverity.Critical, cea.Message, PubnubMessageSource.Server, requestState.Request, requestState.Response, cea.Message, channel);
                         GoToCallback (error, requestState.ErrorCallback);
                     } else if (cea.Message.Contains ("500")) {

@@ -21,6 +21,11 @@ namespace UnityTest
         public TestLine(TestMethod test, string resultId) : base(test)
         {
             m_RenderedName = test.Parent is ParameterizedMethodSuite ? test.TestName.Name : test.MethodName;
+
+			if(m_RenderedName.Length > 100)
+				m_RenderedName = m_RenderedName.Substring(0, 100);
+			m_RenderedName = m_RenderedName.Replace("\n", "");
+
             m_ResultId = resultId;
             var c = new List<string>();
             foreach (string category in test.Categories)

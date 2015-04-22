@@ -164,7 +164,7 @@ namespace UnityTest
             {
                 text = m_SelectedLines.First().GetResultText();
             }
-            EditorGUILayout.TextArea(text, Styles.info);
+            EditorGUILayout.SelectableLabel(text, Styles.info);
 
             EditorGUILayout.EndScrollView();
         }

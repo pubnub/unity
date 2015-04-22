@@ -1,3 +1,9 @@
+Version 1.4.5
+
+- Added "Pause on test failure" option for integration tests
+- bugfixes and code refactorization
+- fixed UI bug where test details were not refreshed is the label was focused
+
 Version 1.4.4
 
 - Minimal supported Unity version is now 4.3

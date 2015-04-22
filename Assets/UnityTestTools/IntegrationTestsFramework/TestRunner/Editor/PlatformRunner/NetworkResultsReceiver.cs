@@ -88,6 +88,10 @@ namespace UnityTest
                         var resultWriter = new XmlResultWriter(dto.loadedLevelName, platform, m_TestResults.ToArray());
                         try
                         {
+                            if (!Directory.Exists(m_Configuration.resultsDir))
+                            {
+                                Directory.CreateDirectory(m_Configuration.resultsDir);
+                            }
                             var filePath = Path.Combine(m_Configuration.resultsDir, dto.loadedLevelName + ".xml");
                             File.WriteAllText(filePath, resultWriter.GetTestResult());
                         }
@@ -185,17 +189,17 @@ namespace UnityTest
 
         private void EnableServer()
         {
+			if (m_Configuration == null) throw new Exception("No result receiver server configuration.");
+
             var ipAddress = IPAddress.Any;
-            if (m_Configuration != null && m_Configuration.ipList != null && m_Configuration.ipList.Count == 1)
+            if (m_Configuration.ipList != null && m_Configuration.ipList.Count == 1)
                 ipAddress = IPAddress.Parse(m_Configuration.ipList.Single());
 
             var ipAddStr = Equals(ipAddress, IPAddress.Any) ? "[All interfaces]" : ipAddress.ToString();
-            if (m_Configuration != null)
-            {
-                m_Listener = new TcpListener(ipAddress, m_Configuration.port);
-                m_StatusLabel = "Waiting for connection on: " + ipAddStr + ":" + m_Configuration.port;
-            }
-
+            
+			m_Listener = new TcpListener(ipAddress, m_Configuration.port);
+            m_StatusLabel = "Waiting for connection on: " + ipAddStr + ":" + m_Configuration.port;
+            
             try
             {
                 m_Listener.Start(100);
@@ -234,6 +238,10 @@ namespace UnityTest
         {
             var w = (NetworkResultsReceiver)GetWindow(typeof(NetworkResultsReceiver), false);
             w.SetConfiguration(configuration);
+			if (!EditorApplication.isCompiling)
+			{
+				w.EnableServer();
+			}
             w.Show(true);
         }
 
