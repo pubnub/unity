@@ -101,6 +101,11 @@ public class PubnubExample : MonoBehaviour
     float fButtonHeight = 40;
     float fButtonWidth = 120;
 
+	public void OnDisable(){
+		//InstantiatePubnub ();
+		//pubnub.Unsubscribe<string> (channel, DisplayReturnMessage, DisplayConnectStatusMessage, DisplayDisconnectStatusMessage, DisplayErrorMessage);
+	}
+
     public void OnGUI ()
     {
         GUI.enabled = !allowUserSettingsChange;
@@ -1207,7 +1212,8 @@ public class PubnubExample : MonoBehaviour
 
     void OnApplicationQuit ()
     {
-        ResetPubnubInstance ();
+        //ResetPubnubInstance ();
+		pubnub.CleanUp ();
     }
 
     void ResetPubnubInstance ()
@@ -1266,6 +1272,7 @@ public class PubnubExample : MonoBehaviour
         //print(result);
         UnityEngine.Debug.Log (string.Format ("DISCONNECT CALLBACK LOG: {0}", result));
         AddToPubnubResultContainer (string.Format ("DISCONNECT CALLBACK: {0}", result));
+        //pubnub.EndPendingRequests ();
     }
 
     void DisplayErrorMessage (string result)

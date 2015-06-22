@@ -1,6 +1,6 @@
 # Please direct all Support Questions and Concerns to Support@PubNub.com
 
-## PubNub 3.6.4b Web Data Push Cloud-Hosted API for Unity 4 and Unity 5
+## PubNub 3.6.7 Web Data Push Cloud-Hosted API for Unity 4 and Unity 5
 ### Supports PC, Mac, Linux, iOS, Android, WebPlayer and WebGL
 
 ### View this First!
@@ -8,6 +8,8 @@ We've made a [screencast](https://vimeo.com/69591819) that will walk you through
 After checking out the general setup video, [For iOS targets](https://vimeo.com/71549964) be sure to view this walkthrough next. Check it out!
 
 ### Important changes from previous version
+* A new method CleanUp is introduced to dispose the GameObject (if it is not set externally) and the Coroutine.
+* GameObject is not released on EndPendingRequests.
 * Reorganization of code:
  * The PubNub code has been moved to the [Assets/Scripts](Assets/Scripts) folder. 
  * The third party libs required by PubNub SDK are in the [Assets/ThirdParty](Assets/ThirdParty) 

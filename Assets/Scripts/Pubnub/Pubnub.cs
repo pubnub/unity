@@ -1,5 +1,5 @@
-//Build Date: Apr 22, 2015
-//ver3.6.5b/Unity5
+//Build Date: Jun 22, 2015
+//ver3.6.7/Unity5
 #if (UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_ANDROID || UNITY_IOS || UNITY_5 || UNITY_WEBGL)
 #define USE_JSONFX_UNITY_IOS
 //#define USE_MiniJSON
@@ -21,7 +21,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-using Pathfinding.Serialization.JsonFx;
 using System.Security.Cryptography;
 using System.Net;
 using System.ComponentModel;
@@ -49,6 +48,7 @@ namespace PubNubMessaging.Core
 		#region "Class variables"
 
 		private static GameObject gobj;
+		private bool localGobj;
 
 		private CoroutineClass coroutine;
 
@@ -65,7 +65,7 @@ namespace PubNubMessaging.Core
 		private string hereNowParameters = "";
 		private string setUserStateparameters = "";
 		private string globalHereNowParameters = "";
-		private string _pnsdkVersion = "PubNub-CSharp-Unity5/3.6.4b";
+		private string _pnsdkVersion = "PubNub-CSharp-Unity5/3.6.7";
 
 		private int _pubnubWebRequestCallbackIntervalInSeconds = 310;
 		private int _pubnubOperationTimeoutIntervalInSeconds = 15;
@@ -128,7 +128,7 @@ namespace PubNubMessaging.Core
 			set {
 				_failClientNetworkForTesting = value;
 			}
-
+			 
 		}
 
 		private static bool MachineSuspendMode {
@@ -392,29 +392,31 @@ namespace PubNubMessaging.Core
 			#endif
 
 			#if(UNITY_IOS)
-            this.Version = "PubNub-CSharp-UnityIOS/3.6.5b";
+            this.Version = "PubNub-CSharp-UnityIOS/3.6.7";
 			#elif(UNITY_STANDALONE_WIN)
-            this.Version = "PubNub-CSharp-UnityWin/3.6.5b";
+            this.Version = "PubNub-CSharp-UnityWin/3.6.7";
 			#elif(UNITY_STANDALONE_OSX)
-			this.Version = "PubNub-CSharp-UnityOSX/3.6.5b";
+			this.Version = "PubNub-CSharp-UnityOSX/3.6.7";
 			#elif(UNITY_ANDROID)
-            this.Version = "PubNub-CSharp-UnityAndroid/3.6.5b";
+            this.Version = "PubNub-CSharp-UnityAndroid/3.6.7";
 			#elif(UNITY_STANDALONE_LINUX)
-            this.Version = "PubNub-CSharp-UnityLinux/3.6.5b";
+            this.Version = "PubNub-CSharp-UnityLinux/3.6.7";
 			#elif(UNITY_WEBPLAYER)
-            this.Version = "PubNub-CSharp-UnityWeb/3.6.5b";
+            this.Version = "PubNub-CSharp-UnityWeb/3.6.7";
 			#elif(UNITY_WEBGL)
-            this.Version = "PubNub-CSharp-UnityWebGL/3.6.5b";
+			this.Version = "PubNub-CSharp-UnityWebGL/3.6.7";
 			#else
-            this.Version = "PubNub-CSharp-Unity5/3.6.5b";
+            this.Version = "PubNub-CSharp-Unity5/3.6.7";
 			#endif
 			LoggingMethod.WriteToLog (this.Version, LoggingMethod.LevelInfo);
 
 			if (gobj == null) {
 				LoggingMethod.WriteToLog ("Initilizing new GameObject", LoggingMethod.LevelInfo);
 				gobj = new GameObject ();  
+				localGobj = true;
 			} else {
-				LoggingMethod.WriteToLog ("Resuing already initialized GameObject", LoggingMethod.LevelInfo);
+				LoggingMethod.WriteToLog ("Reusing already initialized GameObject", LoggingMethod.LevelInfo);
+				localGobj = false;
 			}
 
 			coroutine = gobj.AddComponent<CoroutineClass> ();             
@@ -1438,8 +1440,6 @@ namespace PubNubMessaging.Core
 
 		public void EndPendingRequests ()
 		{
-			RemoveChannelCallback ();
-			RemoveUserState ();
 			LoggingMethod.WriteToLog (string.Format ("DateTime {0} ending open requests.", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
 			RequestState<string> reqStateSub = StoredRequestState.Instance.GetStoredRequestState (CurrentRequestType.Subscribe) as RequestState<string>;
 			coroutine.BounceRequest<string> (CurrentRequestType.Subscribe, reqStateSub, false);
@@ -1451,10 +1451,24 @@ namespace PubNubMessaging.Core
 			LoggingMethod.WriteToLog (string.Format ("DateTime {0} StopHeartbeat.", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
 			StopPresenceHeartbeat ();
 			LoggingMethod.WriteToLog (string.Format ("DateTime {0} StopPresenceHeartbeat.", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+			RemoveChannelCallback ();
+			RemoveUserState ();
+			LoggingMethod.WriteToLog (string.Format ("DateTime {0} RemoveChannelCallback and RemoveUserState complete.", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+		}
 
-			UnityEngine.Object.Destroy (coroutine);
+		public void CleanUp (){
+			//LoggingMethod.WriteToLog (string.Format ("DateTime {0} Cleaning up", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+			//EndPendingRequests ();
+			LoggingMethod.WriteToLog ("Destructing coroutine", LoggingMethod.LevelInfo);
+			if (coroutine != null) {
+				UnityEngine.Object.Destroy (coroutine);
+			}
+			LoggingMethod.WriteToLog ("Destructing GameObject", LoggingMethod.LevelInfo);
+			if(localGobj && (gobj != null))
+			{
+				UnityEngine.Object.Destroy (gobj);
+			}
 
-			UnityEngine.Object.Destroy (gobj);
 			LoggingMethod.WriteToLog (string.Format ("DateTime {0} Clean up complete.", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
 		}
 
@@ -1795,10 +1809,10 @@ namespace PubNubMessaging.Core
 					WebException webEx = new WebException (cea.Message);
 
 					if ((cea.Message.Contains ("NameResolutionFailure")
-					                   || cea.Message.Contains ("ConnectFailure")
-					                   || cea.Message.Contains ("ServerProtocolViolation")
-					                   || cea.Message.Contains ("ProtocolError")
-					                   )) {
+					    || cea.Message.Contains ("ConnectFailure")
+					    || cea.Message.Contains ("ServerProtocolViolation")
+					    || cea.Message.Contains ("ProtocolError")
+					    )) {
 						webEx = new WebException ("Network connnect error", WebExceptionStatus.ConnectFailure);
                             
 						CallErrorCallback (PubnubErrorSeverity.Warn, PubnubMessageSource.Client, channel, requestState.ErrorCallback, cea.Message, PubnubErrorCode.NoInternetRetryConnect, null, null);
@@ -1860,9 +1874,9 @@ namespace PubNubMessaging.Core
 				string errorDescription = PubnubErrorCodeDescription.GetStatusCodeDescription (errorType);
 				if (requestState.Channels != null || requestState.Type == ResponseType.Time) {
 					if (requestState.Type == ResponseType.Subscribe
-					                   || requestState.Type == ResponseType.Presence) {
+					    || requestState.Type == ResponseType.Presence) {
 						if (webEx.Message.IndexOf ("The request was aborted: The request was canceled") == -1
-						                      || webEx.Message.IndexOf ("Machine suspend mode enabled. No request will be processed.") == -1) {
+						    || webEx.Message.IndexOf ("Machine suspend mode enabled. No request will be processed.") == -1) {
 							for (int index = 0; index < requestState.Channels.Length; index++) {
 								string activeChannel = requestState.Channels [index].ToString ();
 								PubnubChannelCallbackKey callbackKey = new PubnubChannelCallbackKey ();
@@ -1896,7 +1910,7 @@ namespace PubNubMessaging.Core
 				LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Process Response Exception: = {1}", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
 				if (requestState.Channels != null) {
 					if (requestState.Type == ResponseType.Subscribe
-					                   || requestState.Type == ResponseType.Presence) {
+					    || requestState.Type == ResponseType.Presence) {
 						for (int index = 0; index < requestState.Channels.Length; index++) {
 							string activeChannel = requestState.Channels [index].ToString ();
 							PubnubChannelCallbackKey callbackKey = new PubnubChannelCallbackKey ();
@@ -2481,7 +2495,6 @@ namespace PubNubMessaging.Core
 					StoredRequestState.Instance.SetRequestState (CurrentRequestType.Subscribe, pubnubRequestState);
 					coroutine.SubCoroutineComplete += CoroutineCompleteHandler<T>;
 					coroutine.Run<T> (requestUri.OriginalString, pubnubRequestState, SubscribeTimeout, 0);
-
 				} else {
 					StoredRequestState.Instance.SetRequestState (CurrentRequestType.NonSubscribe, pubnubRequestState);
 					coroutine.NonSubCoroutineComplete += CoroutineCompleteHandler<T>;
@@ -3028,7 +3041,7 @@ namespace PubNubMessaging.Core
 			case ResponseType.Presence:
                 //try{
 				var messages = (from item in result
-				                            select item as object).ToArray ();
+				                select item as object).ToArray ();
                 //var messages = result.ToArray ();
 				LoggingMethod.WriteToLog (string.Format ("DateTime {0}, (result: {1}", DateTime.Now.ToString (), result.ToString ()), LoggingMethod.LevelInfo);
 				if (messages != null && messages.Length > 0) {
@@ -3106,7 +3119,7 @@ namespace PubNubMessaging.Core
 							if (channelCallbacks.Count > 0 && channelCallbacks.ContainsKey (callbackKey)) {
 								LoggingMethod.WriteToLog (string.Format ("DateTime {0}, (typeof(T): {1}", DateTime.Now.ToString (), typeof(T).ToString ()), LoggingMethod.LevelInfo);
 								if ((typeof(T) == typeof(string) && channelCallbacks [callbackKey].GetType ().Name.Contains ("[System.String]")) ||
-								                            (typeof(T) == typeof(object) && channelCallbacks [callbackKey].GetType ().Name.Contains ("[System.Object]"))) {
+								    (typeof(T) == typeof(object) && channelCallbacks [callbackKey].GetType ().Name.Contains ("[System.Object]"))) {
 									PubnubChannelCallback<T> currentPubnubCallback = channelCallbacks [callbackKey] as PubnubChannelCallback<T>;
 									if (currentPubnubCallback != null && currentPubnubCallback.Callback != null) {
 										GoToCallback<T> (itemMessage, currentPubnubCallback.Callback);
@@ -3237,9 +3250,9 @@ namespace PubNubMessaging.Core
 					//Do not send 105 = WebRequestCancelled
 					//Do not send 130 = PubnubClientMachineSleep
 					if (error.StatusCode != 107
-					                   && error.StatusCode != 105
-					                   && error.StatusCode != 130
-					                   && error.StatusCode != 4040) { //Error Code that should not go out
+					    && error.StatusCode != 105
+					    && error.StatusCode != 130
+					    && error.StatusCode != 4040) { //Error Code that should not go out
 						Callback (error);
 					}
 				}
@@ -3250,10 +3263,10 @@ namespace PubNubMessaging.Core
 		{
 			//Check callback exists and make sure previous timetoken = 0
 			if (channels != null && connectCallback != null
-			             && channels.Length > 0) {
+			    && channels.Length > 0) {
 				IEnumerable<string> newChannels = from channel in multiChannelSubscribe
-				                                              where channel.Value == 0
-				                                              select channel.Key;
+				                                  where channel.Value == 0
+				                                  select channel.Key;
 				foreach (string channel in newChannels) {
 					string jsonString = "";
 					List<object> connectResult = new List<object> ();
@@ -3477,7 +3490,7 @@ namespace PubNubMessaging.Core
 				LoggingMethod.WriteToLog (string.Format ("DateTime {0}, WrapResultBasedOnResponseType exception: {1} ", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
 				if (channels != null) {
 					if (type == ResponseType.Subscribe
-					                   || type == ResponseType.Presence) {
+					    || type == ResponseType.Presence) {
 						for (int index = 0; index < channels.Length; index++) {
 							string activeChannel = channels [index].ToString ();
 							PubnubChannelCallbackKey callbackKey = new PubnubChannelCallbackKey ();
@@ -3508,9 +3521,9 @@ namespace PubNubMessaging.Core
 		#region "Error Callbacks"
 
 		private PubnubClientError CallErrorCallback (PubnubErrorSeverity errSeverity, PubnubMessageSource msgSource,
-		                                                   string channel, Action<PubnubClientError> errorCallback, 
-		                                                   string message, PubnubErrorCode errorType, PubnubWebRequest req, 
-		                                                   PubnubWebResponse res)
+		                                             string channel, Action<PubnubClientError> errorCallback, 
+		                                             string message, PubnubErrorCode errorType, PubnubWebRequest req, 
+		                                             PubnubWebResponse res)
 		{
 			int statusCode = (int)errorType;
 
@@ -3522,9 +3535,9 @@ namespace PubNubMessaging.Core
 		}
 
 		private PubnubClientError CallErrorCallback (PubnubErrorSeverity errSeverity, PubnubMessageSource msgSource,
-		                                                   string channel, Action<PubnubClientError> errorCallback, 
-		                                                   string message, int currentHttpStatusCode, string statusMessage,
-		                                                   PubnubWebRequest req, PubnubWebResponse res)
+		                                             string channel, Action<PubnubClientError> errorCallback, 
+		                                             string message, int currentHttpStatusCode, string statusMessage,
+		                                             PubnubWebRequest req, PubnubWebResponse res)
 		{
 			PubnubErrorCode pubnubErrorType = PubnubErrorCodeHelper.GetErrorType ((int)currentHttpStatusCode, statusMessage);
 
@@ -3538,9 +3551,9 @@ namespace PubNubMessaging.Core
 		}
 
 		private PubnubClientError CallErrorCallback (PubnubErrorSeverity errSeverity, PubnubMessageSource msgSource,
-		                                                   string channel, Action<PubnubClientError> errorCallback, 
-		                                                   Exception ex, PubnubWebRequest req, 
-		                                                   PubnubWebResponse res)
+		                                             string channel, Action<PubnubClientError> errorCallback, 
+		                                             Exception ex, PubnubWebRequest req, 
+		                                             PubnubWebResponse res)
 		{
 			PubnubErrorCode errorType = PubnubErrorCodeHelper.GetErrorType (ex);
 
@@ -3553,9 +3566,9 @@ namespace PubNubMessaging.Core
 		}
 
 		private PubnubClientError CallErrorCallback (PubnubErrorSeverity errSeverity, PubnubMessageSource msgSource,
-		                                                   string channel, Action<PubnubClientError> errorCallback, 
-		                                                   WebException webex, PubnubWebRequest req, 
-		                                                   PubnubWebResponse res)
+		                                             string channel, Action<PubnubClientError> errorCallback, 
+		                                             WebException webex, PubnubWebRequest req, 
+		                                             PubnubWebResponse res)
 		{
 			PubnubErrorCode errorType = PubnubErrorCodeHelper.GetErrorType (webex.Status, webex.Message);
 			int statusCode = (int)errorType;
@@ -3590,7 +3603,7 @@ namespace PubNubMessaging.Core
 			if (this.cipherKey.Length > 0) {
 				PubnubCrypto aes = new PubnubCrypto (this.cipherKey);
 				var myObjectArray = (from item in message
-				                                 select item as object).ToArray ();
+				                     select item as object).ToArray ();
 				IEnumerable enumerable = myObjectArray [0] as IEnumerable;
 				if (enumerable != null) {
 					List<object> receivedMsg = new List<object> ();
@@ -3618,7 +3631,7 @@ namespace PubNubMessaging.Core
 				return returnMessage;
 			} else {
 				var myObjectArray = (from item in message
-				                                 select item as object).ToArray ();
+				                     select item as object).ToArray ();
 				IEnumerable enumerable = myObjectArray [0] as IEnumerable;
 				if (enumerable != null) {
 					List<object> receivedMessage = new List<object> ();
