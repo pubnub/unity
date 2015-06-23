@@ -2502,6 +2502,10 @@ namespace PubNubMessaging.Core
 				}
 
 				return true;
+			} catch (UnityEngine.MissingReferenceException ex) {
+				//check Exception=UnityEngine.MissingReferenceException: The object of type 'CoroutineClass' has been destroyed but you are still trying to access it.
+				LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Exception={1}", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
+				return false;
 			} catch (System.Exception ex) {
 				if (pubnubRequestState != null && pubnubRequestState.ErrorCallback != null) {
 					string multiChannel = (pubnubRequestState.Channels != null) ? string.Join (",", pubnubRequestState.Channels) : "";
@@ -2510,6 +2514,7 @@ namespace PubNubMessaging.Core
 						multiChannel, pubnubRequestState.ErrorCallback, ex, pubnubRequestState.Request, pubnubRequestState.Response);
 				}
 				LoggingMethod.WriteToLog (string.Format ("DateTime {0} Exception={1}", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
+
 				UrlRequestCommonExceptionHandler<T> (pubnubRequestState.Type, pubnubRequestState.Channels, false, pubnubRequestState.UserCallback, pubnubRequestState.ConnectCallback, pubnubRequestState.ErrorCallback, false);
 				return false;
 			}

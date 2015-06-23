@@ -479,7 +479,8 @@ namespace PubNubMessaging.Core
 
         public IEnumerator SendRequestSub<T> (CoroutineParams<T> cp)
         {
-            Debug.Log ("URL Sub:" + cp.url.ToString ());
+            //Debug.Log ("URL Sub:" + cp.url.ToString ());
+			LoggingMethod.WriteToLog (string.Format ("DateTime {0}, URL Sub {1} ", DateTime.Now.ToString (), cp.url.ToString ()), LoggingMethod.LevelInfo);
             WWW www;
 
 
@@ -596,7 +597,8 @@ namespace PubNubMessaging.Core
 
         public IEnumerator SendRequestNonSub<T> (CoroutineParams<T> cp)
         {
-            Debug.Log ("URL NonSub:" + cp.url.ToString ());
+            //Debug.Log ("URL NonSub:" + cp.url.ToString ());
+			LoggingMethod.WriteToLog (string.Format ("DateTime {0}, URL NonSub {1} ", DateTime.Now.ToString (), cp.url.ToString ()), LoggingMethod.LevelInfo);
             WWW www;
 
             isNonSubscribeComplete = false;
@@ -615,7 +617,8 @@ namespace PubNubMessaging.Core
 
         public IEnumerator SendRequestPresenceHeartbeat<T> (CoroutineParams<T> cp)
         {
-            Debug.Log ("URL PresenceHB:" + cp.url.ToString ());
+            //Debug.Log ("URL PresenceHB:" + cp.url.ToString ());
+			LoggingMethod.WriteToLog (string.Format ("DateTime {0}, URL PresenceHB {1} ", DateTime.Now.ToString (), cp.url.ToString ()), LoggingMethod.LevelInfo);
             WWW www;
 
             isPresenceHeartbeatComplete = false;
@@ -635,7 +638,8 @@ namespace PubNubMessaging.Core
 
         public IEnumerator SendRequestHeartbeat<T> (CoroutineParams<T> cp)
         {
-            Debug.Log ("URL Heartbeat:" + cp.url.ToString ());
+            //Debug.Log ("URL Heartbeat:" + cp.url.ToString ());
+			LoggingMethod.WriteToLog (string.Format ("DateTime {0}, URL Heartbeat {1} ", DateTime.Now.ToString (), cp.url.ToString ()), LoggingMethod.LevelInfo);
             WWW www;
 
             isHearbeatComplete = false;
