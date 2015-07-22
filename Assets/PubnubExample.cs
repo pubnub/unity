@@ -586,7 +586,7 @@ public class PubnubExample : MonoBehaviour
         }
         GUI.Label (new Rect (10, 30, 100, fHeight), title);
         //input = GUI.TextArea (new Rect (110, 30, 150, fHeight), input, 200);
-		input = GUI.TextField (new Rect (fLeft, fTop, 90, fButtonHeight), input);
+		input = GUI.TextField (new Rect (110, 30, 150, fHeight), input);
         ShowGuiButton (buttonTitle, state);
 
         if (GUI.Button (new Rect (150, 80, 100, fButtonHeight), "Cancel")) {

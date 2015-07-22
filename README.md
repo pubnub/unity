@@ -1,6 +1,6 @@
 # Please direct all Support Questions and Concerns to Support@PubNub.com
 
-## PubNub 3.6.8 Web Data Push Cloud-Hosted API for Unity 4 and Unity 5
+## PubNub 3.6.8.1 Web Data Push Cloud-Hosted API for Unity 4 and Unity 5
 ### Supports PC, Mac, Linux, iOS, Android, WebPlayer and WebGL
 
 ### View this First!
@@ -8,6 +8,7 @@ We've made a [screencast](https://vimeo.com/69591819) that will walk you through
 After checking out the general setup video, [For iOS targets](https://vimeo.com/71549964) be sure to view this walkthrough next. Check it out!
 
 ### Important changes from previous version
+* For iOS Unity's www class times out the request after 60 secs, so the subscribe timeout setting of > 60 secs won't work.
 * A new method CleanUp is introduced to dispose the GameObject (if it is not set externally) and the Coroutine.
 * GameObject is not released on EndPendingRequests.
 * Reorganization of code:
