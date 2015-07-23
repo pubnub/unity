@@ -304,7 +304,7 @@ namespace PubNubMessaging.Core
 
             //for heartbeat and presence heartbeat treat reconnect as pause
             CurrentRequestType crt;
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, RequestType {1} {2}", DateTime.Now.ToString (), typeof(T), pubnubRequestState.GetType ()), LoggingMethod.LevelInfo);
+            //LoggingMethod.WriteToLog (string.Format ("DateTime {0}, RequestType {1} {2}", DateTime.Now.ToString (), typeof(T), pubnubRequestState.GetType ()), LoggingMethod.LevelInfo);
             if ((pubnubRequestState.Type == ResponseType.Heartbeat) || (pubnubRequestState.Type == ResponseType.PresenceHeartbeat)) {
                 crt = CurrentRequestType.PresenceHeartbeat;
                 if (pubnubRequestState.Type == ResponseType.Heartbeat) {
@@ -600,7 +600,7 @@ namespace PubNubMessaging.Core
             }*/
             #endregion
 
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SendRequestSub exit {1}", DateTime.Now.ToString (), cp.crt.ToString ()), LoggingMethod.LevelInfo);
+            //LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SendRequestSub exit {1}", DateTime.Now.ToString (), cp.crt.ToString ()), LoggingMethod.LevelInfo);
         }
 
         public IEnumerator SendRequestNonSub<T> (CoroutineParams<T> cp)
@@ -620,7 +620,7 @@ namespace PubNubMessaging.Core
             }
              
             ProcessResponse (www, cp);
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SendRequestNonSub exit {1}", DateTime.Now.ToString (), cp.crt.ToString ()), LoggingMethod.LevelInfo);
+            //LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SendRequestNonSub exit {1}", DateTime.Now.ToString (), cp.crt.ToString ()), LoggingMethod.LevelInfo);
         }
 
         public IEnumerator SendRequestPresenceHeartbeat<T> (CoroutineParams<T> cp)
@@ -641,7 +641,7 @@ namespace PubNubMessaging.Core
 
             ProcessResponse (www, cp);
 
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SendRequestPresenceHeartbeat exit {1}", DateTime.Now.ToString (), cp.crt.ToString ()), LoggingMethod.LevelInfo);
+            //LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SendRequestPresenceHeartbeat exit {1}", DateTime.Now.ToString (), cp.crt.ToString ()), LoggingMethod.LevelInfo);
         }
 
         public IEnumerator SendRequestHeartbeat<T> (CoroutineParams<T> cp)
@@ -661,7 +661,7 @@ namespace PubNubMessaging.Core
             }
 
             ProcessResponse (www, cp);
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SendRequestHeartbeat exit {1}", DateTime.Now.ToString (), cp.crt.ToString ()), LoggingMethod.LevelInfo);
+            //LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SendRequestHeartbeat exit {1}", DateTime.Now.ToString (), cp.crt.ToString ()), LoggingMethod.LevelInfo);
         }
 
         public void CallFireEvent<T> (string message, bool isError, bool isTimeout, RequestState<T> pubnubRequestState, CoroutineParams<T> cp)
@@ -801,7 +801,7 @@ namespace PubNubMessaging.Core
                         throw new Exception ("'string' and 'object' are the only types supported in generic method calls");
                     }
                 }
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CheckTimeout exit {1}", DateTime.Now.ToString (), cp.crt.ToString ()), LoggingMethod.LevelInfo);
+                //LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CheckTimeout exit {1}", DateTime.Now.ToString (), cp.crt.ToString ()), LoggingMethod.LevelInfo);
             } catch (Exception ex) {
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CheckTimeout: {1} {2}", DateTime.Now.ToString (), ex.ToString (), cp.crt.ToString ()), LoggingMethod.LevelError);
             }
