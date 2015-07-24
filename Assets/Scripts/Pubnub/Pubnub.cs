@@ -1,5 +1,5 @@
-//Build Date: Jul 23, 2015
-//ver3.6.8.2/Unity5
+//Build Date: Jul 24, 2015
+//ver3.6.8.3/Unity5
 #if (UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_ANDROID || UNITY_IOS || UNITY_5 || UNITY_WEBGL)
 #define USE_JSONFX_UNITY_IOS
 //#define USE_MiniJSON
@@ -66,7 +66,7 @@ namespace PubNubMessaging.Core
         private string hereNowParameters = "";
         private string setUserStateparameters = "";
         private string globalHereNowParameters = "";
-        private string _pnsdkVersion = "PubNub-CSharp-Unity5/3.6.8.2";
+        private string _pnsdkVersion = "PubNub-CSharp-Unity5/3.6.8.3";
 
         private int _pubnubWebRequestCallbackIntervalInSeconds = 310;
         private int _pubnubOperationTimeoutIntervalInSeconds = 15;
@@ -395,21 +395,21 @@ namespace PubNubMessaging.Core
             #endif
 
             #if(UNITY_IOS)
-            this.Version = "PubNub-CSharp-UnityIOS/3.6.8.2";
+            this.Version = "PubNub-CSharp-UnityIOS/3.6.8.3";
             #elif(UNITY_STANDALONE_WIN)
-            this.Version = "PubNub-CSharp-UnityWin/3.6.8.2";
+            this.Version = "PubNub-CSharp-UnityWin/3.6.8.3";
             #elif(UNITY_STANDALONE_OSX)
-            this.Version = "PubNub-CSharp-UnityOSX/3.6.8.2";
+            this.Version = "PubNub-CSharp-UnityOSX/3.6.8.3";
             #elif(UNITY_ANDROID)
-            this.Version = "PubNub-CSharp-UnityAndroid/3.6.8.2";
+            this.Version = "PubNub-CSharp-UnityAndroid/3.6.8.3";
             #elif(UNITY_STANDALONE_LINUX)
-            this.Version = "PubNub-CSharp-UnityLinux/3.6.8.2";
+            this.Version = "PubNub-CSharp-UnityLinux/3.6.8.3";
             #elif(UNITY_WEBPLAYER)
-            this.Version = "PubNub-CSharp-UnityWeb/3.6.8.2";
+            this.Version = "PubNub-CSharp-UnityWeb/3.6.8.3";
             #elif(UNITY_WEBGL)
-            this.Version = "PubNub-CSharp-UnityWebGL/3.6.8.2";
+            this.Version = "PubNub-CSharp-UnityWebGL/3.6.8.3";
             #else
-            this.Version = "PubNub-CSharp-Unity5/3.6.8.2";
+            this.Version = "PubNub-CSharp-Unity5/3.6.8.3";
             #endif
             LoggingMethod.WriteToLog (this.Version, LoggingMethod.LevelInfo);
 
@@ -1763,6 +1763,7 @@ namespace PubNubMessaging.Core
                             }    
                             UrlProcessResponseCallbackNonAsync<T> (cea);
                         } else {
+                            coroutine.NonSubCoroutineComplete -= CoroutineCompleteHandler<T>;
                             if (cea.IsTimeout || CheckRequestTimeoutMessageInError(cea)) {
                                 LoggingMethod.WriteToLog (string.Format ("DateTime {0} NonSub timeout={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelError);
                                 UrlRequestCommonExceptionHandler<T> (cea.PubnubRequestState.Type, cea.PubnubRequestState.Channels, true, cea.PubnubRequestState.UserCallback, cea.PubnubRequestState.ConnectCallback, cea.PubnubRequestState.ErrorCallback, false);
@@ -1784,9 +1785,9 @@ namespace PubNubMessaging.Core
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0} Exception={1}", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
                 UrlRequestCommonExceptionHandler<T> (cea.PubnubRequestState.Type, cea.PubnubRequestState.Channels, false, cea.PubnubRequestState.UserCallback, cea.PubnubRequestState.ConnectCallback, cea.PubnubRequestState.ErrorCallback, false);
             } finally {
-                if ((cea != null) && (cea.CurrRequestType == CurrentRequestType.NonSubscribe)) {
-                    coroutine.NonSubCoroutineComplete -= CoroutineCompleteHandler<T>;
-                } 
+                //if ((cea != null) && (cea.CurrRequestType == CurrentRequestType.NonSubscribe)) {
+                    //coroutine.NonSubCoroutineComplete -= CoroutineCompleteHandler<T>;
+                //} 
             }
         }
 

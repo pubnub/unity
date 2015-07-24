@@ -822,13 +822,34 @@ public class PubnubExample : MonoBehaviour
             showAuthWindow = true;
             showActionsPopupWindow = false;
         }
-        fTop = fTopInit + 13 * fRowHeight + 10;
+        /*fTop = fTopInit + 13 * fRowHeight + 10;
         if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Publish Tests")) {
             InstantiatePubnub ();
             pubnub.Publish<string> (channel, 1, storeInHistory, DisplayReturnMessage, DisplayErrorMessage);
             pubnub.Publish<string> (channel, 1.2f, storeInHistory, DisplayReturnMessage, DisplayErrorMessage);
             pubnub.Publish<string> (channel, 14248827499560123, storeInHistory, DisplayReturnMessage, DisplayErrorMessage);
+        }*/
+        fTop = fTopInit + 13 * fRowHeight + 10;
+        if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "DH Tests")) {
+            InstantiatePubnub ();
+            string[] chArr = {"hello_world", "hello_world2", "hello_world3"};
+            RunDetailedHistoryForMultipleChannels(chArr, 0);
         }
+    }
+
+    void RunDetailedHistoryForMultipleChannels(string[] chArr, int pos){
+        UnityEngine.Debug.Log (string.Format ("Running DH for channel: {0}", chArr[pos]));
+        pubnub.DetailedHistory<string> (chArr[pos], 100, 
+            (string o) => { 
+                UnityEngine.Debug.Log (string.Format ("DisplayHistoryMessage CALLBACK LOG: {0}", o));
+                AddToPubnubResultContainer (string.Format ("DisplayHistoryMessage CALLBACK: {0}", o));
+                if(pos < chArr.Count()-1){
+                    pos++;
+                    UnityEngine.Debug.Log (string.Format ("Calling pos: {0}", pos));
+                    RunDetailedHistoryForMultipleChannels(chArr, pos);
+                }
+            }, 
+            DisplayErrorMessage);
     }
 
     void DoActionWindow (int windowID)

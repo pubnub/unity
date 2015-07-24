@@ -1,6 +1,6 @@
 # Please direct all Support Questions and Concerns to Support@PubNub.com
 
-## PubNub 3.6.8.2 Web Data Push Cloud-Hosted API for Unity 4 and Unity 5
+## PubNub 3.6.8.3 Web Data Push Cloud-Hosted API for Unity 4 and Unity 5
 ### Supports PC, Mac, Linux, iOS, Android, WebPlayer and WebGL
 
 ### View this First!
@@ -8,6 +8,8 @@ We've made a [screencast](https://vimeo.com/69591819) that will walk you through
 After checking out the general setup video, [For iOS targets](https://vimeo.com/71549964) be sure to view this walkthrough next. Check it out!
 
 ### Important changes from previous version
+* 3.8.6.3 has fixes for
+ * Non subscribe callbacks were not fired when called from within a callback of an earlier request.
 * 3.6.8.1 has fixes for 
  * Missed messages when adding a channel to multiplexed, 
  * Sub timeout gets fired when in app goes in background and the request is not complete.
