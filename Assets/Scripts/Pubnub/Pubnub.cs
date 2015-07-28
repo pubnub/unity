@@ -1,5 +1,5 @@
-//Build Date: Jul 24, 2015
-//ver3.6.8.3/Unity5
+//Build Date: Jul 27, 2015
+//ver3.6.8.4/Unity5
 #if (UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_ANDROID || UNITY_IOS || UNITY_5 || UNITY_WEBGL)
 #define USE_JSONFX_UNITY_IOS
 //#define USE_MiniJSON
@@ -66,7 +66,7 @@ namespace PubNubMessaging.Core
         private string hereNowParameters = "";
         private string setUserStateparameters = "";
         private string globalHereNowParameters = "";
-        private string _pnsdkVersion = "PubNub-CSharp-Unity5/3.6.8.3";
+        private string _pnsdkVersion = "PubNub-CSharp-Unity5/3.6.8.4";
 
         private int _pubnubWebRequestCallbackIntervalInSeconds = 310;
         private int _pubnubOperationTimeoutIntervalInSeconds = 15;
@@ -99,7 +99,6 @@ namespace PubNubMessaging.Core
         private bool retriesExceeded = false;
 
         private int retryCount = 0;
-        private long currentHBID = 0;
 
         #endregion
 
@@ -107,7 +106,7 @@ namespace PubNubMessaging.Core
 
         /// <summary>
         /// Gets or sets the set game object.
-        /// This method should be called before ini
+        /// This method should be called before init
         /// </summary>
         /// <value>The set game object.</value>
         public static GameObject SetGameObject {
@@ -270,7 +269,6 @@ namespace PubNubMessaging.Core
             }
 
             set {
-                //_jsonPluggableLibrary = value;
                 if (value is IJsonPluggableLibrary) {
                     this._jsonPluggableLibrary = value;
                 } else {
@@ -395,21 +393,21 @@ namespace PubNubMessaging.Core
             #endif
 
             #if(UNITY_IOS)
-            this.Version = "PubNub-CSharp-UnityIOS/3.6.8.3";
+            this.Version = "PubNub-CSharp-UnityIOS/3.6.8.4";
             #elif(UNITY_STANDALONE_WIN)
-            this.Version = "PubNub-CSharp-UnityWin/3.6.8.3";
+            this.Version = "PubNub-CSharp-UnityWin/3.6.8.4";
             #elif(UNITY_STANDALONE_OSX)
-            this.Version = "PubNub-CSharp-UnityOSX/3.6.8.3";
+            this.Version = "PubNub-CSharp-UnityOSX/3.6.8.4";
             #elif(UNITY_ANDROID)
-            this.Version = "PubNub-CSharp-UnityAndroid/3.6.8.3";
+            this.Version = "PubNub-CSharp-UnityAndroid/3.6.8.4";
             #elif(UNITY_STANDALONE_LINUX)
-            this.Version = "PubNub-CSharp-UnityLinux/3.6.8.3";
+            this.Version = "PubNub-CSharp-UnityLinux/3.6.8.4";
             #elif(UNITY_WEBPLAYER)
-            this.Version = "PubNub-CSharp-UnityWeb/3.6.8.3";
+            this.Version = "PubNub-CSharp-UnityWeb/3.6.8.4";
             #elif(UNITY_WEBGL)
-            this.Version = "PubNub-CSharp-UnityWebGL/3.6.8.3";
+            this.Version = "PubNub-CSharp-UnityWebGL/3.6.8.4";
             #else
-            this.Version = "PubNub-CSharp-Unity5/3.6.8.3";
+            this.Version = "PubNub-CSharp-Unity5/3.6.8.4";
             #endif
             LoggingMethod.WriteToLog (this.Version, LoggingMethod.LevelInfo);
 
@@ -1434,9 +1432,7 @@ namespace PubNubMessaging.Core
         public void TerminateCurrentSubscriberRequest<T> ()
         {
             StopHeartbeat<T> ();
-            //LoggingMethod.WriteToLog (string.Format ("DateTime {0} StopHeartbeat.", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
             StopPresenceHeartbeat<T> ();
-            //LoggingMethod.WriteToLog (string.Format ("DateTime {0} StopPresenceHeartbeat.", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
             RequestState<T> reqState = StoredRequestState.Instance.GetStoredRequestState (CurrentRequestType.Subscribe) as RequestState<T>;
             coroutine.BounceRequest<T> (CurrentRequestType.Subscribe, reqState, true);
         }
@@ -1451,17 +1447,13 @@ namespace PubNubMessaging.Core
 
             LoggingMethod.WriteToLog (string.Format ("DateTime {0} Request bounced.", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
             StopHeartbeat ();
-            //LoggingMethod.WriteToLog (string.Format ("DateTime {0} StopHeartbeat.", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
             StopPresenceHeartbeat ();
-            //LoggingMethod.WriteToLog (string.Format ("DateTime {0} StopPresenceHeartbeat.", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
             RemoveChannelCallback ();
             RemoveUserState ();
             LoggingMethod.WriteToLog (string.Format ("DateTime {0} RemoveChannelCallback and RemoveUserState complete.", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
         }
 
         public void CleanUp (){
-            //LoggingMethod.WriteToLog (string.Format ("DateTime {0} Cleaning up", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
-            //EndPendingRequests ();
             LoggingMethod.WriteToLog ("Destructing coroutine", LoggingMethod.LevelInfo);
             if (coroutine != null) {
                 UnityEngine.Object.Destroy (coroutine);
@@ -1577,7 +1569,6 @@ namespace PubNubMessaging.Core
             keepHearbeatRunning = false;
             isHearbeatRunning = false;
             coroutine.HeartbeatCoroutineComplete -= CoroutineCompleteHandler<T>;
-            //coroutine.SubCoroutineComplete -= CoroutineCompleteHandler<T>;
             coroutine.BounceRequest<T> (CurrentRequestType.Heartbeat, null, false);
         }
 
@@ -1599,15 +1590,12 @@ namespace PubNubMessaging.Core
         {
             keepPresenceHearbeatRunning = true;
             if (!isPresenceHearbeatRunning) {
-            //if (currentHBID == pubnubRequestState.ID) {
                 try {
                     string[] subscriberChannels = pubnubRequestState.Channels.Where (s => s.Contains ("-pnpres") == false).ToArray ();
 
                     if (subscriberChannels != null && subscriberChannels.Length > 0) {
 
                         isPresenceHearbeatRunning = true;
-
-                        //LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Running RunPresenceHeartbeat ", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
 
                         Uri requestUrl = BuildPresenceHeartbeatRequest (subscriberChannels);
 
@@ -1623,13 +1611,8 @@ namespace PubNubMessaging.Core
                         requestState.Reconnect = pause;
 
                         StoredRequestState.Instance.SetRequestState (CurrentRequestType.PresenceHeartbeat, requestState); 
-                        //if(CheckHeartbeatRun(true, pauseTime)){
-                        //if(currentHBID == pubnubRequestState.ID){
                         coroutine.Run<T> (requestUrl.OriginalString, requestState, HeartbeatTimeout, pauseTime);
                         LoggingMethod.WriteToLog (string.Format ("DateTime {0}, PresenceHeartbeat running for {1}", DateTime.Now.ToString (), pubnubRequestState.ID), LoggingMethod.LevelInfo);
-                        /*} else {
-                            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, PresenceHeartbeat already running{1} {2}", DateTime.Now.ToString (), currentHBID, pubnubRequestState.ID), LoggingMethod.LevelInfo);
-                        }*/
                     }
                 } catch (Exception ex) {
                     LoggingMethod.WriteToLog (string.Format ("DateTime {0}, PresenceHeartbeat exception {1}", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
@@ -1644,10 +1627,8 @@ namespace PubNubMessaging.Core
             keepHearbeatRunning = true;
             LoggingMethod.WriteToLog (string.Format ("DateTime {0}, In Runheartbeat {1}", DateTime.Now.ToString (), isHearbeatRunning.ToString ()), LoggingMethod.LevelInfo);
             if (!isHearbeatRunning) {
-            //if (currentHBID == pubnubRequestState.ID) {
                 try {
                     isHearbeatRunning = true;
-                    //LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Running Runheartbeat ", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
                     Uri requestUrl = BuildTimeRequest ();
 
                     coroutine.HeartbeatCoroutineComplete += CoroutineCompleteHandler<T>;
@@ -1663,13 +1644,8 @@ namespace PubNubMessaging.Core
                     requestState.Reconnect = pause;
 
                     StoredRequestState.Instance.SetRequestState (CurrentRequestType.Heartbeat, requestState);
-                    //if(CheckHeartbeatRun(false, pauseTime)){
-                    //if(currentHBID == pubnubRequestState.ID){
                     coroutine.Run<T> (requestUrl.OriginalString, requestState, HeartbeatTimeout, pauseTime);
                     LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Heartbeat running for {1}", DateTime.Now.ToString (), pubnubRequestState.ID), LoggingMethod.LevelInfo);
-                    /*} else {
-                        LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Heartbeat already running {1} {2}", DateTime.Now.ToString (), currentHBID, pubnubRequestState.ID), LoggingMethod.LevelInfo);
-                    }*/
                 } catch (Exception ex) {
                     LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Heartbeat exception {1}", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
                 }
@@ -1685,27 +1661,6 @@ namespace PubNubMessaging.Core
         void CoroutineCompleteHandler<T> (object sender, EventArgs ea)
         {
             CustomEventArgs<T> cea = ea as CustomEventArgs<T>;
-
-            /*Type genericType = typeof(RequestState<>);
-            Type specificListType = genericType.MakeGenericType(cea.PubnubRequestState.TypeParameterType);
-            var pnRequestState = Activator.CreateInstance(specificListType);
-            //var pnRequestState = (genericType)Activator.CreateInstance(cea.PubnubRequestState.TypeParameterType, cea.PubnubRequestState);
-            //var pnRequestState1;
-            //var pnRequestState = cea.PubnubRequestState as cea.PubnubRequestState.TypeParameterType;
-            if (cea.PubnubRequestState.TypeParameterType == typeof(RequestState<object>)) {
-                Debug.Log ("In handler of event cea isobject ");     
-                var pnRequestState1 = cea.PubnubRequestState as RequestState<object>;
-                Debug.Log ("In handler of event cea isobject " + pnRequestState1.Timeout);     
-            }else if (cea.PubnubRequestState.TypeParameterType == typeof(RequestState<string>)) {
-                Debug.Log ("In handler of event cea isstring ");        
-                var pnRequestState1 = cea.PubnubRequestState as RequestState<string>;
-                Debug.Log ("In handler of event cea isobject " + pnRequestState1.Timeout);
-            }
-            //Debug.Log ("pnRequestState1 " + pnRequestState1.);        
-            //pnRequestState
-            //var a = (specificListType)pnRequestState.Type;*/
-
-            //Debug.Log ("In handler of event cea " + cea.CurrRequestType.ToString());
 
             try {
                 if (cea != null) {
@@ -1784,11 +1739,7 @@ namespace PubNubMessaging.Core
             } catch (Exception ex) {
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0} Exception={1}", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
                 UrlRequestCommonExceptionHandler<T> (cea.PubnubRequestState.Type, cea.PubnubRequestState.Channels, false, cea.PubnubRequestState.UserCallback, cea.PubnubRequestState.ConnectCallback, cea.PubnubRequestState.ErrorCallback, false);
-            } finally {
-                //if ((cea != null) && (cea.CurrRequestType == CurrentRequestType.NonSubscribe)) {
-                    //coroutine.NonSubCoroutineComplete -= CoroutineCompleteHandler<T>;
-                //} 
-            }
+            } 
         }
 
         private bool CheckRequestTimeoutMessageInError<T>(CustomEventArgs<T> cea){
@@ -1807,7 +1758,6 @@ namespace PubNubMessaging.Core
 
         private void ProcessResponseCallbackWebExceptionHandler<T> (WebException webEx, RequestState<T> asynchRequestState, string channel)
         {
-            bool reconnect = false;
             if (webEx.ToString ().Contains ("Aborted")) {
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, WebException: {1}", DateTime.Now.ToString (), webEx.ToString ()), LoggingMethod.LevelInfo);
             } else {
@@ -2436,7 +2386,6 @@ namespace PubNubMessaging.Core
 
             //bounce the long-polling subscribe requests to update user state
             TerminateCurrentSubscriberRequest<T> ();
-            //coroutine.BounceRequest<T> (CurrentRequestType.Subscribe, requestState, true);
         }
 
         private Uri BuildSetUserStateRequest (string channel, string uuid, string jsonUserState)
@@ -2517,7 +2466,7 @@ namespace PubNubMessaging.Core
                     _channelRequest.AddOrUpdate (channel, pubnubRequestState.Request, (key, oldState) => pubnubRequestState.Request);
                     RequestState<T> pubnubRequestStateHB = pubnubRequestState;
                     pubnubRequestStateHB.ID = DateTime.Now.Ticks;
-                    currentHBID = pubnubRequestStateHB.ID;
+                    //currentHBID = pubnubRequestStateHB.ID;
                     RunHeartbeat<T> (false, LocalClientHeartbeatInterval, pubnubRequestStateHB);
                     LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Heartbeat started", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
 
@@ -2541,7 +2490,6 @@ namespace PubNubMessaging.Core
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Exception={1}", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
                 return false;
             } catch (System.NullReferenceException ex) {
-                //check Exception=UnityEngine.MissingReferenceException: The object of type 'CoroutineClass' has been destroyed but you are still trying to access it.
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Exception={1}", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
                 return false;
             } catch (System.Exception ex) {
@@ -2760,7 +2708,6 @@ namespace PubNubMessaging.Core
                         lastSubscribeTimetokenForNewMultiplex = lastSubscribeTimetoken;
                         RequestState<T> reqState = StoredRequestState.Instance.GetStoredRequestState (CurrentRequestType.Subscribe) as RequestState<T>;
                         coroutine.BounceRequest<T> (CurrentRequestType.Subscribe, reqState, false);
-                        //StopHeartbeat<T> ();
                     } else {
                         LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Unable to capture channel(s)={1} from _channelRequest to abort request.", DateTime.Now.ToString (), multiChannelName), LoggingMethod.LevelInfo);
                     }
@@ -2787,7 +2734,6 @@ namespace PubNubMessaging.Core
 
                 RequestState<T> state = new RequestState<T> ();
                 _channelRequest.AddOrUpdate (string.Join (",", channels), state.Request, (key, oldValue) => state.Request);
-                //MultiChannelSubscribeRequest<T> (type, channels, 0, userCallback, connectCallback, errorCallback, false);
                 MultiChannelSubscribeRequest<T> (type, channels, lastSubscribeTimetokenForNewMultiplex, userCallback, connectCallback, errorCallback, false);
             }
         }
@@ -2860,23 +2806,13 @@ namespace PubNubMessaging.Core
                         lastTimetoken = sentTimetoken;
                         LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Using sentTimetoken={1}", DateTime.Now.ToString (), sentTimetoken), LoggingMethod.LevelInfo);
                     }
-                        /*
-                    } else if(!sentTimetoken.Equals(0)){
-                        lastTimetoken = sentTimetoken;
-                        LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Using sentTimetoken={1}", DateTime.Now.ToString (), sentTimetoken), LoggingMethod.LevelInfo);
-                        */
-                    /*} else if (lastSubscribeTimetoken.Equals(maximumTimetoken)) {
-                        lastTimetoken = maximumTimetoken;                        
-                        LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Using maximumTimetoken={1}", DateTime.Now.ToString (), maximumTimetoken), LoggingMethod.LevelInfo);
-                    } else {
-                        lastTimetoken = lastSubscribeTimetoken;
-                        LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Using lastSubscribeTimetoken={1}", DateTime.Now.ToString (), lastSubscribeTimetoken), LoggingMethod.LevelInfo);
-                    }*/
+
+                    if(lastSubscribeTimetoken.Equals(lastSubscribeTimetokenForNewMultiplex)){
+                        lastSubscribeTimetokenForNewMultiplex = 0;
+                    }
                 }
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Building request for channel(s)={1} with timetoken={2}", DateTime.Now.ToString (), string.Join (",", channels), lastTimetoken), LoggingMethod.LevelInfo);
                 // Build URL
-                //Uri requestUrl = BuildMultiChannelSubscribeRequest (channels, (Convert.ToInt64 (timetoken.ToString ()) == 0) ? Convert.ToInt64 (timetoken.ToString ()) : lastTimetoken);
-                //Uri requestUrl = BuildMultiChannelSubscribeRequest (channels, (sentTimetoken == 0) ? 0 : lastTimetoken);
                 Uri requestUrl = BuildMultiChannelSubscribeRequest (channels, lastTimetoken);
 
                 RequestState<T> pubnubRequestState = new RequestState<T> ();
@@ -2917,7 +2853,6 @@ namespace PubNubMessaging.Core
 
                 //stop heartbeat.
                 keepHearbeatRunning = false;
-                //Unsubscribe channels here.
                 coroutine.BounceRequest (CurrentRequestType.Subscribe, pubnubRequestState, false);
 
                 //TODO: Fire callbacks

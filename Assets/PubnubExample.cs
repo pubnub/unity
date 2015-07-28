@@ -358,7 +358,7 @@ public class PubnubExample : MonoBehaviour
         fLeft = fLeftInit + 100;
 
         //text1 = GUI.TextArea (new Rect (fLeft, fTop, 90, fButtonHeight), text1, 20);
-		text1 = GUI.TextField (new Rect (fLeft, fTop, 90, fButtonHeight), text1);
+        text1 = GUI.TextField (new Rect (fLeft, fTop, 90, fButtonHeight), text1);
 
         fLeft = fLeftInit;
         fTop = fTop + fButtonHeight;
@@ -366,7 +366,7 @@ public class PubnubExample : MonoBehaviour
         fLeft = fLeftInit + 100;
 
         //text2 = GUI.TextArea (new Rect (fLeft, fTop, 90, fButtonHeight), text2, 20);
-		text2 = GUI.TextField (new Rect (fLeft, fTop, 90, fButtonHeight), text2);
+        text2 = GUI.TextField (new Rect (fLeft, fTop, 90, fButtonHeight), text2);
 
         if ((state == PubnubState.SetUserStateJson) || (state == PubnubState.SetUserStateKeyValue)) {
             fLeft = fLeftInit;
@@ -375,7 +375,7 @@ public class PubnubExample : MonoBehaviour
             fLeft = fLeftInit + 100;
 
             //text3 = GUI.TextArea (new Rect (fLeft, fTop, 90, fButtonHeight), text3, 20);
-			text3 = GUI.TextField (new Rect (fLeft, fTop, 90, fButtonHeight), text3);
+            text3 = GUI.TextField (new Rect (fLeft, fTop, 90, fButtonHeight), text3);
             fLeft = fLeftInit;
             fTop = fTop + 3 * fHeight - 40;
 
@@ -586,7 +586,7 @@ public class PubnubExample : MonoBehaviour
         }
         GUI.Label (new Rect (10, 30, 100, fHeight), title);
         //input = GUI.TextArea (new Rect (110, 30, 150, fHeight), input, 200);
-		input = GUI.TextField (new Rect (110, 30, 150, fHeight), input);
+        input = GUI.TextField (new Rect (110, 30, 150, fHeight), input);
         ShowGuiButton (buttonTitle, state);
 
         if (GUI.Button (new Rect (150, 80, 100, fButtonHeight), "Cancel")) {
@@ -638,17 +638,17 @@ public class PubnubExample : MonoBehaviour
             GUI.Label (new Rect (30, 45, 100, fHeight), labelTitle);
 
             //valueToSetSubs = GUI.TextArea (new Rect (110, 45, 100, fHeight), valueToSetSubs, 20);
-			valueToSetSubs = GUI.TextField (new Rect (110, 45, 100, fHeight), valueToSetSubs);
+            valueToSetSubs = GUI.TextField (new Rect (110, 45, 100, fHeight), valueToSetSubs);
             GUI.Label (new Rect (30, 90, 100, fHeight), labelTitle2);
 
             //valueToSetAuthKey = GUI.TextArea (new Rect (110, 90, 100, fHeight), valueToSetAuthKey, 20);
-			valueToSetAuthKey = GUI.TextField (new Rect (110, 90, 100, fHeight), valueToSetAuthKey);
+            valueToSetAuthKey = GUI.TextField (new Rect (110, 90, 100, fHeight), valueToSetAuthKey);
             fill = 45;
         } else if (state == PubnubState.HereNow) {
             GUI.Label (new Rect (30, 45, 100, fHeight), labelTitle);
 
             //valueToSet = GUI.TextArea (new Rect (110, 45, 100, fHeight), valueToSet, 20);
-			valueToSet = GUI.TextField (new Rect (110, 45, 100, fHeight), valueToSet);
+            valueToSet = GUI.TextField (new Rect (110, 45, 100, fHeight), valueToSet);
         } else if (state == PubnubState.GlobalHereNow) {
             //no text needed
         }
@@ -1125,7 +1125,7 @@ public class PubnubExample : MonoBehaviour
         GUI.Label (new Rect (10, 25, 100, 25), "Enter Message");
 
         //publishedMessage = GUI.TextArea (new Rect (110, 25, 150, 60), publishedMessage, 2000);
-		publishedMessage = GUI.TextField (new Rect (110, 25, 150, 60), publishedMessage);
+        publishedMessage = GUI.TextField (new Rect (110, 25, 150, 60), publishedMessage);
         storeInHistory = GUI.Toggle (new Rect (10, 100, 150, 25), storeInHistory, "Store in History");
 
         //publishedMessage = "Text with 😜 emoji 🎉.";
@@ -1241,7 +1241,9 @@ public class PubnubExample : MonoBehaviour
     void OnApplicationQuit ()
     {
         //ResetPubnubInstance ();
-        pubnub.CleanUp ();
+        if (pubnub != null) {
+            pubnub.CleanUp ();
+        }
     }
 
     void ResetPubnubInstance ()
