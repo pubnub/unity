@@ -1280,6 +1280,7 @@ public class PubnubExample : MonoBehaviour
         //print(result);
         UnityEngine.Debug.Log (string.Format ("CONNECT CALLBACK LOG: {0}", result));
         AddToPubnubResultContainer (string.Format ("CONNECT CALLBACK: {0}", result));
+        pubnub.HereNow<string> ("hello_world2", true, true, DisplayReturnMessage, DisplayErrorMessage);
     }
 
     void DisplayConnectStatusMessageObj (object result)

@@ -262,7 +262,6 @@ namespace PubNubMessaging.Core
                         LoggingMethod.WriteToLog (string.Format ("DateTime {0}, WWW Sub request null2", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
                     } else {
                         LoggingMethod.WriteToLog (string.Format ("DateTime {0}, WWW Sub request2 {1} {2}", DateTime.Now.ToString (), cp.requestState.Type, cp.crt), LoggingMethod.LevelInfo);
-
                     }
 
                     FireEvent (message, isError, false, cp.requestState, cp.crt);
@@ -507,6 +506,7 @@ namespace PubNubMessaging.Core
             cea.IsError = isError;
             cea.IsTimeout = isTimeout;
             cea.CurrRequestType = crt;
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Raising Event of type : {1}", DateTime.Now.ToString (), crt.ToString ()), LoggingMethod.LevelInfo);
 
             if ((crt == CurrentRequestType.Heartbeat) && (heartbeatCoroutineComplete != null)) {
                 heartbeatCoroutineComplete.Raise (this, cea);
@@ -516,6 +516,8 @@ namespace PubNubMessaging.Core
                 subCoroutineComplete.Raise (this, cea);
             } else if ((crt == CurrentRequestType.NonSubscribe) && (nonSubCoroutineComplete != null)) {
                 nonSubCoroutineComplete.Raise (this, cea);
+            } else {
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Request Type not matched {1}", DateTime.Now.ToString (), crt.ToString ()), LoggingMethod.LevelInfo);
             }
         }
     }

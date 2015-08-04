@@ -1,5 +1,5 @@
-//Build Date: Jul 27, 2015
-//ver3.6.8.4/Unity5
+//Build Date: Aug 4, 2015
+//ver3.6.8.5/Unity5
 #if (UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_ANDROID || UNITY_IOS || UNITY_5 || UNITY_WEBGL)
 #define USE_JSONFX_UNITY_IOS
 //#define USE_MiniJSON
@@ -66,7 +66,7 @@ namespace PubNubMessaging.Core
         private string hereNowParameters = "";
         private string setUserStateparameters = "";
         private string globalHereNowParameters = "";
-        private string _pnsdkVersion = "PubNub-CSharp-Unity5/3.6.8.4";
+        private string _pnsdkVersion = "PubNub-CSharp-Unity5/3.6.8.5";
 
         private int _pubnubWebRequestCallbackIntervalInSeconds = 310;
         private int _pubnubOperationTimeoutIntervalInSeconds = 15;
@@ -393,21 +393,21 @@ namespace PubNubMessaging.Core
             #endif
 
             #if(UNITY_IOS)
-            this.Version = "PubNub-CSharp-UnityIOS/3.6.8.4";
+            this.Version = "PubNub-CSharp-UnityIOS/3.6.8.5";
             #elif(UNITY_STANDALONE_WIN)
-            this.Version = "PubNub-CSharp-UnityWin/3.6.8.4";
+            this.Version = "PubNub-CSharp-UnityWin/3.6.8.5";
             #elif(UNITY_STANDALONE_OSX)
-            this.Version = "PubNub-CSharp-UnityOSX/3.6.8.4";
+            this.Version = "PubNub-CSharp-UnityOSX/3.6.8.5";
             #elif(UNITY_ANDROID)
-            this.Version = "PubNub-CSharp-UnityAndroid/3.6.8.4";
+            this.Version = "PubNub-CSharp-UnityAndroid/3.6.8.5";
             #elif(UNITY_STANDALONE_LINUX)
-            this.Version = "PubNub-CSharp-UnityLinux/3.6.8.4";
+            this.Version = "PubNub-CSharp-UnityLinux/3.6.8.5";
             #elif(UNITY_WEBPLAYER)
-            this.Version = "PubNub-CSharp-UnityWeb/3.6.8.4";
+            this.Version = "PubNub-CSharp-UnityWeb/3.6.8.5";
             #elif(UNITY_WEBGL)
-            this.Version = "PubNub-CSharp-UnityWebGL/3.6.8.4";
+            this.Version = "PubNub-CSharp-UnityWebGL/3.6.8.5";
             #else
-            this.Version = "PubNub-CSharp-Unity5/3.6.8.4";
+            this.Version = "PubNub-CSharp-Unity5/3.6.8.5";
             #endif
             LoggingMethod.WriteToLog (this.Version, LoggingMethod.LevelInfo);
 
@@ -1715,10 +1715,12 @@ namespace PubNubMessaging.Core
                                 LoggingMethod.WriteToLog (string.Format ("DateTime {0} Sub timeout={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelError);
                             } else if (cea.IsError) {
                                 LoggingMethod.WriteToLog (string.Format ("DateTime {0} Sub Error={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelError);
-                            }    
+                            } else {
+                               LoggingMethod.WriteToLog (string.Format ("DateTime {0} Sub Message={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelInfo);
+                            }
                             UrlProcessResponseCallbackNonAsync<T> (cea);
                         } else {
-                            coroutine.NonSubCoroutineComplete -= CoroutineCompleteHandler<T>;
+                            //coroutine.NonSubCoroutineComplete -= CoroutineCompleteHandler<T>;
                             if (cea.IsTimeout || CheckRequestTimeoutMessageInError(cea)) {
                                 LoggingMethod.WriteToLog (string.Format ("DateTime {0} NonSub timeout={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelError);
                                 UrlRequestCommonExceptionHandler<T> (cea.PubnubRequestState.Type, cea.PubnubRequestState.Channels, true, cea.PubnubRequestState.UserCallback, cea.PubnubRequestState.ConnectCallback, cea.PubnubRequestState.ErrorCallback, false);
@@ -1726,6 +1728,7 @@ namespace PubNubMessaging.Core
                                 LoggingMethod.WriteToLog (string.Format ("DateTime {0} NonSub Error={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelError);
                                 UrlRequestCommonExceptionHandler<T> (cea.PubnubRequestState.Type, cea.PubnubRequestState.Channels, false, cea.PubnubRequestState.UserCallback, cea.PubnubRequestState.ConnectCallback, cea.PubnubRequestState.ErrorCallback, false);
                             } else {
+                                LoggingMethod.WriteToLog (string.Format ("DateTime {0} NonSub Message={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelInfo);
                                 var result = WrapResultBasedOnResponseType<T> (cea.PubnubRequestState.Type, cea.Message, cea.PubnubRequestState.Channels, cea.PubnubRequestState.Reconnect, cea.PubnubRequestState.Timetoken, cea.PubnubRequestState.ErrorCallback);
                                 ProcessResponseCallbacks<T> (result, cea.PubnubRequestState);            
                             }
@@ -2782,8 +2785,8 @@ namespace PubNubMessaging.Core
                 long sentTimetoken = Convert.ToInt64 (timetoken.ToString ());
                 long minimumTimetoken = multiChannelSubscribe.Min (token => token.Value);
                 long maximumTimetoken = multiChannelSubscribe.Max (token => token.Value);
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, maximumTimetoken={1}", DateTime.Now.ToString (), maximumTimetoken), LoggingMethod.LevelInfo);
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, minimumTimetoken={1}", DateTime.Now.ToString (), minimumTimetoken), LoggingMethod.LevelInfo);
+                //LoggingMethod.WriteToLog (string.Format ("DateTime {0}, maximumTimetoken={1}", DateTime.Now.ToString (), maximumTimetoken), LoggingMethod.LevelInfo);
+                //LoggingMethod.WriteToLog (string.Format ("DateTime {0}, minimumTimetoken={1}", DateTime.Now.ToString (), minimumTimetoken), LoggingMethod.LevelInfo);
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, lastSubscribeTimetokenForNewMultiplex={1}", DateTime.Now.ToString (), lastSubscribeTimetokenForNewMultiplex), LoggingMethod.LevelInfo);
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, sentTimetoken={1}", DateTime.Now.ToString (), sentTimetoken), LoggingMethod.LevelInfo);
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, lastSubscribeTimetoken={1}", DateTime.Now.ToString (), lastSubscribeTimetoken), LoggingMethod.LevelInfo);
@@ -3053,7 +3056,7 @@ namespace PubNubMessaging.Core
                 var messages = (from item in result
                                 select item as object).ToArray ();
                 //var messages = result.ToArray ();
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, (result: {1}", DateTime.Now.ToString (), result.ToString ()), LoggingMethod.LevelInfo);
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, result: {1}", DateTime.Now.ToString (), result.ToString ()), LoggingMethod.LevelInfo);
                 if (messages != null && messages.Length > 0) {
                     //object[] messageList = messages [0] as object[];
                     /*object[] messageList  = ((IEnumerable)messages[0]).Cast<object>()
@@ -3062,7 +3065,7 @@ namespace PubNubMessaging.Core
                     //object[] messageList = messages[0].Cast<object>().ToArray();
 
                     //object[] messageList = Array.ConvertAll<object, object>(messages[0] as object[], element => element);
-                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, (messageList typeOF: {1}", DateTime.Now.ToString (), messages [0].GetType ().ToString ()), LoggingMethod.LevelInfo);
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, messageList typeOF: {1}", DateTime.Now.ToString (), messages [0].GetType ().ToString ()), LoggingMethod.LevelInfo);
                     var messageList = messages [0] as object[];
                     int i = 0;
                     foreach (object o in result) {
@@ -3125,9 +3128,9 @@ namespace PubNubMessaging.Core
                             PubnubChannelCallbackKey callbackKey = new PubnubChannelCallbackKey ();
                             callbackKey.Channel = currentChannel;
                             callbackKey.Type = (currentChannel.LastIndexOf ("-pnpres") == -1) ? ResponseType.Subscribe : ResponseType.Presence;
-                            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, (currentChannel: {1}", DateTime.Now.ToString (), currentChannel.ToString ()), LoggingMethod.LevelInfo);
+                            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, currentChannel: {1}", DateTime.Now.ToString (), currentChannel.ToString ()), LoggingMethod.LevelInfo);
                             if (channelCallbacks.Count > 0 && channelCallbacks.ContainsKey (callbackKey)) {
-                                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, (typeof(T): {1}", DateTime.Now.ToString (), typeof(T).ToString ()), LoggingMethod.LevelInfo);
+                                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, typeof(T): {1}", DateTime.Now.ToString (), typeof(T).ToString ()), LoggingMethod.LevelInfo);
                                 if ((typeof(T) == typeof(string) && channelCallbacks [callbackKey].GetType ().Name.Contains ("[System.String]")) ||
                                     (typeof(T) == typeof(object) && channelCallbacks [callbackKey].GetType ().Name.Contains ("[System.Object]"))) {
                                     PubnubChannelCallback<T> currentPubnubCallback = channelCallbacks [callbackKey] as PubnubChannelCallback<T>;
@@ -3216,9 +3219,9 @@ namespace PubNubMessaging.Core
 
             if (typeof(T) == typeof(string)) {
                 try {
-                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, before _jsonPluggableLibrary.SerializeToJsonString", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+                    //LoggingMethod.WriteToLog (string.Format ("DateTime {0}, before _jsonPluggableLibrary.SerializeToJsonString", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
                     callbackJson = _jsonPluggableLibrary.SerializeToJsonString (result);
-                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, after _jsonPluggableLibrary.SerializeToJsonString", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, after _jsonPluggableLibrary.SerializeToJsonString {1}", DateTime.Now.ToString (), callbackJson), LoggingMethod.LevelInfo);
                     Action<string> castCallback = callback as Action<string>;
                     castCallback (callbackJson);
                 } catch (Exception ex) {
@@ -3344,11 +3347,13 @@ namespace PubNubMessaging.Core
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Lost Channel Name for resubscribe", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
                 return;
             }
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, MultiplexInternalCallback", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+            //
             if (message != null && message.Count >= 3) {
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, MultiChannelSubscribeRequest {1}", DateTime.Now.ToString (), message [1].ToString()), LoggingMethod.LevelInfo);    
                 MultiChannelSubscribeRequest<T> (type, channels, (object)message [1], userCallback, connectCallback, errorCallback, reconnect);
                 //MultiChannelSubscribeRequest<T> (type, channels, (object)sentTimetoken, userCallback, connectCallback, errorCallback, false);
+            } else {
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, MultiplexInternalCallback message null or count < 3", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
             }
         }
 
@@ -3370,7 +3375,7 @@ namespace PubNubMessaging.Core
             try {
                 string multiChannel = (channels != null) ? string.Join (",", channels) : "";
                 if (!string.IsNullOrEmpty (jsonString)) {
-                    if (!string.IsNullOrEmpty (jsonString)) {
+                    //if (!string.IsNullOrEmpty (jsonString)) {
                         LoggingMethod.WriteToLog (string.Format ("DateTime {0}, jsonString = {1}", DateTime.Now.ToString (), jsonString), LoggingMethod.LevelInfo);
                         object deSerializedResult = _jsonPluggableLibrary.DeserializeToObject (jsonString);
                         List<object> result1 = ((IEnumerable)deSerializedResult).Cast<object> ().ToList ();
@@ -3424,7 +3429,7 @@ namespace PubNubMessaging.Core
                                 result = new List<object> ();
                                 //result.Add (s);
                                 result.Add (c [0]);
-                                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, added to result ", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+                                //LoggingMethod.WriteToLog (string.Format ("DateTime {0}, added to result ", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
                             }
                             /*var messages = (from item in deSerializedResult
                                 select item as object).ToArray ();
@@ -3498,7 +3503,9 @@ namespace PubNubMessaging.Core
                             break;
                         }
                         ;//switch stmt end
-                    }
+                    //}
+                } else {
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, json string null ", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
                 }
             } catch (Exception ex) {
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, WrapResultBasedOnResponseType exception: {1} ", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
