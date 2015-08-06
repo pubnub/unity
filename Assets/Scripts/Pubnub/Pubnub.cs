@@ -1,5 +1,5 @@
-//Build Date: Aug 4, 2015
-//ver3.6.8.5/Unity5
+//Build Date: Aug 5, 2015
+//ver3.6.8.6/Unity5
 #if (UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_ANDROID || UNITY_IOS || UNITY_5 || UNITY_WEBGL)
 #define USE_JSONFX_UNITY_IOS
 //#define USE_MiniJSON
@@ -66,7 +66,7 @@ namespace PubNubMessaging.Core
         private string hereNowParameters = "";
         private string setUserStateparameters = "";
         private string globalHereNowParameters = "";
-        private string _pnsdkVersion = "PubNub-CSharp-Unity5/3.6.8.5";
+        private string _pnsdkVersion = "PubNub-CSharp-Unity5/3.6.8.6";
 
         private int _pubnubWebRequestCallbackIntervalInSeconds = 310;
         private int _pubnubOperationTimeoutIntervalInSeconds = 15;
@@ -393,21 +393,21 @@ namespace PubNubMessaging.Core
             #endif
 
             #if(UNITY_IOS)
-            this.Version = "PubNub-CSharp-UnityIOS/3.6.8.5";
+            this.Version = "PubNub-CSharp-UnityIOS/3.6.8.6";
             #elif(UNITY_STANDALONE_WIN)
-            this.Version = "PubNub-CSharp-UnityWin/3.6.8.5";
+            this.Version = "PubNub-CSharp-UnityWin/3.6.8.6";
             #elif(UNITY_STANDALONE_OSX)
-            this.Version = "PubNub-CSharp-UnityOSX/3.6.8.5";
+            this.Version = "PubNub-CSharp-UnityOSX/3.6.8.6";
             #elif(UNITY_ANDROID)
-            this.Version = "PubNub-CSharp-UnityAndroid/3.6.8.5";
+            this.Version = "PubNub-CSharp-UnityAndroid/3.6.8.6";
             #elif(UNITY_STANDALONE_LINUX)
-            this.Version = "PubNub-CSharp-UnityLinux/3.6.8.5";
+            this.Version = "PubNub-CSharp-UnityLinux/3.6.8.6";
             #elif(UNITY_WEBPLAYER)
-            this.Version = "PubNub-CSharp-UnityWeb/3.6.8.5";
+            this.Version = "PubNub-CSharp-UnityWeb/3.6.8.6";
             #elif(UNITY_WEBGL)
-            this.Version = "PubNub-CSharp-UnityWebGL/3.6.8.5";
+            this.Version = "PubNub-CSharp-UnityWebGL/3.6.8.6";
             #else
-            this.Version = "PubNub-CSharp-Unity5/3.6.8.5";
+            this.Version = "PubNub-CSharp-Unity5/3.6.8.6";
             #endif
             LoggingMethod.WriteToLog (this.Version, LoggingMethod.LevelInfo);
 
@@ -3075,7 +3075,7 @@ namespace PubNubMessaging.Core
                             bool added = false;
                             int j = 0;
                             foreach (object c in collection) {
-                                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, collection: {1} type: {2}", DateTime.Now.ToString (), c.ToString (), c.GetType ().ToString ()), LoggingMethod.LevelInfo);
+                                //LoggingMethod.WriteToLog (string.Format ("DateTime {0}, collection: {1} type: {2}", DateTime.Now.ToString (), c.ToString (), c.GetType ().ToString ()), LoggingMethod.LevelInfo);
                                 if ((c.GetType () == typeof(System.Int32)) || (c.GetType () == typeof(System.Double)) || (c.GetType () == typeof(System.Int64)) || (c.GetType () == typeof(System.Boolean))) {
                                     added = true;
                                     LoggingMethod.WriteToLog (string.Format ("DateTime {0}, collection: {1} in type: {2}", DateTime.Now.ToString (), c.ToString (), c.GetType ().ToString ()), LoggingMethod.LevelInfo);
@@ -3086,6 +3086,15 @@ namespace PubNubMessaging.Core
                                     added = true;
                                     LoggingMethod.WriteToLog (string.Format ("DateTime {0}, collection: {1} in type: {2}", DateTime.Now.ToString (), c.ToString (), c.GetType ().ToString ()), LoggingMethod.LevelInfo);
                                     messageList [j] = c.ToString ();
+                                } else {
+                                    try{
+                                        messageList [j] = c;
+                                        added = true;
+                                        LoggingMethod.WriteToLog (string.Format ("DateTime {0}, collection other types: {1} in type: {2}", DateTime.Now.ToString (), c.ToString (), c.GetType ().ToString ()), LoggingMethod.LevelInfo);
+                                    }catch (Exception ex){
+                                        added = false;
+                                        LoggingMethod.WriteToLog (string.Format ("DateTime {0}, collection other types: {1} in type: {2}, exception {3} ", DateTime.Now.ToString (), c.ToString (), c.GetType ().ToString (), ex.ToString()), LoggingMethod.LevelInfo);
+                                    }
                                 }
                                 j++;
                             }

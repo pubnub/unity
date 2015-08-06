@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEditor.Callbacks;
 
 namespace UnityTest
 {
@@ -44,18 +45,26 @@ namespace UnityTest
 
         public void OnEnable()
         {
-            title = "Unit Tests";
+			titleContent = new GUIContent("Unit Tests");
             s_Instance = this;
             m_Settings = ProjectSettingsBase.Load<UnitTestsRunnerSettings>();
             m_FilterSettings = new TestFilterSettings("UnityTest.UnitTestView");
             RefreshTests();
-            EnableBackgroundRunner(m_Settings.runOnRecompilation);
         }
+
+		[DidReloadScripts]
+		public static void OnDidReloadScripts()
+		{
+			if (s_Instance != null && s_Instance.m_Settings.runOnRecompilation) 
+			{
+				s_Instance.RunTests();
+				s_Instance.Repaint();
+			}
+		}
 
         public void OnDestroy()
         {
             s_Instance = null;
-            EnableBackgroundRunner(false);
         }
         
         public void OnGUI()
@@ -164,15 +173,20 @@ namespace UnityTest
             {
                 text = m_SelectedLines.First().GetResultText();
             }
-            EditorGUILayout.SelectableLabel(text, Styles.info);
 
-            EditorGUILayout.EndScrollView();
+			var resultTextSize = Styles.info.CalcSize(new GUIContent(text));
+			EditorGUILayout.SelectableLabel(text, Styles.info,
+			                                GUILayout.ExpandHeight(true), 
+			                                GUILayout.ExpandWidth(true), 
+			                                GUILayout.MinWidth(resultTextSize.x), 
+			                                GUILayout.MinHeight(resultTextSize.y));
+			
+			EditorGUILayout.EndScrollView();
         }
         
         private void ToggleRunOnRecompilation()
         {
             m_Settings.runOnRecompilation = !m_Settings.runOnRecompilation;
-            EnableBackgroundRunner(m_Settings.runOnRecompilation);
         }
         
         public void AddItemsToMenu (GenericMenu menu)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -55,12 +56,16 @@ namespace UnityTest
         }
 
         public bool IsExceptionExpected(string exception)
-        {
-            if (!expectException) return false;
-            exception = exception.Trim();
+		{
+			exception = exception.Trim();
+            if (!expectException) 
+				return false;
+			if(string.IsNullOrEmpty(expectedExceptionList.Trim())) 
+				return true;
             foreach (var expectedException in expectedExceptionList.Split(',').Select(e => e.Trim()))
             {
-                if (exception == expectedException) return true;
+                if (exception == expectedException) 
+					return true;
                 var exceptionType = Type.GetType(exception) ?? GetTypeByName(exception);
                 var expectedExceptionType = Type.GetType(expectedException) ?? GetTypeByName(expectedException);
                 if (exceptionType != null && expectedExceptionType != null && IsAssignableFrom(expectedExceptionType, exceptionType))
@@ -258,17 +263,20 @@ namespace UnityTest
         {
             var go = new GameObject(name);
             go.AddComponent<TestComponent>();
+#if UNITY_EDITOR
+            Undo.RegisterCreatedObjectUndo(go, "Created test");
+#endif
             return go;
         }
 
         public static List<TestComponent> FindAllTestsOnScene()
         {
-			var tests = Resources.FindObjectsOfTypeAll (typeof(TestComponent)).Cast<TestComponent> ();
+            var tests = Resources.FindObjectsOfTypeAll (typeof(TestComponent)).Cast<TestComponent> ();
 #if UNITY_EDITOR
-			tests = tests.Where( t => {var p = PrefabUtility.GetPrefabType(t); return p != PrefabType.Prefab && p != PrefabType.ModelPrefab;} );
+            tests = tests.Where( t => {var p = PrefabUtility.GetPrefabType(t); return p != PrefabType.Prefab && p != PrefabType.ModelPrefab;} );
 
 #endif
-			return tests.ToList ();
+            return tests.ToList ();
         }
 
         public static List<TestComponent> FindAllTopTestsOnScene()
@@ -297,14 +305,14 @@ namespace UnityTest
             return FindAllTestsOnScene().Any();
         }
 
-		public static bool AnyDynamicTestForCurrentScene()
-		{
+        public static bool AnyDynamicTestForCurrentScene()
+        {
 #if UNITY_EDITOR
                 return TestComponent.GetTypesWithHelpAttribute(EditorApplication.currentScene).Any();
 #else
                 return TestComponent.GetTypesWithHelpAttribute(Application.loadedLevelName).Any();
 #endif
-		}
+        }
 
         #endregion
 
@@ -369,7 +377,23 @@ namespace UnityTest
 #if !UNITY_METRO
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
-                foreach (Type type in assembly.GetTypes())
+                Type[] types = null;
+
+                try
+                {
+                    types = assembly.GetTypes();
+                }
+                catch (ReflectionTypeLoadException ex)
+                {
+                    Debug.LogError("Failed to load types from: " + assembly.FullName);
+                    foreach (Exception loadEx in ex.LoaderExceptions)
+                        Debug.LogException(loadEx);
+                }
+
+                if (types == null)
+                    continue;
+
+                foreach (Type type in types)
                 {
                     var attributes = type.GetCustomAttributes(typeof(IntegrationTest.DynamicTestAttribute), true);
                     if (attributes.Length == 1)
