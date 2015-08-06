@@ -101,6 +101,11 @@ public class PubnubExample : MonoBehaviour
     float fButtonHeight = 40;
     float fButtonWidth = 120;
 
+    public void OnDisable(){
+        InstantiatePubnub ();
+        pubnub.Unsubscribe<string> (channel, DisplayReturnMessage, DisplayConnectStatusMessage, DisplayDisconnectStatusMessage, DisplayErrorMessage);
+    }
+
     public void OnGUI ()
     {
         GUI.enabled = !allowUserSettingsChange;
@@ -352,15 +357,16 @@ public class PubnubExample : MonoBehaviour
         GUI.Label (new Rect (fLeft, fTop, 100, fHeight), label1);
         fLeft = fLeftInit + 100;
 
-        text1 = GUI.TextArea (new Rect (fLeft, fTop, 90, fButtonHeight), text1, 20);
+        //text1 = GUI.TextArea (new Rect (fLeft, fTop, 90, fButtonHeight), text1, 20);
+        text1 = GUI.TextField (new Rect (fLeft, fTop, 90, fButtonHeight), text1);
 
         fLeft = fLeftInit;
         fTop = fTop + fButtonHeight;
         GUI.Label (new Rect (fLeft, fTop, 100, fHeight), label2);
         fLeft = fLeftInit + 100;
 
-        text2 = GUI.TextArea (new Rect (fLeft, fTop, 90, fButtonHeight), text2, 20);
-
+        //text2 = GUI.TextArea (new Rect (fLeft, fTop, 90, fButtonHeight), text2, 20);
+        text2 = GUI.TextField (new Rect (fLeft, fTop, 90, fButtonHeight), text2);
 
         if ((state == PubnubState.SetUserStateJson) || (state == PubnubState.SetUserStateKeyValue)) {
             fLeft = fLeftInit;
@@ -368,7 +374,8 @@ public class PubnubExample : MonoBehaviour
             GUI.Label (new Rect (fLeft, fTop, 100, fHeight + 30), label3);
             fLeft = fLeftInit + 100;
 
-            text3 = GUI.TextArea (new Rect (fLeft, fTop, 90, fButtonHeight), text3, 20);
+            //text3 = GUI.TextArea (new Rect (fLeft, fTop, 90, fButtonHeight), text3, 20);
+            text3 = GUI.TextField (new Rect (fLeft, fTop, 90, fButtonHeight), text3);
             fLeft = fLeftInit;
             fTop = fTop + 3 * fHeight - 40;
 
@@ -578,7 +585,8 @@ public class PubnubExample : MonoBehaviour
             buttonTitle = "Revoke";
         }
         GUI.Label (new Rect (10, 30, 100, fHeight), title);
-        input = GUI.TextArea (new Rect (110, 30, 150, fHeight), input, 200);
+        //input = GUI.TextArea (new Rect (110, 30, 150, fHeight), input, 200);
+        input = GUI.TextField (new Rect (110, 30, 150, fHeight), input);
         ShowGuiButton (buttonTitle, state);
 
         if (GUI.Button (new Rect (150, 80, 100, fButtonHeight), "Cancel")) {
@@ -629,15 +637,18 @@ public class PubnubExample : MonoBehaviour
         if ((state == PubnubState.GrantPresence) || (state == PubnubState.GrantSubscribe)) {
             GUI.Label (new Rect (30, 45, 100, fHeight), labelTitle);
 
-            valueToSetSubs = GUI.TextArea (new Rect (110, 45, 100, fHeight), valueToSetSubs, 20);
+            //valueToSetSubs = GUI.TextArea (new Rect (110, 45, 100, fHeight), valueToSetSubs, 20);
+            valueToSetSubs = GUI.TextField (new Rect (110, 45, 100, fHeight), valueToSetSubs);
             GUI.Label (new Rect (30, 90, 100, fHeight), labelTitle2);
 
-            valueToSetAuthKey = GUI.TextArea (new Rect (110, 90, 100, fHeight), valueToSetAuthKey, 20);
+            //valueToSetAuthKey = GUI.TextArea (new Rect (110, 90, 100, fHeight), valueToSetAuthKey, 20);
+            valueToSetAuthKey = GUI.TextField (new Rect (110, 90, 100, fHeight), valueToSetAuthKey);
             fill = 45;
         } else if (state == PubnubState.HereNow) {
             GUI.Label (new Rect (30, 45, 100, fHeight), labelTitle);
 
-            valueToSet = GUI.TextArea (new Rect (110, 45, 100, fHeight), valueToSet, 20);
+            //valueToSet = GUI.TextArea (new Rect (110, 45, 100, fHeight), valueToSet, 20);
+            valueToSet = GUI.TextField (new Rect (110, 45, 100, fHeight), valueToSet);
         } else if (state == PubnubState.GlobalHereNow) {
             //no text needed
         }
@@ -811,13 +822,34 @@ public class PubnubExample : MonoBehaviour
             showAuthWindow = true;
             showActionsPopupWindow = false;
         }
-        fTop = fTopInit + 13 * fRowHeight + 10;
+        /*fTop = fTopInit + 13 * fRowHeight + 10;
         if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Publish Tests")) {
             InstantiatePubnub ();
             pubnub.Publish<string> (channel, 1, storeInHistory, DisplayReturnMessage, DisplayErrorMessage);
             pubnub.Publish<string> (channel, 1.2f, storeInHistory, DisplayReturnMessage, DisplayErrorMessage);
             pubnub.Publish<string> (channel, 14248827499560123, storeInHistory, DisplayReturnMessage, DisplayErrorMessage);
+        }*/
+        fTop = fTopInit + 13 * fRowHeight + 10;
+        if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "DH Tests")) {
+            InstantiatePubnub ();
+            string[] chArr = {"hello_world", "hello_world2", "hello_world3"};
+            RunDetailedHistoryForMultipleChannels(chArr, 0);
         }
+    }
+
+    void RunDetailedHistoryForMultipleChannels(string[] chArr, int pos){
+        UnityEngine.Debug.Log (string.Format ("Running DH for channel: {0}", chArr[pos]));
+        pubnub.DetailedHistory<string> (chArr[pos], 100, 
+            (string o) => { 
+                UnityEngine.Debug.Log (string.Format ("DisplayHistoryMessage CALLBACK LOG: {0}", o));
+                AddToPubnubResultContainer (string.Format ("DisplayHistoryMessage CALLBACK: {0}", o));
+                if(pos < chArr.Count()-1){
+                    pos++;
+                    UnityEngine.Debug.Log (string.Format ("Calling pos: {0}", pos));
+                    RunDetailedHistoryForMultipleChannels(chArr, pos);
+                }
+            }, 
+            DisplayErrorMessage);
     }
 
     void DoActionWindow (int windowID)
@@ -1092,7 +1124,8 @@ public class PubnubExample : MonoBehaviour
     {
         GUI.Label (new Rect (10, 25, 100, 25), "Enter Message");
 
-        publishedMessage = GUI.TextArea (new Rect (110, 25, 150, 60), publishedMessage, 2000);
+        //publishedMessage = GUI.TextArea (new Rect (110, 25, 150, 60), publishedMessage, 2000);
+        publishedMessage = GUI.TextField (new Rect (110, 25, 150, 60), publishedMessage);
         storeInHistory = GUI.Toggle (new Rect (10, 100, 150, 25), storeInHistory, "Store in History");
 
         //publishedMessage = "Text with 😜 emoji 🎉.";
@@ -1207,7 +1240,10 @@ public class PubnubExample : MonoBehaviour
 
     void OnApplicationQuit ()
     {
-        ResetPubnubInstance ();
+        //ResetPubnubInstance ();
+        if (pubnub != null) {
+            pubnub.CleanUp ();
+        }
     }
 
     void ResetPubnubInstance ()
@@ -1244,6 +1280,7 @@ public class PubnubExample : MonoBehaviour
         //print(result);
         UnityEngine.Debug.Log (string.Format ("CONNECT CALLBACK LOG: {0}", result));
         AddToPubnubResultContainer (string.Format ("CONNECT CALLBACK: {0}", result));
+        pubnub.HereNow<string> ("hello_world2", true, true, DisplayReturnMessage, DisplayErrorMessage);
     }
 
     void DisplayConnectStatusMessageObj (object result)
@@ -1266,6 +1303,7 @@ public class PubnubExample : MonoBehaviour
         //print(result);
         UnityEngine.Debug.Log (string.Format ("DISCONNECT CALLBACK LOG: {0}", result));
         AddToPubnubResultContainer (string.Format ("DISCONNECT CALLBACK: {0}", result));
+        //pubnub.EndPendingRequests ();
     }
 
     void DisplayErrorMessage (string result)

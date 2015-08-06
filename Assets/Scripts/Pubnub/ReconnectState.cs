@@ -117,6 +117,7 @@ namespace PubNubMessaging.Core
         public bool Reconnect;
         public long Timetoken;
         public Type TypeParameterType;
+        public long ID;
 
         public RequestState ()
         {
@@ -125,6 +126,7 @@ namespace PubNubMessaging.Core
             Request = null;
             Response = null;
             Channels = null;
+            ID = 0;
         }
 
         public RequestState (RequestState<T> requestState)
@@ -140,6 +142,7 @@ namespace PubNubMessaging.Core
             Timetoken = requestState.Timetoken;
             TypeParameterType = requestState.TypeParameterType;
             UserCallback = requestState.UserCallback as Action<T>;
+            ID = requestState.ID;
         }
 
         public void SetRequestState<U> (
@@ -152,7 +155,8 @@ namespace PubNubMessaging.Core
             bool timeout,
             long timetoken,
             Type typeParameterType,
-            Action<T> userCallback
+            Action<T> userCallback,
+            long id
         )
         {
             Channels = channels;
@@ -165,6 +169,7 @@ namespace PubNubMessaging.Core
             Timetoken = timetoken;
             TypeParameterType = typeParameterType;
             UserCallback = userCallback as Action<T>;
+            ID = id;
         }
     }
 

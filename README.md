@@ -1,6 +1,6 @@
 # Please direct all Support Questions and Concerns to Support@PubNub.com
 
-## PubNub 3.6.4b Web Data Push Cloud-Hosted API for Unity 4 and Unity 5
+## PubNub 3.6.8.6 Web Data Push Cloud-Hosted API for Unity 4 and Unity 5
 ### Supports PC, Mac, Linux, iOS, Android, WebPlayer and WebGL
 
 ### View this First!
@@ -8,6 +8,20 @@ We've made a [screencast](https://vimeo.com/69591819) that will walk you through
 After checking out the general setup video, [For iOS targets](https://vimeo.com/71549964) be sure to view this walkthrough next. Check it out!
 
 ### Important changes from previous version
+* 3.6.8.6 has fixes for
+ * Fix for "null" message in callback when a message contains multiple messages, one of which is of type System.Collections.Generic.Dictionary`2[System.String,System.Object] 
+* 3.6.8.4 has fixes for
+ * Duplicate messages on some occasions.
+* 3.6.8.3 has fixes for
+ * Non subscribe callbacks were not fired when called from within a callback of an earlier request.
+* 3.6.8.1 has fixes for 
+ * Missed messages when adding a channel to multiplexed, 
+ * Sub timeout gets fired when in app goes in background and the request is not complete.
+ * User State didn't change in some cases
+ * Multiple requests heartbeats were running
+* For iOS Unity's www class times out the request after 60 secs, so the subscribe timeout setting of > 60 secs won't work.
+* A new method CleanUp is introduced to dispose the GameObject (if it is not set externally) and the Coroutine.
+* GameObject is not released on EndPendingRequests.
 * Reorganization of code:
  * The PubNub code has been moved to the [Assets/Scripts](Assets/Scripts) folder. 
  * The third party libs required by PubNub SDK are in the [Assets/ThirdParty](Assets/ThirdParty) 

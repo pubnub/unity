@@ -99,7 +99,10 @@ namespace UnityTest
             EditorGUILayout.PropertyField(m_SucceedWhenExceptionIsThrown, m_GUISucceedWhenExceptionIsThrown);
             EditorGUI.EndDisabledGroup();
 
-            if (!component.dynamic) serializedObject.ApplyModifiedProperties();
+            if (!component.dynamic)
+                serializedObject.ApplyModifiedProperties();
+            if(GUI.changed)
+                EditorApplication.MarkSceneDirty();
         }
 
         private string[] GetListOfIgnoredPlatforms(string[] enumList, int flags)
