@@ -33,10 +33,12 @@ After checking out the general setup video, [For iOS targets](https://vimeo.com/
 * This code uses Unity's www class and coroutines all around for network communication. This means all the calls to the PubNub SDK should be made from the main thread.
 * Updated the JsonFx version with the latest one from here (mod by TowerOBricks, https://bitbucket.org/TowerOfBricks/jsonfx-for-unity3d-git).  
 * Detailed History call now supports time token retrieval.
-* 3.6.3b Resume on reconnect fixed
+* 3.6.3b Resume on reconnect fixed.
 
-### There are some known issues and limitations (mostly due to WebGL support)
+### There are some known issues and limitations
 - Time response is treated as string instead of long (when using jsonfx-for-unity3d). If treated as long we get an exception from il2cpp on WebGL.
+- The unit tests won't run on Unity 4.x as the latest UnityTestTools throw compile errors on it. You need to remove the folders [Assets/Scripts/Editor](Assets/Scripts/Editor), [Assets/Scripts/PubnubUnitTests](Assets/Scripts/PubnubUnitTests) and [Assets/UnityTestTools](Assets/UnityTestTools) from your project.
+- For Unity4.x: If the [ExampleScene.unity](Assets/ExampleScene.unity) doesn't load in the UnityEditor, please create a new scene and add [PubnubExample.cs](Assets/PubnubExample.cs) as a component to Main Camera.
 
 #### Changes in the earlier versions
 - We have removed the separate versions for Unity, and made this as a common version which  works on all unity distros. The update is an optimized version of the code which was used for Unity iOS. This version uses the JsonFx 1.4 library (mod by TowerOBricks, https://bitbucket.org/TowerOfBricks/jsonfx-for-unity3d-git).  
@@ -82,13 +84,14 @@ To enable MiniJSON, you need to replace `#define USE_JSONFX_UNITY_IOS` here `htt
 
 #### To run the unit tests, in addition to the above, you need to 
 1. Import UnityTestTools package (this is already present in the Pubnub client code under the path Assets/UnityTestTools) into your Assets. (https://www.assetstore.unity3d.com/#/content/13802)
+2. The unit tests won't run on Unity 4.x as the latest UnitTestTools throw compile errors on it.
 
 #### Running the Demo App on Mac, Linux and Android
 
 ####Common Steps:
 
 1. Open up the Unity Project 
-2. Ensure "PubnubExample" is added as component to Main Camera.
+2. Ensure [PubnubExample.cs](Assets/PubnubExample.cs) is added as component to Main Camera.
 3. Goto File menu -> Build Settings.
 
 ##### Mac / PC /Linux
@@ -119,12 +122,6 @@ To enable MiniJSON, you need to replace `#define USE_JSONFX_UNITY_IOS` here `htt
 6. This will run the PubNub example in the iPad simulator
 7. The code uses the pre-compiler flag UNITY_IOS to distinguish between other platforms.
 8. Target iOS version 4.0 and above. 
-
-#### Running the Tests
-
-1. Open up the Unity Project from iOS folder.
-2. From the "Unity test tools" menu select the "Unit test runner" option.
-3. Run the tests by clicking the "play" button or by selecting the individual tests.
 
 #### Potential Errors and their resolutions:
 
