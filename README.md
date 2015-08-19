@@ -1,6 +1,6 @@
 # Please direct all Support Questions and Concerns to Support@PubNub.com
 
-## PubNub 3.6.8.6 Web Data Push Cloud-Hosted API for Unity 4 and Unity 5
+## PubNub 3.6.8.7 Web Data Push Cloud-Hosted API for Unity 4 and Unity 5
 ### Supports PC, Mac, Linux, iOS, Android, WebPlayer and WebGL
 
 ### View this First!
@@ -8,6 +8,7 @@ We've made a [screencast](https://vimeo.com/69591819) that will walk you through
 After checking out the general setup video, [For iOS targets](https://vimeo.com/71549964) be sure to view this walkthrough next. Check it out!
 
 ### Important changes from previous version
+* 3.6.8.7 removes forceful garbage collection.
 * 3.6.8.6 has fixes for
  * Fix for "null" message in callback when a message contains multiple messages, one of which is of type System.Collections.Generic.Dictionary`2[System.String,System.Object] 
 * 3.6.8.4 has fixes for
