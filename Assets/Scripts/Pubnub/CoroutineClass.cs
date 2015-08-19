@@ -284,7 +284,7 @@ namespace PubNubMessaging.Core
                 www = subscribeWww;
             } else {
                 www = null;
-                System.GC.Collect ();
+                //System.GC.Collect ();
             }
 
             LoggingMethod.WriteToLog (string.Format ("DateTime {0},After www type  {1}", DateTime.Now.ToString (), typeof(T)), LoggingMethod.LevelError);
@@ -303,7 +303,7 @@ namespace PubNubMessaging.Core
                 www = nonSubscribeWww;
             } else {
                 www = null;
-                System.GC.Collect ();
+                //System.GC.Collect ();
             }
              
             ProcessResponse (www, cp);
@@ -321,7 +321,7 @@ namespace PubNubMessaging.Core
                 www = presenceHeartbeatWww;
             } else {
                 www = null;
-                System.GC.Collect ();
+                //System.GC.Collect ();
             }
 
             ProcessResponse (www, cp);
@@ -339,7 +339,7 @@ namespace PubNubMessaging.Core
                 www = heartbeatWww;
             } else {
                 www = null;
-                System.GC.Collect ();
+                //System.GC.Collect ();
             }
 
             ProcessResponse (www, cp);
@@ -440,7 +440,7 @@ namespace PubNubMessaging.Core
 
                 SetComplete (crt);
                 
-                System.GC.Collect ();
+                //System.GC.Collect ();
                 if ((pubnubRequestState != null) && (fireEvent)) {
                     FireEvent ("Aborted", true, false, pubnubRequestState, crt);
                     LoggingMethod.WriteToLog (string.Format ("DateTime {0}, event fired {1}", DateTime.Now.ToString (), crt.ToString ()), LoggingMethod.LevelInfo);

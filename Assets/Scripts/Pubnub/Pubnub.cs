@@ -1,5 +1,5 @@
-//Build Date: Aug 5, 2015
-//ver3.6.8.6/Unity5
+//Build Date: Aug 19, 2015
+//ver3.6.8.7/Unity5
 #if (UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_ANDROID || UNITY_IOS || UNITY_5 || UNITY_WEBGL)
 #define USE_JSONFX_UNITY_IOS
 //#define USE_MiniJSON
@@ -66,7 +66,7 @@ namespace PubNubMessaging.Core
         private string hereNowParameters = "";
         private string setUserStateparameters = "";
         private string globalHereNowParameters = "";
-        private string _pnsdkVersion = "PubNub-CSharp-Unity5/3.6.8.6";
+        private string _pnsdkVersion = "PubNub-CSharp-Unity5/3.6.8.7";
 
         private int _pubnubWebRequestCallbackIntervalInSeconds = 310;
         private int _pubnubOperationTimeoutIntervalInSeconds = 15;
@@ -393,21 +393,21 @@ namespace PubNubMessaging.Core
             #endif
 
             #if(UNITY_IOS)
-            this.Version = "PubNub-CSharp-UnityIOS/3.6.8.6";
+            this.Version = "PubNub-CSharp-UnityIOS/3.6.8.7";
             #elif(UNITY_STANDALONE_WIN)
-            this.Version = "PubNub-CSharp-UnityWin/3.6.8.6";
+            this.Version = "PubNub-CSharp-UnityWin/3.6.8.7";
             #elif(UNITY_STANDALONE_OSX)
-            this.Version = "PubNub-CSharp-UnityOSX/3.6.8.6";
+            this.Version = "PubNub-CSharp-UnityOSX/3.6.8.7";
             #elif(UNITY_ANDROID)
-            this.Version = "PubNub-CSharp-UnityAndroid/3.6.8.6";
+            this.Version = "PubNub-CSharp-UnityAndroid/3.6.8.7";
             #elif(UNITY_STANDALONE_LINUX)
-            this.Version = "PubNub-CSharp-UnityLinux/3.6.8.6";
+            this.Version = "PubNub-CSharp-UnityLinux/3.6.8.7";
             #elif(UNITY_WEBPLAYER)
-            this.Version = "PubNub-CSharp-UnityWeb/3.6.8.6";
+            this.Version = "PubNub-CSharp-UnityWeb/3.6.8.7";
             #elif(UNITY_WEBGL)
-            this.Version = "PubNub-CSharp-UnityWebGL/3.6.8.6";
+            this.Version = "PubNub-CSharp-UnityWebGL/3.6.8.7";
             #else
-            this.Version = "PubNub-CSharp-Unity5/3.6.8.6";
+            this.Version = "PubNub-CSharp-Unity5/3.6.8.7";
             #endif
             LoggingMethod.WriteToLog (this.Version, LoggingMethod.LevelInfo);
 
