@@ -20,7 +20,7 @@ After checking out the general setup video, [For iOS targets](https://vimeo.com/
  * Sub timeout gets fired when in app goes in background and the request is not complete.
  * User State didn't change in some cases
  * Multiple requests heartbeats were running
-* For iOS Unity's www class times out the request after 60 secs, so the subscribe timeout setting of > 60 secs won't work.
+* **For iOS Unity's www class times out the request after 60 secs, so the subscribe timeout setting of > 60 secs won't work.**
 * A new method CleanUp is introduced to dispose the GameObject (if it is not set externally) and the Coroutine.
 * GameObject is not released on EndPendingRequests.
 * Reorganization of code:
