@@ -1,5 +1,5 @@
 //Build Date: Aug 19, 2015
-//ver3.6.8.7/Unity5
+//ver3.6.8.8/Unity5
 #if (UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_ANDROID || UNITY_IOS || UNITY_5 || UNITY_WEBGL)
 #define USE_JSONFX_UNITY_IOS
 //#define USE_MiniJSON
@@ -66,7 +66,7 @@ namespace PubNubMessaging.Core
         private string hereNowParameters = "";
         private string setUserStateparameters = "";
         private string globalHereNowParameters = "";
-        private string _pnsdkVersion = "PubNub-CSharp-Unity5/3.6.8.7";
+        private string _pnsdkVersion = "PubNub-CSharp-Unity5/3.6.8.8";
 
         private int _pubnubWebRequestCallbackIntervalInSeconds = 310;
         private int _pubnubOperationTimeoutIntervalInSeconds = 15;
@@ -393,21 +393,21 @@ namespace PubNubMessaging.Core
             #endif
 
             #if(UNITY_IOS)
-            this.Version = "PubNub-CSharp-UnityIOS/3.6.8.7";
+            this.Version = "PubNub-CSharp-UnityIOS/3.6.8.8";
             #elif(UNITY_STANDALONE_WIN)
-            this.Version = "PubNub-CSharp-UnityWin/3.6.8.7";
+            this.Version = "PubNub-CSharp-UnityWin/3.6.8.8";
             #elif(UNITY_STANDALONE_OSX)
-            this.Version = "PubNub-CSharp-UnityOSX/3.6.8.7";
+            this.Version = "PubNub-CSharp-UnityOSX/3.6.8.8";
             #elif(UNITY_ANDROID)
-            this.Version = "PubNub-CSharp-UnityAndroid/3.6.8.7";
+            this.Version = "PubNub-CSharp-UnityAndroid/3.6.8.8";
             #elif(UNITY_STANDALONE_LINUX)
-            this.Version = "PubNub-CSharp-UnityLinux/3.6.8.7";
+            this.Version = "PubNub-CSharp-UnityLinux/3.6.8.8";
             #elif(UNITY_WEBPLAYER)
-            this.Version = "PubNub-CSharp-UnityWeb/3.6.8.7";
+            this.Version = "PubNub-CSharp-UnityWeb/3.6.8.8";
             #elif(UNITY_WEBGL)
-            this.Version = "PubNub-CSharp-UnityWebGL/3.6.8.7";
+            this.Version = "PubNub-CSharp-UnityWebGL/3.6.8.8";
             #else
-            this.Version = "PubNub-CSharp-Unity5/3.6.8.7";
+            this.Version = "PubNub-CSharp-Unity5/3.6.8.8";
             #endif
             LoggingMethod.WriteToLog (this.Version, LoggingMethod.LevelInfo);
 
@@ -1825,7 +1825,7 @@ namespace PubNubMessaging.Core
                     string jsonString = cea.Message;
                     if (overrideTcpKeepAlive) {
                         LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Aborting previous subscribe/presence requests having channel(s) UrlProcessResponseCallbackNonAsync", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
-                        coroutine.BounceRequest (CurrentRequestType.Subscribe, requestState, false);
+                        coroutine.BounceRequest<T> (CurrentRequestType.Subscribe, requestState, false);
                     }
 
                     if (jsonString != "[]") {
@@ -2441,9 +2441,9 @@ namespace PubNubMessaging.Core
                         LoggingMethod.WriteToLog (string.Format ("DateTime: {0}, OnPubnubWebRequestTimeout: client request timeout reached.Request abort for channel = {1}", DateTime.Now.ToString (), currentMultiChannel), LoggingMethod.LevelInfo);
                         currentState.Timeout = true;
                         if ((currentState.Type == ResponseType.Subscribe) || (currentState.Type == ResponseType.Presence)) {
-                            coroutine.BounceRequest (CurrentRequestType.Subscribe, currentState, false);
+                            coroutine.BounceRequest<T> (CurrentRequestType.Subscribe, currentState, false);
                         } else {
-                            coroutine.BounceRequest (CurrentRequestType.NonSubscribe, currentState, false);
+                            coroutine.BounceRequest<T> (CurrentRequestType.NonSubscribe, currentState, false);
                         }
                     }
                 } else {
@@ -2768,7 +2768,13 @@ namespace PubNubMessaging.Core
             string multiChannel = string.Join (",", channels);
             if (!_channelRequest.ContainsKey (multiChannel)) {
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, MultiChannelSubscribeRequest _channelRequest doesnt contain {1}", DateTime.Now.ToString (), multiChannel), LoggingMethod.LevelInfo);    
-                return;
+                string[] currentChannels = multiChannelSubscribe.Keys.ToArray<string> ();
+                if (currentChannels != null && currentChannels.Length > 0) {
+                    string currentSubChannels = string.Join (",", currentChannels);
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, using existing channels: {1}", DateTime.Now.ToString (), currentSubChannels), LoggingMethod.LevelInfo);    
+                } else {
+                    return;    
+                }
             }
 
             if (pubnetSystemActive && retriesExceeded) {
@@ -2856,7 +2862,7 @@ namespace PubNubMessaging.Core
 
                 //stop heartbeat.
                 keepHearbeatRunning = false;
-                coroutine.BounceRequest (CurrentRequestType.Subscribe, pubnubRequestState, false);
+                coroutine.BounceRequest<T> (CurrentRequestType.Subscribe, pubnubRequestState, false);
 
                 //TODO: Fire callbacks
                 string multiChannel = string.Join (",", pubnubRequestState.Channels);
