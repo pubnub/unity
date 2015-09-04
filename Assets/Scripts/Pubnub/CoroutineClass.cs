@@ -212,6 +212,8 @@ namespace PubNubMessaging.Core
             if (crt == CurrentRequestType.Subscribe) {
                 if((SubTimeoutCoroutine != null) && (!isSubscribeComplete)){
                     StopCoroutine (SubTimeoutCoroutine);
+
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Stopped existing timeout coroutine {1}", DateTime.Now.ToString (), cp.crt.ToString ()), LoggingMethod.LevelInfo);
                 }
                     
                 SubTimeoutCoroutine = CheckTimeoutSub<T> (cp);
@@ -221,6 +223,7 @@ namespace PubNubMessaging.Core
             } else if (crt == CurrentRequestType.NonSubscribe) {
                 if((NonSubTimeoutCoroutine != null) && (!isNonSubscribeComplete)){
                     StopCoroutine (NonSubTimeoutCoroutine);
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Stopped existing timeout coroutine {1}", DateTime.Now.ToString (), cp.crt.ToString ()), LoggingMethod.LevelInfo);
                 }
 
                 NonSubTimeoutCoroutine = CheckTimeoutNonSub<T> (cp);
@@ -231,6 +234,7 @@ namespace PubNubMessaging.Core
             } else if (crt == CurrentRequestType.PresenceHeartbeat) {
                 if((PresenceHeartbeatTimeoutCoroutine != null) && (!isPresenceHeartbeatComplete)){
                     StopCoroutine (PresenceHeartbeatTimeoutCoroutine);
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Stopped existing timeout coroutine {1}", DateTime.Now.ToString (), cp.crt.ToString ()), LoggingMethod.LevelInfo);
                 }
 
                 PresenceHeartbeatTimeoutCoroutine = CheckTimeoutPresenceHeartbeat<T> (cp);
@@ -241,6 +245,7 @@ namespace PubNubMessaging.Core
             } else if (crt == CurrentRequestType.Heartbeat) {
                 if((HeartbeatTimeoutCoroutine != null) && (!isHearbeatComplete)){
                     StopCoroutine (HeartbeatTimeoutCoroutine);
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Stopped existing timeout coroutine {1}", DateTime.Now.ToString (), cp.crt.ToString ()), LoggingMethod.LevelInfo);
                 }
 
                 HeartbeatTimeoutCoroutine = CheckTimeoutHeartbeat<T> (cp);
