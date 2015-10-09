@@ -210,23 +210,44 @@ namespace PubNubMessaging.Core
             CoroutineParams<T> cp = new CoroutineParams<T> (url, timeout, pause, crt, typeof(T), pubnubRequestState);
 
             if (crt == CurrentRequestType.Subscribe) {
+                if((SubTimeoutCoroutine != null) && (!isSubscribeComplete)){
+                    StopCoroutine (SubTimeoutCoroutine);
+
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Stopped existing timeout coroutine {1}", DateTime.Now.ToString (), cp.crt.ToString ()), LoggingMethod.LevelInfo);
+                }
+                    
                 SubTimeoutCoroutine = CheckTimeoutSub<T> (cp);
                 SubCoroutine = SendRequestSub<T> (cp);
                 StartCoroutine (SubTimeoutCoroutine);
                 StartCoroutine (SubCoroutine);
             } else if (crt == CurrentRequestType.NonSubscribe) {
+                if((NonSubTimeoutCoroutine != null) && (!isNonSubscribeComplete)){
+                    StopCoroutine (NonSubTimeoutCoroutine);
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Stopped existing timeout coroutine {1}", DateTime.Now.ToString (), cp.crt.ToString ()), LoggingMethod.LevelInfo);
+                }
+
                 NonSubTimeoutCoroutine = CheckTimeoutNonSub<T> (cp);
                 NonSubCoroutine = SendRequestNonSub<T> (cp);
                 StartCoroutine (NonSubTimeoutCoroutine);
                 StartCoroutine (NonSubCoroutine);
 
             } else if (crt == CurrentRequestType.PresenceHeartbeat) {
+                if((PresenceHeartbeatTimeoutCoroutine != null) && (!isPresenceHeartbeatComplete)){
+                    StopCoroutine (PresenceHeartbeatTimeoutCoroutine);
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Stopped existing timeout coroutine {1}", DateTime.Now.ToString (), cp.crt.ToString ()), LoggingMethod.LevelInfo);
+                }
+
                 PresenceHeartbeatTimeoutCoroutine = CheckTimeoutPresenceHeartbeat<T> (cp);
                 PresenceHeartbeatCoroutine = SendRequestPresenceHeartbeat<T> (cp);
                 StartCoroutine (PresenceHeartbeatTimeoutCoroutine);
                 StartCoroutine (PresenceHeartbeatCoroutine);
 
             } else if (crt == CurrentRequestType.Heartbeat) {
+                if((HeartbeatTimeoutCoroutine != null) && (!isHearbeatComplete)){
+                    StopCoroutine (HeartbeatTimeoutCoroutine);
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Stopped existing timeout coroutine {1}", DateTime.Now.ToString (), cp.crt.ToString ()), LoggingMethod.LevelInfo);
+                }
+
                 HeartbeatTimeoutCoroutine = CheckTimeoutHeartbeat<T> (cp);
                 HeartbeatCoroutine = SendRequestHeartbeat<T> (cp);
                 StartCoroutine (HeartbeatTimeoutCoroutine);
@@ -284,7 +305,7 @@ namespace PubNubMessaging.Core
                 www = subscribeWww;
             } else {
                 www = null;
-                System.GC.Collect ();
+                //System.GC.Collect ();
             }
 
             LoggingMethod.WriteToLog (string.Format ("DateTime {0},After www type  {1}", DateTime.Now.ToString (), typeof(T)), LoggingMethod.LevelError);
@@ -303,7 +324,7 @@ namespace PubNubMessaging.Core
                 www = nonSubscribeWww;
             } else {
                 www = null;
-                System.GC.Collect ();
+                //System.GC.Collect ();
             }
              
             ProcessResponse (www, cp);
@@ -321,7 +342,7 @@ namespace PubNubMessaging.Core
                 www = presenceHeartbeatWww;
             } else {
                 www = null;
-                System.GC.Collect ();
+                //System.GC.Collect ();
             }
 
             ProcessResponse (www, cp);
@@ -339,7 +360,7 @@ namespace PubNubMessaging.Core
                 www = heartbeatWww;
             } else {
                 www = null;
-                System.GC.Collect ();
+                //System.GC.Collect ();
             }
 
             ProcessResponse (www, cp);
@@ -355,18 +376,19 @@ namespace PubNubMessaging.Core
         {
             try {
                 if (crt == CurrentRequestType.Heartbeat) {
-                    isHearbeatComplete = true;
                     StopCoroutine (HeartbeatTimeoutCoroutine);
+                    isHearbeatComplete = true;
                 } else if (crt == CurrentRequestType.PresenceHeartbeat) {
-                    isPresenceHeartbeatComplete = true;
                     StopCoroutine (PresenceHeartbeatTimeoutCoroutine);
+                    isPresenceHeartbeatComplete = true;
                 } else if (crt == CurrentRequestType.Subscribe) {
-                    isSubscribeComplete = true;
                     StopCoroutine (SubTimeoutCoroutine);
+                    isSubscribeComplete = true;
                 } else {
-                    isNonSubscribeComplete = true;
                     StopCoroutine (NonSubTimeoutCoroutine);
+                    isNonSubscribeComplete = true;
                 } 
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SetComplete Complete {1}", DateTime.Now.ToString (), crt.ToString()), LoggingMethod.LevelInfo);
             } catch (Exception ex) {
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SetComplete Exception: ", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
             }
@@ -429,7 +451,9 @@ namespace PubNubMessaging.Core
                     }
                 } else if ((crt == CurrentRequestType.Subscribe) && (subscribeWww != null) && (!subscribeWww.isDone)) {
                     subscribeWww = null;
+
                     StopCoroutine (SubCoroutine);
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Coroutine stopped Subscribe: ", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
                 } else if ((crt == CurrentRequestType.NonSubscribe) && (nonSubscribeWww != null) && (!nonSubscribeWww.isDone)) {
                     LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Dispose nonSubscribeWww: ", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
                     nonSubscribeWww.Dispose ();
@@ -440,7 +464,7 @@ namespace PubNubMessaging.Core
 
                 SetComplete (crt);
                 
-                System.GC.Collect ();
+                //System.GC.Collect ();
                 if ((pubnubRequestState != null) && (fireEvent)) {
                     FireEvent ("Aborted", true, false, pubnubRequestState, crt);
                     LoggingMethod.WriteToLog (string.Format ("DateTime {0}, event fired {1}", DateTime.Now.ToString (), crt.ToString ()), LoggingMethod.LevelInfo);
