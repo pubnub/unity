@@ -3808,7 +3808,7 @@ namespace PubNubMessaging.Core
                         case ResponseType.GetUserState:
                         case ResponseType.SetUserState:
                             Dictionary<string, object> userStateDictionary = _jsonPluggableLibrary.DeserializeToDictionaryOfObject (jsonString);
-                                result = new List<object> ();
+                            result = new List<object> ();
                             result.Add (userStateDictionary);
                             result.Add (multiChannel);
                             break;
@@ -3821,7 +3821,7 @@ namespace PubNubMessaging.Core
                         default:
                             break;
                         }
-                        ;//switch stmt end
+                        //switch stmt end
                     //}
                 } else {
                     LoggingMethod.WriteToLog (string.Format ("DateTime {0}, json string null ", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
@@ -4247,7 +4247,7 @@ namespace PubNubMessaging.Core
     #endif
     #endregion
 
-    #region "Pubnub Push Notification"
+    #region "Push Notification Types"
     public enum PushTypeService
     {
         None,
