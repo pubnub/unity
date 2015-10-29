@@ -439,6 +439,7 @@ namespace PubNubMessaging.Core
         GlobalHereNowOperationTimeout = 134,
         PAMAccessOperationTimeout = 135,
         UserStateUnchanged = 136,
+        PushNotificationTimeout = 137,
         MessageTooLarge = 4000,
         BadRequest = 4001,
         InvalidKey = 4002,
@@ -507,13 +508,14 @@ namespace PubNubMessaging.Core
             dictionaryCodes.Add (127, "Detailed History operation timeout occured.");
             dictionaryCodes.Add (128, "Time operation timeout occured.");
             dictionaryCodes.Add (129, "Error occured in external component. Please contact PubNub support with full error object details for further investigation");
-            dictionaryCodes.Add (130, "Client machine is sleeping. Please check your machine.");
+            dictionaryCodes.Add (130, "Client machine is sleeping. Plxease check your machine.");
             dictionaryCodes.Add (131, "Timeout occured while setting user state. Please try again. If it continues, please contact PubNub support");
             dictionaryCodes.Add (132, "Timeout occured while getting user state. Please try again. If it continues, please contact PubNub support");
             dictionaryCodes.Add (133, "Timeout occured while running WhereNow. Please try again. If it continues, please contact PubNub support");
             dictionaryCodes.Add (134, "Timeout occured while running GlobalHereNow. Please try again. If it continues, please contact PubNub support");
             dictionaryCodes.Add (135, "Timeout occured while running PAM operations. Please try again. If it continues, please contact PubNub support");
             dictionaryCodes.Add (136, "User State Unchanged");
+            dictionaryCodes.Add(137, "Timeout occured while registering device for push notifications. Please try again. If it continues, please contact PubNub support");
             dictionaryCodes.Add (0, "Undocumented error. Please contact PubNub support with full error object details for further investigation");
         }
 
