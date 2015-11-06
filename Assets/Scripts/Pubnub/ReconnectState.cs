@@ -30,7 +30,7 @@ namespace PubNubMessaging.Core
         Time,
         Subscribe,
         Presence,
-        Here_Now,
+        HereNow,
         Heartbeat,
         DetailedHistory,
         Leave,
@@ -42,8 +42,8 @@ namespace PubNubMessaging.Core
         PresenceHeartbeat,
         SetUserState,
         GetUserState,
-        Where_Now,
-        GlobalHere_Now
+        WhereNow,
+        GlobalHereNow
     }
 
     internal class InternetState<T>
