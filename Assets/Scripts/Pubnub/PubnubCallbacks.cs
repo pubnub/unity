@@ -4,70 +4,170 @@ using System.Net;
 
 namespace PubNubMessaging.Core
 {
+	#region "Channel callback"
+	internal struct PubnubChannelCallbackKey
+	{
+		public string Channel;
+		public ResponseType Type;
+	}
+
+	internal class PubnubChannelCallback<T>
+	{
+		public Action<T> Callback;
+		public Action<PubnubClientError> ErrorCallback;
+		public Action<T> ConnectCallback;
+		public Action<T> DisconnectCallback;
+		//public ResponseType Type;
+		public PubnubChannelCallback ()
+		{
+			Callback = null;
+			ConnectCallback = null;
+			DisconnectCallback = null;
+			ErrorCallback = null;
+		}
+	}
+	#endregion
+
 	internal static class PubnubCallbacks
 	{
+
+		internal static void SendConnectCallback<T> (IJsonPluggableLibrary jsonPluggableLibrary, 
+			List<object> connectResult, string channel, ResponseType type, SafeDictionary<PubnubChannelCallbackKey, object> channelCallbacks){
+
+			PubnubChannelCallbackKey callbackKey = new PubnubChannelCallbackKey ();
+			callbackKey.Channel = channel;
+			callbackKey.Type = type;
+
+			if (channelCallbacks.Count > 0 && channelCallbacks.ContainsKey (callbackKey)) {
+				PubnubChannelCallback<T> currentPubnubCallback = channelCallbacks [callbackKey] as PubnubChannelCallback<T>;
+				if (currentPubnubCallback != null && currentPubnubCallback.ConnectCallback != null) {
+					PubnubCallbacks.GoToCallback<T> (connectResult, currentPubnubCallback.ConnectCallback, jsonPluggableLibrary);
+				}
+			}
+		}
+
+		internal static void FireErrorCallbacksForAllChannels<T> (WebException webEx, RequestState<T> requestState, 
+			PubnubErrorSeverity severity, SafeDictionary<PubnubChannelCallbackKey, 
+			object> channelCallbacks, bool callbackObjectType,  PubnubErrorFilter.Level errorLevel){
+
+			for (int index = 0; index < requestState.Channels.Length; index++) {
+				string activeChannel = requestState.Channels [index].ToString ();
+				PubnubClientError error = Helpers.CreatePubnubClientError<T> (webEx, requestState, activeChannel, 
+					severity);
+
+				FireErrorCallback<T> (activeChannel, channelCallbacks, 
+					callbackObjectType, requestState.Type, errorLevel, error);
+			}
+		}
+
+		internal static void FireErrorCallbacksForAllChannels<T> (Exception ex, RequestState<T> requestState, 
+			PubnubErrorSeverity severity, SafeDictionary<PubnubChannelCallbackKey, 
+			object> channelCallbacks, bool callbackObjectType, PubnubErrorCode errorType, 
+			PubnubErrorFilter.Level errorLevel){
+
+			for (int index = 0; index < requestState.Channels.Length; index++) {
+				string activeChannel = requestState.Channels [index].ToString ();
+				PubnubClientError error = Helpers.CreatePubnubClientError<T> (ex, requestState, 
+					activeChannel, errorType, severity);
+
+				PubnubCallbacks.FireErrorCallback<T> (requestState.Channels [index].ToString (), channelCallbacks, 
+					callbackObjectType, requestState.Type, errorLevel, error);
+			}
+		}
+
+		internal static void FireErrorCallbacksForAllChannels<T> (Exception ex, string[] channels,
+			PubnubErrorSeverity severity, SafeDictionary<PubnubChannelCallbackKey, 
+			object> channelCallbacks, bool callbackObjectType, PubnubErrorCode errorType, 
+			ResponseType responseType, PubnubErrorFilter.Level errorLevel){
+
+			for (int index = 0; index < channels.Length; index++) {
+				string activeChannel = channels [index].ToString ();
+				PubnubClientError error = Helpers.CreatePubnubClientError<T> (ex, null, 
+					activeChannel, errorType, severity);
+
+				PubnubCallbacks.FireErrorCallback<T> (channels [index].ToString (), channelCallbacks, 
+					callbackObjectType, responseType, errorLevel, error);
+			}
+		}
+
+		internal static void FireErrorCallbacksForAllChannels<T> (string message, RequestState<T> requestState, string[] channels,
+			PubnubErrorSeverity severity, SafeDictionary<PubnubChannelCallbackKey, 
+			object> channelCallbacks, bool callbackObjectType, PubnubErrorCode errorType, 
+			ResponseType responseType, PubnubErrorFilter.Level errorLevel){
+
+			for (int index = 0; index < channels.Length; index++) {
+				string activeChannel = channels [index].ToString ();
+				PubnubClientError error = Helpers.CreatePubnubClientError<T> (message, requestState, 
+					activeChannel, errorType, severity);
+
+				PubnubCallbacks.FireErrorCallback<T> (activeChannel, channelCallbacks, 
+					callbackObjectType, responseType, errorLevel, error);
+			}
+		}
+
+		internal static void FireErrorCallback<T> (string activeChannel, SafeDictionary<PubnubChannelCallbackKey, 
+			object> channelCallbacks, bool callbackObjectType, ResponseType responseType, PubnubErrorFilter.Level errorLevel, 
+			PubnubClientError error){
+
+			var callbackKey = GetPubnubChannelCallbackKey (activeChannel, responseType);
+			PubnubChannelCallback<T> currentPubnubCallback = null;
+
+			if (channelCallbacks.Count > 0 && channelCallbacks.ContainsKey (callbackKey)) {
+				if(callbackObjectType){
+					object callbackObject;
+					bool channelAvailable = channelCallbacks.TryGetValue (callbackKey, out callbackObject);
+
+					if (channelAvailable) {
+						currentPubnubCallback = callbackObject as PubnubChannelCallback<T>;
+					}
+				} else {
+					currentPubnubCallback = channelCallbacks [callbackKey] as PubnubChannelCallback<T>;
+				}
+				if (currentPubnubCallback != null && currentPubnubCallback.ErrorCallback != null) {
+					GoToCallback (error, currentPubnubCallback.ErrorCallback, errorLevel);
+				}
+
+			}
+		}
+
+		internal static PubnubChannelCallbackKey GetPubnubChannelCallbackKey(string activeChannel, ResponseType responseType){
+			PubnubChannelCallbackKey callbackKey = new PubnubChannelCallbackKey ();
+			callbackKey.Channel = activeChannel;
+			callbackKey.Type = responseType;
+			return callbackKey;
+		}
+
 		#region "Error Callbacks"
 
-		internal static PubnubClientError CallErrorCallback (PubnubErrorSeverity errSeverity, PubnubMessageSource msgSource,
-			string channel, Action<PubnubClientError> errorCallback, 
-			string message, PubnubErrorCode errorType, PubnubWebRequest req, 
-			PubnubWebResponse res)
-		{
-			int statusCode = (int)errorType;
+		internal static void CallErrorCallback<T>(WebException webEx, 
+			RequestState<T> requestState, string channel, PubnubErrorSeverity severity,
+			Action<PubnubClientError> errorCallback, PubnubErrorFilter.Level errorLevel){
 
-			string errorDescription = PubnubErrorCodeDescription.GetStatusCodeDescription (errorType);
+			PubnubClientError clientError = Helpers.CreatePubnubClientError (webEx, requestState, channel, severity);
 
-			PubnubClientError error = new PubnubClientError (statusCode, errSeverity, message, msgSource, req, res, errorDescription, channel);
-			GoToCallback (error, errorCallback);
-			return error;
+			GoToCallback (clientError, errorCallback, errorLevel);
 		}
 
-		internal static PubnubClientError CallErrorCallback (PubnubErrorSeverity errSeverity, PubnubMessageSource msgSource,
-			string channel, Action<PubnubClientError> errorCallback, 
-			string message, int currentHttpStatusCode, string statusMessage,
-			PubnubWebRequest req, PubnubWebResponse res)
-		{
-			PubnubErrorCode pubnubErrorType = PubnubErrorCodeHelper.GetErrorType ((int)currentHttpStatusCode, statusMessage);
+		internal static void CallErrorCallback<T>(Exception ex, 
+			RequestState<T> requestState, string channel, PubnubErrorCode errorCode, PubnubErrorSeverity severity,
+			Action<PubnubClientError> errorCallback, PubnubErrorFilter.Level errorLevel){
 
-			int statusCode = (int)pubnubErrorType;
+			PubnubClientError clientError = Helpers.CreatePubnubClientError (ex, requestState, channel, errorCode, severity);
 
-			string errorDescription = PubnubErrorCodeDescription.GetStatusCodeDescription (pubnubErrorType);
-
-			PubnubClientError error = new PubnubClientError (statusCode, errSeverity, message, msgSource, req, res, errorDescription, channel);
-			GoToCallback (error, errorCallback);
-			return error;
+			GoToCallback (clientError, errorCallback, errorLevel);
 		}
 
-		internal static PubnubClientError CallErrorCallback (PubnubErrorSeverity errSeverity, PubnubMessageSource msgSource,
-			string channel, Action<PubnubClientError> errorCallback, 
-			Exception ex, PubnubWebRequest req, 
-			PubnubWebResponse res)
-		{
-			PubnubErrorCode errorType = PubnubErrorCodeHelper.GetErrorType (ex);
+		internal static void CallErrorCallback<T>(string message, 
+			RequestState<T> requestState, string channel, PubnubErrorCode errorCode, PubnubErrorSeverity severity,
+			Action<PubnubClientError> errorCallback, PubnubErrorFilter.Level errorLevel){
 
-			int statusCode = (int)errorType;
-			string errorDescription = PubnubErrorCodeDescription.GetStatusCodeDescription (errorType);
+			PubnubClientError clientError = Helpers.CreatePubnubClientError<T> (message, requestState, channel, 
+				errorCode, severity);
 
-			PubnubClientError error = new PubnubClientError (statusCode, errSeverity, true, ex.Message, ex, msgSource, req, res, errorDescription, channel);
-			GoToCallback (error, errorCallback);
-			return error;
+			GoToCallback (clientError, errorCallback, errorLevel);
 		}
 
-		internal static PubnubClientError CallErrorCallback (PubnubErrorSeverity errSeverity, PubnubMessageSource msgSource,
-			string channel, Action<PubnubClientError> errorCallback, 
-			WebException webex, PubnubWebRequest req, 
-			PubnubWebResponse res)
-		{
-			PubnubErrorCode errorType = PubnubErrorCodeHelper.GetErrorType (webex.Status, webex.Message);
-			int statusCode = (int)errorType;
-			string errorDescription = PubnubErrorCodeDescription.GetStatusCodeDescription (errorType);
-
-			PubnubClientError error = new PubnubClientError (statusCode, errSeverity, true, webex.Message, webex, msgSource, req, res, errorDescription, channel);
-			GoToCallback (error, errorCallback);
-			return error;
-		}
-
-		internal static void JsonResponseToCallback<T> (List<object> result, Action<T> callback, IJsonPluggableLibrary jsonPluggableLibrary)
+		private static void JsonResponseToCallback<T> (List<object> result, Action<T> callback, IJsonPluggableLibrary jsonPluggableLibrary)
 		{
 			string callbackJson = "";
 
@@ -79,7 +179,7 @@ namespace PubNubMessaging.Core
 			}
 		}
 
-		internal static void JsonResponseToCallback<T> (object result, Action<T> callback, IJsonPluggableLibrary jsonPluggableLibrary)
+		private static void JsonResponseToCallback<T> (object result, Action<T> callback, IJsonPluggableLibrary jsonPluggableLibrary)
 		{
 			string callbackJson = "";
 
@@ -96,21 +196,21 @@ namespace PubNubMessaging.Core
 			}
 		}
 
-		internal static void GoToCallback<T> (object result, Action<T> Callback)
+		internal static void GoToCallback<T> (object result, Action<T> Callback, IJsonPluggableLibrary jsonPluggableLibrary)
 		{
 			if (Callback != null) {
 				if (typeof(T) == typeof(string)) {
-					JsonResponseToCallback (result, Callback);
+					JsonResponseToCallback (result, Callback, jsonPluggableLibrary);
 				} else {
 					Callback ((T)(object)result);
 				}
 			}
 		}
 
-		internal static void GoToCallback (object result, Action<string> Callback)
+		internal static void GoToCallback (object result, Action<string> Callback, IJsonPluggableLibrary jsonPluggableLibrary)
 		{
 			if (Callback != null) {
-				JsonResponseToCallback (result, Callback);
+				JsonResponseToCallback (result, Callback, jsonPluggableLibrary);
 			}
 		}
 

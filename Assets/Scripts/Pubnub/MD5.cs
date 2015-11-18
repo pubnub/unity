@@ -625,17 +625,7 @@ namespace PubNubMessaging.Core
 
             return EncryptOrDecrypt (false, cipherText);
         }
-        //md5 used for AES encryption key
-        /*private static byte[] Md5(string cipherKey)
-        {
-            MD5 obj = new MD5CryptoServiceProvider();
-            #if (SILVERLIGHT || WINDOWS_PHONE)
-            byte[] data = Encoding.UTF8.GetBytes(cipherKey);
-            #else
-            byte[] data = Encoding.Default.GetBytes(cipherKey);
-            #endif
-            return obj.ComputeHash(data);
-        }*/
+
         /// <summary>
         /// Converts the upper case hex to lower case hex.
         /// </summary>
