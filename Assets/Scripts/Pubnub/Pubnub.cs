@@ -557,9 +557,6 @@ namespace PubNubMessaging.Core
             get {
                 return PubnubUnity.Version;
             }
-            set {
-                PubnubUnity.Version = value;
-            }
         }
 
         #endregion

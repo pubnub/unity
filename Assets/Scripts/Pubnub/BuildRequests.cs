@@ -345,6 +345,59 @@ namespace PubNubMessaging.Core
 			return BuildRestApiRequest<Uri> (url, ResponseType.Subscribe, uuid, ssl, origin, 0, authenticationKey, pnsdkVersion, parameters);
 		}
 
+        static StringBuilder AddSSLAndEncodeURL<T>(List<string> urlComponents, ResponseType type, bool ssl, string origin, StringBuilder url)
+        {
+            // Add http or https based on SSL flag
+            if (ssl)
+            {
+                url.Append("https://");
+            }
+            else
+            {
+                url.Append("http://");
+            }
+            // Add Origin To The Request
+            url.Append(origin);
+            // Generate URL with UTF-8 Encoding
+            for (int componentIndex = 0; componentIndex < urlComponents.Count; componentIndex++)
+            {
+                url.Append("/");
+                if (type == ResponseType.Publish && componentIndex == urlComponents.Count - 1)
+                {
+                    url.Append(Helpers.EncodeUricomponent(urlComponents[componentIndex].ToString(), type, false, false));
+                }
+                else
+                {
+                    url.Append(Helpers.EncodeUricomponent(urlComponents[componentIndex].ToString(), type, true, false));
+                }
+            }
+            return url;
+        }
+
+        private static StringBuilder AppendAuthKeyToURL(StringBuilder url, string authenticationKey, ResponseType type){
+            if (!string.IsNullOrEmpty (authenticationKey)) {
+                url.AppendFormat ("&auth={0}", Helpers.EncodeUricomponent (authenticationKey, type, false, false));
+            }
+            return url;
+        }
+
+        private static StringBuilder AppendUUIDToURL(StringBuilder url, string uuid){
+            url.AppendFormat ("?uuid={0}", uuid);
+            return url;
+        }
+
+        private static StringBuilder AppendPresenceHeartbeatToURL(StringBuilder url, int pubnubPresenceHeartbeatInSeconds){
+            if (pubnubPresenceHeartbeatInSeconds != 0) {
+                url.AppendFormat ("&heartbeat={0}", pubnubPresenceHeartbeatInSeconds);
+            }
+            return url;
+        }
+
+        private static StringBuilder AppendPNSDKVersionToURL(StringBuilder url, string pnsdkVersion, ResponseType type){
+            url.AppendFormat ("&pnsdk={0}", Helpers.EncodeUricomponent (pnsdkVersion, type, false, true));
+            return url;
+        }
+
 		//sessionid
 		//ssl
 		//origin
@@ -352,7 +405,6 @@ namespace PubNubMessaging.Core
 		//authenticationKey
 		//pnsdkVersion	
 		//parameters
-
 		private static Uri BuildRestApiRequest<T> (List<string> urlComponents, ResponseType type, string uuid, bool ssl, string origin, 
 			int pubnubPresenceHeartbeatInSeconds, string authenticationKey, string pnsdkVersion, string parameters)
 		{
@@ -360,125 +412,89 @@ namespace PubNubMessaging.Core
 
 			uuid = Helpers.EncodeUricomponent (uuid, type, false, false);
 
-			// Add http or https based on SSL flag
-			if (ssl) {
-				url.Append ("https://");
-			} else {
-				url.Append ("http://");
-			}
+			url = AddSSLAndEncodeURL<T>(urlComponents, type, ssl, origin, url);
 
-			// Add Origin To The Request
-			url.Append (origin);
-
-			// Generate URL with UTF-8 Encoding
-			for (int componentIndex = 0; componentIndex < urlComponents.Count; componentIndex++) {
-				url.Append ("/");
-
-				if (type == ResponseType.Publish && componentIndex == urlComponents.Count - 1) {
-					url.Append (Helpers.EncodeUricomponent (urlComponents [componentIndex].ToString (), type, false, false));
-				} else {
-					url.Append (Helpers.EncodeUricomponent (urlComponents [componentIndex].ToString (), type, true, false));
-				}
-			}
 			switch (type) {
-			case ResponseType.Presence:
-			case ResponseType.Subscribe:
-			case ResponseType.Leave:
+                case ResponseType.Presence:
+                case ResponseType.Subscribe:
+                case ResponseType.Leave:
 
-				url.AppendFormat ("?uuid={0}", uuid);
-				url.Append (parameters);
-				if (!string.IsNullOrEmpty (authenticationKey)) {
-					url.AppendFormat ("&auth={0}", Helpers.EncodeUricomponent (authenticationKey, type, false, false));
-				}
-				if (pubnubPresenceHeartbeatInSeconds != 0) {
-					url.AppendFormat ("&heartbeat={0}", pubnubPresenceHeartbeatInSeconds);
-				}
-				url.AppendFormat ("&pnsdk={0}", Helpers.EncodeUricomponent (pnsdkVersion, type, false, true));
-				break;
+                    url.AppendFormat("?uuid={0}", uuid);
+                    url = AppendUUIDToURL(url, uuid);
+                    url.Append(parameters);
+                    url = AppendAuthKeyToURL(url, authenticationKey, type);
 
-			case ResponseType.PresenceHeartbeat:
+                    url = AppendPresenceHeartbeatToURL(url, pubnubPresenceHeartbeatInSeconds);
+                    url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
+                    break;
 
-				url.AppendFormat ("?uuid={0}", uuid);
-				url.Append (parameters);
-				if (pubnubPresenceHeartbeatInSeconds != 0) {
-					url.AppendFormat ("&heartbeat={0}", pubnubPresenceHeartbeatInSeconds);
-				}
-				if (!string.IsNullOrEmpty (authenticationKey)) {
-					url.AppendFormat ("&auth={0}", Helpers.EncodeUricomponent (authenticationKey, type, false, false));
-				}
-				url.AppendFormat ("&pnsdk={0}", Helpers.EncodeUricomponent (pnsdkVersion, type, false, true));
+			    case ResponseType.PresenceHeartbeat:
 
-				break;
+                    url = AppendUUIDToURL(url, uuid);
+				    url.Append (parameters);
+                    url = AppendPresenceHeartbeatToURL(url, pubnubPresenceHeartbeatInSeconds);
+                    url = AppendAuthKeyToURL(url, authenticationKey, type);
+                    url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
+				    break;
 
-			case ResponseType.SetUserState:
+			    case ResponseType.SetUserState:
 
-				url.Append (parameters);
-				url.AppendFormat ("&uuid={0}", uuid);
-				if (!string.IsNullOrEmpty (authenticationKey)) {
-					url.AppendFormat ("&auth={0}", Helpers.EncodeUricomponent (authenticationKey, type, false, false));
-				}
-				url.AppendFormat ("&pnsdk={0}", Helpers.EncodeUricomponent (pnsdkVersion, type, false, true));
-				break;
+				    url.Append (parameters);
+                    url = AppendUUIDToURL(url, uuid);
+                    url = AppendAuthKeyToURL(url, authenticationKey, type);
+                    url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
+    				break;
 
-			case ResponseType.GetUserState:
+			    case ResponseType.GetUserState:
 
-				url.AppendFormat ("?uuid={0}", uuid);
-				if (!string.IsNullOrEmpty (authenticationKey)) {
-					url.AppendFormat ("&auth={0}", Helpers.EncodeUricomponent (authenticationKey, type, false, false));
-				}
-				url.AppendFormat ("&pnsdk={0}", Helpers.EncodeUricomponent (pnsdkVersion, type, false, true));
-				break;
-			case ResponseType.HereNow:
+                    url = AppendUUIDToURL(url, uuid);
+                    url = AppendAuthKeyToURL(url, authenticationKey, type);
+                    url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
+				    break;
+			    case ResponseType.HereNow:
 
-				url.Append (parameters);
-				url.AppendFormat ("&uuid={0}", uuid);
-				if (!string.IsNullOrEmpty (authenticationKey)) {
-					url.AppendFormat ("&auth={0}", Helpers.EncodeUricomponent (authenticationKey, type, false, false));
-				}
-				url.AppendFormat ("&pnsdk={0}", Helpers.EncodeUricomponent (pnsdkVersion, type, false, true));
-				break;
+				    url.Append (parameters);
+                    url = AppendUUIDToURL(url, uuid);
+                    url = AppendAuthKeyToURL(url, authenticationKey, type);
+                    url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
+				    break;
 
-			case ResponseType.GlobalHereNow:
+			    case ResponseType.GlobalHereNow:
 
-				url.Append (parameters);
-				url.AppendFormat ("&uuid={0}", uuid);
-				if (!string.IsNullOrEmpty (authenticationKey)) {
-					url.AppendFormat ("&auth={0}", Helpers.EncodeUricomponent (authenticationKey, type, false, false));
-				}
-				url.AppendFormat ("&pnsdk={0}", Helpers.EncodeUricomponent (pnsdkVersion, type, false, true));
-				break;
+				    url.Append (parameters);
+                    url = AppendUUIDToURL(url, uuid);
+                    url = AppendAuthKeyToURL(url, authenticationKey, type);
+                    url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
+				    break;
 
-			case ResponseType.WhereNow:
+			    case ResponseType.WhereNow:
 
-				url.AppendFormat ("?uuid={0}", uuid);
-				if (!string.IsNullOrEmpty (authenticationKey)) {
-					url.AppendFormat ("&auth={0}", Helpers.EncodeUricomponent (authenticationKey, type, false, false));
-				}
-				url.AppendFormat ("&pnsdk={0}", Helpers.EncodeUricomponent (pnsdkVersion, type, false, true));
-				break;
+                    url = AppendUUIDToURL(url, uuid);
+                    url = AppendAuthKeyToURL(url, authenticationKey, type);
+                    url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
+				    break;
 
-			case ResponseType.Publish:
+			    case ResponseType.Publish:
 
-				url.AppendFormat ("?uuid={0}", uuid);
-				if (parameters != "") {
-					url.AppendFormat ("&{0}", parameters);
-				}
-				if (!string.IsNullOrEmpty (authenticationKey)) {
-					url.AppendFormat ("&auth={0}", Helpers.EncodeUricomponent (authenticationKey, type, false, false));
-				}
-				url.AppendFormat ("&pnsdk={0}", Helpers.EncodeUricomponent (pnsdkVersion, type, false, true));
-				break;
+                    url = AppendUUIDToURL(url, uuid);
+    				if (parameters != "") {
+    					url.AppendFormat ("&{0}", parameters);
+    				}
+                    url = AppendAuthKeyToURL(url, authenticationKey, type);
+                    url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
 
-			case ResponseType.DetailedHistory:
-			case ResponseType.GrantAccess:
-			case ResponseType.AuditAccess:
-			case ResponseType.RevokeAccess:
-				url.Append (parameters);
-				break;
-			default:
-				url.AppendFormat ("?uuid={0}", uuid);
-				url.AppendFormat ("&pnsdk={0}", Helpers.EncodeUricomponent (pnsdkVersion, type, false, true));
-				break;
+    				break;
+
+    			case ResponseType.DetailedHistory:
+    			case ResponseType.GrantAccess:
+    			case ResponseType.AuditAccess:
+    			case ResponseType.RevokeAccess:
+    				url.Append (parameters);
+				    break;
+			    default:
+                    url = AppendUUIDToURL(url, uuid);
+                    url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
+				    break;
 			}
 
 			Uri requestUri = new Uri (url.ToString ());

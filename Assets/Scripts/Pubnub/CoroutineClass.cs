@@ -165,6 +165,19 @@ namespace PubNubMessaging.Core
             }
         }
 
+        public void DelayStartCoroutine<T>(string url, RequestState<T> pubnubRequestState, int timeout, int pause, CurrentRequestType crt)
+        {
+            if (pubnubRequestState.Type == ResponseType.Heartbeat)
+            {
+                DelayRequestCoroutineHB = DelayRequest<T>(url, pubnubRequestState, timeout, pause, crt);
+                StartCoroutine(DelayRequestCoroutineHB);
+            }
+            else
+            {
+                DelayRequestCoroutinePHB = DelayRequest<T>(url, pubnubRequestState, timeout, pause, crt);
+                StartCoroutine(DelayRequestCoroutinePHB);
+            }
+        }
 
         public void Run<T> (string url, RequestState<T> pubnubRequestState, int timeout, int pause)
         {
@@ -178,13 +191,7 @@ namespace PubNubMessaging.Core
                 CheckComplete (crt);
 
                 if (pubnubRequestState.Reconnect) {
-                    if (pubnubRequestState.Type == ResponseType.Heartbeat) {
-                        DelayRequestCoroutineHB = DelayRequest<T> (url, pubnubRequestState, timeout, pause, crt);
-                        StartCoroutine (DelayRequestCoroutineHB);
-                    } else {
-                        DelayRequestCoroutinePHB = DelayRequest<T> (url, pubnubRequestState, timeout, pause, crt);
-                        StartCoroutine (DelayRequestCoroutinePHB);
-                    }
+                    DelayStartCoroutine<T>(url, pubnubRequestState, timeout, pause, crt);
                 } else {
                     StartCoroutinesByName<T> (url, pubnubRequestState, timeout, pause, crt);
                 }
@@ -427,40 +434,53 @@ namespace PubNubMessaging.Core
             return true;
         }
 
+        void StopRunningCoroutines(CurrentRequestType crt)
+        {
+            if (crt == CurrentRequestType.Heartbeat)
+            {
+                if ((heartbeatWww != null) && (!heartbeatWww.isDone))
+                {
+                    heartbeatWww.Dispose();
+                    heartbeatWww = null;
+                    StopCoroutine(HeartbeatCoroutine);
+                }
+                if (DelayRequestCoroutineHB != null)
+                {
+                    StopCoroutine(DelayRequestCoroutineHB);
+                }
+            }
+            else if (crt == CurrentRequestType.PresenceHeartbeat)
+            {
+                if ((presenceHeartbeatWww != null) && (!presenceHeartbeatWww.isDone))
+                {
+                    presenceHeartbeatWww.Dispose();
+                    presenceHeartbeatWww = null;
+                    StopCoroutine(PresenceHeartbeatCoroutine);
+                }
+                if (DelayRequestCoroutinePHB != null)
+                {
+                    StopCoroutine(DelayRequestCoroutinePHB);
+                }
+            }
+            else if ((crt == CurrentRequestType.Subscribe) && (subscribeWww != null) && (!subscribeWww.isDone))
+            {
+                subscribeWww = null;
+                StopCoroutine(SubCoroutine);
+                LoggingMethod.WriteToLog(string.Format("DateTime {0}, Coroutine stopped Subscribe: ", DateTime.Now.ToString()), LoggingMethod.LevelInfo);
+            }
+            else if ((crt == CurrentRequestType.NonSubscribe) && (nonSubscribeWww != null) && (!nonSubscribeWww.isDone))
+            {
+                LoggingMethod.WriteToLog(string.Format("DateTime {0}, Dispose nonSubscribeWww: ", DateTime.Now.ToString()), LoggingMethod.LevelInfo);
+                nonSubscribeWww.Dispose();
+                nonSubscribeWww = null;
+                StopCoroutine(NonSubCoroutine);
+            }
+        }
+
         public void BounceRequest<T> (CurrentRequestType crt, RequestState<T> pubnubRequestState, bool fireEvent)
         {
             try {
-                if (crt == CurrentRequestType.Heartbeat){
-                    if((heartbeatWww != null) && (!heartbeatWww.isDone)) {
-                        heartbeatWww.Dispose ();
-                        heartbeatWww = null;
-
-                        StopCoroutine (HeartbeatCoroutine);
-                    }   
-                    if(DelayRequestCoroutineHB != null) {
-                        StopCoroutine (DelayRequestCoroutineHB);    
-                    }
-                } else if (crt == CurrentRequestType.PresenceHeartbeat) {
-                    if((presenceHeartbeatWww != null) && (!presenceHeartbeatWww.isDone)) {
-                        presenceHeartbeatWww.Dispose ();
-                        presenceHeartbeatWww = null;
-                        StopCoroutine (PresenceHeartbeatCoroutine);
-                    }
-                    if(DelayRequestCoroutinePHB != null) {
-                        StopCoroutine (DelayRequestCoroutinePHB);
-                    }
-                } else if ((crt == CurrentRequestType.Subscribe) && (subscribeWww != null) && (!subscribeWww.isDone)) {
-                    subscribeWww = null;
-
-                    StopCoroutine (SubCoroutine);
-                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Coroutine stopped Subscribe: ", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
-                } else if ((crt == CurrentRequestType.NonSubscribe) && (nonSubscribeWww != null) && (!nonSubscribeWww.isDone)) {
-                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Dispose nonSubscribeWww: ", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
-                    nonSubscribeWww.Dispose ();
-                    
-                    nonSubscribeWww = null;
-                    StopCoroutine (NonSubCoroutine);
-                }
+                StopRunningCoroutines(crt);
 
                 SetComplete (crt);
                 
