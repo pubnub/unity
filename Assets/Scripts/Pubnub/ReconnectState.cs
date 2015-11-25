@@ -97,7 +97,9 @@ namespace PubNubMessaging.Core
                 if (requestStates.ContainsKey (aKey)) {
                     return requestStates [aKey];
                 }
+                #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, returning false", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+                #endif
             }
             return null;
         }
@@ -132,7 +134,9 @@ namespace PubNubMessaging.Core
         public RequestState (RequestState<T> requestState)
         {
             Channels = requestState.Channels;
+            #if (ENABLE_PUBNUB_LOGGING)
             LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Channels {1}", DateTime.Now.ToString (), Channels.ToString ()), LoggingMethod.LevelInfo);
+            #endif
             ConnectCallback = requestState.ConnectCallback as Action<T>;
             ErrorCallback = requestState.ErrorCallback;
             Reconnect = requestState.Reconnect;
