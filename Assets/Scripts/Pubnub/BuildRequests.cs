@@ -441,7 +441,6 @@ namespace PubNubMessaging.Core
                 case ResponseType.Subscribe:
                 case ResponseType.Leave:
 
-                    url.AppendFormat("?uuid={0}", uuid);
                     url = AppendUUIDToURL(url, uuid);
                     url.Append(parameters);
                     url = AppendAuthKeyToURL(url, authenticationKey, type);

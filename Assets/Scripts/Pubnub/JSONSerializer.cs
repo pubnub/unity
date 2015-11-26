@@ -37,10 +37,6 @@ namespace PubNubMessaging.Core
         private static IJsonPluggableLibrary jsonPluggableLibrary = null;
         public static IJsonPluggableLibrary JsonPluggableLibrary{
             get {
-                return jsonPluggableLibrary;
-            }
-
-            set {
                 #if (USE_MiniJSON)
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog("USE_MiniJSON", LoggingMethod.LevelInfo);
@@ -52,6 +48,7 @@ namespace PubNubMessaging.Core
                 #endif
                 jsonPluggableLibrary = new JsonFxUnitySerializer ();
                 #endif
+                return jsonPluggableLibrary;
             }
         }
 

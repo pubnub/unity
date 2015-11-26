@@ -263,6 +263,10 @@ namespace PubNubMessaging.Core
 
         public static IJsonPluggableLibrary JsonPluggableLibrary {
             get {
+                if (jsonPluggableLibrary == null)
+                {
+                    jsonPluggableLibrary = JSONSerializer.JsonPluggableLibrary;
+                }
                 return jsonPluggableLibrary;
             }
 
@@ -385,8 +389,6 @@ namespace PubNubMessaging.Core
         {
             LoggingMethod.LogLevel = pubnubLogLevel;
             PubnubErrorFilter.ErrorLevel = errorLevel;
-
-            JsonPluggableLibrary = JSONSerializer.JsonPluggableLibrary;
 
             #if(UNITY_IOS)
             Version = string.Format("PubNub-CSharp-UnityIOS/{0}", build);
@@ -1049,7 +1051,7 @@ namespace PubNubMessaging.Core
 
         private void SubscribePresenceHanlder<T> (CustomEventArgs<T> cea){
             #if (ENABLE_PUBNUB_LOGGING)
-            if (cea.IsTimeout || Helpers.CheckRequestTimeoutMessageInError (cea)) {
+            if (cea.IsTimeout || Utility.CheckRequestTimeoutMessageInError (cea)) {
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0} Sub timeout={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelError);
             } else if (cea.IsError) {
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0} Sub Error={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelError);
