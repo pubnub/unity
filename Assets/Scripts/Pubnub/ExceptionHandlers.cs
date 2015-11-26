@@ -45,8 +45,7 @@ namespace PubNubMessaging.Core
                 PubnubCallbacks.CallErrorCallback<T> (cea.Message, null, channel, 
                     PubnubErrorCode.NoInternetRetryConnect, PubnubErrorSeverity.Warn, requestState.ErrorCallback, errorLevel);
 
-            } else if (cea.IsTimeout || Helpers.CheckRequestTimeoutMessageInError(cea)) {
-                //CallErrorCallback (PubnubErrorSeverity.Warn, PubnubMessageSource.Client, channel, requestState.ErrorCallback, cea.Message, PubnubErrorCode.NoInternetRetryConnect, null, null);
+            } else if (cea.IsTimeout || Utility.CheckRequestTimeoutMessageInError(cea)) {
             } else if ((cea.Message.Contains ("403")) 
                 || (cea.Message.Contains ("java.io.FileNotFoundException")) 
                 || ((PubnubUnity.Version.Contains("UnityWeb")) && (cea.Message.Contains ("Failed downloading")))) {
@@ -160,8 +159,8 @@ namespace PubNubMessaging.Core
             mea.reconnectMaxTried = false;
             mea.requestType = type;
             mea.userCallback = userCallback;
+
             multiplexException.Raise(typeof(ExceptionHandlers), mea);
-            //MultiplexExceptionHandler<T> (type, channels, userCallback, connectCallback, errorCallback, false, resumeOnReconnect);
         }
 
         internal static void UrlRequestCommonExceptionHandler<T> (ResponseType type, string[] channels, 

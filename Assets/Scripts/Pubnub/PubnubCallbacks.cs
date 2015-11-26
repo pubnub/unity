@@ -17,7 +17,6 @@ namespace PubNubMessaging.Core
         public Action<PubnubClientError> ErrorCallback;
         public Action<T> ConnectCallback;
         public Action<T> DisconnectCallback;
-        //public ResponseType Type;
         public PubnubChannelCallback ()
         {
             Callback = null;
@@ -25,6 +24,14 @@ namespace PubNubMessaging.Core
             DisconnectCallback = null;
             ErrorCallback = null;
         }
+    }
+
+    public enum CallbackType
+    {
+        User,
+        Connect,
+        Error,
+        Disconnect
     }
     #endregion
 
@@ -55,13 +62,16 @@ namespace PubNubMessaging.Core
             IJsonPluggableLibrary jsonPluggableLibrary, string currentChannel, List<object> itemMessage)
         {
             var callbackKey = PubnubCallbacks.GetPubnubChannelCallbackKey(currentChannel, 
-                (Helpers.IsPresenceChannel(currentChannel)) ? ResponseType.Presence : ResponseType.Subscribe);
+                (Utility.IsPresenceChannel(currentChannel)) ? ResponseType.Presence : ResponseType.Subscribe);
+            #if (ENABLE_PUBNUB_LOGGING)
             LoggingMethod.WriteToLog(string.Format("DateTime {0}, currentChannel: {1}", DateTime.Now.ToString(), 
                 currentChannel.ToString()), LoggingMethod.LevelInfo);
-            
+            #endif
             if (channelCallbacks.Count > 0 && channelCallbacks.ContainsKey(callbackKey))
             {
+                #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog(string.Format("DateTime {0}, typeof(T): {1}", DateTime.Now.ToString(), typeof(T).ToString()), LoggingMethod.LevelInfo);
+                #endif
                 if ((typeof(T) == typeof(string) && channelCallbacks[callbackKey].GetType().Name.Contains("[System.String]")) 
                     || (typeof(T) == typeof(object) && channelCallbacks[callbackKey].GetType().Name.Contains("[System.Object]")))
                 {
@@ -230,13 +240,16 @@ namespace PubNubMessaging.Core
 
             if (typeof(T) == typeof(string)) {
                 try {
-                    //LoggingMethod.WriteToLog (string.Format ("DateTime {0}, before _jsonPluggableLibrary.SerializeToJsonString", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
                     callbackJson = jsonPluggableLibrary.SerializeToJsonString (result);
+                    #if (ENABLE_PUBNUB_LOGGING)
                     LoggingMethod.WriteToLog (string.Format ("DateTime {0}, after _jsonPluggableLibrary.SerializeToJsonString {1}", DateTime.Now.ToString (), callbackJson), LoggingMethod.LevelInfo);
+                    #endif
                     Action<string> castCallback = callback as Action<string>;
                     castCallback (callbackJson);
                 } catch (Exception ex) {
+                    #if (ENABLE_PUBNUB_LOGGING)
                     LoggingMethod.WriteToLog (string.Format ("DateTime {0}, JsonResponseToCallback = {1} ", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);        
+                    #endif
                 }
             }
         }

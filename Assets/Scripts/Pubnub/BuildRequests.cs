@@ -6,6 +6,26 @@ namespace PubNubMessaging.Core
 {
 	public class BuildRequests
 	{
+
+        internal static RequestState<T> BuildRequestState<T>(string[] channel, ResponseType responseType, 
+            bool reconnect, Action<T> userCallback, Action<T> connectCallback, Action<PubnubClientError> errorCallback,
+            long id, bool timeout, long timetoken, Type typeParam
+        ){
+            RequestState<T> requestState = new RequestState<T> ();
+            requestState.Channels = channel;
+            requestState.Type = responseType;
+            requestState.Reconnect = reconnect;
+            requestState.UserCallback = userCallback;
+            requestState.ErrorCallback = errorCallback;
+            requestState.ConnectCallback = connectCallback;
+            requestState.ID = id;
+            requestState.Timeout = timeout;
+            requestState.Timetoken = timetoken;
+            requestState.TypeParameterType = typeParam;
+
+            return requestState;
+        }
+
 		#region "Build Requests"
 		internal static Uri BuildPublishRequest (string channel, string message, bool storeInHistory, string uuid, 
 			bool ssl, string origin, string authenticationKey, string pnsdkVersion, 
@@ -29,7 +49,7 @@ namespace PubNubMessaging.Core
 					.Append (message); // 1
 
 				// Sign Message
-				signature = Helpers.Md5 (stringToSign.ToString ());
+                signature = Utility.Md5 (stringToSign.ToString ());
 			}
 
 			// Build URL
@@ -68,11 +88,11 @@ namespace PubNubMessaging.Core
 				parameterBuilder.AppendFormat ("&end={0}", end.ToString ().ToLower ());
 			}
 			if (!string.IsNullOrEmpty (authenticationKey)) {
-				parameterBuilder.AppendFormat ("&auth={0}", Helpers.EncodeUricomponent (authenticationKey, ResponseType.DetailedHistory, false, false));
+                parameterBuilder.AppendFormat ("&auth={0}", Utility.EncodeUricomponent (authenticationKey, ResponseType.DetailedHistory, false, false));
 			}
 
-			parameterBuilder.AppendFormat ("&uuid={0}", Helpers.EncodeUricomponent (uuid, ResponseType.DetailedHistory, false, false));
-			parameterBuilder.AppendFormat ("&pnsdk={0}", Helpers.EncodeUricomponent (pnsdkVersion, ResponseType.DetailedHistory, false, true));
+            parameterBuilder.AppendFormat ("&uuid={0}", Utility.EncodeUricomponent (uuid, ResponseType.DetailedHistory, false, false));
+            parameterBuilder.AppendFormat ("&pnsdk={0}", Utility.EncodeUricomponent (pnsdkVersion, ResponseType.DetailedHistory, false, true));
 
 			parameters = parameterBuilder.ToString ();
 
@@ -154,26 +174,26 @@ namespace PubNubMessaging.Core
 			string publishKey, string subscribeKey, string cipherKey, string secretKey)
 		{
 			string signature = "0";
-			long timeStamp = Helpers.TranslateDateTimeToSeconds (DateTime.UtcNow);
+            long timeStamp = Utility.TranslateDateTimeToSeconds (DateTime.UtcNow);
 			string queryString = "";
 
 			StringBuilder queryStringBuilder = new StringBuilder ();
 			if (!string.IsNullOrEmpty (authenticationKey)) {
-				queryStringBuilder.AppendFormat ("auth={0}", Helpers.EncodeUricomponent (authenticationKey, ResponseType.GrantAccess, false, false));
+                queryStringBuilder.AppendFormat ("auth={0}", Utility.EncodeUricomponent (authenticationKey, ResponseType.GrantAccess, false, false));
 			}
 
 			if (!string.IsNullOrEmpty (channel)) {
-				queryStringBuilder.AppendFormat ("{0}channel={1}", (queryStringBuilder.Length > 0) ? "&" : "", Helpers.EncodeUricomponent (channel, ResponseType.GrantAccess, false, false));
+                queryStringBuilder.AppendFormat ("{0}channel={1}", (queryStringBuilder.Length > 0) ? "&" : "", Utility.EncodeUricomponent (channel, ResponseType.GrantAccess, false, false));
 			}
 
 			queryStringBuilder.AppendFormat ("{0}", (queryStringBuilder.Length > 0) ? "&" : "");
-			queryStringBuilder.AppendFormat ("pnsdk={0}", Helpers.EncodeUricomponent (pnsdkVersion, ResponseType.GrantAccess, false, true));
+            queryStringBuilder.AppendFormat ("pnsdk={0}", Utility.EncodeUricomponent (pnsdkVersion, ResponseType.GrantAccess, false, true));
 			queryStringBuilder.AppendFormat ("&r={0}", Convert.ToInt32 (read));
 			queryStringBuilder.AppendFormat ("&timestamp={0}", timeStamp.ToString ());
 			if (ttl > -1) {
 				queryStringBuilder.AppendFormat ("&ttl={0}", ttl.ToString ());
 			}
-			queryStringBuilder.AppendFormat ("&uuid={0}", Helpers.EncodeUricomponent (uuid, ResponseType.GrantAccess, false, false));
+            queryStringBuilder.AppendFormat ("&uuid={0}", Utility.EncodeUricomponent (uuid, ResponseType.GrantAccess, false, false));
 			queryStringBuilder.AppendFormat ("&w={0}", Convert.ToInt32 (write));
 
 			if (secretKey.Length > 0) {
@@ -210,18 +230,18 @@ namespace PubNubMessaging.Core
 		{
 			string signature = "0";
 
-			long timeStamp = Helpers.TranslateDateTimeToSeconds (DateTime.UtcNow);
+            long timeStamp = Utility.TranslateDateTimeToSeconds (DateTime.UtcNow);
 			string queryString = "";
 			StringBuilder queryStringBuilder = new StringBuilder ();
 			if (!string.IsNullOrEmpty (authenticationKey)) {
-				queryStringBuilder.AppendFormat ("auth={0}", Helpers.EncodeUricomponent (authenticationKey, ResponseType.AuditAccess, false, false));
+                queryStringBuilder.AppendFormat ("auth={0}", Utility.EncodeUricomponent (authenticationKey, ResponseType.AuditAccess, false, false));
 			}
 			if (!string.IsNullOrEmpty (channel)) {
-				queryStringBuilder.AppendFormat ("{0}channel={1}", (queryStringBuilder.Length > 0) ? "&" : "", Helpers.EncodeUricomponent (channel, ResponseType.AuditAccess, false, false));
+                queryStringBuilder.AppendFormat ("{0}channel={1}", (queryStringBuilder.Length > 0) ? "&" : "", Utility.EncodeUricomponent (channel, ResponseType.AuditAccess, false, false));
 			}
-			queryStringBuilder.AppendFormat ("{0}pnsdk={1}", (queryStringBuilder.Length > 0) ? "&" : "", Helpers.EncodeUricomponent (pnsdkVersion, ResponseType.AuditAccess, false, true));
+            queryStringBuilder.AppendFormat ("{0}pnsdk={1}", (queryStringBuilder.Length > 0) ? "&" : "", Utility.EncodeUricomponent (pnsdkVersion, ResponseType.AuditAccess, false, true));
 			queryStringBuilder.AppendFormat ("{0}timestamp={1}", (queryStringBuilder.Length > 0) ? "&" : "", timeStamp.ToString ());
-			queryStringBuilder.AppendFormat ("{0}uuid={1}", (queryStringBuilder.Length > 0) ? "&" : "", Helpers.EncodeUricomponent (uuid, ResponseType.AuditAccess, false, false));
+            queryStringBuilder.AppendFormat ("{0}uuid={1}", (queryStringBuilder.Length > 0) ? "&" : "", Utility.EncodeUricomponent (uuid, ResponseType.AuditAccess, false, false));
 
 			if (secretKey.Length > 0) {
 				StringBuilder string_to_sign = new StringBuilder ();
@@ -254,7 +274,7 @@ namespace PubNubMessaging.Core
 		internal static Uri BuildSetUserStateRequest (string channel, string jsonUserState, string uuid, 
 			bool ssl, string origin, string authenticationKey, string pnsdkVersion, string subscribeKey)
 		{
-			string parameters = string.Format ("?state={0}", Helpers.EncodeUricomponent (jsonUserState, ResponseType.SetUserState, false, false));
+            string parameters = string.Format ("?state={0}", Utility.EncodeUricomponent (jsonUserState, ResponseType.SetUserState, false, false));
 
 			List<string> url = new List<string> ();
 
@@ -293,9 +313,11 @@ namespace PubNubMessaging.Core
 		{
 			string parameters = "";
 			if (channelsJsonState != "{}" && channelsJsonState != "") {
-				parameters = string.Format ("&state={0}", Helpers.EncodeUricomponent (channelsJsonState, ResponseType.PresenceHeartbeat, false, false));
+                parameters = string.Format ("&state={0}", Utility.EncodeUricomponent (channelsJsonState, ResponseType.PresenceHeartbeat, false, false));
 			}
+            #if (ENABLE_PUBNUB_LOGGING)
 			LoggingMethod.WriteToLog (string.Format ("DateTime {0}, presenceHeartbeatParameters {1}", DateTime.Now.ToString (), parameters), LoggingMethod.LevelInfo);
+            #endif
 
 			List<string> url = new List<string> ();
 
@@ -332,7 +354,7 @@ namespace PubNubMessaging.Core
 			string parameters = "";
 
 			if (channelsJsonState != "{}" && channelsJsonState != "") {
-				parameters = string.Format ("&state={0}", Helpers.EncodeUricomponent (channelsJsonState, ResponseType.Subscribe, false, false));
+                parameters = string.Format ("&state={0}", Utility.EncodeUricomponent (channelsJsonState, ResponseType.Subscribe, false, false));
 			}
 
 			List<string> url = new List<string> ();
@@ -364,11 +386,11 @@ namespace PubNubMessaging.Core
                 url.Append("/");
                 if (type == ResponseType.Publish && componentIndex == urlComponents.Count - 1)
                 {
-                    url.Append(Helpers.EncodeUricomponent(urlComponents[componentIndex].ToString(), type, false, false));
+                    url.Append(Utility.EncodeUricomponent(urlComponents[componentIndex].ToString(), type, false, false));
                 }
                 else
                 {
-                    url.Append(Helpers.EncodeUricomponent(urlComponents[componentIndex].ToString(), type, true, false));
+                    url.Append(Utility.EncodeUricomponent(urlComponents[componentIndex].ToString(), type, true, false));
                 }
             }
             return url;
@@ -376,7 +398,7 @@ namespace PubNubMessaging.Core
 
         private static StringBuilder AppendAuthKeyToURL(StringBuilder url, string authenticationKey, ResponseType type){
             if (!string.IsNullOrEmpty (authenticationKey)) {
-                url.AppendFormat ("&auth={0}", Helpers.EncodeUricomponent (authenticationKey, type, false, false));
+                url.AppendFormat ("&auth={0}", Utility.EncodeUricomponent (authenticationKey, type, false, false));
             }
             return url;
         }
@@ -394,7 +416,7 @@ namespace PubNubMessaging.Core
         }
 
         private static StringBuilder AppendPNSDKVersionToURL(StringBuilder url, string pnsdkVersion, ResponseType type){
-            url.AppendFormat ("&pnsdk={0}", Helpers.EncodeUricomponent (pnsdkVersion, type, false, true));
+            url.AppendFormat ("&pnsdk={0}", Utility.EncodeUricomponent (pnsdkVersion, type, false, true));
             return url;
         }
 
@@ -410,7 +432,7 @@ namespace PubNubMessaging.Core
 		{
 			StringBuilder url = new StringBuilder ();
 
-			uuid = Helpers.EncodeUricomponent (uuid, type, false, false);
+            uuid = Utility.EncodeUricomponent (uuid, type, false, false);
 
 			url = AddSSLAndEncodeURL<T>(urlComponents, type, ssl, origin, url);
 

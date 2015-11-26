@@ -20,7 +20,6 @@ namespace PubNubMessaging.Core
 			HashAlgorithm algorithm = new SHA256CryptoServiceProvider ();
 			#endif
 
-			//Byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
 			Byte[] inputBytes = System.Text.Encoding.UTF8.GetBytes (input);
 			Byte[] hashedBytes = algorithm.ComputeHash (inputBytes);
 			return BitConverter.ToString (hashedBytes);
@@ -55,12 +54,13 @@ namespace PubNubMessaging.Core
 						byte[] decryptedBytes = Convert.FromBase64CharArray (plainStr.ToCharArray (), 0, plainStr.Length);
 
 						//decrypt
-						//string decrypted = System.Text.Encoding.ASCII.GetString(decrypto.TransformFinalBlock(decryptedBytes, 0, decryptedBytes.Length));
 						string decrypted = System.Text.Encoding.UTF8.GetString (decrypto.TransformFinalBlock (decryptedBytes, 0, decryptedBytes.Length));
 
 						return decrypted;
 					} catch (Exception ex) {
+                        #if (ENABLE_PUBNUB_LOGGING)
 						LoggingMethod.WriteToLog (string.Format ("DateTime {0} Decrypt Error. {1}", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelInfo);
+                        #endif
 						throw ex;
 					}
 				}
