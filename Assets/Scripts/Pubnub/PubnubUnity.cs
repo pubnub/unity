@@ -791,10 +791,15 @@ namespace PubNubMessaging.Core
             #endif
             StopHeartbeat ();
             StopPresenceHeartbeat ();
-            RemoveChannelCallback ();
+            ClearChannelCallback ();
             RemoveUserState ();
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0} RemoveChannelCallback and RemoveUserState complete.", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0} ClearChannelCallback and RemoveUserState complete.", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+            #endif
+            ClearChannelRequest();
+            ClearMultiChannelSubscribe();
+            #if (ENABLE_PUBNUB_LOGGING)
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0} ClearChannelRequest and ClearMultiChannelSubscribe complete.", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
             #endif
         }
 
@@ -817,10 +822,26 @@ namespace PubNubMessaging.Core
             #endif
         }
 
-        private void RemoveChannelCallback ()
+        private void ClearChannelRequest ()
         {
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0} RemoveChannelCallback from dictionary", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0} Clear ChannelRequest", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+            #endif
+            channelRequest.Clear ();
+        }
+
+        private void ClearMultiChannelSubscribe ()
+        {
+            #if (ENABLE_PUBNUB_LOGGING)
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0} Clear MultiChannelSubscribe", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+            #endif
+            multiChannelSubscribe.Clear ();
+        }
+
+        private void ClearChannelCallback ()
+        {
+            #if (ENABLE_PUBNUB_LOGGING)
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0} Clear ChannelCallback", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
             #endif
             channelCallbacks.Clear ();
         }
@@ -906,24 +927,27 @@ namespace PubNubMessaging.Core
         void StartPresenceHeartbeat<T> (bool pause, int pauseTime, RequestState<T> pubnubRequestState)
         {
             try {
-                string[] subscriberChannels = pubnubRequestState.Channels.Where (s => s.Contains (Utility.PresenceChannelSuffix) == false).ToArray ();
-                if (subscriberChannels != null && subscriberChannels.Length > 0) {
-                    isPresenceHearbeatRunning = true;
-                    string[] channels = multiChannelSubscribe.Keys.ToArray<string> ();
-                    string channelsJsonState = BuildJsonUserState (channels, false);
+                string[] channels = multiChannelSubscribe.Keys.ToArray<string> ();
+                if (channels != null && channels.Length > 0) {
+                    channels = channels.Where (s => s.Contains (Utility.PresenceChannelSuffix) == false).ToArray ();
 
-                    Uri requestUrl = BuildRequests.BuildPresenceHeartbeatRequest (channels, channelsJsonState, this.SessionUUID,
-                        this.ssl, this.Origin, authenticationKey, Version, this.subscribeKey);
+                    if (channels != null && channels.Length > 0) {
+                        isPresenceHearbeatRunning = true;
+                        string channelsJsonState = BuildJsonUserState (channels, false);
 
-                    coroutine.PresenceHeartbeatCoroutineComplete += CoroutineCompleteHandler<T>;
+                        Uri requestUrl = BuildRequests.BuildPresenceHeartbeatRequest (channels, channelsJsonState, this.SessionUUID,
+                            this.ssl, this.Origin, authenticationKey, Version, this.subscribeKey);
 
-                    //for heartbeat and presence heartbeat treat reconnect as pause
-                    RequestState<T> requestState = BuildRequests.BuildRequestState<T> (pubnubRequestState.Channels, ResponseType.PresenceHeartbeat, pause, null, null, pubnubRequestState.ErrorCallback, pubnubRequestState.ID, false, 0, null);
-                    StoredRequestState.Instance.SetRequestState (CurrentRequestType.PresenceHeartbeat, requestState);
-                    coroutine.Run<T> (requestUrl.OriginalString, requestState, HeartbeatTimeout, pauseTime);
-                    #if (ENABLE_PUBNUB_LOGGING)
-                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, PresenceHeartbeat running for {1}", DateTime.Now.ToString (), pubnubRequestState.ID), LoggingMethod.LevelInfo);
-                    #endif
+                        coroutine.PresenceHeartbeatCoroutineComplete += CoroutineCompleteHandler<T>;
+
+                        //for heartbeat and presence heartbeat treat reconnect as pause
+                        RequestState<T> requestState = BuildRequests.BuildRequestState<T> (pubnubRequestState.Channels, ResponseType.PresenceHeartbeat, pause, null, null, pubnubRequestState.ErrorCallback, pubnubRequestState.ID, false, 0, null);
+                        StoredRequestState.Instance.SetRequestState (CurrentRequestType.PresenceHeartbeat, requestState);
+                        coroutine.Run<T> (requestUrl.OriginalString, requestState, HeartbeatTimeout, pauseTime);
+                        #if (ENABLE_PUBNUB_LOGGING)
+                        LoggingMethod.WriteToLog (string.Format ("DateTime {0}, PresenceHeartbeat running for {1}", DateTime.Now.ToString (), pubnubRequestState.ID), LoggingMethod.LevelInfo);
+                        #endif
+                    }
                 }
             }
             catch (Exception ex) {
@@ -1585,7 +1609,7 @@ namespace PubNubMessaging.Core
 
         List<string> UnsubscribeChannels<T>(string channel, List<string> validChannels)
         {
-            Uri request = BuildRequests.BuildMultiChannelLeaveRequest(validChannels.ToArray(), "", this.ssl, this.Origin, authenticationKey, Version, this.subscribeKey);
+            Uri request = BuildRequests.BuildMultiChannelLeaveRequest(validChannels.ToArray(), this.SessionUUID, this.ssl, this.Origin, authenticationKey, Version, this.subscribeKey);
             RequestState<T> requestState = BuildRequests.BuildRequestState<T>(new string[] {
                 channel
             }, ResponseType.Leave, false, null, null, null, 0, false, 0, null);

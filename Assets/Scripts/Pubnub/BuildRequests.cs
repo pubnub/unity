@@ -403,8 +403,15 @@ namespace PubNubMessaging.Core
             return url;
         }
 
-        private static StringBuilder AppendUUIDToURL(StringBuilder url, string uuid){
-            url.AppendFormat ("?uuid={0}", uuid);
+        private static StringBuilder AppendUUIDToURL(StringBuilder url, string uuid, bool firstInQS){
+            if (firstInQS)
+            {
+                url.AppendFormat("?uuid={0}", uuid);
+            }
+            else
+            {
+                url.AppendFormat("&uuid={0}", uuid);
+            }
             return url;
         }
 
@@ -441,7 +448,7 @@ namespace PubNubMessaging.Core
                 case ResponseType.Subscribe:
                 case ResponseType.Leave:
 
-                    url = AppendUUIDToURL(url, uuid);
+                    url = AppendUUIDToURL(url, uuid, true);
                     url.Append(parameters);
                     url = AppendAuthKeyToURL(url, authenticationKey, type);
 
@@ -451,7 +458,7 @@ namespace PubNubMessaging.Core
 
 			    case ResponseType.PresenceHeartbeat:
 
-                    url = AppendUUIDToURL(url, uuid);
+                    url = AppendUUIDToURL(url, uuid, true);
 				    url.Append (parameters);
                     url = AppendPresenceHeartbeatToURL(url, pubnubPresenceHeartbeatInSeconds);
                     url = AppendAuthKeyToURL(url, authenticationKey, type);
@@ -461,21 +468,21 @@ namespace PubNubMessaging.Core
 			    case ResponseType.SetUserState:
 
 				    url.Append (parameters);
-                    url = AppendUUIDToURL(url, uuid);
+                    url = AppendUUIDToURL(url, uuid, false);
                     url = AppendAuthKeyToURL(url, authenticationKey, type);
                     url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
     				break;
 
 			    case ResponseType.GetUserState:
 
-                    url = AppendUUIDToURL(url, uuid);
+                    url = AppendUUIDToURL(url, uuid, true);
                     url = AppendAuthKeyToURL(url, authenticationKey, type);
                     url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
 				    break;
 			    case ResponseType.HereNow:
 
 				    url.Append (parameters);
-                    url = AppendUUIDToURL(url, uuid);
+                    url = AppendUUIDToURL(url, uuid, false);
                     url = AppendAuthKeyToURL(url, authenticationKey, type);
                     url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
 				    break;
@@ -483,21 +490,21 @@ namespace PubNubMessaging.Core
 			    case ResponseType.GlobalHereNow:
 
 				    url.Append (parameters);
-                    url = AppendUUIDToURL(url, uuid);
+                    url = AppendUUIDToURL(url, uuid, false);
                     url = AppendAuthKeyToURL(url, authenticationKey, type);
                     url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
 				    break;
 
 			    case ResponseType.WhereNow:
 
-                    url = AppendUUIDToURL(url, uuid);
+                    url = AppendUUIDToURL(url, uuid, true);
                     url = AppendAuthKeyToURL(url, authenticationKey, type);
                     url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
 				    break;
 
 			    case ResponseType.Publish:
 
-                    url = AppendUUIDToURL(url, uuid);
+                    url = AppendUUIDToURL(url, uuid, true);
     				if (parameters != "") {
     					url.AppendFormat ("&{0}", parameters);
     				}
@@ -513,7 +520,7 @@ namespace PubNubMessaging.Core
     				url.Append (parameters);
 				    break;
 			    default:
-                    url = AppendUUIDToURL(url, uuid);
+                    url = AppendUUIDToURL(url, uuid, true);
                     url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
 				    break;
 			}
