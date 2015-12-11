@@ -9,6 +9,11 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Net;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
+
+#if DEBUG
+[assembly:InternalsVisibleTo("Assembly-CSharp-Editor")]
+#endif
 
 namespace PubNubMessaging.Core
 {
@@ -487,7 +492,7 @@ namespace PubNubMessaging.Core
             string originalMessage = (enableJsonEncodingForPublish) ? Helpers.JsonEncodePublishMsg (message, this.cipherKey, JsonPluggableLibrary) : message.ToString ();
 
             Uri request = BuildRequests.BuildPublishRequest (channel, originalMessage, storeInHistory, this.SessionUUID,
-                this.ssl, this.Origin, this.AuthenticationKey, Version, this.publishKey, this.subscribeKey, this.cipherKey, this.secretKey);
+                this.ssl, this.Origin, this.AuthenticationKey, this.publishKey, this.subscribeKey, this.cipherKey, this.secretKey);
 
             RequestState<T> requestState = BuildRequests.BuildRequestState<T> (new string[] { channel }, ResponseType.Publish, 
                 false, userCallback, null, errorCallback, 0, false, 0, null);
@@ -516,7 +521,7 @@ namespace PubNubMessaging.Core
             Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
             Uri request = BuildRequests.BuildDetailedHistoryRequest (channel, start, end, count, reverse, includeToken, this.SessionUUID,
-                this.ssl, this.Origin, this.AuthenticationKey, Version, this.subscribeKey);
+                this.ssl, this.Origin, this.AuthenticationKey, this.subscribeKey);
 
             RequestState<T> requestState = BuildRequests.BuildRequestState<T> (new string[] { channel }, ResponseType.DetailedHistory, false, userCallback, null, errorCallback, 0, false, 0, null);
 
@@ -530,7 +535,7 @@ namespace PubNubMessaging.Core
         public bool HereNow<T> (string channel, bool showUUIDList, bool includeUserState, Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
             Uri request = BuildRequests.BuildHereNowRequest (channel, showUUIDList, includeUserState, this.SessionUUID,
-                this.ssl, this.Origin, this.AuthenticationKey, Version, this.subscribeKey);
+                this.ssl, this.Origin, this.AuthenticationKey, this.subscribeKey);
 
             RequestState<T> requestState = BuildRequests.BuildRequestState<T> (new string[] { channel }, ResponseType.HereNow, false, userCallback, null, errorCallback, 0, false, 0, null);
 
@@ -544,7 +549,7 @@ namespace PubNubMessaging.Core
         public bool GlobalHereNow<T> (bool showUUIDList, bool includeUserState, Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
             Uri request = BuildRequests.BuildGlobalHereNowRequest (showUUIDList, includeUserState, this.SessionUUID,
-                this.ssl, this.Origin, this.AuthenticationKey, Version, this.subscribeKey);
+                this.ssl, this.Origin, this.AuthenticationKey, this.subscribeKey);
 
             RequestState<T> requestState = BuildRequests.BuildRequestState<T> (null, ResponseType.GlobalHereNow, false, userCallback, null, errorCallback, 0, false, 0, null);
 
@@ -561,7 +566,7 @@ namespace PubNubMessaging.Core
                 uuid = this.SessionUUID;
             }
             Uri request = BuildRequests.BuildWhereNowRequest (uuid, this.SessionUUID,
-                this.ssl, this.Origin, this.AuthenticationKey, Version, this.subscribeKey);
+                this.ssl, this.Origin, this.AuthenticationKey, this.subscribeKey);
 
             RequestState<T> requestState = BuildRequests.BuildRequestState<T> (new string[] { uuid }, ResponseType.WhereNow, false, userCallback, null, errorCallback, 0, false, 0, null);
 
@@ -619,7 +624,7 @@ namespace PubNubMessaging.Core
         public bool GrantAccess<T> (string channel, string authenticationKey, bool read, bool write, int ttl, Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
             Uri request = BuildRequests.BuildGrantAccessRequest (channel, read, write, ttl, this.SessionUUID,
-                this.ssl, this.Origin, authenticationKey, Version, this.publishKey, this.subscribeKey, this.cipherKey, this.secretKey);
+                this.ssl, this.Origin, authenticationKey, this.publishKey, this.subscribeKey, this.cipherKey, this.secretKey);
 
             RequestState<T> requestState = BuildRequests.BuildRequestState<T> (new string[] { channel }, ResponseType.GrantAccess, false, userCallback, null, errorCallback, 0, false, 0, null);
 
@@ -653,7 +658,7 @@ namespace PubNubMessaging.Core
         public void AuditAccess<T> (string channel, string authenticationKey, Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
             Uri request = BuildRequests.BuildAuditAccessRequest (channel, this.SessionUUID,
-                this.ssl, this.Origin, authenticationKey, Version, this.publishKey, this.subscribeKey, this.cipherKey, this.secretKey);
+                this.ssl, this.Origin, authenticationKey, this.publishKey, this.subscribeKey, this.cipherKey, this.secretKey);
 
             RequestState<T> requestState = BuildRequests.BuildRequestState<T> (!string.IsNullOrEmpty (channel)? new string[] { channel } : null, ResponseType.AuditAccess, false, userCallback, null, errorCallback, 0, false, 0, null);
 
@@ -753,7 +758,7 @@ namespace PubNubMessaging.Core
             }
 
             Uri request = BuildRequests.BuildGetUserStateRequest (channel, this.SessionUUID,
-                this.ssl, this.Origin, authenticationKey, Version, this.subscribeKey);
+                this.ssl, this.Origin, authenticationKey, this.subscribeKey);
 
             RequestState<T> requestState = BuildRequests.BuildRequestState<T> (new string[] { channel }, ResponseType.GetUserState, false, userCallback, null, errorCallback, 0, false, 0, null);
 
@@ -875,7 +880,7 @@ namespace PubNubMessaging.Core
 
             if (channels != null && channels.Length > 0) {
                 Uri request = BuildRequests.BuildMultiChannelLeaveRequest (channels, oldUUID,
-                    this.ssl, this.Origin, authenticationKey, Version, this.subscribeKey);
+                    this.ssl, this.Origin, authenticationKey, this.subscribeKey);
 
                 RequestState<string> requestState = BuildRequests.BuildRequestState<string> (channels, ResponseType.Leave, false, null, null, null, 0, false, 0, null);
 
@@ -936,7 +941,7 @@ namespace PubNubMessaging.Core
                         string channelsJsonState = BuildJsonUserState (channels, false);
 
                         Uri requestUrl = BuildRequests.BuildPresenceHeartbeatRequest (channels, channelsJsonState, this.SessionUUID,
-                            this.ssl, this.Origin, authenticationKey, Version, this.subscribeKey);
+                            this.ssl, this.Origin, authenticationKey, this.subscribeKey);
 
                         coroutine.PresenceHeartbeatCoroutineComplete += CoroutineCompleteHandler<T>;
 
@@ -1458,7 +1463,7 @@ namespace PubNubMessaging.Core
             }
 
             Uri request = BuildRequests.BuildSetUserStateRequest (channel, jsonUserState, this.SessionUUID,
-                this.ssl, this.Origin, authenticationKey, Version, this.subscribeKey);
+                this.ssl, this.Origin, authenticationKey, this.subscribeKey);
 
             RequestState<T> requestState = BuildRequests.BuildRequestState<T> (new string[] { channel }, ResponseType.SetUserState, false, userCallback, null, errorCallback, 0, false, 0, null);
 
@@ -1609,7 +1614,8 @@ namespace PubNubMessaging.Core
 
         List<string> UnsubscribeChannels<T>(string channel, List<string> validChannels)
         {
-            Uri request = BuildRequests.BuildMultiChannelLeaveRequest(validChannels.ToArray(), this.SessionUUID, this.ssl, this.Origin, authenticationKey, Version, this.subscribeKey);
+            Uri request = BuildRequests.BuildMultiChannelLeaveRequest(validChannels.ToArray(), this.SessionUUID, 
+				this.ssl, this.Origin, authenticationKey, this.subscribeKey);
             RequestState<T> requestState = BuildRequests.BuildRequestState<T>(new string[] {
                 channel
             }, ResponseType.Leave, false, null, null, null, 0, false, 0, null);
@@ -1894,7 +1900,7 @@ namespace PubNubMessaging.Core
                 string channelsJsonState = BuildJsonUserState (channels, false);
 
                 Uri requestUrl = BuildRequests.BuildMultiChannelSubscribeRequest (channels, lastTimetoken, channelsJsonState, this.SessionUUID,
-                    this.ssl, this.Origin, authenticationKey, Version, this.subscribeKey);
+                    this.ssl, this.Origin, authenticationKey, this.subscribeKey);
 
                 RequestState<T> pubnubRequestState = BuildRequests.BuildRequestState<T> (channels, type, reconnect, userCallback as Action<T>, connectCallback as Action<T>, errorCallback, 0, false, Convert.ToInt64 (timetoken.ToString ()), typeof(T));
                 // Wait for message

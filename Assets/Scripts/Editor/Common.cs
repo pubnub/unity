@@ -9,6 +9,7 @@ using System.Xml;
 using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Linq;
+using NUnit.Framework;
 
 #if (USE_JSONFX) || (USE_JSONFX_UNITY)
 using JsonFx.Json;
@@ -32,7 +33,8 @@ namespace PubNubMessaging.Tests
 {
     public class Common
     {
-        public static string PublishKey = "demo-36";
+        public static string Origin = "pubsub.pubnub.com";
+		public static string PublishKey = "demo-36";
         public static string SubscribeKey = "demo-36";
         public static string SecretKey = "demo-36";
 		public static float WaitTimeBetweenCalls = 5;
@@ -43,6 +45,20 @@ namespace PubNubMessaging.Tests
         public string ErrorResponse { get; set; }
 
         public bool DeliveryStatus  { get; set; }
+
+		public static string GetRandomChannelName()
+		{
+			System.Random r = new System.Random ();
+			return "UnityUnitTests_" + r.Next (100);
+		}
+
+		public static void LogAndCompare(string expected, string received)
+		{
+			UnityEngine.Debug.Log("Expected:" + expected);
+			UnityEngine.Debug.Log("Received:" + received);
+			Assert.IsTrue (expected.Equals (received));
+		}
+
 
         /// <summary>
         /// Blocks the current thread unit the response is received

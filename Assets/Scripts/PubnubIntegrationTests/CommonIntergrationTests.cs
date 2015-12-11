@@ -336,6 +336,7 @@ namespace PubNubMessaging.Tests
             }
             pubnub.Unsubscribe<string> (channel, this.DisplayReturnMessage, this.DisplayReturnMessage, this.DisplayReturnMessage, this.DisplayErrorMessage);
             pubnub.EndPendingRequests ();
+            pubnub.CleanUp();
         }
 
         public IEnumerator DoTimeAndParse (bool ssl, string testName, bool asObject)
@@ -379,6 +380,7 @@ namespace PubNubMessaging.Tests
                 }
             }
             pubnub.EndPendingRequests ();
+            pubnub.CleanUp();
         }
 
         public IEnumerator DoPublishThenDetailedHistoryAndParse (bool ssl, string testName, object[] messages, bool asObject, bool withCipher, bool noStore, int numberOfMessages, bool isParamsTest)
@@ -513,6 +515,7 @@ namespace PubNubMessaging.Tests
                 }
             }
             pubnub.EndPendingRequests ();
+            pubnub.CleanUp();
         }
 
         public bool ParseDetailedHistoryResponse (object[] messages, string testName, bool asObject, int messageStart, int messageEnd)
@@ -792,6 +795,7 @@ namespace PubNubMessaging.Tests
             }
 
             pubnub.EndPendingRequests ();
+            pubnub.CleanUp();
         }
 
         public IEnumerator DoPublishAndParse (bool ssl, string testName, object message, string expected, bool asObject, bool withCipher)
@@ -883,6 +887,7 @@ namespace PubNubMessaging.Tests
             }
 
             pubnub.EndPendingRequests ();
+            pubnub.CleanUp();
         }
 
         public IEnumerator SetAndGetStateAndParse (bool ssl, string testName)
@@ -913,6 +918,7 @@ namespace PubNubMessaging.Tests
             }
 
             pubnub.EndPendingRequests ();
+            pubnub.CleanUp();
         }
 
         public IEnumerator DoSubscribeThenDoGlobalHereNowAndParse (bool ssl, string testName, bool parseAsString)
@@ -1035,6 +1041,7 @@ namespace PubNubMessaging.Tests
 
             pubnub.Unsubscribe<string> (channel, this.DisplayReturnMessage, this.DisplayReturnMessage, this.DisplayReturnMessage, this.DisplayErrorMessage);
             pubnub.EndPendingRequests ();
+            pubnub.CleanUp();
         }
 
         public IEnumerator DoSubscribeThenDoWhereNowAndParse (bool ssl, string testName, bool parseAsString)
@@ -1116,6 +1123,7 @@ namespace PubNubMessaging.Tests
 
             pubnub.Unsubscribe<string> (channel, this.DisplayReturnMessage, this.DisplayReturnMessage, this.DisplayReturnMessage, this.DisplayErrorMessage);
             pubnub.EndPendingRequests ();
+            pubnub.CleanUp();
         }
 
         /*public IEnumerator DoSubscribeThenHereNowAsStringAndParse (bool ssl, string testName, bool parseAsString)
@@ -1260,6 +1268,7 @@ namespace PubNubMessaging.Tests
 
             pubnub.Unsubscribe<string> (channel, this.DisplayReturnMessage, this.DisplayReturnMessage, this.DisplayReturnMessage, this.DisplayErrorMessage);
             pubnub.EndPendingRequests ();
+            pubnub.CleanUp();
         }
 
         bool ParseDict (string matchUUID, object uuids)
@@ -1674,7 +1683,7 @@ namespace PubNubMessaging.Tests
             
             pubnub.PresenceUnsubscribe<string> (channel, this.DisplayReturnMessageDummy, this.DisplayReturnMessageDummy, this.DisplayReturnMessage, this.DisplayErrorMessage);
             pubnub.EndPendingRequests ();
-
+            pubnub.CleanUp();
         }
     }
 }

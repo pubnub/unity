@@ -28,7 +28,7 @@ namespace PubNubMessaging.Core
 
 		#region "Build Requests"
 		internal static Uri BuildPublishRequest (string channel, string message, bool storeInHistory, string uuid, 
-			bool ssl, string origin, string authenticationKey, string pnsdkVersion, 
+			bool ssl, string origin, string authenticationKey, 
 			string publishKey, string subscribeKey, string cipherKey, string secretKey)
 		{
 			string parameters = (storeInHistory) ? "" : "store=0";
@@ -62,12 +62,12 @@ namespace PubNubMessaging.Core
 			url.Add ("0");
 			url.Add (message);
 
-			return BuildRestApiRequest<Uri> (url, ResponseType.Publish, uuid, ssl, origin, 0, authenticationKey, pnsdkVersion, parameters);
+			return BuildRestApiRequest<Uri> (url, ResponseType.Publish, uuid, ssl, origin, 0, authenticationKey, parameters);
 		}
 
 		internal static Uri BuildDetailedHistoryRequest (string channel, long start, long end, 
 			int count, bool reverse, bool includeToken, string uuid, bool ssl, string origin, 
-			string authenticationKey, string pnsdkVersion, string subscribeKey)
+			string authenticationKey, string subscribeKey)
 		{
 			StringBuilder parameterBuilder = new StringBuilder ();
 			string parameters = "";
@@ -92,7 +92,7 @@ namespace PubNubMessaging.Core
 			}
 
             parameterBuilder.AppendFormat ("&uuid={0}", Utility.EncodeUricomponent (uuid, ResponseType.DetailedHistory, false, false));
-            parameterBuilder.AppendFormat ("&pnsdk={0}", Utility.EncodeUricomponent (pnsdkVersion, ResponseType.DetailedHistory, false, true));
+			parameterBuilder.AppendFormat ("&pnsdk={0}", Utility.EncodeUricomponent (PubnubUnity.Version, ResponseType.DetailedHistory, false, true));
 
 			parameters = parameterBuilder.ToString ();
 
@@ -105,11 +105,11 @@ namespace PubNubMessaging.Core
 			url.Add ("channel");
 			url.Add (channel);
 
-			return BuildRestApiRequest<Uri> (url, ResponseType.DetailedHistory, uuid, ssl, origin, 0, authenticationKey, pnsdkVersion, parameters);
+			return BuildRestApiRequest<Uri> (url, ResponseType.DetailedHistory, uuid, ssl, origin, 0, authenticationKey, parameters);
 		}
 
 		internal static Uri BuildHereNowRequest (string channel, bool showUUIDList, bool includeUserState, string uuid, 
-			bool ssl, string origin, string authenticationKey, string pnsdkVersion, string subscribeKey)
+			bool ssl, string origin, string authenticationKey, string subscribeKey)
 		{
 			int disableUUID = (showUUIDList) ? 0 : 1;
 			int userState = (includeUserState) ? 1 : 0;
@@ -124,11 +124,11 @@ namespace PubNubMessaging.Core
 			url.Add ("channel");
 			url.Add (channel);
 
-			return BuildRestApiRequest<Uri> (url, ResponseType.HereNow, uuid, ssl, origin, 0, authenticationKey, pnsdkVersion, parameters);
+			return BuildRestApiRequest<Uri> (url, ResponseType.HereNow, uuid, ssl, origin, 0, authenticationKey, parameters);
 		}
 
 		internal static Uri BuildGlobalHereNowRequest (bool showUUIDList, bool includeUserState, string uuid, 
-			bool ssl, string origin, string authenticationKey, string pnsdkVersion, string subscribeKey)
+			bool ssl, string origin, string authenticationKey, string subscribeKey)
 		{
 			int disableUUID = (showUUIDList) ? 0 : 1;
 			int userState = (includeUserState) ? 1 : 0;
@@ -141,11 +141,11 @@ namespace PubNubMessaging.Core
 			url.Add ("sub_key");
 			url.Add (subscribeKey);
 
-			return BuildRestApiRequest<Uri> (url, ResponseType.GlobalHereNow, uuid, ssl, origin, 0, authenticationKey, pnsdkVersion, parameters);
+			return BuildRestApiRequest<Uri> (url, ResponseType.GlobalHereNow, uuid, ssl, origin, 0, authenticationKey, parameters);
 		}
 
 		internal static Uri BuildWhereNowRequest (string uuid, string sessionUUID,
-			bool ssl, string origin, string authenticationKey, string pnsdkVersion, string subscribeKey)
+			bool ssl, string origin, string authenticationKey, string subscribeKey)
 		{
 			List<string> url = new List<string> ();
 
@@ -156,7 +156,7 @@ namespace PubNubMessaging.Core
 			url.Add ("uuid");
 			url.Add (uuid);
 
-			return BuildRestApiRequest<Uri> (url, ResponseType.WhereNow, sessionUUID, ssl, origin, 0, authenticationKey, pnsdkVersion, "");
+			return BuildRestApiRequest<Uri> (url, ResponseType.WhereNow, sessionUUID, ssl, origin, 0, authenticationKey, "");
 		}
 
 		internal static Uri BuildTimeRequest (string uuid, bool ssl, string origin, string pnsdkVersion)
@@ -166,11 +166,11 @@ namespace PubNubMessaging.Core
 			url.Add ("time");
 			url.Add ("0");
 
-			return BuildRestApiRequest<Uri> (url, ResponseType.Time, uuid, ssl, origin, 0, "", pnsdkVersion, "");
+			return BuildRestApiRequest<Uri> (url, ResponseType.Time, uuid, ssl, origin, 0, "", "");
 		}
 
 		internal static Uri BuildGrantAccessRequest (string channel, bool read, bool write, int ttl, string uuid, 
-			bool ssl, string origin, string authenticationKey, string pnsdkVersion, 
+			bool ssl, string origin, string authenticationKey, 
 			string publishKey, string subscribeKey, string cipherKey, string secretKey)
 		{
 			string signature = "0";
@@ -187,7 +187,7 @@ namespace PubNubMessaging.Core
 			}
 
 			queryStringBuilder.AppendFormat ("{0}", (queryStringBuilder.Length > 0) ? "&" : "");
-            queryStringBuilder.AppendFormat ("pnsdk={0}", Utility.EncodeUricomponent (pnsdkVersion, ResponseType.GrantAccess, false, true));
+			queryStringBuilder.AppendFormat ("pnsdk={0}", Utility.EncodeUricomponent (PubnubUnity.Version, ResponseType.GrantAccess, false, true));
 			queryStringBuilder.AppendFormat ("&r={0}", Convert.ToInt32 (read));
 			queryStringBuilder.AppendFormat ("&timestamp={0}", timeStamp.ToString ());
 			if (ttl > -1) {
@@ -221,11 +221,11 @@ namespace PubNubMessaging.Core
 			url.Add ("sub-key");
 			url.Add (subscribeKey);
 
-			return BuildRestApiRequest<Uri> (url, ResponseType.GrantAccess, uuid, ssl, origin, 0, authenticationKey, pnsdkVersion, parameters);
+			return BuildRestApiRequest<Uri> (url, ResponseType.GrantAccess, uuid, ssl, origin, 0, authenticationKey, parameters);
 		}
 
 		internal static Uri BuildAuditAccessRequest (string channel, string uuid, 
-			bool ssl, string origin, string authenticationKey, string pnsdkVersion,
+			bool ssl, string origin, string authenticationKey, 
 			string publishKey, string subscribeKey, string cipherKey, string secretKey)
 		{
 			string signature = "0";
@@ -239,7 +239,7 @@ namespace PubNubMessaging.Core
 			if (!string.IsNullOrEmpty (channel)) {
                 queryStringBuilder.AppendFormat ("{0}channel={1}", (queryStringBuilder.Length > 0) ? "&" : "", Utility.EncodeUricomponent (channel, ResponseType.AuditAccess, false, false));
 			}
-            queryStringBuilder.AppendFormat ("{0}pnsdk={1}", (queryStringBuilder.Length > 0) ? "&" : "", Utility.EncodeUricomponent (pnsdkVersion, ResponseType.AuditAccess, false, true));
+			queryStringBuilder.AppendFormat ("{0}pnsdk={1}", (queryStringBuilder.Length > 0) ? "&" : "", Utility.EncodeUricomponent (PubnubUnity.Version, ResponseType.AuditAccess, false, true));
 			queryStringBuilder.AppendFormat ("{0}timestamp={1}", (queryStringBuilder.Length > 0) ? "&" : "", timeStamp.ToString ());
             queryStringBuilder.AppendFormat ("{0}uuid={1}", (queryStringBuilder.Length > 0) ? "&" : "", Utility.EncodeUricomponent (uuid, ResponseType.AuditAccess, false, false));
 
@@ -268,11 +268,11 @@ namespace PubNubMessaging.Core
 			url.Add ("sub-key");
 			url.Add (subscribeKey);
 
-			return BuildRestApiRequest<Uri> (url, ResponseType.AuditAccess, uuid, ssl, origin, 0, authenticationKey, pnsdkVersion, parameters);
+			return BuildRestApiRequest<Uri> (url, ResponseType.AuditAccess, uuid, ssl, origin, 0, authenticationKey, parameters);
 		}
 
 		internal static Uri BuildSetUserStateRequest (string channel, string jsonUserState, string uuid, 
-			bool ssl, string origin, string authenticationKey, string pnsdkVersion, string subscribeKey)
+			bool ssl, string origin, string authenticationKey, string subscribeKey)
 		{
             string parameters = string.Format ("?state={0}", Utility.EncodeUricomponent (jsonUserState, ResponseType.SetUserState, false, false));
 
@@ -288,11 +288,11 @@ namespace PubNubMessaging.Core
 			url.Add (uuid);
 			url.Add ("data");
 
-			return BuildRestApiRequest<Uri> (url, ResponseType.SetUserState, uuid, ssl, origin, 0, authenticationKey, pnsdkVersion, parameters);
+			return BuildRestApiRequest<Uri> (url, ResponseType.SetUserState, uuid, ssl, origin, 0, authenticationKey, parameters);
 		}
 
 		internal static Uri BuildGetUserStateRequest (string channel, string uuid,
-			bool ssl, string origin, string authenticationKey, string pnsdkVersion, string subscribeKey)
+			bool ssl, string origin, string authenticationKey, string subscribeKey)
 		{
 			List<string> url = new List<string> ();
 
@@ -305,11 +305,11 @@ namespace PubNubMessaging.Core
 			url.Add ("uuid");
 			url.Add (uuid);
 
-			return BuildRestApiRequest<Uri> (url, ResponseType.GetUserState, uuid, ssl, origin, 0, authenticationKey, pnsdkVersion, "");
+			return BuildRestApiRequest<Uri> (url, ResponseType.GetUserState, uuid, ssl, origin, 0, authenticationKey, "");
 		}
 
 		internal static Uri BuildPresenceHeartbeatRequest (string[] channels, string channelsJsonState, string uuid,
-			bool ssl, string origin, string authenticationKey, string pnsdkVersion, string subscribeKey)
+			bool ssl, string origin, string authenticationKey, string subscribeKey)
 		{
 			string parameters = "";
 			if (channelsJsonState != "{}" && channelsJsonState != "") {
@@ -329,11 +329,11 @@ namespace PubNubMessaging.Core
 			url.Add (string.Join (",", channels));
 			url.Add ("heartbeat");
 
-			return BuildRestApiRequest<Uri> (url, ResponseType.PresenceHeartbeat, uuid, ssl, origin, 0, authenticationKey, pnsdkVersion, parameters);
+			return BuildRestApiRequest<Uri> (url, ResponseType.PresenceHeartbeat, uuid, ssl, origin, 0, authenticationKey, parameters);
 		}
 
 		internal static Uri BuildMultiChannelLeaveRequest (string[] channels, string uuid, 
-			bool ssl, string origin, string authenticationKey, string pnsdkVersion, string subscribeKey)
+			bool ssl, string origin, string authenticationKey, string subscribeKey)
 		{
 			List<string> url = new List<string> ();
 
@@ -345,11 +345,11 @@ namespace PubNubMessaging.Core
 			url.Add (string.Join (",", channels));
 			url.Add ("leave");
 
-			return BuildRestApiRequest<Uri> (url, ResponseType.Leave, uuid, ssl, origin, 0, authenticationKey, pnsdkVersion, "");
+			return BuildRestApiRequest<Uri> (url, ResponseType.Leave, uuid, ssl, origin, 0, authenticationKey, "");
 		}
 
 		internal static Uri BuildMultiChannelSubscribeRequest (string[] channels, object timetoken, string channelsJsonState, string uuid,
-			bool ssl, string origin, string authenticationKey, string pnsdkVersion, string subscribeKey)
+			bool ssl, string origin, string authenticationKey, string subscribeKey)
 		{
 			string parameters = "";
 
@@ -364,7 +364,7 @@ namespace PubNubMessaging.Core
 			url.Add ("0");
 			url.Add (timetoken.ToString ());
 
-			return BuildRestApiRequest<Uri> (url, ResponseType.Subscribe, uuid, ssl, origin, 0, authenticationKey, pnsdkVersion, parameters);
+			return BuildRestApiRequest<Uri> (url, ResponseType.Subscribe, uuid, ssl, origin, 0, authenticationKey, parameters);
 		}
 
         static StringBuilder AddSSLAndEncodeURL<T>(List<string> urlComponents, ResponseType type, bool ssl, string origin, StringBuilder url)
@@ -435,10 +435,10 @@ namespace PubNubMessaging.Core
 		//pnsdkVersion	
 		//parameters
 		private static Uri BuildRestApiRequest<T> (List<string> urlComponents, ResponseType type, string uuid, bool ssl, string origin, 
-			int pubnubPresenceHeartbeatInSeconds, string authenticationKey, string pnsdkVersion, string parameters)
+			int pubnubPresenceHeartbeatInSeconds, string authenticationKey, string parameters)
 		{
 			StringBuilder url = new StringBuilder ();
-
+			string pnsdkVersion = PubnubUnity.Version;
             uuid = Utility.EncodeUricomponent (uuid, type, false, false);
 
 			url = AddSSLAndEncodeURL<T>(urlComponents, type, ssl, origin, url);

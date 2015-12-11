@@ -85,7 +85,7 @@ namespace PubNubMessaging.Core
             }
         }
 
-        private static bool IsUnsafe (char ch, bool ignoreComma)
+        internal static bool IsUnsafe (char ch, bool ignoreComma)
         {
             if (ignoreComma) {
                 return " ~`!@#$%^&*()+=[]\\{}|;':\"/<>?".IndexOf (ch) >= 0;
