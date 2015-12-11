@@ -609,7 +609,7 @@ namespace PubNubMessaging.Core
 
         public bool Time<T> (Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
-            Uri request = BuildRequests.BuildTimeRequest (this.SessionUUID, this.ssl, this.Origin, Version);
+            Uri request = BuildRequests.BuildTimeRequest (this.SessionUUID, this.ssl, this.Origin);
 
             RequestState<T> requestState = BuildRequests.BuildRequestState<T> (null, ResponseType.Time, false, userCallback, null, errorCallback, 0, false, 0, null);
             return UrlProcessRequest<T> (request, requestState); 
@@ -980,7 +980,7 @@ namespace PubNubMessaging.Core
             try {
                 isHearbeatRunning = true;
                 Uri requestUrl = BuildRequests.BuildTimeRequest (this.SessionUUID,
-                    this.ssl, this.Origin, Version);
+                    this.ssl, this.Origin);
 
                 coroutine.HeartbeatCoroutineComplete += CoroutineCompleteHandler<T>;
                 //for heartbeat and presence heartbeat treat reconnect as pause

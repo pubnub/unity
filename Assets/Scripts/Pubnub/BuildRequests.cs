@@ -159,7 +159,7 @@ namespace PubNubMessaging.Core
 			return BuildRestApiRequest<Uri> (url, ResponseType.WhereNow, sessionUUID, ssl, origin, 0, authenticationKey, "");
 		}
 
-		internal static Uri BuildTimeRequest (string uuid, bool ssl, string origin, string pnsdkVersion)
+		internal static Uri BuildTimeRequest (string uuid, bool ssl, string origin)
 		{
 			List<string> url = new List<string> ();
 
