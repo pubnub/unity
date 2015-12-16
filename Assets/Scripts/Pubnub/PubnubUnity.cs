@@ -1097,14 +1097,14 @@ namespace PubNubMessaging.Core
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0} NonSub timeout={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelError);
                 #endif
-                ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (cea.PubnubRequestState.Type, cea.PubnubRequestState.Channels, 
+				ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (cea.Message.ToString (), cea.PubnubRequestState.Type, cea.PubnubRequestState.Channels, 
                     true, cea.PubnubRequestState.UserCallback, cea.PubnubRequestState.ConnectCallback, 
                     cea.PubnubRequestState.ErrorCallback, false, PubnubErrorLevel);
             } else if (cea.IsError) {
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0} NonSub Error={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelError);
                 #endif
-                ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (cea.PubnubRequestState.Type, cea.PubnubRequestState.Channels, 
+				ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (cea.Message.ToString (), cea.PubnubRequestState.Type, cea.PubnubRequestState.Channels, 
                     false, cea.PubnubRequestState.UserCallback, cea.PubnubRequestState.ConnectCallback, 
                     cea.PubnubRequestState.ErrorCallback, false, PubnubErrorLevel);
             } else {
@@ -1176,7 +1176,7 @@ namespace PubNubMessaging.Core
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0} Exception={1}", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
                 #endif
 
-                ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (cea.PubnubRequestState.Type, cea.PubnubRequestState.Channels, 
+				ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (ex.Message, cea.PubnubRequestState.Type, cea.PubnubRequestState.Channels, 
                     false, cea.PubnubRequestState.UserCallback, cea.PubnubRequestState.ConnectCallback, 
                     cea.PubnubRequestState.ErrorCallback, false, PubnubErrorLevel);
             } 
@@ -1569,7 +1569,7 @@ namespace PubNubMessaging.Core
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0} Exception={1}", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
                 #endif
 
-                ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (pubnubRequestState.Type, pubnubRequestState.Channels, 
+                ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (ex.Message, pubnubRequestState.Type, pubnubRequestState.Channels, 
                     false, pubnubRequestState.UserCallback, pubnubRequestState.ConnectCallback, 
                     pubnubRequestState.ErrorCallback, false, PubnubErrorLevel);
                 return false;

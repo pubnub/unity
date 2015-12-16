@@ -583,6 +583,44 @@ namespace PubNubMessaging.Core
             return CreatePubnubClientError<T> (ex, requestState, channel, errorCode, severity);
         }
 
+		internal static PubnubErrorCode GetTimeOutErrorCode (ResponseType responseType)
+		{
+			switch(responseType){
+			case ResponseType.AuditAccess:
+			case ResponseType.GrantAccess:
+			case ResponseType.RevokeAccess:
+				return PubnubErrorCode.PAMAccessOperationTimeout;
+			case ResponseType.DetailedHistory:
+			case ResponseType.History:
+				return PubnubErrorCode.DetailedHistoryOperationTimeout;
+			case ResponseType.GetUserState:
+				return PubnubErrorCode.GetUserStateTimeout;
+			case ResponseType.GlobalHereNow:
+				return PubnubErrorCode.GlobalHereNowOperationTimeout;
+			case ResponseType.SetUserState:
+				return PubnubErrorCode.SetUserStateTimeout;
+			case ResponseType.HereNow:
+				return PubnubErrorCode.HereNowOperationTimeout;
+			case ResponseType.Publish:
+				return PubnubErrorCode.PublishOperationTimeout;
+			case ResponseType.Time:
+				return PubnubErrorCode.TimeOperationTimeout;
+			case ResponseType.WhereNow:
+				return PubnubErrorCode.WhereNowOperationTimeout;
+			default:
+				/* 
+				 * ResponseType.Presence:
+				 * ResponseType.PresenceUnsubscribe:
+				 * ResponseType.Leave:
+				 * ResponseType.Subscribe:
+				 * ResponseType.Unsubscribe:
+				 * ResponseType.Heartbeat:
+				 * ResponseType.PresenceHeartbeat:
+				 */
+				return PubnubErrorCode.OperationTimeout;
+			}
+		}
+
         internal static PubnubClientError CreatePubnubClientError<T>(Exception ex, 
             RequestState<T> requestState, string channel, PubnubErrorCode errorCode, PubnubErrorSeverity severity){
 
