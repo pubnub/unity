@@ -2,6 +2,8 @@ using System;
 using PubNubMessaging.Core;
 using NUnit.Framework;
 using System.Text;
+using UnityEngine;
+using System.Collections;
 
 namespace PubNubMessaging.Tests
 {
@@ -16,6 +18,7 @@ namespace PubNubMessaging.Tests
 		ResponseType CRequestType;
 		string[] Channels;
 		bool ResumeOnReconnect;
+		bool waitForCompletion = true;
 
 		void UserCallback (string result)
 		{
@@ -919,9 +922,12 @@ namespace PubNubMessaging.Tests
 			Channels = channel;
 			ResumeOnReconnect = true;
 			ExceptionStatusCode = (int)PubnubErrorCode.OperationTimeout;
+
+			ExceptionHandlers.MultiplexException += HandleMultiplexException<object>;
 			TestUrlRequestCommonExceptionHandlerCommon<object> ("test message", channel, true,
 				ResponseType.Subscribe, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
 			);
+
 		}
 
 		[Test]
@@ -930,6 +936,7 @@ namespace PubNubMessaging.Tests
 			string[] channel = {"test"}; 
 			Channels = channel;
 			ResumeOnReconnect = true;
+			ExceptionHandlers.MultiplexException += HandleMultiplexException<object>;
 			TestUrlRequestCommonExceptionHandlerCommon<object> ("test message", channel, true,
 				ResponseType.Subscribe, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
 			);
@@ -942,6 +949,7 @@ namespace PubNubMessaging.Tests
 			Channels = channel;
 			ResumeOnReconnect = false;
 			ExceptionStatusCode = (int)PubnubErrorCode.OperationTimeout;
+			ExceptionHandlers.MultiplexException += HandleMultiplexException<object>;
 			TestUrlRequestCommonExceptionHandlerCommon<object> ("test message", channel, false,
 				ResponseType.Subscribe, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
 			);
@@ -953,6 +961,7 @@ namespace PubNubMessaging.Tests
 			string[] channel = {"test"}; 
 			Channels = channel;
 			ResumeOnReconnect = false;
+			ExceptionHandlers.MultiplexException += HandleMultiplexException<object>;
 			TestUrlRequestCommonExceptionHandlerCommon<object> ("test message", channel, false,
 				ResponseType.Subscribe, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
 			);
@@ -965,6 +974,7 @@ namespace PubNubMessaging.Tests
 			Channels = channel;
 			ResumeOnReconnect = true;
 			ExceptionStatusCode = (int)PubnubErrorCode.OperationTimeout;
+			ExceptionHandlers.MultiplexException += HandleMultiplexException<object>;
 			TestUrlRequestCommonExceptionHandlerCommon<object> ("test message", channel, true,
 				ResponseType.Presence, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
 			);
@@ -976,6 +986,7 @@ namespace PubNubMessaging.Tests
 			string[] channel = {"test"}; 
 			Channels = channel;
 			ResumeOnReconnect = true;
+			ExceptionHandlers.MultiplexException += HandleMultiplexException<object>;
 			TestUrlRequestCommonExceptionHandlerCommon<object> ("test message", channel, true,
 				ResponseType.Presence, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
 			);
@@ -987,6 +998,7 @@ namespace PubNubMessaging.Tests
 			string[] channel = {"test"}; 
 			Channels = channel;
 			ResumeOnReconnect = false;
+			ExceptionHandlers.MultiplexException += HandleMultiplexException<object>;
 			ExceptionStatusCode = (int)PubnubErrorCode.OperationTimeout;
 			TestUrlRequestCommonExceptionHandlerCommon<object> ("test message", channel, false,
 				ResponseType.Presence, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
@@ -999,6 +1011,7 @@ namespace PubNubMessaging.Tests
 			string[] channel = {"test"}; 
 			Channels = channel;
 			ResumeOnReconnect = false;
+			ExceptionHandlers.MultiplexException += HandleMultiplexException<object>;
 			TestUrlRequestCommonExceptionHandlerCommon<object> ("test message", channel, false,
 				ResponseType.Presence, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
 			);
@@ -1311,6 +1324,7 @@ namespace PubNubMessaging.Tests
 			string[] channel = {"test"}; 
 			Channels = channel;
 			ResumeOnReconnect = true;
+			ExceptionHandlers.MultiplexException += HandleMultiplexException<string>;
 			TestUrlRequestCommonExceptionHandlerCommon<string> ("test message", channel, true,
 				ResponseType.Subscribe, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
 			);
@@ -1323,6 +1337,7 @@ namespace PubNubMessaging.Tests
 			Channels = channel;
 			ResumeOnReconnect = false;
 			ExceptionStatusCode = (int)PubnubErrorCode.OperationTimeout;
+			ExceptionHandlers.MultiplexException += HandleMultiplexException<string>;
 			TestUrlRequestCommonExceptionHandlerCommon<string> ("test message", channel, false,
 				ResponseType.Subscribe, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
 			);
@@ -1334,6 +1349,7 @@ namespace PubNubMessaging.Tests
 			string[] channel = {"test"}; 
 			Channels = channel;
 			ResumeOnReconnect = false;
+			ExceptionHandlers.MultiplexException += HandleMultiplexException<string>;
 			TestUrlRequestCommonExceptionHandlerCommon<string> ("test message", channel, false,
 				ResponseType.Subscribe, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
 			);
@@ -1345,6 +1361,7 @@ namespace PubNubMessaging.Tests
 			string[] channel = {"test"}; 
 			Channels = channel;
 			ResumeOnReconnect = true;
+			ExceptionHandlers.MultiplexException += HandleMultiplexException<string>;
 			ExceptionStatusCode = (int)PubnubErrorCode.OperationTimeout;
 			TestUrlRequestCommonExceptionHandlerCommon<string> ("test message", channel, true,
 				ResponseType.Presence, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
@@ -1357,6 +1374,7 @@ namespace PubNubMessaging.Tests
 			string[] channel = {"test"}; 
 			Channels = channel;
 			ResumeOnReconnect = true;
+			ExceptionHandlers.MultiplexException += HandleMultiplexException<string>;
 			TestUrlRequestCommonExceptionHandlerCommon<string> ("test message", channel, true,
 				ResponseType.Presence, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
 			);
@@ -1368,6 +1386,7 @@ namespace PubNubMessaging.Tests
 			string[] channel = {"test"}; 
 			Channels = channel;
 			ResumeOnReconnect = false;
+			ExceptionHandlers.MultiplexException += HandleMultiplexException<string>;
 			ExceptionStatusCode = (int)PubnubErrorCode.OperationTimeout;
 			TestUrlRequestCommonExceptionHandlerCommon<string> ("test message", channel, false,
 				ResponseType.Presence, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
@@ -1380,6 +1399,7 @@ namespace PubNubMessaging.Tests
 			string[] channel = {"test"}; 
 			Channels = channel;
 			ResumeOnReconnect = false;
+			ExceptionHandlers.MultiplexException += HandleMultiplexException<string>;
 			TestUrlRequestCommonExceptionHandlerCommon<string> ("test message", channel, false,
 				ResponseType.Presence, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
 			);
@@ -1695,22 +1715,38 @@ namespace PubNubMessaging.Tests
 			} else {
 				ExceptionStatusCode = (int)PubnubErrorCode.None;
 			}
-
+			CRequestType = responseType;
 			ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (message, responseType, channels, 
 				timeout, userCallback, connectCallback, errorCallback, resumeOnReconnect, errorLevel );
+
+			/*if (responseType == ResponseType.Presence || responseType == ResponseType.Subscribe) {
+				//waitForCompletion = true;
+				DateTime dt = DateTime.Now;
+				while (dt.AddSeconds(2) > DateTime.Now) {
+					UnityEngine.Debug.Log ("waiting");
+				}
+			}*/
 		}	
+
+		IEnumerator Wait()
+		{
+			yield return new WaitForSeconds(2.0f);
+		}
 
 		private void HandleMultiplexException<T> (object sender, EventArgs ea)
 		{
+			ExceptionHandlers.MultiplexException -= HandleMultiplexException<T>;
 			MultiplexExceptionEventArgs<T> mea = ea as MultiplexExceptionEventArgs<T>;
-			UnityEngine.Debug.Log (string.Format ("HandleMultiplexException LOG: {0} {1} {2}",
+			UnityEngine.Debug.Log (string.Format ("HandleMultiplexException LOG: {0} {1} {2} {3} {4} {5} {6} {7} {8}",
 				mea.requestType.Equals (CRequestType) ,
 				mea.channels.Equals (Channels),
-				mea.resumeOnReconnect.Equals(ResumeOnReconnect)
+				mea.resumeOnReconnect.Equals(ResumeOnReconnect), CRequestType.ToString(), 
+				string.Join(",",Channels), ResumeOnReconnect, mea.requestType,
+				string.Join(",",mea.channels), mea.resumeOnReconnect
 			));
-
+			//waitForCompletion = false;
 			Assert.True (mea.requestType.Equals (CRequestType) 
-				&& mea.channels.Equals (Channels)
+				&& string.Join(",",mea.channels).Equals (string.Join(",",Channels))
 				&& mea.resumeOnReconnect.Equals(ResumeOnReconnect)
 			);
 		}

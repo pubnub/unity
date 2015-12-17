@@ -52,6 +52,7 @@ namespace PubNubMessaging.Tests
 			return "UnityUnitTests_" + r.Next (100);
 		}
 
+
 		public static void LogAndCompare(string expected, string received)
 		{
 			UnityEngine.Debug.Log("Expected:" + expected);
