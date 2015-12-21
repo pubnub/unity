@@ -126,9 +126,9 @@ namespace PubNubMessaging.Core
             SafeDictionary<PubnubChannelCallbackKey, object> channelCallbacks, IJsonPluggableLibrary jsonPluggableLibrary)
         {
             if (result != null && result.Count >= 1 && asynchRequestState.UserCallback != null) {
-                Helpers.ResponseToConnectCallback<T> (result, asynchRequestState.Type, asynchRequestState.Channels, 
+                Helpers.ResponseToConnectCallback<T> (result, asynchRequestState.respType, asynchRequestState.Channels, 
                     asynchRequestState.ConnectCallback, multiChannelSubscribe, channelCallbacks, jsonPluggableLibrary);
-                Helpers.ResponseToUserCallback<T> (result, asynchRequestState.Type, asynchRequestState.Channels, 
+                Helpers.ResponseToUserCallback<T> (result, asynchRequestState.respType, asynchRequestState.Channels, 
                     asynchRequestState.UserCallback, cipherKey, channelCallbacks, jsonPluggableLibrary);
             }
         }

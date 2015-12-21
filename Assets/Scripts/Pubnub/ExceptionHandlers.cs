@@ -10,7 +10,7 @@ namespace PubNubMessaging.Core
         internal string[] channels;
         internal bool reconnectMaxTried;
         internal bool resumeOnReconnect;
-        internal ResponseType requestType;
+        internal ResponseType responseType;
         internal Action<T> userCallback; 
         internal Action<T> connectCallback; 
         internal Action<PubnubClientError> errorCallback;
@@ -76,10 +76,10 @@ namespace PubNubMessaging.Core
         internal static void ResponseCallbackWebExceptionHandler<T> (CustomEventArgs<T> cea, RequestState<T> requestState, 
             WebException webEx, string channel, SafeDictionary<PubnubChannelCallbackKey, object> channelCallbacks, 
             PubnubErrorFilter.Level errorLevel){
-            if (requestState.Channels != null || requestState.Type == ResponseType.Time) {
+            if (requestState.Channels != null || requestState.respType == ResponseType.Time) {
 
-                if (requestState.Type == ResponseType.Subscribe
-                    || requestState.Type == ResponseType.Presence) {
+                if (requestState.respType == ResponseType.Subscribe
+                    || requestState.respType == ResponseType.Presence) {
 
                     if (webEx.Message.IndexOf ("The request was aborted: The request was canceled") == -1
                         || webEx.Message.IndexOf ("Machine suspend mode enabled. No request will be processed.") == -1) {
@@ -105,8 +105,8 @@ namespace PubNubMessaging.Core
             #endif
             if (requestState.Channels != null) {
 
-                if (requestState.Type == ResponseType.Subscribe
-                    || requestState.Type == ResponseType.Presence) {
+                if (requestState.respType == ResponseType.Subscribe
+                    || requestState.respType == ResponseType.Presence) {
 
                     PubnubCallbacks.FireErrorCallbacksForAllChannels (ex, requestState, 
                         PubnubErrorSeverity.Warn, channelCallbacks, 
@@ -126,7 +126,7 @@ namespace PubNubMessaging.Core
             #if (ENABLE_PUBNUB_LOGGING)
             LoggingMethod.WriteToLog (string.Format ("DateTime {0} Exception= {1} for URL: {2}", DateTime.Now.ToString (), ex.ToString (), asynchRequestState.Request.RequestUri.ToString ()), LoggingMethod.LevelInfo);
             #endif
-			UrlRequestCommonExceptionHandler<T> (ex.Message, asynchRequestState.Type, asynchRequestState.Channels, asynchRequestState.Timeout, 
+			UrlRequestCommonExceptionHandler<T> (ex.Message, asynchRequestState.respType, asynchRequestState.Channels, asynchRequestState.Timeout, 
                 asynchRequestState.UserCallback, asynchRequestState.ConnectCallback, asynchRequestState.ErrorCallback, false, errorLevel);
         }
 
@@ -141,11 +141,11 @@ namespace PubNubMessaging.Core
             }
             #endif
 
-			UrlRequestCommonExceptionHandler<T> (webEx.Message, asynchRequestState.Type, asynchRequestState.Channels, asynchRequestState.Timeout,
+			UrlRequestCommonExceptionHandler<T> (webEx.Message, asynchRequestState.respType, asynchRequestState.Channels, asynchRequestState.Timeout,
                 asynchRequestState.UserCallback, asynchRequestState.ConnectCallback, asynchRequestState.ErrorCallback, false, errorLevel);
         }
 
-        static void FireMultiplexException<T>(ResponseType type, string[] channels, Action<T> userCallback, 
+        static void FireMultiplexException<T>(ResponseType respType, string[] channels, Action<T> userCallback, 
             Action<T> connectCallback, Action<PubnubClientError> errorCallback, bool resumeOnReconnect)
         {
             #if (ENABLE_PUBNUB_LOGGING)
@@ -157,7 +157,7 @@ namespace PubNubMessaging.Core
             mea.errorCallback = errorCallback;
             mea.resumeOnReconnect = resumeOnReconnect;
             mea.reconnectMaxTried = false;
-            mea.requestType = type;
+			mea.responseType = respType;
             mea.userCallback = userCallback;
 
             multiplexException.Raise(typeof(ExceptionHandlers), mea);

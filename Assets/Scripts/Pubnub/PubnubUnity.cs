@@ -47,7 +47,7 @@ namespace PubNubMessaging.Core
         private string subscribeKey = "";
         private string secretKey = "";
         private string cipherKey = "";
-        private bool ssl = false;
+        private bool ssl = true;
         private static long lastSubscribeTimetoken = 0;
         private static long lastSubscribeTimetokenForNewMultiplex = 0;
         private const string build = "3.6.9.0";
@@ -1097,21 +1097,21 @@ namespace PubNubMessaging.Core
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0} NonSub timeout={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelError);
                 #endif
-				ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (cea.Message.ToString (), cea.PubnubRequestState.Type, cea.PubnubRequestState.Channels, 
+				ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (cea.Message.ToString (), cea.PubnubRequestState.respType, cea.PubnubRequestState.Channels, 
                     true, cea.PubnubRequestState.UserCallback, cea.PubnubRequestState.ConnectCallback, 
                     cea.PubnubRequestState.ErrorCallback, false, PubnubErrorLevel);
             } else if (cea.IsError) {
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0} NonSub Error={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelError);
                 #endif
-				ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (cea.Message.ToString (), cea.PubnubRequestState.Type, cea.PubnubRequestState.Channels, 
+				ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (cea.Message.ToString (), cea.PubnubRequestState.respType, cea.PubnubRequestState.Channels, 
                     false, cea.PubnubRequestState.UserCallback, cea.PubnubRequestState.ConnectCallback, 
                     cea.PubnubRequestState.ErrorCallback, false, PubnubErrorLevel);
             } else {
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0} NonSub Message={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelInfo);
                 #endif
-                var result = Helpers.WrapResultBasedOnResponseType<T> (cea.PubnubRequestState.Type, cea.Message, 
+                var result = Helpers.WrapResultBasedOnResponseType<T> (cea.PubnubRequestState.respType, cea.Message, 
                     cea.PubnubRequestState.Channels, cea.PubnubRequestState.ErrorCallback, channelCallbacks, 
                     JsonPluggableLibrary, PubnubErrorLevel, this.cipherKey);
 
@@ -1123,9 +1123,9 @@ namespace PubNubMessaging.Core
         private void ProcessCoroutineCompleteResponse<T> (CustomEventArgs<T> cea)
         {
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, In handler of event cea {1} RequestType CoroutineCompleteHandler {2}", DateTime.Now.ToString (), cea.PubnubRequestState.Type.ToString (), typeof(T)), LoggingMethod.LevelInfo);
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, In handler of event cea {1} RequestType CoroutineCompleteHandler {2}", DateTime.Now.ToString (), cea.PubnubRequestState.respType.ToString (), typeof(T)), LoggingMethod.LevelInfo);
             #endif
-            switch (cea.PubnubRequestState.Type) {
+            switch (cea.PubnubRequestState.respType) {
             case ResponseType.Heartbeat:
 
                 HeartbeatHandler<T> (cea);
@@ -1176,7 +1176,7 @@ namespace PubNubMessaging.Core
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0} Exception={1}", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
                 #endif
 
-				ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (ex.Message, cea.PubnubRequestState.Type, cea.PubnubRequestState.Channels, 
+				ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (ex.Message, cea.PubnubRequestState.respType, cea.PubnubRequestState.Channels, 
                     false, cea.PubnubRequestState.UserCallback, cea.PubnubRequestState.ConnectCallback, 
                     cea.PubnubRequestState.ErrorCallback, false, PubnubErrorLevel);
             } 
@@ -1192,22 +1192,22 @@ namespace PubNubMessaging.Core
             }
 
             if (!jsonString.Equals("[]")) {
-                result = Helpers.WrapResultBasedOnResponseType<T> (requestState.Type, jsonString, requestState.Channels, 
+                result = Helpers.WrapResultBasedOnResponseType<T> (requestState.respType, jsonString, requestState.Channels, 
                      requestState.ErrorCallback, channelCallbacks, JsonPluggableLibrary, PubnubErrorLevel, this.cipherKey);
 
                 ParseReceiedTimetoken<T> (requestState, result);
             }
             Helpers.ProcessResponseCallbacks<T> (result, requestState, multiChannelSubscribe, this.cipherKey, channelCallbacks, JsonPluggableLibrary);
 
-            if (requestState.Type == ResponseType.Subscribe || requestState.Type == ResponseType.Presence) {
+            if (requestState.respType == ResponseType.Subscribe || requestState.respType == ResponseType.Presence) {
                 foreach (string currentChannel in requestState.Channels) {
                     multiChannelSubscribe.AddOrUpdate (currentChannel, Convert.ToInt64 (result [1].ToString ()), (key, oldValue) => Convert.ToInt64 (result [1].ToString ()));
                 }
             }
-            switch (requestState.Type) {
+            switch (requestState.respType) {
             case ResponseType.Subscribe:
             case ResponseType.Presence:
-                MultiplexInternalCallback<T> (requestState.Type, result, requestState.UserCallback, requestState.ConnectCallback, requestState.ErrorCallback, false);
+                MultiplexInternalCallback<T> (requestState.respType, result, requestState.UserCallback, requestState.ConnectCallback, requestState.ErrorCallback, false);
                 break;
             default:
                 break;
@@ -1296,7 +1296,7 @@ namespace PubNubMessaging.Core
         private void HandleMultiplexException<T> (object sender, EventArgs ea)
         {
             MultiplexExceptionEventArgs<T> mea = ea as MultiplexExceptionEventArgs<T>;
-            MultiplexExceptionHandler<T> (mea.requestType, mea.channels, mea.userCallback, 
+            MultiplexExceptionHandler<T> (mea.responseType, mea.channels, mea.userCallback, 
                 mea.connectCallback, mea.errorCallback, mea.reconnectMaxTried, mea.resumeOnReconnect);
         }
 
@@ -1502,7 +1502,7 @@ namespace PubNubMessaging.Core
 
         private void RunRequests<T> (Uri requestUri, RequestState<T> pubnubRequestState, string channel)
         {
-            if (pubnubRequestState.Type == ResponseType.Subscribe || pubnubRequestState.Type == ResponseType.Presence) {
+            if (pubnubRequestState.respType == ResponseType.Subscribe || pubnubRequestState.respType == ResponseType.Presence) {
                 channelRequest.AddOrUpdate (channel, pubnubRequestState.Request, (key, oldState) => pubnubRequestState.Request);
                 RequestState<T> pubnubRequestStateHB = pubnubRequestState;
                 pubnubRequestStateHB.ID = DateTime.Now.Ticks;
@@ -1540,7 +1540,7 @@ namespace PubNubMessaging.Core
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, In Url process request", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
                 #endif
-                if (!channelRequest.ContainsKey (channel) && (pubnubRequestState.Type == ResponseType.Subscribe || pubnubRequestState.Type == ResponseType.Presence)) {
+                if (!channelRequest.ContainsKey (channel) && (pubnubRequestState.respType == ResponseType.Subscribe || pubnubRequestState.respType == ResponseType.Presence)) {
                     #if (ENABLE_PUBNUB_LOGGING)
                     LoggingMethod.WriteToLog (string.Format ("DateTime {0}, In Url process request check", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
                     #endif
@@ -1569,7 +1569,7 @@ namespace PubNubMessaging.Core
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0} Exception={1}", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
                 #endif
 
-                ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (ex.Message, pubnubRequestState.Type, pubnubRequestState.Channels, 
+                ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (ex.Message, pubnubRequestState.respType, pubnubRequestState.Channels, 
                     false, pubnubRequestState.UserCallback, pubnubRequestState.ConnectCallback, 
                     pubnubRequestState.ErrorCallback, false, PubnubErrorLevel);
                 return false;

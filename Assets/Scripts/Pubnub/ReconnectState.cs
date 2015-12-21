@@ -113,7 +113,7 @@ namespace PubNubMessaging.Core
         public Action<T> ConnectCallback;
         public PubnubWebRequest Request;
         public PubnubWebResponse Response;
-        public ResponseType Type;
+        public ResponseType respType;
         public string[] Channels;
         public bool Timeout;
         public bool Reconnect;
@@ -147,6 +147,7 @@ namespace PubNubMessaging.Core
             TypeParameterType = requestState.TypeParameterType;
             UserCallback = requestState.UserCallback as Action<T>;
             ID = requestState.ID;
+			respType = requestState.respType;
         }
 
         public void SetRequestState<U> (

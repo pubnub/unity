@@ -13,7 +13,7 @@ namespace PubNubMessaging.Core
         ){
             RequestState<T> requestState = new RequestState<T> ();
             requestState.Channels = channel;
-            requestState.Type = responseType;
+            requestState.respType = responseType;
             requestState.Reconnect = reconnect;
             requestState.UserCallback = userCallback;
             requestState.ErrorCallback = errorCallback;

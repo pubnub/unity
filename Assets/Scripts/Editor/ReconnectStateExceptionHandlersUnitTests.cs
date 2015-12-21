@@ -1738,14 +1738,14 @@ namespace PubNubMessaging.Tests
 			ExceptionHandlers.MultiplexException -= HandleMultiplexException<T>;
 			MultiplexExceptionEventArgs<T> mea = ea as MultiplexExceptionEventArgs<T>;
 			UnityEngine.Debug.Log (string.Format ("HandleMultiplexException LOG: {0} {1} {2} {3} {4} {5} {6} {7} {8}",
-				mea.requestType.Equals (CRequestType) ,
+				mea.responseType.Equals (CRequestType) ,
 				mea.channels.Equals (Channels),
 				mea.resumeOnReconnect.Equals(ResumeOnReconnect), CRequestType.ToString(), 
-				string.Join(",",Channels), ResumeOnReconnect, mea.requestType,
+				string.Join(",",Channels), ResumeOnReconnect, mea.responseType,
 				string.Join(",",mea.channels), mea.resumeOnReconnect
 			));
 			//waitForCompletion = false;
-			Assert.True (mea.requestType.Equals (CRequestType) 
+			Assert.True (mea.responseType.Equals (CRequestType) 
 				&& string.Join(",",mea.channels).Equals (string.Join(",",Channels))
 				&& mea.resumeOnReconnect.Equals(ResumeOnReconnect)
 			);
