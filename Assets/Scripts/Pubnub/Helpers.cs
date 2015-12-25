@@ -8,6 +8,7 @@ namespace PubNubMessaging.Core
 {
     internal static class Helpers
     {
+		#region "Helpers"
         internal static bool CheckChannelsInMultiChannelSubscribeRequest(string multiChannel, 
             SafeDictionary<string, long> multiChannelSubscribe, SafeDictionary<string, PubnubWebRequest> channelRequest)
         {
@@ -132,13 +133,13 @@ namespace PubNubMessaging.Core
                     asynchRequestState.UserCallback, cipherKey, channelCallbacks, jsonPluggableLibrary);
             }
         }
+		#endregion
 
         #region "Encoding and Crypto"
 
         internal static string JsonEncodePublishMsg (object originalMessage, string cipherKey, IJsonPluggableLibrary jsonPluggableLibrary)
         {
             string message = jsonPluggableLibrary.SerializeToJsonString (originalMessage);
-
 
             if (cipherKey.Length > 0) {
                 PubnubCrypto aes = new PubnubCrypto (cipherKey);

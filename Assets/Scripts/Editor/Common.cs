@@ -61,6 +61,24 @@ namespace PubNubMessaging.Tests
 		}
 
 
+		internal static SafeDictionary<PubnubChannelCallbackKey, object> CreateChannelCallbacks<T>(string[] channels, ResponseType responseType,
+			Action<T> userCallback, Action<T> connectCallback, Action<PubnubClientError> errorCallback){
+
+			SafeDictionary<PubnubChannelCallbackKey, object> channelCallbacks = new SafeDictionary<PubnubChannelCallbackKey, object> ();
+
+			foreach (string channel in channels) {
+				PubnubChannelCallbackKey callbackKey = new PubnubChannelCallbackKey ();
+				callbackKey.Channel = channel;
+				callbackKey.Type = responseType;
+				PubnubChannelCallback<T> pubnubChannelCallbacks = new PubnubChannelCallback<T> ();
+				pubnubChannelCallbacks.Callback = userCallback;
+				pubnubChannelCallbacks.ConnectCallback = connectCallback;
+				pubnubChannelCallbacks.ErrorCallback = errorCallback;
+				channelCallbacks.AddOrUpdate (callbackKey, pubnubChannelCallbacks, (key, oldValue) => pubnubChannelCallbacks);
+			}
+			return channelCallbacks;
+
+		}
         /// <summary>
         /// Blocks the current thread unit the response is received
         /// or timeout occurs
