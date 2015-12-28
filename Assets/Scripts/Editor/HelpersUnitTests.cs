@@ -3,6 +3,7 @@ using PubNubMessaging.Core;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 
 namespace PubNubMessaging.Tests
 {
@@ -17,6 +18,8 @@ namespace PubNubMessaging.Tests
 		List<object> resultList = new List<object>();
 		string ExpectedConnectResponse = "";
 		string ExpectedRegularResponse = "";
+		bool ExpectedCallback = false;
+		bool ExpectedConnect = false;
 
 		[Test]
 		public void TestCheckChannelsInMultiChannelSubscribeRequestFalse2 (){
@@ -263,7 +266,7 @@ namespace PubNubMessaging.Tests
 			foreach (string currentChannel in multiChannel) {
 				multiChannelSubscribe.AddOrUpdate (currentChannel, 14498416434364941, (key, oldValue) => Convert.ToInt64 (14498416434364941));
 			}
-			bool result1 = false;
+
 			Action<PubnubClientError> errorcb = ErrorCallbackCommonExceptionHandler;
 			if (!readCallback) {
 				errorcb = null;
@@ -371,7 +374,7 @@ namespace PubNubMessaging.Tests
 			foreach (string currentChannel in multiChannel) {
 				multiChannelSubscribe.AddOrUpdate (currentChannel, 14498416434364941, (key, oldValue) => Convert.ToInt64 (14498416434364941));
 			}
-			bool result1 = false;
+
 
 			Action<PubnubClientError> errorcb = ErrorCallbackCommonExceptionHandler;
 			if (!readCallback) {
@@ -425,18 +428,24 @@ namespace PubNubMessaging.Tests
 		void UserCallbackCommonExceptionHandler (string result)
 		{
 			UnityEngine.Debug.Log (string.Format ("REGULAR CALLBACK LOG: {0}", result));
-			bool bRes = result.Equals (ExpectedRegularResponse);
-			UnityEngine.Debug.Log (string.Format ("REGULAR CALLBACK: {0}", bRes));
-			Assert.IsTrue (bRes);
+			if (ExpectedCallback) {
+				bool bRes = result.Equals (ExpectedRegularResponse);
+				UnityEngine.Debug.Log (string.Format ("REGULAR CALLBACK: {0}", bRes));
+
+				Assert.IsTrue (bRes);
+			}
 
 		}
 
 		void UserCallbackCommonExceptionHandler (object result)
 		{
 			UnityEngine.Debug.Log (string.Format ("REGULAR CALLBACK LOG: {0}", result.ToString()));
-			bool bRes = result.Equals (ExpectedRegularResponse);
-			UnityEngine.Debug.Log (string.Format ("REGULAR CALLBACK: {0}", bRes));
-			Assert.IsTrue (bRes);
+			if (ExpectedCallback) {
+				bool bRes = result.Equals (ExpectedRegularResponse);
+				UnityEngine.Debug.Log (string.Format ("REGULAR CALLBACK Obj: {0}", bRes));
+
+				Assert.IsTrue (bRes);
+			}
 		}
 
 		void DisconnectCallbackCommonExceptionHandler (string result)
@@ -447,24 +456,28 @@ namespace PubNubMessaging.Tests
 		void ConnectCallbackCommonExceptionHandler (string result)
 		{
 			UnityEngine.Debug.Log (string.Format ("CONNECT CALLBACK LOG: {0}", result));
-			bool bRes = result.Equals (ExpectedConnectResponse);
-			UnityEngine.Debug.Log (string.Format ("CONNECT CALLBACK: {0}", bRes));
-			Assert.IsTrue (bRes);
+			if (ExpectedConnect) {
+				bool bRes = result.Equals (ExpectedConnectResponse);
+				UnityEngine.Debug.Log (string.Format ("CONNECT CALLBACK: {0}", bRes));
+				Assert.IsTrue (bRes);
+			}
 		}
 
 		void ConnectCallbackCommonExceptionHandler (object result)
 		{
 			UnityEngine.Debug.Log (string.Format ("CONNECT CALLBACK LOG: {0}", result.ToString()));
-			Pubnub pubnub = new Pubnub (
-				Common.PublishKey,
-				Common.SubscribeKey,
-				"",
-				"",
-				true
-			);
-			bool bRes = pubnub.JsonPluggableLibrary.SerializeToJsonString(result).Equals (ExpectedConnectResponse);
-			UnityEngine.Debug.Log (string.Format ("CONNECT CALLBACK: {0}", bRes));
-			Assert.IsTrue (bRes);
+			if (ExpectedConnect) {
+				Pubnub pubnub = new Pubnub (
+					               Common.PublishKey,
+					               Common.SubscribeKey,
+					               "",
+					               "",
+					               true
+				               );
+				bool bRes = pubnub.JsonPluggableLibrary.SerializeToJsonString (result).Equals (ExpectedConnectResponse);
+				UnityEngine.Debug.Log (string.Format ("CONNECT CALLBACK Obj: {0}", bRes));
+				Assert.IsTrue (bRes);
+			}
 		}
 
 		[Test]
@@ -478,6 +491,8 @@ namespace PubNubMessaging.Tests
 			result.Add (string.Join(",", multiChannel));
 
 			ExpectedConnectResponse = "[1,\"Connected\",\"testChannel\"]";
+			ExpectedConnect = true;
+			ExpectedCallback = false;
 			TestProcessResponseCallbacksCommon<string> (multiChannel, result, "", 14498416434364941, false, false, ResponseType.Subscribe,
 				UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler
 			);
@@ -495,6 +510,9 @@ namespace PubNubMessaging.Tests
 			result.Add (string.Join(",", multiChannel));
 
 			ExpectedConnectResponse = "[1,\"Presence Connected\",\"testChannel\"]";
+			ExpectedConnect = true;
+			ExpectedCallback = false;
+
 			TestProcessResponseCallbacksCommon<string> (multiChannel, result, "", 14498416434364941, false, false, ResponseType.Presence,
 				UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler
 			);
@@ -512,6 +530,9 @@ namespace PubNubMessaging.Tests
 			result.Add (string.Join(",", multiChannel));
 
 			ExpectedConnectResponse = "[1,\"Connected\",\"testChannel\"]";
+			ExpectedConnect = true;
+			ExpectedCallback = false;
+
 			TestProcessResponseCallbacksCommon<object> (multiChannel, result, "", 14498416434364941, false, false, ResponseType.Subscribe,
 				UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler
 			);
@@ -529,6 +550,9 @@ namespace PubNubMessaging.Tests
 			result.Add (string.Join(",", multiChannel));
 
 			ExpectedConnectResponse = "[1,\"Presence Connected\",\"testChannel\"]";
+			ExpectedConnect = true;
+			ExpectedCallback = false;
+
 			TestProcessResponseCallbacksCommon<object> (multiChannel, result, "", 14498416434364941, false, false, ResponseType.Presence,
 				UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler
 			);
@@ -540,12 +564,15 @@ namespace PubNubMessaging.Tests
 			string[] multiChannel = {"testChannel"};
 			List<object> result = new List<object> ();
 			List<object> result2 = new List<object> ();
-			result2.Add ("[\"test message\"]");
+			object[] obj = {"test message"};
+			result2.Add (obj);
 			result.Add (result2);
 			result.Add (14498416434364941);
 			result.Add (string.Join(",", multiChannel));
 
-			ExpectedRegularResponse = "[\"[\"test message\"]\",\"14498416434364941\",\"testChannel\"]";
+			ExpectedRegularResponse = "[[\"test message\"],\"14498416434364941\",\"testChannel\"]";
+			ExpectedConnect = false;
+			ExpectedCallback = true;
 
 			TestProcessResponseCallbacksCommon<string> (multiChannel, result, "", 14498416434364941, false, false, ResponseType.Subscribe,
 				UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler
@@ -553,6 +580,61 @@ namespace PubNubMessaging.Tests
 
 		}
 
+		[Test]
+		public void TestProcessResponseCallbacksPres (){ 
+			string[] multiChannel = {"testChannel"};
+
+			Dictionary<string, object> dictionary = new Dictionary<string, object> ();
+			dictionary.Add ("action", "join");
+			dictionary.Add ("timestamp", 1451284248);
+			dictionary.Add ("uuid", "0c52695b-7dbf-4643-8b90-e0e1cbc19071");
+			dictionary.Add ("occupancy", 1);
+			Dictionary<string, object>[] dict = new Dictionary<string, object>[] {
+				new Dictionary<string, object>()
+			};
+			dict[0] = dictionary;
+			List<object> result = new List<object> ();
+			result.Add (dict);
+			result.Add ("14380891444409649");
+			result.Add ("testChannel");
+
+			ExpectedRegularResponse = "[{\"action\":\"join\",\"timestamp\":1451284248,\"uuid\":\"0c52695b-7dbf-4643-8b90-e0e1cbc19071\",\"occupancy\":1},\"14380891444409649\",\"testChannel\"]";
+			ExpectedConnect = false;
+			ExpectedCallback = true;
+
+			TestProcessResponseCallbacksCommon<string> (multiChannel, result, "", 14498416434364941, false, false, ResponseType.Subscribe,
+				UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler
+			);
+
+		}
+
+		[Test]
+		public void TestProcessResponseCallbacksHereNow (){ 
+			string[] multiChannel = {"testChannel"};
+
+			Dictionary<string, object> dictionary = new Dictionary<string, object> ();
+			string[] strarr = { "0c52695b-7dbf-4643-8b90-e0e1cbc19071", "123123234t234f34fq3dq" };
+			dictionary.Add ("occupancy", 4);
+			dictionary.Add ("uuid", strarr);
+
+			Dictionary<string, object>[] dict = new Dictionary<string, object>[] {
+				new Dictionary<string, object>()
+			};
+			dict[0] = dictionary;
+			List<object> result = new List<object> ();
+			result.Add (dict);
+			result.Add ("14380891444409649");
+			result.Add ("testChannel");
+			ExpectedRegularResponse = "[{\"occupancy\":4,\"uuid\":[\"0c52695b-7dbf-4643-8b90-e0e1cbc19071\",\"123123234t234f34fq3dq\"]},\"14380891444409649\",\"testChannel\"]";
+			ExpectedConnect = false;
+			ExpectedCallback = true;
+
+			TestProcessResponseCallbacksCommon<string> (multiChannel, result, "", 14498416434364941, false, false, ResponseType.Subscribe,
+				UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler
+			);
+
+		}
+			
 		public void TestProcessResponseCallbacksCommon<T>(string [] multiChannel, List<object> result, string cipherKey, long timetoken, bool isTimeout,
 			bool resumeOnReconnect, ResponseType responseType,
 			Action<T> userCallback, Action<T> connectCallback, Action<PubnubClientError> errorCallback 
@@ -567,8 +649,12 @@ namespace PubNubMessaging.Tests
 
 			SafeDictionary<string, long> multiChannelSubscribe = new SafeDictionary<string, long> ();
 			foreach (string currentChannel in multiChannel) {
-				//multiChannelSubscribe.AddOrUpdate (currentChannel, 14498416434364941, (key, oldValue) => Convert.ToInt64 (14498416434364941));
-				multiChannelSubscribe.AddOrUpdate (currentChannel, 0, (key, oldValue) => Convert.ToInt64 (0));
+				if (ExpectedConnect) {
+					multiChannelSubscribe.AddOrUpdate (currentChannel, 0, (key, oldValue) => Convert.ToInt64 (0));
+				} else {
+					multiChannelSubscribe.AddOrUpdate (currentChannel, 14498416434364941, (key, oldValue) => Convert.ToInt64 (14498416434364941));
+				}
+
 			}
 
 			SafeDictionary<PubnubChannelCallbackKey, object> channelCallbacks = Common.CreateChannelCallbacks (multiChannel, responseType,
@@ -949,7 +1035,299 @@ namespace PubNubMessaging.Tests
 			return bResult;
 		}
 
+		[Test]
+		public void TestJsonEncodePublishMsg(){ 
+			string str = "test message";
+
+			Pubnub pubnub = new Pubnub (
+				Common.PublishKey,
+				Common.SubscribeKey,
+				"",
+				"",
+				true
+			);
+			string encoded = Helpers.JsonEncodePublishMsg (str, "", pubnub.JsonPluggableLibrary);
+			bool res = encoded.Equals ("\"test message\"");
+			UnityEngine.Debug.Log ("res1:" + res + encoded);
+			Assert.IsTrue(res);
+		}
+			
+		[Test]
+		public void TestJsonEncodePublishMsgCipher(){ 
+			string str = "test message";
+
+			Pubnub pubnub = new Pubnub (
+				Common.PublishKey,
+				Common.SubscribeKey,
+				"",
+				"enigma",
+				true
+			);
+			string encoded = Helpers.JsonEncodePublishMsg (str, "enigma", pubnub.JsonPluggableLibrary);
+			bool res = encoded.Equals ("\"UXgV6VPqJ7WI04csguMrqw==\"");
+			UnityEngine.Debug.Log ("res2:" + res + encoded);
+			Assert.IsTrue(res);
+		}
+
+		[Test]
+		public void TestDecodeDecryptLoopCipher(){ 
+			TestDecodeDecryptLoopCommon ("enigma", "test message", "UXgV6VPqJ7WI04csguMrqw==", false);
+		}
+
+		[Test]
+		public void TestDecodeDecryptLoop(){ 
+			TestDecodeDecryptLoopCommon ("", "test message", "test message", false);
+		}
+		[Test]
+		public void TestDecodeDecryptLoopCipherMultiple(){ 
+			TestDecodeDecryptLoopCommon ("enigma", "test message", "UXgV6VPqJ7WI04csguMrqw==", true);
+		}
+
+		[Test]
+		public void TestDecodeDecryptLoopMultiple(){ 
+			TestDecodeDecryptLoopCommon ("", "test message", "test message", true);
+		}
+
+		public void TestDecodeDecryptLoopCommon(string cipherKey, string resultExpected, string inputMessage, bool multiple){
+			List<object> result = new List<object> ();
+			string[] multiChannel = {"testChannel3"};
+			resultList = new List<object> ();
+			List<object> resultList2 = new List<object> ();
+			resultList2.Add (resultExpected);
+			if (multiple) {
+				resultList2.Add (resultExpected);
+			}
+			resultList.Add (resultList2);
+			resultList.Add (string.Join(",", multiChannel));
+
+			List<object> inputList = new List<object> ();
+			List<object> inputList2 = new List<object> ();
+			inputList2.Add (inputMessage);
+			if (multiple) {
+				inputList2.Add (inputMessage);
+			}
+
+			inputList.Add (inputList2);
+			inputList.Add (string.Join(",", multiChannel));
+
+			Pubnub pubnub = new Pubnub (
+				Common.PublishKey,
+				Common.SubscribeKey,
+				"",
+				cipherKey,
+				true
+			);
+
+			List<object> response = Helpers.DecodeDecryptLoop (inputList, multiChannel, ErrorCallbackCommonExceptionHandler, cipherKey,
+				pubnub.JsonPluggableLibrary, PubnubErrorFilter.Level.Info);
+				
+			bool bResult = false;
+			string ser1 = pubnub.JsonPluggableLibrary.SerializeToJsonString (response);
+			string ser2 = pubnub.JsonPluggableLibrary.SerializeToJsonString (resultList);
+			UnityEngine.Debug.Log ("ser2:" + ser2);
+			UnityEngine.Debug.Log ("ser1:" + ser1);
+			bResult = (ser1.Equals (ser2));
+			Assert.IsTrue (bResult);
+		}
+
+		[Test]
+		public void TestDecodeMessage(){ 
+			string str = "UXgV6VPqJ7WI04csguMrqw==";
+			TestDecodeMessageCommon (str, "test message");
+		}
+
+		[Test]
+		public void TestDecodeMessageError(){ 
+			string str = "UXgV6VPqJ7WI04csguMrqw=";
+			ExceptionCode = 0;
+			readCallback = true;
+			TestDecodeMessageCommon (str, "**DECRYPT ERROR**");
+		}
+
+		void TestDecodeMessageCommon(object inputMessage, string resultExpected){
+			string[] multiChannel = {"testChannel3"};
+			string cipherKey = "enigma";
+			Pubnub pubnub = new Pubnub (
+				Common.PublishKey,
+				Common.SubscribeKey,
+				"",
+				cipherKey,
+				true
+			);
+
+			PubnubCrypto aes = new PubnubCrypto (cipherKey);
+			object resp= Helpers.DecodeMessage(aes, inputMessage, multiChannel, ErrorCallbackCommonExceptionHandler,
+				pubnub.JsonPluggableLibrary, PubnubErrorFilter.Level.Info);
+
+			UnityEngine.Debug.Log ("ser2:" + resultExpected.ToString());
+			UnityEngine.Debug.Log ("ser1:" + resp.ToString());
+			Assert.IsTrue (resp.Equals(resultExpected));
+		}
+
+		[Test]
+		public void TestDeserializeAndAddToResult(){
+			string str = "{\"status\":200,\"message\":\"OK\",\"service\":\"Presence\",\"occupancy\":0}";
+			TestDeserializeAndAddToResultCommon (false, str, "status");
+		}
+
+		[Test]
+		public void TestDeserializeAndAddToResultAddChannel(){
+			string str = "{\"status\":200,\"message\":\"OK\",\"service\":\"Presence\",\"occupancy\":0}";
+			TestDeserializeAndAddToResultCommon (true, str, "status");
+		}
+
+		public void TestDeserializeAndAddToResultCommon(bool addChannel, string str, string expectedResult){ 
+			string channel = "testChannel3";
+
+			Pubnub pubnub = new Pubnub (
+				Common.PublishKey,
+				Common.SubscribeKey,
+				"",
+				"",
+				true
+			);
+
+			List<object> lstObj = Helpers.DeserializeAndAddToResult (str, channel, 
+				pubnub.JsonPluggableLibrary, addChannel);
+
+			bool bRes = false;
+			foreach (object obj in lstObj) {
+				if (obj.GetType ().IsGenericType) {
+					UnityEngine.Debug.Log ("generic:" + obj.ToString ());
+					Dictionary<string, object> dictionary = (Dictionary<string, object>)obj;
+					bRes = dictionary.ContainsKey(expectedResult);
+					break;
+				}
+			}
+
+			UnityEngine.Debug.Log ("ser1:" + bRes );
+			Assert.IsTrue(bRes);
+			if (addChannel) {
+				bRes = lstObj.Contains (channel);
+				UnityEngine.Debug.Log ("ser2:" + bRes);
+				Assert.IsTrue (bRes);
+
+			} else {
+				bRes = lstObj.Contains (channel);
+				UnityEngine.Debug.Log ("ser2:" + bRes);
+				Assert.IsFalse (bRes);
+			}
+		}
+
+		[Test]
+		public void TestCreatePubnubClientError(){
+			string[] multiChannel = {"testChannel3"};
+			RequestState<string> requestState = BuildRequests.BuildRequestState<string> (multiChannel, ResponseType.Subscribe, 
+				true, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, 
+				ErrorCallbackCommonExceptionHandler, 0, true, 0, typeof(string));
+			
+			PubnubClientError error = Helpers.CreatePubnubClientError<string> ("Timed out", requestState, string.Join(",", multiChannel), 
+				PubnubErrorCode.OperationTimeout, PubnubErrorSeverity.Critical);
+			UnityEngine.Debug.Log ("Timed out:" + error.Message);
+			UnityEngine.Debug.Log (error.StatusCode + ":" + PubnubErrorCode.OperationTimeout);
+			UnityEngine.Debug.Log (error.Severity + ":" + PubnubErrorSeverity.Critical);
+
+			Assert.IsTrue (error.Message.Contains("Timed out"));
+			Assert.IsTrue (error.StatusCode.Equals(137));
+			Assert.IsTrue (error.Severity.Equals (PubnubErrorSeverity.Critical));
+		}
+
+		[Test]
+		public void TestCreatePubnubClientErrorEx(){
+			string[] multiChannel = {"testChannel3"};
+			RequestState<string> requestState = BuildRequests.BuildRequestState<string> (multiChannel, ResponseType.Subscribe, 
+				true, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, 
+				ErrorCallbackCommonExceptionHandler, 0, true, 0, typeof(string));
+			Exception ex = new Exception ("Test Exception");
+
+			PubnubClientError error = Helpers.CreatePubnubClientError<string> (ex, requestState, string.Join(",", multiChannel), 
+				PubnubErrorCode.PubnubObjectDisposedException, PubnubErrorSeverity.Info);
+
+			UnityEngine.Debug.Log (ex.Message + ":" + error.Message + error.Message.Contains(ex.Message));
+			UnityEngine.Debug.Log (error.StatusCode + ":" + PubnubErrorCode.PubnubObjectDisposedException + error.StatusCode.Equals(107));
+			UnityEngine.Debug.Log (error.Severity + ":" + PubnubErrorSeverity.Info + error.Severity.Equals (PubnubErrorSeverity.Info));
+
+			Assert.IsTrue (error.Message.Contains(ex.Message));
+			Assert.IsTrue (error.StatusCode.Equals(107));
+			Assert.IsTrue (error.Severity.Equals (PubnubErrorSeverity.Info));
+		}
+
+		[Test]
+		public void TestCreatePubnubClientErrorWebEx(){
+			string[] multiChannel = {"testChannel3"};
+			RequestState<string> requestState = BuildRequests.BuildRequestState<string> (multiChannel, ResponseType.Subscribe, 
+				true, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, 
+				ErrorCallbackCommonExceptionHandler, 0, true, 0, typeof(string));
+			WebException wex = new WebException ("Test Web Exception");
+
+			PubnubClientError error = Helpers.CreatePubnubClientError<string> (wex, requestState, string.Join(",", multiChannel), 
+				PubnubErrorSeverity.Warn);
+
+			UnityEngine.Debug.Log (wex.Message + ":" + error.Message);
+			UnityEngine.Debug.Log (error.StatusCode + ":" + PubnubErrorCode.None);
+			UnityEngine.Debug.Log (error.Severity + ":" + PubnubErrorSeverity.Warn);
+			Assert.IsTrue (error.Message.Contains(wex.Message));
+			Assert.IsTrue (error.StatusCode.Equals(0));
+			Assert.IsTrue (error.Severity.Equals (PubnubErrorSeverity.Warn));
+
+		}
+
+		[Test]
+		public void TestGetTimeOutErrorCodePresence(){
+			TestGetTimeOutErrorCodeCommon (ResponseType.Presence, PubnubErrorCode.OperationTimeout);
+		}
+
+		[Test]
+		public void TestGetTimeOutErrorCodeAuditAccess(){
+			TestGetTimeOutErrorCodeCommon (ResponseType.AuditAccess, PubnubErrorCode.PAMAccessOperationTimeout);
+		}
+
+		[Test]
+		public void TestGetTimeOutErrorCodeDetailedHistory(){
+			TestGetTimeOutErrorCodeCommon (ResponseType.DetailedHistory, PubnubErrorCode.DetailedHistoryOperationTimeout);
+		}
+
+		[Test]
+		public void TestGetTimeOutErrorCodeGetUserState(){
+			TestGetTimeOutErrorCodeCommon (ResponseType.GetUserState, PubnubErrorCode.GetUserStateTimeout);
+		}
+
+		[Test]
+		public void TestGetTimeOutErrorCodeGlobalHereNow(){
+			TestGetTimeOutErrorCodeCommon (ResponseType.GlobalHereNow, PubnubErrorCode.GlobalHereNowOperationTimeout);
+		}
+
+		[Test]
+		public void TestGetTimeOutErrorCodeSetUserState(){
+			TestGetTimeOutErrorCodeCommon (ResponseType.SetUserState, PubnubErrorCode.SetUserStateTimeout);
+		}
+
+		[Test]
+		public void TestGetTimeOutErrorCodeHereNow(){
+			TestGetTimeOutErrorCodeCommon (ResponseType.HereNow, PubnubErrorCode.HereNowOperationTimeout);
+		}
+
+		[Test]
+		public void TestGetTimeOutErrorCodeTime(){
+			TestGetTimeOutErrorCodeCommon (ResponseType.Time, PubnubErrorCode.TimeOperationTimeout);
+		}
+
+		[Test]
+		public void TestGetTimeOutErrorCodeWhereNow(){
+			TestGetTimeOutErrorCodeCommon (ResponseType.WhereNow, PubnubErrorCode.WhereNowOperationTimeout);
+		}
+
+		[Test]
+		public void TestGetTimeOutErrorCodeSubscribe(){
+			TestGetTimeOutErrorCodeCommon (ResponseType.Subscribe, PubnubErrorCode.OperationTimeout);
+		}
+
+		void TestGetTimeOutErrorCodeCommon(ResponseType responseType, PubnubErrorCode expErrorCode){
+			PubnubErrorCode errCode = Helpers.GetTimeOutErrorCode (responseType);
+			Assert.IsTrue (errCode.Equals (expErrorCode));
+		}
+		
+
 		#endif
 	}
 }
-

@@ -150,8 +150,9 @@ namespace PubNubMessaging.Core
             return message;
         }
 
-        private static object DecodeMessage (PubnubCrypto aes, object element, string[] channels, 
-            Action<PubnubClientError> errorCallback, IJsonPluggableLibrary jsonPluggableLibrary, PubnubErrorFilter.Level errorLevel)
+        internal static object DecodeMessage (PubnubCrypto aes, object element, string[] channels, 
+            Action<PubnubClientError> errorCallback, IJsonPluggableLibrary jsonPluggableLibrary, 
+			PubnubErrorFilter.Level errorLevel)
         {
             string decryptMessage = "";
             try {
@@ -167,7 +168,7 @@ namespace PubNubMessaging.Core
             return decodeMessage;
         }
 
-        private static List<object> DecryptCipheredMessage (List<object> message, string[] channels, 
+		internal static List<object> DecryptCipheredMessage (List<object> message, string[] channels, 
             Action<PubnubClientError> errorCallback, string cipherKey, IJsonPluggableLibrary jsonPluggableLibrary, 
             PubnubErrorFilter.Level errorLevel)
         {
@@ -191,7 +192,7 @@ namespace PubNubMessaging.Core
             return returnMessage;
         }
 
-        private static List<object> DecryptNonCipheredMessage (List<object> message)
+		internal static List<object> DecryptNonCipheredMessage (List<object> message)
         {
             List<object> returnMessage = new List<object> ();
             var myObjectArray = (from item in message
@@ -210,7 +211,7 @@ namespace PubNubMessaging.Core
             return returnMessage;
         }
 
-        private static List<object> DecodeDecryptLoop (List<object> message, string[] channels, 
+		internal static List<object> DecodeDecryptLoop (List<object> message, string[] channels, 
             Action<PubnubClientError> errorCallback, string cipherKey, IJsonPluggableLibrary jsonPluggableLibrary, 
             PubnubErrorFilter.Level errorLevel)
         {
@@ -326,7 +327,7 @@ namespace PubNubMessaging.Core
             return result;
         }
 
-        static List<object> DeserializeAndAddToResult (string jsonString, string multiChannel, IJsonPluggableLibrary jsonPluggableLibrary, bool addChannel)
+		internal static List<object> DeserializeAndAddToResult (string jsonString, string multiChannel, IJsonPluggableLibrary jsonPluggableLibrary, bool addChannel)
         {
             Dictionary<string, object> dictionary = jsonPluggableLibrary.DeserializeToDictionaryOfObject (jsonString);
             List<object> result = new List<object> ();
@@ -337,7 +338,7 @@ namespace PubNubMessaging.Core
             return result;
         }
 
-        static void ProcessWrapResultBasedOnResponseTypeException<T> (ResponseType type, string[] channels, 
+		internal static void ProcessWrapResultBasedOnResponseTypeException<T> (ResponseType type, string[] channels, 
             Action<PubnubClientError> errorCallback, SafeDictionary<PubnubChannelCallbackKey, object> channelCallbacks, 
             PubnubErrorFilter.Level errorLevel, Exception ex)
         {
@@ -355,7 +356,7 @@ namespace PubNubMessaging.Core
             }
         }
 
-        static object[] CreateMessageList(List<object> result, object[] messageList)
+		internal static object[] CreateMessageList(List<object> result, object[] messageList)
         {
             int i = 0;
             foreach (object o in result)
@@ -414,7 +415,7 @@ namespace PubNubMessaging.Core
             return messageList;
         }
 
-        static List<object> AddMessageToList(string cipherKey, IJsonPluggableLibrary jsonPluggableLibrary, 
+		internal static List<object> AddMessageToList(string cipherKey, IJsonPluggableLibrary jsonPluggableLibrary, 
             object[] messages, int messageIndex, string currentChannel, object[] messageList)
         {
             List<object> itemMessage = new List<object>();
@@ -453,7 +454,7 @@ namespace PubNubMessaging.Core
             return itemMessage;
         }
 
-        static void ResponseToUserCallbackForSubscribeSendCallbacks<T> (List<object> result, string cipherKey, SafeDictionary<PubnubChannelCallbackKey, 
+		internal static void ResponseToUserCallbackForSubscribeSendCallbacks<T> (List<object> result, string cipherKey, SafeDictionary<PubnubChannelCallbackKey, 
             object> channelCallbacks, IJsonPluggableLibrary jsonPluggableLibrary, object[] messages)
         {
             #if (ENABLE_PUBNUB_LOGGING)
