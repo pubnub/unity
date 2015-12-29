@@ -890,7 +890,7 @@ namespace PubNubMessaging.Core
             TerminateCurrentSubscriberRequest<string> ();
 
         }
-
+    
         #endregion
 
         #endregion
@@ -1097,14 +1097,14 @@ namespace PubNubMessaging.Core
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0} NonSub timeout={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelError);
                 #endif
-				ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (cea.Message.ToString (), cea.PubnubRequestState.respType, cea.PubnubRequestState.Channels, 
+                ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (cea.Message.ToString (), cea.PubnubRequestState.respType, cea.PubnubRequestState.Channels, 
                     true, cea.PubnubRequestState.UserCallback, cea.PubnubRequestState.ConnectCallback, 
                     cea.PubnubRequestState.ErrorCallback, false, PubnubErrorLevel);
             } else if (cea.IsError) {
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0} NonSub Error={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelError);
                 #endif
-				ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (cea.Message.ToString (), cea.PubnubRequestState.respType, cea.PubnubRequestState.Channels, 
+                ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (cea.Message.ToString (), cea.PubnubRequestState.respType, cea.PubnubRequestState.Channels, 
                     false, cea.PubnubRequestState.UserCallback, cea.PubnubRequestState.ConnectCallback, 
                     cea.PubnubRequestState.ErrorCallback, false, PubnubErrorLevel);
             } else {
@@ -1176,7 +1176,7 @@ namespace PubNubMessaging.Core
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0} Exception={1}", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
                 #endif
 
-				ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (ex.Message, cea.PubnubRequestState.respType, cea.PubnubRequestState.Channels, 
+                ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (ex.Message, cea.PubnubRequestState.respType, cea.PubnubRequestState.Channels, 
                     false, cea.PubnubRequestState.UserCallback, cea.PubnubRequestState.ConnectCallback, 
                     cea.PubnubRequestState.ErrorCallback, false, PubnubErrorLevel);
             } 
@@ -1615,7 +1615,7 @@ namespace PubNubMessaging.Core
         List<string> UnsubscribeChannels<T>(string channel, List<string> validChannels)
         {
             Uri request = BuildRequests.BuildMultiChannelLeaveRequest(validChannels.ToArray(), this.SessionUUID, 
-				this.ssl, this.Origin, authenticationKey, this.subscribeKey);
+                this.ssl, this.Origin, authenticationKey, this.subscribeKey);
             RequestState<T> requestState = BuildRequests.BuildRequestState<T>(new string[] {
                 channel
             }, ResponseType.Leave, false, null, null, null, 0, false, 0, null);

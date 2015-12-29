@@ -34,11 +34,11 @@ namespace PubNubMessaging.Tests
     public class Common
     {
         public static string Origin = "pubsub.pubnub.com";
-		public static string PublishKey = "demo-36";
+        public static string PublishKey = "demo-36";
         public static string SubscribeKey = "demo-36";
         public static string SecretKey = "demo-36";
-		public static float WaitTimeBetweenCalls = 5;
-		public static float WaitTimeToReadResponse = 15;
+        public static float WaitTimeBetweenCalls = 5;
+        public static float WaitTimeToReadResponse = 15;
 
 
         public object Response { get; set; }
@@ -46,39 +46,39 @@ namespace PubNubMessaging.Tests
 
         public bool DeliveryStatus  { get; set; }
 
-		public static string GetRandomChannelName()
-		{
-			System.Random r = new System.Random ();
-			return "UnityUnitTests_" + r.Next (100);
-		}
+        public static string GetRandomChannelName()
+        {
+            System.Random r = new System.Random ();
+            return "UnityUnitTests_" + r.Next (100);
+        }
 
 
-		public static void LogAndCompare(string expected, string received)
-		{
-			UnityEngine.Debug.Log("Expected:" + expected);
-			UnityEngine.Debug.Log("Received:" + received);
-			Assert.IsTrue (expected.Equals (received));
-		}
+        public static void LogAndCompare(string expected, string received)
+        {
+            UnityEngine.Debug.Log("Expected:" + expected);
+            UnityEngine.Debug.Log("Received:" + received);
+            Assert.IsTrue (expected.Equals (received));
+        }
 
 
-		internal static SafeDictionary<PubnubChannelCallbackKey, object> CreateChannelCallbacks<T>(string[] channels, ResponseType responseType,
-			Action<T> userCallback, Action<T> connectCallback, Action<PubnubClientError> errorCallback){
+        internal static SafeDictionary<PubnubChannelCallbackKey, object> CreateChannelCallbacks<T>(string[] channels, ResponseType responseType,
+            Action<T> userCallback, Action<T> connectCallback, Action<PubnubClientError> errorCallback){
 
-			SafeDictionary<PubnubChannelCallbackKey, object> channelCallbacks = new SafeDictionary<PubnubChannelCallbackKey, object> ();
+            SafeDictionary<PubnubChannelCallbackKey, object> channelCallbacks = new SafeDictionary<PubnubChannelCallbackKey, object> ();
 
-			foreach (string channel in channels) {
-				PubnubChannelCallbackKey callbackKey = new PubnubChannelCallbackKey ();
-				callbackKey.Channel = channel;
-				callbackKey.Type = responseType;
-				PubnubChannelCallback<T> pubnubChannelCallbacks = new PubnubChannelCallback<T> ();
-				pubnubChannelCallbacks.Callback = userCallback;
-				pubnubChannelCallbacks.ConnectCallback = connectCallback;
-				pubnubChannelCallbacks.ErrorCallback = errorCallback;
-				channelCallbacks.AddOrUpdate (callbackKey, pubnubChannelCallbacks, (key, oldValue) => pubnubChannelCallbacks);
-			}
-			return channelCallbacks;
+            foreach (string channel in channels) {
+                PubnubChannelCallbackKey callbackKey = new PubnubChannelCallbackKey ();
+                callbackKey.Channel = channel;
+                callbackKey.Type = responseType;
+                PubnubChannelCallback<T> pubnubChannelCallbacks = new PubnubChannelCallback<T> ();
+                pubnubChannelCallbacks.Callback = userCallback;
+                pubnubChannelCallbacks.ConnectCallback = connectCallback;
+                pubnubChannelCallbacks.ErrorCallback = errorCallback;
+                channelCallbacks.AddOrUpdate (callbackKey, pubnubChannelCallbacks, (key, oldValue) => pubnubChannelCallbacks);
+            }
+            return channelCallbacks;
 
-		}
+        }
         /// <summary>
         /// Blocks the current thread unit the response is received
         /// or timeout occurs
@@ -120,7 +120,7 @@ namespace PubNubMessaging.Tests
 
         public void DisplayErrorMessage (PubnubClientError result)
         {
-			ErrorResponse = result.Description;
+            ErrorResponse = result.Description;
             //DeliveryStatus = true;
             UnityEngine.Debug.Log ("DisplayErrorMessage:" + result.ToString ());
         }
@@ -129,7 +129,7 @@ namespace PubNubMessaging.Tests
         {
             //deliveryStatus = true;
             //Response = result;
-			ErrorResponse = result.ToString();
+            ErrorResponse = result.ToString();
             UnityEngine.Debug.Log ("DisplayReturnMessageDummy:" + result.ToString ());
         }
 
@@ -168,41 +168,41 @@ namespace PubNubMessaging.Tests
         {
             object retMessage;
             #if (USE_JSONFX) || (USE_JSONFX_UNITY)
-			var reader = new JsonFx.Json.JsonReader ();
-			retMessage = reader.Read<T> (message);
+            var reader = new JsonFx.Json.JsonReader ();
+            retMessage = reader.Read<T> (message);
             #elif (USE_JSONFX_UNITY_IOS)
             UnityEngine.Debug.Log ("message: " + message);
             retMessage = JsonReader.Deserialize<T> (message);
             #elif (USE_MiniJSON)
-			UnityEngine.Debug.Log("message: " + message);
-			object retMessage1 = Json.Deserialize(message) as object;
-			Type type = typeof(T);
-			var expectedType2 = typeof(object[]);
-			if(expectedType2.IsAssignableFrom(type)){
-				retMessage = ((System.Collections.IEnumerable)retMessage1).Cast<object> ().ToArray ();
-			} else {
-				retMessage	= retMessage1;
-			}
+            UnityEngine.Debug.Log("message: " + message);
+            object retMessage1 = Json.Deserialize(message) as object;
+            Type type = typeof(T);
+            var expectedType2 = typeof(object[]);
+            if(expectedType2.IsAssignableFrom(type)){
+                retMessage = ((System.Collections.IEnumerable)retMessage1).Cast<object> ().ToArray ();
+            } else {
+                retMessage    = retMessage1;
+            }
             #else
-			retMessage = JsonConvert.DeserializeObject<T> (message);
+            retMessage = JsonConvert.DeserializeObject<T> (message);
             #endif
             return (T)retMessage;
         }
 
         #if (USE_MiniJSON)
-		/// <summary>
-		/// Deserialize the specified message using either JSONFX or NEWTONSOFT.JSON.
-		/// The functionality is based on the pre-compiler flag
-		/// </summary>
-		/// <param name="message">Message.</param>
-		public static T DeserializeMiniJson<T> (string message)
-		{
-				object retMessage;
-				UnityEngine.Debug.Log("message: " + message);
-				retMessage = MiniJSON.Json.Deserialize(message) as object;
-				return (T)retMessage;
-		}
-		#endif
+        /// <summary>
+        /// Deserialize the specified message using either JSONFX or NEWTONSOFT.JSON.
+        /// The functionality is based on the pre-compiler flag
+        /// </summary>
+        /// <param name="message">Message.</param>
+        public static T DeserializeMiniJson<T> (string message)
+        {
+                object retMessage;
+                UnityEngine.Debug.Log("message: " + message);
+                retMessage = MiniJSON.Json.Deserialize(message) as object;
+                return (T)retMessage;
+        }
+        #endif
 
         /// <summary>
         /// Serialize the specified message using either JSONFX or NEWTONSOFT.JSON.
@@ -213,35 +213,35 @@ namespace PubNubMessaging.Tests
         {
             string retMessage;
             #if (USE_JSONFX) || (USE_JSONFX_UNITY)
-			var writer = new JsonFx.Json.JsonWriter ();
-			retMessage = writer.Write (message);
-			retMessage = ConvertHexToUnicodeChars (retMessage);
+            var writer = new JsonFx.Json.JsonWriter ();
+            retMessage = writer.Write (message);
+            retMessage = ConvertHexToUnicodeChars (retMessage);
             #elif (USE_JSONFX_UNITY_IOS)
             retMessage = JsonWriter.Serialize (message);
             retMessage = ConvertHexToUnicodeChars (retMessage);
             #elif (USE_MiniJSON)
-			retMessage = Json.Serialize(message);
-			UnityEngine.Debug.Log("retMessage: " + retMessage);
+            retMessage = Json.Serialize(message);
+            UnityEngine.Debug.Log("retMessage: " + retMessage);
             #else
-			retMessage = JsonConvert.SerializeObject (message);
+            retMessage = JsonConvert.SerializeObject (message);
             #endif
             return retMessage;
         }
-				
+                
         #if (USE_MiniJSON)
-		/// <summary>
-		/// Serialize the specified message using either JSONFX or NEWTONSOFT.JSON.
-		/// The functionality is based on the pre-compiler flag
-		/// </summary>
-		/// <param name="message">Message.</param>
-		public static string SerializeMiniJson (object message)
-		{
-				string retMessage;
-				retMessage = MiniJSON.Json.Serialize(message);
-				UnityEngine.Debug.Log("retMessage: " + retMessage);
-				return retMessage;
-		}
-		#endif
+        /// <summary>
+        /// Serialize the specified message using either JSONFX or NEWTONSOFT.JSON.
+        /// The functionality is based on the pre-compiler flag
+        /// </summary>
+        /// <param name="message">Message.</param>
+        public static string SerializeMiniJson (object message)
+        {
+                string retMessage;
+                retMessage = MiniJSON.Json.Serialize(message);
+                UnityEngine.Debug.Log("retMessage: " + retMessage);
+                return retMessage;
+        }
+        #endif
 
         /// <summary>
         /// Converts the upper case hex to lower case hex.

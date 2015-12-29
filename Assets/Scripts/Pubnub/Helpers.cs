@@ -8,7 +8,7 @@ namespace PubNubMessaging.Core
 {
     internal static class Helpers
     {
-		#region "Helpers"
+        #region "Helpers"
         internal static bool CheckChannelsInMultiChannelSubscribeRequest(string multiChannel, 
             SafeDictionary<string, long> multiChannelSubscribe, SafeDictionary<string, PubnubWebRequest> channelRequest)
         {
@@ -133,7 +133,7 @@ namespace PubNubMessaging.Core
                     asynchRequestState.UserCallback, cipherKey, channelCallbacks, jsonPluggableLibrary);
             }
         }
-		#endregion
+        #endregion
 
         #region "Encoding and Crypto"
 
@@ -152,7 +152,7 @@ namespace PubNubMessaging.Core
 
         internal static object DecodeMessage (PubnubCrypto aes, object element, string[] channels, 
             Action<PubnubClientError> errorCallback, IJsonPluggableLibrary jsonPluggableLibrary, 
-			PubnubErrorFilter.Level errorLevel)
+            PubnubErrorFilter.Level errorLevel)
         {
             string decryptMessage = "";
             try {
@@ -168,7 +168,7 @@ namespace PubNubMessaging.Core
             return decodeMessage;
         }
 
-		internal static List<object> DecryptCipheredMessage (List<object> message, string[] channels, 
+        internal static List<object> DecryptCipheredMessage (List<object> message, string[] channels, 
             Action<PubnubClientError> errorCallback, string cipherKey, IJsonPluggableLibrary jsonPluggableLibrary, 
             PubnubErrorFilter.Level errorLevel)
         {
@@ -192,7 +192,7 @@ namespace PubNubMessaging.Core
             return returnMessage;
         }
 
-		internal static List<object> DecryptNonCipheredMessage (List<object> message)
+        internal static List<object> DecryptNonCipheredMessage (List<object> message)
         {
             List<object> returnMessage = new List<object> ();
             var myObjectArray = (from item in message
@@ -211,7 +211,7 @@ namespace PubNubMessaging.Core
             return returnMessage;
         }
 
-		internal static List<object> DecodeDecryptLoop (List<object> message, string[] channels, 
+        internal static List<object> DecodeDecryptLoop (List<object> message, string[] channels, 
             Action<PubnubClientError> errorCallback, string cipherKey, IJsonPluggableLibrary jsonPluggableLibrary, 
             PubnubErrorFilter.Level errorLevel)
         {
@@ -327,7 +327,7 @@ namespace PubNubMessaging.Core
             return result;
         }
 
-		internal static List<object> DeserializeAndAddToResult (string jsonString, string multiChannel, IJsonPluggableLibrary jsonPluggableLibrary, bool addChannel)
+        internal static List<object> DeserializeAndAddToResult (string jsonString, string multiChannel, IJsonPluggableLibrary jsonPluggableLibrary, bool addChannel)
         {
             Dictionary<string, object> dictionary = jsonPluggableLibrary.DeserializeToDictionaryOfObject (jsonString);
             List<object> result = new List<object> ();
@@ -338,7 +338,7 @@ namespace PubNubMessaging.Core
             return result;
         }
 
-		internal static void ProcessWrapResultBasedOnResponseTypeException<T> (ResponseType type, string[] channels, 
+        internal static void ProcessWrapResultBasedOnResponseTypeException<T> (ResponseType type, string[] channels, 
             Action<PubnubClientError> errorCallback, SafeDictionary<PubnubChannelCallbackKey, object> channelCallbacks, 
             PubnubErrorFilter.Level errorLevel, Exception ex)
         {
@@ -356,7 +356,7 @@ namespace PubNubMessaging.Core
             }
         }
 
-		internal static object[] CreateMessageList(List<object> result, object[] messageList)
+        internal static object[] CreateMessageList(List<object> result, object[] messageList)
         {
             int i = 0;
             foreach (object o in result)
@@ -415,7 +415,7 @@ namespace PubNubMessaging.Core
             return messageList;
         }
 
-		internal static List<object> AddMessageToList(string cipherKey, IJsonPluggableLibrary jsonPluggableLibrary, 
+        internal static List<object> AddMessageToList(string cipherKey, IJsonPluggableLibrary jsonPluggableLibrary, 
             object[] messages, int messageIndex, string currentChannel, object[] messageList)
         {
             List<object> itemMessage = new List<object>();
@@ -454,7 +454,7 @@ namespace PubNubMessaging.Core
             return itemMessage;
         }
 
-		internal static void ResponseToUserCallbackForSubscribeSendCallbacks<T> (List<object> result, string cipherKey, SafeDictionary<PubnubChannelCallbackKey, 
+        internal static void ResponseToUserCallbackForSubscribeSendCallbacks<T> (List<object> result, string cipherKey, SafeDictionary<PubnubChannelCallbackKey, 
             object> channelCallbacks, IJsonPluggableLibrary jsonPluggableLibrary, object[] messages)
         {
             #if (ENABLE_PUBNUB_LOGGING)
@@ -585,43 +585,43 @@ namespace PubNubMessaging.Core
             return CreatePubnubClientError<T> (ex, requestState, channel, errorCode, severity);
         }
 
-		internal static PubnubErrorCode GetTimeOutErrorCode (ResponseType responseType)
-		{
-			switch(responseType){
-			case ResponseType.AuditAccess:
-			case ResponseType.GrantAccess:
-			case ResponseType.RevokeAccess:
-				return PubnubErrorCode.PAMAccessOperationTimeout;
-			case ResponseType.DetailedHistory:
-			case ResponseType.History:
-				return PubnubErrorCode.DetailedHistoryOperationTimeout;
-			case ResponseType.GetUserState:
-				return PubnubErrorCode.GetUserStateTimeout;
-			case ResponseType.GlobalHereNow:
-				return PubnubErrorCode.GlobalHereNowOperationTimeout;
-			case ResponseType.SetUserState:
-				return PubnubErrorCode.SetUserStateTimeout;
-			case ResponseType.HereNow:
-				return PubnubErrorCode.HereNowOperationTimeout;
-			case ResponseType.Publish:
-				return PubnubErrorCode.PublishOperationTimeout;
-			case ResponseType.Time:
-				return PubnubErrorCode.TimeOperationTimeout;
-			case ResponseType.WhereNow:
-				return PubnubErrorCode.WhereNowOperationTimeout;
-			default:
-				/* 
-				 * ResponseType.Presence:
-				 * ResponseType.PresenceUnsubscribe:
-				 * ResponseType.Leave:
-				 * ResponseType.Subscribe:
-				 * ResponseType.Unsubscribe:
-				 * ResponseType.Heartbeat:
-				 * ResponseType.PresenceHeartbeat:
-				 */
-				return PubnubErrorCode.OperationTimeout;
-			}
-		}
+        internal static PubnubErrorCode GetTimeOutErrorCode (ResponseType responseType)
+        {
+            switch(responseType){
+            case ResponseType.AuditAccess:
+            case ResponseType.GrantAccess:
+            case ResponseType.RevokeAccess:
+                return PubnubErrorCode.PAMAccessOperationTimeout;
+            case ResponseType.DetailedHistory:
+            case ResponseType.History:
+                return PubnubErrorCode.DetailedHistoryOperationTimeout;
+            case ResponseType.GetUserState:
+                return PubnubErrorCode.GetUserStateTimeout;
+            case ResponseType.GlobalHereNow:
+                return PubnubErrorCode.GlobalHereNowOperationTimeout;
+            case ResponseType.SetUserState:
+                return PubnubErrorCode.SetUserStateTimeout;
+            case ResponseType.HereNow:
+                return PubnubErrorCode.HereNowOperationTimeout;
+            case ResponseType.Publish:
+                return PubnubErrorCode.PublishOperationTimeout;
+            case ResponseType.Time:
+                return PubnubErrorCode.TimeOperationTimeout;
+            case ResponseType.WhereNow:
+                return PubnubErrorCode.WhereNowOperationTimeout;
+            default:
+                /* 
+                 * ResponseType.Presence:
+                 * ResponseType.PresenceUnsubscribe:
+                 * ResponseType.Leave:
+                 * ResponseType.Subscribe:
+                 * ResponseType.Unsubscribe:
+                 * ResponseType.Heartbeat:
+                 * ResponseType.PresenceHeartbeat:
+                 */
+                return PubnubErrorCode.OperationTimeout;
+            }
+        }
 
         internal static PubnubClientError CreatePubnubClientError<T>(Exception ex, 
             RequestState<T> requestState, string channel, PubnubErrorCode errorCode, PubnubErrorSeverity severity){

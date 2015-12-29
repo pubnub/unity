@@ -411,7 +411,7 @@ public class PubnubExample : MonoBehaviour
                 int valueInt;
                 double valueDouble;
                 string stateKey = text2;
-				//pubnub.Subscribe<string>(currentChannel, DisplayReturnMessage, DisplayConnectStatusMessage, DisplayErrorMessage);
+                //pubnub.Subscribe<string>(currentChannel, DisplayReturnMessage, DisplayConnectStatusMessage, DisplayErrorMessage);
 
                 if (Int32.TryParse (text3, out valueInt)) {
                     pubnub.SetUserState<string> (currentChannel, "", new KeyValuePair<string, object> (stateKey, valueInt), DisplayReturnMessage, DisplayErrorMessage);

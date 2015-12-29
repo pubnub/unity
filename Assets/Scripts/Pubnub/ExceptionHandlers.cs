@@ -126,7 +126,7 @@ namespace PubNubMessaging.Core
             #if (ENABLE_PUBNUB_LOGGING)
             LoggingMethod.WriteToLog (string.Format ("DateTime {0} Exception= {1} for URL: {2}", DateTime.Now.ToString (), ex.ToString (), asynchRequestState.Request.RequestUri.ToString ()), LoggingMethod.LevelInfo);
             #endif
-			UrlRequestCommonExceptionHandler<T> (ex.Message, asynchRequestState.respType, asynchRequestState.Channels, asynchRequestState.Timeout, 
+            UrlRequestCommonExceptionHandler<T> (ex.Message, asynchRequestState.respType, asynchRequestState.Channels, asynchRequestState.Timeout, 
                 asynchRequestState.UserCallback, asynchRequestState.ConnectCallback, asynchRequestState.ErrorCallback, false, errorLevel);
         }
 
@@ -141,7 +141,7 @@ namespace PubNubMessaging.Core
             }
             #endif
 
-			UrlRequestCommonExceptionHandler<T> (webEx.Message, asynchRequestState.respType, asynchRequestState.Channels, asynchRequestState.Timeout,
+            UrlRequestCommonExceptionHandler<T> (webEx.Message, asynchRequestState.respType, asynchRequestState.Channels, asynchRequestState.Timeout,
                 asynchRequestState.UserCallback, asynchRequestState.ConnectCallback, asynchRequestState.ErrorCallback, false, errorLevel);
         }
 
@@ -157,13 +157,13 @@ namespace PubNubMessaging.Core
             mea.errorCallback = errorCallback;
             mea.resumeOnReconnect = resumeOnReconnect;
             mea.reconnectMaxTried = false;
-			mea.responseType = respType;
+            mea.responseType = respType;
             mea.userCallback = userCallback;
 
             multiplexException.Raise(typeof(ExceptionHandlers), mea);
         }
 
-		internal static void UrlRequestCommonExceptionHandler<T> (string message, ResponseType type, string[] channels, 
+        internal static void UrlRequestCommonExceptionHandler<T> (string message, ResponseType type, string[] channels, 
             bool requestTimeout, Action<T> userCallback, Action<T> connectCallback, Action<PubnubClientError> errorCallback, 
             bool resumeOnReconnect, PubnubErrorFilter.Level errorLevel)
         {
@@ -187,25 +187,25 @@ namespace PubNubMessaging.Core
             }
         }
 
-		internal static void CommonExceptionHandler<T> (string message, string channelName, bool requestTimeout, 
-			Action<PubnubClientError> errorCallback, PubnubErrorFilter.Level errorLevel, ResponseType responseType)
+        internal static void CommonExceptionHandler<T> (string message, string channelName, bool requestTimeout, 
+            Action<PubnubClientError> errorCallback, PubnubErrorFilter.Level errorLevel, ResponseType responseType)
         {
-			if (requestTimeout) {
-				message = "Operation Timeout";
-				#if (ENABLE_PUBNUB_LOGGING)
-				LoggingMethod.WriteToLog (string.Format ("DateTime {0}, {1} response={2}", DateTime.Now.ToString (), responseType.ToString (), message), LoggingMethod.LevelInfo);
-				#endif
+            if (requestTimeout) {
+                message = "Operation Timeout";
+                #if (ENABLE_PUBNUB_LOGGING)
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, {1} response={2}", DateTime.Now.ToString (), responseType.ToString (), message), LoggingMethod.LevelInfo);
+                #endif
 
-				PubnubCallbacks.CallErrorCallback<T> (message, null, channelName, 
-					Helpers.GetTimeOutErrorCode (responseType), PubnubErrorSeverity.Critical, errorCallback, errorLevel);
-			} else {
-				#if (ENABLE_PUBNUB_LOGGING)
-				LoggingMethod.WriteToLog (string.Format ("DateTime {0}, {1} response={2}", DateTime.Now.ToString (), responseType.ToString (), message), LoggingMethod.LevelInfo);
-				#endif
+                PubnubCallbacks.CallErrorCallback<T> (message, null, channelName, 
+                    Helpers.GetTimeOutErrorCode (responseType), PubnubErrorSeverity.Critical, errorCallback, errorLevel);
+            } else {
+                #if (ENABLE_PUBNUB_LOGGING)
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, {1} response={2}", DateTime.Now.ToString (), responseType.ToString (), message), LoggingMethod.LevelInfo);
+                #endif
 
-				PubnubCallbacks.CallErrorCallback<T> (message, null, channelName, 
-					PubnubErrorCode.None, PubnubErrorSeverity.Critical, errorCallback, errorLevel);
-			}
+                PubnubCallbacks.CallErrorCallback<T> (message, null, channelName, 
+                    PubnubErrorCode.None, PubnubErrorSeverity.Critical, errorCallback, errorLevel);
+            }
         }
     }
 }

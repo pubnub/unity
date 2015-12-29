@@ -438,7 +438,7 @@ namespace PubNubMessaging.Core
         GlobalHereNowOperationTimeout = 134,
         PAMAccessOperationTimeout = 135,
         UserStateUnchanged = 136,
-		OperationTimeout = 137,
+        OperationTimeout = 137,
         MessageTooLarge = 4000,
         BadRequest = 4001,
         InvalidKey = 4002,

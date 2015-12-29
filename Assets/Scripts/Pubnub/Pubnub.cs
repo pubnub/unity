@@ -545,7 +545,7 @@ namespace PubNubMessaging.Core
 
         public static long TranslateDateTimeToPubnubUnixNanoSeconds (DateTime dotNetUTCDateTime)
         {
-			return Utility.TranslateDateTimeToPubnubUnixNanoSeconds (dotNetUTCDateTime);
+            return Utility.TranslateDateTimeToPubnubUnixNanoSeconds (dotNetUTCDateTime);
         }
 
         public static DateTime TranslatePubnubUnixNanoSecondsToDateTime (long unixNanoSecondTime)

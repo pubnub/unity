@@ -147,7 +147,7 @@ namespace PubNubMessaging.Core
             TypeParameterType = requestState.TypeParameterType;
             UserCallback = requestState.UserCallback as Action<T>;
             ID = requestState.ID;
-			respType = requestState.respType;
+            respType = requestState.respType;
         }
 
         public void SetRequestState<U> (
