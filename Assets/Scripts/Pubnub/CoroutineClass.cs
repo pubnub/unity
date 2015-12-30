@@ -166,7 +166,7 @@ namespace PubNubMessaging.Core
 
         public void DelayStartCoroutine<T>(string url, RequestState<T> pubnubRequestState, int timeout, int pause, CurrentRequestType crt)
         {
-            if (pubnubRequestState.respType == ResponseType.Heartbeat)
+            if (pubnubRequestState.RespType == ResponseType.Heartbeat)
             {
                 DelayRequestCoroutineHB = DelayRequest<T>(url, pubnubRequestState, timeout, pause, crt);
                 StartCoroutine(DelayRequestCoroutineHB);
@@ -182,9 +182,9 @@ namespace PubNubMessaging.Core
         {
             //for heartbeat and presence heartbeat treat reconnect as pause
             CurrentRequestType crt;
-            if ((pubnubRequestState.respType == ResponseType.Heartbeat) || (pubnubRequestState.respType == ResponseType.PresenceHeartbeat)) {
+            if ((pubnubRequestState.RespType == ResponseType.Heartbeat) || (pubnubRequestState.RespType == ResponseType.PresenceHeartbeat)) {
                 crt = CurrentRequestType.PresenceHeartbeat;
-                if (pubnubRequestState.respType == ResponseType.Heartbeat) {
+                if (pubnubRequestState.RespType == ResponseType.Heartbeat) {
                     crt = CurrentRequestType.Heartbeat;
                 }
                 CheckComplete (crt);
@@ -194,7 +194,7 @@ namespace PubNubMessaging.Core
                 } else {
                     StartCoroutinesByName<T> (url, pubnubRequestState, timeout, pause, crt);
                 }
-            } else if ((pubnubRequestState.respType == ResponseType.Subscribe) || (pubnubRequestState.respType == ResponseType.Presence)) {
+            } else if ((pubnubRequestState.RespType == ResponseType.Subscribe) || (pubnubRequestState.RespType == ResponseType.Presence)) {
                 crt = CurrentRequestType.Subscribe;
                 CheckComplete (crt);
                 #if (ENABLE_PUBNUB_LOGGING)
@@ -302,7 +302,7 @@ namespace PubNubMessaging.Core
                     if (cp.requestState == null) {
                         LoggingMethod.WriteToLog (string.Format ("DateTime {0}, WWW Sub request null2", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
                     } else {
-                        LoggingMethod.WriteToLog (string.Format ("DateTime {0}, WWW Sub request2 {1} {2}", DateTime.Now.ToString (), cp.requestState.respType, cp.crt), LoggingMethod.LevelInfo);
+                        LoggingMethod.WriteToLog (string.Format ("DateTime {0}, WWW Sub request2 {1} {2}", DateTime.Now.ToString (), cp.requestState.RespType, cp.crt), LoggingMethod.LevelInfo);
                     }
                     #endif
 

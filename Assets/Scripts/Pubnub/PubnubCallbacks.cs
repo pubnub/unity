@@ -111,7 +111,7 @@ namespace PubNubMessaging.Core
                     severity);
 
                 FireErrorCallback<T> (activeChannel, channelCallbacks, 
-                    callbackObjectType, requestState.respType, errorLevel, error);
+                    callbackObjectType, requestState.RespType, errorLevel, error);
             }
         }
 
@@ -126,7 +126,7 @@ namespace PubNubMessaging.Core
                     activeChannel, errorType, severity);
 
                 PubnubCallbacks.FireErrorCallback<T> (requestState.Channels [index].ToString (), channelCallbacks, 
-                    callbackObjectType, requestState.respType, errorLevel, error);
+                    callbackObjectType, requestState.RespType, errorLevel, error);
             }
         }
 

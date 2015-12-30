@@ -1253,7 +1253,7 @@ namespace PubNubMessaging.Tests
             UnityEngine.Debug.Log (error.Severity + ":" + PubnubErrorSeverity.Critical);
 
             Assert.IsTrue (error.Message.Contains("Timed out"));
-            Assert.IsTrue (error.StatusCode.Equals(137));
+            Assert.IsTrue (error.StatusCode.Equals(138));
             Assert.IsTrue (error.Severity.Equals (PubnubErrorSeverity.Critical));
         }
 

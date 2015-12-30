@@ -127,9 +127,9 @@ namespace PubNubMessaging.Core
             SafeDictionary<PubnubChannelCallbackKey, object> channelCallbacks, IJsonPluggableLibrary jsonPluggableLibrary)
         {
             if (result != null && result.Count >= 1 && asynchRequestState.UserCallback != null) {
-                Helpers.ResponseToConnectCallback<T> (result, asynchRequestState.respType, asynchRequestState.Channels, 
+                Helpers.ResponseToConnectCallback<T> (result, asynchRequestState.RespType, asynchRequestState.Channels, 
                     asynchRequestState.ConnectCallback, multiChannelSubscribe, channelCallbacks, jsonPluggableLibrary);
-                Helpers.ResponseToUserCallback<T> (result, asynchRequestState.respType, asynchRequestState.Channels, 
+                Helpers.ResponseToUserCallback<T> (result, asynchRequestState.RespType, asynchRequestState.Channels, 
                     asynchRequestState.UserCallback, cipherKey, channelCallbacks, jsonPluggableLibrary);
             }
         }
@@ -295,6 +295,10 @@ namespace PubNubMessaging.Core
                     case ResponseType.Presence:
                     case ResponseType.Leave:
                     case ResponseType.Publish:
+                    case ResponseType.PushRegister:
+                    case ResponseType.PushRemove:
+                    case ResponseType.PushGet:
+                    case ResponseType.PushUnregister:
                         result.Add (multiChannel);
                         break;
                     case ResponseType.GrantAccess:
@@ -530,6 +534,10 @@ namespace PubNubMessaging.Core
                 case ResponseType.RevokeAccess:
                 case ResponseType.GetUserState:
                 case ResponseType.SetUserState:
+                case ResponseType.PushRegister:
+                case ResponseType.PushRemove:
+                case ResponseType.PushGet:
+                case ResponseType.PushUnregister:
                     CheckResultListAndCallCallback(result, userCallback, jsonPluggableLibrary);
                     break;
                 default:

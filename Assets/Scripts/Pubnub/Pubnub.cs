@@ -515,6 +515,71 @@ namespace PubNubMessaging.Core
         }
         #endregion
 
+        #region "Mobile Push"
+        public void RegisterDeviceForPush(string channel, PushTypeService pushType, string pushToken, Action<object> userCallback, Action<PubnubClientError> errorCallback)
+        {
+            RegisterDeviceForPush<object>(channel, pushType, pushToken, userCallback, errorCallback); 
+        }
+
+        public void RegisterDeviceForPush<T>(string channel, PushTypeService pushType, string pushToken, Action<T> userCallback, Action<PubnubClientError> errorCallback)
+        {
+            Utility.CheckChannel(channel);
+            Utility.CheckString(pushToken, "Push token");
+            Utility.CheckPushType(pushType);
+            Utility.CheckCallback(userCallback, CallbackType.User);
+            Utility.CheckCallback(errorCallback, CallbackType.Error);
+
+            pubnub.RegisterDeviceForPush<T>(channel, pushType, pushToken, userCallback, errorCallback);
+        }
+
+        public void UnregisterDeviceForPush(PushTypeService pushType, string pushToken, Action<object> userCallback, Action<PubnubClientError> errorCallback)
+        {
+            UnregisterDeviceForPush<object>(pushType, pushToken, userCallback, errorCallback); 
+        }
+
+        public void UnregisterDeviceForPush<T>(PushTypeService pushType, string pushToken, Action<T> userCallback, Action<PubnubClientError> errorCallback)
+        {
+            Utility.CheckString(pushToken, "Push token");
+            Utility.CheckPushType(pushType);
+            Utility.CheckCallback(userCallback, CallbackType.User);
+            Utility.CheckCallback(errorCallback, CallbackType.Error);
+
+            pubnub.UnregisterDeviceForPush<T>(pushType, pushToken, userCallback, errorCallback);
+        }
+
+        public void RemoveChannelForDevicePush(string channel, PushTypeService pushType, string pushToken, Action<object> userCallback, Action<PubnubClientError> errorCallback)
+        {
+            RemoveChannelForDevicePush<object>(channel, pushType, pushToken, userCallback, errorCallback); 
+        }
+
+        public void RemoveChannelForDevicePush<T>(string channel, PushTypeService pushType, string pushToken, Action<T> userCallback, Action<PubnubClientError> errorCallback)
+        {
+            Utility.CheckChannel(channel);
+            Utility.CheckString(pushToken, "Push token");
+            Utility.CheckPushType(pushType);
+            Utility.CheckCallback(userCallback, CallbackType.User);
+            Utility.CheckCallback(errorCallback, CallbackType.Error);
+
+            pubnub.RemoveChannelForDevicePush<T>(channel, pushType, pushToken, userCallback, errorCallback);
+        }
+
+        public void GetChannelsForDevicePush(PushTypeService pushType, string pushToken, Action<object> userCallback, Action<PubnubClientError> errorCallback)
+        {
+            GetChannelsForDevicePush<object>(pushType, pushToken, userCallback, errorCallback); 
+        }
+
+        public void GetChannelsForDevicePush<T>(PushTypeService pushType, string pushToken, Action<T> userCallback, Action<PubnubClientError> errorCallback)
+        {
+            Utility.CheckString(pushToken, "Push token");
+            Utility.CheckPushType(pushType);
+            Utility.CheckCallback(userCallback, CallbackType.User);
+            Utility.CheckCallback(errorCallback, CallbackType.Error);
+
+            pubnub.GetChannelsForDevicePush<T> (pushType, pushToken, userCallback, errorCallback);
+        }
+
+        #endregion
+
         #endregion
 
         #region "PubNub API Other Methods"

@@ -1685,5 +1685,9 @@ namespace PubNubMessaging.Tests
             pubnub.EndPendingRequests ();
             pubnub.CleanUp();
         }
+
+		/*public IEnumerator TestCoroutineRun (bool ssl, string testName, bool asObject){
+				
+		}*/
     }
 }

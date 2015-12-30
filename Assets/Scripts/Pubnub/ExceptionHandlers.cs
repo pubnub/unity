@@ -76,10 +76,10 @@ namespace PubNubMessaging.Core
         internal static void ResponseCallbackWebExceptionHandler<T> (CustomEventArgs<T> cea, RequestState<T> requestState, 
             WebException webEx, string channel, SafeDictionary<PubnubChannelCallbackKey, object> channelCallbacks, 
             PubnubErrorFilter.Level errorLevel){
-            if (requestState.Channels != null || requestState.respType == ResponseType.Time) {
+            if (requestState.Channels != null || requestState.RespType == ResponseType.Time) {
 
-                if (requestState.respType == ResponseType.Subscribe
-                    || requestState.respType == ResponseType.Presence) {
+                if (requestState.RespType == ResponseType.Subscribe
+                    || requestState.RespType == ResponseType.Presence) {
 
                     if (webEx.Message.IndexOf ("The request was aborted: The request was canceled") == -1
                         || webEx.Message.IndexOf ("Machine suspend mode enabled. No request will be processed.") == -1) {
@@ -105,8 +105,8 @@ namespace PubNubMessaging.Core
             #endif
             if (requestState.Channels != null) {
 
-                if (requestState.respType == ResponseType.Subscribe
-                    || requestState.respType == ResponseType.Presence) {
+                if (requestState.RespType == ResponseType.Subscribe
+                    || requestState.RespType == ResponseType.Presence) {
 
                     PubnubCallbacks.FireErrorCallbacksForAllChannels (ex, requestState, 
                         PubnubErrorSeverity.Warn, channelCallbacks, 
@@ -126,7 +126,7 @@ namespace PubNubMessaging.Core
             #if (ENABLE_PUBNUB_LOGGING)
             LoggingMethod.WriteToLog (string.Format ("DateTime {0} Exception= {1} for URL: {2}", DateTime.Now.ToString (), ex.ToString (), asynchRequestState.Request.RequestUri.ToString ()), LoggingMethod.LevelInfo);
             #endif
-            UrlRequestCommonExceptionHandler<T> (ex.Message, asynchRequestState.respType, asynchRequestState.Channels, asynchRequestState.Timeout, 
+            UrlRequestCommonExceptionHandler<T> (ex.Message, asynchRequestState.RespType, asynchRequestState.Channels, asynchRequestState.Timeout, 
                 asynchRequestState.UserCallback, asynchRequestState.ConnectCallback, asynchRequestState.ErrorCallback, false, errorLevel);
         }
 
@@ -141,7 +141,7 @@ namespace PubNubMessaging.Core
             }
             #endif
 
-            UrlRequestCommonExceptionHandler<T> (webEx.Message, asynchRequestState.respType, asynchRequestState.Channels, asynchRequestState.Timeout,
+            UrlRequestCommonExceptionHandler<T> (webEx.Message, asynchRequestState.RespType, asynchRequestState.Channels, asynchRequestState.Timeout,
                 asynchRequestState.UserCallback, asynchRequestState.ConnectCallback, asynchRequestState.ErrorCallback, false, errorLevel);
         }
 
@@ -180,10 +180,35 @@ namespace PubNubMessaging.Core
                 case ResponseType.Leave:
                 case ResponseType.PresenceHeartbeat:
                     break;
+                case ResponseType.PushGet:
+                case ResponseType.PushRegister:
+                case ResponseType.PushRemove:
+                case ResponseType.PushUnregister:
+                    PushNotificationExceptionHandler<T>(channels, requestTimeout, errorCallback, errorLevel);
+                    break;
                 default:
                     CommonExceptionHandler<T> (message, channels [0], requestTimeout, errorCallback, errorLevel, type);
                     break;
                     
+            }
+        }
+
+        internal static void PushNotificationExceptionHandler<T>(string[] channels, bool requestTimeout, 
+            Action<PubnubClientError> errorCallback, PubnubErrorFilter.Level errorLevel)
+        {
+            string channel = "";
+            if (channels != null)
+            {
+                channel = string.Join(",", channels);
+            }
+            if (requestTimeout)
+            {
+                string message = (requestTimeout) ? "Operation Timeout" : "Network connnect error";
+                #if (ENABLE_PUBNUB_LOGGING)
+                LoggingMethod.WriteToLog(string.Format("DateTime {0}, PushExceptionHandler response={1}", DateTime.Now.ToString(), message), LoggingMethod.LevelInfo);
+                #endif
+                PubnubCallbacks.CallErrorCallback <T>(message, null, channel, 
+                    PubnubErrorCode.PushNotificationTimeout, PubnubErrorSeverity.Critical, errorCallback, errorLevel);
             }
         }
 

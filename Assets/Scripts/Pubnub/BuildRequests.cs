@@ -13,7 +13,7 @@ namespace PubNubMessaging.Core
         ){
             RequestState<T> requestState = new RequestState<T> ();
             requestState.Channels = channel;
-            requestState.respType = responseType;
+            requestState.RespType = responseType;
             requestState.Reconnect = reconnect;
             requestState.UserCallback = userCallback;
             requestState.ErrorCallback = errorCallback;
@@ -27,6 +27,87 @@ namespace PubNubMessaging.Core
         }
 
         #region "Build Requests"
+        internal static Uri BuildRegisterDevicePushRequest(string channel, PushTypeService pushType, 
+            string pushToken,  string uuid, 
+            bool ssl, string origin, string authenticationKey,string subscribeKey)
+        {
+            StringBuilder parameterBuilder = new StringBuilder();
+
+            parameterBuilder.AppendFormat("?add={0}", Utility.EncodeUricomponent(channel, ResponseType.PushRegister, true, false));
+            parameterBuilder.AppendFormat("&type={0}", pushType.ToString().ToLower());
+
+            // Build URL
+            List<string> url = new List<string>();
+            url.Add("v1");
+            url.Add("push");
+            url.Add("sub-key");
+            url.Add(subscribeKey);
+            url.Add("devices");
+            url.Add(pushToken);
+
+            return BuildRestApiRequest<Uri>(url, ResponseType.PushRegister, uuid, ssl, origin, 0, authenticationKey, parameterBuilder.ToString());
+        }
+
+        internal static Uri BuildRemoveChannelPushRequest(string channel, PushTypeService pushType, 
+            string pushToken,  string uuid, 
+            bool ssl, string origin, string authenticationKey,string subscribeKey)
+        {
+            StringBuilder parameterBuilder = new StringBuilder();
+
+            parameterBuilder.AppendFormat("?remove={0}", Utility.EncodeUricomponent(channel, ResponseType.PushRemove, true, false));
+            parameterBuilder.AppendFormat("&type={0}", pushType.ToString().ToLower());
+
+            // Build URL
+            List<string> url = new List<string>();
+            url.Add("v1");
+            url.Add("push");
+            url.Add("sub-key");
+            url.Add(subscribeKey);
+            url.Add("devices");
+            url.Add(pushToken);
+
+            return BuildRestApiRequest<Uri>(url, ResponseType.PushRemove, uuid, ssl, origin, 0, authenticationKey, parameterBuilder.ToString());
+        }
+
+        internal static Uri BuildGetChannelsPushRequest(PushTypeService pushType, string pushToken, string uuid, 
+            bool ssl, string origin, string authenticationKey, string subscribeKey)
+        {
+            StringBuilder parameterBuilder = new StringBuilder();
+
+            parameterBuilder.AppendFormat("?type={0}", pushType.ToString().ToLower());
+
+            // Build URL
+            List<string> url = new List<string>();
+            url.Add("v1");
+            url.Add("push");
+            url.Add("sub-key");
+            url.Add(subscribeKey);
+            url.Add("devices");
+            url.Add(pushToken);
+
+            return BuildRestApiRequest<Uri>(url, ResponseType.PushGet, uuid, ssl, origin, 0, authenticationKey, parameterBuilder.ToString());
+        }
+
+        internal static Uri BuildUnregisterDevicePushRequest(PushTypeService pushType, string pushToken, string uuid, 
+            bool ssl, string origin, string authenticationKey, string subscribeKey)
+        {
+            StringBuilder parameterBuilder = new StringBuilder();
+
+            parameterBuilder.AppendFormat("?type={0}", pushType.ToString().ToLower());
+
+            // Build URL
+            List<string> url = new List<string>();
+            url.Add("v1");
+            url.Add("push");
+            url.Add("sub-key");
+            url.Add(subscribeKey);
+            url.Add("devices");
+            url.Add(pushToken);
+            url.Add("remove");
+
+            return BuildRestApiRequest<Uri>(url, ResponseType.PushUnregister, uuid, ssl, origin, 0, authenticationKey, parameterBuilder.ToString());
+        }
+
         internal static Uri BuildPublishRequest (string channel, string message, bool storeInHistory, string uuid, 
             bool ssl, string origin, string authenticationKey, 
             string publishKey, string subscribeKey, string cipherKey, string secretKey)
@@ -512,7 +593,15 @@ namespace PubNubMessaging.Core
                     url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
 
                     break;
-
+                case ResponseType.PushGet:
+                case ResponseType.PushRegister:
+                case ResponseType.PushRemove:
+                case ResponseType.PushUnregister:
+                    url.Append (parameters);
+                    url = AppendUUIDToURL(url, uuid, false);
+                    url = AppendAuthKeyToURL(url, authenticationKey, type);
+                    url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
+                    break;
                 case ResponseType.DetailedHistory:
                 case ResponseType.GrantAccess:
                 case ResponseType.AuditAccess:

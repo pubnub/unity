@@ -3,9 +3,29 @@ using System.Text;
 
 namespace PubNubMessaging.Core
 {
+    #region "Push Notification Types"
+    public enum PushTypeService
+    {
+        None,
+        MPNS, //MicrosoftPushNotificationService
+        WNS, //WindowsNotificationService,
+        GCM,
+        APNS
+    }
+
+    #endregion
     internal static class Utility
     {
+
         internal const string PresenceChannelSuffix = "-pnpres";
+
+        internal static void CheckPushType(PushTypeService pushType)
+        {
+            if (pushType == PushTypeService.None)
+            {
+                throw new ArgumentException("Missing PushTypeService");
+            }
+        }
 
         internal static void CheckChannel(string channel)
         {
@@ -20,6 +40,14 @@ namespace PubNubMessaging.Core
             if (message == null)
             {
                 throw new ArgumentException("Message is null");
+            }
+        }
+
+        internal static void CheckString(string message, string what)
+        {
+            if (message == null)
+            {
+                throw new ArgumentException(string.Format("{0} is null", what));
             }
         }
 
@@ -120,7 +148,9 @@ namespace PubNubMessaging.Core
                 }
             }
             encodedUri = o.ToString ();
-            if (type == ResponseType.HereNow || type == ResponseType.DetailedHistory || type == ResponseType.Leave || type == ResponseType.PresenceHeartbeat) {
+            if (type == ResponseType.HereNow || type == ResponseType.DetailedHistory || type == ResponseType.Leave || type == ResponseType.PresenceHeartbeat
+                || type == ResponseType.PushRegister || type == ResponseType.PushRemove || type == ResponseType.PushGet || type == ResponseType.PushUnregister
+            ) {
                 if (!ignorePercent2fEncode) {
                     encodedUri = encodedUri.Replace ("%2F", "%252F");
                 }
