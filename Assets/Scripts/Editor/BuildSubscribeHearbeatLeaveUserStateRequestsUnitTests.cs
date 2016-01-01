@@ -652,6 +652,524 @@ namespace PubNubMessaging.Tests
             string received = uri.ToString ();
             Common.LogAndCompare (expected, received);
         }
+
+        [Test]
+        public void TestBuildRegisterDevicePushRequestAPNS ()
+        {
+            TestBuildRegisterDevicePushRequestCommon (true, "", "pushToken", PushTypeService.APNS);
+        }
+
+        [Test]
+        public void TestBuildRegisterDevicePushRequestMPNS ()
+        {
+            TestBuildRegisterDevicePushRequestCommon (true, "", "pushToken", PushTypeService.MPNS);
+        }
+
+        [Test]
+        public void TestBuildRegisterDevicePushRequestGCM ()
+        {
+            TestBuildRegisterDevicePushRequestCommon (true, "", "pushToken", PushTypeService.GCM);
+        }
+
+        [Test]
+        public void TestBuildRegisterDevicePushRequestWNS ()
+        {
+            TestBuildRegisterDevicePushRequestCommon (true, "", "pushToken", PushTypeService.WNS);
+        }
+
+        [Test]
+        public void TestBuildRegisterDevicePushRequestAPNSAuth ()
+        {
+            TestBuildRegisterDevicePushRequestCommon (true, "authKey", "pushToken", PushTypeService.APNS);
+        }
+
+        [Test]
+        public void TestBuildRegisterDevicePushRequestMPNSAuth ()
+        {
+            TestBuildRegisterDevicePushRequestCommon (true, "authKey", "pushToken", PushTypeService.MPNS);
+        }
+
+        [Test]
+        public void TestBuildRegisterDevicePushRequestGCMAuth ()
+        {
+            TestBuildRegisterDevicePushRequestCommon (true, "authKey", "pushToken", PushTypeService.GCM);
+        }
+
+        [Test]
+        public void TestBuildRegisterDevicePushRequestWNSAuth ()
+        {
+            TestBuildRegisterDevicePushRequestCommon (true, "authKey", "pushToken", PushTypeService.WNS);
+        }
+
+        [Test]
+        public void TestBuildRegisterDevicePushRequestSSLAPNS ()
+        {
+            TestBuildRegisterDevicePushRequestCommon (false, "", "pushToken", PushTypeService.APNS);
+        }
+
+        [Test]
+        public void TestBuildRegisterDevicePushRequestSSLMPNS ()
+        {
+            TestBuildRegisterDevicePushRequestCommon (false, "", "pushToken", PushTypeService.MPNS);
+        }
+
+        [Test]
+        public void TestBuildRegisterDevicePushRequestSSLGCM ()
+        {
+            TestBuildRegisterDevicePushRequestCommon (false, "", "pushToken", PushTypeService.GCM);
+        }
+
+        [Test]
+        public void TestBuildRegisterDevicePushRequestSSLWNS ()
+        {
+            TestBuildRegisterDevicePushRequestCommon (false, "", "pushToken", PushTypeService.WNS);
+        }
+
+        [Test]
+        public void TestBuildRegisterDevicePushRequestSSLAPNSAuth ()
+        {
+            TestBuildRegisterDevicePushRequestCommon (false, "authKey", "pushToken", PushTypeService.APNS);
+        }
+
+        [Test]
+        public void TestBuildRegisterDevicePushRequestSSLMPNSAuth ()
+        {
+            TestBuildRegisterDevicePushRequestCommon (false, "authKey", "pushToken", PushTypeService.MPNS);
+        }
+
+        [Test]
+        public void TestBuildRegisterDevicePushRequestSSLGCMAuth ()
+        {
+            TestBuildRegisterDevicePushRequestCommon (false, "authKey", "pushToken", PushTypeService.GCM);
+        }
+
+        [Test]
+        public void TestBuildRegisterDevicePushRequestSSLWNSAuth ()
+        {
+            TestBuildRegisterDevicePushRequestCommon (false, "authKey", "pushToken", PushTypeService.WNS);
+        }
+
+        public void TestBuildRegisterDevicePushRequestCommon(bool ssl, string authKey, string pushToken, PushTypeService pushType){
+            string channel = "push_channel";
+            string uuid = "customuuid";
+
+            Pubnub pubnub = new Pubnub (
+                Common.PublishKey,
+                Common.SubscribeKey,
+                "",
+                "",
+                ssl
+            );
+            pubnub.AuthenticationKey = authKey;
+            string authKeyString = "";
+            if (!string.IsNullOrEmpty(authKey)) {
+                authKeyString = string.Format ("&auth={0}", pubnub.AuthenticationKey);
+            }
+
+            Uri uri = BuildRequests.BuildRegisterDevicePushRequest (channel, pushType, pushToken, uuid, ssl, 
+                pubnub.Origin, pubnub.AuthenticationKey, Common.SubscribeKey
+            );
+
+            //[1, "Modified Channels"]
+            //https://pubsub.pubnub.com/v1/push/sub-key/demo-36/devices/pushToken?add=push_channel&type=apns&uuid=customuuid&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
+            string expected = string.Format ("http{0}://{1}/v1/push/sub-key/{2}/devices/{3}?add={4}&type={5}&uuid={6}{7}&pnsdk={8}",
+                ssl?"s":"", pubnub.Origin, Common.SubscribeKey, pushToken, 
+                Utility.EncodeUricomponent(channel, ResponseType.PushRegister, true, false), pushType.ToString().ToLower(),
+                uuid, authKeyString, PubnubUnity.Version
+            );
+            string received = uri.ToString ();
+            UnityEngine.Debug.Log("exp:"+expected);
+            UnityEngine.Debug.Log(received);
+            Common.LogAndCompare (expected, received);
+        }
+
+        [Test]
+        public void TestBuildRemoveChannelPushRequestAPNS ()
+        {
+            TestBuildRemoveChannelPushRequestCommon (true, "", "pushToken", PushTypeService.APNS);
+        }
+
+        [Test]
+        public void TestBuildRemoveChannelPushRequestMPNS ()
+        {
+            TestBuildRemoveChannelPushRequestCommon (true, "", "pushToken", PushTypeService.MPNS);
+        }
+
+        [Test]
+        public void TestBuildRemoveChannelPushRequestGCM ()
+        {
+            TestBuildRemoveChannelPushRequestCommon (true, "", "pushToken", PushTypeService.GCM);
+        }
+
+        [Test]
+        public void TestBuildRemoveChannelPushRequestWNS ()
+        {
+            TestBuildRemoveChannelPushRequestCommon (true, "", "pushToken", PushTypeService.WNS);
+        }
+
+        [Test]
+        public void TestBuildRemoveChannelPushRequestAPNSAuth ()
+        {
+            TestBuildRemoveChannelPushRequestCommon (true, "authKey", "pushToken", PushTypeService.APNS);
+        }
+
+        [Test]
+        public void TestBuildRemoveChannelPushRequestMPNSAuth ()
+        {
+            TestBuildRemoveChannelPushRequestCommon (true, "authKey", "pushToken", PushTypeService.MPNS);
+        }
+
+        [Test]
+        public void TestBuildRemoveChannelPushRequestGCMAuth ()
+        {
+            TestBuildRemoveChannelPushRequestCommon (true, "authKey", "pushToken", PushTypeService.GCM);
+        }
+
+        [Test]
+        public void TestBuildRemoveChannelPushRequestWNSAuth ()
+        {
+            TestBuildRemoveChannelPushRequestCommon (true, "authKey", "pushToken", PushTypeService.WNS);
+        }
+
+        [Test]
+        public void TestBuildRemoveChannelPushRequestSSLAPNS ()
+        {
+            TestBuildRemoveChannelPushRequestCommon (false, "", "pushToken", PushTypeService.APNS);
+        }
+
+        [Test]
+        public void TestBuildRemoveChannelPushRequestSSLMPNS ()
+        {
+            TestBuildRemoveChannelPushRequestCommon (false, "", "pushToken", PushTypeService.MPNS);
+        }
+
+        [Test]
+        public void TestBuildRemoveChannelPushRequestSSLGCM ()
+        {
+            TestBuildRemoveChannelPushRequestCommon (false, "", "pushToken", PushTypeService.GCM);
+        }
+
+        [Test]
+        public void TestBuildRemoveChannelPushRequestSSLWNS ()
+        {
+            TestBuildRemoveChannelPushRequestCommon (false, "", "pushToken", PushTypeService.WNS);
+        }
+
+        [Test]
+        public void TestBuildRemoveChannelPushRequestSSLAPNSAuth ()
+        {
+            TestBuildRemoveChannelPushRequestCommon (false, "authKey", "pushToken", PushTypeService.APNS);
+        }
+
+        [Test]
+        public void TestBuildRemoveChannelPushRequestSSLMPNSAuth ()
+        {
+            TestBuildRemoveChannelPushRequestCommon (false, "authKey", "pushToken", PushTypeService.MPNS);
+        }
+
+        [Test]
+        public void TestBuildRemoveChannelPushRequestSSLGCMAuth ()
+        {
+            TestBuildRemoveChannelPushRequestCommon (false, "authKey", "pushToken", PushTypeService.GCM);
+        }
+
+        [Test]
+        public void TestBuildRemoveChannelPushRequestSSLWNSAuth ()
+        {
+            TestBuildRemoveChannelPushRequestCommon (false, "authKey", "pushToken", PushTypeService.WNS);
+        }
+
+        public void TestBuildRemoveChannelPushRequestCommon(bool ssl, string authKey, string pushToken, PushTypeService pushType){
+            string channel = "push_channel";
+            string uuid = "customuuid";
+
+            Pubnub pubnub = new Pubnub (
+                Common.PublishKey,
+                Common.SubscribeKey,
+                "",
+                "",
+                ssl
+            );
+            pubnub.AuthenticationKey = authKey;
+            string authKeyString = "";
+            if (!string.IsNullOrEmpty(authKey)) {
+                authKeyString = string.Format ("&auth={0}", pubnub.AuthenticationKey);
+            }
+
+            Uri uri = BuildRequests.BuildRemoveChannelPushRequest (channel, pushType, pushToken, uuid, ssl, 
+                pubnub.Origin, pubnub.AuthenticationKey, Common.SubscribeKey
+            );
+            //[1, "Modified Channels"]
+            //http://pubsub.pubnub.com/v1/push/sub-key/demo-36/devices/pushToken?remove=push_channel&type=mpns&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
+            string expected = string.Format ("http{0}://{1}/v1/push/sub-key/{2}/devices/{3}?remove={4}&type={5}&uuid={6}{7}&pnsdk={8}",
+                ssl?"s":"", pubnub.Origin, Common.SubscribeKey, pushToken, 
+                Utility.EncodeUricomponent(channel, ResponseType.PushRemove, true, false), pushType.ToString().ToLower(),
+                uuid, authKeyString, PubnubUnity.Version
+            );
+            string received = uri.ToString ();
+            UnityEngine.Debug.Log("exp:"+expected);
+            UnityEngine.Debug.Log(received);
+            Common.LogAndCompare (expected, received);
+        }
+
+        [Test]
+        public void TestBuildGetChannelsPushRequestAPNS ()
+        {
+            TestBuildGetChannelsPushRequestCommon (true, "", "pushToken", PushTypeService.APNS);
+        }
+
+        [Test]
+        public void TestBuildGetChannelsPushRequestMPNS ()
+        {
+            TestBuildGetChannelsPushRequestCommon (true, "", "pushToken", PushTypeService.MPNS);
+        }
+
+        [Test]
+        public void TestBuildGetChannelsPushRequestGCM ()
+        {
+            TestBuildGetChannelsPushRequestCommon (true, "", "pushToken", PushTypeService.GCM);
+        }
+
+        [Test]
+        public void TestBuildGetChannelsPushRequestWNS ()
+        {
+            TestBuildGetChannelsPushRequestCommon (true, "", "pushToken", PushTypeService.WNS);
+        }
+
+        [Test]
+        public void TestBuildGetChannelsPushRequestAPNSAuth ()
+        {
+            TestBuildGetChannelsPushRequestCommon (true, "authKey", "pushToken", PushTypeService.APNS);
+        }
+
+        [Test]
+        public void TestBuildGetChannelsPushRequestMPNSAuth ()
+        {
+            TestBuildGetChannelsPushRequestCommon (true, "authKey", "pushToken", PushTypeService.MPNS);
+        }
+
+        [Test]
+        public void TestBuildGetChannelsPushRequestGCMAuth ()
+        {
+            TestBuildGetChannelsPushRequestCommon (true, "authKey", "pushToken", PushTypeService.GCM);
+        }
+
+        [Test]
+        public void TestBuildGetChannelsPushRequestWNSAuth ()
+        {
+            TestBuildGetChannelsPushRequestCommon (true, "authKey", "pushToken", PushTypeService.WNS);
+        }
+
+        [Test]
+        public void TestBuildGetChannelsPushRequestSSLAPNS ()
+        {
+            TestBuildGetChannelsPushRequestCommon (false, "", "pushToken", PushTypeService.APNS);
+        }
+
+        [Test]
+        public void TestBuildGetChannelsPushRequestSSLMPNS ()
+        {
+            TestBuildGetChannelsPushRequestCommon (false, "", "pushToken", PushTypeService.MPNS);
+        }
+
+        [Test]
+        public void TestBuildGetChannelsPushRequestSSLGCM ()
+        {
+            TestBuildGetChannelsPushRequestCommon (false, "", "pushToken", PushTypeService.GCM);
+        }
+
+        [Test]
+        public void TestBuildGetChannelsPushRequestSSLWNS ()
+        {
+            TestBuildGetChannelsPushRequestCommon (false, "", "pushToken", PushTypeService.WNS);
+        }
+
+        [Test]
+        public void TestBuildGetChannelsPushRequestSSLAPNSAuth ()
+        {
+            TestBuildGetChannelsPushRequestCommon (false, "authKey", "pushToken", PushTypeService.APNS);
+        }
+
+        [Test]
+        public void TestBuildGetChannelsPushRequestSSLMPNSAuth ()
+        {
+            TestBuildGetChannelsPushRequestCommon (false, "authKey", "pushToken", PushTypeService.MPNS);
+        }
+
+        [Test]
+        public void TestBuildGetChannelsPushRequestSSLGCMAuth ()
+        {
+            TestBuildGetChannelsPushRequestCommon (false, "authKey", "pushToken", PushTypeService.GCM);
+        }
+
+        [Test]
+        public void TestBuildGetChannelsPushRequestSSLWNSAuth ()
+        {
+            TestBuildGetChannelsPushRequestCommon (false, "authKey", "pushToken", PushTypeService.WNS);
+        }
+
+        public void TestBuildGetChannelsPushRequestCommon(bool ssl, string authKey, string pushToken, PushTypeService pushType){
+            string uuid = "customuuid";
+
+            Pubnub pubnub = new Pubnub (
+                Common.PublishKey,
+                Common.SubscribeKey,
+                "",
+                "",
+                ssl
+            );
+            pubnub.AuthenticationKey = authKey;
+            string authKeyString = "";
+            if (!string.IsNullOrEmpty(authKey)) {
+                authKeyString = string.Format ("&auth={0}", pubnub.AuthenticationKey);
+            }
+
+            Uri uri = BuildRequests.BuildGetChannelsPushRequest (pushType, pushToken, uuid, ssl, 
+                pubnub.Origin, pubnub.AuthenticationKey, Common.SubscribeKey
+            );
+
+            //[1, "Modified Channels"]
+            //["push_channel"]
+            //https://pubsub.pubnub.com/v1/push/sub-key/demo-36/devices/pushToken?type=wns&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
+            //https://pubsub.pubnub.com/v1/push/sub-key/demo-36/devices/pushToken?type=mpns&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
+            string expected = string.Format ("http{0}://{1}/v1/push/sub-key/{2}/devices/{3}?type={4}&uuid={5}{6}&pnsdk={7}",
+                ssl?"s":"", pubnub.Origin, Common.SubscribeKey, pushToken, 
+                pushType.ToString().ToLower(),
+                uuid, authKeyString, PubnubUnity.Version
+            );
+            string received = uri.ToString ();
+            UnityEngine.Debug.Log("exp:"+expected);
+            UnityEngine.Debug.Log(received);
+            Common.LogAndCompare (expected, received);
+        }
+
+        [Test]
+        public void BuildUnregisterDevicePushRequestAPNS ()
+        {
+            BuildUnregisterDevicePushRequestCommon (true, "", "pushToken", PushTypeService.APNS);
+        }
+
+        [Test]
+        public void BuildUnregisterDevicePushRequestMPNS ()
+        {
+            BuildUnregisterDevicePushRequestCommon (true, "", "pushToken", PushTypeService.MPNS);
+        }
+
+        [Test]
+        public void BuildUnregisterDevicePushRequestGCM ()
+        {
+            BuildUnregisterDevicePushRequestCommon (true, "", "pushToken", PushTypeService.GCM);
+        }
+
+        [Test]
+        public void BuildUnregisterDevicePushRequestWNS ()
+        {
+            BuildUnregisterDevicePushRequestCommon (true, "", "pushToken", PushTypeService.WNS);
+        }
+
+        [Test]
+        public void BuildUnregisterDevicePushRequestAPNSAuth ()
+        {
+            BuildUnregisterDevicePushRequestCommon (true, "authKey", "pushToken", PushTypeService.APNS);
+        }
+
+        [Test]
+        public void BuildUnregisterDevicePushRequestMPNSAuth ()
+        {
+            BuildUnregisterDevicePushRequestCommon (true, "authKey", "pushToken", PushTypeService.MPNS);
+        }
+
+        [Test]
+        public void BuildUnregisterDevicePushRequestGCMAuth ()
+        {
+            BuildUnregisterDevicePushRequestCommon (true, "authKey", "pushToken", PushTypeService.GCM);
+        }
+
+        [Test]
+        public void BuildUnregisterDevicePushRequestWNSAuth ()
+        {
+            BuildUnregisterDevicePushRequestCommon (true, "authKey", "pushToken", PushTypeService.WNS);
+        }
+
+        [Test]
+        public void BuildUnregisterDevicePushRequestSSLAPNS ()
+        {
+            BuildUnregisterDevicePushRequestCommon (false, "", "pushToken", PushTypeService.APNS);
+        }
+
+        [Test]
+        public void BuildUnregisterDevicePushRequestSSLMPNS ()
+        {
+            BuildUnregisterDevicePushRequestCommon (false, "", "pushToken", PushTypeService.MPNS);
+        }
+
+        [Test]
+        public void BuildUnregisterDevicePushRequestSSLGCM ()
+        {
+            BuildUnregisterDevicePushRequestCommon (false, "", "pushToken", PushTypeService.GCM);
+        }
+
+        [Test]
+        public void BuildUnregisterDevicePushRequestSSLWNS ()
+        {
+            BuildUnregisterDevicePushRequestCommon (false, "", "pushToken", PushTypeService.WNS);
+        }
+
+        [Test]
+        public void BuildUnregisterDevicePushRequestSSLAPNSAuth ()
+        {
+            BuildUnregisterDevicePushRequestCommon (false, "authKey", "pushToken", PushTypeService.APNS);
+        }
+
+        [Test]
+        public void BuildUnregisterDevicePushRequestSSLMPNSAuth ()
+        {
+            BuildUnregisterDevicePushRequestCommon (false, "authKey", "pushToken", PushTypeService.MPNS);
+        }
+
+        [Test]
+        public void BuildUnregisterDevicePushRequestSSLGCMAuth ()
+        {
+            BuildUnregisterDevicePushRequestCommon (false, "authKey", "pushToken", PushTypeService.GCM);
+        }
+
+        [Test]
+        public void BuildUnregisterDevicePushRequestSSLWNSAuth ()
+        {
+            BuildUnregisterDevicePushRequestCommon (false, "authKey", "pushToken", PushTypeService.WNS);
+        }
+
+        public void BuildUnregisterDevicePushRequestCommon(bool ssl, string authKey, string pushToken, PushTypeService pushType){
+            string uuid = "customuuid";
+
+            Pubnub pubnub = new Pubnub (
+                Common.PublishKey,
+                Common.SubscribeKey,
+                "",
+                "",
+                ssl
+            );
+            pubnub.AuthenticationKey = authKey;
+            string authKeyString = "";
+            if (!string.IsNullOrEmpty(authKey)) {
+                authKeyString = string.Format ("&auth={0}", pubnub.AuthenticationKey);
+            }
+
+            Uri uri = BuildRequests.BuildUnregisterDevicePushRequest (pushType, pushToken, uuid, ssl, 
+                pubnub.Origin, pubnub.AuthenticationKey, Common.SubscribeKey
+            );
+            //[1, "Removed Device"]
+            //https://pubsub.pubnub.com/v1/push/sub-key/demo-36/devices/pushToken/remove?type=wns&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
+            string expected = string.Format ("http{0}://{1}/v1/push/sub-key/{2}/devices/{3}/remove?type={4}&uuid={5}{6}&pnsdk={7}",
+                ssl?"s":"", pubnub.Origin, Common.SubscribeKey, pushToken, 
+                pushType.ToString().ToLower(),
+                uuid, authKeyString, PubnubUnity.Version
+            );
+            string received = uri.ToString ();
+            UnityEngine.Debug.Log("exp:"+expected);
+            UnityEngine.Debug.Log(received);
+            Common.LogAndCompare (expected, received);
+        }
         #endif
     }
 }

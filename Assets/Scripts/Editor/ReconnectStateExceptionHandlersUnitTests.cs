@@ -175,6 +175,150 @@ namespace PubNubMessaging.Tests
             );
         }
 
+        [Test]
+        public void TestBuildRequestStatePushGetObj ()
+        {
+            string[] channels = new string[] { "test" };
+            TestBuildRequestStateCommon<object> (channels, CurrentRequestType.NonSubscribe, ResponseType.PushGet, 
+                true, UserCallback, ConnectCallback, ErrorCallback, 0, false, 0, null
+            );
+        }
+
+        [Test]
+        public void TestBuildRequestStatePushGet ()
+        {
+            string[] channels = new string[] { "test" };
+            TestBuildRequestStateCommon<string> (channels, CurrentRequestType.NonSubscribe, ResponseType.PushGet, 
+                true, UserCallback, ConnectCallback, ErrorCallback, 0, false, 0, null
+            );
+        }
+
+        [Test]
+        public void TestBuildRequestStatePushGetObjTO ()
+        {
+            string[] channels = new string[] { "test" };
+            TestBuildRequestStateCommon<object> (channels, CurrentRequestType.NonSubscribe, ResponseType.PushGet, 
+                true, UserCallback, ConnectCallback, ErrorCallback, 0, true, 0, null
+            );
+        }
+
+        [Test]
+        public void TestBuildRequestStatePushGetTO ()
+        {
+            string[] channels = new string[] { "test" };
+            TestBuildRequestStateCommon<string> (channels, CurrentRequestType.NonSubscribe, ResponseType.PushGet, 
+                true, UserCallback, ConnectCallback, ErrorCallback, 0, true, 0, null
+            );
+        }
+
+        [Test]
+        public void TestBuildRequestStatePushRemoveObj ()
+        {
+            string[] channels = new string[] { "test" };
+            TestBuildRequestStateCommon<object> (channels, CurrentRequestType.NonSubscribe, ResponseType.PushRemove, 
+                true, UserCallback, ConnectCallback, ErrorCallback, 0, false, 0, null
+            );
+        }
+
+        [Test]
+        public void TestBuildRequestStatePushRemove ()
+        {
+            string[] channels = new string[] { "test" };
+            TestBuildRequestStateCommon<string> (channels, CurrentRequestType.NonSubscribe, ResponseType.PushRemove, 
+                true, UserCallback, ConnectCallback, ErrorCallback, 0, false, 0, null
+            );
+        }
+
+        [Test]
+        public void TestBuildRequestStatePushRemoveObjTO ()
+        {
+            string[] channels = new string[] { "test" };
+            TestBuildRequestStateCommon<object> (channels, CurrentRequestType.NonSubscribe, ResponseType.PushRemove, 
+                true, UserCallback, ConnectCallback, ErrorCallback, 0, true, 0, null
+            );
+        }
+
+        [Test]
+        public void TestBuildRequestStatePushRemoveTO ()
+        {
+            string[] channels = new string[] { "test" };
+            TestBuildRequestStateCommon<string> (channels, CurrentRequestType.NonSubscribe, ResponseType.PushRemove, 
+                true, UserCallback, ConnectCallback, ErrorCallback, 0, true, 0, null
+            );
+        }
+
+        [Test]
+        public void TestBuildRequestStatePushRegisterObj ()
+        {
+            string[] channels = new string[] { "test" };
+            TestBuildRequestStateCommon<object> (channels, CurrentRequestType.NonSubscribe, ResponseType.PushRegister, 
+                true, UserCallback, ConnectCallback, ErrorCallback, 0, false, 0, null
+            );
+        }
+
+        [Test]
+        public void TestBuildRequestStatePushRegister ()
+        {
+            string[] channels = new string[] { "test" };
+            TestBuildRequestStateCommon<string> (channels, CurrentRequestType.NonSubscribe, ResponseType.PushRegister, 
+                true, UserCallback, ConnectCallback, ErrorCallback, 0, false, 0, null
+            );
+        }
+
+        [Test]
+        public void TestBuildRequestStatePushRegisterObjTO ()
+        {
+            string[] channels = new string[] { "test" };
+            TestBuildRequestStateCommon<object> (channels, CurrentRequestType.NonSubscribe, ResponseType.PushRegister, 
+                true, UserCallback, ConnectCallback, ErrorCallback, 0, true, 0, null
+            );
+        }
+
+        [Test]
+        public void TestBuildRequestStatePushRegisterTO ()
+        {
+            string[] channels = new string[] { "test" };
+            TestBuildRequestStateCommon<string> (channels, CurrentRequestType.NonSubscribe, ResponseType.PushRegister, 
+                true, UserCallback, ConnectCallback, ErrorCallback, 0, true, 0, null
+            );
+        }
+
+        [Test]
+        public void TestBuildRequestStatePushUnregisterObj ()
+        {
+            string[] channels = new string[] { "test" };
+            TestBuildRequestStateCommon<object> (channels, CurrentRequestType.NonSubscribe, ResponseType.PushUnregister, 
+                true, UserCallback, ConnectCallback, ErrorCallback, 0, false, 0, null
+            );
+        }
+
+        [Test]
+        public void TestBuildRequestStatePushUnregister ()
+        {
+            string[] channels = new string[] { "test" };
+            TestBuildRequestStateCommon<string> (channels, CurrentRequestType.NonSubscribe, ResponseType.PushUnregister, 
+                true, UserCallback, ConnectCallback, ErrorCallback, 0, false, 0, null
+            );
+        }
+
+        [Test]
+        public void TestBuildRequestStatePushUnregisterObjTO ()
+        {
+            string[] channels = new string[] { "test" };
+            TestBuildRequestStateCommon<object> (channels, CurrentRequestType.NonSubscribe, ResponseType.PushUnregister, 
+                true, UserCallback, ConnectCallback, ErrorCallback, 0, true, 0, null
+            );
+        }
+
+        [Test]
+        public void TestBuildRequestStatePushUnregisterTO ()
+        {
+            string[] channels = new string[] { "test" };
+            TestBuildRequestStateCommon<string> (channels, CurrentRequestType.NonSubscribe, ResponseType.PushUnregister, 
+                true, UserCallback, ConnectCallback, ErrorCallback, 0, true, 0, null
+            );
+        }
+
         public void TestBuildRequestStateCommon<T>(string[] channels, CurrentRequestType requestType, ResponseType responseType, 
             bool reconnect, Action<T> userCallback,
             Action<T> connectCallback, Action<PubnubClientError> errorCallback,
@@ -185,7 +329,16 @@ namespace PubNubMessaging.Tests
 
             StoredRequestState.Instance.SetRequestState (requestType, requestState);
             RequestState<T> reqState = StoredRequestState.Instance.GetStoredRequestState(requestType) as RequestState<T>;
-            Assert.IsTrue (reqState.Equals (requestState) && (reqState.ID.Equals(id)));
+            Assert.IsTrue (reqState.Equals (requestState));
+            Assert.IsTrue (reqState.ID.Equals(id));
+            Assert.IsTrue (string.Join(",", reqState.Channels).Equals(string.Join(",", channels)));
+            Assert.IsTrue (reqState.Reconnect.Equals(reconnect));
+            Assert.IsTrue (reqState.RespType.Equals(responseType));
+            Assert.IsTrue (reqState.Timeout.Equals(timeout));
+            Assert.IsTrue (reqState.Timetoken.Equals(timetoken));
+            Assert.IsTrue (reqState.ConnectCallback.Equals(connectCallback));
+            Assert.IsTrue (reqState.UserCallback.Equals(userCallback));
+            Assert.IsTrue (reqState.ErrorCallback.Equals(errorCallback));
         }    
 
         [Test]
@@ -1699,6 +1852,166 @@ namespace PubNubMessaging.Tests
 
             TestUrlRequestCommonExceptionHandlerCommon<string> ("test message", channel, false,
                 ResponseType.Heartbeat, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestUrlRequestCommonExceptionHandlerStringPushGet ()
+        {
+            string[] channel = {"test"}; ExceptionChannel = channel[0];
+            ExceptionStatusCode = (int)PubnubErrorCode.PushNotificationTimeout;
+            TestUrlRequestCommonExceptionHandlerCommon<string> ("test message", channel, false,
+                ResponseType.PushGet, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestUrlRequestCommonExceptionHandlerStringNonTimeoutPushGet ()
+        {
+            string[] channel = {"test"}; ExceptionChannel = channel[0];
+
+            TestUrlRequestCommonExceptionHandlerCommon<string> ("test message", channel, false,
+                ResponseType.PushGet, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestUrlRequestCommonExceptionHandlerStringPushRegister ()
+        {
+            string[] channel = {"test"}; ExceptionChannel = channel[0];
+            ExceptionStatusCode = (int)PubnubErrorCode.PushNotificationTimeout;
+            TestUrlRequestCommonExceptionHandlerCommon<string> ("test message", channel, false,
+                ResponseType.PushRegister, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestUrlRequestCommonExceptionHandlerStringNonTimeoutPushRegister ()
+        {
+            string[] channel = {"test"}; ExceptionChannel = channel[0];
+
+            TestUrlRequestCommonExceptionHandlerCommon<string> ("test message", channel, false,
+                ResponseType.PushRegister, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestUrlRequestCommonExceptionHandlerStringPushRemove ()
+        {
+            string[] channel = {"test"}; ExceptionChannel = channel[0];
+            ExceptionStatusCode = (int)PubnubErrorCode.PushNotificationTimeout;
+            TestUrlRequestCommonExceptionHandlerCommon<string> ("test message", channel, false,
+                ResponseType.PushRemove, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestUrlRequestCommonExceptionHandlerStringNonTimeoutPushRemove ()
+        {
+            string[] channel = {"test"}; ExceptionChannel = channel[0];
+
+            TestUrlRequestCommonExceptionHandlerCommon<string> ("test message", channel, false,
+                ResponseType.PushRemove, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestUrlRequestCommonExceptionHandlerStringPushUnregister ()
+        {
+            string[] channel = {"test"}; ExceptionChannel = channel[0];
+            ExceptionStatusCode = (int)PubnubErrorCode.PushNotificationTimeout;
+            TestUrlRequestCommonExceptionHandlerCommon<string> ("test message", channel, false,
+                ResponseType.PushUnregister, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestUrlRequestCommonExceptionHandlerStringNonTimeoutPushUnregister ()
+        {
+            string[] channel = {"test"}; ExceptionChannel = channel[0];
+
+            TestUrlRequestCommonExceptionHandlerCommon<string> ("test message", channel, false,
+                ResponseType.PushUnregister, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestUrlRequestCommonExceptionHandlerStringPushGetObj ()
+        {
+            string[] channel = {"test"}; ExceptionChannel = channel[0];
+            ExceptionStatusCode = (int)PubnubErrorCode.PushNotificationTimeout;
+            TestUrlRequestCommonExceptionHandlerCommon<object> ("test message", channel, false,
+                ResponseType.PushGet, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestUrlRequestCommonExceptionHandlerStringNonTimeoutPushGetObj ()
+        {
+            string[] channel = {"test"}; ExceptionChannel = channel[0];
+
+            TestUrlRequestCommonExceptionHandlerCommon<object> ("test message", channel, false,
+                ResponseType.PushGet, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestUrlRequestCommonExceptionHandlerStringPushRegisterObj ()
+        {
+            string[] channel = {"test"}; ExceptionChannel = channel[0];
+            ExceptionStatusCode = (int)PubnubErrorCode.PushNotificationTimeout;
+            TestUrlRequestCommonExceptionHandlerCommon<object> ("test message", channel, false,
+                ResponseType.PushRegister, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestUrlRequestCommonExceptionHandlerStringNonTimeoutPushRegisterObj ()
+        {
+            string[] channel = {"test"}; ExceptionChannel = channel[0];
+
+            TestUrlRequestCommonExceptionHandlerCommon<object> ("test message", channel, false,
+                ResponseType.PushRegister, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestUrlRequestCommonExceptionHandlerStringPushRemoveObj ()
+        {
+            string[] channel = {"test"}; ExceptionChannel = channel[0];
+            ExceptionStatusCode = (int)PubnubErrorCode.PushNotificationTimeout;
+            TestUrlRequestCommonExceptionHandlerCommon<object> ("test message", channel, false,
+                ResponseType.PushRemove, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestUrlRequestCommonExceptionHandlerStringNonTimeoutPushRemoveObj ()
+        {
+            string[] channel = {"test"}; ExceptionChannel = channel[0];
+
+            TestUrlRequestCommonExceptionHandlerCommon<object> ("test message", channel, false,
+                ResponseType.PushRemove, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestUrlRequestCommonExceptionHandlerStringPushUnregisterObj ()
+        {
+            string[] channel = {"test"}; ExceptionChannel = channel[0];
+            ExceptionStatusCode = (int)PubnubErrorCode.PushNotificationTimeout;
+            TestUrlRequestCommonExceptionHandlerCommon<object> ("test message", channel, false,
+                ResponseType.PushUnregister, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestUrlRequestCommonExceptionHandlerStringNonTimeoutPushUnregisterObj ()
+        {
+            string[] channel = {"test"}; ExceptionChannel = channel[0];
+
+            TestUrlRequestCommonExceptionHandlerCommon<object> ("test message", channel, false,
+                ResponseType.PushUnregister, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
             );
         }
 

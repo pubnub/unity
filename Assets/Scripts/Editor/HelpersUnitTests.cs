@@ -467,7 +467,14 @@ namespace PubNubMessaging.Tests
         {
             UnityEngine.Debug.Log (string.Format ("REGULAR CALLBACK LOG: {0}", result.ToString()));
             if (ExpectedCallback) {
-                bool bRes = result.Equals (ExpectedRegularResponse);
+                Pubnub pubnub = new Pubnub (
+                    Common.PublishKey,
+                    Common.SubscribeKey,
+                    "",
+                    "",
+                    true
+                );
+                bool bRes = pubnub.JsonPluggableLibrary.SerializeToJsonString (result).Equals (ExpectedRegularResponse);
                 UnityEngine.Debug.Log (string.Format ("REGULAR CALLBACK Obj: {0}", bRes));
 
                 Assert.IsTrue (bRes);
@@ -660,7 +667,153 @@ namespace PubNubMessaging.Tests
             );
 
         }
-            
+
+        [Test]
+        public void TestProcessResponseCallbacksPushRegister (){ 
+            string[] multiChannel = {"push_channel"};
+            List<object> result = new List<object> ();
+            result.Add (1);
+            result.Add ("Modified Channels");
+            result.Add ("");
+
+            ExpectedRegularResponse = "[1,\"Modified Channels\",\"\"]";
+            ExpectedConnect = false;
+            ExpectedCallback = true;
+
+            TestProcessResponseCallbacksCommon<string> (multiChannel, result, "", 0, false, false, ResponseType.PushRegister,
+                UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler
+            );
+
+        }
+
+        [Test]
+        public void TestProcessResponseCallbacksPushGet (){ 
+            string[] multiChannel = {"push_channel"};
+            List<object> result = new List<object> ();
+            result.Add ("push_channel");
+            result.Add ("");
+            //["push_channel"]
+
+            ExpectedRegularResponse = "[\"push_channel\",\"\"]";
+            ExpectedConnect = false;
+            ExpectedCallback = true;
+
+            TestProcessResponseCallbacksCommon<string> (multiChannel, result, "", 0, false, false, ResponseType.PushGet,
+                UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler
+            );
+
+        }
+
+        [Test]
+        public void TestProcessResponseCallbacksPushUnregister (){ 
+            string[] multiChannel = {"push_channel"};
+            List<object> result = new List<object> ();
+            result.Add (1);
+            result.Add ("Modified Channels");
+            result.Add ("");
+
+            ExpectedRegularResponse = "[1,\"Modified Channels\",\"\"]";
+            ExpectedConnect = false;
+            ExpectedCallback = true;
+
+            TestProcessResponseCallbacksCommon<string> (multiChannel, result, "", 0, false, false, ResponseType.PushUnregister,
+                UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler
+            );
+
+        }
+
+        [Test]
+        public void TestProcessResponseCallbacksPushRemove (){ 
+            string[] multiChannel = {"push_channel"};
+            List<object> result = new List<object> ();
+            result.Add (1);
+            result.Add ("Removed Device");
+            result.Add ("");
+            //[1, "Removed Device"]
+
+            ExpectedRegularResponse = "[1,\"Removed Device\",\"\"]";
+            ExpectedConnect = false;
+            ExpectedCallback = true;
+
+            TestProcessResponseCallbacksCommon<string> (multiChannel, result, "", 0, false, false, ResponseType.PushRemove,
+                UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler
+            );
+
+        }
+
+        [Test]
+        public void  TestProcessResponseCallbacksObjPushRegister (){ 
+            string[] multiChannel = {"push_channel"};
+            List<object> result = new List<object> ();
+            result.Add (1);
+            result.Add ("Modified Channels");
+            result.Add ("");
+
+            ExpectedRegularResponse = "[1,\"Modified Channels\",\"\"]";
+            ExpectedConnect = false;
+            ExpectedCallback = true;
+
+            TestProcessResponseCallbacksCommon<object> (multiChannel, result, "", 0, false, false, ResponseType.PushRegister,
+                UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler
+            );
+
+        }
+
+        [Test]
+        public void  TestProcessResponseCallbacksObjPushGet (){ 
+            string[] multiChannel = {"push_channel"};
+            List<object> result = new List<object> ();
+            result.Add ("push_channel");
+            result.Add ("");
+            //["push_channel"]
+
+            ExpectedRegularResponse = "[\"push_channel\",\"\"]";
+            ExpectedConnect = false;
+            ExpectedCallback = true;
+
+            TestProcessResponseCallbacksCommon<object> (multiChannel, result, "", 0, false, false, ResponseType.PushGet,
+                UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler
+            );
+
+        }
+
+        [Test]
+        public void  TestProcessResponseCallbacksObjPushUnregister (){ 
+            string[] multiChannel = {"push_channel"};
+            List<object> result = new List<object> ();
+            result.Add (1);
+            result.Add ("Modified Channels");
+            result.Add ("");
+
+            ExpectedRegularResponse = "[1,\"Modified Channels\",\"\"]";
+            ExpectedConnect = false;
+            ExpectedCallback = true;
+
+            TestProcessResponseCallbacksCommon<object> (multiChannel, result, "", 0, false, false, ResponseType.PushUnregister,
+                UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler
+            );
+
+        }
+
+        [Test]
+        public void  TestProcessResponseCallbacksObjPushRemove (){ 
+            string[] multiChannel = {"push_channel"};
+            List<object> result = new List<object> ();
+            result.Add (1);
+            result.Add ("Removed Device");
+            result.Add ("");
+            //[1, "Removed Device"]
+
+            ExpectedRegularResponse = "[1,\"Removed Device\",\"\"]";
+            ExpectedConnect = false;
+            ExpectedCallback = true;
+
+            TestProcessResponseCallbacksCommon<object> (multiChannel, result, "", 0, false, false, ResponseType.PushRemove,
+                UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler
+            );
+
+        }
+
         public void TestProcessResponseCallbacksCommon<T>(string [] multiChannel, List<object> result, string cipherKey, long timetoken, bool isTimeout,
             bool resumeOnReconnect, ResponseType responseType,
             Action<T> userCallback, Action<T> connectCallback, Action<PubnubClientError> errorCallback 
@@ -965,6 +1118,118 @@ namespace PubNubMessaging.Tests
 
         }
 
+        [Test]
+        public void TestWrapResultBasedOnResponseTypesObjPushRegister(){ 
+            string[] multiChannel = {};
+            resultList = new List<object> ();
+            resultList.Add (1);
+            resultList.Add ("Modified Channels");
+            resultList.Add ("");
+            //[1, "Modified Channels"]
+            TestWrapResultBasedOnResponseTypeCommon<object> (multiChannel, "", "[1, \"Modified Channels\"]", ResponseType.PushRegister,
+                UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler
+            );
+
+        }
+
+        [Test]
+        public void TestWrapResultBasedOnResponseTypesObjPushRemove(){ 
+            string[] multiChannel = {};
+            resultList = new List<object> ();
+            resultList.Add (1);
+            resultList.Add ("Modified Channels");
+            resultList.Add ("");
+
+            //[1, "Modified Channels"]
+            TestWrapResultBasedOnResponseTypeCommon<object> (multiChannel, "", "[1, \"Modified Channels\"]", ResponseType.PushRemove,
+                UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler
+            );
+
+        }
+
+        [Test]
+        public void TestWrapResultBasedOnResponseTypesObjPushGet(){ 
+            string[] multiChannel = {};
+            resultList = new List<object> ();
+            resultList.Add ("push_channel");
+            resultList.Add ("");
+            //["push_channel"]
+            TestWrapResultBasedOnResponseTypeCommon<object> (multiChannel, "", "[\"push_channel\"]", ResponseType.PushGet,
+                UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler
+            );
+
+        }
+
+        [Test]
+        public void TestWrapResultBasedOnResponseTypesObjPushUnregister(){ 
+            string[] multiChannel = {};
+            resultList = new List<object> ();
+            resultList.Add (1);
+            resultList.Add ("Removed Device");
+            resultList.Add ("");
+            //[1, "Removed Device"]
+            TestWrapResultBasedOnResponseTypeCommon<object> (multiChannel, "", "[1, \"Removed Device\"]", ResponseType.PushUnregister,
+                UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler
+            );
+
+        }
+
+        [Test]
+        public void TestWrapResultBasedOnResponseTypesPushRegister(){ 
+            string[] multiChannel = {};
+            resultList = new List<object> ();
+            resultList.Add (1);
+            resultList.Add ("Modified Channels");
+            resultList.Add ("");
+            //[1, "Modified Channels"]
+            TestWrapResultBasedOnResponseTypeCommon<string> (multiChannel, "", "[1, \"Modified Channels\"]", ResponseType.PushRegister,
+                UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler
+            );
+
+        }
+
+        [Test]
+        public void TestWrapResultBasedOnResponseTypesPushRemove(){ 
+            string[] multiChannel = {};
+            resultList = new List<object> ();
+            resultList.Add (1);
+            resultList.Add ("Modified Channels");
+            resultList.Add ("");
+
+            //[1, "Modified Channels"]
+            TestWrapResultBasedOnResponseTypeCommon<string> (multiChannel, "", "[1, \"Modified Channels\"]", ResponseType.PushRemove,
+                UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler
+            );
+
+        }
+
+        [Test]
+        public void TestWrapResultBasedOnResponseTypesPushGet(){ 
+            string[] multiChannel = {};
+            resultList = new List<object> ();
+            resultList.Add ("push_channel");
+            resultList.Add ("");
+            //["push_channel"]
+            TestWrapResultBasedOnResponseTypeCommon<string> (multiChannel, "", "[\"push_channel\"]", ResponseType.PushGet,
+                UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler
+            );
+
+        }
+
+        [Test]
+        public void TestWrapResultBasedOnResponseTypesPushUnregister(){ 
+            string[] multiChannel = {};
+            resultList = new List<object> ();
+            resultList.Add (1);
+            resultList.Add ("Removed Device");
+            resultList.Add ("");
+            //[1, "Removed Device"]
+            TestWrapResultBasedOnResponseTypeCommon<string> (multiChannel, "", "[1, \"Removed Device\"]", ResponseType.PushUnregister,
+                UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler
+            );
+
+        }
+
         public void TestWrapResultBasedOnResponseTypeCommon<T>(string [] channels, string cipherKey, string jsonString,
             ResponseType responseType, Action<T> userCallback, 
             Action<T> connectCallback, Action<PubnubClientError> errorCallback ){
@@ -993,6 +1258,8 @@ namespace PubNubMessaging.Tests
         }
 
         bool MatchList(bool bResult, ResponseType responseType, List<object> list, List<object> resList, IJsonPluggableLibrary jsonPluggableLibrary){
+            UnityEngine.Debug.Log ("list:" + jsonPluggableLibrary.SerializeToJsonString(list));  
+            UnityEngine.Debug.Log ("resList:" + jsonPluggableLibrary.SerializeToJsonString(resList));  
             foreach (object obj in list) {
                 UnityEngine.Debug.Log ("obj:" + obj.ToString ());    
                 bool bResult1 = false;
