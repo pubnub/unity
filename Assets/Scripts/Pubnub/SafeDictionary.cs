@@ -20,17 +20,12 @@ namespace PubNubMessaging.Core
        
         public TValue AddOrUpdate(TKey key, TValue value, Func<TKey, TValue, TValue> f)
         {
-            //LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Locking", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
             lock (syncRoot)
             {
-                //LoggingMethod.WriteToLog (string.Format ("DateTime {0}, insynsc", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
                 if (d.ContainsKey (key)) {
-                    //LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ContainsKey", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);    
                     d [key] = value;
                 } else {
-                    //LoggingMethod.WriteToLog (string.Format ("DateTime {0}, adding key ", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
                     d.Add (key, value);
-                    //LoggingMethod.WriteToLog (string.Format ("DateTime {0},  key added ", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
                 }
 
                 return d [key];
@@ -43,23 +38,11 @@ namespace PubNubMessaging.Core
             {
                 TValue val;
                 if (d.TryGetValue (key, out val)) {
-                    //LoggingMethod.WriteToLog (string.Format ("DateTime {0},  in try get value ", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
                     return val;
                 } else {
                     d.Add(key, value);
-                    //LoggingMethod.WriteToLog (string.Format ("DateTime {0},  key added2 ", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
                     return d [key];
                 }
-                /*if (d.ContainsKey (key)) {
-                    return d [key];
-                } else {
-                    TValue val;
-                    if (d.TryGetValue (key, out val)) {
-                        return val;
-                    } else {
-                        return val;
-                    }
-                }*/
             }
         }
 

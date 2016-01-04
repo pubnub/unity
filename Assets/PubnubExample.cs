@@ -392,11 +392,8 @@ public class PubnubExample : MonoBehaviour
             } else if (state == PubnubState.DelUserState) {
                 AddToPubnubResultContainer ("Running delete user state");
                 string stateKey = text2;
-                /*ThreadPool.QueueUserWorkItem (new WaitCallback (
-                    delegate {*/
-                        pubnub.SetUserState<string> (currentChannel, new KeyValuePair<string, object> (stateKey, null), DisplayReturnMessage, DisplayErrorMessage);
-                    /*}
-                ));*/
+                pubnub.SetUserState<string> (currentChannel, new KeyValuePair<string, object> (stateKey, null), DisplayReturnMessage, DisplayErrorMessage);
+
             } else if (state == PubnubState.SetUserStateJson) {
                 AddToPubnubResultContainer ("Running Set User State Json");
                 string currentUuid = text2;
@@ -407,32 +404,22 @@ public class PubnubExample : MonoBehaviour
                 } else {
                     jsonUserState = text3;
                 }
-                /*ThreadPool.QueueUserWorkItem (new WaitCallback (
-                    delegate {*/
-                        pubnub.SetUserState<string> (currentChannel, currentUuid, jsonUserState, DisplayReturnMessage, DisplayErrorMessage);
-                    /*}
-                ));*/
+                pubnub.SetUserState<string> (currentChannel, currentUuid, jsonUserState, DisplayReturnMessage, DisplayErrorMessage);
+
             } else if (state == PubnubState.SetUserStateKeyValue) {
                 AddToPubnubResultContainer ("Running Set User State Key Value");
                 int valueInt;
                 double valueDouble;
                 string stateKey = text2;
+                //pubnub.Subscribe<string>(currentChannel, DisplayReturnMessage, DisplayConnectStatusMessage, DisplayErrorMessage);
+
                 if (Int32.TryParse (text3, out valueInt)) {
-                    /*ThreadPool.QueueUserWorkItem (new WaitCallback (
-                        delegate {*/
-                            pubnub.SetUserState<string> (currentChannel, "", new KeyValuePair<string, object> (stateKey, valueInt), DisplayReturnMessage, DisplayErrorMessage);
-                        //}));
+                    pubnub.SetUserState<string> (currentChannel, "", new KeyValuePair<string, object> (stateKey, valueInt), DisplayReturnMessage, DisplayErrorMessage);
                 } else if (Double.TryParse (text3, out valueDouble)) {
-                    /*ThreadPool.QueueUserWorkItem (new WaitCallback (
-                        delegate {*/
-                            pubnub.SetUserState<string> (currentChannel, "", new KeyValuePair<string, object> (stateKey, valueDouble), DisplayReturnMessage, DisplayErrorMessage);
-                        //}));
+                    pubnub.SetUserState<string> (currentChannel, "", new KeyValuePair<string, object> (stateKey, valueDouble), DisplayReturnMessage, DisplayErrorMessage);
                 } else {
                     string val = text3;
-                    /*ThreadPool.QueueUserWorkItem (new WaitCallback (
-                        delegate {*/
-                            pubnub.SetUserState<string> (currentChannel, "", new KeyValuePair<string, object> (stateKey, val), DisplayReturnMessage, DisplayErrorMessage);
-                        //}));
+                    pubnub.SetUserState<string> (currentChannel, "", new KeyValuePair<string, object> (stateKey, val), DisplayReturnMessage, DisplayErrorMessage);
                 }
             }
 
@@ -1038,7 +1025,7 @@ public class PubnubExample : MonoBehaviour
             } else if ((PubnubState)pubnubState == PubnubState.Unsubscribe) {
                 AddToPubnubResultContainer ("Running Unsubscribe");
                 allowUserSettingsChange = false;
-                pubnub.Unsubscribe<string> (channel, DisplayReturnMessage, DisplayConnectStatusMessage, DisplayDisconnectStatusMessage, DisplayErrorMessage);
+                pubnub.Unsubscribe<string> (channel, DisplayDisconnectReturnMessage, DisplayConnectStatusMessage, DisplayDisconnectStatusMessage, DisplayErrorMessage);
             } else if ((PubnubState)pubnubState == PubnubState.PresenceUnsubscribe) {
                 AddToPubnubResultContainer ("Running Presence Unsubscribe");
                 allowUserSettingsChange = false;
@@ -1260,6 +1247,14 @@ public class PubnubExample : MonoBehaviour
         //print(result);
         UnityEngine.Debug.Log (string.Format ("REGULAR CALLBACK LOG: {0}", result));
         AddToPubnubResultContainer (string.Format ("REGULAR CALLBACK: {0}", result));
+    }
+
+    void DisplayDisconnectReturnMessage (string result)
+    {
+        //print(result);
+        UnityEngine.Debug.Log (string.Format ("Disconnect CALLBACK LOG: {0}", result));
+        AddToPubnubResultContainer (string.Format ("Disconnect CALLBACK: {0}", result));
+        pubnub.EndPendingRequests ();
     }
 
     void DisplayReturnMessageObj (object result)

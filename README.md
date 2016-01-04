@@ -1,6 +1,6 @@
 # Please direct all Support Questions and Concerns to Support@PubNub.com
 
-## PubNub 3.6.8.8 Web Data Push Cloud-Hosted API for Unity 4 and Unity 5
+## PubNub 3.6.9.0 Web Data Push Cloud-Hosted API for Unity 4 and Unity 5
 ### Supports PC, Mac, Linux, iOS, Android, WebPlayer and WebGL
 
 ### View this First!
@@ -8,6 +8,10 @@ We've made a [screencast](https://vimeo.com/69591819) that will walk you through
 After checking out the general setup video, [For iOS targets](https://vimeo.com/71549964) be sure to view this walkthrough next. Check it out!
 
 ### Important changes from previous version
+* 3.6.9.0: refactored code
+ * JSON library: the pre-compiler directives to choose between MiniJSON and JSONFx have been moved to the class [JSONSerializer.cs](Assets/Scripts/Pubnub/JSONSerializer.cs)
+ * **Logging: In addition to setting the variables `PubnubLogLevel = LoggingMethod.Level.Info` and `PubnubErrorLevel = PubnubErrorFilter.Level.Info` you also need to add a "define symbol": `ENABLE_PUBNUB_LOGGING` for each of the platform you want to enable logging. This setting is available in the Unity Editor: `File-> Build Settings -> Player Settings -> Other Settings -> Configuration -> Scripting define symbols`. After you type `ENABLE_PUBNUB_LOGGING` in it do remember to press `return` with the focus still in the text box or your setting will not be saved.**
+ * Add mobile push methods
 * 3.6.8.8 some fixes for subscribe request timeouts.
 * 3.6.8.7 removes forceful garbage collection.
 * 3.6.8.6 has fixes for
@@ -28,7 +32,7 @@ After checking out the general setup video, [For iOS targets](https://vimeo.com/
  * The PubNub code has been moved to the [Assets/Scripts](Assets/Scripts) folder. 
  * The third party libs required by PubNub SDK are in the [Assets/ThirdParty](Assets/ThirdParty) 
  * You need to import both Scripts and ThirdParty folder in your project.
- * PubNub SDK for Unity has the support for 2 JSON serialization libs, [jsonfx-for-unity3d](https://bitbucket.org/TowerOfBricks/jsonfx-for-unity3d-git) and MiniJSON. By default jsonfx-for-unity3d is used. To use MiniJSON you need to replace the directive `#define USE_JSONFX_UNITY_IOS` with `#define USE_MiniJSON` in the files [Pubnub.cs](Scripts/PubNub/Pubnub.cs) and [CommonIntergrationTests.cs] (Scripts/PubnubUnitTests/CommonIntergrationTests.cs)
+ * PubNub SDK for Unity has the support for 2 JSON serialization libs, [jsonfx-for-unity3d](https://bitbucket.org/TowerOfBricks/jsonfx-for-unity3d-git) and MiniJSON. By default jsonfx-for-unity3d is used. To use MiniJSON you need to replace the directive `#define USE_JSONFX_UNITY_IOS` with `#define USE_MiniJSON` in the files [Pubnub.cs](Assets/Scripts/PubNub/Pubnub.cs) and [CommonIntergrationTests.cs] (Assets/Scripts/PubnubUnitTests/CommonIntergrationTests.cs)
  * To run PubNub Unit and Integration tests you need to add the folder [Assets/UnityTestTools](Assets/UnityTestTools), [Assets/Scrips/Editor](Assets/Scripts/Editor) and [Assets/Scrips/PubnubUnitTests](Assets/Scripts/PubnubUnitTests) to your project.
  * [PubnubExample.cs](Assets/PubnubExample.cs) and [ExampleScene.unity](Assets/ExampleScene.unity) are the demo example scene and script.
 * Removed dependency on System.Threading.
