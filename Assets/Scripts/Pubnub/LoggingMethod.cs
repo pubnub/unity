@@ -67,7 +67,6 @@ namespace PubNubMessaging.Core
                 #if (SILVERLIGHT || WINDOWS_PHONE || MONOTOUCH || __IOS__ || MONODROID || __ANDROID__)
                 System.Diagnostics.Debug.WriteLine(logText);
                 #elif (UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_IOS || UNITY_ANDROID || UNITY_5 || UNITY_WEBGL)
-                //print (logText);
                 UnityEngine.Debug.Log (logText);
                 #else
                 try {
@@ -319,19 +318,19 @@ namespace PubNubMessaging.Core
             string errorType = ex.GetType ().ToString ();
             string errorMessage = ex.Message;
 
-            if (errorType == "System.FormatException" && errorMessage == "Invalid length for a Base-64 char array or string.") {
+            if (errorType.Equals("System.FormatException") && errorMessage.Equals("Invalid length for a Base-64 char array or string.")) {
                 ret = PubnubErrorCode.PubnubMessageDecryptException;
-            } else if (errorType == "System.FormatException" && errorMessage == "The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters. ") {
+            } else if (errorType.Equals("System.FormatException") && errorMessage.Equals("The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters. ")) {
                 ret = PubnubErrorCode.PubnubMessageDecryptException;
-            } else if (errorType == "System.ObjectDisposedException" && errorMessage == "Cannot access a disposed object.") {
+            } else if (errorType.Equals("System.ObjectDisposedException") && errorMessage.Equals("Cannot access a disposed object.")) {
                 ret = PubnubErrorCode.PubnubObjectDisposedException;
-            } else if (errorType == "System.Net.Sockets.SocketException" && errorMessage == "The requested name is valid, but no data of the requested type was found") {
+            } else if (errorType.Equals("System.Net.Sockets.SocketException") && errorMessage.Equals("The requested name is valid, but no data of the requested type was found")) {
                 ret = PubnubErrorCode.PubnubSocketConnectException;
-            } else if (errorType == "System.Net.Sockets.SocketException" && errorMessage == "No such host is known") {
+            } else if (errorType.Equals("System.Net.Sockets.SocketException") && errorMessage.Equals("No such host is known")) {
                 ret = PubnubErrorCode.PubnubSocketConnectException;
-            } else if (errorType == "System.Security.Cryptography.CryptographicException" && errorMessage == "Padding is invalid and cannot be removed.") {
+            } else if (errorType.Equals("System.Security.Cryptography.CryptographicException") && errorMessage.Equals("Padding is invalid and cannot be removed.")) {
                 ret = PubnubErrorCode.PubnubCryptographicException;
-            } else if (errorType == "System.Runtime.InteropServices.SEHException" && errorMessage == "External component has thrown an exception.") {
+            } else if (errorType.Equals("System.Runtime.InteropServices.SEHException") && errorMessage.Equals("External component has thrown an exception.")) {
                 ret = PubnubErrorCode.PubnubInterOpSEHException;
             } else {
                 UnityEngine.Debug.Log ("ATTENTION: Error Type = " + errorType);
@@ -347,15 +346,15 @@ namespace PubNubMessaging.Core
 
             switch (statusCode) {
             case 400:
-                if (httpErrorCodeMessage.ToUpper () == "MESSAGE TOO LARGE") {
+                if (httpErrorCodeMessage.ToUpper ().Equals("MESSAGE TOO LARGE")) {
                     ret = PubnubErrorCode.MessageTooLarge;
-                } else if (httpErrorCodeMessage.ToUpper () == "INVALID KEY") {
+                } else if (httpErrorCodeMessage.ToUpper ().Equals("INVALID KEY")) {
                     ret = PubnubErrorCode.InvalidKey;
-                } else if (httpErrorCodeMessage.ToUpper () == "BADREQUEST") {
+                } else if (httpErrorCodeMessage.ToUpper ().Equals("BADREQUEST")) {
                     ret = PubnubErrorCode.BadRequest;
-                } else if (httpErrorCodeMessage.ToUpper () == "NO UUID SPECIFIED") {
+                } else if (httpErrorCodeMessage.ToUpper ().Equals("NO UUID SPECIFIED")) {
                     ret = PubnubErrorCode.NoUuidSpecified;
-                } else if (httpErrorCodeMessage.ToUpper () == "INVALID TIMESTAMP") {
+                } else if (httpErrorCodeMessage.ToUpper ().Equals("INVALID TIMESTAMP")){
                     ret = PubnubErrorCode.InvalidTimestamp;
                 }
                 break;
@@ -363,14 +362,14 @@ namespace PubNubMessaging.Core
                 ret = PubnubErrorCode.InvalidSubscribeKey;
                 break;
             case 402:
-                if (httpErrorCodeMessage.ToUpper () == "NOT ENABLED") {
+                if (httpErrorCodeMessage.ToUpper ().Equals("NOT ENABLED")) {
                     ret = PubnubErrorCode.PamNotEnabled;
                 }
                 break;
             case 403:
-                if (httpErrorCodeMessage.ToUpper () == "FORBIDDEN") {
+                if (httpErrorCodeMessage.ToUpper ().Equals("FORBIDDEN")) {
                     ret = PubnubErrorCode.Forbidden;
-                } else if (httpErrorCodeMessage.ToUpper () == "SIGNATURE DOES NOT MATCH") {
+                } else if (httpErrorCodeMessage.ToUpper ().Equals("SIGNATURE DOES NOT MATCH")) {
                     ret = PubnubErrorCode.SignatureDoesNotMatch;
                 }
                 break;
@@ -440,6 +439,7 @@ namespace PubNubMessaging.Core
         PAMAccessOperationTimeout = 135,
         UserStateUnchanged = 136,
         PushNotificationTimeout = 137,
+        OperationTimeout = 138,
         MessageTooLarge = 4000,
         BadRequest = 4001,
         InvalidKey = 4002,
@@ -515,7 +515,6 @@ namespace PubNubMessaging.Core
             dictionaryCodes.Add (134, "Timeout occured while running GlobalHereNow. Please try again. If it continues, please contact PubNub support");
             dictionaryCodes.Add (135, "Timeout occured while running PAM operations. Please try again. If it continues, please contact PubNub support");
             dictionaryCodes.Add (136, "User State Unchanged");
-            dictionaryCodes.Add(137, "Timeout occured while registering device for push notifications. Please try again. If it continues, please contact PubNub support");
             dictionaryCodes.Add (0, "Undocumented error. Please contact PubNub support with full error object details for further investigation");
         }
 

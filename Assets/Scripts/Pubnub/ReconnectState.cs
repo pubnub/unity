@@ -30,7 +30,7 @@ namespace PubNubMessaging.Core
         Time,
         Subscribe,
         Presence,
-        Here_Now,
+        HereNow,
         Heartbeat,
         DetailedHistory,
         Leave,
@@ -42,8 +42,8 @@ namespace PubNubMessaging.Core
         PresenceHeartbeat,
         SetUserState,
         GetUserState,
-        Where_Now,
-        GlobalHere_Now,
+        WhereNow,
+        GlobalHereNow,
         PushRegister,
         PushRemove,
         PushGet,
@@ -101,7 +101,9 @@ namespace PubNubMessaging.Core
                 if (requestStates.ContainsKey (aKey)) {
                     return requestStates [aKey];
                 }
+                #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, returning false", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+                #endif
             }
             return null;
         }
@@ -115,7 +117,7 @@ namespace PubNubMessaging.Core
         public Action<T> ConnectCallback;
         public PubnubWebRequest Request;
         public PubnubWebResponse Response;
-        public ResponseType Type;
+        public ResponseType RespType;
         public string[] Channels;
         public bool Timeout;
         public bool Reconnect;
@@ -136,7 +138,9 @@ namespace PubNubMessaging.Core
         public RequestState (RequestState<T> requestState)
         {
             Channels = requestState.Channels;
+            #if (ENABLE_PUBNUB_LOGGING)
             LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Channels {1}", DateTime.Now.ToString (), Channels.ToString ()), LoggingMethod.LevelInfo);
+            #endif
             ConnectCallback = requestState.ConnectCallback as Action<T>;
             ErrorCallback = requestState.ErrorCallback;
             Reconnect = requestState.Reconnect;
@@ -147,6 +151,7 @@ namespace PubNubMessaging.Core
             TypeParameterType = requestState.TypeParameterType;
             UserCallback = requestState.UserCallback as Action<T>;
             ID = requestState.ID;
+            RespType = requestState.RespType;
         }
 
         public void SetRequestState<U> (

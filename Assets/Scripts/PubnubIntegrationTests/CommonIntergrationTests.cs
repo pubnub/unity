@@ -336,6 +336,7 @@ namespace PubNubMessaging.Tests
             }
             pubnub.Unsubscribe<string> (channel, this.DisplayReturnMessage, this.DisplayReturnMessage, this.DisplayReturnMessage, this.DisplayErrorMessage);
             pubnub.EndPendingRequests ();
+            pubnub.CleanUp();
         }
 
         public IEnumerator DoTimeAndParse (bool ssl, string testName, bool asObject)
@@ -379,6 +380,7 @@ namespace PubNubMessaging.Tests
                 }
             }
             pubnub.EndPendingRequests ();
+            pubnub.CleanUp();
         }
 
         public IEnumerator DoPublishThenDetailedHistoryAndParse (bool ssl, string testName, object[] messages, bool asObject, bool withCipher, bool noStore, int numberOfMessages, bool isParamsTest)
@@ -513,6 +515,7 @@ namespace PubNubMessaging.Tests
                 }
             }
             pubnub.EndPendingRequests ();
+            pubnub.CleanUp();
         }
 
         public bool ParseDetailedHistoryResponse (object[] messages, string testName, bool asObject, int messageStart, int messageEnd)
@@ -792,6 +795,7 @@ namespace PubNubMessaging.Tests
             }
 
             pubnub.EndPendingRequests ();
+            pubnub.CleanUp();
         }
 
         public IEnumerator DoPublishAndParse (bool ssl, string testName, object message, string expected, bool asObject, bool withCipher)
@@ -883,6 +887,7 @@ namespace PubNubMessaging.Tests
             }
 
             pubnub.EndPendingRequests ();
+            pubnub.CleanUp();
         }
 
         public IEnumerator SetAndGetStateAndParse (bool ssl, string testName)
@@ -913,6 +918,7 @@ namespace PubNubMessaging.Tests
             }
 
             pubnub.EndPendingRequests ();
+            pubnub.CleanUp();
         }
 
         public IEnumerator DoSubscribeThenDoGlobalHereNowAndParse (bool ssl, string testName, bool parseAsString)
@@ -1035,6 +1041,7 @@ namespace PubNubMessaging.Tests
 
             pubnub.Unsubscribe<string> (channel, this.DisplayReturnMessage, this.DisplayReturnMessage, this.DisplayReturnMessage, this.DisplayErrorMessage);
             pubnub.EndPendingRequests ();
+            pubnub.CleanUp();
         }
 
         public IEnumerator DoSubscribeThenDoWhereNowAndParse (bool ssl, string testName, bool parseAsString)
@@ -1116,6 +1123,7 @@ namespace PubNubMessaging.Tests
 
             pubnub.Unsubscribe<string> (channel, this.DisplayReturnMessage, this.DisplayReturnMessage, this.DisplayReturnMessage, this.DisplayErrorMessage);
             pubnub.EndPendingRequests ();
+            pubnub.CleanUp();
         }
 
         /*public IEnumerator DoSubscribeThenHereNowAsStringAndParse (bool ssl, string testName, bool parseAsString)
@@ -1260,6 +1268,7 @@ namespace PubNubMessaging.Tests
 
             pubnub.Unsubscribe<string> (channel, this.DisplayReturnMessage, this.DisplayReturnMessage, this.DisplayReturnMessage, this.DisplayErrorMessage);
             pubnub.EndPendingRequests ();
+            pubnub.CleanUp();
         }
 
         bool ParseDict (string matchUUID, object uuids)
@@ -1671,10 +1680,97 @@ namespace PubNubMessaging.Tests
 
             }
 
-            
             pubnub.PresenceUnsubscribe<string> (channel, this.DisplayReturnMessageDummy, this.DisplayReturnMessageDummy, this.DisplayReturnMessage, this.DisplayErrorMessage);
             pubnub.EndPendingRequests ();
+            pubnub.CleanUp();
+        }
 
+        string ExpectedMessage = "";
+        string ExpectedChannels = "";
+        bool IsError = false;
+        bool IsTimeout = false;
+        CurrentRequestType Crt;
+        ResponseType RespType;
+
+        public IEnumerator TestCoroutineRun (string url, int timeout, int pause, string[] channels,
+            bool resumeOnReconnect,bool ssl, string testName, bool asObject, string expectedMessage, string expectedChannels,
+            bool isError, bool isTimeOut, long timetoken, CurrentRequestType crt, ResponseType respType
+        ){
+            
+            if (asObject) {
+                yield return TestProcessResponse<object> (url, timeout, pause, channels, false, RespType, Crt, 
+                    UserCallbackCommonExceptionHandler, 
+                    ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, isTimeOut, isError, timetoken);
+            } else {
+                yield return TestProcessResponse<string> (url, timeout, pause, channels, false, RespType, Crt, 
+                    UserCallbackCommonExceptionHandler, 
+                    ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, isTimeOut, isError, timetoken);
+            }
+            pubnub.EndPendingRequests ();
+            pubnub.CleanUp();
+        }
+
+        public IEnumerator TestProcessResponse<T>(string url, int timeout, int pause, string[] channels, bool resumeOnReconnect, 
+            ResponseType responseType, CurrentRequestType crt, Action<T> userCallback,
+            Action<T> connectCallback, Action<PubnubClientError> errorCallback,
+            bool isTimeout, bool isError, long timetoken
+        ){
+            WWW www = new WWW (url);
+            yield return www;
+            RequestState<T> pubnubRequestState = BuildRequests.BuildRequestState<T> (channels, responseType, 
+                resumeOnReconnect, userCallback, connectCallback, errorCallback, 0, isTimeout, timetoken, typeof(T));
+            CoroutineParams<T> cp = new CoroutineParams<T> (url, timeout, pause, crt, typeof(T), pubnubRequestState);
+            CoroutineClass cc = new CoroutineClass ();
+            cc.SubCoroutineComplete += Cc_SubCoroutineComplete<T>;
+            cc.ProcessResponse(www, cp);
+        }
+
+        void ErrorCallbackCommonExceptionHandler (PubnubClientError result)
+        {
+            UnityEngine.Debug.Log (string.Format ("REGULAR CALLBACK LOG: {0}", result));
+        }
+
+        void Cc_SubCoroutineComplete<T> (object sender, EventArgs ea)
+        {
+            CustomEventArgs<T> cea = ea as CustomEventArgs<T>;
+
+            if (cea != null
+                && cea.PubnubRequestState != null
+                && string.Join (",", cea.PubnubRequestState.Channels).Equals (ExpectedChannels)
+                && cea.IsError.Equals (IsError)
+                && cea.IsTimeout.Equals (IsTimeout)
+                && cea.CurrRequestType.Equals (Crt)
+                && cea.PubnubRequestState.RespType.Equals (RespType)
+            ){
+                IntegrationTest.Pass();
+            } else {
+                IntegrationTest.Fail ();
+            }
+        }
+
+        void UserCallbackCommonExceptionHandler (string result)
+        {
+            UnityEngine.Debug.Log (string.Format ("REGULAR CALLBACK LOG: {0}", result));
+        }
+
+        void UserCallbackCommonExceptionHandler (object result)
+        {
+            UnityEngine.Debug.Log (string.Format ("REGULAR CALLBACK LOG: {0}", result.ToString()));
+        }
+
+        void DisconnectCallbackCommonExceptionHandler (string result)
+        {
+            UnityEngine.Debug.Log (string.Format ("Disconnect CALLBACK LOG: {0}", result));
+        }
+
+        void ConnectCallbackCommonExceptionHandler (string result)
+        {
+            UnityEngine.Debug.Log (string.Format ("CONNECT CALLBACK LOG: {0}", result));
+        }
+
+        void ConnectCallbackCommonExceptionHandler (object result)
+        {
+            UnityEngine.Debug.Log (string.Format ("CONNECT CALLBACK LOG: {0}", result.ToString()));
         }
     }
 }
