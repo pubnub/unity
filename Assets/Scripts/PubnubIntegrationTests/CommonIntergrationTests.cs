@@ -1692,7 +1692,7 @@ namespace PubNubMessaging.Tests
         CurrentRequestType Crt;
         ResponseType RespType;
 
-        public IEnumerator TestCoroutineRun (string url, int timeout, int pause, string[] channels,
+        /*public IEnumerator TestCoroutineRun (string url, int timeout, int pause, string[] channels,
             bool resumeOnReconnect,bool ssl, string testName, bool asObject, string expectedMessage, string expectedChannels,
             bool isError, bool isTimeOut, long timetoken, CurrentRequestType crt, ResponseType respType
         ){
@@ -1771,6 +1771,6 @@ namespace PubNubMessaging.Tests
         void ConnectCallbackCommonExceptionHandler (object result)
         {
             UnityEngine.Debug.Log (string.Format ("CONNECT CALLBACK LOG: {0}", result.ToString()));
-        }
+        }*/
     }
 }
