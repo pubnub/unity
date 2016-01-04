@@ -2,6 +2,7 @@
 using PubNubMessaging.Core;
 using NUnit.Framework;
 using System.Text;
+using UnityEngine;
 
 namespace PubNubMessaging.Tests
 {

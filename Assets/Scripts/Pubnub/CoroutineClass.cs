@@ -30,7 +30,7 @@ namespace PubNubMessaging.Core
     #endregion
 
     #region CoroutineClass
-    class CoroutineParams<T>
+    internal class CoroutineParams<T>
     {
         public string url;
         public int timeout;

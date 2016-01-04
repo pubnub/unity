@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Linq;
 using NUnit.Framework;
+using UnityEngine;
 
 #if (USE_JSONFX) || (USE_JSONFX_UNITY)
 using JsonFx.Json;
@@ -31,6 +32,8 @@ using Newtonsoft.Json.Converters;
 #endif
 namespace PubNubMessaging.Tests
 {
+	public class ActionMaster:MonoBehaviour{
+	}
     public class Common
     {
         public static string Origin = "pubsub.pubnub.com";

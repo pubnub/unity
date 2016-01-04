@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace PubNubMessaging.Core
 {
@@ -725,6 +726,20 @@ namespace PubNubMessaging.Core
         public string Version{
             get {
                 return PubnubUnity.Version;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the set game object.
+        /// This method should be called before init
+        /// </summary>
+        /// <value>The set game object.</value>
+        public static GameObject SetGameObject {
+            get {
+                return Pubnub.SetGameObject;
+            }
+            set {
+                Pubnub.SetGameObject = value;
             }
         }
 

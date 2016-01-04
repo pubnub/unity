@@ -1,6 +1,7 @@
 ﻿using System;
 using PubNubMessaging.Core;
 using NUnit.Framework;
+using UnityEngine;
 
 namespace PubNubMessaging.Tests
 {
@@ -13,6 +14,8 @@ namespace PubNubMessaging.Tests
         //BuildJsonUserState
         //DeleteLocalUserState
         //AddOrUpdateOrDeleteLocalUserState
+
+
         #endif
     }
 }
