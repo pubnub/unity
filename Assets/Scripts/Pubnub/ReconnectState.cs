@@ -43,7 +43,11 @@ namespace PubNubMessaging.Core
         SetUserState,
         GetUserState,
         Where_Now,
-        GlobalHere_Now
+        GlobalHere_Now,
+        PushRegister,
+        PushRemove,
+        PushGet,
+        PushUnregister
     }
 
     internal class InternetState<T>
