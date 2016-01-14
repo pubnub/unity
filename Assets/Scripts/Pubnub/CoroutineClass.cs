@@ -178,6 +178,24 @@ namespace PubNubMessaging.Core
             }
         }
 
+        float subtimer = 300; 
+        float hbtimer = 300;
+        float phbtimer = 300;
+        float nonsubtimer = 300;
+
+        bool runSubTimer = false;
+
+        void Update() {
+            if (runSubTimer) {
+                subtimer -= Time.deltaTime;
+                if (subtimer <= 0) {
+                    //ProcessTimeout<T> (cp);
+                }
+                runSubTimer = false;
+                UnityEngine.Debug.Log ("timer:" + subtimer.ToString ());
+            }
+        }
+
         public void Run<T> (string url, RequestState<T> pubnubRequestState, int timeout, int pause)
         {
             //for heartbeat and presence heartbeat treat reconnect as pause
