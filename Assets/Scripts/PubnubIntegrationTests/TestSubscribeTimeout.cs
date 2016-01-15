@@ -11,7 +11,11 @@ namespace PubNubMessaging.Tests
         {
             CommonIntergrationTests common = new CommonIntergrationTests ();
 
-            string[] multiChannel = {"testChannel"};
+            System.Random r = new System.Random ();
+            string channel = "UnityIntegrationTestsTimeout_" + r.Next (100);
+
+            string[] multiChannel = new string[1];
+            multiChannel [0] = channel;
 
             Pubnub pubnub = new Pubnub (
                 CommonIntergrationTests.PublishKey,
@@ -22,16 +26,17 @@ namespace PubNubMessaging.Tests
             );
 
             CurrentRequestType crt = CurrentRequestType.Subscribe;
-            string expectedMessage = "[[],";
+            string expectedMessage = "Timed out";
             string expectedChannels = string.Join (",", multiChannel);
-            string url = string.Format ("http://pubsub.pubnub.com/subscribe/{0}/{1}/0/0?uuid={2}&pnsdk={3}", CommonIntergrationTests.SubscribeKey, 
-                             expectedChannels, pubnub.SessionUUID, pubnub.Version
-                         );
-            ResponseType respType =  ResponseType.Subscribe;
+            long nanoSecondTime = Pubnub.TranslateDateTimeToPubnubUnixNanoSeconds (DateTime.UtcNow);
 
-            IEnumerator ienum = common.TestCoroutineRunProcessResponse(url, 20, -1, multiChannel, false,
-                false, this.name, expectedMessage, expectedChannels, false, false, false, 0, crt, respType);
-            yield return StartCoroutine(ienum);
+            string url = string.Format ("http://pubsub.pubnub.com/subscribe/{0}/{1}/0/{2}?uuid={3}&pnsdk={4}", CommonIntergrationTests.SubscribeKey, 
+                expectedChannels, nanoSecondTime, pubnub.SessionUUID, pubnub.Version
+            );
+            ResponseType respType =  ResponseType.Subscribe;
+                
+            common.TestCoroutineRun(url, 5, 0, multiChannel, false,
+                false, this.name, expectedMessage, expectedChannels, true, true, false, 0, crt, respType);
 
             UnityEngine.Debug.Log (string.Format("{0}: After StartCoroutine", this.name));
             yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls);

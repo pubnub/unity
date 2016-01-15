@@ -5,13 +5,17 @@ using PubNubMessaging.Core;
 
 namespace PubNubMessaging.Tests
 {
-    public class TestCoroutineRunIntegrationSubErrorTimeout: MonoBehaviour
+    public class TestBounceSubscribe: MonoBehaviour
     {
         public IEnumerator Start ()
         {
-            /*CommonIntergrationTests common = new CommonIntergrationTests ();
+            CommonIntergrationTests common = new CommonIntergrationTests ();
 
-            string[] multiChannel = {"testChannel"};
+            System.Random r = new System.Random ();
+            string channel = "UnityIntegrationTestsTimeout_" + r.Next (100);
+
+            string[] multiChannel = new string[1];
+            multiChannel [0] = channel;
 
             Pubnub pubnub = new Pubnub (
                 CommonIntergrationTests.PublishKey,
@@ -22,7 +26,7 @@ namespace PubNubMessaging.Tests
             );
 
             CurrentRequestType crt = CurrentRequestType.Subscribe;
-            string expectedMessage = "[[],";
+            string expectedMessage = "Aborted";
             string expectedChannels = string.Join (",", multiChannel);
             long nanoSecondTime = Pubnub.TranslateDateTimeToPubnubUnixNanoSeconds (DateTime.UtcNow);
 
@@ -31,15 +35,12 @@ namespace PubNubMessaging.Tests
             );
             ResponseType respType =  ResponseType.Subscribe;
 
-            IEnumerator ienum = common.TestCoroutineRunError(url, 5, -1, multiChannel, false,
-                false, this.name, expectedMessage, expectedChannels, true, true, false, 0, crt, respType);
-            
-            yield return StartCoroutine(ienum);
+            common.TestCoroutineBounce(url, 5, 0, multiChannel, false,
+                false, this.name, expectedMessage, expectedChannels, true, false, false, 0, crt, respType);
 
-            UnityEngine.Debug.Log (string.Format("{0}: After StartCoroutine", this.name));*/
+            UnityEngine.Debug.Log (string.Format("{0}: After StartCoroutine", this.name));
             yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls);
         }
     }
 }
-
 

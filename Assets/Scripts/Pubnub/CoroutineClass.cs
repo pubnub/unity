@@ -91,10 +91,10 @@ namespace PubNubMessaging.Core
 
         #endregion
 
-        private bool isHearbeatComplete = false;
-        private bool isPresenceHeartbeatComplete = false;
-        private bool isSubscribeComplete = false;
-        private bool isNonSubscribeComplete = false;
+        internal bool isHearbeatComplete = false;
+        internal bool isPresenceHeartbeatComplete = false;
+        internal bool isSubscribeComplete = false;
+        internal bool isNonSubscribeComplete = false;
 
         private IEnumerator SubCoroutine;
         private IEnumerator SubTimeoutCoroutine;
@@ -107,10 +107,10 @@ namespace PubNubMessaging.Core
         private IEnumerator DelayRequestCoroutineHB;
         private IEnumerator DelayRequestCoroutinePHB;
 
-        WWW subscribeWww;
-        WWW heartbeatWww;
-        WWW presenceHeartbeatWww;
-        WWW nonSubscribeWww;
+        internal WWW subscribeWww;
+        internal WWW heartbeatWww;
+        internal WWW presenceHeartbeatWww;
+        internal WWW nonSubscribeWww;
 
         private EventHandler<EventArgs> subCoroutineComplete;
         //Register single event handler
@@ -242,7 +242,7 @@ namespace PubNubMessaging.Core
                     LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Stopped existing timeout coroutine {1}", DateTime.Now.ToString (), cp.crt.ToString ()), LoggingMethod.LevelInfo);
                     #endif
                 }
-                    
+
                 SubTimeoutCoroutine = CheckTimeoutSub<T> (cp);
                 SubCoroutine = SendRequestSub<T> (cp);
                 StartCoroutine (SubTimeoutCoroutine);
@@ -459,8 +459,12 @@ namespace PubNubMessaging.Core
                         return false;
                     }
                 } else if (crt == CurrentRequestType.Subscribe) {
+                    //if ((!isSubscribeComplete)){// && (subscribeWww != null) && (!subscribeWww.isDone)) {
                     if ((!isSubscribeComplete) && (subscribeWww != null) && (!subscribeWww.isDone)) {
+                        //if(SubCoroutine != null){
                         StopCoroutine (SubCoroutine);
+                        //}
+                        //isSubscribeComplete = true;
                         return false;
                     }
                 } else {
@@ -472,7 +476,7 @@ namespace PubNubMessaging.Core
 
             } catch (Exception ex) {
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, GetCompleteAndDispose Exception: ", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, GetCompleteAndDispose Exception: {1}", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
                 #endif
             }
 
