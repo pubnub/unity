@@ -45,7 +45,7 @@ public class PubnubExample : MonoBehaviour
         ChangeUUID
     }
 
-    bool ssl = false;
+    bool ssl = true;
     bool resumeOnReconnect = true;
     string cipherKey = "";
     string secretKey = "demo";
@@ -1254,7 +1254,7 @@ public class PubnubExample : MonoBehaviour
         //print(result);
         UnityEngine.Debug.Log (string.Format ("Disconnect CALLBACK LOG: {0}", result));
         AddToPubnubResultContainer (string.Format ("Disconnect CALLBACK: {0}", result));
-        pubnub.EndPendingRequests ();
+        //pubnub.EndPendingRequests ();
     }
 
     void DisplayReturnMessageObj (object result)
