@@ -169,7 +169,11 @@ namespace PubNubMessaging.Core
             }
 
             set {
+                #if(UNITY_IOS)
+                pubnubWebRequestCallbackIntervalInSeconds = Utility.CheckTimeoutValue(value);
+                #else
                 pubnubWebRequestCallbackIntervalInSeconds = value;
+                #endif
             }
         }
 
@@ -429,7 +433,13 @@ namespace PubNubMessaging.Core
                 localGobj = false;
             }
 
-            coroutine = gobj.AddComponent<CoroutineClass> ();             
+            coroutine = gobj.AddComponent<CoroutineClass> ();    
+            coroutine.subscribeTimer = SubscribeTimeout;
+            coroutine.nonSubscribeTimer = NonSubscribeTimeout;
+            coroutine.heartbeatTimer = HeartbeatTimeout;
+            coroutine.presenceHeartbeatTimer = HeartbeatTimeout;
+            coroutine.heartbeatPauseTimer = NetworkCheckRetryInterval;
+            coroutine.presenceHeartbeatPauseTimer = NetworkCheckRetryInterval;
 
             this.publishKey = publishKey;
             this.subscribeKey = subscribeKey;

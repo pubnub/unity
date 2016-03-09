@@ -8,6 +8,9 @@ We've made a [screencast](https://vimeo.com/69591819) that will walk you through
 After checking out the general setup video, [For iOS targets](https://vimeo.com/71549964) be sure to view this walkthrough next. Check it out!
 
 ### Important changes from previous version
+* 3.6.9.1: A new debug symbol to reduce the usage of coroutines
+ * Set REDUCE_PUBNUB_COROUTINES, to use the alternate logic for www coroutines used by the PubNub's SDK. When using this option it is recommended that you call TerminateCurrentSubscriberRequest when the app comes back to the foreground else an ongoing long request will wait till the timeout value to abort and reinit the request. 
+ * For iOS if the value of NonSubscribeTimeout and SubscribeTimeout is greater than 59 secs, the SDK will force the value to be 59 secs. 
 * 3.6.9.0: refactored code
  * JSON library: the pre-compiler directives to choose between MiniJSON and JSONFx have been moved to the class [JSONSerializer.cs](Assets/Scripts/Pubnub/JSONSerializer.cs)
  * **Logging: In addition to setting the variables `PubnubLogLevel = LoggingMethod.Level.Info` and `PubnubErrorLevel = PubnubErrorFilter.Level.Info` you also need to add a "define symbol": `ENABLE_PUBNUB_LOGGING` for each of the platform you want to enable logging. This setting is available in the Unity Editor: `File-> Build Settings -> Player Settings -> Other Settings -> Configuration -> Scripting define symbols`. After you type `ENABLE_PUBNUB_LOGGING` in it do remember to press `return` with the focus still in the text box or your setting will not be saved.**

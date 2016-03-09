@@ -18,6 +18,21 @@ namespace PubNubMessaging.Core
     {
 
         internal const string PresenceChannelSuffix = "-pnpres";
+        internal const int iOSRequestTimeout = 59;
+
+        #if(UNITY_IOS)
+        internal static int CheckTimeoutValue(int value){
+            if (value > iOSRequestTimeout) {
+                #if (ENABLE_PUBNUB_LOGGING)
+                LoggingMethod.WriteToLog (string.Format("Forcing timeout value to {0} as iOS force closes the www request after {0} secs", iOSRequestTimeout), LoggingMethod.LevelInfo);
+                #endif
+                
+                return iOSRequestTimeout;
+            } else {
+                return value;
+            }
+        }
+        #endif    
 
         internal static void CheckPushType(PushTypeService pushType)
         {

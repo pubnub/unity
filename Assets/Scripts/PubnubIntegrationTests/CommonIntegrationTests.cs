@@ -2111,5 +2111,7 @@ namespace PubNubMessaging.Tests
                 IntegrationTest.Fail ("www not null and done");
             }
         }
+    #if(REDUCE_PUBNUB_COROUTINES)
+    #endif
     }
 }
