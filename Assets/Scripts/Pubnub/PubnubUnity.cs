@@ -193,7 +193,11 @@ namespace PubNubMessaging.Core
             }
 
             set {
+                #if(UNITY_IOS)
+                pubnubOperationTimeoutIntervalInSeconds = Utility.CheckTimeoutValue(value);
+                #else
                 pubnubOperationTimeoutIntervalInSeconds = value;
+                #endif
             }
         }
 

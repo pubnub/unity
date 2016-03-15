@@ -1,4 +1,4 @@
-#define REDUCE_PUBNUB_COROUTINES
+//#define REDUCE_PUBNUB_COROUTINES
 using System;
 using System.Linq;
 using UnityEngine;
@@ -182,12 +182,12 @@ namespace PubNubMessaging.Core
         public float presenceHeartbeatPauseTimer = 10;
 
         #if(REDUCE_PUBNUB_COROUTINES)
-        bool runSubscribeTimer = false;
-        bool runNonSubscribeTimer = false;
-        bool runHeartbeatTimer = false;
-        bool runPresenceHeartbeatTimer = false;
-        bool runHeartbeatPauseTimer = false;
-        bool runPresenceHeartbeatPauseTimer = false;
+        internal bool runSubscribeTimer = false;
+        internal bool runNonSubscribeTimer = false;
+        internal bool runHeartbeatTimer = false;
+        internal bool runPresenceHeartbeatTimer = false;
+        internal bool runHeartbeatPauseTimer = false;
+        internal bool runPresenceHeartbeatPauseTimer = false;
 
         public event EventHandler<EventArgs> heartbeatResumeEvent;
 
@@ -437,27 +437,33 @@ namespace PubNubMessaging.Core
         void CoroutineClass_CompleteEvent<T> (object sender, EventArgs e)
         {
             CurrentRequestTypeEventArgs crtEa = e as CurrentRequestTypeEventArgs;
-            CoroutineParams<T> cp = GetCoroutineParams<T> (crtEa.CurrRequestType) as CoroutineParams<T>;
+            if (crtEa != null) {
+                CoroutineParams<T> cp = GetCoroutineParams<T> (crtEa.CurrRequestType) as CoroutineParams<T>;
 
-            if (crtEa.IsTimeout) {
-                ProcessTimeout<T> (cp);
-            } else {
-                switch (crtEa.CurrRequestType) {
-                case CurrentRequestType.Subscribe:
-                    ProcessResponse<T> (subscribeWww, cp);
-                    break;
-                case CurrentRequestType.Heartbeat:
-                    ProcessResponse<T> (heartbeatWww, cp);
-                    break;
-                case CurrentRequestType.PresenceHeartbeat:
-                    ProcessResponse<T> (presenceHeartbeatWww, cp);
-                    break;
-                case CurrentRequestType.NonSubscribe:
-                    ProcessResponse<T> (nonSubscribeWww, cp);
-                    break;
-                default:
-                    break;
+                if (crtEa.IsTimeout) {
+                    ProcessTimeout<T> (cp);
+                } else {
+                    switch (crtEa.CurrRequestType) {
+                    case CurrentRequestType.Subscribe:
+                        ProcessResponse<T> (subscribeWww, cp);
+                        break;
+                    case CurrentRequestType.Heartbeat:
+                        ProcessResponse<T> (heartbeatWww, cp);
+                        break;
+                    case CurrentRequestType.PresenceHeartbeat:
+                        ProcessResponse<T> (presenceHeartbeatWww, cp);
+                        break;
+                    case CurrentRequestType.NonSubscribe:
+                        ProcessResponse<T> (nonSubscribeWww, cp);
+                        break;
+                    default:
+                        break;
+                    }
                 }
+            } else {
+                #if (ENABLE_PUBNUB_LOGGING)
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CurrentRequestTypeEventArgs null", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+                #endif
             }
         }
 

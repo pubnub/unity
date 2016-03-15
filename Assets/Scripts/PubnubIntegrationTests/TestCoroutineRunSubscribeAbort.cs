@@ -6,20 +6,17 @@ using PubNubMessaging.Core;
 
 namespace PubNubMessaging.Tests
 {
-    #if(REDUCE_PUBNUB_COROUTINES)
-    [IntegrationTest.Ignore]
-    #endif
-    public class TestPHBTimeout: MonoBehaviour
+    public class TestCoroutineRunSubscribeAbort: MonoBehaviour
     {
         public IEnumerator Start ()
-        {
-            #if(!REDUCE_PUBNUB_COROUTINES)
+        { 
+            #if(REDUCE_PUBNUB_COROUTINES)
             CommonIntergrationTests common = new CommonIntergrationTests ();
-
             System.Random r = new System.Random ();
             string channel = "UnityIntegrationTestsTimeout_" + r.Next (100);
+            string channel2 = "UnityIntegrationTestsTimeout_" + r.Next (100);
 
-            string[] multiChannel = new string[1];
+            string[] multiChannel = new string[2];
             multiChannel [0] = channel;
 
             Pubnub pubnub = new Pubnub (
@@ -30,19 +27,24 @@ namespace PubNubMessaging.Tests
                 true
             );
 
-            CurrentRequestType crt = CurrentRequestType.PresenceHeartbeat;
-            string expectedMessage = "Timed out";
+            CurrentRequestType crt = CurrentRequestType.Subscribe;
+            string expectedMessage = "Aborted";
             string expectedChannels = string.Join (",", multiChannel);
             long nanoSecondTime = Pubnub.TranslateDateTimeToPubnubUnixNanoSeconds (DateTime.UtcNow);
 
-            //Send a sub request (intentional) that waits for response
             string url = string.Format ("http://pubsub.pubnub.com/subscribe/{0}/{1}/0/{2}?uuid={3}&pnsdk={4}", CommonIntergrationTests.SubscribeKey, 
                 expectedChannels, nanoSecondTime, pubnub.SessionUUID, pubnub.Version
             );
-            ResponseType respType =  ResponseType.PresenceHeartbeat;
+            multiChannel [1] = channel2;
+            expectedChannels = string.Join (",", multiChannel);
+            string url2 = string.Format ("http://pubsub.pubnub.com/subscribe/{0}/{1}/0/{2}?uuid={3}&pnsdk={4}", CommonIntergrationTests.SubscribeKey, 
+                expectedChannels, nanoSecondTime, pubnub.SessionUUID, pubnub.Version
+            );
+            ResponseType respType =  ResponseType.Subscribe;
 
-            common.TestCoroutineRun(url, 5, 0, multiChannel, false,
-                false, this.name, expectedMessage, expectedChannels, true, true, false, 0, crt, respType);
+            common.TestCoroutineRunSubscribeAbort(url, url2, 20, -1, multiChannel, false,
+                false, this.name, expectedMessage, expectedChannels, false, false, false, 0, crt, respType);
+            //yield return StartCoroutine(ienum);
 
             UnityEngine.Debug.Log (string.Format("{0}: After StartCoroutine", this.name));
             yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls);
@@ -51,7 +53,6 @@ namespace PubNubMessaging.Tests
             UnityEngine.Debug.Log (string.Format("{0}: Ignoring test", this.name));
             IntegrationTest.Pass();
             #endif
-
         }
     }
 }

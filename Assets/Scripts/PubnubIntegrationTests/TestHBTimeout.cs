@@ -1,14 +1,19 @@
-﻿using System;
+﻿//#define REDUCE_PUBNUB_COROUTINES
+using System;
 using UnityEngine;
 using System.Collections;
 using PubNubMessaging.Core;
 
 namespace PubNubMessaging.Tests
 {
+    #if(REDUCE_PUBNUB_COROUTINES)
+    [IntegrationTest.Ignore]
+    #endif
     public class TestHBTimeout: MonoBehaviour
     {
         public IEnumerator Start ()
         {
+            #if(!REDUCE_PUBNUB_COROUTINES)
             CommonIntergrationTests common = new CommonIntergrationTests ();
 
             System.Random r = new System.Random ();
@@ -41,6 +46,12 @@ namespace PubNubMessaging.Tests
 
             UnityEngine.Debug.Log (string.Format("{0}: After StartCoroutine", this.name));
             yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls);
+            #else
+            yield return null;
+            UnityEngine.Debug.Log (string.Format("{0}: Ignoring test", this.name));
+            IntegrationTest.Pass();
+            #endif
+
         }
     }
 }

@@ -1,4 +1,5 @@
 #define USE_JSONFX_UNITY_IOS
+//#define REDUCE_PUBNUB_COROUTINES
 //#define USE_MiniJSON
 using System;
 using PubNubMessaging.Core;
@@ -1801,7 +1802,6 @@ namespace PubNubMessaging.Tests
                     UserCallbackCommonExceptionHandler, 
                     ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler,
                     isTimeout, isError, timetoken);
-
             }
         }
 
@@ -1814,7 +1814,6 @@ namespace PubNubMessaging.Tests
                 resumeOnReconnect, userCallback, 
                 connectCallback, errorCallback, 0, isTimeout, timetoken, typeof(T));
             CoroutineParams<T> cp = new CoroutineParams<T> (url, timeout, pause, crt, typeof(T), pubnubRequestState);
-            //CoroutineClass cc = new CoroutineClass ();
             GameObject go = new GameObject ();
             CoroutineClass cc = go.AddComponent<CoroutineClass> ();
 
@@ -2111,7 +2110,203 @@ namespace PubNubMessaging.Tests
                 IntegrationTest.Fail ("www not null and done");
             }
         }
-    #if(REDUCE_PUBNUB_COROUTINES)
-    #endif
+
+        #if(REDUCE_PUBNUB_COROUTINES)
+        public IEnumerator TestCoroutineRunSubscribeMultiple(string url, string url2, int timeout, int pause, string[] channels,
+            bool resumeOnReconnect,bool ssl, string testName, string expectedMessage, string expectedChannels,
+            bool isError, bool isTimeout, bool asObject, long timetoken, CurrentRequestType crt, ResponseType respType
+        ){
+            ExpectedMessage = expectedMessage;
+            ExpectedChannels = string.Join (",", channels);
+            IsError = isError;
+            IsTimeout = isTimeout;
+            Crt = crt;
+            RespType = respType;
+
+            RequestState<string> pubnubRequestState = BuildRequests.BuildRequestState<string> (channels, respType, 
+            resumeOnReconnect, UserCallbackCommonExceptionHandler, 
+            ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 0, isTimeout, timetoken, typeof(string));
+            GameObject go = new GameObject ();
+            CoroutineClass cc = go.AddComponent<CoroutineClass> ();
+            
+            //cc.SubCoroutineComplete += CcCoroutineComplete<string>;
+            cc.Run<string>(url, pubnubRequestState, timeout, pause);
+            yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCallsLow);
+            cc.Run<string>(url2, pubnubRequestState, timeout, pause);
+
+            DateTime dt = DateTime.Now;
+            //cc.BounceRequest<string>(crt, pubnubRequestState, false);
+
+            //cc.CheckComplete (crt);
+            bool failTest = false;
+            if(crt.Equals(CurrentRequestType.Subscribe)){
+                if(cc.subscribeTimer.Equals(0)){
+                    failTest = true;
+                    UnityEngine.Debug.Log ("subscribeTimer 0");
+                } else if(!cc.runSubscribeTimer){
+                    failTest = true;
+                    UnityEngine.Debug.Log ("runSubscribeTimer false");
+                } else {
+                    UnityEngine.Debug.Log ("www not null or done");
+                }
+            } 
+                       
+            if (failTest) {
+                IntegrationTest.Fail ("www not null and done");
+            } else {
+                IntegrationTest.Pass ();
+            }
+        }
+
+        public void TestCoroutineRunSubscribeAbort (string url, string url2, int timeout, int pause, string[] channels,
+            bool resumeOnReconnect,bool ssl, string testName, string expectedMessage, string expectedChannels,
+            bool isError, bool isTimeout, bool asObject, long timetoken, CurrentRequestType crt, ResponseType respType
+        ){
+            ExpectedMessage = expectedMessage;
+            ExpectedChannels = string.Join (",", channels);
+            IsError = isError;
+            IsTimeout = isTimeout;
+            Crt = crt;
+            RespType = respType;
+
+            if (asObject) {
+                TestSubscribeAbort<object> (url, timeout, pause, channels, false, RespType, Crt, 
+                    UserCallbackCommonExceptionHandler, 
+                    ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler,
+
+                    isTimeout, isError, timetoken);
+            } else {
+                TestSubscribeAbort<string> (url, timeout, pause, channels, false, RespType, Crt,
+                    UserCallbackCommonExceptionHandler, 
+                    ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler,
+                    isTimeout, isError, timetoken);
+            }
+        }
+
+        public void TestSubscribeAbort<T>(string url, int timeout, int pause, string[] channels, bool resumeOnReconnect, 
+                ResponseType respType, CurrentRequestType crt, 
+                Action<T> userCallback, Action<T> connectCallback, Action<PubnubClientError> errorCallback,
+                bool isTimeout, bool isError, long timetoken
+        ){
+            RequestState<T> pubnubRequestState = BuildRequests.BuildRequestState<T> (channels, respType, 
+                resumeOnReconnect, userCallback, 
+                connectCallback, errorCallback, 0, isTimeout, timetoken, typeof(T));
+            GameObject go = new GameObject ();
+            CoroutineClass cc = go.AddComponent<CoroutineClass> ();
+
+            cc.Run<T>(url, pubnubRequestState, timeout, pause);
+            DateTime dt = DateTime.Now;
+            cc.BounceRequest<T>(crt, pubnubRequestState, false);
+
+            //cc.CheckComplete (crt);
+            bool failTest = false;
+            if(crt.Equals(CurrentRequestType.Subscribe)){
+                if ((cc.subscribeWww != null) && (!cc.subscribeWww.isDone) && !cc.isSubscribeComplete) {
+                    failTest = true;
+                } else if(cc.subscribeTimer != 0){
+                    failTest = true;
+                    UnityEngine.Debug.Log ("subscribeTimer not 0");
+
+                } else if(cc.runSubscribeTimer){
+                    failTest = true;
+                    UnityEngine.Debug.Log ("runSubscribeTimer true");
+                } else {
+                    UnityEngine.Debug.Log ("www null or done");
+                }
+            } else if (crt.Equals(CurrentRequestType.NonSubscribe)){
+                if ((cc.subscribeWww != null) && (!cc.subscribeWww.isDone)  && !cc.isNonSubscribeComplete) {
+                    failTest = true;
+                } else {
+                    UnityEngine.Debug.Log ("www null or done");
+                }
+            } else if (crt.Equals(CurrentRequestType.PresenceHeartbeat)){
+                if ((cc.subscribeWww != null) && (!cc.subscribeWww.isDone) && !cc.isPresenceHeartbeatComplete) {
+                    failTest = true;
+                } else {
+                    UnityEngine.Debug.Log ("www null or done");
+                }
+            } else if (crt.Equals(CurrentRequestType.Heartbeat)){
+                if ((cc.subscribeWww != null) && (!cc.subscribeWww.isDone) && !cc.isHearbeatComplete) {
+                    failTest = true;
+                } else {
+                    UnityEngine.Debug.Log ("www null or done");
+                }
+            }            
+            if (failTest) {
+                IntegrationTest.Fail ("www not null and done");
+            } else {
+                IntegrationTest.Pass ();
+            }
+        }
+
+        public IEnumerator TestSubscribeMultiple<T>(string url, string url2, int timeout, int pause, string[] channels, bool resumeOnReconnect, 
+            ResponseType respType, CurrentRequestType crt, 
+            Action<T> userCallback, Action<T> connectCallback, Action<PubnubClientError> errorCallback,
+            bool isTimeout, bool isError, long timetoken
+        ){
+            RequestState<T> pubnubRequestState = BuildRequests.BuildRequestState<T> (channels, respType, 
+            resumeOnReconnect, userCallback, 
+            connectCallback, errorCallback, 0, isTimeout, timetoken, typeof(T));
+            GameObject go = new GameObject ();
+            CoroutineClass cc = go.AddComponent<CoroutineClass> ();
+
+            //check runSubscribeTimer
+            //check subscribeTimer
+            //subCompleteOrTimeoutEvent
+            //subscribeWww is done
+
+            cc.SubCompleteOrTimeoutEvent += CcCoroutineComplete2<T>;
+            cc.Run<T>(url, pubnubRequestState, timeout, pause);
+            yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCallsLow);
+            cc.Run<T>(url2, pubnubRequestState, timeout, pause);
+
+            DateTime dt = DateTime.Now;
+            cc.BounceRequest<T>(crt, pubnubRequestState, false);
+
+            //cc.CheckComplete (crt);
+            bool failTest = false;
+            if(crt.Equals(CurrentRequestType.Subscribe)){
+                if ((cc.subscribeWww != null) && (!cc.subscribeWww.isDone) && !cc.isSubscribeComplete) {
+                    failTest = true;
+                } else if(cc.subscribeTimer != 0){
+                    failTest = true;
+                    UnityEngine.Debug.Log ("subscribeTimer not 0");
+                } else if(cc.runSubscribeTimer){
+                    failTest = true;
+                    UnityEngine.Debug.Log ("runSubscribeTimer true");
+                } else {
+                    UnityEngine.Debug.Log ("www null or done");
+                }
+            } else if (crt.Equals(CurrentRequestType.NonSubscribe)){
+                if ((cc.subscribeWww != null) && (!cc.subscribeWww.isDone)  && !cc.isNonSubscribeComplete) {
+                   failTest = true;
+                } else {
+                    UnityEngine.Debug.Log ("www null or done");
+                }
+            } else if (crt.Equals(CurrentRequestType.PresenceHeartbeat)){
+                if ((cc.subscribeWww != null) && (!cc.subscribeWww.isDone) && !cc.isPresenceHeartbeatComplete) {
+                  failTest = true;
+                } else {
+                    UnityEngine.Debug.Log ("www null or done");
+                }
+            } else if (crt.Equals(CurrentRequestType.Heartbeat)){
+                if ((cc.subscribeWww != null) && (!cc.subscribeWww.isDone) && !cc.isHearbeatComplete) {
+                    failTest = true;
+                } else {
+                    UnityEngine.Debug.Log ("www null or done");
+                }
+            }            
+            if (failTest) {
+                IntegrationTest.Fail ("www not null and done");
+            } 
+        }
+
+        void CcCoroutineComplete2<T> (object sender, EventArgs e)
+        {
+            //responseHandled = true;
+            UnityEngine.Debug.Log ("Event handler fired");
+            IntegrationTest.Pass();
+        }
+        #endif
     }
 }
