@@ -474,15 +474,19 @@ namespace PubNubMessaging.Core
             StartCoroutinesByName<T> (cp.url, cp.requestState, cp.timeout, cp.pause, cp.crt);
         }
 
-        public void RemoveEventHandler<T>(CurrentRequestType crt){
+        public void RemoveEventHandler<T>(CurrentRequestType crt, bool removeHeartbeats){
             switch (crt) {
             case CurrentRequestType.Heartbeat:
-                HeartbeatCompleteOrTimeoutEvent -= CoroutineClass_CompleteEvent<T>;
-                HeartbeatResumeEvent -= CoroutineClass_ResumeEvent<T>;
+                if (removeHeartbeats) {
+                    HeartbeatCompleteOrTimeoutEvent -= CoroutineClass_CompleteEvent<T>;
+                    HeartbeatResumeEvent -= CoroutineClass_ResumeEvent<T>;
+                }
                 break;
             case CurrentRequestType.PresenceHeartbeat:
-                PresenceHeartbeatCompleteOrTimeoutEvent -= CoroutineClass_CompleteEvent<T>;
-                PresenceHeartbeatResumeEvent -= CoroutineClass_ResumeEvent<T>;
+                if (removeHeartbeats) {
+                    PresenceHeartbeatCompleteOrTimeoutEvent -= CoroutineClass_CompleteEvent<T>;
+                    PresenceHeartbeatResumeEvent -= CoroutineClass_ResumeEvent<T>;
+                }
                 break;
             case CurrentRequestType.Subscribe:
                 SubCompleteOrTimeoutEvent -= CoroutineClass_CompleteEvent<T>;
@@ -728,7 +732,7 @@ namespace PubNubMessaging.Core
         {
             try {
                 #if(REDUCE_PUBNUB_COROUTINES)
-                RemoveEventHandler<T>(cp.crt);
+                RemoveEventHandler<T>(cp.crt, false);
                 #endif
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Process Request {1} ", DateTime.Now.ToString (), cp.crt.ToString ()), LoggingMethod.LevelInfo);
@@ -1046,7 +1050,7 @@ namespace PubNubMessaging.Core
         {
             try {
                 #if(REDUCE_PUBNUB_COROUTINES)
-                RemoveEventHandler<T>(cp.crt);
+                RemoveEventHandler<T>(cp.crt, false);
                 #endif
 
                 #if (ENABLE_PUBNUB_LOGGING)

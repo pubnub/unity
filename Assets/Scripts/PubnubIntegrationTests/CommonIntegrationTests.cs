@@ -2255,7 +2255,7 @@ namespace PubNubMessaging.Tests
             //subCompleteOrTimeoutEvent
             //subscribeWww is done
 
-            cc.SubCompleteOrTimeoutEvent += CcCoroutineComplete2<T>;
+            //cc.SubCompleteOrTimeoutEvent += CcCoroutineComplete2<T>;
             cc.Run<T>(url, pubnubRequestState, timeout, pause);
             yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCallsLow);
             cc.Run<T>(url2, pubnubRequestState, timeout, pause);
@@ -2301,12 +2301,12 @@ namespace PubNubMessaging.Tests
             } 
         }
 
-        void CcCoroutineComplete2<T> (object sender, EventArgs e)
+        /*void CcCoroutineComplete2<T> (object sender, EventArgs e)
         {
             //responseHandled = true;
             UnityEngine.Debug.Log ("Event handler fired");
             IntegrationTest.Pass();
-        }
+        }*/
         #endif
     }
 }
