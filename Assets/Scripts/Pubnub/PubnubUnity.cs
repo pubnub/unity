@@ -1,5 +1,5 @@
 //Build Date: Nov 26, 2015
-//ver3.6.9.0/Unity5
+//ver3.6.9.1/Unity5
 using System;
 using UnityEngine;
 using System.Collections;
@@ -50,8 +50,8 @@ namespace PubNubMessaging.Core
         private bool ssl = true;
         private static long lastSubscribeTimetoken = 0;
         private static long lastSubscribeTimetokenForNewMultiplex = 0;
-        private const string build = "3.6.9.0";
-        private static string pnsdkVersion = "PubNub-CSharp-Unity5/3.6.9.0";
+        private const string build = "3.6.9.1";
+        private static string pnsdkVersion = "PubNub-CSharp-Unity5/3.6.9.1";
 
         private int pubnubWebRequestCallbackIntervalInSeconds = 310;
         private int pubnubOperationTimeoutIntervalInSeconds = 15;
@@ -169,7 +169,11 @@ namespace PubNubMessaging.Core
             }
 
             set {
+                #if(UNITY_IOS)
+                pubnubWebRequestCallbackIntervalInSeconds = Utility.CheckTimeoutValue(value);
+                #else
                 pubnubWebRequestCallbackIntervalInSeconds = value;
+                #endif
             }
         }
 
@@ -189,7 +193,11 @@ namespace PubNubMessaging.Core
             }
 
             set {
+                #if(UNITY_IOS)
+                pubnubOperationTimeoutIntervalInSeconds = Utility.CheckTimeoutValue(value);
+                #else
                 pubnubOperationTimeoutIntervalInSeconds = value;
+                #endif
             }
         }
 
@@ -429,7 +437,13 @@ namespace PubNubMessaging.Core
                 localGobj = false;
             }
 
-            coroutine = gobj.AddComponent<CoroutineClass> ();             
+            coroutine = gobj.AddComponent<CoroutineClass> ();    
+            coroutine.subscribeTimer = SubscribeTimeout;
+            coroutine.nonSubscribeTimer = NonSubscribeTimeout;
+            coroutine.heartbeatTimer = HeartbeatTimeout;
+            coroutine.presenceHeartbeatTimer = HeartbeatTimeout;
+            coroutine.heartbeatPauseTimer = NetworkCheckRetryInterval;
+            coroutine.presenceHeartbeatPauseTimer = NetworkCheckRetryInterval;
 
             this.publishKey = publishKey;
             this.subscribeKey = subscribeKey;
