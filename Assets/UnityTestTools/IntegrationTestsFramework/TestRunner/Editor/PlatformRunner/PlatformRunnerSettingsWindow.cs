@@ -6,6 +6,7 @@ using System.Net;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using UnityEngine.SceneManagement;
 
 namespace UnityTest.IntegrationTests
 {
@@ -47,7 +48,7 @@ namespace UnityTest.IntegrationTests
             position.Set(position.xMin, position.yMin, 200, position.height);
             m_AllScenesInProject = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.unity", SearchOption.AllDirectories).ToList();
             m_AllScenesInProject.Sort();
-            var currentScene = (Directory.GetCurrentDirectory() + EditorApplication.currentScene).Replace("\\", "").Replace("/", "");
+            var currentScene = (Directory.GetCurrentDirectory() + SceneManager.GetActiveScene().path).Replace("\\", "").Replace("/", "");
             var currentScenePath = m_AllScenesInProject.Where(s => s.Replace("\\", "").Replace("/", "") == currentScene);
             m_SelectedScenes.AddRange(currentScenePath);
 
@@ -247,8 +248,10 @@ namespace UnityTest.IntegrationTests
                     else if (m_Settings.port < IPEndPoint.MinPort)
                         m_Settings.port = IPEndPoint.MinPort;
                 }
-                EditorGUI.EndDisabledGroup();
             }
+
+			EditorGUI.EndDisabledGroup();
+
             if (EditorGUI.EndChangeCheck())
             {
                 m_Settings.Save();
@@ -264,7 +267,7 @@ namespace UnityTest.IntegrationTests
                 buildTarget = m_BuildTarget,
                 buildScenes = m_OtherScenesToBuild,
                 testScenes = m_IntegrationTestScenes,
-                projectName = m_IntegrationTestScenes.Count > 1 ? "IntegrationTests" : Path.GetFileNameWithoutExtension(EditorApplication.currentScene),
+                projectName = m_IntegrationTestScenes.Count > 1 ? "IntegrationTests" : Path.GetFileNameWithoutExtension(SceneManager.GetActiveScene().path),
                 resultsDir = m_Settings.resultsPath,
                 sendResultsOverNetwork = m_Settings.sendResultsOverNetwork,
                 ipList = m_Interfaces.Skip(1).ToList(),
