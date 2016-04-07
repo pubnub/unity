@@ -47,7 +47,13 @@ namespace PubNubMessaging.Core
         PushRegister,
         PushRemove,
         PushGet,
-        PushUnregister
+        PushUnregister,
+        ChannelGroupAdd,
+        ChannelGroupRemove,
+        ChannelGroupGet,
+        ChannelGroupGrantAccess,
+        ChannelGroupAuditAccess,
+        ChannelGroupRevokeAccess
     }
 
     internal class InternetState<T>
@@ -119,6 +125,7 @@ namespace PubNubMessaging.Core
         public PubnubWebResponse Response;
         public ResponseType RespType;
         public string[] Channels;
+        public string[] ChannelGroups;
         public bool Timeout;
         public bool Reconnect;
         public long Timetoken;
@@ -132,14 +139,17 @@ namespace PubNubMessaging.Core
             Request = null;
             Response = null;
             Channels = null;
+            ChannelGroups = null;
             ID = 0;
         }
 
         public RequestState (RequestState<T> requestState)
         {
             Channels = requestState.Channels;
+            ChannelGroups = requestState.ChannelGroups;
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Channels {1}", DateTime.Now.ToString (), Channels.ToString ()), LoggingMethod.LevelInfo);
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Channels {1}", DateTime.Now.ToString (), String.Join(",", Channels).ToString ()), LoggingMethod.LevelInfo);
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ChannelGroups {1}", DateTime.Now.ToString (), String.Join(",", ChannelGroups).ToString ()), LoggingMethod.LevelInfo);
             #endif
             ConnectCallback = requestState.ConnectCallback as Action<T>;
             ErrorCallback = requestState.ErrorCallback;

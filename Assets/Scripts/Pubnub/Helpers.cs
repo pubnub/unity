@@ -249,20 +249,21 @@ namespace PubNubMessaging.Core
             }
         }
             
-        /// <summary>
-        /// Gets the result by wrapping the json response based on the request
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="type"></param>
-        /// <param name="jsonString"></param>
-        /// <param name="channels"></param>
-        /// <param name="reconnect"></param>
-        /// <param name="lastTimetoken"></param>
-        /// <param name="errorCallback"></param>
-        /// <returns></returns>
+        public static List<object> WrapResultBasedOnResponseType<T> (RequestState<T> pubnubRequestState, string jsonString, 
+            SafeDictionary<PubnubChannelCallbackKey, object> channelCallbacks, 
+            IJsonPluggableLibrary jsonPluggableLibrary, PubnubErrorFilter.Level errorLevel, string cipherKey)
+        {
+            return WrapResultBasedOnResponseType<T> (pubnubRequestState.RespType, jsonString, pubnubRequestState.Channels,
+                pubnubRequestState.ErrorCallback, channelCallbacks, jsonPluggableLibrary, 
+                errorLevel, cipherKey, pubnubRequestState.ChannelGroups
+            );
+        }
+
         public static List<object> WrapResultBasedOnResponseType<T> (ResponseType type, string jsonString, string[] channels, 
             Action<PubnubClientError> errorCallback, SafeDictionary<PubnubChannelCallbackKey, 
-            object> channelCallbacks, IJsonPluggableLibrary jsonPluggableLibrary, PubnubErrorFilter.Level errorLevel, string cipherKey)
+            object> channelCallbacks, IJsonPluggableLibrary jsonPluggableLibrary, PubnubErrorFilter.Level errorLevel, string cipherKey,
+            string[] channelGroups
+        )
         {
             List<object> result = new List<object> ();
 
@@ -640,10 +641,18 @@ namespace PubNubMessaging.Core
 
             int statusCode = (int)errorCode;
             string errorDescription = PubnubErrorCodeDescription.GetStatusCodeDescription (errorCode);
+            PubnubWebRequest request = null;
+            PubnubWebResponse response = null;
+            string channelGroupsString = null;
+
+            if (requestState == null) {
+                request = requestState.Request;
+                response = requestState.Response;
+                channelGroupsString = (requestState.ChannelGroups != null) ? string.Join(",", requestState.ChannelGroups) : "";
+            }
 
             PubnubClientError error = new PubnubClientError (statusCode, severity, true, ex.Message, ex, 
-                PubnubMessageSource.Client, (requestState==null)?null:requestState.Request, 
-                (requestState==null)?null:requestState.Response, errorDescription, channel);
+                PubnubMessageSource.Client, request, response, errorDescription, channel, channelGroupsString);
 
             #if (ENABLE_PUBNUB_LOGGING)
             LoggingMethod.WriteToLog (string.Format ("DateTime {0}, PubnubClientError = {1}", DateTime.Now.ToString (), error.ToString ()), LoggingMethod.LevelInfo);
@@ -657,8 +666,18 @@ namespace PubNubMessaging.Core
             int statusCode = (int)errorCode;
             string errorDescription = PubnubErrorCodeDescription.GetStatusCodeDescription (errorCode);
 
+            PubnubWebRequest request = null;
+            PubnubWebResponse response = null;
+            string channelGroupsString = null;
+
+            if (requestState == null) {
+                request = requestState.Request;
+                response = requestState.Response;
+                channelGroupsString = (requestState.ChannelGroups != null) ? string.Join(",", requestState.ChannelGroups) : "";
+            }
+
             PubnubClientError error = new PubnubClientError (statusCode, severity, message, PubnubMessageSource.Client, 
-                (requestState==null)?null:requestState.Request, (requestState==null)?null:requestState.Response, errorDescription, channel);
+                request, response, errorDescription, channel, channelGroupsString);
 
             #if (ENABLE_PUBNUB_LOGGING)
             LoggingMethod.WriteToLog (string.Format ("DateTime {0}, PubnubClientError = {1}", DateTime.Now.ToString (), error.ToString ()), LoggingMethod.LevelInfo);

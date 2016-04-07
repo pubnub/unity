@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Collections.Generic;
 
 namespace PubNubMessaging.Core
 {
@@ -34,11 +35,38 @@ namespace PubNubMessaging.Core
         }
         #endif    
 
+        internal static List<string> CheckAndAddNameSpace(string nameSpace){
+            List<string> url = new List<string>();
+            if (!string.IsNullOrEmpty(nameSpace) && nameSpace.Trim().Length > 0)
+            {
+                url.Add("namespace");
+                url.Add(nameSpace);
+                return url;
+            }
+            return null;
+        }
+
         internal static void CheckPushType(PushTypeService pushType)
         {
             if (pushType == PushTypeService.None)
             {
                 throw new ArgumentException("Missing PushTypeService");
+            }
+        }
+
+        internal static void CheckChannelOrChannelGroup(string channel, string channelGroup){
+            if ((string.IsNullOrEmpty(channel) || string.IsNullOrEmpty(channel.Trim())) 
+                && (string.IsNullOrEmpty(channelGroup) || string.IsNullOrEmpty(channelGroup.Trim())))
+            {
+                throw new ArgumentException("Both Channel and ChannelGroup is empty.");
+            }
+        }
+
+        internal static void CheckChannels(string[] channels)
+        {
+            if (channels == null || channels.Length == 0)
+            {
+                throw new ArgumentException("Missing channel(s)");
             }
         }
 

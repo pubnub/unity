@@ -11,8 +11,17 @@ namespace PubNubMessaging.Core
             bool reconnect, Action<T> userCallback, Action<T> connectCallback, Action<PubnubClientError> errorCallback,
             long id, bool timeout, long timetoken, Type typeParam
         ){
+            return BuildRequestState<T> (channel, responseType, reconnect, userCallback, connectCallback, errorCallback,
+                id, timeout, timetoken, typeParam, null);
+        }
+
+        internal static RequestState<T> BuildRequestState<T>(string[] channel, ResponseType responseType, 
+            bool reconnect, Action<T> userCallback, Action<T> connectCallback, Action<PubnubClientError> errorCallback,
+            long id, bool timeout, long timetoken, Type typeParam, string[] channelGroups
+        ){
             RequestState<T> requestState = new RequestState<T> ();
             requestState.Channels = channel;
+            requestState.ChannelGroups = channelGroups;
             requestState.RespType = responseType;
             requestState.Reconnect = reconnect;
             requestState.UserCallback = userCallback;
@@ -448,6 +457,59 @@ namespace PubNubMessaging.Core
             return BuildRestApiRequest<Uri> (url, ResponseType.Subscribe, uuid, ssl, origin, 0, authenticationKey, parameters);
         }
 
+        internal static Uri BuildAddChannelsToChannelGroupRequest(string[] channels, string nameSpace, string groupName, string uuid,
+            bool ssl, string origin, string authenticationKey, string subscribeKey)
+        {
+            string parameters = string.Format("?add={0}", string.Join(",", channels));
+
+            // Build URL
+            List<string> url = new List<string>();
+            url.Add("v1");
+            url.Add("channel-registration");
+            url.Add("sub-key");
+            url.Add(subscribeKey);
+            List<string> ns = Utility.CheckAndAddNameSpace (nameSpace);
+            if (ns != null) {
+                url.AddRange (ns);    
+            }
+
+            url.Add("channel-group");
+            url.Add(groupName);
+
+            return BuildRestApiRequest<Uri>(url, ResponseType.ChannelGroupAdd,
+                uuid, ssl, origin, 0, authenticationKey, parameters);
+        }
+
+        internal static Uri BuildRemoveChannelsFromChannelGroupRequest(string[] channels, string nameSpace, string groupName, string uuid,
+            bool ssl, string origin, string authenticationKey, string subscribeKey)
+        {
+            bool channelsAvailable = false;
+            string parameters = "";
+            if (channels != null && channels.Length > 0) {
+                parameters = string.Format ("?remove={0}", string.Join (",", channels));
+                channelsAvailable = true;
+            }
+
+            // Build URL
+            List<string> url = new List<string>();
+            url.Add("v1");
+            url.Add("channel-registration");
+            url.Add("sub-key");
+            url.Add(subscribeKey);
+            List<string> ns = Utility.CheckAndAddNameSpace (nameSpace);
+            if (ns != null) {
+                url.AddRange (ns);    
+            }
+            url.Add("channel-group");
+            url.Add(groupName);
+            if (channelsAvailable) {
+                url.Add ("remove");
+            }
+
+            return BuildRestApiRequest<Uri>(url, ResponseType.ChannelGroupRemove,
+                uuid, ssl, origin, 0, authenticationKey, parameters);
+        }
+
         static StringBuilder AddSSLAndEncodeURL<T>(List<string> urlComponents, ResponseType type, bool ssl, string origin, StringBuilder url)
         {
             // Add http or https based on SSL flag
@@ -597,6 +659,12 @@ namespace PubNubMessaging.Core
                 case ResponseType.PushRegister:
                 case ResponseType.PushRemove:
                 case ResponseType.PushUnregister:
+                case ResponseType.ChannelGroupAdd:
+                case ResponseType.ChannelGroupRemove:
+                case ResponseType.ChannelGroupGet:
+                case ResponseType.ChannelGroupGrantAccess:
+                case ResponseType.ChannelGroupAuditAccess:
+                case ResponseType.ChannelGroupRevokeAccess:
                     url.Append (parameters);
                     url = AppendUUIDToURL(url, uuid, false);
                     url = AppendAuthKeyToURL(url, authenticationKey, type);
