@@ -381,9 +381,15 @@ namespace PubNubMessaging.Core
             return BuildRestApiRequest<Uri> (url, ResponseType.SetUserState, uuid, ssl, origin, 0, authenticationKey, parameters);
         }
 
-        internal static Uri BuildGetUserStateRequest (string channel, string uuid,
+        internal static Uri BuildGetUserStateRequest (string channel, string channelGroup, string uuid,
             bool ssl, string origin, string authenticationKey, string subscribeKey)
         {
+            string parameters = "";
+            if (!string.IsNullOrEmpty(channelGroup) && channelGroup.Trim().Length > 0)
+            {
+                parameters = string.Format("&channel-group={0}", Utility.EncodeUricomponent(channelGroup, ResponseType.GetUserState, false, false));
+            }
+
             List<string> url = new List<string> ();
 
             url.Add ("v2");
@@ -395,7 +401,7 @@ namespace PubNubMessaging.Core
             url.Add ("uuid");
             url.Add (uuid);
 
-            return BuildRestApiRequest<Uri> (url, ResponseType.GetUserState, uuid, ssl, origin, 0, authenticationKey, "");
+            return BuildRestApiRequest<Uri> (url, ResponseType.GetUserState, uuid, ssl, origin, 0, authenticationKey, parameters);
         }
 
         internal static Uri BuildPresenceHeartbeatRequest (string[] channels, string channelsJsonState, string uuid,
@@ -508,6 +514,51 @@ namespace PubNubMessaging.Core
 
             return BuildRestApiRequest<Uri>(url, ResponseType.ChannelGroupRemove,
                 uuid, ssl, origin, 0, authenticationKey, parameters);
+        }
+
+        internal static Uri BuildGetChannelsForChannelGroupRequest(string nameSpace, string groupName, bool limitToChannelGroupScopeOnly,
+            string uuid, bool ssl, string origin, string authenticationKey, string subscribeKey)
+        {
+            bool groupNameAvailable = false;
+            bool nameSpaceAvailable = false;
+
+            // Build URL
+            List<string> url = new List<string>();
+            url.Add("v1");
+            url.Add("channel-registration");
+            url.Add("sub-key");
+            url.Add(subscribeKey);
+            List<string> ns = Utility.CheckAndAddNameSpace (nameSpace);
+            if (ns != null) {
+                nameSpaceAvailable = true;
+                url.AddRange (ns);    
+            }
+
+            if (limitToChannelGroupScopeOnly)
+            {
+                url.Add("channel-group");
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(groupName) && groupName.Trim().Length > 0)
+                {
+                    groupNameAvailable = true;
+                    url.Add("channel-group");
+                    url.Add(groupName);
+                }
+
+                if (!nameSpaceAvailable && !groupNameAvailable)
+                {
+                    url.Add("namespace");
+                }
+                else if (nameSpaceAvailable && !groupNameAvailable)
+                {
+                    url.Add("channel-group");
+                }
+            }
+
+            return BuildRestApiRequest<Uri>(url, ResponseType.ChannelGroupGet,
+                uuid, ssl, origin, 0, authenticationKey, "");
         }
 
         static StringBuilder AddSSLAndEncodeURL<T>(List<string> urlComponents, ResponseType type, bool ssl, string origin, StringBuilder url)

@@ -703,6 +703,7 @@ namespace PubNubMessaging.Core
 
         #region "Set User State"
 
+        //public void SetUserState<T> (string channel, string channelGroup, string uuid, string jsonUserState, Action<T> userCallback, Action<PubnubClientError> errorCallback)
         public void SetUserState<T> (string channel, string uuid, string jsonUserState, Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
             if (!JsonPluggableLibrary.IsDictionaryCompatible (jsonUserState)) {
@@ -728,6 +729,7 @@ namespace PubNubMessaging.Core
             SharedSetUserState (channel, uuid, jsonUserState, userCallback, errorCallback);
         }
 
+        //public void SetUserState<T> (string channel, string channelGroup, string uuid, KeyValuePair<string, object> keyValuePair, Action<T> userCallback, Action<PubnubClientError> errorCallback)
         public void SetUserState<T> (string channel, string uuid, KeyValuePair<string, object> keyValuePair, Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
             string key = keyValuePair.Key;
@@ -767,16 +769,17 @@ namespace PubNubMessaging.Core
 
         #region "Get User State"
 
-        public void GetUserState<T> (string channel, string uuid, Action<T> userCallback, Action<PubnubClientError> errorCallback)
+        public void GetUserState<T> (string channel, string channelGroup, string uuid, Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
             if (string.IsNullOrEmpty (uuid)) {
                 uuid = this.SessionUUID;
             }
 
-            Uri request = BuildRequests.BuildGetUserStateRequest (channel, this.SessionUUID,
+            Uri request = BuildRequests.BuildGetUserStateRequest (channel, channelGroup, this.SessionUUID,
                 this.ssl, this.Origin, authenticationKey, this.subscribeKey);
 
-            RequestState<T> requestState = BuildRequests.BuildRequestState<T> (new string[] { channel }, ResponseType.GetUserState, false, userCallback, null, errorCallback, 0, false, 0, null);
+            RequestState<T> requestState = BuildRequests.BuildRequestState<T> (new string[] { channel }, ResponseType.GetUserState, false, 
+                userCallback, null, errorCallback, 0, false, 0, null,  string.IsNullOrEmpty(channelGroup)? null: new string[] { channelGroup });
 
             UrlProcessRequest<T> (request, requestState);
         }
@@ -872,6 +875,33 @@ namespace PubNubMessaging.Core
 
             UrlProcessRequest<T>(request, requestState);
         }
+
+        public void GetChannelsForChannelGroup<T>(string nameSpace, string groupName, Action<T> userCallback, Action<PubnubClientError> errorCallback)
+        {
+            Uri request = BuildRequests.BuildGetChannelsForChannelGroupRequest(nameSpace, groupName, false, this.SessionUUID,
+                this.ssl, this.Origin, authenticationKey, this.subscribeKey);
+
+            RequestState<T> requestState = BuildRequests.BuildRequestState<T> (null, 
+                ResponseType.ChannelGroupGet, false, userCallback, null, errorCallback, 0, false, 0, null, 
+                new string[] { string.Format("{0}:{1}", nameSpace, groupName) }
+            );
+
+            UrlProcessRequest<T>(request, requestState);
+        }
+
+        public void GetAllChannelGroups<T>(string nameSpace, Action<T> userCallback, Action<PubnubClientError> errorCallback)
+        {
+            Uri request = BuildRequests.BuildGetChannelsForChannelGroupRequest(nameSpace, "", true, this.SessionUUID,
+                this.ssl, this.Origin, authenticationKey, this.subscribeKey);
+
+            RequestState<T> requestState = BuildRequests.BuildRequestState<T> (null, 
+                ResponseType.ChannelGroupGet, false, userCallback, null, errorCallback, 0, false, 0, null, 
+                new string[] { string.Format("{0}:{1}", nameSpace, "") }
+            );
+
+            UrlProcessRequest<T>(request, requestState);
+        }
+
         #endregion         
 
         #region "PubNub API Other Methods"
@@ -1573,7 +1603,8 @@ namespace PubNubMessaging.Core
             Uri request = BuildRequests.BuildSetUserStateRequest (channel, jsonUserState, this.SessionUUID,
                 this.ssl, this.Origin, authenticationKey, this.subscribeKey);
 
-            RequestState<T> requestState = BuildRequests.BuildRequestState<T> (new string[] { channel }, ResponseType.SetUserState, false, userCallback, null, errorCallback, 0, false, 0, null);
+            RequestState<T> requestState = BuildRequests.BuildRequestState<T> (new string[] { channel }, ResponseType.SetUserState, false, 
+                userCallback, null, errorCallback, 0, false, 0, null);
 
             UrlProcessRequest<T> (request, requestState);
 

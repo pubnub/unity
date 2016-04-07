@@ -862,7 +862,7 @@ namespace PubNubMessaging.Core
             Utility.CheckCallback(userCallback, CallbackType.User);
             Utility.CheckCallback(errorCallback, CallbackType.Error);
 
-            pubnub.GetChannelsForChannelGroup<T>(channelGroup, userCallback, errorCallback);
+            pubnub.GetChannelsForChannelGroup<T>("", channelGroup, userCallback, errorCallback);
         }
 
         public void GetAllChannelGroups(Action<object> userCallback, Action<PubnubClientError> errorCallback)
@@ -875,7 +875,7 @@ namespace PubNubMessaging.Core
             Utility.CheckCallback(userCallback, CallbackType.User);
             Utility.CheckCallback(errorCallback, CallbackType.Error);
 
-            pubnub.GetAllChannelGroups<T>(userCallback, errorCallback);
+            pubnub.GetAllChannelGroups<T>("", userCallback, errorCallback);
         }
 
         #endregion
