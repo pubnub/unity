@@ -275,7 +275,7 @@ namespace PubNubMessaging.Tests
             if (!readCallback) {
                 errorcb = null;
             }
-            List<string> validChannels2 = Helpers.RemoveDuplicateChannelsAndCheckForAlreadySubscribedChannels<T> (responseType,
+            List<string> validChannels2 = Helpers.RemoveDuplicatesCheckAlreadySubscribedAndAddNewChannels<T> (responseType,
                 channel, errorcb, multiChannel, validChannels, networkConnection, 
                 multiChannelSubscribe, errorLevel
             );

@@ -35,6 +35,35 @@ namespace PubNubMessaging.Core
         }
         #endif    
 
+        internal static long ValidateTimetoken(string timetoken, bool raiseError){
+            long r;
+            if (long.TryParse (timetoken, out r)) {
+                return r;
+            } else if (raiseError) {
+                throw new ArgumentException ("Invalid timetoken");
+            } else {
+                return 0;
+            }
+        }
+
+        internal static string CheckChannelGroup(string channelGroup, bool convertToPresence){
+            string[] multiChannelGroups = channelGroup.Split(',');
+            if (multiChannelGroups.Length > 0) {
+                for (int index = 0; index < multiChannelGroups.Length; index++) {
+                    if (!string.IsNullOrEmpty (multiChannelGroups [index]) && multiChannelGroups [index].Trim ().Length > 0) {
+                        if (convertToPresence) {
+                            multiChannelGroups [index] = string.Format ("{0}{1}", multiChannelGroups [index], Utility.PresenceChannelSuffix);
+                        } 
+                    } else {
+                        throw new MissingMemberException (string.Format("Invalid channel group '{0}'", multiChannelGroups [index]));
+                    }
+                }
+            } else {
+                throw new ArgumentException(string.Format("Channel Group is null"));
+            }
+            return string.Join(",", multiChannelGroups);
+        }
+
         internal static List<string> CheckAndAddNameSpace(string nameSpace){
             List<string> url = new List<string>();
             if (!string.IsNullOrEmpty(nameSpace) && nameSpace.Trim().Length > 0)

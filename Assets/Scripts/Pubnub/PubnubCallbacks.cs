@@ -8,6 +8,7 @@ namespace PubNubMessaging.Core
     internal struct PubnubChannelCallbackKey
     {
         public string Channel;
+        public bool isChannelGroup;
         public ResponseType Type;
     }
 
@@ -17,12 +18,15 @@ namespace PubNubMessaging.Core
         public Action<PubnubClientError> ErrorCallback;
         public Action<T> ConnectCallback;
         public Action<T> DisconnectCallback;
+        public Action<T> WildcardPresenceCallback;
+
         public PubnubChannelCallback ()
         {
             Callback = null;
             ConnectCallback = null;
             DisconnectCallback = null;
             ErrorCallback = null;
+            WildcardPresenceCallback = null;
         }
     }
 
@@ -63,6 +67,7 @@ namespace PubNubMessaging.Core
         {
             var callbackKey = PubnubCallbacks.GetPubnubChannelCallbackKey(currentChannel, 
                 (Utility.IsPresenceChannel(currentChannel)) ? ResponseType.Presence : ResponseType.Subscribe);
+            
             #if (ENABLE_PUBNUB_LOGGING)
             LoggingMethod.WriteToLog(string.Format("DateTime {0}, currentChannel: {1}", DateTime.Now.ToString(), 
                 currentChannel.ToString()), LoggingMethod.LevelInfo);
@@ -102,8 +107,7 @@ namespace PubNubMessaging.Core
         }
 
         internal static void FireErrorCallbacksForAllChannels<T> (WebException webEx, RequestState<T> requestState, 
-            PubnubErrorSeverity severity, SafeDictionary<PubnubChannelCallbackKey, 
-            object> channelCallbacks, bool callbackObjectType,  PubnubErrorFilter.Level errorLevel){
+            PubnubErrorSeverity severity, bool callbackObjectType,  PubnubErrorFilter.Level errorLevel){
 
             for (int index = 0; index < requestState.Channels.Length; index++) {
                 string activeChannel = requestState.Channels [index].ToString ();
@@ -185,38 +189,61 @@ namespace PubNubMessaging.Core
             }
         }
 
-        internal static PubnubChannelCallbackKey GetPubnubChannelCallbackKey(string activeChannel, ResponseType responseType){
+        internal static PubnubChannelCallbackKey GetPubnubChannelCallbackKey(string activeChannel, ResponseType responseType, bool isChannelGroup){
             PubnubChannelCallbackKey callbackKey = new PubnubChannelCallbackKey ();
             callbackKey.Channel = activeChannel;
+            callbackKey.isChannelGroup = isChannelGroup;
             callbackKey.Type = responseType;
             return callbackKey;
+        }
+
+        internal static PubnubChannelCallback<T> GetPubnubChannelCallback<T>(Action<T> userCallback, Action<T> connectCallback, 
+            Action<PubnubClientError> errorCallback
+        ){
+            PubnubChannelCallback<T> pubnubChannelCallbacks = new PubnubChannelCallback<T> ();
+            pubnubChannelCallbacks.Callback = userCallback;
+            pubnubChannelCallbacks.ConnectCallback = connectCallback;
+            pubnubChannelCallbacks.ErrorCallback = errorCallback;
+            return pubnubChannelCallbacks;
+        }
+
+        internal static PubnubChannelCallback<T> GetPubnubChannelCallback<T>(Action<T> userCallback, Action<T> connectCallback, 
+            Action<PubnubClientError> errorCallback, Action<T> disconnectCallback, Action<T> wildcardPresenceCallback
+        ){
+            PubnubChannelCallback<T> pubnubChannelCallbacks = new PubnubChannelCallback<T> ();
+            pubnubChannelCallbacks.Callback = userCallback;
+            pubnubChannelCallbacks.ConnectCallback = connectCallback;
+            pubnubChannelCallbacks.ErrorCallback = errorCallback;
+            pubnubChannelCallbacks.DisconnectCallback = disconnectCallback;
+            pubnubChannelCallbacks.WildcardPresenceCallback = wildcardPresenceCallback;
+            return pubnubChannelCallbacks;
         }
 
         #region "Error Callbacks"
 
         internal static void CallErrorCallback<T>(WebException webEx, 
-            RequestState<T> requestState, string channel, PubnubErrorSeverity severity,
+            RequestState<T> requestState, PubnubErrorSeverity severity,
             Action<PubnubClientError> errorCallback, PubnubErrorFilter.Level errorLevel){
 
-            PubnubClientError clientError = Helpers.CreatePubnubClientError (webEx, requestState, channel, severity);
+            PubnubClientError clientError = Helpers.CreatePubnubClientError (webEx, requestState, severity);
 
             GoToCallback (clientError, errorCallback, errorLevel);
         }
 
         internal static void CallErrorCallback<T>(Exception ex, 
-            RequestState<T> requestState, string channel, PubnubErrorCode errorCode, PubnubErrorSeverity severity,
+            RequestState<T> requestState, PubnubErrorCode errorCode, PubnubErrorSeverity severity,
             Action<PubnubClientError> errorCallback, PubnubErrorFilter.Level errorLevel){
 
-            PubnubClientError clientError = Helpers.CreatePubnubClientError (ex, requestState, channel, errorCode, severity);
+            PubnubClientError clientError = Helpers.CreatePubnubClientError (ex, requestState, errorCode, severity);
 
             GoToCallback (clientError, errorCallback, errorLevel);
         }
 
         internal static void CallErrorCallback<T>(string message, 
-            RequestState<T> requestState, string channel, PubnubErrorCode errorCode, PubnubErrorSeverity severity,
+            RequestState<T> requestState, PubnubErrorCode errorCode, PubnubErrorSeverity severity,
             Action<PubnubClientError> errorCallback, PubnubErrorFilter.Level errorLevel){
 
-            PubnubClientError clientError = Helpers.CreatePubnubClientError<T> (message, requestState, channel, 
+            PubnubClientError clientError = Helpers.CreatePubnubClientError<T> (message, requestState, channelEntities, 
                 errorCode, severity);
 
             GoToCallback (clientError, errorCallback, errorLevel);

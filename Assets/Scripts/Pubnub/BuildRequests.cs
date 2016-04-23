@@ -20,13 +20,13 @@ namespace PubNubMessaging.Core
             long id, bool timeout, long timetoken, Type typeParam, string[] channelGroups
         ){
             RequestState<T> requestState = new RequestState<T> ();
-            requestState.Channels = channel;
-            requestState.ChannelGroups = channelGroups;
+            //requestState.Channels = channel;
+            //requestState.ChannelGroups = channelGroups;
             requestState.RespType = responseType;
             requestState.Reconnect = reconnect;
-            requestState.UserCallback = userCallback;
-            requestState.ErrorCallback = errorCallback;
-            requestState.ConnectCallback = connectCallback;
+            //requestState.UserCallback = userCallback;
+            //requestState.ErrorCallback = errorCallback;
+            //requestState.ConnectCallback = connectCallback;
             requestState.ID = id;
             requestState.Timeout = timeout;
             requestState.Timetoken = timetoken;
@@ -453,6 +453,9 @@ namespace PubNubMessaging.Core
                 parameters = string.Format ("&state={0}", Utility.EncodeUricomponent (channelsJsonState, ResponseType.Subscribe, false, false));
             }
 
+            if (Subscription.Instance.HasChannelGroups) {
+            }
+
             List<string> url = new List<string> ();
             url.Add ("subscribe");
             url.Add (subscribeKey);
@@ -559,6 +562,121 @@ namespace PubNubMessaging.Core
 
             return BuildRestApiRequest<Uri>(url, ResponseType.ChannelGroupGet,
                 uuid, ssl, origin, 0, authenticationKey, "");
+        }
+
+        internal static Uri BuildChannelGroupAuditAccessRequest(string channelGroup, string uuid, 
+            bool ssl, string origin, string authenticationKey, 
+            string publishKey, string subscribeKey, string cipherKey, string secretKey)
+        {
+            string signature = "0";
+            long timeStamp = Utility.TranslateDateTimeToSeconds(DateTime.UtcNow);
+
+            string queryString = "";
+            StringBuilder queryStringBuilder = new StringBuilder();
+            if (!string.IsNullOrEmpty(authenticationKey))
+            {
+                queryStringBuilder.AppendFormat("auth={0}", Utility.EncodeUricomponent(authenticationKey, ResponseType.ChannelGroupAuditAccess, false, false));
+            }
+            if (!string.IsNullOrEmpty(channelGroup))
+            {
+                queryStringBuilder.AppendFormat("{0}channel-group={1}", (queryStringBuilder.Length > 0) ? "&" : "", 
+                    Utility.EncodeUricomponent(channelGroup, ResponseType.ChannelGroupAuditAccess, false, false));
+            }
+            queryStringBuilder.AppendFormat("{0}pnsdk={1}", (queryStringBuilder.Length > 0) ? "&" : "", 
+                Utility.EncodeUricomponent(PubnubUnity.Version, ResponseType.ChannelGroupAuditAccess, false, true));
+            queryStringBuilder.AppendFormat("{0}timestamp={1}", (queryStringBuilder.Length > 0) ? "&" : "", timeStamp.ToString());
+            queryStringBuilder.AppendFormat("{0}uuid={1}", (queryStringBuilder.Length > 0) ? "&" : "", 
+                Utility.EncodeUricomponent(uuid, ResponseType.ChannelGroupAuditAccess, false, false));
+
+            if (secretKey.Length > 0)
+            {
+                StringBuilder string_to_sign = new StringBuilder();
+                string_to_sign.Append(subscribeKey)
+                    .Append("\n")
+                    .Append(publishKey)
+                    .Append("\n")
+                    .Append("audit")
+                    .Append("\n")
+                    .Append(queryStringBuilder.ToString());
+
+                PubnubCrypto pubnubCrypto = new PubnubCrypto(cipherKey);
+                signature = pubnubCrypto.PubnubAccessManagerSign(secretKey, string_to_sign.ToString());
+                queryString = string.Format("signature={0}&{1}", signature, queryStringBuilder.ToString());
+            }
+
+            string parameters = "";
+            parameters += "?" + queryString;
+
+            List<string> url = new List<string>();
+            url.Add("v1");
+            url.Add("auth");
+            url.Add("audit");
+            url.Add("sub-key");
+            url.Add(subscribeKey);
+
+            return BuildRestApiRequest<Uri>(url, ResponseType.ChannelGroupAuditAccess,
+                uuid, ssl, origin, 0, authenticationKey, parameters);
+        }
+
+        internal static Uri BuildChannelGroupGrantAccessRequest(string channelGroup, bool read, bool write, bool manage, int ttl, string uuid, 
+            bool ssl, string origin, string authenticationKey, 
+            string publishKey, string subscribeKey, string cipherKey, string secretKey)
+        {
+            string signature = "0";
+            long timeStamp = Utility.TranslateDateTimeToSeconds(DateTime.UtcNow);
+            string queryString = "";
+            StringBuilder queryStringBuilder = new StringBuilder();
+            if (!string.IsNullOrEmpty(authenticationKey))
+            {
+                queryStringBuilder.AppendFormat("auth={0}", Utility.EncodeUricomponent(authenticationKey, ResponseType.ChannelGroupGrantAccess, false, false));
+            }
+
+            if (!string.IsNullOrEmpty(channelGroup))
+            {
+                queryStringBuilder.AppendFormat("{0}channel-group={1}", (queryStringBuilder.Length > 0) ? "&" : "", 
+                    Utility.EncodeUricomponent(channelGroup, ResponseType.ChannelGroupGrantAccess, false, false));
+            }
+
+            queryStringBuilder.AppendFormat("{0}", (queryStringBuilder.Length > 0) ? "&" : "");
+            queryStringBuilder.AppendFormat("m={0}", Convert.ToInt32(manage));
+            queryStringBuilder.AppendFormat("&pnsdk={0}", Utility.EncodeUricomponent(PubnubUnity.Version, ResponseType.ChannelGroupGrantAccess, false, true));
+            queryStringBuilder.AppendFormat("&r={0}", Convert.ToInt32(read));
+            queryStringBuilder.AppendFormat("&timestamp={0}", timeStamp.ToString()  );
+            if (ttl > -1)
+            {
+                queryStringBuilder.AppendFormat("&ttl={0}", ttl.ToString());
+            }
+            queryStringBuilder.AppendFormat("&uuid={0}", Utility.EncodeUricomponent(uuid, ResponseType.ChannelGroupGrantAccess, false, false));
+            //queryStringBuilder.AppendFormat("&w={0}", Convert.ToInt32(write)); Not supported at this time.
+
+            if (secretKey.Length > 0)
+            {
+                StringBuilder string_to_sign = new StringBuilder();
+                string_to_sign.Append(subscribeKey)
+                    .Append("\n")
+                    .Append(publishKey)
+                    .Append("\n")
+                    .Append("grant")
+                    .Append("\n")
+                    .Append(queryStringBuilder.ToString());
+
+                PubnubCrypto pubnubCrypto = new PubnubCrypto(cipherKey);
+                signature = pubnubCrypto.PubnubAccessManagerSign(secretKey, string_to_sign.ToString());
+                queryString = string.Format("signature={0}&{1}", signature, queryStringBuilder.ToString());
+            }
+
+            string parameters = "";
+            parameters += "?" + queryString;
+
+            List<string> url = new List<string>();
+            url.Add("v1");
+            url.Add("auth");
+            url.Add("grant");
+            url.Add("sub-key");
+            url.Add(subscribeKey);
+
+            return BuildRestApiRequest<Uri>(url, ResponseType.ChannelGroupGrantAccess,
+                uuid, ssl, origin, 0, authenticationKey, parameters);
         }
 
         static StringBuilder AddSSLAndEncodeURL<T>(List<string> urlComponents, ResponseType type, bool ssl, string origin, StringBuilder url)

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace PubNubMessaging.Core
 {
@@ -118,14 +119,14 @@ namespace PubNubMessaging.Core
 
     public class RequestState<T>
     {
-        public Action<T> UserCallback;
-        public Action<PubnubClientError> ErrorCallback;
-        public Action<T> ConnectCallback;
+        //public Action<T> UserCallback;
+        //public Action<PubnubClientError> ErrorCallback;
+        //public Action<T> ConnectCallback;
         public PubnubWebRequest Request;
         public PubnubWebResponse Response;
         public ResponseType RespType;
-        public string[] Channels;
-        public string[] ChannelGroups;
+        //public string[] Channels;
+        public List<ChannelEntity> ChannelEntities;
         public bool Timeout;
         public bool Reconnect;
         public long Timetoken;
@@ -134,37 +135,39 @@ namespace PubNubMessaging.Core
 
         public RequestState ()
         {
-            UserCallback = null;
-            ConnectCallback = null;
+            //UserCallback = null;
+            //ConnectCallback = null;
             Request = null;
             Response = null;
-            Channels = null;
-            ChannelGroups = null;
+            ChannelEntities = null;
+            //Channels = null;
+            //ChannelGroups = null;
             ID = 0;
         }
 
         public RequestState (RequestState<T> requestState)
         {
-            Channels = requestState.Channels;
-            ChannelGroups = requestState.ChannelGroups;
+            //Channels = requestState.Channels;
+            //ChannelGroups = requestState.ChannelGroups;
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Channels {1}", DateTime.Now.ToString (), String.Join(",", Channels).ToString ()), LoggingMethod.LevelInfo);
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ChannelGroups {1}", DateTime.Now.ToString (), String.Join(",", ChannelGroups).ToString ()), LoggingMethod.LevelInfo);
+            //LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Channels {1}", DateTime.Now.ToString (), String.Join(",", Channels).ToString ()), LoggingMethod.LevelInfo);
+            //LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ChannelGroups {1}", DateTime.Now.ToString (), String.Join(",", ChannelGroups).ToString ()), LoggingMethod.LevelInfo);
             #endif
-            ConnectCallback = requestState.ConnectCallback as Action<T>;
-            ErrorCallback = requestState.ErrorCallback;
+            //ConnectCallback = requestState.ConnectCallback as Action<T>;
+            //ErrorCallback = requestState.ErrorCallback;
+            ChannelEntities = requestState.ChannelEntities;
             Reconnect = requestState.Reconnect;
             Request = requestState.Request;
             Response = requestState.Response;
             Timeout = requestState.Timeout;
             Timetoken = requestState.Timetoken;
             TypeParameterType = requestState.TypeParameterType;
-            UserCallback = requestState.UserCallback as Action<T>;
+            //UserCallback = requestState.UserCallback as Action<T>;
             ID = requestState.ID;
             RespType = requestState.RespType;
         }
 
-        public void SetRequestState<U> (
+        /*public void SetRequestState<U> (
             string[] channels, 
             Action<T> connectCallback, 
             Action<PubnubClientError> errorCallback,
@@ -178,18 +181,18 @@ namespace PubNubMessaging.Core
             long id
         )
         {
-            Channels = channels;
-            ConnectCallback = connectCallback as Action<T>;
-            ErrorCallback = errorCallback;
+            //Channels = channels;
+            //ConnectCallback = connectCallback as Action<T>;
+            //ErrorCallback = errorCallback;
             Reconnect = reconnect;
             Request = request;
             Response = response;
             Timeout = timeout;
             Timetoken = timetoken;
             TypeParameterType = typeParameterType;
-            UserCallback = userCallback as Action<T>;
+            //UserCallback = userCallback as Action<T>;
             ID = id;
-        }
+        }*/
     }
 
     #endregion
