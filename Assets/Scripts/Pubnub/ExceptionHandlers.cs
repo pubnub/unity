@@ -39,41 +39,48 @@ namespace PubNubMessaging.Core
             )) {
                 webEx = new WebException ("Network connnect error", WebExceptionStatus.ConnectFailure);
 
-                PubnubCallbacks.CallErrorCallback<T> (cea.Message, requestState, null, 
+                PubnubCallbacks.CallErrorCallback<T> (cea.Message, requestState, 
                     PubnubErrorCode.NoInternetRetryConnect, PubnubErrorSeverity.Warn, errorLevel);
 
             } else if (cea.IsTimeout || Utility.CheckRequestTimeoutMessageInError(cea)) {
             } else if ((cea.Message.Contains ("403")) 
                 || (cea.Message.Contains ("java.io.FileNotFoundException")) 
                 || ((PubnubUnity.Version.Contains("UnityWeb")) && (cea.Message.Contains ("Failed downloading")))) {
-                PubnubClientError error = new PubnubClientError (403, PubnubErrorSeverity.Critical, cea.Message, PubnubMessageSource.Server, requestState.Request, requestState.Response, cea.Message);
+                PubnubClientError error = new PubnubClientError (403, PubnubErrorSeverity.Critical, cea.Message, PubnubMessageSource.Server, 
+                    requestState.Request, requestState.Response, cea.Message, requestState.ChannelEntities);
                 PubnubCallbacks.GoToCallback (error, requestState.ErrorCallback, jsonPluggableLibrary);
             } else if (cea.Message.Contains ("500")) {
-                PubnubClientError error = new PubnubClientError (500, PubnubErrorSeverity.Critical, cea.Message, PubnubMessageSource.Server, requestState.Request, requestState.Response, cea.Message, channel, channelGroups);
+                PubnubClientError error = new PubnubClientError (500, PubnubErrorSeverity.Critical, cea.Message, PubnubMessageSource.Server, 
+                    requestState.Request, requestState.Response, cea.Message, requestState.ChannelEntities);
                 PubnubCallbacks.GoToCallback (error, requestState.ErrorCallback, jsonPluggableLibrary);
             } else if (cea.Message.Contains ("502")) {
-                PubnubClientError error = new PubnubClientError (503, PubnubErrorSeverity.Critical, cea.Message, PubnubMessageSource.Server, requestState.Request, requestState.Response, cea.Message, channel, channelGroups);
+                PubnubClientError error = new PubnubClientError (503, PubnubErrorSeverity.Critical, cea.Message, PubnubMessageSource.Server, 
+                    requestState.Request, requestState.Response, cea.Message, requestState.ChannelEntities);
                 PubnubCallbacks.GoToCallback (error, requestState.ErrorCallback, jsonPluggableLibrary);
             } else if (cea.Message.Contains ("503")) {
-                PubnubClientError error = new PubnubClientError (503, PubnubErrorSeverity.Critical, cea.Message, PubnubMessageSource.Server, requestState.Request, requestState.Response, cea.Message, channel, channelGroups);
+                PubnubClientError error = new PubnubClientError (503, PubnubErrorSeverity.Critical, cea.Message, PubnubMessageSource.Server, 
+                    requestState.Request, requestState.Response, cea.Message, requestState.ChannelEntities);
                 PubnubCallbacks.GoToCallback (error, requestState.ErrorCallback, jsonPluggableLibrary);
             } else if (cea.Message.Contains ("504")) {
-                PubnubClientError error = new PubnubClientError (504, PubnubErrorSeverity.Critical, cea.Message, PubnubMessageSource.Server, requestState.Request, requestState.Response, cea.Message, channel, channelGroups);
+                PubnubClientError error = new PubnubClientError (504, PubnubErrorSeverity.Critical, cea.Message, PubnubMessageSource.Server, 
+                    requestState.Request, requestState.Response, cea.Message, requestState.ChannelEntities);
                 PubnubCallbacks.GoToCallback (error, requestState.ErrorCallback, jsonPluggableLibrary);
             } else if (cea.Message.Contains ("414")) {
-                PubnubClientError error = new PubnubClientError (414, PubnubErrorSeverity.Critical, cea.Message, PubnubMessageSource.Server, requestState.Request, requestState.Response, cea.Message, channel, channelGroups);
+                PubnubClientError error = new PubnubClientError (414, PubnubErrorSeverity.Critical, cea.Message, PubnubMessageSource.Server, 
+                    requestState.Request, requestState.Response, cea.Message, requestState.ChannelEntities);
                 PubnubCallbacks.GoToCallback (error, requestState.ErrorCallback, jsonPluggableLibrary);
             } else {
-                PubnubClientError error = new PubnubClientError (400, PubnubErrorSeverity.Critical, cea.Message, PubnubMessageSource.Server, requestState.Request, requestState.Response, cea.Message, channel, channelGroups);
+                PubnubClientError error = new PubnubClientError (400, PubnubErrorSeverity.Critical, cea.Message, PubnubMessageSource.Server, 
+                    requestState.Request, requestState.Response, cea.Message, requestState.ChannelEntities);
                 PubnubCallbacks.GoToCallback (error, requestState.ErrorCallback, jsonPluggableLibrary);
             }
-            ProcessResponseCallbackWebExceptionHandler<T> (webEx, requestState, channel, errorLevel);
+            ProcessResponseCallbackWebExceptionHandler<T> (webEx, requestState, errorLevel);
         }
 
         internal static void ResponseCallbackWebExceptionHandler<T> (CustomEventArgs<T> cea, RequestState<T> requestState, 
-            WebException webEx, string channel, SafeDictionary<PubnubChannelCallbackKey, object> channelCallbacks, 
+            WebException webEx,
             PubnubErrorFilter.Level errorLevel){
-            if (requestState.Channels != null || requestState.RespType != ResponseType.Time) {
+            if ((requestState!=null) && (requestState.ChannelEntities != null || requestState.RespType != ResponseType.Time)) {
 
                 if (requestState.RespType == ResponseType.Subscribe
                     || requestState.RespType == ResponseType.Presence) {
@@ -85,11 +92,11 @@ namespace PubNubMessaging.Core
                             PubnubErrorSeverity.Warn, true, errorLevel);
                     }
                 } else {
-                    PubnubCallbacks.CallErrorCallback<T> (webEx, requestState, channel, 
-                        PubnubErrorSeverity.Warn, requestState.ErrorCallback, errorLevel);
+                    PubnubCallbacks.CallErrorCallback<T> (webEx, requestState,
+                        PubnubErrorSeverity.Warn, errorLevel);
                 }
             }
-            ProcessResponseCallbackWebExceptionHandler<T> (webEx, requestState, channel, errorLevel);
+            ProcessResponseCallbackWebExceptionHandler<T> (webEx, requestState, errorLevel);
         }
 
         internal static void ResponseCallbackExceptionHandler<T> (CustomEventArgs<T> cea, RequestState<T> requestState, 
@@ -98,7 +105,7 @@ namespace PubNubMessaging.Core
             #if (ENABLE_PUBNUB_LOGGING)
             LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Process Response Exception: = {1}", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
             #endif
-            if (requestState.Channels != null) {
+            if (requestState.ChannelEntities != null) {
 
                 if (requestState.RespType == ResponseType.Subscribe
                     || requestState.RespType == ResponseType.Presence) {
@@ -107,8 +114,8 @@ namespace PubNubMessaging.Core
                         PubnubErrorSeverity.Warn, false, PubnubErrorCode.None, errorLevel);
                 } else {
 
-                    PubnubCallbacks.CallErrorCallback<T> (ex, requestState, channel, 
-                        PubnubErrorCode.None, PubnubErrorSeverity.Critical, requestState.ErrorCallback, errorLevel);
+                    PubnubCallbacks.CallErrorCallback<T> (ex, requestState, 
+                        PubnubErrorCode.None, PubnubErrorSeverity.Critical, errorLevel);
                 }
             }
             ProcessResponseCallbackExceptionHandler<T> (ex, requestState, errorLevel);
@@ -125,7 +132,7 @@ namespace PubNubMessaging.Core
         }
 
         internal static void ProcessResponseCallbackWebExceptionHandler<T> (WebException webEx, RequestState<T> asynchRequestState, 
-            string channel, PubnubErrorFilter.Level errorLevel)
+             PubnubErrorFilter.Level errorLevel)
         {
             #if (ENABLE_PUBNUB_LOGGING)
             if (webEx.ToString ().Contains ("Aborted")) {
@@ -173,7 +180,7 @@ namespace PubNubMessaging.Core
                     break;
                 case ResponseType.GlobalHereNow:
                 case ResponseType.Time:
-                    CommonExceptionHandler<T>(message, "", requestTimeout, requestState.ErrorCallback, errorLevel, requestState.RespType, requestState);
+                    CommonExceptionHandler<T>(requestState, message, requestTimeout, errorLevel);
                     break;
                 case ResponseType.Leave:
                 case ResponseType.PresenceHeartbeat:
@@ -182,7 +189,7 @@ namespace PubNubMessaging.Core
                 case ResponseType.PushRegister:
                 case ResponseType.PushRemove:
                 case ResponseType.PushUnregister:
-                    PushNotificationExceptionHandler<T>(requestState.Channels, requestTimeout, requestState.ErrorCallback, errorLevel, requestState);
+                    PushNotificationExceptionHandler<T>(requestState, requestTimeout, errorLevel);
                     break;
                 case ResponseType.ChannelGroupAdd:
                 case ResponseType.ChannelGroupRemove:
@@ -190,82 +197,66 @@ namespace PubNubMessaging.Core
                 case ResponseType.ChannelGroupGrantAccess:
                 case ResponseType.ChannelGroupAuditAccess:
                 case ResponseType.ChannelGroupRevokeAccess:
-                    ChannelGroupExceptionHandler<T>(requestState.Channels, requestTimeout, requestState.ErrorCallback, errorLevel, requestState);
+                    ChannelGroupExceptionHandler<T>(requestState, requestTimeout, errorLevel);
                     break;
                 default:
-                    CommonExceptionHandler<T> (message, requestState.Channels [0], requestTimeout, requestState.ErrorCallback, errorLevel, 
-                        requestState.RespType, requestState);
+                    CommonExceptionHandler<T> (requestState, message, requestTimeout, errorLevel);
                     break;
                     
             }
         }
 
-        internal static void PushNotificationExceptionHandler<T>(string[] channels, bool requestTimeout, 
-            Action<PubnubClientError> errorCallback, PubnubErrorFilter.Level errorLevel, RequestState<T> requestState)
+        internal static void PushNotificationExceptionHandler<T>(RequestState<T> requestState, bool requestTimeout, 
+            PubnubErrorFilter.Level errorLevel )
         {
-            string channel = "";
-            if (channels != null)
-            {
-                channel = string.Join(",", channels);
-            }
             if (requestTimeout)
             {
                 string message = (requestTimeout) ? "Operation Timeout" : "Network connnect error";
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog(string.Format("DateTime {0}, PushExceptionHandler response={1}", DateTime.Now.ToString(), message), LoggingMethod.LevelInfo);
                 #endif
-                PubnubCallbacks.CallErrorCallback <T>(message, requestState, channel, 
-                    PubnubErrorCode.PushNotificationTimeout, PubnubErrorSeverity.Critical, errorCallback, errorLevel);
+                PubnubCallbacks.CallErrorCallback <T>(message, requestState, 
+                    PubnubErrorCode.PushNotificationTimeout, PubnubErrorSeverity.Critical, errorLevel);
             }
         }
 
-        internal static void ChannelGroupExceptionHandler<T>(string[] channels, bool requestTimeout, 
-            Action<PubnubClientError> errorCallback, PubnubErrorFilter.Level errorLevel, RequestState<T> requestState)
+        internal static void ChannelGroupExceptionHandler<T>(RequestState<T> requestState, bool requestTimeout, 
+            PubnubErrorFilter.Level errorLevel)
         {
-            string channel = "";
-            if (channels != null)
-            {
-                channel = string.Join(",", channels);
-            }
-            /*string channelGroup = "";
-            if (channelGroups != null)
-            {
-                channelGroup = string.Join(",", channelGroups);
-            }*/
-
             if (requestTimeout)
             {
                 string message = (requestTimeout) ? "Operation Timeout" : "Network connnect error";
                 //string channelAndChannelGroupMessage = string.Format("channels: {0}, channelGroups: {1}", channel, channelGroup);
 
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog(string.Format("DateTime {0}, ChannelGroupExceptionHandler response={1}, {2}", DateTime.Now.ToString(), message, channelAndChannelGroupMessage), LoggingMethod.LevelInfo);
+                LoggingMethod.WriteToLog(string.Format("DateTime {0}, ChannelGroupExceptionHandler response={1}, {2}", 
+                    DateTime.Now.ToString(), message, Helpers.GetNamesFromChannelEntities(requestState.ChannelEntities)), LoggingMethod.LevelInfo);
                 #endif
-                PubnubCallbacks.CallErrorCallback <T>(message, requestState, channel, 
-                    PubnubErrorCode.ChannelGroupTimeout, PubnubErrorSeverity.Critical, errorCallback, errorLevel);
+                PubnubCallbacks.CallErrorCallback <T>(message, requestState, 
+                    PubnubErrorCode.ChannelGroupTimeout, PubnubErrorSeverity.Critical, errorLevel);
             }
         }
 
-        internal static void CommonExceptionHandler<T> (string message, string channelName, bool requestTimeout, 
-            Action<PubnubClientError> errorCallback, PubnubErrorFilter.Level errorLevel, ResponseType responseType,
-            RequestState<T> requestState
+        internal static void CommonExceptionHandler<T> (RequestState<T> requestState, string message, bool requestTimeout, 
+            PubnubErrorFilter.Level errorLevel
         )
         {
             if (requestTimeout) {
                 message = "Operation Timeout";
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, {1} response={2}", DateTime.Now.ToString (), responseType.ToString (), message), LoggingMethod.LevelInfo);
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, {1} response={2}", DateTime.Now.ToString (), 
+                    requestState.RespType.ToString (), message), LoggingMethod.LevelInfo);
                 #endif
 
-                PubnubCallbacks.CallErrorCallback<T> (message, null, channelName, 
-                    Helpers.GetTimeOutErrorCode (responseType), PubnubErrorSeverity.Critical, errorCallback, errorLevel);
+                PubnubCallbacks.CallErrorCallback<T> (message, requestState, 
+                    Helpers.GetTimeOutErrorCode (requestState.RespType), PubnubErrorSeverity.Critical, errorLevel);
             } else {
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, {1} response={2}", DateTime.Now.ToString (), responseType.ToString (), message), LoggingMethod.LevelInfo);
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, {1} response={2}", DateTime.Now.ToString (), requestState.RespType.ToString (), message), LoggingMethod.LevelInfo);
                 #endif
 
-                PubnubCallbacks.CallErrorCallback<T> (message, requestState, channelName, 
-                    PubnubErrorCode.None, PubnubErrorSeverity.Critical, errorCallback, errorLevel);
+                PubnubCallbacks.CallErrorCallback<T> (message, requestState, 
+                    PubnubErrorCode.None, PubnubErrorSeverity.Critical, errorLevel);
             }
         }
     }

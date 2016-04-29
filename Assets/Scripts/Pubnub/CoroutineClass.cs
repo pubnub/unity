@@ -864,7 +864,7 @@ namespace PubNubMessaging.Core
         public void CallFireEvent<T> (string message, bool isError, bool isTimeout, RequestState<T> pubnubRequestState, CoroutineParams<T> cp)
         {
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CallFireEvent RequestType {1} {2} {3}", DateTime.Now.ToString (), typeof(T), pubnubRequestState.GetType (), pubnubRequestState.Channels), LoggingMethod.LevelInfo);
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CallFireEvent RequestType {1} {2} {3}", DateTime.Now.ToString (), typeof(T), pubnubRequestState.GetType (), Helpers.GetNamesFromChannelEntities(pubnubRequestState.ChannelEntities)), LoggingMethod.LevelInfo);
             #endif
             FireEvent (message, isError, false, pubnubRequestState, cp.crt);
         }

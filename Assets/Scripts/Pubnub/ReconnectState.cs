@@ -119,8 +119,8 @@ namespace PubNubMessaging.Core
 
     public class RequestState<T>
     {
-        //public Action<T> UserCallback;
-        //public Action<PubnubClientError> ErrorCallback;
+        public Action<T> UserCallback;
+        public Action<PubnubClientError> ErrorCallback;
         //public Action<T> ConnectCallback;
         public PubnubWebRequest Request;
         public PubnubWebResponse Response;
@@ -132,10 +132,11 @@ namespace PubNubMessaging.Core
         public long Timetoken;
         public Type TypeParameterType;
         public long ID;
+        public string UUID;
 
         public RequestState ()
         {
-            //UserCallback = null;
+            UserCallback = null;
             //ConnectCallback = null;
             Request = null;
             Response = null;

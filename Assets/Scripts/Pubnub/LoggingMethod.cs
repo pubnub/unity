@@ -113,7 +113,7 @@ namespace PubNubMessaging.Core
 
         public PubnubClientError (int statusCode, PubnubErrorSeverity errorSeverity, bool isDotNetException, string message, 
             Exception detailedDotNetException, PubnubMessageSource source, PubnubWebRequest pubnubWebRequest, 
-            PubnubWebResponse pubnubWebResponse, string description, string channel, string channelGroup)
+            PubnubWebResponse pubnubWebResponse, string description, List<ChannelEntity> channelEntitles)
         {
             _dateTimeGMT = DateTime.Now.ToUniversalTime ();
             _statusCode = statusCode;
@@ -121,8 +121,8 @@ namespace PubNubMessaging.Core
             _message = message;
             _errorSeverity = errorSeverity;
             _messageSource = source;
-            _channel = channel;
-            _channelGroup = channelGroup;
+            _channel = Helpers.GetNamesFromChannelEntities(channelEntitles, false);
+            _channelGroup = Helpers.GetNamesFromChannelEntities(channelEntitles, true);
             _detailedDotNetException = detailedDotNetException;
             _pubnubWebRequest = pubnubWebRequest;
             _pubnubWebResponse = pubnubWebResponse;
@@ -131,20 +131,9 @@ namespace PubNubMessaging.Core
 
         public PubnubClientError (int statusCode, PubnubErrorSeverity errorSeverity, string message, 
             PubnubMessageSource source, PubnubWebRequest pubnubWebRequest, PubnubWebResponse pubnubWebResponse, string description, 
-            string channel, string channelGroup)
+            List<ChannelEntity> channelEntitles)
+            : this (statusCode,errorSeverity, false, message, null, source,pubnubWebRequest, pubnubWebResponse, description, channelEntitles) 
         {
-            _dateTimeGMT = DateTime.Now.ToUniversalTime ();
-            _statusCode = statusCode;
-            _isDotNetException = false;
-            _message = message;
-            _errorSeverity = errorSeverity;
-            _messageSource = source;
-            _channel = channel;
-            _channelGroup = channelGroup;
-            _detailedDotNetException = null;
-            _pubnubWebRequest = pubnubWebRequest;
-            _pubnubWebResponse = pubnubWebResponse;
-            _description = description;
         }
 
         public int StatusCode {

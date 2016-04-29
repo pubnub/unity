@@ -70,6 +70,9 @@ namespace PubNubMessaging.Core
         }
 
         public bool HasChannelGroups {get; private set;}
+        public bool HasPresenceChannels {get; private set;}
+        public bool HasChannelsOrChannelGroups {get; private set;}
+        public bool HasChannels {get; private set;}
 
         public int CurrentSubscribedChannelsCount {
             get;
@@ -87,7 +90,17 @@ namespace PubNubMessaging.Core
             private set;
         }
 
-        public List<ChannelEntity> SubscribedChannelsAndChannelGroups {
+        public List<ChannelEntity> AllChannels {
+            get;
+            private set;
+        }
+
+        public List<ChannelEntity> AllChannelGroups {
+            get;
+            private set;
+        }
+
+        public List<ChannelEntity> AllSubscribedChannelsAndChannelGroups {
             get;
             private set;
         }
@@ -122,10 +135,9 @@ namespace PubNubMessaging.Core
         private SafeDictionary<ChannelIdentity, ChannelParameters> channelEntitiesDictionary = new SafeDictionary<ChannelIdentity, ChannelParameters>();
 
         //public void Add(ChannelIdentity channelID, ChannelParameters channelParam){
-        public void Subscribe(ChannelEntity channelEntity){
+        public void Subscribe(ChannelEntity channelEntity, bool reset){
             if (!channelEntitiesDictionary.ContainsKey (channelEntity.ChannelID)) {
                 channelEntitiesDictionary.Add (channelEntity.ChannelID, channelEntity.ChannelParams);
-                ResetChannelsAndChannelGroups ();
             } else {
                 channelEntitiesDictionary [channelEntity.ChannelID].Callbacks = channelEntity.ChannelParams.Callbacks;
                 channelEntitiesDictionary [channelEntity.ChannelID].IsAwaitingConnectCallback = channelEntity.ChannelParams.IsAwaitingConnectCallback;
@@ -140,34 +152,50 @@ namespace PubNubMessaging.Core
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, channelEntities key found {1} {2}", DateTime.Now.ToString (), channelEntity.ChannelID.ChannelOrChannelGroupName, channelEntity.ChannelID.IsChannelGroup), LoggingMethod.LevelInfo);
                 #endif
             }
-        }
-
-        public void Subscribe(ChannelEntity[] channelEntities){
-            foreach (ChannelEntity ce in channelEntities) {
-                Subscribe (ce);
+            if (reset) {
+                ResetChannelsAndChannelGroupsAndBuildState ();
             }
         }
 
-        public void Delete(ChannelEntity channelEntity)
-        {
-            channelEntitiesDictionary.Remove(channelEntity.ChannelID);
-
-            ResetChannelsAndChannelGroups ();
+        public void Subscribe(List<ChannelEntity> channelEntities){
+            foreach (ChannelEntity ce in channelEntities) {
+                Subscribe (ce, false);
+            }
+            ResetChannelsAndChannelGroupsAndBuildState ();
         }
 
-        public void ResetChannelsAndChannelGroups(){
+        public bool Delete(ChannelEntity channelEntity)
+        {
+            bool bDeleted = channelEntitiesDictionary.Remove(channelEntity.ChannelID);
+
+            ResetChannelsAndChannelGroupsAndBuildState ();
+            return bDeleted;
+        }
+
+        public void ResetChannelsAndChannelGroupsAndBuildState(){
             AllPresenceChannelsOrChannelGroups.Clear ();
             AllNonPresenceChannelsOrChannelGroups.Clear ();
             ChannelsAndChannelGroupsAwaitingConnectCallback.Clear ();
-            SubscribedChannelsAndChannelGroups.Clear ();
+            AllChannels.Clear ();
+            AllChannelGroups.Clear ();
+            AllSubscribedChannelsAndChannelGroups.Clear ();
+            HasChannelGroups = false;
+            HasChannels = false;
+            HasPresenceChannels = false;
+            HasChannelsOrChannelGroups = false;
+            CurrentSubscribedChannelsCount = 0;
+            CurrentSubscribedChannelGroupsCount = 0;
+
             foreach (var ci in channelEntitiesDictionary) {
                 if (ci.Value.IsSubscribed) {
                     if (ci.Key.IsChannelGroup) {
                         CurrentSubscribedChannelGroupsCount++;
+                        AllChannelGroups.Add(new ChannelEntity (ci.Key, ci.Value));
                     } else {
                         CurrentSubscribedChannelsCount++;
+                        AllChannels.Add(new ChannelEntity (ci.Key, ci.Value));
                     }
-                    SubscribedChannelsAndChannelGroups.Add (new ChannelEntity (ci.Key, ci.Value));
+                    AllSubscribedChannelsAndChannelGroups.Add (new ChannelEntity (ci.Key, ci.Value));
 
                     if (ci.Value.IsPresenceChannel) {
                         AllPresenceChannelsOrChannelGroups.Add (new ChannelEntity (ci.Key, ci.Value));
@@ -183,8 +211,16 @@ namespace PubNubMessaging.Core
             if(CurrentSubscribedChannelGroupsCount > 0){
                 HasChannelGroups = true;
             }
-            //SafeDictionary<ChannelIdentity, ChannelParameters> currentChannelsAndChannelGroups = new SafeDictionary<ChannelIdentity, ChannelParameters> ();
-            //CurrentSubscribedChannelsAndChannelGroups = currentChannelsAndChannelGroups;
+            if(CurrentSubscribedChannelsCount > 0){
+                HasChannels = true;
+            }
+            if (AllPresenceChannelsOrChannelGroups.Count > 0) {
+                HasPresenceChannels = true;
+            }
+            if(HasChannels || HasChannelGroups){
+                HasChannelsOrChannelGroups = true;
+            }
+            CompiledUserState = Helpers.BuildJsonUserState (AllSubscribedChannelsAndChannelGroups);
         }
 
         public bool UpdateOrAddUserStateOfEntity(ChannelEntity channelEntity, Dictionary<string, object> userState){
@@ -210,8 +246,8 @@ namespace PubNubMessaging.Core
                 channelEntitiesDictionary.Add (channelEntity.ChannelID, channelEntity.ChannelParams);
                 stateChanged = true;
             }
-            ResetChannelsAndChannelGroups ();
-            CompiledUserState = Helpers.BuildJsonUserState (SubscribedChannelsAndChannelGroups);
+            ResetChannelsAndChannelGroupsAndBuildState ();
+
             return stateChanged;
         }
 
@@ -244,10 +280,16 @@ namespace PubNubMessaging.Core
             channelEntitiesDictionary.Clear ();
             AllPresenceChannelsOrChannelGroups.Clear ();
             AllNonPresenceChannelsOrChannelGroups.Clear ();
-            SubscribedChannelsAndChannelGroups.Clear ();
+            AllChannels.Clear ();
+            AllChannelGroups.Clear ();
+            AllSubscribedChannelsAndChannelGroups.Clear ();
             CompiledUserState = String.Empty;
             CurrentSubscribedChannelsCount = 0;
             CurrentSubscribedChannelGroupsCount = 0;
+            HasChannelGroups = false;
+            HasChannels = false;
+            HasChannelsOrChannelGroups = false;
+            HasPresenceChannels = false;
         }
     }
 
