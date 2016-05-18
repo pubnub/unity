@@ -905,7 +905,7 @@ namespace PubNubMessaging.Core
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SetComplete Complete {1}", DateTime.Now.ToString (), crt.ToString()), LoggingMethod.LevelInfo);
                 #endif
             } catch (Exception ex) {
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SetComplete Exception: ", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SetComplete Exception: {1}", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
             }
 
         }

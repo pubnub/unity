@@ -119,7 +119,7 @@ namespace PubNubMessaging.Core
 
     public class RequestState<T>
     {
-        public Action<T> UserCallback;
+        public Action<T> SuccessCallback;
         public Action<PubnubClientError> ErrorCallback;
         //public Action<T> ConnectCallback;
         public PubnubWebRequest Request;
@@ -136,7 +136,7 @@ namespace PubNubMessaging.Core
 
         public RequestState ()
         {
-            UserCallback = null;
+            SuccessCallback = null;
             //ConnectCallback = null;
             Request = null;
             Response = null;

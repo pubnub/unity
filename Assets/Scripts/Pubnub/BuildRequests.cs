@@ -32,7 +32,7 @@ namespace PubNubMessaging.Core
             requestState.ChannelEntities = channelEntities;
             requestState.RespType = responseType;
             requestState.Reconnect = reconnect;
-            requestState.UserCallback = null;
+            requestState.SuccessCallback = null;
             requestState.ErrorCallback = null;
             requestState.ID = id;
             requestState.Timeout = timeout;
@@ -50,7 +50,7 @@ namespace PubNubMessaging.Core
             requestState.ChannelEntities = null;
             requestState.RespType = responseType;
             requestState.Reconnect = reconnect;
-            requestState.UserCallback = userCallback;
+            requestState.SuccessCallback = userCallback;
             requestState.ErrorCallback = errorCallback;
             requestState.ID = id;
             requestState.Timeout = timeout;
@@ -483,7 +483,7 @@ namespace PubNubMessaging.Core
             return BuildRestApiRequest<Uri> (url, ResponseType.Leave, uuid, ssl, origin, 0, authenticationKey, unsubscribeParamBuilder.ToString());
         }
 
-        internal static Uri BuildMultiChannelSubscribeRequest (string[] channels, string[] channelGroups, object timetoken, 
+        internal static Uri BuildMultiChannelSubscribeRequest (string channels, string channelGroups, object timetoken, 
                 string channelsJsonState, string uuid,
             bool ssl, string origin, string authenticationKey, string subscribeKey)
         {
@@ -493,15 +493,15 @@ namespace PubNubMessaging.Core
                 subscribeParamBuilder.AppendFormat ("&state={0}", Utility.EncodeUricomponent (channelsJsonState, ResponseType.Subscribe, false, false));
             }
 
-            if (channelGroups != null && channelGroups.Length > 0 && channelGroups[0] != "")
+            if (!string.IsNullOrEmpty(channelGroups))
             {
-                subscribeParamBuilder.AppendFormat("&channel-group={0}", string.Join(",", channelGroups));
+                subscribeParamBuilder.AppendFormat("&channel-group={0}", channelGroups);
             }
 
             List<string> url = new List<string> ();
             url.Add ("subscribe");
             url.Add (subscribeKey);
-            url.Add ((channels.Length > 0) ? string.Join (",", channels) : ",");
+            url.Add (string.IsNullOrEmpty(channels) ? "" : channels);
             url.Add ("0");
             url.Add (timetoken.ToString ());
 

@@ -36,11 +36,15 @@ namespace PubNubMessaging.Core
         #endif    
 
         internal static long ValidateTimetoken(string timetoken, bool raiseError){
-            long r;
-            if (long.TryParse (timetoken, out r)) {
-                return r;
-            } else if (raiseError) {
-                throw new ArgumentException ("Invalid timetoken");
+            if(!string.IsNullOrEmpty(timetoken)){
+                long r;
+                if (long.TryParse (timetoken, out r)) {
+                    return r;
+                } else if (raiseError) {
+                    throw new ArgumentException ("Invalid timetoken");
+                } else {
+                    return 0;
+                }
             } else {
                 return 0;
             }

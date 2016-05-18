@@ -39,8 +39,8 @@ namespace PubNubMessaging.Core
             )) {
                 webEx = new WebException ("Network connnect error", WebExceptionStatus.ConnectFailure);
 
-                PubnubCallbacks.CallErrorCallback<T> (cea.Message, requestState, 
-                    PubnubErrorCode.NoInternetRetryConnect, PubnubErrorSeverity.Warn, errorLevel);
+                PubnubCallbacks.FireErrorCallbacksForAllChannels<T> (cea.Message, requestState, 
+                    PubnubErrorSeverity.Warn, PubnubErrorCode.NoInternetRetryConnect, errorLevel);
 
             } else if (cea.IsTimeout || Utility.CheckRequestTimeoutMessageInError(cea)) {
             } else if ((cea.Message.Contains ("403")) 
@@ -89,10 +89,10 @@ namespace PubNubMessaging.Core
                         || webEx.Message.IndexOf ("Machine suspend mode enabled. No request will be processed.") == -1) {
 
                         PubnubCallbacks.FireErrorCallbacksForAllChannels<T> (webEx, requestState, 
-                            PubnubErrorSeverity.Warn, true, errorLevel);
+                            PubnubErrorSeverity.Warn, errorLevel);
                     }
                 } else {
-                    PubnubCallbacks.CallErrorCallback<T> (webEx, requestState,
+                    PubnubCallbacks.FireErrorCallbacksForAllChannels<T> (webEx, requestState,
                         PubnubErrorSeverity.Warn, errorLevel);
                 }
             }
@@ -111,11 +111,11 @@ namespace PubNubMessaging.Core
                     || requestState.RespType == ResponseType.Presence) {
 
                     PubnubCallbacks.FireErrorCallbacksForAllChannels (ex, requestState, 
-                        PubnubErrorSeverity.Warn, false, PubnubErrorCode.None, errorLevel);
+                        PubnubErrorSeverity.Warn, PubnubErrorCode.None, errorLevel);
                 } else {
 
-                    PubnubCallbacks.CallErrorCallback<T> (ex, requestState, 
-                        PubnubErrorCode.None, PubnubErrorSeverity.Critical, errorLevel);
+                    PubnubCallbacks.FireErrorCallbacksForAllChannels<T> (ex, requestState, 
+                        PubnubErrorSeverity.Critical, PubnubErrorCode.None, errorLevel);
                 }
             }
             ProcessResponseCallbackExceptionHandler<T> (ex, requestState, errorLevel);
@@ -215,8 +215,8 @@ namespace PubNubMessaging.Core
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog(string.Format("DateTime {0}, PushExceptionHandler response={1}", DateTime.Now.ToString(), message), LoggingMethod.LevelInfo);
                 #endif
-                PubnubCallbacks.CallErrorCallback <T>(message, requestState, 
-                    PubnubErrorCode.PushNotificationTimeout, PubnubErrorSeverity.Critical, errorLevel);
+                PubnubCallbacks.FireErrorCallbacksForAllChannels<T> (message, requestState, 
+                    PubnubErrorSeverity.Critical, PubnubErrorCode.PushNotificationTimeout, errorLevel);
             }
         }
 
@@ -232,8 +232,8 @@ namespace PubNubMessaging.Core
                 LoggingMethod.WriteToLog(string.Format("DateTime {0}, ChannelGroupExceptionHandler response={1}, {2}", 
                     DateTime.Now.ToString(), message, Helpers.GetNamesFromChannelEntities(requestState.ChannelEntities)), LoggingMethod.LevelInfo);
                 #endif
-                PubnubCallbacks.CallErrorCallback <T>(message, requestState, 
-                    PubnubErrorCode.ChannelGroupTimeout, PubnubErrorSeverity.Critical, errorLevel);
+                PubnubCallbacks.FireErrorCallbacksForAllChannels<T>(message, requestState, 
+                    PubnubErrorSeverity.Critical, PubnubErrorCode.ChannelGroupTimeout, errorLevel);
             }
         }
 
@@ -248,15 +248,15 @@ namespace PubNubMessaging.Core
                     requestState.RespType.ToString (), message), LoggingMethod.LevelInfo);
                 #endif
 
-                PubnubCallbacks.CallErrorCallback<T> (message, requestState, 
-                    Helpers.GetTimeOutErrorCode (requestState.RespType), PubnubErrorSeverity.Critical, errorLevel);
+                PubnubCallbacks.FireErrorCallbacksForAllChannels<T> (message, requestState, 
+                    PubnubErrorSeverity.Critical, Helpers.GetTimeOutErrorCode (requestState.RespType), errorLevel);
             } else {
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, {1} response={2}", DateTime.Now.ToString (), requestState.RespType.ToString (), message), LoggingMethod.LevelInfo);
                 #endif
 
-                PubnubCallbacks.CallErrorCallback<T> (message, requestState, 
-                    PubnubErrorCode.None, PubnubErrorSeverity.Critical, errorLevel);
+                PubnubCallbacks.FireErrorCallbacksForAllChannels<T> (message, requestState, 
+                    PubnubErrorSeverity.Critical, PubnubErrorCode.None, errorLevel);
             }
         }
     }

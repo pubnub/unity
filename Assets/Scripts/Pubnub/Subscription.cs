@@ -7,17 +7,19 @@ namespace PubNubMessaging.Core
     {
         public string ChannelOrChannelGroupName {get; set;}
         public bool IsChannelGroup {get; set;}
+        public bool IsPresenceChannel {get; set;}
 
-        public ChannelIdentity(string channelOrChannelGroupName, bool isChannelGroup){
+        public ChannelIdentity(string channelOrChannelGroupName, bool isChannelGroup, bool isPresenceChannel){
             ChannelOrChannelGroupName = channelOrChannelGroupName;
             IsChannelGroup = isChannelGroup;
+            IsPresenceChannel = isPresenceChannel;
         }
     }
 
     public class ChannelParameters
     {
         public bool IsAwaitingConnectCallback {get; set;}
-        public bool IsPresenceChannel {get; set;}
+
         public bool IsSubscribed {get; set;}
         public object Callbacks {get; set;}
         public Dictionary<string, object> UserState {get; set;}
@@ -29,7 +31,6 @@ namespace PubNubMessaging.Core
             UserState = null;
             Callbacks = null;
             TypeParameterType = null;
-            IsPresenceChannel = false;
         }
     }
 
@@ -62,6 +63,9 @@ namespace PubNubMessaging.Core
                         instance.ChannelsAndChannelGroupsAwaitingConnectCallback = new List<ChannelEntity> ();
                         instance.AllPresenceChannelsOrChannelGroups = new List<ChannelEntity> ();
                         instance.AllNonPresenceChannelsOrChannelGroups = new List<ChannelEntity> ();
+                        instance.AllChannels = new List<ChannelEntity> ();
+                        instance.AllChannelGroups = new List<ChannelEntity> ();
+                        instance.AllSubscribedChannelsAndChannelGroups  = new List<ChannelEntity> ();
                     }
                 }
 
@@ -135,13 +139,17 @@ namespace PubNubMessaging.Core
         private SafeDictionary<ChannelIdentity, ChannelParameters> channelEntitiesDictionary = new SafeDictionary<ChannelIdentity, ChannelParameters>();
 
         //public void Add(ChannelIdentity channelID, ChannelParameters channelParam){
-        public void Subscribe(ChannelEntity channelEntity, bool reset){
+        public void Add(ChannelEntity channelEntity, bool reset){
             if (!channelEntitiesDictionary.ContainsKey (channelEntity.ChannelID)) {
+                channelEntity.ChannelParams.IsSubscribed = true;
                 channelEntitiesDictionary.Add (channelEntity.ChannelID, channelEntity.ChannelParams);
+                #if (ENABLE_PUBNUB_LOGGING)
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, channelEntities key add {1} {2}", DateTime.Now.ToString (), 
+                    channelEntity.ChannelID.ChannelOrChannelGroupName, channelEntity.ChannelID.IsChannelGroup), LoggingMethod.LevelInfo);
+                #endif
             } else {
                 channelEntitiesDictionary [channelEntity.ChannelID].Callbacks = channelEntity.ChannelParams.Callbacks;
                 channelEntitiesDictionary [channelEntity.ChannelID].IsAwaitingConnectCallback = channelEntity.ChannelParams.IsAwaitingConnectCallback;
-                channelEntitiesDictionary [channelEntity.ChannelID].IsPresenceChannel = channelEntity.ChannelParams.IsPresenceChannel;
                 channelEntitiesDictionary [channelEntity.ChannelID].IsSubscribed = channelEntity.ChannelParams.IsSubscribed;
                 channelEntitiesDictionary [channelEntity.ChannelID].TypeParameterType = channelEntity.ChannelParams.TypeParameterType;
                 Dictionary<string, object> userState = channelEntitiesDictionary [channelEntity.ChannelID].UserState;
@@ -149,7 +157,8 @@ namespace PubNubMessaging.Core
                     channelEntitiesDictionary [channelEntity.ChannelID].UserState = channelEntity.ChannelParams.UserState;
                 }
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, channelEntities key found {1} {2}", DateTime.Now.ToString (), channelEntity.ChannelID.ChannelOrChannelGroupName, channelEntity.ChannelID.IsChannelGroup), LoggingMethod.LevelInfo);
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, channelEntities key update {1} {2}", DateTime.Now.ToString (), 
+                    channelEntity.ChannelID.ChannelOrChannelGroupName, channelEntity.ChannelID.IsChannelGroup), LoggingMethod.LevelInfo);
                 #endif
             }
             if (reset) {
@@ -157,16 +166,21 @@ namespace PubNubMessaging.Core
             }
         }
 
-        public void Subscribe(List<ChannelEntity> channelEntities){
+        public void Add(List<ChannelEntity> channelEntities){
             foreach (ChannelEntity ce in channelEntities) {
-                Subscribe (ce, false);
+                Add (ce, false);
             }
             ResetChannelsAndChannelGroupsAndBuildState ();
         }
 
         public bool Delete(ChannelEntity channelEntity)
         {
-            bool bDeleted = channelEntitiesDictionary.Remove(channelEntity.ChannelID);
+            ChannelParameters cp;
+            bool bDeleted = channelEntitiesDictionary.Remove(channelEntity.ChannelID, out cp);
+            #if (ENABLE_PUBNUB_LOGGING)
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, channelEntities key found {1} {2}", DateTime.Now.ToString (), 
+                channelEntity.ChannelID.ChannelOrChannelGroupName, bDeleted.ToString()), LoggingMethod.LevelInfo);
+            #endif
 
             ResetChannelsAndChannelGroupsAndBuildState ();
             return bDeleted;
@@ -197,7 +211,7 @@ namespace PubNubMessaging.Core
                     }
                     AllSubscribedChannelsAndChannelGroups.Add (new ChannelEntity (ci.Key, ci.Value));
 
-                    if (ci.Value.IsPresenceChannel) {
+                    if (ci.Key.IsPresenceChannel) {
                         AllPresenceChannelsOrChannelGroups.Add (new ChannelEntity (ci.Key, ci.Value));
                     } else {
                         AllNonPresenceChannelsOrChannelGroups.Add (new ChannelEntity (ci.Key, ci.Value));
@@ -207,6 +221,10 @@ namespace PubNubMessaging.Core
                         ChannelsAndChannelGroupsAwaitingConnectCallback.Add (new ChannelEntity (ci.Key, ci.Value));
                     }
                 }
+                #if (ENABLE_PUBNUB_LOGGING)
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, channelEntities subscription key/val {1} {2}", DateTime.Now.ToString (), 
+                    ci.Key.ChannelOrChannelGroupName, ci.Value.IsSubscribed), LoggingMethod.LevelInfo);
+                #endif
             }
             if(CurrentSubscribedChannelGroupsCount > 0){
                 HasChannelGroups = true;
@@ -256,8 +274,20 @@ namespace PubNubMessaging.Core
                 //int index = channelEntities.IndexOf (ce);
                 //if (index != -1)
                 //channelEntities [index].ChannelParams.IsAwaitingConnectCallback = IsAwaitingConnectCallback;
-                if(channelEntitiesDictionary.ContainsKey(ce.ChannelID))
-                    channelEntitiesDictionary[ce.ChannelID].IsAwaitingConnectCallback = isAwaitingConnectCallback;
+                if (channelEntitiesDictionary.ContainsKey (ce.ChannelID)) {
+                    channelEntitiesDictionary [ce.ChannelID].IsAwaitingConnectCallback = isAwaitingConnectCallback;
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, UpdateIsAwaitingConnectCallbacksOfEntity key/val1 {1} {2}", DateTime.Now.ToString (), 
+                        ce.ChannelID.ChannelOrChannelGroupName, ce.ChannelID.IsChannelGroup.ToString()), LoggingMethod.LevelInfo);
+                    #endif
+                } 
+                #if (ENABLE_PUBNUB_LOGGING)
+                else 
+                {
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, UpdateIsAwaitingConnectCallbacksOfEntity not found key/val1 {1} {2}", DateTime.Now.ToString (), 
+                        ce.ChannelID.ChannelOrChannelGroupName, ce.ChannelID.IsChannelGroup.ToString()), LoggingMethod.LevelInfo);
+                }
+                #endif
                 
             }
 

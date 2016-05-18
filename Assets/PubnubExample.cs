@@ -42,7 +42,15 @@ public class PubnubExample : MonoBehaviour
         PresenceInterval,
         WhereNow,
         GlobalHereNow,
-        ChangeUUID
+        ChangeUUID,
+        AddChannelGroup,
+        RemoveChannelGroup,
+        AddChannelToChannelGroup,
+        ListAllChannelGroups,
+        RemoveChannelFromChannelGroup,
+        GrantCG,
+        RevokeCG,
+        AuditCG
     }
 
     bool ssl = true;
@@ -76,6 +84,7 @@ public class PubnubExample : MonoBehaviour
     bool showAuthWindow = false;
     bool showTextWindow = false;
     bool showActionsPopupWindow = false;
+    bool showCGPopupWindow = false;
     bool showPamPopupWindow = false;
     bool toggle1 = false;
     bool toggle2 = false;
@@ -124,41 +133,53 @@ public class PubnubExample : MonoBehaviour
             pubnubApiResult = "";
         }
 
-        GUI.enabled = allowUserSettingsChange;
-
-        fLeft = fLeftInit + 150;
-        ssl = GUI.Toggle (new Rect (fLeft, fTop, 100, fButtonHeight), ssl, " Enable SSL ");
-
-        fLeft = fLeft + 100;
-        resumeOnReconnect = GUI.Toggle (new Rect (fLeft, fTop, 200, fButtonHeight), resumeOnReconnect, " Resume On Reconnect ");
-
         GUI.enabled = true;
 
-        fTop = fTopInit + 1 * fRowHeight;
-        fLeft = fLeftInit;
-        GUI.Label (new Rect (fLeft, fTop, 90, fHeight), "Channel Name");
-        fLeft = fLeft + 90;
-        channel = GUI.TextField (new Rect (fLeft, fTop, 140, fHeight), channel, 100);
-
-        fLeft = fLeft + 140 + 10; 
+        fLeft = fLeftInit + 150;
         if (GUI.Button (new Rect (fLeft, fTop, 90, fButtonHeight), "Actions")) {
             showPamPopupWindow = false;
+            showCGPopupWindow = false;
             showActionsPopupWindow = !showActionsPopupWindow;
         }
         if (showActionsPopupWindow) {
             ShowActions (fLeft, fTop, fButtonHeight);
         }
 
-        fLeft = fLeft + 90 + 10;
-        if (GUI.Button (new Rect (fLeft, fTop, 90, fButtonHeight), "PAM & More")) {
+        fLeft = fLeft + 100;
+        if (GUI.Button (new Rect (fLeft, fTop, 50, fButtonHeight), "PAM")) {
             showActionsPopupWindow = false;
+            showCGPopupWindow = false;
             showPamPopupWindow = !showPamPopupWindow;
         }
         if (showPamPopupWindow) {
-            ShowPamActions (fLeft + 90, fTop, fButtonHeight);
+            ShowPamActions (fLeft + 50, fTop, fButtonHeight);
         }
 
+        fLeft = fLeft + 60;
+        if (GUI.Button (new Rect (fLeft, fTop, 90, fButtonHeight), "CG & More")) {
+            showActionsPopupWindow = false;
+            showPamPopupWindow = false;
+            showCGPopupWindow = !showCGPopupWindow;
+        }
+        if (showCGPopupWindow) {
+            ShowCGActions (fLeft + 50, fTop, fButtonHeight);
+        }
+
+
+
         GUI.enabled = allowUserSettingsChange;
+
+        fTop = fTopInit + 1 * fRowHeight;
+        fLeft = fLeftInit;
+        /*GUI.Label (new Rect (fLeft, fTop, 60, fHeight), "Channel");
+        fLeft = fLeft + 60;
+        channel = GUI.TextField (new Rect (fLeft, fTop, 100, fHeight), channel, 100);
+
+        fLeft = fLeft + 100 + 10; */
+        ssl = GUI.Toggle (new Rect (fLeft, fTop, 60, fButtonHeight), ssl, " SSL ");
+
+        fLeft = fLeft + 50 + 10;
+        resumeOnReconnect = GUI.Toggle (new Rect (fLeft, fTop, 200, fButtonHeight), resumeOnReconnect, " Resume On Reconnect ");
 
         fTop = fTopInit + 2 * fRowHeight;
         fLeft = fLeftInit;
@@ -290,6 +311,12 @@ public class PubnubExample : MonoBehaviour
             } else if (state == PubnubState.SetUserStateKeyValue) {
                 title = "Set User State using Key-Value pair";
                 textWindowRect = GUI.ModalWindow (0, textWindowRect, DoTextWindow, title);
+            } else if (state == PubnubState.Subscribe) {
+                title = "Subscribe";
+                textWindowRect2 = GUI.ModalWindow (0, textWindowRect2, DoTextWindow, title);
+            } else if (state == PubnubState.Presence) {
+                title = "Presence";
+                textWindowRect2 = GUI.ModalWindow (0, textWindowRect2, DoTextWindow, title);
             }
 
             GUI.backgroundColor = new Color (1, 1, 1, 1);
@@ -309,6 +336,14 @@ public class PubnubExample : MonoBehaviour
         Rect windowRect = new Rect (fLeft - 160, fTop + fButtonHeight, 160, 650);
         GUI.backgroundColor = Color.black;
         windowRect = GUI.Window (0, windowRect, DoPamActionWindow, "");
+        GUI.backgroundColor = new Color (1, 1, 1, 1);
+    }
+
+    void ShowCGActions (float fLeft, float fTop, float fButtonHeight)
+    {
+        Rect windowRect = new Rect (fLeft - 160, fTop + fButtonHeight, 160, 650);
+        GUI.backgroundColor = Color.black;
+        windowRect = GUI.Window (0, windowRect, DoCGActionWindow, "");
         GUI.backgroundColor = new Color (1, 1, 1, 1);
     }
 
@@ -350,6 +385,16 @@ public class PubnubExample : MonoBehaviour
             label2 = "Key";
             label3 = "Value";
             buttonTitle = "Set";
+        } else if (state.Equals(PubnubState.Subscribe)){
+            title = "Subscribe";
+            label1 = "Channel";
+            label2 = "Channel Group";
+            buttonTitle = "Subscribe";
+        } else if (state.Equals(PubnubState.Presence)){
+            title = "Presence";
+            label1 = "Channel";
+            label2 = "Channel Group";
+            buttonTitle = "Presence";
         }
 
         fLeft = fLeftInit;
@@ -385,42 +430,55 @@ public class PubnubExample : MonoBehaviour
         }
         if (GUI.Button (new Rect (fLeft, fTop, 100, fButtonHeight), buttonTitle)) {
             string currentChannel = text1;
+            try{
+                if (state == PubnubState.GetUserState) {
+                    AddToPubnubResultContainer ("Running get user state");
+                    pubnub.GetUserState<string> (text1, text2, DisplayReturnMessage, DisplayErrorMessage);
+                } else if (state == PubnubState.DelUserState) {
+                    AddToPubnubResultContainer ("Running delete user state");
+                    string stateKey = text2;
+                    pubnub.SetUserState<string> (currentChannel, new KeyValuePair<string, object> (stateKey, null), DisplayReturnMessage, DisplayErrorMessage);
 
-            if (state == PubnubState.GetUserState) {
-                AddToPubnubResultContainer ("Running get user state");
-                pubnub.GetUserState<string> (text1, text2, DisplayReturnMessage, DisplayErrorMessage);
-            } else if (state == PubnubState.DelUserState) {
-                AddToPubnubResultContainer ("Running delete user state");
-                string stateKey = text2;
-                pubnub.SetUserState<string> (currentChannel, new KeyValuePair<string, object> (stateKey, null), DisplayReturnMessage, DisplayErrorMessage);
+                } else if (state == PubnubState.SetUserStateJson) {
+                    AddToPubnubResultContainer ("Running Set User State Json");
+                    string currentUuid = text2;
+                    string jsonUserState = "";
 
-            } else if (state == PubnubState.SetUserStateJson) {
-                AddToPubnubResultContainer ("Running Set User State Json");
-                string currentUuid = text2;
-                string jsonUserState = "";
+                    if (string.IsNullOrEmpty (text3)) {
+                        //jsonUserState = pubnub.GetLocalUserState (text1);
+                    } else {
+                        jsonUserState = text3;
+                    }
+                    pubnub.SetUserState<string> (currentChannel, currentUuid, jsonUserState, DisplayReturnMessage, DisplayErrorMessage);
 
-                if (string.IsNullOrEmpty (text3)) {
-                    //jsonUserState = pubnub.GetLocalUserState (text1);
-                } else {
-                    jsonUserState = text3;
+                } else if (state == PubnubState.SetUserStateKeyValue) {
+                    AddToPubnubResultContainer ("Running Set User State Key Value");
+                    int valueInt;
+                    double valueDouble;
+                    string stateKey = text2;
+                    //pubnub.Subscribe<string>(currentChannel, DisplayReturnMessage, DisplayConnectStatusMessage, DisplayErrorMessage);
+
+                    if (Int32.TryParse (text3, out valueInt)) {
+                        pubnub.SetUserState<string> (currentChannel, "", new KeyValuePair<string, object> (stateKey, valueInt), DisplayReturnMessage, DisplayErrorMessage);
+                    } else if (Double.TryParse (text3, out valueDouble)) {
+                        pubnub.SetUserState<string> (currentChannel, "", new KeyValuePair<string, object> (stateKey, valueDouble), DisplayReturnMessage, DisplayErrorMessage);
+                    } else {
+                        string val = text3;
+                        pubnub.SetUserState<string> (currentChannel, "", new KeyValuePair<string, object> (stateKey, val), DisplayReturnMessage, DisplayErrorMessage);
+                    }
+                } else if (state.Equals(PubnubState.Subscribe)){
+                    string channelGroup = text2;
+                    AddToPubnubResultContainer ("Running Subscribe");
+                    pubnub.Subscribe<string> (currentChannel, channelGroup, DisplayReturnMessage, DisplayConnectStatusMessage, DisplayErrorMessage);
+                } else if (state.Equals(PubnubState.Presence)){
+                    string channelGroup = text2;
+                    AddToPubnubResultContainer ("Running Presence");
+                    pubnub.Presence<string> (currentChannel, channelGroup, DisplayReturnMessage, DisplayConnectStatusMessage, DisplayErrorMessage);
                 }
-                pubnub.SetUserState<string> (currentChannel, currentUuid, jsonUserState, DisplayReturnMessage, DisplayErrorMessage);
 
-            } else if (state == PubnubState.SetUserStateKeyValue) {
-                AddToPubnubResultContainer ("Running Set User State Key Value");
-                int valueInt;
-                double valueDouble;
-                string stateKey = text2;
-                //pubnub.Subscribe<string>(currentChannel, DisplayReturnMessage, DisplayConnectStatusMessage, DisplayErrorMessage);
-
-                if (Int32.TryParse (text3, out valueInt)) {
-                    pubnub.SetUserState<string> (currentChannel, "", new KeyValuePair<string, object> (stateKey, valueInt), DisplayReturnMessage, DisplayErrorMessage);
-                } else if (Double.TryParse (text3, out valueDouble)) {
-                    pubnub.SetUserState<string> (currentChannel, "", new KeyValuePair<string, object> (stateKey, valueDouble), DisplayReturnMessage, DisplayErrorMessage);
-                } else {
-                    string val = text3;
-                    pubnub.SetUserState<string> (currentChannel, "", new KeyValuePair<string, object> (stateKey, val), DisplayReturnMessage, DisplayErrorMessage);
-                }
+            }catch (Exception ex){
+                AddToPubnubResultContainer (ex.Message);
+                UnityEngine.Debug.Log (ex.ToString());
             }
 
             text1 = "";
@@ -689,6 +747,132 @@ public class PubnubExample : MonoBehaviour
         GUI.DragWindow (new Rect (0, 0, 800, 400));
     }
 
+    void DoCGActionWindow (int windowID)
+    {
+        fLeft = fLeftInit - 10;
+        fTop = fTopInit + 10;
+        float fButtonWidth = 140;
+
+        if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Add CG")) {
+            InstantiatePubnub ();
+            AsyncOrNonAsyncCall (PubnubState.GrantSubscribe);
+            state = PubnubState.AddChannelGroup;
+            showCGPopupWindow = false;
+            showGrantWindow = true;
+        }
+        fTop = fTopInit + 1 * fRowHeight + 10;
+        if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Add Channel to CG")) {
+            InstantiatePubnub ();
+            AsyncOrNonAsyncCall (PubnubState.AuditSubscribe);
+            showCGPopupWindow = false;
+            showAuthWindow = true;
+            state = PubnubState.AddChannelToChannelGroup;
+        }
+
+        fTop = fTopInit + 2 * fRowHeight + 10;
+        if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Remove Channel from CG")) {
+            InstantiatePubnub ();
+            AsyncOrNonAsyncCall (PubnubState.RevokeSubscribe);
+            showCGPopupWindow = false;
+            showAuthWindow = true;
+            state = PubnubState.RemoveChannelFromChannelGroup;
+        }
+
+        fTop = fTopInit + 3 * fRowHeight + 10;
+        if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Remove CG")) {
+            InstantiatePubnub ();
+            AsyncOrNonAsyncCall (PubnubState.GrantPresence);
+            state = PubnubState.RemoveChannelGroup;
+            showCGPopupWindow = false;
+            showGrantWindow = true;
+        }
+
+        fTop = fTopInit + 4 * fRowHeight + 10;
+        if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "List CG")) {
+            InstantiatePubnub ();
+            AsyncOrNonAsyncCall (PubnubState.ListAllChannelGroups);
+            showPamPopupWindow = false;
+            showAuthWindow = true;
+            state = PubnubState.ListAllChannelGroups;
+        }
+
+        fTop = fTopInit + 5 * fRowHeight + 10;
+        if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Auth Key")) {
+            InstantiatePubnub ();
+            AsyncOrNonAsyncCall (PubnubState.AuthKey);
+            showAuthWindow = true;
+            showCGPopupWindow = false;
+            state = PubnubState.AuthKey;
+        }
+        fTop = fTopInit + 6 * fRowHeight + 10;
+        if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Add/Edit User State")) {
+            InstantiatePubnub ();
+            AsyncOrNonAsyncCall (PubnubState.SetUserStateKeyValue);
+            showCGPopupWindow = false;
+            state = PubnubState.SetUserStateKeyValue;
+            showTextWindow = true;
+        }
+        /*fTop = fTopInit + 8 * fRowHeight + 10;
+                if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "View Local State")) {
+                        InstantiatePubnub ();
+                        AsyncOrNonAsyncCall (PubnubState.ViewLocalUserState);
+                        showActionsPopupWindow = false;
+                }*/
+        fTop = fTopInit + 7 * fRowHeight + 10;
+        if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Del User State")) {
+            InstantiatePubnub ();
+            AsyncOrNonAsyncCall (PubnubState.DelUserState);
+            showCGPopupWindow = false;
+            state = PubnubState.DelUserState;
+            showTextWindow = true;
+        }
+        fTop = fTopInit + 8 * fRowHeight + 10;
+        if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Set User State")) {
+            InstantiatePubnub ();
+            AsyncOrNonAsyncCall (PubnubState.SetUserStateJson);
+            showCGPopupWindow = false;
+            state = PubnubState.SetUserStateJson;
+            showTextWindow = true;
+        }
+        fTop = fTopInit + 9 * fRowHeight + 10;
+        if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Get User State")) {
+            InstantiatePubnub ();
+            AsyncOrNonAsyncCall (PubnubState.GetUserState);
+            showCGPopupWindow = false;
+            state = PubnubState.GetUserState;
+            showTextWindow = true;
+        }
+        fTop = fTopInit + 10 * fRowHeight + 10;
+        if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Presence Heartbeat")) {
+            InstantiatePubnub ();
+            AsyncOrNonAsyncCall (PubnubState.PresenceHeartbeat);
+            state = PubnubState.PresenceHeartbeat;
+            showAuthWindow = true;
+            showCGPopupWindow = false;
+        }
+        fTop = fTopInit + 11 * fRowHeight + 10;
+        if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Presence Interval")) {
+            InstantiatePubnub ();
+            AsyncOrNonAsyncCall (PubnubState.PresenceInterval);
+            state = PubnubState.PresenceInterval;
+            showAuthWindow = true;
+            showCGPopupWindow = false;
+        }
+        /*fTop = fTopInit + 13 * fRowHeight + 10;
+        if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Publish Tests")) {
+            InstantiatePubnub ();
+            pubnub.Publish<string> (channel, 1, storeInHistory, DisplayReturnMessage, DisplayErrorMessage);
+            pubnub.Publish<string> (channel, 1.2f, storeInHistory, DisplayReturnMessage, DisplayErrorMessage);
+            pubnub.Publish<string> (channel, 14248827499560123, storeInHistory, DisplayReturnMessage, DisplayErrorMessage);
+        }*/
+        fTop = fTopInit + 12 * fRowHeight + 10;
+        if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "DH Tests")) {
+            InstantiatePubnub ();
+            string[] chArr = {"hello_world", "hello_world2", "hello_world3"};
+            RunDetailedHistoryForMultipleChannels(chArr, 0);
+        }
+    }
+
     void DoPamActionWindow (int windowID)
     {
         fLeft = fLeftInit - 10;
@@ -748,19 +932,19 @@ public class PubnubExample : MonoBehaviour
         }
 
         fTop = fTopInit + 6 * fRowHeight + 10;
-        if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Auth Key")) {
+        if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Grant CG")) {
             InstantiatePubnub ();
             AsyncOrNonAsyncCall (PubnubState.AuthKey);
             showAuthWindow = true;
             showPamPopupWindow = false;
-            state = PubnubState.AuthKey;
+            state = PubnubState.GrantCG;
         }
         fTop = fTopInit + 7 * fRowHeight + 10;
-        if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Add/Edit User State")) {
+        if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Audit CG")) {
             InstantiatePubnub ();
             AsyncOrNonAsyncCall (PubnubState.SetUserStateKeyValue);
             showActionsPopupWindow = false;
-            state = PubnubState.SetUserStateKeyValue;
+            state = PubnubState.AuditCG;
             showTextWindow = true;
         }
         /*fTop = fTopInit + 8 * fRowHeight + 10;
@@ -770,14 +954,14 @@ public class PubnubExample : MonoBehaviour
                         showActionsPopupWindow = false;
                 }*/
         fTop = fTopInit + 8 * fRowHeight + 10;
-        if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Del User State")) {
+        if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Revoke CG")) {
             InstantiatePubnub ();
             AsyncOrNonAsyncCall (PubnubState.DelUserState);
             showActionsPopupWindow = false;
-            state = PubnubState.DelUserState;
+            state = PubnubState.RevokeCG;
             showTextWindow = true;
         }
-        fTop = fTopInit + 9 * fRowHeight + 10;
+        /*fTop = fTopInit + 9 * fRowHeight + 10;
         if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Set User State")) {
             InstantiatePubnub ();
             AsyncOrNonAsyncCall (PubnubState.SetUserStateJson);
@@ -816,12 +1000,12 @@ public class PubnubExample : MonoBehaviour
             pubnub.Publish<string> (channel, 1.2f, storeInHistory, DisplayReturnMessage, DisplayErrorMessage);
             pubnub.Publish<string> (channel, 14248827499560123, storeInHistory, DisplayReturnMessage, DisplayErrorMessage);
         }*/
-        fTop = fTopInit + 13 * fRowHeight + 10;
+        /*fTop = fTopInit + 13 * fRowHeight + 10;
         if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "DH Tests")) {
             InstantiatePubnub ();
             string[] chArr = {"hello_world", "hello_world2", "hello_world3"};
             RunDetailedHistoryForMultipleChannels(chArr, 0);
-        }
+        }*/
     }
 
     void RunDetailedHistoryForMultipleChannels(string[] chArr, int pos){
@@ -851,15 +1035,18 @@ public class PubnubExample : MonoBehaviour
         fTop = fTopInit + 1 * fRowHeight + 10;
         if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Presence")) {
             InstantiatePubnub ();
-            AsyncOrNonAsyncCall (PubnubState.Presence);
+            state = PubnubState.Presence;
+            DoAction (PubnubState.Presence);
+            showTextWindow = true;
             showActionsPopupWindow = false;
         }
 
         fTop = fTopInit + 2 * fRowHeight + 10;
         if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Subscribe")) {
             InstantiatePubnub ();
+            state = PubnubState.Subscribe;
             DoAction (PubnubState.Subscribe);
-
+            showTextWindow = true;
             //pubnub.Subscribe<string> (channel, DisplayReturnMessage, DisplayConnectStatusMessage, DisplayErrorMessage);
 
             showActionsPopupWindow = false;
@@ -1004,14 +1191,11 @@ public class PubnubExample : MonoBehaviour
     {
         try {
             if ((PubnubState)pubnubState == PubnubState.Presence) {
-                AddToPubnubResultContainer ("Running Presence");
                 allowUserSettingsChange = false;
-                pubnub.Presence<string> (channel, DisplayReturnMessage, DisplayConnectStatusMessage, DisplayErrorMessage);
             } else if ((PubnubState)pubnubState == PubnubState.Subscribe) {
-                AddToPubnubResultContainer ("Running Subscribe");
                 allowUserSettingsChange = false;
                 //pubnub.Subscribe<string> (channel, DisplayReturnMessageObj, DisplayConnectStatusMessageObj, DisplayErrorMessage);
-                pubnub.Subscribe<string> (channel, DisplayReturnMessage, DisplayConnectStatusMessage, DisplayErrorMessage);
+                //pubnub.Subscribe<string> (channel, DisplayReturnMessage, DisplayConnectStatusMessage, DisplayErrorMessage);
             } else if ((PubnubState)pubnubState == PubnubState.DetailedHistory) {
                 AddToPubnubResultContainer ("Running Detailed History");
                 allowUserSettingsChange = false;

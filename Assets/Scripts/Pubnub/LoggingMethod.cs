@@ -114,6 +114,15 @@ namespace PubNubMessaging.Core
         public PubnubClientError (int statusCode, PubnubErrorSeverity errorSeverity, bool isDotNetException, string message, 
             Exception detailedDotNetException, PubnubMessageSource source, PubnubWebRequest pubnubWebRequest, 
             PubnubWebResponse pubnubWebResponse, string description, List<ChannelEntity> channelEntitles)
+            :this(statusCode, errorSeverity, isDotNetException, message, detailedDotNetException, source, pubnubWebRequest,
+                pubnubWebResponse, description, Helpers.GetNamesFromChannelEntities(channelEntitles, false),
+                Helpers.GetNamesFromChannelEntities(channelEntitles, true))
+        {
+        }
+
+        public PubnubClientError (int statusCode, PubnubErrorSeverity errorSeverity, bool isDotNetException, string message, 
+            Exception detailedDotNetException, PubnubMessageSource source, PubnubWebRequest pubnubWebRequest, 
+            PubnubWebResponse pubnubWebResponse, string description, string channels, string channelGroups)
         {
             _dateTimeGMT = DateTime.Now.ToUniversalTime ();
             _statusCode = statusCode;
@@ -121,8 +130,8 @@ namespace PubNubMessaging.Core
             _message = message;
             _errorSeverity = errorSeverity;
             _messageSource = source;
-            _channel = Helpers.GetNamesFromChannelEntities(channelEntitles, false);
-            _channelGroup = Helpers.GetNamesFromChannelEntities(channelEntitles, true);
+            _channel = channels;
+            _channelGroup = channelGroups;
             _detailedDotNetException = detailedDotNetException;
             _pubnubWebRequest = pubnubWebRequest;
             _pubnubWebResponse = pubnubWebResponse;
@@ -132,7 +141,15 @@ namespace PubNubMessaging.Core
         public PubnubClientError (int statusCode, PubnubErrorSeverity errorSeverity, string message, 
             PubnubMessageSource source, PubnubWebRequest pubnubWebRequest, PubnubWebResponse pubnubWebResponse, string description, 
             List<ChannelEntity> channelEntitles)
-            : this (statusCode,errorSeverity, false, message, null, source,pubnubWebRequest, pubnubWebResponse, description, channelEntitles) 
+            : this (statusCode, errorSeverity, false, message, null, source, pubnubWebRequest, pubnubWebResponse, description, channelEntitles) 
+        {
+        }
+
+        public PubnubClientError (int statusCode, PubnubErrorSeverity errorSeverity, string message, 
+            PubnubMessageSource source, PubnubWebRequest pubnubWebRequest, PubnubWebResponse pubnubWebResponse, string description, 
+            string channels, string channelGroups)
+            : this (statusCode, errorSeverity, false, message, null, source, pubnubWebRequest, pubnubWebResponse, description
+                , channels, channelGroups) 
         {
         }
 
