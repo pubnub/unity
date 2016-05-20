@@ -48,31 +48,45 @@ namespace PubNubMessaging.Core
                 || ((PubnubUnity.Version.Contains("UnityWeb")) && (cea.Message.Contains ("Failed downloading")))) {
                 PubnubClientError error = new PubnubClientError (403, PubnubErrorSeverity.Critical, cea.Message, PubnubMessageSource.Server, 
                     requestState.Request, requestState.Response, cea.Message, requestState.ChannelEntities);
-                PubnubCallbacks.GoToCallback (error, requestState.ErrorCallback, jsonPluggableLibrary);
+                PubnubCallbacks.CallErrorCallback<T> (requestState.ErrorCallback, requestState.ChannelEntities,
+                    error, errorLevel);
+                
             } else if (cea.Message.Contains ("500")) {
                 PubnubClientError error = new PubnubClientError (500, PubnubErrorSeverity.Critical, cea.Message, PubnubMessageSource.Server, 
                     requestState.Request, requestState.Response, cea.Message, requestState.ChannelEntities);
-                PubnubCallbacks.GoToCallback (error, requestState.ErrorCallback, jsonPluggableLibrary);
+                PubnubCallbacks.CallErrorCallback<T> (requestState.ErrorCallback, requestState.ChannelEntities,
+                    error, errorLevel);
+                
             } else if (cea.Message.Contains ("502")) {
                 PubnubClientError error = new PubnubClientError (503, PubnubErrorSeverity.Critical, cea.Message, PubnubMessageSource.Server, 
                     requestState.Request, requestState.Response, cea.Message, requestState.ChannelEntities);
-                PubnubCallbacks.GoToCallback (error, requestState.ErrorCallback, jsonPluggableLibrary);
+                PubnubCallbacks.CallErrorCallback<T>(requestState.ErrorCallback, requestState.ChannelEntities,
+                    error, errorLevel);
+                
             } else if (cea.Message.Contains ("503")) {
                 PubnubClientError error = new PubnubClientError (503, PubnubErrorSeverity.Critical, cea.Message, PubnubMessageSource.Server, 
                     requestState.Request, requestState.Response, cea.Message, requestState.ChannelEntities);
-                PubnubCallbacks.GoToCallback (error, requestState.ErrorCallback, jsonPluggableLibrary);
+                PubnubCallbacks.CallErrorCallback<T> (requestState.ErrorCallback, requestState.ChannelEntities,
+                    error, errorLevel);
+                
             } else if (cea.Message.Contains ("504")) {
                 PubnubClientError error = new PubnubClientError (504, PubnubErrorSeverity.Critical, cea.Message, PubnubMessageSource.Server, 
                     requestState.Request, requestState.Response, cea.Message, requestState.ChannelEntities);
-                PubnubCallbacks.GoToCallback (error, requestState.ErrorCallback, jsonPluggableLibrary);
+                PubnubCallbacks.CallErrorCallback<T> (requestState.ErrorCallback, requestState.ChannelEntities,
+                    error, errorLevel);
+                
             } else if (cea.Message.Contains ("414")) {
                 PubnubClientError error = new PubnubClientError (414, PubnubErrorSeverity.Critical, cea.Message, PubnubMessageSource.Server, 
                     requestState.Request, requestState.Response, cea.Message, requestState.ChannelEntities);
-                PubnubCallbacks.GoToCallback (error, requestState.ErrorCallback, jsonPluggableLibrary);
+                PubnubCallbacks.CallErrorCallback<T> (requestState.ErrorCallback, requestState.ChannelEntities,
+                    error, errorLevel);
+                
             } else {
                 PubnubClientError error = new PubnubClientError (400, PubnubErrorSeverity.Critical, cea.Message, PubnubMessageSource.Server, 
                     requestState.Request, requestState.Response, cea.Message, requestState.ChannelEntities);
-                PubnubCallbacks.GoToCallback (error, requestState.ErrorCallback, jsonPluggableLibrary);
+                PubnubCallbacks.CallErrorCallback<T> (requestState.ErrorCallback, requestState.ChannelEntities,
+                    error, errorLevel);
+                    
             }
             ProcessResponseCallbackWebExceptionHandler<T> (webEx, requestState, errorLevel);
         }

@@ -1,4 +1,4 @@
-//Build Date: Mar 24, 2016
+//Build Date: May 24, 2016
 //ver3.7/Unity5
 using System;
 using UnityEngine;
@@ -67,7 +67,7 @@ namespace PubNubMessaging.Core
         private bool enableJsonEncodingForPublish = true;
         private LoggingMethod.Level pubnubLogLevel = LoggingMethod.Level.Info;
         private PubnubErrorFilter.Level errorLevel = PubnubErrorFilter.Level.Info;
-
+        bool resetTimetoken = false;
         //store compiled user state 
         private string CompiledUserState = "";
         /// channelcallbacks to be merged
@@ -625,13 +625,14 @@ namespace PubNubMessaging.Core
 
         #region "Unsubscribe Presence And Subscribe"
 
-            public void PresenceUnsubscribe<T> (string channel, string channelGroup, Action<T> userCallback, Action<T> connectCallback, Action<T> disconnectCallback, 
+        public void PresenceUnsubscribe<T> (string channel, string channelGroup, Action<T> userCallback, Action<T> connectCallback, Action<T> disconnectCallback, 
             Action<PubnubClientError> errorCallback)
         {
             #if (ENABLE_PUBNUB_LOGGING)
             LoggingMethod.WriteToLog (string.Format ("DateTime {0}, requested presence-unsubscribe for channel(s)={1}", DateTime.Now.ToString (), channel), LoggingMethod.LevelInfo);
             #endif
-            MultiChannelUnSubscribeInit<T> (ResponseType.PresenceUnsubscribe, channel, channelGroup, userCallback, connectCallback, disconnectCallback, errorCallback);
+            MultiChannelUnsubscribeInit<T> (ResponseType.PresenceUnsubscribe, channel, channelGroup, userCallback, 
+                connectCallback, disconnectCallback, errorCallback);
         }
 
         /// <summary>
@@ -649,7 +650,8 @@ namespace PubNubMessaging.Core
             #if (ENABLE_PUBNUB_LOGGING)
             LoggingMethod.WriteToLog (string.Format ("DateTime {0}, requested unsubscribe for channel(s)={1}", DateTime.Now.ToString (), channel), LoggingMethod.LevelInfo);
             #endif
-            MultiChannelUnSubscribeInit<T> (ResponseType.Unsubscribe, channel, channelGroup, userCallback, connectCallback, disconnectCallback, errorCallback);
+            MultiChannelUnsubscribeInit<T> (ResponseType.Unsubscribe, channel, channelGroup, userCallback, 
+                connectCallback, disconnectCallback, errorCallback);
 
         }
 
@@ -1418,7 +1420,8 @@ namespace PubNubMessaging.Core
             string jsonString = cea.Message;
             if (overrideTcpKeepAlive) {
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Aborting previous subscribe/presence requests having channel(s) UrlProcessResponseCallbackNonAsync", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Aborting previous subscribe/presence requests having channel(s) UrlProcessResponseCallbackNonAsync", 
+                    DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
                 #endif
                 coroutine.BounceRequest<T> (CurrentRequestType.Subscribe, requestState, false);
             }
@@ -1491,7 +1494,7 @@ namespace PubNubMessaging.Core
                     DateTime.Now.ToString (), channels, channelGroups), LoggingMethod.LevelInfo);
                 #endif
 
-                MultiChannelUnSubscribeInit<T> (ResponseType.Unsubscribe, channels, channelGroups, null, null, null, null);
+                MultiChannelUnsubscribeInit<T> (ResponseType.Unsubscribe, channels, channelGroups, null, null, null, null);
 
                 Helpers.CheckSubscribedChannelsAndSendCallbacks<T> (Subscription.Instance.AllSubscribedChannelsAndChannelGroups, 
                     type, NetworkCheckMaxRetries, PubnubErrorLevel);
@@ -1713,7 +1716,7 @@ namespace PubNubMessaging.Core
             }
         }
 
-        private void MultiChannelUnSubscribeInit<T> (ResponseType respType, string channel, string channelGroups, Action<T> userCallback, 
+        private void MultiChannelUnsubscribeInit<T> (ResponseType respType, string channel, string channelGroups, Action<T> userCallback, 
             Action<T> connectCallback, Action<T> disconnectCallback, Action<PubnubClientError> errorCallback)
         {
             string[] rawChannels = channel.Split (',');
@@ -1722,7 +1725,7 @@ namespace PubNubMessaging.Core
 
             List<ChannelEntity> newChannelEntities;
             bool channelsOrChannelGroupsAdded = Helpers.RemoveDuplicatesCheckAlreadySubscribedAndGetChannels<T>(respType, userCallback, connectCallback,
-                errorCallback, null, disconnectCallback, rawChannels, rawChannelGroups, PubnubErrorLevel, false, out newChannelEntities);
+                errorCallback, null, disconnectCallback, rawChannels, rawChannelGroups, PubnubErrorLevel, true, out newChannelEntities);
             
             if (newChannelEntities.Count > 0) {
                 //Retrieve the current channels already subscribed previously and terminate them
@@ -1767,6 +1770,7 @@ namespace PubNubMessaging.Core
                 errorCallback, wildcardPresenceCallback, null, rawChannels, rawChannelGroups, PubnubErrorLevel, false, out newChannelEntities);
 
             if (channelsOrChannelGroupsAdded && internetStatus) {
+                resetTimetoken = true;
                 Subscription.Instance.Add (newChannelEntities);
 
                 #if (ENABLE_PUBNUB_LOGGING)
@@ -1828,10 +1832,11 @@ namespace PubNubMessaging.Core
             LoggingMethod.WriteToLog(string.Format("DateTime {0}, sentTimetoken={1}", DateTime.Now.ToString(), sentTimetoken), LoggingMethod.LevelInfo);
             LoggingMethod.WriteToLog(string.Format("DateTime {0}, lastSubscribeTimetoken={1}", DateTime.Now.ToString(), lastSubscribeTimetoken), LoggingMethod.LevelInfo);
             #endif
-            if (uuidChanged)
+            if (resetTimetoken || uuidChanged)
             {
                 lastTimetoken = 0;
                 uuidChanged = false;
+                resetTimetoken = false;
             }
             else
             {

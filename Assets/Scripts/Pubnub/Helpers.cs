@@ -67,15 +67,21 @@ namespace PubNubMessaging.Core
             if (channelEntities != null) {
                 int count = 0;
                 foreach (ChannelEntity c in channelEntities) {
-                    if (count > 0) {
-                        sb.Append (",");
-                    }
                     if (isChannelGroup && c.ChannelID.IsChannelGroup) {
+                        if (count > 0) {
+                            sb.Append (",");
+                        }
+
                         sb.Append (c.ChannelID.ChannelOrChannelGroupName);
+                        count++;
                     } else if (!isChannelGroup && !c.ChannelID.IsChannelGroup) {
+                        if (count > 0) {
+                            sb.Append (",");
+                        }
+
                         sb.Append (c.ChannelID.ChannelOrChannelGroupName);
+                        count++;
                     }
-                    count++;
                 }
             }
             return sb.ToString();
@@ -277,27 +283,23 @@ namespace PubNubMessaging.Core
                 #endif
 
                 if (channelName.Length > 0) {
-                    if (type == ResponseType.Presence) {
+                    if ((type == ResponseType.Presence) || (type == ResponseType.PresenceUnsubscribe)) {
                         channelName = string.Format ("{0}{1}", channelName, Utility.PresenceChannelSuffix);
                     }
+
                     #if (ENABLE_PUBNUB_LOGGING)
                     Helpers.LogChannelEntitiesDictionary();
                     LoggingMethod.WriteToLog (string.Format ("DateTime {0}, channel={1}", DateTime.Now.ToString (), channelName), LoggingMethod.LevelInfo);
                     #endif
+
                     //create channelEntity
                     ChannelEntity ce = Helpers.CreateChannelEntity (channelName, true, isChannelGroup, null, 
                         userCallback, connectCallback, errorCallback, disconnectCallback, wildcardPresenceCallback);
 
-                    if (Subscription.Instance.ChannelEntitiesDictionary.ContainsKey (ce.ChannelID)) {
-                        if (!unsubscribeCheck) {
-                            string message = string.Format ("{0}Already subscribed", (ce.ChannelID.IsPresenceChannel)? "Presence " : "");
-                            PubnubErrorCode errorType = (ce.ChannelID.IsPresenceChannel) ? PubnubErrorCode.AlreadyPresenceSubscribed : PubnubErrorCode.AlreadySubscribed;
-                            PubnubCallbacks.CallErrorCallback<T> (ce, message,
-                                errorType, PubnubErrorSeverity.Info, errorLevel);
-                            #if (ENABLE_PUBNUB_LOGGING)
-                            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, channel={1} response={2}", DateTime.Now.ToString (), channelName, message), LoggingMethod.LevelInfo);
-                            #endif
-                        } else {
+                    bool channelIsSubscribed = Subscription.Instance.ChannelEntitiesDictionary.ContainsKey (ce.ChannelID);
+
+                    if (unsubscribeCheck) {
+                        if (!channelIsSubscribed) {
                             string message = string.Format ("{0}Channel Not Subscribed", (ce.ChannelID.IsPresenceChannel) ? "Presence " : "");
                             PubnubErrorCode errorType = (ce.ChannelID.IsPresenceChannel) ? PubnubErrorCode.NotPresenceSubscribed : PubnubErrorCode.NotSubscribed;
                             #if (ENABLE_PUBNUB_LOGGING)
@@ -305,10 +307,23 @@ namespace PubNubMessaging.Core
                             #endif
                             PubnubCallbacks.CallErrorCallback<T> (ce, message,
                                 errorType, PubnubErrorSeverity.Info, errorLevel);
+                        } else {
+                            channelEntities.Add (ce);
+                            bReturn = true;
                         }
                     } else {
-                        channelEntities.Add (ce);
-                        bReturn = true;
+                        if (channelIsSubscribed) {
+                            string message = string.Format ("{0}Already subscribed", (ce.ChannelID.IsPresenceChannel) ? "Presence " : "");
+                            PubnubErrorCode errorType = (ce.ChannelID.IsPresenceChannel) ? PubnubErrorCode.AlreadyPresenceSubscribed : PubnubErrorCode.AlreadySubscribed;
+                            PubnubCallbacks.CallErrorCallback<T> (ce, message,
+                                errorType, PubnubErrorSeverity.Info, errorLevel);
+                            #if (ENABLE_PUBNUB_LOGGING)
+                            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, channel={1} response={2}", DateTime.Now.ToString (), channelName, message), LoggingMethod.LevelInfo);
+                            #endif
+                        } else {
+                            channelEntities.Add (ce);
+                            bReturn = true;
+                        }
                     }
                 } else {
                     string message = "Invalid Channel Name";
@@ -334,6 +349,9 @@ namespace PubNubMessaging.Core
         {
             bool bReturn = false;
             if (channelsOrChannelGroups.Length > 0) {
+                
+                channelsOrChannelGroups = channelsOrChannelGroups.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+
                 if (channelsOrChannelGroups.Length != channelsOrChannelGroups.Distinct ().Count ()) {
                     channelsOrChannelGroups = channelsOrChannelGroups.Distinct ().ToArray ();
                     #if (ENABLE_PUBNUB_LOGGING)
@@ -361,7 +379,7 @@ namespace PubNubMessaging.Core
                 #endif
 
                 bReturn = CreateChannelEntityAndAddToSubscribe<T> (type, channelsOrChannelGroups, isChannelGroup, 
-                    userCallback, connectCallback, errorCallback, wildcardPresenceCallback, disconnectCallback, errorLevel, false, ref channelEntities);
+                    userCallback, connectCallback, errorCallback, wildcardPresenceCallback, disconnectCallback, errorLevel, unsubscribeCheck, ref channelEntities);
             } else {
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, channelsOrChannelGroups len <=0", 
@@ -875,7 +893,18 @@ namespace PubNubMessaging.Core
             //Check callback exists and make sure previous timetoken = 0
             if (asynchRequestState.ChannelEntities != null) {
                 foreach (ChannelEntity channelEntity in asynchRequestState.ChannelEntities) {
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ResponseToConnectCallback {1}", 
+                        DateTime.Now.ToString (), channelEntity.ChannelID.ChannelOrChannelGroupName), LoggingMethod.LevelInfo);
+                    #endif
+
+
                     if (channelEntity.ChannelParams.IsAwaitingConnectCallback) {
+                        #if (ENABLE_PUBNUB_LOGGING)
+                        LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ResponseToConnectCallback IsAwaitingConnectCallback {1}", 
+                            DateTime.Now.ToString (), channelEntity.ChannelID.ChannelOrChannelGroupName), LoggingMethod.LevelInfo);
+                        #endif
+
                         switch (asynchRequestState.RespType) {
                         case ResponseType.Subscribe:
                             var connectResult = Helpers.CreateJsonResponse ("Connected", channelEntity.ChannelID.ChannelOrChannelGroupName, jsonPluggableLibrary);

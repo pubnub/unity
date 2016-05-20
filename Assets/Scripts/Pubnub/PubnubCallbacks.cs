@@ -299,12 +299,7 @@ namespace PubNubMessaging.Core
             PubnubErrorFilter.Level errorLevel){
 
             PubnubClientError clientError = Helpers.CreatePubnubClientError<T> (ex, null, channelEntities, errorCode, severity);
-            foreach (ChannelEntity ce in channelEntities) {
-                PubnubChannelCallback<T> channelCallback = ce.ChannelParams.Callbacks as PubnubChannelCallback<T>;
-                if (channelCallback != null) {
-                    GoToCallback (clientError, channelCallback.ErrorCallback, errorLevel);
-                }
-            }
+            CallCallbackForEachChannelEntity<T> (channelEntities, clientError, errorLevel);
         }
 
         /*internal static void CallErrorCallback<T>(string message, 
@@ -346,6 +341,32 @@ namespace PubNubMessaging.Core
             }
 
         }
+
+        internal static void CallCallbackForEachChannelEntity<T> (List<ChannelEntity> channelEntities, PubnubClientError clientError, 
+            PubnubErrorFilter.Level errorLevel){
+            foreach (ChannelEntity ce in channelEntities) {
+                PubnubChannelCallback<T> channelCallback = ce.ChannelParams.Callbacks as PubnubChannelCallback<T>;
+                if (channelCallback != null) {
+                    GoToCallback (clientError, channelCallback.ErrorCallback, errorLevel);
+                }
+            }
+        }
+
+        internal static void CallErrorCallback<T>(Action<PubnubClientError> errorCallback, List<ChannelEntity> channelEntities,
+            PubnubClientError clientError, PubnubErrorFilter.Level errorLevel)
+        {
+            if (channelEntities != null) {
+                CallCallbackForEachChannelEntity<T> (channelEntities, clientError, errorLevel);
+            } else if (errorCallback != null) {
+                GoToCallback (clientError, errorCallback, errorLevel);
+            } else {
+                #if (ENABLE_PUBNUB_LOGGING)
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CallErrorCallback errorCallback null, clientError = {1} ", 
+                    DateTime.Now.ToString (), clientError.ToString ()), LoggingMethod.LevelWarning);        
+                #endif
+            }
+        }
+
 
         /*internal static void CallErrorCallback<T>(List<ChannelEntity> channelEntities, string message,
             PubnubErrorCode errorCode, PubnubErrorSeverity severity,

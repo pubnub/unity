@@ -317,6 +317,12 @@ public class PubnubExample : MonoBehaviour
             } else if (state == PubnubState.Presence) {
                 title = "Presence";
                 textWindowRect2 = GUI.ModalWindow (0, textWindowRect2, DoTextWindow, title);
+            } else if (state == PubnubState.Unsubscribe) {
+                title = "Unsubscribe";
+                textWindowRect2 = GUI.ModalWindow (0, textWindowRect2, DoTextWindow, title);
+            } else if (state == PubnubState.PresenceUnsubscribe) {
+                title = "PresenceUnsubscribe";
+                textWindowRect2 = GUI.ModalWindow (0, textWindowRect2, DoTextWindow, title);
             }
 
             GUI.backgroundColor = new Color (1, 1, 1, 1);
@@ -395,6 +401,16 @@ public class PubnubExample : MonoBehaviour
             label1 = "Channel";
             label2 = "Channel Group";
             buttonTitle = "Presence";
+        } else if (state.Equals(PubnubState.Unsubscribe)){
+            title = "SubscribeUnsubscribe";
+            label1 = "Channel";
+            label2 = "Channel Group";
+            buttonTitle = "Unsubscribe";
+        } else if (state.Equals(PubnubState.PresenceUnsubscribe)){
+            title = "PresenceUnsubscribe";
+            label1 = "Channel";
+            label2 = "Channel Group";
+            buttonTitle = "PresenceUnsubscribe";
         }
 
         fLeft = fLeftInit;
@@ -474,6 +490,16 @@ public class PubnubExample : MonoBehaviour
                     string channelGroup = text2;
                     AddToPubnubResultContainer ("Running Presence");
                     pubnub.Presence<string> (currentChannel, channelGroup, DisplayReturnMessage, DisplayConnectStatusMessage, DisplayErrorMessage);
+                } else if (state.Equals(PubnubState.Unsubscribe)){
+                    string channelGroup = text2;
+                    AddToPubnubResultContainer ("Running Unsubscribe");
+                    pubnub.Unsubscribe<string> (currentChannel, channelGroup, DisplayDisconnectReturnMessage, DisplayConnectStatusMessage, DisplayDisconnectStatusMessage, DisplayErrorMessage);
+                } else if (state.Equals(PubnubState.PresenceUnsubscribe)){
+                    string channelGroup = text2;
+                    AddToPubnubResultContainer ("Running PresenceUnsubscribe");
+
+                    pubnub.PresenceUnsubscribe<string> (currentChannel, channelGroup, DisplayReturnMessage, DisplayConnectStatusMessage, DisplayDisconnectStatusMessage, DisplayErrorMessage);
+
                 }
 
             }catch (Exception ex){
@@ -1071,14 +1097,18 @@ public class PubnubExample : MonoBehaviour
         fTop = fTopInit + 5 * fRowHeight + 10;
         if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Unsubscribe")) {
             InstantiatePubnub ();
-            AsyncOrNonAsyncCall (PubnubState.Unsubscribe);
+            state = PubnubState.Unsubscribe;
+            DoAction (PubnubState.Unsubscribe);
+            showTextWindow = true;
             showActionsPopupWindow = false;
         }
 
         fTop = fTopInit + 6 * fRowHeight + 10;
         if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Presence-Unsub")) {
             InstantiatePubnub ();
-            AsyncOrNonAsyncCall (PubnubState.PresenceUnsubscribe);
+            state = PubnubState.PresenceUnsubscribe;
+            DoAction (PubnubState.PresenceUnsubscribe);
+            showTextWindow = true;
             showActionsPopupWindow = false;
         }
 
@@ -1207,13 +1237,10 @@ public class PubnubExample : MonoBehaviour
                 allowUserSettingsChange = false;
                 pubnub.Time<string> (DisplayReturnMessage, DisplayErrorMessage);
             } else if ((PubnubState)pubnubState == PubnubState.Unsubscribe) {
-                AddToPubnubResultContainer ("Running Unsubscribe");
+                
                 allowUserSettingsChange = false;
-                pubnub.Unsubscribe<string> (channel, DisplayDisconnectReturnMessage, DisplayConnectStatusMessage, DisplayDisconnectStatusMessage, DisplayErrorMessage);
             } else if ((PubnubState)pubnubState == PubnubState.PresenceUnsubscribe) {
-                AddToPubnubResultContainer ("Running Presence Unsubscribe");
                 allowUserSettingsChange = false;
-                pubnub.PresenceUnsubscribe<string> (channel, DisplayReturnMessage, DisplayConnectStatusMessage, DisplayDisconnectStatusMessage, DisplayErrorMessage);
             /*} else if ((PubnubState)pubnubState == PubnubState.EnableNetwork) {
                 AddToPubnubResultContainer ("Running Enable Network");
                 pubnub.DisableSimulateNetworkFailForTestingOnly ();

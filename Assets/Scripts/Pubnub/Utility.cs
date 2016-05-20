@@ -91,7 +91,7 @@ namespace PubNubMessaging.Core
             if ((string.IsNullOrEmpty(channel) || string.IsNullOrEmpty(channel.Trim())) 
                 && (string.IsNullOrEmpty(channelGroup) || string.IsNullOrEmpty(channelGroup.Trim())))
             {
-                throw new ArgumentException("Both Channel and ChannelGroup is empty.");
+                throw new ArgumentException("Both Channel and ChannelGroup are empty.");
             }
         }
 

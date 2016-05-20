@@ -454,7 +454,7 @@ namespace PubNubMessaging.Core
             url.Add ("sub_key");
             url.Add (subscribeKey);
             url.Add ("channel");
-            url.Add (channels);
+            url.Add (string.IsNullOrEmpty(channels) ? "," : channels);
             url.Add ("heartbeat");
 
             return BuildRestApiRequest<Uri> (url, ResponseType.PresenceHeartbeat, uuid, ssl, origin, 0, authenticationKey, presenceParamBuilder.ToString());
@@ -477,7 +477,7 @@ namespace PubNubMessaging.Core
             url.Add ("sub_key");
             url.Add (subscribeKey);
             url.Add ("channel");
-            url.Add (channels);
+            url.Add (string.IsNullOrEmpty(channels) ? "," : channels);
             url.Add ("leave");
 
             return BuildRestApiRequest<Uri> (url, ResponseType.Leave, uuid, ssl, origin, 0, authenticationKey, unsubscribeParamBuilder.ToString());
@@ -501,7 +501,7 @@ namespace PubNubMessaging.Core
             List<string> url = new List<string> ();
             url.Add ("subscribe");
             url.Add (subscribeKey);
-            url.Add (string.IsNullOrEmpty(channels) ? "" : channels);
+            url.Add (string.IsNullOrEmpty(channels) ? "," : channels);
             url.Add ("0");
             url.Add (timetoken.ToString ());
 
