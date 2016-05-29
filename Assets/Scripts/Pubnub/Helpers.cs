@@ -7,6 +7,24 @@ using System.Text;
 
 namespace PubNubMessaging.Core
 {
+    public sealed class Counter
+    {
+        // use a meaningful name, 'i' by convention should only be used in a for loop.
+        private int current = 0;
+
+        // update the method name to imply that it returns something.
+        public int NextValue()
+        {
+            // prefix fields with 'this'
+            return Interlocked.Increment(ref this.current);
+        }
+
+        public void Reset()
+        {
+            this.current = 0;
+        }
+    }
+
     internal static class Helpers
     {
         #region "Helpers"
@@ -777,10 +795,24 @@ namespace PubNubMessaging.Core
                 }
             }
             itemMessage.Add(messages[1].ToString());
+            string[] messageChannelsWithCG;
+            string channelGroup = "";
+            if (messages.Length > 3) {
+                messageChannelsWithCG = messages [3].ToString ().Split (',');    
+                if (messageChannelsWithCG.Length > messageIndex) {
+                    channelGroup = messageChannelsWithCG [messageIndex].Replace (Utility.PresenceChannelSuffix, "");
+                    if (!channelGroup.Equals (currentChannel)) {
+                        itemMessage.Add (channelGroup);
+                    }
+                }
+            }
+
             itemMessage.Add(currentChannel.Replace(Utility.PresenceChannelSuffix, ""));
+
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog(string.Format("DateTime {0}, messageList: {1} index {2}, timestamp {3}, channel {4}", DateTime.Now.ToString(),
-                messageList[messageIndex], messageIndex.ToString(), messages[1].ToString(), currentChannel), LoggingMethod.LevelInfo);
+            LoggingMethod.WriteToLog(string.Format("DateTime {0}, messageList: {1} index {2}, timestamp {3}, channel {4}, channelGroup {5}", 
+                DateTime.Now.ToString(), messageList[messageIndex], messageIndex.ToString(), 
+                messages[1].ToString(), currentChannel, channelGroup), LoggingMethod.LevelInfo);
             #endif
 
             return itemMessage;

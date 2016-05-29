@@ -68,12 +68,6 @@ namespace PubNubMessaging.Core
         private LoggingMethod.Level pubnubLogLevel = LoggingMethod.Level.Info;
         private PubnubErrorFilter.Level errorLevel = PubnubErrorFilter.Level.Info;
         bool resetTimetoken = false;
-        //store compiled user state 
-        private string CompiledUserState = "";
-        /// channelcallbacks to be merged
-        /// channelrequest to be merged (double check if PubnubWebRequest is used somewhere)
-
-        //make multiChannelSubscribe key name unique
 
         //private SafeDictionary<string, SubscribeOptions> multiChannelSubscribe = new SafeDictionary<string, SubscribeOptions> ();
         //private SafeDictionary<string, PubnubWebRequest> channelRequest = new SafeDictionary<string, PubnubWebRequest> ();
@@ -385,6 +379,9 @@ namespace PubNubMessaging.Core
             }
         }
 
+        public string FilterExpr{ get; set;}
+        public string Region{ get; set;}
+
         #endregion
 
         #region "Constructors"
@@ -513,14 +510,16 @@ namespace PubNubMessaging.Core
 
         #region "Publish"
 
-        public bool Publish<T> (string channel, object message, bool storeInHistory, Action<T> userCallback, Action<PubnubClientError> errorCallback)
+        public bool Publish<T> (string channel, object message, bool storeInHistory, object metadata,
+            Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
             string originalMessage = (enableJsonEncodingForPublish) ? Helpers.JsonEncodePublishMsg (message, this.cipherKey, JsonPluggableLibrary) : message.ToString ();
+            string originalMetadata = (enableJsonEncodingForPublish) ? Helpers.JsonEncodePublishMsg (metadata, this.cipherKey, JsonPluggableLibrary) : message.ToString ();
 
             List<ChannelEntity> channelEntity = Helpers.CreateChannelEntity (new string[] {channel}, false, false, null, userCallback, null, errorCallback, null, null);
 
             Uri request = BuildRequests.BuildPublishRequest (channel, originalMessage, storeInHistory, this.SessionUUID,
-                this.ssl, this.Origin, this.AuthenticationKey, this.publishKey, this.subscribeKey, this.cipherKey, this.secretKey);
+                this.ssl, this.Origin, this.AuthenticationKey, this.publishKey, this.subscribeKey, this.cipherKey, this.secretKey, metadata);
 
             //RequestState<T> requestState = BuildRequests.BuildRequestState<T> (new string[] { channel }, null, ResponseType.Publish, 
             RequestState<T> requestState = BuildRequests.BuildRequestState<T> (channelEntity, ResponseType.Publish, 
@@ -879,15 +878,15 @@ namespace PubNubMessaging.Core
             Uri request = BuildRequests.BuildAddChannelsToChannelGroupRequest(channels, nameSpace, groupName, this.SessionUUID,
                 this.ssl, this.Origin, authenticationKey, this.subscribeKey);
 
-            List<ChannelEntity> channelEntity = Helpers.CreateChannelEntity (channels, false, false, null, 
-                userCallback, null, errorCallback, null, null);
+            //List<ChannelEntity> channelEntity = Helpers.CreateChannelEntity (channels, false, false, null, 
+              //  userCallback, null, errorCallback, null, null);
 
             List<ChannelEntity> channelGroupEntity = Helpers.CreateChannelEntity (new string[] {groupName}, false, true, null, 
                 userCallback, null, errorCallback, null, null);
 
-            channelEntity.AddRange (channelGroupEntity);
+            //channelEntity.AddRange (channelGroupEntity);
 
-            RequestState<T> requestState = BuildRequests.BuildRequestState<T> (channelEntity, 
+            RequestState<T> requestState = BuildRequests.BuildRequestState<T> (channelGroupEntity, 
                 ResponseType.ChannelGroupAdd, false, 0, false, 0, null 
                  
             );
@@ -901,15 +900,15 @@ namespace PubNubMessaging.Core
             Uri request = BuildRequests.BuildRemoveChannelsFromChannelGroupRequest(channels, nameSpace, groupName, this.SessionUUID,
                 this.ssl, this.Origin, authenticationKey, this.subscribeKey);
 
-            List<ChannelEntity> channelEntity = Helpers.CreateChannelEntity (channels, false, false, null, 
-                userCallback, null, errorCallback, null, null);
+            //List<ChannelEntity> channelEntity = Helpers.CreateChannelEntity (channels, false, false, null, 
+              //  userCallback, null, errorCallback, null, null);
 
             List<ChannelEntity> channelGroupEntity = Helpers.CreateChannelEntity (new string[] {groupName}, false, true, null, 
                 userCallback, null, errorCallback, null, null);
 
-            channelEntity.AddRange (channelGroupEntity);
+            //channelEntity.AddRange (channelGroupEntity);
 
-            RequestState<T> requestState = BuildRequests.BuildRequestState<T> (channelEntity, 
+            RequestState<T> requestState = BuildRequests.BuildRequestState<T> (channelGroupEntity, 
                 ResponseType.ChannelGroupRemove, false, 0, false, 0, null
             );
 
@@ -1916,9 +1915,14 @@ namespace PubNubMessaging.Core
                 string channels = Helpers.GetNamesFromChannelEntities(channelEntities, false);
                 string channelGroups = Helpers.GetNamesFromChannelEntities(channelEntities, true);
 
-                Uri requestUrl = BuildRequests.BuildMultiChannelSubscribeRequest (channels,
+                //v1
+                /*Uri requestUrl = BuildRequests.BuildMultiChannelSubscribeRequest (channels,
                     channelGroups,
                     lastTimetoken, channelsJsonState, this.SessionUUID,
+                    this.ssl, this.Origin, authenticationKey, this.subscribeKey);*/
+                //v2
+                Uri requestUrl = BuildRequests.BuildMultiChannelSubscribeRequestV2 (channels,
+                    channelGroups, lastTimetoken.ToString(), channelsJsonState, this.SessionUUID, this.Region, this.FilterExpr,
                     this.ssl, this.Origin, authenticationKey, this.subscribeKey);
 
                 RequestState<T> pubnubRequestState = BuildRequests.BuildRequestState<T> (channelEntities, type, reconnect, 
