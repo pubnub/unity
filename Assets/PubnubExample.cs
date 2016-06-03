@@ -58,9 +58,9 @@ public class PubnubExample : MonoBehaviour
     bool ssl = true;
     bool resumeOnReconnect = true;
     string cipherKey = "";
-    string secretKey = "demo";
-    string publishKey = "demo";
-    string subscribeKey = "demo";
+    string secretKey = "demo";//"sec-c-MmQwYjk0YzItYTQ5Mi00MWE5LThhOTctMTM5ZDBiMmY0NzE0";//"demo";
+    string publishKey = "demo";//"pub-c-ba32728d-f52a-4043-a42a-af220b045237";//"demo";
+    string subscribeKey = "demo";//"sub-c-1bcbfc56-20fe-11e6-84f2-02ee2ddab7fe";//"demo";
     string uuid = Guid.NewGuid ().ToString ();
     string subscribeTimeoutInSeconds = "310";
     string operationTimeoutInSeconds = "45";
@@ -1742,31 +1742,32 @@ public class PubnubExample : MonoBehaviour
 
     void DisplayErrorMessageSegments (PubnubClientError pubnubError)
     {
-        UnityEngine.Debug.Log (string.Format ("<STATUS CODE>: {0}", pubnubError.StatusCode)); // Unique ID of Error
+        StringBuilder errorMessageBuilder = new StringBuilder ();
+        errorMessageBuilder.AppendFormat("<STATUS CODE>: {0}\n", pubnubError.StatusCode); // Unique ID of Error
 
-        UnityEngine.Debug.Log (string.Format ("<MESSAGE>: {0}", pubnubError.Message)); // Message received from server/clent or from .NET exception
-        AddToPubnubResultContainer (string.Format ("Error: {0}", pubnubError.Message));
-        UnityEngine.Debug.Log (string.Format ("<SEVERITY>: {0}", pubnubError.Severity)); // Info can be ignored, Warning and Error should be handled
+        errorMessageBuilder.AppendFormat("<MESSAGE>: {0}\n", pubnubError.Message); // Message received from server/clent or from .NET exception
+        AddToPubnubResultContainer (string.Format ("Error: {0}\n", pubnubError.Message));
+        errorMessageBuilder.AppendFormat("<SEVERITY>: {0}\n", pubnubError.Severity); // Info can be ignored, Warning and Error should be handled
 
         if (pubnubError.DetailedDotNetException != null) {
             //Console.WriteLine(pubnubError.IsDotNetException); // Boolean flag to check .NET exception
-            UnityEngine.Debug.Log (string.Format ("<DETAILED DOT.NET EXCEPTION>: {0}", pubnubError.DetailedDotNetException.ToString ())); // Full Details of .NET exception
+            errorMessageBuilder.AppendFormat("<DETAILED DOT.NET EXCEPTION>: {0}\n", pubnubError.DetailedDotNetException.ToString ()); // Full Details of .NET exception
         }
-        UnityEngine.Debug.Log (string.Format ("<MESSAGE SOURCE>: {0}", pubnubError.MessageSource)); // Did this originate from Server or Client-side logic
+        errorMessageBuilder.AppendFormat("<MESSAGE SOURCE>: {0}\n", pubnubError.MessageSource); // Did this originate from Server or Client-side logic
         if (pubnubError.PubnubWebRequest != null) {
             //Captured Web Request details
-            UnityEngine.Debug.Log (string.Format ("<HTTP WEB REQUEST>: {0}", pubnubError.PubnubWebRequest.RequestUri.ToString ())); 
-            UnityEngine.Debug.Log (string.Format ("<HTTP WEB REQUEST - HEADERS>: {0}", pubnubError.PubnubWebRequest.Headers.ToString ())); 
+            errorMessageBuilder.AppendFormat("<HTTP WEB REQUEST>: {0}\n", pubnubError.PubnubWebRequest.RequestUri.ToString ()); 
+            errorMessageBuilder.AppendFormat("<HTTP WEB REQUEST - HEADERS>: {0}\n", pubnubError.PubnubWebRequest.Headers.ToString ()); 
         }
         if (pubnubError.PubnubWebResponse != null) {
             //Captured Web Response details
-            UnityEngine.Debug.Log (string.Format ("<HTTP WEB RESPONSE - HEADERS>: {0}", pubnubError.PubnubWebResponse.Headers.ToString ()));
+            errorMessageBuilder.AppendFormat("<HTTP WEB RESPONSE - HEADERS>: {0}\n", pubnubError.PubnubWebResponse.Headers.ToString ());
         }
-        UnityEngine.Debug.Log (string.Format ("<DESCRIPTION>: {0}", pubnubError.Description)); // Useful for logging and troubleshooting and support
-        AddToPubnubResultContainer (string.Format ("DESCRIPTION: {0}", pubnubError.Description));
-        UnityEngine.Debug.Log (string.Format ("<CHANNEL>: {0}", pubnubError.Channel)); //Channel name(s) at the time of error
-        UnityEngine.Debug.Log (string.Format ("<DATETIME>: {0}", pubnubError.ErrorDateTimeGMT)); //GMT time of error
-
+        errorMessageBuilder.AppendFormat("<DESCRIPTION>: {0}\n", pubnubError.Description); // Useful for logging and troubleshooting and support
+        AddToPubnubResultContainer (string.Format ("DESCRIPTION: {0}\n", pubnubError.Description));
+        errorMessageBuilder.AppendFormat("<CHANNEL>: {0}\n", pubnubError.Channel); //Channel name(s) at the time of error
+        errorMessageBuilder.AppendFormat("<DATETIME>: {0}\n", pubnubError.ErrorDateTimeGMT); //GMT time of error
+        UnityEngine.Debug.Log (errorMessageBuilder.ToString());
     }
 
     void AddToPubnubResultContainer (string result)

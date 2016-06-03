@@ -588,6 +588,13 @@ namespace PubNubMessaging.Core
                     ResponseToUserCallbackForSubscribeV2<T> (resultSubscribeEnvelope.Messages, asynchRequestState.ChannelEntities, 
                         cipherKey, jsonPluggableLibrary);
                 }
+                #if (ENABLE_PUBNUB_LOGGING)
+                else {
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, resultSubscribeEnvelope.Messages null", 
+                        DateTime.Now.ToString ()), LoggingMethod.LevelError);
+                }
+                #endif
+
             } 
         }
 
@@ -1092,6 +1099,11 @@ namespace PubNubMessaging.Core
         internal static void ResponseToUserCallbackForSubscribeV2<T> (List<SubscribeMessage> subscribeMessages, List<ChannelEntity> channelEntities,
             string cipherKey, IJsonPluggableLibrary jsonPluggableLibrary)
         {
+            #if (ENABLE_PUBNUB_LOGGING)
+            LoggingMethod.WriteToLog(string.Format("DateTime {0}, In ResponseToUserCallbackForSubscribeV2", DateTime.Now.ToString()
+                ), LoggingMethod.LevelInfo);
+            #endif
+             
             foreach (SubscribeMessage subscribeMessage in subscribeMessages){
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SubscribeMessage:\n" +

@@ -9,6 +9,7 @@ After checking out the general setup video, [For iOS targets](https://vimeo.com/
 
 ### Important changes from previous version
 * 3.7
+ * PubSub v2.
  * Channel Groups.
  * Code optimizations.
 * 3.6.9.1: A new debug symbol to reduce the usage of coroutines

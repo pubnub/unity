@@ -458,10 +458,10 @@ namespace PubNubMessaging.Core
                 presenceParamBuilder.AppendFormat("&channel-group={0}", Utility.EncodeUricomponent(channelGroups, ResponseType.PresenceHeartbeat, true, false));
             }
 
-            #if (ENABLE_PUBNUB_LOGGING)
+            /*#if (ENABLE_PUBNUB_LOGGING)
             LoggingMethod.WriteToLog (string.Format ("DateTime {0}, presenceHeartbeatParameters {1}", DateTime.Now.ToString (), 
                     presenceParamBuilder.ToString()), LoggingMethod.LevelInfo);
-            #endif
+            #endif*/
 
             List<string> url = new List<string> ();
 

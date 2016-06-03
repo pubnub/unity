@@ -1268,7 +1268,7 @@ namespace PubNubMessaging.Core
                 PubnubCallbacks.FireErrorCallbacksForAllChannels<T> (cbMessage, cea.PubnubRequestState, 
                     PubnubErrorSeverity.Info, PubnubErrorCode.YesInternet, PubnubErrorLevel);
 
-                MultiplexExceptionHandler<T> (ResponseType.Subscribe, false, true);
+                MultiplexExceptionHandler<T> (ResponseType.SubscribeV2, false, true);
             }
             retryCount = 0;
         }
@@ -1429,8 +1429,9 @@ namespace PubNubMessaging.Core
             SubscribeEnvelope resultSubscribeEnvelope = null;
             string jsonString = cea.Message;
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Aborting previous subscribe/presence requests having channel(s) UrlProcessResponseCallbackNonAsync", 
-                DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Aborting previous subscribe/presence requests having channel(s) " +
+                "UrlProcessResponseCallbackNonAsync. requestState.RespType {1}",  
+                DateTime.Now.ToString (), requestState.RespType.ToString()), LoggingMethod.LevelInfo);
             #endif
             coroutine.BounceRequest<T> (CurrentRequestType.Subscribe, requestState, false);
 
