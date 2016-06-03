@@ -583,7 +583,9 @@ namespace PubNubMessaging.Core
                 } else {
                     StartCoroutinesByName<T> (url, pubnubRequestState, timeout, pause, crt);
                 }
-            } else if ((pubnubRequestState.RespType == ResponseType.Subscribe) || (pubnubRequestState.RespType == ResponseType.Presence)) {
+            } else if (pubnubRequestState.RespType.Equals(ResponseType.Subscribe) || pubnubRequestState.RespType.Equals(ResponseType.Presence)
+                || pubnubRequestState.RespType.Equals(ResponseType.SubscribeV2) || pubnubRequestState.RespType.Equals(ResponseType.PresenceV2)
+                ) {
                 crt = CurrentRequestType.Subscribe;
 
                 CheckComplete (crt);

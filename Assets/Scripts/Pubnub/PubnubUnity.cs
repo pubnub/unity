@@ -39,6 +39,7 @@ namespace PubNubMessaging.Core
 
         private static GameObject gobj;
         private bool localGobj;
+        private Counter publishMessageCounter;
 
         private CoroutineClass coroutine;
 
@@ -379,7 +380,7 @@ namespace PubNubMessaging.Core
             }
         }
 
-        public string FilterExpr{ get; set;}
+        public object FilterExpr{ get; set;}
         public string Region{ get; set;}
 
         #endregion
@@ -461,6 +462,8 @@ namespace PubNubMessaging.Core
             retriesExceeded = false;
             internetStatus = true;
 
+            publishMessageCounter = new Counter ();
+
             #if(UNITY_ANDROID || UNITY_STANDALONE || UNITY_IOS)
             ServicePointManager.ServerCertificateValidationCallback = ValidatorUnity;
             #endif
@@ -502,7 +505,7 @@ namespace PubNubMessaging.Core
             LoggingMethod.WriteToLog (string.Format ("DateTime {0}, requested subscribe for channel={1}", DateTime.Now.ToString (), channel), LoggingMethod.LevelInfo);
             #endif
 
-            MultiChannelSubscribeInit<T> (ResponseType.Subscribe, channel, channelGroup, timetoken, userCallback, connectCallback, 
+            MultiChannelSubscribeInit<T> (ResponseType.SubscribeV2, channel, channelGroup, timetoken, userCallback, connectCallback, 
                 errorCallback, wildcardPresenceCallback);
         }
 
@@ -513,13 +516,14 @@ namespace PubNubMessaging.Core
         public bool Publish<T> (string channel, object message, bool storeInHistory, object metadata,
             Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
-            string originalMessage = (enableJsonEncodingForPublish) ? Helpers.JsonEncodePublishMsg (message, this.cipherKey, JsonPluggableLibrary) : message.ToString ();
-            string originalMetadata = (enableJsonEncodingForPublish) ? Helpers.JsonEncodePublishMsg (metadata, this.cipherKey, JsonPluggableLibrary) : message.ToString ();
+            string jsonMessage = (enableJsonEncodingForPublish) ? Helpers.JsonEncodePublishMsg (message, this.cipherKey, JsonPluggableLibrary) : message.ToString ();
+            string jsonMetadata = (enableJsonEncodingForPublish) ? Helpers.JsonEncodePublishMsg (metadata, this.cipherKey, JsonPluggableLibrary) : message.ToString ();
 
             List<ChannelEntity> channelEntity = Helpers.CreateChannelEntity (new string[] {channel}, false, false, null, userCallback, null, errorCallback, null, null);
 
-            Uri request = BuildRequests.BuildPublishRequest (channel, originalMessage, storeInHistory, this.SessionUUID,
-                this.ssl, this.Origin, this.AuthenticationKey, this.publishKey, this.subscribeKey, this.cipherKey, this.secretKey, metadata);
+            Uri request = BuildRequests.BuildPublishRequest (channel, jsonMessage, storeInHistory, this.SessionUUID,
+                this.ssl, this.Origin, this.AuthenticationKey, this.publishKey, this.subscribeKey, this.cipherKey, 
+                this.secretKey, jsonMetadata, this.publishMessageCounter.NextValue());
 
             //RequestState<T> requestState = BuildRequests.BuildRequestState<T> (new string[] { channel }, null, ResponseType.Publish, 
             RequestState<T> requestState = BuildRequests.BuildRequestState<T> (channelEntity, ResponseType.Publish, 
@@ -539,7 +543,7 @@ namespace PubNubMessaging.Core
             LoggingMethod.WriteToLog (string.Format ("DateTime {0}, requested presence for channel={1}", DateTime.Now.ToString (), channel), LoggingMethod.LevelInfo);
             #endif
 
-            MultiChannelSubscribeInit<T> (ResponseType.Presence, channel, channelGroup, timetoken, userCallback, connectCallback, errorCallback, null);
+            MultiChannelSubscribeInit<T> (ResponseType.PresenceV2, channel, channelGroup, timetoken, userCallback, connectCallback, errorCallback, null);
         }
 
         #endregion
@@ -1033,7 +1037,12 @@ namespace PubNubMessaging.Core
             #endif
         }
 
+        public void ResetPublishMessageCounter (){
+            publishMessageCounter.Reset ();
+        }
+
         public void CleanUp (){
+            publishMessageCounter.Reset ();
             #if (ENABLE_PUBNUB_LOGGING)
             LoggingMethod.WriteToLog ("Destructing coroutine", LoggingMethod.LevelInfo);
             #endif
@@ -1371,6 +1380,8 @@ namespace PubNubMessaging.Core
                 break;
             case ResponseType.Subscribe:
             case ResponseType.Presence:
+            case ResponseType.SubscribeV2:
+            case ResponseType.PresenceV2:
 
                 SubscribePresenceHanlder<T> (cea);
 
@@ -1414,26 +1425,25 @@ namespace PubNubMessaging.Core
         }
 
         void ResponseCallbackNonErrorHandler<T> (CustomEventArgs<T> cea, RequestState<T> requestState){
-            List<object> result = new List<object> ();
-
+            //List<object> result = new List<object> ();
+            SubscribeEnvelope resultSubscribeEnvelope = null;
             string jsonString = cea.Message;
-            if (overrideTcpKeepAlive) {
-                #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Aborting previous subscribe/presence requests having channel(s) UrlProcessResponseCallbackNonAsync", 
-                    DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
-                #endif
-                coroutine.BounceRequest<T> (CurrentRequestType.Subscribe, requestState, false);
-            }
+            #if (ENABLE_PUBNUB_LOGGING)
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Aborting previous subscribe/presence requests having channel(s) UrlProcessResponseCallbackNonAsync", 
+                DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+            #endif
+            coroutine.BounceRequest<T> (CurrentRequestType.Subscribe, requestState, false);
 
             if (!jsonString.Equals("[]")) {
                 /*result = Helpers.WrapResultBasedOnResponseType<T> (requestState.RespType, jsonString, requestState.Channels, 
                      requestState.ErrorCallback, channelCallbacks, JsonPluggableLibrary, PubnubErrorLevel, this.cipherKey);*/
 
-                Helpers.WrapResultBasedOnResponseType<T> (requestState, jsonString, JsonPluggableLibrary, 
-                    PubnubErrorLevel, this.cipherKey, ref result);
-                ParseReceiedTimetoken<T> (requestState, result);
+                //Helpers.WrapResultBasedOnResponseType<T> (requestState, jsonString, JsonPluggableLibrary, 
+                    //PubnubErrorLevel, this.cipherKey, ref result);
+                //ParseReceiedTimetoken<T> (requestState, result);
+                resultSubscribeEnvelope = ParseReceiedJSONV2<T> (requestState, jsonString);
+
             }
-            Helpers.ProcessResponseCallbacks<T> (ref result, requestState, this.cipherKey, JsonPluggableLibrary);
 
             /*if (requestState.RespType == ResponseType.Subscribe || requestState.RespType == ResponseType.Presence) {
                 foreach (ChannelEntity ce in requestState.ChannelEntities) {
@@ -1441,9 +1451,41 @@ namespace PubNubMessaging.Core
                 }
             }*/
             switch (requestState.RespType) {
-            case ResponseType.Subscribe:
+            /*case ResponseType.Subscribe:
             case ResponseType.Presence:
+                Helpers.ProcessResponseCallbacks<T> (ref result, requestState, this.cipherKey, JsonPluggableLibrary);
                 MultiplexInternalCallback<T> (requestState.RespType, result, false);
+                break;*/
+            case ResponseType.SubscribeV2:
+            case ResponseType.PresenceV2:
+                Helpers.ProcessResponseCallbacksV2<T> (ref resultSubscribeEnvelope, requestState, this.cipherKey, JsonPluggableLibrary);
+                if ((resultSubscribeEnvelope != null) && (resultSubscribeEnvelope.TimetokenMeta != null)) {
+                    ParseReceiedTimetoken<T> (requestState, resultSubscribeEnvelope.TimetokenMeta.Timetoken);
+                    /*#if (ENABLE_PUBNUB_LOGGING)
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Calling MultiChannelSubscribeRequest \n" +
+                        "Timetoken: {1}", 
+                        DateTime.Now.ToString (), resultSubscribeEnvelope.TimetokenMeta.Timetoken), LoggingMethod.LevelError);
+                    #endif*/
+
+                    MultiChannelSubscribeRequest<T> (requestState.RespType, resultSubscribeEnvelope.TimetokenMeta.Timetoken, false);
+                    /*long parsedInt;
+                    if (Int64.TryParse (resultSubscribeEnvelope.t.Timetoken, out parsedInt)) {
+                        MultiChannelSubscribeRequest<T> (requestState.RespType, parsedInt, false);
+                    }
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    else {
+                        LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Timetoken parsing failed: {1}", 
+                            DateTime.Now.ToString (), resultSubscribeEnvelope.t.Timetoken), LoggingMethod.LevelError);
+                    }
+                    #endif*/
+                } 
+                #if (ENABLE_PUBNUB_LOGGING)
+                else {
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ERROR: Couldn't extract timetoken, initiating fresh subscribe request. \nJSON response:\n {1}", 
+                        DateTime.Now.ToString (), jsonString), LoggingMethod.LevelError);
+                    MultiChannelSubscribeRequest<T> (requestState.RespType, 0, false);
+                }
+                #endif
                 break;
             default:
                 break;
@@ -1507,22 +1549,25 @@ namespace PubNubMessaging.Core
                     return;
                 }
 
-                List<object> result = new List<object> ();
-                result.Add ("0");
+                long tt = lastSubscribeTimetoken;
                 if (!EnableResumeOnReconnect && reconnect) {
-                    result.Add (0); //send 0 time token to enable presence event
-                } else {
-                    result.Add (lastSubscribeTimetoken); //get last timetoken
-                }
+                    tt =0; //send 0 time token to enable presence event
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Reconnect true and EnableResumeOnReconnect false sending tt = 0. ", 
+                        DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+                    #endif
 
-                if(!string.IsNullOrEmpty(channelGroups)){
-                    result.Add (channelGroups); //send channel name
+                } 
+                #if (ENABLE_PUBNUB_LOGGING)
+                else {
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, sending tt = {1}. ", 
+                        DateTime.Now.ToString (), tt.ToString()), LoggingMethod.LevelInfo);
                 }
+                #endif
 
-                if(!string.IsNullOrEmpty(channels)){
-                    result.Add (channels); //send channel name
-                }
-                MultiplexInternalCallback<T> (type, result, reconnect);
+
+                MultiChannelSubscribeRequest<T> (type, tt, reconnect);
+
             }
         }
 
@@ -1558,11 +1603,45 @@ namespace PubNubMessaging.Core
 
         #region "Helpers"
 
-        void ParseReceiedTimetoken<T> (RequestState<T> requestState, List<object> result)
+        SubscribeEnvelope ParseReceiedJSONV2<T> (RequestState<T> requestState, string jsonString)
         {
-            long receivedTimetoken = (result.Count > 1) ? Convert.ToInt64 (result [1].ToString ()) : 0;
+            if (!string.IsNullOrEmpty (jsonString)) {
+                #if (ENABLE_PUBNUB_LOGGING)
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, jsonString = {1}", DateTime.Now.ToString (), jsonString), LoggingMethod.LevelInfo);
+                #endif
+                //SubscribeEnvelope resultSubscribeEnvelope = jsonPluggableLibrary.Deserialize<SubscribeEnvelope>(jsonString);
+                object resultSubscribeEnvelope = jsonPluggableLibrary.DeserializeToObject(jsonString);
+                SubscribeEnvelope subscribeEnvelope = new SubscribeEnvelope ();
+
+                if (resultSubscribeEnvelope is Dictionary<string, object>) {
+
+                    Dictionary<string, object> message = (Dictionary<string, object>)resultSubscribeEnvelope;
+                    subscribeEnvelope.TimetokenMeta = Helpers.CreateTimetokenMetadata (message ["t"]);
+                    subscribeEnvelope.Messages = Helpers.CreateListOfSubscribeMessage (message ["m"]);
+                      
+                    return subscribeEnvelope;
+                } else {
+                    #if (ENABLE_PUBNUB_LOGGING)
+
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, resultSubscribeEnvelope is not dict", 
+                        DateTime.Now.ToString ()), LoggingMethod.LevelError);
+                
+                    #endif
+                    
+                    return null;
+                }
+            } else {
+                return null;
+            }
+
+        }
+
+        void ParseReceiedTimetoken<T> (RequestState<T> requestState, long receivedTimetoken)
+        {
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, receivedTimetoken = {1}", DateTime.Now.ToString (), receivedTimetoken), LoggingMethod.LevelInfo);
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, receivedTimetoken = {1}", 
+                DateTime.Now.ToString (), receivedTimetoken.ToString()),
+                LoggingMethod.LevelInfo);
             #endif
             lastSubscribeTimetoken = receivedTimetoken;
             if (!enableResumeOnReconnect) {
@@ -1583,7 +1662,9 @@ namespace PubNubMessaging.Core
 
         private void RunRequests<T> (Uri requestUri, RequestState<T> pubnubRequestState)
         {
-            if (pubnubRequestState.RespType == ResponseType.Subscribe || pubnubRequestState.RespType == ResponseType.Presence) {
+            if (pubnubRequestState.RespType.Equals(ResponseType.Subscribe) || pubnubRequestState.RespType.Equals(ResponseType.Presence)
+                || pubnubRequestState.RespType.Equals(ResponseType.SubscribeV2) || pubnubRequestState.RespType.Equals(ResponseType.PresenceV2)
+            ) {
                 RequestState<T> pubnubRequestStateHB = pubnubRequestState;
                 pubnubRequestStateHB.ID = DateTime.Now.Ticks;
 
@@ -1689,11 +1770,13 @@ namespace PubNubMessaging.Core
                 //Modify the value for type ResponseType. Presence or Subscrie is ok, but sending the close value would make sense
                 if (Subscription.Instance.HasPresenceChannels)
                 {
-                    type = ResponseType.Presence;
+                    //type = ResponseType.Presence;
+                    type = ResponseType.PresenceV2;
                 }
                 else
                 {
-                    type = ResponseType.Subscribe;
+                    //type = ResponseType.Subscribe;
+                    type = ResponseType.SubscribeV2;
                 }
                 //Continue with any remaining channels for subscribe/presence
                 MultiChannelSubscribeRequest<T>(type, 0, false);
@@ -1821,14 +1904,14 @@ namespace PubNubMessaging.Core
             return false;
         }
 
-        long SaveLastTimetoken(object timetoken)
+        long SaveLastTimetoken(long timetoken)
         {
             long lastTimetoken = 0;
-            long sentTimetoken = Convert.ToInt64(timetoken.ToString());
+            long sentTimetoken = timetoken;//Convert.ToInt64(timetoken.ToString());
             //long minimumTimetoken = multiChannelSubscribe.Min(token => token.Value);
             #if (ENABLE_PUBNUB_LOGGING)
             LoggingMethod.WriteToLog(string.Format("DateTime {0}, lastSubscribeTimetokenForNewMultiplex={1}", DateTime.Now.ToString(), lastSubscribeTimetokenForNewMultiplex), LoggingMethod.LevelInfo);
-            LoggingMethod.WriteToLog(string.Format("DateTime {0}, sentTimetoken={1}", DateTime.Now.ToString(), sentTimetoken), LoggingMethod.LevelInfo);
+            LoggingMethod.WriteToLog(string.Format("DateTime {0}, sentTimetoken={1}", DateTime.Now.ToString(), sentTimetoken.ToString()), LoggingMethod.LevelInfo);
             LoggingMethod.WriteToLog(string.Format("DateTime {0}, lastSubscribeTimetoken={1}", DateTime.Now.ToString(), lastSubscribeTimetoken), LoggingMethod.LevelInfo);
             #endif
             if (resetTimetoken || uuidChanged)
@@ -1885,7 +1968,7 @@ namespace PubNubMessaging.Core
         /// <param name="errorCallback"></param>
         /// <param name="reconnect"></param>
         /// 
-        private void MultiChannelSubscribeRequest<T> (ResponseType type, object timetoken, bool reconnect)
+        private void MultiChannelSubscribeRequest<T> (ResponseType type, long timetoken, bool reconnect)
         {
             //Exit if the channel is unsubscribed
             if (CheckAllChannelsAreUnsubscribed<T>())
@@ -1921,9 +2004,10 @@ namespace PubNubMessaging.Core
                     lastTimetoken, channelsJsonState, this.SessionUUID,
                     this.ssl, this.Origin, authenticationKey, this.subscribeKey);*/
                 //v2
+                string filterExpr = (this.FilterExpr!=null) ? Helpers.JsonEncodePublishMsg (this.FilterExpr, this.cipherKey, JsonPluggableLibrary) : "";
                 Uri requestUrl = BuildRequests.BuildMultiChannelSubscribeRequestV2 (channels,
-                    channelGroups, lastTimetoken.ToString(), channelsJsonState, this.SessionUUID, this.Region, this.FilterExpr,
-                    this.ssl, this.Origin, authenticationKey, this.subscribeKey);
+                    channelGroups, lastTimetoken.ToString(), channelsJsonState, this.SessionUUID, this.Region, 
+                    filterExpr, this.ssl, this.Origin, authenticationKey, this.subscribeKey);
 
                 RequestState<T> pubnubRequestState = BuildRequests.BuildRequestState<T> (channelEntities, type, reconnect, 
                      0, false, Convert.ToInt64 (timetoken.ToString ()), typeof(T));
@@ -1969,7 +2053,7 @@ namespace PubNubMessaging.Core
                     PubnubErrorSeverity.Warn, PubnubErrorCode.NoInternetRetryConnect, PubnubErrorLevel);
 
 
-                MultiplexExceptionHandler<T> (ResponseType.Subscribe, true, false);
+                MultiplexExceptionHandler<T> (ResponseType.SubscribeV2, true, false);
             }
         }
 
@@ -1982,10 +2066,10 @@ namespace PubNubMessaging.Core
         /// <param name="userCallback"></param>
         /// <param name="connectCallback"></param>
         /// <param name="errorCallback"></param>
-        private void MultiplexInternalCallback<T> (ResponseType type, object multiplexResult, bool reconnect)
+        /*private void MultiplexInternalCallback<T> (ResponseType type, object multiplexResult, bool reconnect)
         {
             List<object> message = multiplexResult as List<object>;
-            string[] channels = null;
+            string[] channels;
             if (message != null && message.Count >= 3) {
                 if (message [message.Count - 1] is string[]) {
                     channels = message [message.Count - 1] as string[];
@@ -2010,8 +2094,9 @@ namespace PubNubMessaging.Core
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, MultiplexInternalCallback message null or count < 3", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
             }
             #endif    
-        }
+        }*/
 
+       
         #endregion
 
     }

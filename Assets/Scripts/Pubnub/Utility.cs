@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace PubNubMessaging.Core
 {
@@ -34,6 +35,21 @@ namespace PubNubMessaging.Core
             }
         }
         #endif    
+
+        internal static long CheckDictAndExtractLong(IDictionary dict, string what, string key){
+            long sequenceNumber = 0; 
+            if (dict.Contains (key)) {
+                long seqNumber;
+                if (!Int64.TryParse (dict [key].ToString(), out seqNumber)) {
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, {1}, {2} conversion failed: {3}.", 
+                        DateTime.Now.ToString (), what, key, dict [key].ToString ()), LoggingMethod.LevelInfo);
+                    #endif
+                }
+                sequenceNumber = seqNumber;
+            }
+            return sequenceNumber;
+        }
 
         internal static long ValidateTimetoken(string timetoken, bool raiseError){
             if(!string.IsNullOrEmpty(timetoken)){

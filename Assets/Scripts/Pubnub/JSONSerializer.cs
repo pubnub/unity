@@ -86,6 +86,12 @@ namespace PubNubMessaging.Core
             return output;
         }
 
+        public T Deserialize<T> (string jsonString)
+        {
+            var output = JsonReader.Deserialize<T> (jsonString);
+            return output;
+        }
+
         public Dictionary<string, object> DeserializeToDictionaryOfObject (string jsonString)
         {
             object obj = DeserializeToObject (jsonString);

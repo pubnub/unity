@@ -58,9 +58,9 @@ public class PubnubExample : MonoBehaviour
     bool ssl = true;
     bool resumeOnReconnect = true;
     string cipherKey = "";
-    string secretKey = "sec-c-MmQwYjk0YzItYTQ5Mi00MWE5LThhOTctMTM5ZDBiMmY0NzE0";//"demo";
-    string publishKey = "pub-c-ba32728d-f52a-4043-a42a-af220b045237";//"demo";
-    string subscribeKey = "sub-c-1bcbfc56-20fe-11e6-84f2-02ee2ddab7fe";//"demo";
+    string secretKey = "demo";
+    string publishKey = "demo";
+    string subscribeKey = "demo";
     string uuid = Guid.NewGuid ().ToString ();
     string subscribeTimeoutInSeconds = "310";
     string operationTimeoutInSeconds = "45";

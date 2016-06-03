@@ -74,20 +74,40 @@ namespace PubNubMessaging.Core
         #region "Publish Methods"
         public bool Publish(string channel, object message, Action<object> userCallback, Action<PubnubClientError> errorCallback)
         {
-            return Publish<object>(channel, message, true, userCallback, errorCallback);
+            return Publish<object>(channel, message, true, null, userCallback, errorCallback);
         }
 
         public bool Publish<T>(string channel, object message, Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
-            return Publish<T>(channel, message, true, userCallback, errorCallback);
+            return Publish<T>(channel, message, true, null, userCallback, errorCallback);
         }
 
         public bool Publish(string channel, object message, bool storeInHistory, Action<object> userCallback, Action<PubnubClientError> errorCallback)
         {
-            return Publish<object> (channel, message, storeInHistory, userCallback, errorCallback);
+            return Publish<object> (channel, message, storeInHistory, null, userCallback, errorCallback);
         }
 
         public bool Publish<T>(string channel, object message, bool storeInHistory, Action<T> userCallback, Action<PubnubClientError> errorCallback)
+        {
+            return Publish<T> (channel, message, storeInHistory, null, userCallback, errorCallback);
+        }
+
+        public bool Publish(string channel, object message, object metadata, Action<object> userCallback, Action<PubnubClientError> errorCallback)
+        {
+            return Publish<object>(channel, message, true, metadata, userCallback, errorCallback);
+        }
+
+        public bool Publish<T>(string channel, object message, object metadata, Action<T> userCallback, Action<PubnubClientError> errorCallback)
+        {
+            return Publish<T>(channel, message, true, metadata, userCallback, errorCallback);
+        }
+
+        public bool Publish(string channel, object message, bool storeInHistory, object metadata, Action<object> userCallback, Action<PubnubClientError> errorCallback)
+        {
+            return Publish<object> (channel, message, storeInHistory, metadata, userCallback, errorCallback);
+        }
+
+        public bool Publish<T>(string channel, object message, bool storeInHistory, object metadata, Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
             Utility.CheckChannel(channel);
             Utility.CheckMessage(message);
@@ -98,7 +118,7 @@ namespace PubNubMessaging.Core
 
             Utility.CheckJSONPluggableLibrary();
 
-            return pubnub.Publish<T>(channel, message, storeInHistory, userCallback, errorCallback);
+            return pubnub.Publish<T>(channel, message, storeInHistory, metadata, userCallback, errorCallback);
         }
         #endregion
 
@@ -939,7 +959,12 @@ namespace PubNubMessaging.Core
         {
             pubnub.TerminateCurrentSubscriberRequest<T> ();
         }
-            
+
+        public void ResetPublishMessageCounter ()
+        {
+            pubnub.ResetPublishMessageCounter ();
+        }
+
         public void EndPendingRequests<T> ()
         {
             pubnub.EndPendingRequests<T> ();
@@ -987,6 +1012,10 @@ namespace PubNubMessaging.Core
         #endregion
 
         #region "Properties"
+        public object FilterExpression {
+            get { return pubnub.FilterExpr; }
+            set { pubnub.FilterExpr = value; }
+        }
 
         public string AuthenticationKey {
             get { return pubnub.AuthenticationKey; }

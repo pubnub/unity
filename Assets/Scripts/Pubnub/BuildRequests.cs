@@ -145,14 +145,14 @@ namespace PubNubMessaging.Core
 
         internal static Uri BuildPublishRequest (string channel, string message, bool storeInHistory, string uuid, 
             bool ssl, string origin, string authenticationKey, 
-                string publishKey, string subscribeKey, string cipherKey, string secretKey, string metadata)
+                string publishKey, string subscribeKey, string cipherKey, string secretKey, string metadata, uint messageCounter)
         {
             StringBuilder parameterBuilder = new StringBuilder ();
-            parameterBuilder.Append ((storeInHistory) ? "" : "store=0");
+            parameterBuilder.AppendFormat ("&seqn={0}", messageCounter.ToString ());
+            parameterBuilder.Append ((storeInHistory) ? "" : "&store=0");
             if (!string.IsNullOrEmpty (metadata)) {
                 parameterBuilder.AppendFormat ("&meta={0}", Utility.EncodeUricomponent (metadata, ResponseType.Publish, false, false));
             }
-            parameterBuilder.AppendFormat ("&seqn={0}", );
 
             // Generate String to Sign
             string signature = "0";
@@ -914,9 +914,7 @@ namespace PubNubMessaging.Core
                 case ResponseType.Publish:
 
                     url = AppendUUIDToURL(url, uuid, true);
-                    if (parameters != "") {
-                        url.AppendFormat ("&{0}", parameters);
-                    }
+                    url.Append (parameters);
                     url = AppendAuthKeyToURL(url, authenticationKey, type);
                     url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
 

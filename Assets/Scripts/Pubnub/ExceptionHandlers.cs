@@ -96,8 +96,11 @@ namespace PubNubMessaging.Core
             PubnubErrorFilter.Level errorLevel){
             if ((requestState!=null) && (requestState.ChannelEntities != null || requestState.RespType != ResponseType.Time)) {
 
-                if (requestState.RespType == ResponseType.Subscribe
-                    || requestState.RespType == ResponseType.Presence) {
+                if (requestState.RespType.Equals(ResponseType.Subscribe)
+                    || requestState.RespType.Equals(ResponseType.Presence)
+                    || requestState.RespType.Equals(ResponseType.SubscribeV2)
+                    || requestState.RespType.Equals(ResponseType.PresenceV2)
+                ) {
 
                     if (webEx.Message.IndexOf ("The request was aborted: The request was canceled") == -1
                         || webEx.Message.IndexOf ("Machine suspend mode enabled. No request will be processed.") == -1) {
@@ -121,8 +124,11 @@ namespace PubNubMessaging.Core
             #endif
             if (requestState.ChannelEntities != null) {
 
-                if (requestState.RespType == ResponseType.Subscribe
-                    || requestState.RespType == ResponseType.Presence) {
+                if (requestState.RespType.Equals(ResponseType.Subscribe)
+                    || requestState.RespType.Equals(ResponseType.Presence)
+                    || requestState.RespType.Equals(ResponseType.SubscribeV2)
+                    || requestState.RespType.Equals(ResponseType.PresenceV2)
+                ) {
 
                     PubnubCallbacks.FireErrorCallbacksForAllChannels (ex, requestState, 
                         PubnubErrorSeverity.Warn, PubnubErrorCode.None, errorLevel);
@@ -190,6 +196,8 @@ namespace PubNubMessaging.Core
             {
                 case ResponseType.Presence:
                 case ResponseType.Subscribe:
+                case ResponseType.PresenceV2:
+                case ResponseType.SubscribeV2:
                     FireMultiplexException<T>(resumeOnReconnect, requestState);
                     break;
                 case ResponseType.GlobalHereNow:

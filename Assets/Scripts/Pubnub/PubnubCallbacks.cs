@@ -16,6 +16,7 @@ namespace PubNubMessaging.Core
     {
         public Action<T> SuccessCallback;
         public Action<PubnubClientError> ErrorCallback;
+        public Action<PNMessageResult> MessageCallback;
         public Action<T> ConnectCallback;
         public Action<T> DisconnectCallback;
         public Action<T> WildcardPresenceCallback;
@@ -27,12 +28,14 @@ namespace PubNubMessaging.Core
             DisconnectCallback = null;
             ErrorCallback = null;
             WildcardPresenceCallback = null;
+            MessageCallback = null;
         }
     }
 
     public enum CallbackType
     {
         Success,
+        Message,
         Connect,
         Error,
         Disconnect,
