@@ -39,12 +39,12 @@ namespace PubNubMessaging.Core
             get {
                 #if (USE_MiniJSON)
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog("USE_MiniJSON", LoggingMethod.LevelInfo);
+                LoggingMethod.WriteToLog("JSON LIB: USE_MiniJSON", LoggingMethod.LevelInfo);
                 #endif
                 jsonPluggableLibrary = new MiniJSONObjectSerializer();
                 #elif (USE_JSONFX_UNITY_IOS)
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog ("USE_JSONFX_UNITY_IOS", LoggingMethod.LevelInfo);
+                LoggingMethod.WriteToLog ("JSON LIB: USE_JSONFX_UNITY_IOS", LoggingMethod.LevelInfo);
                 #endif
                 jsonPluggableLibrary = new JsonFxUnitySerializer ();
                 #endif

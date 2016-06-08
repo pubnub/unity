@@ -39,7 +39,7 @@ namespace PubNubMessaging.Core
         internal static TimetokenMetadata CreateTimetokenMetadata (object timeTokenDataObject)
         {
             Dictionary<string, object> timeTokenData = (Dictionary<string, object>)timeTokenDataObject;
-            TimetokenMetadata timetokenMetadata = new TimetokenMetadata (Utility.CheckDictAndExtractLong(timeTokenData, "timeToken", "t"), 
+            TimetokenMetadata timetokenMetadata = new TimetokenMetadata (Utility.CheckKeyAndParseLong(timeTokenData, "timeToken", "t"), 
                 timeTokenData["r"].ToString());
 
             #if (ENABLE_PUBNUB_LOGGING)
@@ -62,7 +62,7 @@ namespace PubNubMessaging.Core
                 string flags = (dict.Contains ("f")) ? dict ["f"].ToString () : "";
                 string issuingClientId = (dict.Contains ("i")) ? dict ["i"].ToString () : "";
                 string subscribeKey = (dict.Contains ("k")) ? dict ["k"].ToString () : "";
-                long sequenceNumber = Utility.CheckDictAndExtractLong (dict, "sequenceNumber", "s"); 
+                long sequenceNumber = Utility.CheckKeyAndParseLong (dict, "sequenceNumber", "s"); 
 
                 TimetokenMetadata originatingTimetoken = (dict.Contains ("o")) ? CreateTimetokenMetadata (dict ["o"]) : null;
                 TimetokenMetadata publishMetadata = (dict.Contains ("p")) ? CreateTimetokenMetadata (dict ["p"]) : null;
@@ -1074,8 +1074,10 @@ namespace PubNubMessaging.Core
             ChannelEntity ce = channelEntities.Find(x => x.ChannelID.Equals(ci));
             if (ce != null) {
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog(string.Format("DateTime {0}, ChannelEntity : {1}  {2}", DateTime.Now.ToString(),
-                    ce.ChannelID.ChannelOrChannelGroupName, ce.ChannelID.IsChannelGroup), LoggingMethod.LevelInfo);
+                LoggingMethod.WriteToLog(string.Format("DateTime {0}, ChannelEntity : {1}  cg?={2} ispres?={3}", DateTime.Now.ToString(),
+                    ce.ChannelID.ChannelOrChannelGroupName, ce.ChannelID.IsChannelGroup.ToString(),
+                    ce.ChannelID.IsPresenceChannel.ToString()
+                ), LoggingMethod.LevelInfo);
                 #endif
                 //PNMessageResult messageResult; 
                 //TODO Decrypt
@@ -1083,14 +1085,31 @@ namespace PubNubMessaging.Core
 
                 List<object> itemMessage;
                 AddMessageToListV2(cipherKey, jsonPluggableLibrary, subscribeMessage, ce, out itemMessage);
-
                 PubnubChannelCallback<T> channelCallbacks = ce.ChannelParams.Callbacks as PubnubChannelCallback<T>;
-                PubnubCallbacks.GoToCallback<T> (itemMessage, channelCallbacks.SuccessCallback, jsonPluggableLibrary);
+
+                if ((subscribeMessage.SubscriptionMatch.Contains (".*")) && (ce.ChannelID.IsPresenceChannel)) {
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    LoggingMethod.WriteToLog(string.Format("DateTime {0}, Wildcard match ChannelEntity : {1} ", DateTime.Now.ToString(),
+                        ce.ChannelID.ChannelOrChannelGroupName
+                    ), LoggingMethod.LevelInfo);
+                    #endif
+
+                    PubnubCallbacks.GoToCallback<T> (itemMessage, channelCallbacks.WildcardPresenceCallback, jsonPluggableLibrary);
+                } else {
+                    PubnubCallbacks.GoToCallback<T> (itemMessage, channelCallbacks.SuccessCallback, jsonPluggableLibrary);
+                }
             }
             #if (ENABLE_PUBNUB_LOGGING)
             else {
-            LoggingMethod.WriteToLog(string.Format("DateTime {0}, ChannelEntity : null", DateTime.Now.ToString()
-                ), LoggingMethod.LevelInfo);
+                StringBuilder sbChannelEntity = new StringBuilder();
+                foreach( ChannelEntity channelEntity in channelEntities){
+                    sbChannelEntity.AppendFormat("ChannelEntity : {0} cg?={1} ispres?={2}", channelEntity.ChannelID.ChannelOrChannelGroupName,
+                        channelEntity.ChannelID.IsChannelGroup.ToString(),
+                        channelEntity.ChannelID.IsPresenceChannel.ToString()
+                    );
+                }
+                LoggingMethod.WriteToLog(string.Format("DateTime {0}, ChannelEntity : null ci.name {1} \nChannelEntities: \n {2}", DateTime.Now.ToString(),
+                    ci.ChannelOrChannelGroupName, sbChannelEntity.ToString()), LoggingMethod.LevelInfo);
             }
             #endif
 
@@ -1141,7 +1160,16 @@ namespace PubNubMessaging.Core
                 if (subscribeMessage.Channel.Equals (subscribeMessage.SubscriptionMatch)) {
                     //channel
 
-                    ChannelIdentity ci = new ChannelIdentity(subscribeMessage.Channel, false, isPresenceChannel);
+                    ChannelIdentity ci = new ChannelIdentity (subscribeMessage.Channel, false, isPresenceChannel);
+                    FindChannelEntityAndCallback<T> (subscribeMessage, channelEntities, cipherKey, jsonPluggableLibrary, ci);
+                } else if (subscribeMessage.SubscriptionMatch.Contains (".*") && isPresenceChannel){
+                    //wildcard presence channel
+
+                    ChannelIdentity ci = new ChannelIdentity (subscribeMessage.SubscriptionMatch, false, false);
+                    FindChannelEntityAndCallback<T> (subscribeMessage, channelEntities, cipherKey, jsonPluggableLibrary, ci);
+                } else if (subscribeMessage.SubscriptionMatch.Contains (".*")){
+                    //wildcard channel
+                    ChannelIdentity ci = new ChannelIdentity (subscribeMessage.SubscriptionMatch, false, isPresenceChannel);
                     FindChannelEntityAndCallback<T> (subscribeMessage, channelEntities, cipherKey, jsonPluggableLibrary, ci);
 
                 } else {

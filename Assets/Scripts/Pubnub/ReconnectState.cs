@@ -103,18 +103,33 @@ namespace PubNubMessaging.Core
         {
             object reqState = requestState as object;
             requestStates.AddOrUpdate (key, reqState, (oldData, newData) => reqState);
+            #if (ENABLE_PUBNUB_LOGGING)
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SetStoredRequestState {1}", 
+                DateTime.Now.ToString (), key.ToString()), LoggingMethod.LevelInfo);
+            #endif
+
         }
 
         public object GetStoredRequestState (CurrentRequestType aKey)
         {
             if (requestStates.ContainsKey (aKey)) {
                 if (requestStates.ContainsKey (aKey)) {
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, GetStoredRequestState {1}", 
+                        DateTime.Now.ToString (), aKey.ToString()), LoggingMethod.LevelInfo);
+                    #endif
                     return requestStates [aKey];
                 }
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, returning false", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, GetStoredRequestState returning false", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
                 #endif
             }
+            #if (ENABLE_PUBNUB_LOGGING)
+            else {
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, GetStoredRequestState doesnt contain key {1}", 
+                    DateTime.Now.ToString (), aKey.ToString()), LoggingMethod.LevelInfo);
+            }
+            #endif
             return null;
         }
 

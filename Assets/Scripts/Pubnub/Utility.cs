@@ -36,7 +36,7 @@ namespace PubNubMessaging.Core
         }
         #endif    
 
-        internal static long CheckDictAndExtractLong(IDictionary dict, string what, string key){
+        internal static long CheckKeyAndParseLong(IDictionary dict, string what, string key){
             long sequenceNumber = 0; 
             if (dict.Contains (key)) {
                 long seqNumber;

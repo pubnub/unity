@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace PubNubMessaging.Core
 {
@@ -92,22 +93,22 @@ namespace PubNubMessaging.Core
             return Publish<T> (channel, message, storeInHistory, null, userCallback, errorCallback);
         }
 
-        public bool Publish(string channel, object message, object metadata, Action<object> userCallback, Action<PubnubClientError> errorCallback)
+        public bool Publish(string channel, object message, Dictionary<string, string> metadata, Action<object> userCallback, Action<PubnubClientError> errorCallback)
         {
             return Publish<object>(channel, message, true, metadata, userCallback, errorCallback);
         }
 
-        public bool Publish<T>(string channel, object message, object metadata, Action<T> userCallback, Action<PubnubClientError> errorCallback)
+        public bool Publish<T>(string channel, object message, Dictionary<string, string> metadata, Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
             return Publish<T>(channel, message, true, metadata, userCallback, errorCallback);
         }
 
-        public bool Publish(string channel, object message, bool storeInHistory, object metadata, Action<object> userCallback, Action<PubnubClientError> errorCallback)
+        public bool Publish(string channel, object message, bool storeInHistory, Dictionary<string, string> metadata, Action<object> userCallback, Action<PubnubClientError> errorCallback)
         {
             return Publish<object> (channel, message, storeInHistory, metadata, userCallback, errorCallback);
         }
 
-        public bool Publish<T>(string channel, object message, bool storeInHistory, object metadata, Action<T> userCallback, Action<PubnubClientError> errorCallback)
+        public bool Publish<T>(string channel, object message, bool storeInHistory, Dictionary<string, string> metadata, Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
             Utility.CheckChannel(channel);
             Utility.CheckMessage(message);
@@ -1012,7 +1013,7 @@ namespace PubNubMessaging.Core
         #endregion
 
         #region "Properties"
-        public object FilterExpression {
+        public string FilterExpression {
             get { return pubnub.FilterExpr; }
             set { pubnub.FilterExpr = value; }
         }

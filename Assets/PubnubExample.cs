@@ -52,15 +52,17 @@ public class PubnubExample : MonoBehaviour
         CGRevoke,
         CGRevokePresence,
         CGAudit,
-        CGAuditPresence
+        CGAuditPresence,
+        SetFilterExpression,
+        GetFilterExpression
     }
 
     bool ssl = true;
     bool resumeOnReconnect = true;
     string cipherKey = "";
-    string secretKey = "demo";//"sec-c-MmQwYjk0YzItYTQ5Mi00MWE5LThhOTctMTM5ZDBiMmY0NzE0";//"demo";
-    string publishKey = "demo";//"pub-c-ba32728d-f52a-4043-a42a-af220b045237";//"demo";
-    string subscribeKey = "demo";//"sub-c-1bcbfc56-20fe-11e6-84f2-02ee2ddab7fe";//"demo";
+    string secretKey = "sec-c-MmQwYjk0YzItYTQ5Mi00MWE5LThhOTctMTM5ZDBiMmY0NzE0";//"demo";
+    string publishKey = "pub-c-ba32728d-f52a-4043-a42a-af220b045237";//"demo";
+    string subscribeKey = "sub-c-1bcbfc56-20fe-11e6-84f2-02ee2ddab7fe";//"demo";
     string uuid = Guid.NewGuid ().ToString ();
     string subscribeTimeoutInSeconds = "310";
     string operationTimeoutInSeconds = "45";
@@ -70,6 +72,8 @@ public class PubnubExample : MonoBehaviour
     static public bool showErrorMessageSegments = true;
     string channel = "";
     string publishedMessage = "";
+    string publishedMetadataKey = "";
+    string publishedMetadataValue = "";
     string pubChannel ="";
     string input = "";
     static Pubnub pubnub;
@@ -98,7 +102,7 @@ public class PubnubExample : MonoBehaviour
     string text3 = "";
     bool storeInHistory = true;
 
-    Rect publishWindowRect = new Rect (60, 365, 300, 180);
+    Rect publishWindowRect = new Rect (60, 365, 300, 250);
     Rect authWindowRect = new Rect (60, 365, 300, 200);
     Rect textWindowRect = new Rect (60, 365, 300, 250);
     Rect textWindowRect2 = new Rect (60, 365, 300, 250);
@@ -280,6 +284,8 @@ public class PubnubExample : MonoBehaviour
                 authWindowRect = GUI.ModalWindow (0, authWindowRect, DoRemoveChannelGroup, "Remove Channel Group");
             } else if (state == PubnubState.GetChannelsForChannelGroup) {
                 authWindowRect = GUI.ModalWindow (0, authWindowRect, DoListAllChannelsOfChannelGroups, "List Channels of Channel Group");
+            } else if (state == PubnubState.SetFilterExpression) {
+                authWindowRect = GUI.ModalWindow (0, authWindowRect, DoSetFilterExpression, "SetFilterExpression");
             }
                 
             //state = PubnubState.None;
@@ -413,7 +419,7 @@ public class PubnubExample : MonoBehaviour
             label2 = "UUID";
             buttonTitle = "Get";
         } else if (state == PubnubState.DelUserState) {
-            title = "Delete User Statue";
+            title = "Delete User State";
             label1 = "Channel";
             label2 = "Key";
             buttonTitle = "Delete";
@@ -720,6 +726,10 @@ public class PubnubExample : MonoBehaviour
     {
         ShowWindow (PubnubState.GetChannelsForChannelGroup);
     }
+    void DoSetFilterExpression (int windowID)
+    {
+        ShowWindow (PubnubState.SetFilterExpression);
+    }
 
     void ShowGuiButton (string buttonTitle, PubnubState state)
     {
@@ -759,6 +769,9 @@ public class PubnubExample : MonoBehaviour
             } else if (state == PubnubState.GetChannelsForChannelGroup) {
                 AddToPubnubResultContainer ("Running GetChannelsForChannelGroup");
                 pubnub.GetChannelsForChannelGroup<string> (input, DisplayReturnMessage, DisplayErrorMessage);
+            } else if (state == PubnubState.SetFilterExpression) {
+                AddToPubnubResultContainer ("Running SetFilterExpression");
+                pubnub.FilterExpression = input;
             }
 
             input = "";
@@ -808,6 +821,9 @@ public class PubnubExample : MonoBehaviour
         } else if (state == PubnubState.GetChannelsForChannelGroup) {
             title = "Channel Group";
             buttonTitle = "List";
+        } else if (state == PubnubState.SetFilterExpression) {
+            title = "Filter Expression";
+            buttonTitle = "Set";
         }
         GUI.Label (new Rect (10, 30, 100, fHeight), title);
         input = GUI.TextField (new Rect (110, 30, 150, fHeight), input);
@@ -1040,29 +1056,32 @@ public class PubnubExample : MonoBehaviour
         fTop = fTopInit + 9 * fRowHeight + 10;
         if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Presence Heartbeat")) {
             InstantiatePubnub ();
-            AsyncOrNonAsyncCall (PubnubState.PresenceHeartbeat);
             state = PubnubState.PresenceHeartbeat;
+            DoAction (state);
             showAuthWindow = true;
             showCGPopupWindow = false;
         }
         fTop = fTopInit + 10 * fRowHeight + 10;
         if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Presence Interval")) {
             InstantiatePubnub ();
-            AsyncOrNonAsyncCall (PubnubState.PresenceInterval);
             state = PubnubState.PresenceInterval;
+            DoAction (state);
             showAuthWindow = true;
             showCGPopupWindow = false;
         }
         fTop = fTopInit + 11 * fRowHeight + 10;
-        if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "DH Tests")) {
+        if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Set Filter Expression")) {
             InstantiatePubnub ();
-            string[] chArr = {"hello_world", "hello_world2", "hello_world3"};
-            RunDetailedHistoryForMultipleChannels(chArr, 0);
+            state = PubnubState.SetFilterExpression;
+            DoAction (state);
+            showAuthWindow = true;
+            showCGPopupWindow = false;
         }
         fTop = fTopInit + 12 * fRowHeight + 10;
-        if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Sub TT Tests")) {
+        if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Get Filter Expression")) {
             InstantiatePubnub ();
-            pubnub.Subscribe<string>("ch2, ch3", "cg5", "14641779000775299", DisplayReturnMessage, DisplayConnectStatusMessage, null, DisplayErrorMessage);
+            state = PubnubState.GetFilterExpression;
+            DoAction (state);
             showCGPopupWindow = false;
         }
     }
@@ -1165,6 +1184,21 @@ public class PubnubExample : MonoBehaviour
             state = PubnubState.CGRevokePresence;
             showTextWindow = true;
         }
+        fTop = fTopInit + 12 * fRowHeight + 10;
+        if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "DH Tests")) {
+            InstantiatePubnub ();
+            string[] chArr = {"hello_world", "hello_world2", "hello_world3"};
+            showPamPopupWindow = false;
+            RunDetailedHistoryForMultipleChannels(chArr, 0);
+        }
+        fTop = fTopInit + 13 * fRowHeight + 10;
+        if (GUI.Button (new Rect (fLeft, fTop, fButtonWidth, fButtonHeight), "Sub TT Tests")) {
+            InstantiatePubnub ();
+            pubnub.Subscribe<string>("ch2, ch3", "cg5", "14641779000775299", DisplayReturnMessage, DisplayConnectStatusMessage, null, DisplayErrorMessage);
+            showCGPopupWindow = false;
+            showPamPopupWindow = false;
+        }
+
 
     }
 
@@ -1362,6 +1396,11 @@ public class PubnubExample : MonoBehaviour
                 allowUserSettingsChange = false;
                 pubnub.Time<string> (DisplayReturnMessage, DisplayErrorMessage);
                 break;
+            case PubnubState.GetFilterExpression:
+                AddToPubnubResultContainer ("Running Get Filter Expression");
+                allowUserSettingsChange = false;
+                AddToPubnubResultContainer (pubnub.FilterExpression.ToString());
+                break;
             case PubnubState.GrantSubscribe:
                 AddToPubnubResultContainer ("Running Grant Subscribe");
                 break;
@@ -1428,27 +1467,37 @@ public class PubnubExample : MonoBehaviour
 
     void DoPublishWindow (int windowID)
     {
-        GUI.Label (new Rect (10, 25, 100, 25), "Enter Channel");
+        GUI.Label (new Rect (10, 25, 100, 25), "Channel");
         pubChannel = GUI.TextField (new Rect (110, 25, 150, 25), pubChannel);
 
-        GUI.Label (new Rect (10, 60, 100, 25), "Enter Message");
+        GUI.Label (new Rect (10, 60, 100, 25), "Message");
 
-        publishedMessage = GUI.TextField (new Rect (110, 60, 150, 60), publishedMessage);
-        storeInHistory = GUI.Toggle (new Rect (10, 120, 150, 25), storeInHistory, "Store in History");
+        publishedMessage = GUI.TextField (new Rect (110, 60, 150, 30), publishedMessage);
+        GUI.Label (new Rect (10, 95, 100, 25), "Metadata Key");
+        publishedMetadataKey = GUI.TextField (new Rect (110, 95, 150, 30), publishedMetadataKey);
+
+        GUI.Label (new Rect (10, 130, 100, 25), "Metadata Value");
+        publishedMetadataValue = GUI.TextField (new Rect (110, 130, 150, 30), publishedMetadataValue);
+
+        storeInHistory = GUI.Toggle (new Rect (10, 165, 150, 25), storeInHistory, "Store in History");
 
         string stringMessage = publishedMessage;
-        if (GUI.Button (new Rect (30, 150, 100, 30), "Publish")) {
+        if (GUI.Button (new Rect (30, 185, 100, 30), "Publish")) {
             //stringMessage = "Text with 😜 emoji 🎉.";
-            pubnub.Publish<string> (pubChannel, stringMessage, storeInHistory, DisplayReturnMessage, DisplayErrorMessage);
+            Dictionary<string, string> metadataDict = new Dictionary<string, string>();
+            if(!string.IsNullOrEmpty(publishedMetadataKey) && (!string.IsNullOrEmpty(publishedMetadataValue))){
+                metadataDict.Add (publishedMetadataKey, publishedMetadataValue);
+            }
+            pubnub.Publish<string> (pubChannel, stringMessage, storeInHistory, metadataDict, DisplayReturnMessage, DisplayErrorMessage);
             publishedMessage = "";
             showPublishPopupWindow = false;
             pubChannel = "";
         }
 
-        if (GUI.Button (new Rect (150, 150, 100, 30), "Cancel")) {
+        if (GUI.Button (new Rect (150, 185, 100, 30), "Cancel")) {
             showPublishPopupWindow = false;
         }
-        GUI.DragWindow (new Rect (0, 0, 800, 510));
+        GUI.DragWindow (new Rect (0, 0, 800, 610));
     }
 
     void Start ()

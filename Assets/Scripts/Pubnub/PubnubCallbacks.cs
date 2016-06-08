@@ -72,7 +72,7 @@ namespace PubNubMessaging.Core
                 SendCallbackChannelEntity<T> (jsonPluggableLibrary, channelEntity, itemMessage, callbackType, checkType);
             } else {
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, itemMessage null", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SendCallbacks itemMessage null", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
                 #endif
             }
         }
@@ -81,11 +81,10 @@ namespace PubNubMessaging.Core
             List<object> itemMessage, CallbackType callbackType, bool checkType)
         {
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, currentChannel: {1}", DateTime.Now.ToString (), 
-                channelEntity.ChannelID.ChannelOrChannelGroupName), LoggingMethod.LevelInfo);
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, typeof(T): {1}, TypeParameterType: {2}", 
-                DateTime.Now.ToString (), typeof(T).ToString (), channelEntity.ChannelParams.TypeParameterType), LoggingMethod.LevelInfo);
-
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SendCallbackChannelEntity currentChannel: {1},  typeof(T): {2}, TypeParameterType: {3}", DateTime.Now.ToString (), 
+                channelEntity.ChannelID.ChannelOrChannelGroupName,
+                typeof(T).ToString (), channelEntity.ChannelParams.TypeParameterType
+            ), LoggingMethod.LevelInfo);
             #endif
 
             if (checkType) {

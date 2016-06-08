@@ -150,7 +150,7 @@ namespace PubNubMessaging.Core
             StringBuilder parameterBuilder = new StringBuilder ();
             parameterBuilder.AppendFormat ("&seqn={0}", messageCounter.ToString ());
             parameterBuilder.Append ((storeInHistory) ? "" : "&store=0");
-            if (!string.IsNullOrEmpty (metadata)) {
+            if (!string.IsNullOrEmpty (metadata) || metadata.Equals("\"\"")) {
                 parameterBuilder.AppendFormat ("&meta={0}", Utility.EncodeUricomponent (metadata, ResponseType.Publish, false, false));
             }
 
@@ -532,7 +532,7 @@ namespace PubNubMessaging.Core
             subscribeParamBuilder.AppendFormat ("&tt={0}", timetoken);
 
             if (!string.IsNullOrEmpty (filterExpr)) {
-                subscribeParamBuilder.AppendFormat ("&filter-expr={0}",  Utility.EncodeUricomponent(filterExpr, ResponseType.Subscribe, false, false));
+                    subscribeParamBuilder.AppendFormat ("&filter-expr=({0})",  Utility.EncodeUricomponent(filterExpr, ResponseType.Subscribe, false, false));
             }
 
             if (!string.IsNullOrEmpty (region)) {
