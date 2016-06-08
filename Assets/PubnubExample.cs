@@ -578,7 +578,8 @@ public class PubnubExample : MonoBehaviour
                 } else if (state.Equals(PubnubState.Subscribe)){
                     string channelGroup = text2;
                     AddToPubnubResultContainer ("Running Subscribe");
-                    pubnub.Subscribe<string> (currentChannel, channelGroup, DisplayReturnMessage, DisplayConnectStatusMessage, DisplayErrorMessage);
+                    pubnub.Subscribe<string> (currentChannel, channelGroup, DisplayReturnMessage, DisplayConnectStatusMessage, 
+                        DisplayWildcardReturnMessage, DisplayErrorMessage);
                 } else if (state.Equals(PubnubState.Presence)){
                     string channelGroup = text2;
                     AddToPubnubResultContainer ("Running Presence");
@@ -1604,6 +1605,22 @@ public class PubnubExample : MonoBehaviour
     {
         UnityEngine.Debug.Log (string.Format ("REGULAR CALLBACK LOG: {0}", result));
         AddToPubnubResultContainer (string.Format ("REGULAR CALLBACK: {0}", result));
+    }
+
+    void DisplayWildcardReturnMessage (string result)
+    {
+        UnityEngine.Debug.Log (string.Format ("Wildcard CALLBACK LOG: {0}", result));
+        AddToPubnubResultContainer (string.Format ("Wildcard CALLBACK: {0}", result));
+    }
+
+    void DisplayWildcardReturnMessage (object result)
+    {
+        var myList = result as List<object>;
+        var stringList = myList.OfType<string>();
+        string result2 = string.Join(",", stringList.ToArray());
+
+        UnityEngine.Debug.Log (string.Format ("Wildcard CALLBACK LOG: {0}", result2));
+        AddToPubnubResultContainer (string.Format ("Wildcard CALLBACK: {0}", result2));
     }
 
     void DisplayDisconnectReturnMessage (string result)

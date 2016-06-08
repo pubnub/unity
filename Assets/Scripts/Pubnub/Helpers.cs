@@ -1087,7 +1087,7 @@ namespace PubNubMessaging.Core
                 AddMessageToListV2(cipherKey, jsonPluggableLibrary, subscribeMessage, ce, out itemMessage);
                 PubnubChannelCallback<T> channelCallbacks = ce.ChannelParams.Callbacks as PubnubChannelCallback<T>;
 
-                if ((subscribeMessage.SubscriptionMatch.Contains (".*")) && (ce.ChannelID.IsPresenceChannel)) {
+                if ((subscribeMessage.SubscriptionMatch.Contains (".*")) && Utility.IsPresenceChannel(subscribeMessage.Channel)) {
                     #if (ENABLE_PUBNUB_LOGGING)
                     LoggingMethod.WriteToLog(string.Format("DateTime {0}, Wildcard match ChannelEntity : {1} ", DateTime.Now.ToString(),
                         ce.ChannelID.ChannelOrChannelGroupName

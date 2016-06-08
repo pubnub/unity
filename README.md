@@ -11,6 +11,8 @@ After checking out the general setup video, [For iOS targets](https://vimeo.com/
 * 3.7
  * PubSub v2.
  * Channel Groups.
+ * Message Filtering
+ * Wildcard Subscribe
  * Code optimizations.
 * 3.6.9.1: A new debug symbol to reduce the usage of coroutines
  * Set `REDUCE_PUBNUB_COROUTINES`, to use the alternate logic for www coroutines used by the PubNub's SDK. When using this option it is recommended that you call `TerminateCurrentSubscriberRequest` when the app comes back to the foreground else an ongoing long request will wait till the timeout value to abort and reinit the request. 
