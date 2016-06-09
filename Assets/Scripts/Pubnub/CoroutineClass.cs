@@ -1086,7 +1086,8 @@ namespace PubNubMessaging.Core
             try {
                 #if(!REDUCE_PUBNUB_COROUTINES)
                 StopRunningCoroutines(crt);
-
+                #else
+                CheckComplete (crt);
                 #endif
                 SetComplete (crt);
                 //if (((pubnubRequestState != null) && fireEvent) || (fireEvent && crt.Equals(CurrentRequestType.Subscribe))) {

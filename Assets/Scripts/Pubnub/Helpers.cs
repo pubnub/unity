@@ -1157,7 +1157,7 @@ namespace PubNubMessaging.Core
                 #endif
 
                 bool isPresenceChannel = Utility.IsPresenceChannel(subscribeMessage.Channel);
-                if (subscribeMessage.Channel.Equals (subscribeMessage.SubscriptionMatch)) {
+                if (string.IsNullOrEmpty(subscribeMessage.SubscriptionMatch) || subscribeMessage.Channel.Equals (subscribeMessage.SubscriptionMatch)) {
                     //channel
 
                     ChannelIdentity ci = new ChannelIdentity (subscribeMessage.Channel, false, isPresenceChannel);

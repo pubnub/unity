@@ -71,6 +71,10 @@ namespace PubNubMessaging.Core
         private PubnubErrorFilter.Level errorLevel = PubnubErrorFilter.Level.Info;
         bool resetTimetoken = false;
 
+        uint subRequestCounter = 0;
+        uint nonSubRequestCounter = 0;
+        uint hbRequestCounter = 0;
+        uint phbRequestCounter = 0;
         //private SafeDictionary<string, SubscribeOptions> multiChannelSubscribe = new SafeDictionary<string, SubscribeOptions> ();
         //private SafeDictionary<string, PubnubWebRequest> channelRequest = new SafeDictionary<string, PubnubWebRequest> ();
         //private SafeDictionary<PubnubChannelCallbackKey, object> channelCallbacks = new SafeDictionary<PubnubChannelCallbackKey, object> ();
@@ -1520,13 +1524,15 @@ namespace PubNubMessaging.Core
                     }
                     #endif*/
                 } 
-                #if (ENABLE_PUBNUB_LOGGING)
+
                 else {
+                    #if (ENABLE_PUBNUB_LOGGING)
                     LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ERROR: Couldn't extract timetoken, initiating fresh subscribe request. \nJSON response:\n {1}", 
                         DateTime.Now.ToString (), jsonString), LoggingMethod.LevelError);
+                    #endif
                     MultiChannelSubscribeRequest<T> (requestState.RespType, 0, false);
                 }
-                #endif
+
                 break;
             default:
                 break;
@@ -1580,7 +1586,7 @@ namespace PubNubMessaging.Core
 
                 Helpers.CheckSubscribedChannelsAndSendCallbacks<T> (Subscription.Instance.AllSubscribedChannelsAndChannelGroups, 
                     type, NetworkCheckMaxRetries, PubnubErrorLevel);
-
+                retriesExceeded = false;
             } else {
                 if (!internetStatus) {
                     #if (ENABLE_PUBNUB_LOGGING)
@@ -1701,6 +1707,25 @@ namespace PubNubMessaging.Core
             }
         }
 
+        /*void RequestCounter(CurrentRequestType crt, bool increment){
+            bool bounce = false;
+            switch(crt){
+            case CurrentRequestType.Subscribe:
+                if (subRequestCounter > 0) {
+                    coroutine.BounceRequest (crt, null, false);
+                }
+                break;
+            case CurrentRequestType.NonSubscribe:
+                break;
+            case CurrentRequestType.Heartbeat:
+                break;
+            case CurrentRequestType.PresenceHeartbeat:
+                break;
+            default:
+                break;
+            }
+        }*/
+
         private void RunRequests<T> (Uri requestUri, RequestState<T> pubnubRequestState)
         {
             if (pubnubRequestState.RespType.Equals(ResponseType.Subscribe) || pubnubRequestState.RespType.Equals(ResponseType.Presence)
@@ -1714,8 +1739,10 @@ namespace PubNubMessaging.Core
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Heartbeat started", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
                 #endif
                 if (Subscription.Instance.HasPresenceChannels && (PresenceHeartbeatInterval > 0)){
-                        RunPresenceHeartbeat<T> (false, PresenceHeartbeatInterval, pubnubRequestStateHB);
+                    RunPresenceHeartbeat<T> (false, PresenceHeartbeatInterval, pubnubRequestStateHB);
                 }
+                //RequestCounter (CurrentRequestType.Subscribe, true);
+
                 StoredRequestState.Instance.SetRequestState (CurrentRequestType.Subscribe, pubnubRequestState);
                 coroutine.SubCoroutineComplete += CoroutineCompleteHandler<T>;
                 coroutine.Run<T> (requestUri.OriginalString, pubnubRequestState, SubscribeTimeout, requestDelayTime);
@@ -1883,9 +1910,17 @@ namespace PubNubMessaging.Core
         {
             if (subscribedChannels == null || subscribedChannels.Count <= 0)
                 return;
-            retryCount = 0;
-            internetStatus = true;
-            retriesExceeded = false;
+            if (!isHearbeatRunning) {
+                retryCount = 0;
+                internetStatus = true;
+                retriesExceeded = false;
+            } 
+            #if (ENABLE_PUBNUB_LOGGING)
+            else {
+                LoggingMethod.WriteToLog(string.Format("DateTime {0}, ResetInternetCheckSettings heartbeat running, internet status {1}", 
+                    DateTime.Now.ToString(), internetStatus.ToString()), LoggingMethod.LevelInfo);
+            }
+            #endif
         }
 
         public void MultiChannelSubscribeInit<T> (ResponseType respType, string channel, string channelGroup, long timetokenToUse, 
@@ -1898,28 +1933,45 @@ namespace PubNubMessaging.Core
 
             ResetInternetCheckSettings (subscribedChannels);
 
+            //if (internetStatus) {
             List<ChannelEntity> newChannelEntities;
-            bool channelsOrChannelGroupsAdded = Helpers.RemoveDuplicatesCheckAlreadySubscribedAndGetChannels<T>(respType, userCallback, connectCallback,
-                errorCallback, wildcardPresenceCallback, null, rawChannels, rawChannelGroups, PubnubErrorLevel, false, out newChannelEntities);
+            bool channelsOrChannelGroupsAdded = Helpers.RemoveDuplicatesCheckAlreadySubscribedAndGetChannels<T> (respType, userCallback, 
+                connectCallback, errorCallback, wildcardPresenceCallback, null, rawChannels, rawChannelGroups, 
+                PubnubErrorLevel, false, out newChannelEntities);
 
-            if (channelsOrChannelGroupsAdded && internetStatus) {
+            if ((channelsOrChannelGroupsAdded) && (internetStatus)) {
                 resetTimetoken = true;
                 Subscription.Instance.Add (newChannelEntities);
 
                 #if (ENABLE_PUBNUB_LOGGING)
-                Helpers.LogChannelEntitiesDictionary();
+                Helpers.LogChannelEntitiesDictionary ();
                 #endif
 
                 if (!timetokenToUse.Equals (0)) {
                     lastSubscribeTimetokenForNewMultiplex = timetokenToUse;
-                } 
-                else if(subscribedChannels.Count>0)
-                {
+                } else if (subscribedChannels.Count > 0) {
                     AbortPreviousRequestAndFetchTimetoken<T> (subscribedChannels);
                     lastSubscribeTimetokenForNewMultiplex = lastSubscribeTimetoken;
                 }
                 MultiChannelSubscribeRequest<T> (respType, lastSubscribeTimetokenForNewMultiplex, false);
+            } 
+            #if (ENABLE_PUBNUB_LOGGING)
+            else {
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, channelsOrChannelGroupsAdded {1}, internet status {2}", 
+                    DateTime.Now.ToString (), channelsOrChannelGroupsAdded.ToString (), internetStatus.ToString ()), LoggingMethod.LevelInfo);
             }
+            #endif
+            /*} else {
+                string message = string.Format ("Internet unavailable. Channels/ChannelGroups {0}, {1} not subscribed", channel, channelGroup); 
+
+                PubnubCallbacks.CallErrorCallback<T> (message, errorCallback, PubnubErrorCode.NoInternet, 
+                    PubnubErrorSeverity.Info, errorLevel);
+                
+                #if (ENABLE_PUBNUB_LOGGING)
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, internet status {1}, message {2}", 
+                    DateTime.Now.ToString (), internetStatus.ToString (), message), LoggingMethod.LevelInfo);
+                #endif
+            }*/
         }
 
         private bool CheckAllChannelsAreUnsubscribed<T>()
@@ -1944,8 +1996,8 @@ namespace PubNubMessaging.Core
         {
             if (pubnetSystemActive && retriesExceeded)
             {
-            #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog(string.Format("DateTime {0}, Subscribe channel={1} - No internet connection. MAXed retries for internet ", 
+                #if (ENABLE_PUBNUB_LOGGING)
+                LoggingMethod.WriteToLog(string.Format("DateTime {0}, Subscribe channel={1} - No internet connection. MAXed retries for internet connection", 
                     DateTime.Now.ToString(), Helpers.GetNamesFromChannelEntities(channelEntities)), LoggingMethod.LevelInfo);
                 #endif
                 MultiplexExceptionHandler<T>(type, true, false);
@@ -2027,10 +2079,10 @@ namespace PubNubMessaging.Core
                 return;
             }
             List<ChannelEntity> channelEntities = Subscription.Instance.AllSubscribedChannelsAndChannelGroups;
-            if (CheckSystemActiveAndRetriesExceeded<T>(type, channelEntities))
+            /*if (CheckSystemActiveAndRetriesExceeded<T>(type, channelEntities))
             {
                 return;
-            }
+            }*/
 
             // Begin recursive subscribe
             try {
@@ -2079,7 +2131,8 @@ namespace PubNubMessaging.Core
             internetStatus = false;
             retryCount++;
             if (retryCount <= NetworkCheckMaxRetries) {
-                string cbMessage = string.Format ("DateTime {0} Internet Disconnected, retrying. Retry count {1} of {2}", DateTime.Now.ToString (), retryCount.ToString (), NetworkCheckMaxRetries);    
+                string cbMessage = string.Format ("DateTime {0} Internet Disconnected, retrying. Retry count {1} of {2}", 
+                    DateTime.Now.ToString (), retryCount.ToString (), NetworkCheckMaxRetries);    
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (cbMessage, LoggingMethod.LevelError);
                 #endif
@@ -2088,13 +2141,18 @@ namespace PubNubMessaging.Core
 
             } else {
                 retriesExceeded = true;
-                string cbMessage = string.Format ("DateTime {0} Internet Disconnected. Retries exceeded {1}. Unsubscribing connected channels.", DateTime.Now.ToString (), NetworkCheckMaxRetries);
+                string cbMessage = string.Format ("DateTime {0} Internet Disconnected. Retries exceeded {1}. Unsubscribing connected channels.", 
+                    DateTime.Now.ToString (), NetworkCheckMaxRetries);
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (cbMessage, LoggingMethod.LevelError);
                 #endif
 
                 //stop heartbeat.
-                keepHearbeatRunning = false;
+                StopHeartbeat<T>();
+                //reset internetStatus
+                List<ChannelEntity> subscribedChannels = Subscription.Instance.AllSubscribedChannelsAndChannelGroups;
+                ResetInternetCheckSettings(subscribedChannels);
+
                 coroutine.BounceRequest<T> (CurrentRequestType.Subscribe, null, false);
 
                 PubnubCallbacks.FireErrorCallbacksForAllChannels<T> (cbMessage, pubnubRequestState, 
