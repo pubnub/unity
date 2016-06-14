@@ -132,7 +132,7 @@ namespace PubNubMessaging.Core
             PubnubErrorFilter.Level errorLevel)
         {
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0} Exception= {1} for URL: {2}", DateTime.Now.ToString (), ex.ToString (), asynchRequestState.Request.RequestUri.ToString ()), LoggingMethod.LevelInfo);
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ProcessResponseCallbackExceptionHandler Exception= {1} for URL: {2}", DateTime.Now.ToString (), ex.ToString (), asynchRequestState.Request.RequestUri.ToString ()), LoggingMethod.LevelInfo);
             #endif
             UrlRequestCommonExceptionHandler<T> (ex.Message, asynchRequestState, asynchRequestState.Timeout, 
                 false, errorLevel);
@@ -143,9 +143,9 @@ namespace PubNubMessaging.Core
         {
             #if (ENABLE_PUBNUB_LOGGING)
             if (webEx.ToString ().Contains ("Aborted")) {
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, WebException: {1}", DateTime.Now.ToString (), webEx.ToString ()), LoggingMethod.LevelInfo);
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ProcessResponseCallbackWebExceptionHandler WebException: {1}", DateTime.Now.ToString (), webEx.ToString ()), LoggingMethod.LevelInfo);
             } else {
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, WebException: {1}", DateTime.Now.ToString (), webEx.ToString ()), LoggingMethod.LevelError);
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ProcessResponseCallbackWebExceptionHandler WebException: {1}", DateTime.Now.ToString (), webEx.ToString ()), LoggingMethod.LevelError);
             }
             #endif
 

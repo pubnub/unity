@@ -67,7 +67,7 @@ namespace PubNubMessaging.Core
                 #if (SILVERLIGHT || WINDOWS_PHONE || MONOTOUCH || __IOS__ || MONODROID || __ANDROID__)
                 System.Diagnostics.Debug.WriteLine(logText);
                 #elif (UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_IOS || UNITY_ANDROID || UNITY_5 || UNITY_WEBGL)
-                UnityEngine.Debug.Log (logText);
+                UnityEngine.Debug.Log (string.Format("\n** {0} \n", logText));
                 #else
                 try {
                     Trace.WriteLine (logText);

@@ -144,7 +144,7 @@ namespace PubNubMessaging.Core
                 channelEntity.ChannelParams.IsSubscribed = true;
                 channelEntitiesDictionary.Add (channelEntity.ChannelID, channelEntity.ChannelParams);
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, channelEntities key add {1} {2}", DateTime.Now.ToString (), 
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Add: channelEntities key add {1} {2}", DateTime.Now.ToString (), 
                     channelEntity.ChannelID.ChannelOrChannelGroupName, channelEntity.ChannelID.IsChannelGroup), LoggingMethod.LevelInfo);
                 #endif
             } else {
@@ -157,7 +157,7 @@ namespace PubNubMessaging.Core
                     channelEntitiesDictionary [channelEntity.ChannelID].UserState = channelEntity.ChannelParams.UserState;
                 }
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, channelEntities key update {1} {2}", DateTime.Now.ToString (), 
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Add: channelEntities key update {1} {2}", DateTime.Now.ToString (), 
                     channelEntity.ChannelID.ChannelOrChannelGroupName, channelEntity.ChannelID.IsChannelGroup), LoggingMethod.LevelInfo);
                 #endif
             }
@@ -178,7 +178,7 @@ namespace PubNubMessaging.Core
             ChannelParameters cp;
             bool bDeleted = channelEntitiesDictionary.Remove(channelEntity.ChannelID, out cp);
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, channelEntities key found {1} {2}", DateTime.Now.ToString (), 
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Delete: channelEntities key found {1} {2}", DateTime.Now.ToString (), 
                 channelEntity.ChannelID.ChannelOrChannelGroupName, bDeleted.ToString()), LoggingMethod.LevelInfo);
             #endif
 
@@ -222,7 +222,7 @@ namespace PubNubMessaging.Core
                     }
                 }
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, channelEntities subscription key/val {1} {2}", DateTime.Now.ToString (), 
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ResetChannelsAndChannelGroupsAndBuildState: channelEntities subscription key/val {1} {2}", DateTime.Now.ToString (), 
                     ci.Key.ChannelOrChannelGroupName, ci.Value.IsSubscribed), LoggingMethod.LevelInfo);
                 #endif
             }
@@ -286,6 +286,7 @@ namespace PubNubMessaging.Core
                 {
                     LoggingMethod.WriteToLog (string.Format ("DateTime {0}, UpdateIsAwaitingConnectCallbacksOfEntity not found key/val1 {1} {2}", DateTime.Now.ToString (), 
                         ce.ChannelID.ChannelOrChannelGroupName, ce.ChannelID.IsChannelGroup.ToString()), LoggingMethod.LevelInfo);
+                    Helpers.LogChannelEntitiesDictionary();
                 }
                 #endif
                 

@@ -36,15 +36,15 @@ namespace PubNubMessaging.Core
     internal static class Helpers
     {
         #region "Helpers"
-        internal static TimetokenMetadata CreateTimetokenMetadata (object timeTokenDataObject)
+        internal static TimetokenMetadata CreateTimetokenMetadata (object timeTokenDataObject, string whichTT)
         {
             Dictionary<string, object> timeTokenData = (Dictionary<string, object>)timeTokenDataObject;
-            TimetokenMetadata timetokenMetadata = new TimetokenMetadata (Utility.CheckKeyAndParseLong(timeTokenData, "timeToken", "t"), 
+            TimetokenMetadata timetokenMetadata = new TimetokenMetadata (Utility.CheckKeyAndParseLong(timeTokenData, whichTT, "t"), 
                 timeTokenData["r"].ToString());
 
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, \nTimetoken: {1} \nRegion: {2}", 
-                DateTime.Now.ToString (), timetokenMetadata.Timetoken, timetokenMetadata.Region), 
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, TimetokenMetadata: {1} \nTimetoken: {2} \nRegion: {3}", 
+                DateTime.Now.ToString (), whichTT, timetokenMetadata.Timetoken, timetokenMetadata.Region), 
                 LoggingMethod.LevelInfo);
             #endif
 
@@ -64,8 +64,8 @@ namespace PubNubMessaging.Core
                 string subscribeKey = (dict.Contains ("k")) ? dict ["k"].ToString () : "";
                 long sequenceNumber = Utility.CheckKeyAndParseLong (dict, "sequenceNumber", "s"); 
 
-                TimetokenMetadata originatingTimetoken = (dict.Contains ("o")) ? CreateTimetokenMetadata (dict ["o"]) : null;
-                TimetokenMetadata publishMetadata = (dict.Contains ("p")) ? CreateTimetokenMetadata (dict ["p"]) : null;
+                TimetokenMetadata originatingTimetoken = (dict.Contains ("o")) ? CreateTimetokenMetadata (dict ["o"], "Originating TT: ") : null;
+                TimetokenMetadata publishMetadata = (dict.Contains ("p")) ? CreateTimetokenMetadata (dict ["p"], "Publish TT: ") : null;
                 object userMetadata = (dict.Contains ("u")) ? (object)dict ["u"] : null;
 
                 SubscribeMessage subscribeMessage = new SubscribeMessage (
@@ -82,7 +82,7 @@ namespace PubNubMessaging.Core
                     userMetadata
                 );
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, " +
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, AddToSubscribeMessageList: \n" +
                     "shard : {1},\n" +
                     "subscriptionMatch: {2},\n" +
                     "channel: {3},\n" +
@@ -117,7 +117,7 @@ namespace PubNubMessaging.Core
             } 
             #if (ENABLE_PUBNUB_LOGGING)
             else {
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CreateListOfSubscribeMessage create " +
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, AddToSubscribeMessageList: CreateListOfSubscribeMessage create " +
                     "SubscribeMessage failed. dictObject type: {1}, dict type : {2}", 
                     DateTime.Now.ToString (), dictObject.ToString (), dict.ToString ()), LoggingMethod.LevelInfo);
             }
@@ -152,7 +152,7 @@ namespace PubNubMessaging.Core
             }
             #if (ENABLE_PUBNUB_LOGGING)
             else {
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CreateListOfSubscribeMessage no messages ",
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CreateListOfSubscribeMessage: no messages ",
                     DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
             }
             #endif
@@ -261,7 +261,7 @@ namespace PubNubMessaging.Core
 
                 }
             }
-            return string.Format ("channel(s) = {0} and channelGroups(s) = {1}", sbCh.ToString(), sbChGrp.ToString());
+            return string.Format ("GetNamesFromChannelEntities: channel(s) = {0} and channelGroups(s) = {1}", sbCh.ToString(), sbChGrp.ToString());
         }
 
         internal static bool UpdateOrAddUserStateOfEntity<T>(string channel, bool isChannelGroup, Dictionary<string, object> userState,
@@ -315,7 +315,7 @@ namespace PubNubMessaging.Core
         ){
             string channelOrChannelGroupName = channelOrChannelGroupName2.Trim ();
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog(string.Format("DateTime {0}, channelOrChannelGroupName {1}, {2}", DateTime.Now.ToString(), 
+            LoggingMethod.WriteToLog(string.Format("DateTime {0}, CreateChannelEntity: channelOrChannelGroupName {1}, {2}", DateTime.Now.ToString(), 
                 channelOrChannelGroupName.ToString(), channelOrChannelGroupName2.ToString()), LoggingMethod.LevelInfo);
             #endif
 
@@ -338,7 +338,7 @@ namespace PubNubMessaging.Core
                 return ce;
             } else {
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog(string.Format("DateTime {0}, channelOrChannelGroupName empty, is channel group {1}", DateTime.Now.ToString(), isChannelGroup.ToString()), LoggingMethod.LevelInfo);
+                LoggingMethod.WriteToLog(string.Format("DateTime {0}, CreateChannelEntity: channelOrChannelGroupName empty, is channel group {1}", DateTime.Now.ToString(), isChannelGroup.ToString()), LoggingMethod.LevelInfo);
                 #endif
 
                 return null;
@@ -362,11 +362,11 @@ namespace PubNubMessaging.Core
                     }
                 }
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, channelEntities={1}", DateTime.Now.ToString (), channelEntities.Count), LoggingMethod.LevelInfo);
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CreateChannelEntity 2: channelEntities={1}", DateTime.Now.ToString (), channelEntities.Count), LoggingMethod.LevelInfo);
                 #endif
             } else {
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog(string.Format("DateTime {0}, channelOrChannelGroupNames null, is channel group {1}", DateTime.Now.ToString(), isChannelGroup.ToString()), LoggingMethod.LevelInfo);
+                LoggingMethod.WriteToLog(string.Format("DateTime {0}, CreateChannelEntity 2: channelOrChannelGroupNames null, is channel group {1}", DateTime.Now.ToString(), isChannelGroup.ToString()), LoggingMethod.LevelInfo);
                 #endif
             }
 
@@ -408,15 +408,18 @@ namespace PubNubMessaging.Core
                     yield return item;
         }
 
+        #if (ENABLE_PUBNUB_LOGGING)
         internal static void LogChannelEntitiesDictionary(){
             StringBuilder sbLogs = new StringBuilder();
             foreach (var ci in Subscription.Instance.ChannelEntitiesDictionary) {
-                sbLogs.AppendFormat("\nChannelEntitiesDictionary \nChannelOrChannelGroupName:{0} \nIsChannelGroup:{1} \nIsPresenceChannel:{2}", 
+                sbLogs.AppendFormat("\nChannelEntitiesDictionary \nChannelOrChannelGroupName:{0} \nIsChannelGroup:{1} \nIsPresenceChannel:{2}\n", 
                     ci.Key.ChannelOrChannelGroupName, ci.Key.IsChannelGroup.ToString(), ci.Key.IsPresenceChannel.ToString()
                 );
             }
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, {1}", DateTime.Now.ToString (), sbLogs.ToString()), LoggingMethod.LevelInfo);
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, LogChannelEntitiesDictionary: Count: {2} \n{1}", 
+                DateTime.Now.ToString (), sbLogs.ToString(), Subscription.Instance.ChannelEntitiesDictionary.Count), LoggingMethod.LevelInfo);
         }
+        #endif
 
         internal static bool CreateChannelEntityAndAddToSubscribe <T>(ResponseType type, string[] rawChannels, bool isChannelGroup,
             Action<T> userCallback, Action<T> connectCallback, Action<PubnubClientError> errorCallback, 
@@ -440,7 +443,7 @@ namespace PubNubMessaging.Core
 
                     #if (ENABLE_PUBNUB_LOGGING)
                     Helpers.LogChannelEntitiesDictionary();
-                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, channel={1}", DateTime.Now.ToString (), channelName), LoggingMethod.LevelInfo);
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CreateChannelEntityAndAddToSubscribe: channel={1}", DateTime.Now.ToString (), channelName), LoggingMethod.LevelInfo);
                     #endif
 
                     //create channelEntity
@@ -454,7 +457,7 @@ namespace PubNubMessaging.Core
                             string message = string.Format ("{0}Channel Not Subscribed", (ce.ChannelID.IsPresenceChannel) ? "Presence " : "");
                             PubnubErrorCode errorType = (ce.ChannelID.IsPresenceChannel) ? PubnubErrorCode.NotPresenceSubscribed : PubnubErrorCode.NotSubscribed;
                             #if (ENABLE_PUBNUB_LOGGING)
-                            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, channel={1} response={2}", DateTime.Now.ToString (), channelName, message), LoggingMethod.LevelInfo);
+                            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CreateChannelEntityAndAddToSubscribe: channel={1} response={2}", DateTime.Now.ToString (), channelName, message), LoggingMethod.LevelInfo);
                             #endif
                             PubnubCallbacks.CallErrorCallback<T> (ce, message,
                                 errorType, PubnubErrorSeverity.Info, errorLevel);
@@ -469,7 +472,7 @@ namespace PubNubMessaging.Core
                             PubnubCallbacks.CallErrorCallback<T> (ce, message,
                                 errorType, PubnubErrorSeverity.Info, errorLevel);
                             #if (ENABLE_PUBNUB_LOGGING)
-                            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, channel={1} response={2}", DateTime.Now.ToString (), channelName, message), LoggingMethod.LevelInfo);
+                            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CreateChannelEntityAndAddToSubscribe: channel={1} response={2}", DateTime.Now.ToString (), channelName, message), LoggingMethod.LevelInfo);
                             #endif
                         } else {
                             channelEntities.Add (ce);
@@ -482,7 +485,7 @@ namespace PubNubMessaging.Core
                         message = "Invalid Channel Group Name";
                     }
                     #if (ENABLE_PUBNUB_LOGGING)
-                    LoggingMethod.WriteToLog(string.Format("DateTime {0}, channel={1} response={2}", DateTime.Now.ToString(), channelName, message), 
+                    LoggingMethod.WriteToLog(string.Format("DateTime {0}, CreateChannelEntityAndAddToSubscribe: channel={1} response={2}", DateTime.Now.ToString(), channelName, message), 
                         LoggingMethod.LevelInfo);
                     #endif
                     //PubnubCallbacks.CallErrorCallback<T>(message, errorCallback, PubnubErrorCode.InvalidChannel, 
@@ -506,14 +509,14 @@ namespace PubNubMessaging.Core
                 if (channelsOrChannelGroups.Length != channelsOrChannelGroups.Distinct ().Count ()) {
                     channelsOrChannelGroups = channelsOrChannelGroups.Distinct ().ToArray ();
                     #if (ENABLE_PUBNUB_LOGGING)
-                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, distinct channelsOrChannelGroups len={1}, channelsOrChannelGroups = {2}", 
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, RemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCommon: distinct channelsOrChannelGroups len={1}, channelsOrChannelGroups = {2}", 
                         DateTime.Now.ToString (), channelsOrChannelGroups.Length, string.Join(",", channelsOrChannelGroups)), 
                         LoggingMethod.LevelInfo);
                     #endif
 
                     string channel = string.Join (",", GetDuplicates (channelsOrChannelGroups).Distinct<string> ().ToArray<string> ());
                     #if (ENABLE_PUBNUB_LOGGING)
-                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, duplicates channelsOrChannelGroups {1}", 
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, RemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCommon: duplicates channelsOrChannelGroups {1}", 
                         DateTime.Now.ToString (), channel), 
                         LoggingMethod.LevelInfo);
                     #endif
@@ -524,7 +527,7 @@ namespace PubNubMessaging.Core
                         PubnubErrorSeverity.Info, errorLevel);
                 }
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, channelsOrChannelGroups len={1}, channelsOrChannelGroups = {2}", 
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, RemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCommon: channelsOrChannelGroups len={1}, channelsOrChannelGroups = {2}", 
                     DateTime.Now.ToString (), channelsOrChannelGroups.Length, string.Join(",", channelsOrChannelGroups)), 
                     LoggingMethod.LevelInfo);
                 #endif
@@ -533,7 +536,7 @@ namespace PubNubMessaging.Core
                     userCallback, connectCallback, errorCallback, wildcardPresenceCallback, disconnectCallback, errorLevel, unsubscribeCheck, ref channelEntities);
             } else {
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, channelsOrChannelGroups len <=0", 
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, RemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCommon: channelsOrChannelGroups len <=0", 
                     DateTime.Now.ToString ()), 
                     LoggingMethod.LevelInfo);
                 #endif
@@ -590,7 +593,7 @@ namespace PubNubMessaging.Core
                 }
                 #if (ENABLE_PUBNUB_LOGGING)
                 else {
-                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, resultSubscribeEnvelope.Messages null", 
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ProcessResponseCallbacksV2: resultSubscribeEnvelope.Messages null", 
                         DateTime.Now.ToString ()), LoggingMethod.LevelError);
                 }
                 #endif
@@ -719,7 +722,7 @@ namespace PubNubMessaging.Core
                         errorLevel, error);
 
                     #if (ENABLE_PUBNUB_LOGGING)
-                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, {1} Subscribe JSON network error response={2}", 
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CheckSubscribedChannelsAndSendCallbacks: {1} Subscribe JSON network error response={2}", 
                         DateTime.Now.ToString (), (channelEntity.ChannelID.IsPresenceChannel)?"Presence":"", message), LoggingMethod.LevelInfo);
                     #endif
 
@@ -745,7 +748,7 @@ namespace PubNubMessaging.Core
                 string multiChannelGroup = Helpers.GetNamesFromChannelEntities(pubnubRequestState.ChannelEntities, true);
                 if (!string.IsNullOrEmpty (jsonString)) {
                     #if (ENABLE_PUBNUB_LOGGING)
-                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, jsonString = {1}", DateTime.Now.ToString (), jsonString), LoggingMethod.LevelInfo);
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, WrapResultBasedOnResponseType: jsonString = {1}", DateTime.Now.ToString (), jsonString), LoggingMethod.LevelInfo);
                     #endif
                     object deSerializedResult = jsonPluggableLibrary.DeserializeToObject (jsonString);
                     List<object> result1 = ((IEnumerable)deSerializedResult).Cast<object> ().ToList ();
@@ -819,12 +822,12 @@ namespace PubNubMessaging.Core
                 } 
                 #if (ENABLE_PUBNUB_LOGGING)
                 else {
-                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, json string null ", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, WrapResultBasedOnResponseType: json string null ", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
                 }
                 #endif
             } catch (Exception ex) {
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, WrapResultBasedOnResponseType exception: {1} ", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, WrapResultBasedOnResponseType: exception: {1} ", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
                 #endif
                 ProcessWrapResultBasedOnResponseTypeException<T> (pubnubRequestState, errorLevel, ex);
             }
@@ -877,7 +880,7 @@ namespace PubNubMessaging.Core
                         {
                             added = true;
                             #if (ENABLE_PUBNUB_LOGGING)
-                            LoggingMethod.WriteToLog(string.Format("DateTime {0}, collection: {1} in type: {2}", DateTime.Now.ToString(), c.ToString(), c.GetType().ToString()), LoggingMethod.LevelInfo);
+                            LoggingMethod.WriteToLog(string.Format("DateTime {0}, CreateMessageList: collection: {1} in type: {2}", DateTime.Now.ToString(), c.ToString(), c.GetType().ToString()), LoggingMethod.LevelInfo);
                             #endif
                             messageList[j] = c;
                         }
@@ -885,7 +888,7 @@ namespace PubNubMessaging.Core
                         {
                             added = true;
                             #if (ENABLE_PUBNUB_LOGGING)
-                            LoggingMethod.WriteToLog(string.Format("DateTime {0}, collection: {1} in type: {2}", DateTime.Now.ToString(), c.ToString(), c.GetType().ToString()), LoggingMethod.LevelInfo);
+                            LoggingMethod.WriteToLog(string.Format("DateTime {0}, CreateMessageList: collection: {1} in type: {2}", DateTime.Now.ToString(), c.ToString(), c.GetType().ToString()), LoggingMethod.LevelInfo);
                             #endif
                             messageList[j] = c.ToString();
                         }
@@ -896,14 +899,14 @@ namespace PubNubMessaging.Core
                                 messageList[j] = c;
                                 added = true;
                                 #if (ENABLE_PUBNUB_LOGGING)
-                                LoggingMethod.WriteToLog(string.Format("DateTime {0}, collection other types: {1} in type: {2}", DateTime.Now.ToString(), c.ToString(), c.GetType().ToString()), LoggingMethod.LevelInfo);
+                                LoggingMethod.WriteToLog(string.Format("DateTime {0}, CreateMessageList: collection other types: {1} in type: {2}", DateTime.Now.ToString(), c.ToString(), c.GetType().ToString()), LoggingMethod.LevelInfo);
                                 #endif
                             }
                             catch (Exception ex)
                             {
                                 added = false;
                                 #if (ENABLE_PUBNUB_LOGGING)
-                                LoggingMethod.WriteToLog(string.Format("DateTime {0}, collection other types: {1} in type: {2}, exception {3} ", DateTime.Now.ToString(), c.ToString(), c.GetType().ToString(), ex.ToString()), LoggingMethod.LevelInfo);
+                                LoggingMethod.WriteToLog(string.Format("DateTime {0}, CreateMessageList: collection other types: {1} in type: {2}, exception {3} ", DateTime.Now.ToString(), c.ToString(), c.GetType().ToString(), ex.ToString()), LoggingMethod.LevelInfo);
                                 #endif
                             }
                         }
@@ -943,7 +946,7 @@ namespace PubNubMessaging.Core
                     {
                         decodeMessage = messageList[messageIndex].ToString();
                         #if (ENABLE_PUBNUB_LOGGING)
-                        LoggingMethod.WriteToLog(string.Format("DateTime {0}, decodeMessage Exception: {1}", DateTime.Now.ToString(), decryptEx.ToString()), LoggingMethod.LevelError);
+                        LoggingMethod.WriteToLog(string.Format("DateTime {0}, AddMessageToList: decodeMessage Exception: {1}", DateTime.Now.ToString(), decryptEx.ToString()), LoggingMethod.LevelError);
                         #endif
                     }
                     itemMessage.Add(decodeMessage);
@@ -969,7 +972,7 @@ namespace PubNubMessaging.Core
             itemMessage.Add(currentChannel.Replace(Utility.PresenceChannelSuffix, ""));
 
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog(string.Format("DateTime {0}, messageList: {1} index {2}, timestamp {3}, channel {4}, channelGroup {5}", 
+            LoggingMethod.WriteToLog(string.Format("DateTime {0}, AddMessageToList: messageList: {1} index {2}, timestamp {3}, channel {4}, channelGroup {5}", 
                 DateTime.Now.ToString(), messageList[messageIndex], messageIndex.ToString(), 
                 messages[1].ToString(), currentChannel, channelGroup), LoggingMethod.LevelInfo);
             #endif
@@ -982,7 +985,7 @@ namespace PubNubMessaging.Core
             IJsonPluggableLibrary jsonPluggableLibrary, object[] messages)
         {
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, messageList typeOF: {1}", DateTime.Now.ToString (), 
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ResponseToUserCallbackForSubscribeSendCallbacks: messageList typeOF: {1}", DateTime.Now.ToString (), 
                 messages [0].GetType ().ToString ()), LoggingMethod.LevelInfo);
             #endif
 
@@ -992,7 +995,7 @@ namespace PubNubMessaging.Core
             string[] messageChannels = messages [2].ToString ().Split (',');
 
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog(string.Format("DateTime {0}, (messageChannels: {1}", DateTime.Now.ToString(), messageChannels.ToString()), LoggingMethod.LevelInfo);
+            LoggingMethod.WriteToLog(string.Format("DateTime {0}, ResponseToUserCallbackForSubscribeSendCallbacks: messageChannels: {1}", DateTime.Now.ToString(), messageChannels.ToString()), LoggingMethod.LevelInfo);
             #endif
 
             if (messageList != null && messageList.Length > 0)
@@ -1008,7 +1011,7 @@ namespace PubNubMessaging.Core
                     }
                     #if (ENABLE_PUBNUB_LOGGING)
                     else {
-                        LoggingMethod.WriteToLog(string.Format("DateTime {0}, ChannelEntity null: {1} index {2}", DateTime.Now.ToString(),
+                        LoggingMethod.WriteToLog(string.Format("DateTime {0}, ResponseToUserCallbackForSubscribeSendCallbacks: ChannelEntity null: {1} index {2}", DateTime.Now.ToString(),
                             messageChannels.ToString(), messageIndex.ToString()), LoggingMethod.LevelInfo);
                     }
                     #endif
@@ -1049,9 +1052,9 @@ namespace PubNubMessaging.Core
                     }
                     catch (Exception decryptEx)
                     {
-                        decodeMessage = subscribeMessage.Payload.ToString();
+                        decodeMessage = subscribeMessage.Payload;
                         #if (ENABLE_PUBNUB_LOGGING)
-                        LoggingMethod.WriteToLog(string.Format("DateTime {0}, decodeMessage Exception: {1}", DateTime.Now.ToString(), decryptEx.ToString()), LoggingMethod.LevelError);
+                        LoggingMethod.WriteToLog(string.Format("DateTime {0}, AddMessageToListV2: decodeMessage Exception: {1}", DateTime.Now.ToString(), decryptEx.ToString()), LoggingMethod.LevelError);
                         #endif
                     }
                     itemMessage.Add(decodeMessage);
@@ -1074,7 +1077,7 @@ namespace PubNubMessaging.Core
             ChannelEntity ce = channelEntities.Find(x => x.ChannelID.Equals(ci));
             if (ce != null) {
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog(string.Format("DateTime {0}, ChannelEntity : {1}  cg?={2} ispres?={3}", DateTime.Now.ToString(),
+                LoggingMethod.WriteToLog(string.Format("DateTime {0}, FindChannelEntityAndCallback: \n ChannelEntity : {1}  cg?={2} ispres?={3}", DateTime.Now.ToString(),
                     ce.ChannelID.ChannelOrChannelGroupName, ce.ChannelID.IsChannelGroup.ToString(),
                     ce.ChannelID.IsPresenceChannel.ToString()
                 ), LoggingMethod.LevelInfo);
@@ -1089,7 +1092,7 @@ namespace PubNubMessaging.Core
 
                 if ((subscribeMessage.SubscriptionMatch.Contains (".*")) && Utility.IsPresenceChannel(subscribeMessage.Channel)) {
                     #if (ENABLE_PUBNUB_LOGGING)
-                    LoggingMethod.WriteToLog(string.Format("DateTime {0}, Wildcard match ChannelEntity : {1} ", DateTime.Now.ToString(),
+                    LoggingMethod.WriteToLog(string.Format("DateTime {0}, FindChannelEntityAndCallback: Wildcard match ChannelEntity : {1} ", DateTime.Now.ToString(),
                         ce.ChannelID.ChannelOrChannelGroupName
                     ), LoggingMethod.LevelInfo);
                     #endif
@@ -1108,7 +1111,7 @@ namespace PubNubMessaging.Core
                         channelEntity.ChannelID.IsPresenceChannel.ToString()
                     );
                 }
-                LoggingMethod.WriteToLog(string.Format("DateTime {0}, ChannelEntity : null ci.name {1} \nChannelEntities: \n {2}", DateTime.Now.ToString(),
+                LoggingMethod.WriteToLog(string.Format("DateTime {0}, FindChannelEntityAndCallback: ChannelEntity : null ci.name {1} \nChannelEntities: \n {2}", DateTime.Now.ToString(),
                     ci.ChannelOrChannelGroupName, sbChannelEntity.ToString()), LoggingMethod.LevelInfo);
             }
             #endif
@@ -1125,7 +1128,7 @@ namespace PubNubMessaging.Core
              
             foreach (SubscribeMessage subscribeMessage in subscribeMessages){
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SubscribeMessage:\n" +
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ResponseToUserCallbackForSubscribeV2:\n SubscribeMessage:\n" +
                     "shard : {1},\n" +
                     "subscriptionMatch: {2},\n" +
                     "channel: {3},\n" +
@@ -1189,7 +1192,7 @@ namespace PubNubMessaging.Core
                 select item as object).ToArray ();
 
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, result: {1}", DateTime.Now.ToString (), result.ToString ()), LoggingMethod.LevelInfo);
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ResponseToUserCallbackForSubscribe result: {1}", DateTime.Now.ToString (), result.ToString ()), LoggingMethod.LevelInfo);
             #endif
 
             if (messages != null && messages.Length > 0) {
@@ -1249,14 +1252,16 @@ namespace PubNubMessaging.Core
         {
             //Check callback exists and make sure previous timetoken = 0
             if (asynchRequestState.ChannelEntities != null) {
+                bool updateIsAwaitingConnectCallback = false;
                 foreach (ChannelEntity channelEntity in asynchRequestState.ChannelEntities) {
                     #if (ENABLE_PUBNUB_LOGGING)
-                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ResponseToConnectCallback {1}", 
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Check ResponseToConnectCallback {1}", 
                         DateTime.Now.ToString (), channelEntity.ChannelID.ChannelOrChannelGroupName), LoggingMethod.LevelInfo);
                     #endif
 
 
                     if (channelEntity.ChannelParams.IsAwaitingConnectCallback) {
+                        updateIsAwaitingConnectCallback = true;
                         #if (ENABLE_PUBNUB_LOGGING)
                         LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ResponseToConnectCallback IsAwaitingConnectCallback {1}", 
                             DateTime.Now.ToString (), channelEntity.ChannelID.ChannelOrChannelGroupName), LoggingMethod.LevelInfo);
@@ -1282,7 +1287,9 @@ namespace PubNubMessaging.Core
                         }
                     }
                 }
-                Subscription.Instance.UpdateIsAwaitingConnectCallbacksOfEntity(asynchRequestState.ChannelEntities, false);
+                if (updateIsAwaitingConnectCallback) {
+                    Subscription.Instance.UpdateIsAwaitingConnectCallbacksOfEntity (asynchRequestState.ChannelEntities, false);
+                }
             }
 
         }
@@ -1391,7 +1398,7 @@ namespace PubNubMessaging.Core
             );
 
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, PubnubClientError = {1}", DateTime.Now.ToString (), error.ToString ()), LoggingMethod.LevelInfo);
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, PubnubClientError 2 = {1}", DateTime.Now.ToString (), error.ToString ()), LoggingMethod.LevelInfo);
             #endif
             return error;
         }
@@ -1416,7 +1423,7 @@ namespace PubNubMessaging.Core
             );
 
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, PubnubClientError = {1}", DateTime.Now.ToString (), error.ToString ()), LoggingMethod.LevelInfo);
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, PubnubClientError 3 = {1}", DateTime.Now.ToString (), error.ToString ()), LoggingMethod.LevelInfo);
             #endif
             return error;
         }
@@ -1441,7 +1448,7 @@ namespace PubNubMessaging.Core
             );
 
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, PubnubClientError = {1}", DateTime.Now.ToString (), error.ToString ()), LoggingMethod.LevelInfo);
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, PubnubClientError 4 = {1}", DateTime.Now.ToString (), error.ToString ()), LoggingMethod.LevelInfo);
             #endif
             return error;
         }

@@ -1597,6 +1597,7 @@ public class PubnubExample : MonoBehaviour
     {
         if (pubnub != null) {
             pubnub.EndPendingRequests ();
+            pubnub.CleanUp ();
             pubnub = null;
         }
     }
