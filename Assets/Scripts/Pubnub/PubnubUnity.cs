@@ -711,7 +711,7 @@ namespace PubNubMessaging.Core
                 this.ssl, this.Origin, authenticationKey, this.publishKey, this.subscribeKey, this.cipherKey, this.secretKey);
 
             RequestState<T> requestState = BuildRequests.BuildRequestState<T> (channelEntity, ResponseType.GrantAccess, false,
-                0, false, 0, null);
+                                               0, false, 0, null, "", userCallback, errorCallback);
 
             return UrlProcessRequest<T> (request, requestState); 
         }
@@ -754,7 +754,7 @@ namespace PubNubMessaging.Core
                     userCallback, null, errorCallback, null, null);
 
                 requestState = BuildRequests.BuildRequestState<T> (channelEntity, 
-                     ResponseType.AuditAccess, false, 0, false, 0, null);
+                    ResponseType.AuditAccess, false, 0, false, 0, null, "", userCallback, errorCallback);
             }
 
             UrlProcessRequest<T> (request, requestState);
@@ -1087,6 +1087,9 @@ namespace PubNubMessaging.Core
             publishMessageCounter.Reset ();
         }
 
+    /// <summary>
+    /// must be called on reset.
+    /// </summary>
         public void CleanUp (){
             publishMessageCounter.Reset ();
 
@@ -1219,8 +1222,9 @@ namespace PubNubMessaging.Core
                     //channels = channels.Where (s => s.Contains (Utility.PresenceChannelSuffix) == false).ToArray ();
 
                     //if (channels != null && channels.Length > 0) {
-                if(Subscription.Instance.AllPresenceChannelsOrChannelGroups.Count > 0){
-                        isPresenceHearbeatRunning = true;
+                if((Subscription.Instance.AllPresenceChannelsOrChannelGroups.Count <= 0) 
+                    && (Subscription.Instance.AllNonPresenceChannelsOrChannelGroups.Count > 0)){
+                    isPresenceHearbeatRunning = true;
                     string channelsJsonState = Subscription.Instance.CompiledUserState;
 
                     Uri requestUrl = BuildRequests.BuildPresenceHeartbeatRequest (Helpers.GetNamesFromChannelEntities(Subscription.Instance.AllChannels, false), 
@@ -1237,7 +1241,7 @@ namespace PubNubMessaging.Core
                     #if (ENABLE_PUBNUB_LOGGING)
                     LoggingMethod.WriteToLog (string.Format ("DateTime {0}, StartPresenceHeartbeat: PresenceHeartbeat running for {1}", DateTime.Now.ToString (), pubnubRequestState.ID), LoggingMethod.LevelInfo);
                     #endif
-                    //}
+                //}
                 }
             }
             catch (Exception ex) {
@@ -1755,7 +1759,7 @@ namespace PubNubMessaging.Core
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, RunRequests: Heartbeat started", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
                 #endif
-                if (Subscription.Instance.HasPresenceChannels && (PresenceHeartbeatInterval > 0)){
+                if (PresenceHeartbeatInterval > 0){
                     RunPresenceHeartbeat<T> (false, PresenceHeartbeatInterval, pubnubRequestStateHB);
                 }
                 //RequestCounter (CurrentRequestType.Subscribe, true);
@@ -1969,7 +1973,7 @@ namespace PubNubMessaging.Core
                     lastSubscribeTimetokenForNewMultiplex = lastSubscribeTimetoken;
                 }
                 AbortPreviousRequest<T> (subscribedChannels);
-                MultiChannelSubscribeRequest<T> (respType, lastSubscribeTimetokenForNewMultiplex, false);
+                MultiChannelSubscribeRequest<T> (respType, 0, false);
             } 
             #if (ENABLE_PUBNUB_LOGGING)
             else {
@@ -2130,7 +2134,7 @@ namespace PubNubMessaging.Core
                 string filterExpr = (!string.IsNullOrEmpty(this.FilterExpr)) ? this.FilterExpr : string.Empty;
                 Uri requestUrl = BuildRequests.BuildMultiChannelSubscribeRequestV2 (channels,
                     channelGroups, lastTimetoken.ToString(), channelsJsonState, this.SessionUUID, this.Region, 
-                    filterExpr, this.ssl, this.Origin, authenticationKey, this.subscribeKey);
+                    filterExpr, this.ssl, this.Origin, authenticationKey, this.subscribeKey, this.PresenceHeartbeat);
 
                 RequestState<T> pubnubRequestState = BuildRequests.BuildRequestState<T> (channelEntities, type, reconnect, 
                      0, false, Convert.ToInt64 (timetoken.ToString ()), typeof(T));

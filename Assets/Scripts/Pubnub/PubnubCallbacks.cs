@@ -70,18 +70,21 @@ namespace PubNubMessaging.Core
         {
             if ((itemMessage != null) && (itemMessage.Count > 0)) {
                 SendCallbackChannelEntity<T> (jsonPluggableLibrary, channelEntity, itemMessage, callbackType, checkType);
-            } else {
-                #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SendCallbacks itemMessage null", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
-                #endif
+            } 
+            #if (ENABLE_PUBNUB_LOGGING)
+            else {
+                
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SendCallbacks: itemMessage null", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+
             }
+            #endif
         }
 
         internal static void SendCallbackChannelEntity<T>(IJsonPluggableLibrary jsonPluggableLibrary, ChannelEntity channelEntity, 
             List<object> itemMessage, CallbackType callbackType, bool checkType)
         {
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SendCallbackChannelEntity currentChannel: {1},  typeof(T): {2}, TypeParameterType: {3}", DateTime.Now.ToString (), 
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SendCallbackChannelEntity: currentChannel: {1},  typeof(T): {2}, TypeParameterType: {3}", DateTime.Now.ToString (), 
                 channelEntity.ChannelID.ChannelOrChannelGroupName,
                 typeof(T).ToString (), channelEntity.ChannelParams.TypeParameterType
             ), LoggingMethod.LevelInfo);
@@ -104,7 +107,7 @@ namespace PubNubMessaging.Core
                 SendCallbacks<T> (jsonPluggableLibrary, asynchRequestState.ChannelEntities, itemMessage, callbackType, checkType);
             } else {
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0} Callback type={1}", DateTime.Now.ToString (), callbackType.ToString()), LoggingMethod.LevelInfo);
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SendCallbacks1: Callback type={1}", DateTime.Now.ToString (), callbackType.ToString()), LoggingMethod.LevelInfo);
                 #endif
 
                 if (callbackType.Equals(CallbackType.Success)) {
@@ -134,7 +137,7 @@ namespace PubNubMessaging.Core
             if (channelEntities != null) {
                 if ((itemMessage != null) && (itemMessage.Count > 0)) {
                     #if (ENABLE_PUBNUB_LOGGING)
-                    LoggingMethod.WriteToLog (string.Format ("DateTime {0} itemMessage.Count={1} {2}", DateTime.Now.ToString (), 
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SendCallbacks2: itemMessage.Count={1} {2}", DateTime.Now.ToString (), 
                         itemMessage.Count.ToString(), channelEntities.Count.ToString()
                     ), LoggingMethod.LevelInfo);
                     #endif
@@ -142,17 +145,23 @@ namespace PubNubMessaging.Core
                     foreach (ChannelEntity channelEntity in channelEntities) {
                         SendCallbackChannelEntity<T> (jsonPluggableLibrary, channelEntity, itemMessage, callbackType, checkType);
                     }
-                } else {
-                    #if (ENABLE_PUBNUB_LOGGING)
-                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, itemMessage null or count <0", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
-                    #endif
-                }
-            } else {
+                } 
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, channelEntities null", 
-                    DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+                else {
+                    
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SendCallbacks2: itemMessage null or count <0", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+
+                }
                 #endif
+            } 
+            #if (ENABLE_PUBNUB_LOGGING)
+            else {
+                
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SendCallbacks2: channelEntities null", 
+                    DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+                
             }
+            #endif
         }
 
         internal static void SendCallback<T>(IJsonPluggableLibrary jsonPluggableLibrary, ChannelEntity channelEntity, 
@@ -160,11 +169,13 @@ namespace PubNubMessaging.Core
             PubnubChannelCallback<T> channelCallbacks = channelEntity.ChannelParams.Callbacks as PubnubChannelCallback<T>;
             if (channelCallbacks != null) {
                 SendCallbackBasedOnType<T> (jsonPluggableLibrary, channelCallbacks, itemMessage, callbackType);
-            } else {
-                #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, channelCallbacks null", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
-                #endif
+            } 
+            #if (ENABLE_PUBNUB_LOGGING)
+            else {
+                
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SendCallbacks3: channelCallbacks null", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
             }
+            #endif
         }
 
         /*internal static void SendConnectCallback<T> (IJsonPluggableLibrary jsonPluggableLibrary, 
@@ -202,27 +213,59 @@ namespace PubNubMessaging.Core
             PubnubErrorSeverity severity, PubnubErrorCode errorType, 
             ResponseType responseType, PubnubErrorFilter.Level errorLevel)
         {
-            foreach (ChannelEntity channelEntity in channelEntities) {
-                string channel = "";
-                string channelGroup = "";
-                if (channelEntity.ChannelID.IsChannelGroup) {
-                    channelGroup = channelEntity.ChannelID.ChannelOrChannelGroupName;
-                } else {
-                    channel = channelEntity.ChannelID.ChannelOrChannelGroupName;
-                }
+            if ((channelEntities != null) && (channelEntities.Count > 0)) {
+                foreach (ChannelEntity channelEntity in channelEntities) {
+                    string channel = "";
+                    string channelGroup = "";
+                    if (channelEntity.ChannelID.IsChannelGroup) {
+                        channelGroup = channelEntity.ChannelID.ChannelOrChannelGroupName;
+                    } else {
+                        channel = channelEntity.ChannelID.ChannelOrChannelGroupName;
+                    }
 
-                PubnubClientError error = null;
-                if (ex != null) {
-                    error = Helpers.CreatePubnubClientError<T> (ex, requestState, PubnubErrorCode.None,
-                        severity, channel, channelGroup);  
-                } else {
-                    error = Helpers.CreatePubnubClientError<T> (message, requestState, PubnubErrorCode.None,
-                        severity, channel, channelGroup);  
-                }
+                    PubnubClientError error = null;
+                    if (ex != null) {
+                        error = Helpers.CreatePubnubClientError<T> (ex, requestState, PubnubErrorCode.None,
+                            severity, channel, channelGroup);  
+                    } else {
+                        error = Helpers.CreatePubnubClientError<T> (message, requestState, PubnubErrorCode.None,
+                            severity, channel, channelGroup);  
+                    }
 
-                FireErrorCallback<T> (channelEntity,
-                     errorLevel, error);
+                    FireErrorCallback<T> (channelEntity,
+                        errorLevel, error);
+                }
             }
+
+            else {
+                if ((requestState != null) && (requestState.ErrorCallback != null)) {
+                    PubnubClientError error = null;
+                    if (ex != null) {
+                        error = Helpers.CreatePubnubClientError<T> (ex, requestState, PubnubErrorCode.None,
+                            severity, "", "");  
+                    } else {
+                        error = Helpers.CreatePubnubClientError<T> (message, requestState, PubnubErrorCode.None,
+                            severity, "", "");  
+                    }
+
+                    GoToCallback (error, requestState.ErrorCallback, errorLevel);
+                }
+                #if (ENABLE_PUBNUB_LOGGING)
+                else {
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, FireErrorCallbacksForAllChannelsCommon: {1}",
+                        DateTime.Now.ToString (),
+                        (requestState!=null)?"ErrorCallback null":"requestState null"
+                    ), LoggingMethod.LevelInfo);
+
+                }
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, FireErrorCallbacksForAllChannelsCommon: channelEntities count: {1}",
+                    DateTime.Now.ToString (),
+                    (channelEntities!=null)?channelEntities.Count.ToString():"channelEntities null"
+                ), LoggingMethod.LevelInfo);
+                #endif
+            }
+
+
         }
 
         /*internal static void FireErrorCallbacksForAllChannels<T> (Exception ex, List<ChannelEntity> channelEntities,

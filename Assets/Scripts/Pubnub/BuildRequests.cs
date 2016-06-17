@@ -25,29 +25,13 @@ namespace PubNubMessaging.Core
             List<ChannelEntity> channelGroupEntities = Helpers.CreateChannelEntity (channelGroups, false, true, null, userCallback, null, 
                 errorCallback, null, null);*/
         #region "Build Request State"
+
         internal static RequestState<T> BuildRequestState<T>(List<ChannelEntity> channelEntities, ResponseType responseType, 
-            bool reconnect, long id, bool timeout, long timetoken, Type typeParam
+                bool reconnect, long id, bool timeout, long timetoken, Type typeParam, string uuid,
+                Action<T> userCallback, Action<PubnubClientError> errorCallback
         ){
             RequestState<T> requestState = new RequestState<T> ();
             requestState.ChannelEntities = channelEntities;
-            requestState.RespType = responseType;
-            requestState.Reconnect = reconnect;
-            requestState.SuccessCallback = null;
-            requestState.ErrorCallback = null;
-            requestState.ID = id;
-            requestState.Timeout = timeout;
-            requestState.Timetoken = timetoken;
-            requestState.TypeParameterType = typeParam;
-
-            return requestState;
-        }
-
-        
-        internal static RequestState<T> BuildRequestState<T>(Action<T> userCallback, Action<PubnubClientError> errorCallback, ResponseType responseType, 
-                bool reconnect, long id, bool timeout, long timetoken, Type typeParam, string uuid
-        ){
-            RequestState<T> requestState = new RequestState<T> ();
-            requestState.ChannelEntities = null;
             requestState.RespType = responseType;
             requestState.Reconnect = reconnect;
             requestState.SuccessCallback = userCallback;
@@ -58,6 +42,20 @@ namespace PubNubMessaging.Core
             requestState.TypeParameterType = typeParam;
             requestState.UUID = uuid;
             return requestState;
+        }
+
+        internal static RequestState<T> BuildRequestState<T>(List<ChannelEntity> channelEntities, ResponseType responseType, 
+            bool reconnect, long id, bool timeout, long timetoken, Type typeParam
+        ){
+            return BuildRequestState<T> (channelEntities, responseType, reconnect, id, timeout, timetoken,
+                typeParam, "", null, null);
+        }
+        
+        internal static RequestState<T> BuildRequestState<T>(Action<T> userCallback, Action<PubnubClientError> errorCallback, ResponseType responseType, 
+                bool reconnect, long id, bool timeout, long timetoken, Type typeParam, string uuid
+        ){
+                return BuildRequestState<T> (null, responseType, reconnect, id, timeout, timetoken,
+                    typeParam, uuid, userCallback, errorCallback);
         }
 
         #endregion
@@ -526,7 +524,7 @@ namespace PubNubMessaging.Core
 
         internal static Uri BuildMultiChannelSubscribeRequestV2 (string channels, string channelGroups, string timetoken, 
                 string channelsJsonState, string uuid, string region, string filterExpr,
-            bool ssl, string origin, string authenticationKey, string subscribeKey)
+                bool ssl, string origin, string authenticationKey, string subscribeKey, int presenceHeartbeat)
         {
             StringBuilder subscribeParamBuilder = new StringBuilder ();
             subscribeParamBuilder.AppendFormat ("&tt={0}", timetoken);
@@ -555,7 +553,7 @@ namespace PubNubMessaging.Core
             url.Add (string.IsNullOrEmpty(channels) ? "," : channels);
             url.Add ("0");
 
-            return BuildRestApiRequest<Uri> (url, ResponseType.SubscribeV2, uuid, ssl, origin, 0, authenticationKey, subscribeParamBuilder.ToString ());
+            return BuildRestApiRequest<Uri> (url, ResponseType.SubscribeV2, uuid, ssl, origin, presenceHeartbeat, authenticationKey, subscribeParamBuilder.ToString ());
         }
 
         internal static Uri BuildAddChannelsToChannelGroupRequest(string[] channels, string nameSpace, string groupName, string uuid,
@@ -869,7 +867,7 @@ namespace PubNubMessaging.Core
 
                     url = AppendUUIDToURL(url, uuid, true);
                     url.Append (parameters);
-                    url = AppendPresenceHeartbeatToURL(url, pubnubPresenceHeartbeatInSeconds);
+                    //url = AppendPresenceHeartbeatToURL(url, pubnubPresenceHeartbeatInSeconds);
                     url = AppendAuthKeyToURL(url, authenticationKey, type);
                     url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
                     break;

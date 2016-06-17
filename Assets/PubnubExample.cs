@@ -105,7 +105,7 @@ public class PubnubExample : MonoBehaviour
     Rect publishWindowRect = new Rect (60, 365, 300, 250);
     Rect authWindowRect = new Rect (60, 365, 300, 200);
     Rect textWindowRect = new Rect (60, 365, 300, 250);
-    Rect textWindowRect2 = new Rect (60, 365, 300, 250);
+    Rect textWindowRect2 = new Rect (60, 365, 300, 300);
     bool allowUserSettingsChange = true;
     float fLeft = 20;
     float fLeftInit = 20;
@@ -275,8 +275,8 @@ public class PubnubExample : MonoBehaviour
             } else if (state == PubnubState.RevokePresence) {
                 authWindowRect = GUI.ModalWindow (0, authWindowRect, DoRevokePresenceWindow, "Revoke Presence");
             } else if (state == PubnubState.RevokeSubscribe) {
-                authWindowRect = GUI.ModalWindow (0, authWindowRect, DoRevokeSubscribeWindow, "Revoke Subscribe");
-            } else if (state == PubnubState.PresenceInterval) {*/
+                authWindowRect = GUI.ModalWindow (0, authWindowRect, DoRevokeSubscribeWindow, "Revoke Subscribe");*/
+            } else if (state == PubnubState.PresenceInterval) {
                 authWindowRect = GUI.ModalWindow (0, authWindowRect, DoPresenceIntervalWindow, "Presence Interval");
             } else if (state == PubnubState.DetailedHistory) {
                 authWindowRect = GUI.ModalWindow (0, authWindowRect, DoDetailedHistory, "Detailed History");

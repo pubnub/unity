@@ -1,4 +1,4 @@
-#define REDUCE_PUBNUB_COROUTINES
+//#define REDUCE_PUBNUB_COROUTINES
 using System;
 using System.Linq;
 using UnityEngine;
@@ -426,7 +426,6 @@ namespace PubNubMessaging.Core
             #if (ENABLE_PUBNUB_LOGGING)
             LoggingMethod.WriteToLog (string.Format ("DateTime {0}, REDUCE_PUBNUB_COROUTINES is set.",
                 DateTime.Now.ToString ()
-                //t.ToString()
             ), LoggingMethod.LevelInfo);
             #endif
         }
@@ -434,9 +433,11 @@ namespace PubNubMessaging.Core
         void Update() {
             //if ((Time.time - t) > .20) {
                 //t = Time.time;
-                /*#if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Update {1} {2}", DateTime.Now.ToString (), t.ToString (), (Time.time - t).ToString()), LoggingMethod.LevelInfo);
-                #endif*/
+                /*
+                 * #if (ENABLE_PUBNUB_LOGGING)
+                 * LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Update {1} {2}", DateTime.Now.ToString (), t.ToString (), (Time.time - t).ToString()), LoggingMethod.LevelInfo);
+                 * #endif
+                */
                 
                 if (runSubscribeTimer) {
                     subscribeTimer -= Time.deltaTime;
@@ -823,7 +824,7 @@ namespace PubNubMessaging.Core
                         LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ProcessResponse: WWW Sub {1}\n Error: {2}\n, text: {3}\n URL: {4}", 
                             DateTime.Now.ToString (), cp.crt.ToString (), www.error, www.text, www.url), LoggingMethod.LevelInfo);
                         #endif
-                        message = string.Format ("Error: {0}, Text: {1}", www.error, www.text);
+                        message = string.Format ("{0}\"Error\": \"{1}\", \"Description\": {2}{3}", "{", www.error, www.text, "}");
                         isError = true;
                     } 
 
