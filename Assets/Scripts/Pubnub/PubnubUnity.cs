@@ -794,7 +794,7 @@ namespace PubNubMessaging.Core
                 } else {
                     string userState = "";
                     List<ChannelEntity> channelEntities;
-                    if (Helpers.CheckAndAddExistingUserState<T> (channel, channelGroup, deserializeUserState, errorCallback, errorLevel,
+                    if (Helpers.CheckAndAddExistingUserState<T> (channel, channelGroup, deserializeUserState, userCallback, errorCallback, errorLevel,
                         out userState, out channelEntities
                     )) {
                         SharedSetUserState<T> (channel, channelGroup,
@@ -810,7 +810,8 @@ namespace PubNubMessaging.Core
             string userState = "";
             List<ChannelEntity> channelEntities;
             if (Helpers.CheckAndAddExistingUserState<T> (channel, channelGroup, 
-                new Dictionary<string, object> { { keyValuePair.Key, keyValuePair.Value } }, errorCallback, errorLevel, out userState, out channelEntities
+                new Dictionary<string, object> { { keyValuePair.Key, keyValuePair.Value } }, userCallback, 
+                errorCallback, errorLevel, out userState, out channelEntities
             )) {
 
                 SharedSetUserState<T> (channel, channelGroup, channelEntities, uuid, userState);
@@ -838,7 +839,7 @@ namespace PubNubMessaging.Core
             Uri request = BuildRequests.BuildGetUserStateRequest (channel, channelGroup, this.SessionUUID,
                 this.ssl, this.Origin, authenticationKey, this.subscribeKey);
 
-            RequestState<T> requestState = BuildRequests.BuildRequestState<T> (channelGroupsEntity, ResponseType.GetUserState, false, 
+            RequestState<T> requestState = BuildRequests.BuildRequestState<T> (channelEntity, ResponseType.GetUserState, false, 
                 0, false, 0, null);
 
             UrlProcessRequest<T> (request, requestState);
@@ -1661,6 +1662,12 @@ namespace PubNubMessaging.Core
             RequestState<T> requestState = BuildRequests.BuildRequestState<T> (channelEntities, ResponseType.SetUserState, false, 
                 0, false, 0, null);
 
+            #if (ENABLE_PUBNUB_LOGGING)
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SharedSetUserState: channelEntities count {1} ", 
+                DateTime.Now.ToString (), (channelEntities!=null)?channelEntities.Count.ToString():"null"), LoggingMethod.LevelInfo);
+            #endif
+
+
             UrlProcessRequest<T> (request, requestState);
 
             //bounce the long-polling subscribe requests to update user state
@@ -2043,7 +2050,9 @@ namespace PubNubMessaging.Core
                 lastTimetoken = 0;
                 uuidChanged = false;
                 resetTimetoken = false;
+                #if (ENABLE_PUBNUB_LOGGING)
                 sbLogger.AppendFormat("SaveLastTimetoken: resetTimetoken\n");
+                #endif
             }
             else
             {

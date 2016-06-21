@@ -1,4 +1,4 @@
-//#define REDUCE_PUBNUB_COROUTINES
+#define REDUCE_PUBNUB_COROUTINES
 using System;
 using System.Linq;
 using UnityEngine;
@@ -1097,7 +1097,8 @@ namespace PubNubMessaging.Core
                         LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CheckComplete: DISPOSING WWW", DateTime.Now.ToString ()), LoggingMethod.LevelError);
                         #endif
 
-                //TODO: Remove flag when unity bug is fixed. Currenlty calling this on Android hangs the whole app.
+                //TODO: Remove flag when unity bug is fixed. Currenlty calling this on Android hangs the whole app. 
+                //Not fixed for Android as of Unity 5.3.5p4
                         #if(!UNITY_ANDROID)
                         subscribeWww.Dispose();
                         #endif
