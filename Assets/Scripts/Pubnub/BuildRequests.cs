@@ -229,7 +229,12 @@ namespace PubNubMessaging.Core
         {
             int disableUUID = (showUUIDList) ? 0 : 1;
             int userState = (includeUserState) ? 1 : 0;
-            string parameters = string.Format ("?disable_uuids={0}&state={1}", disableUUID, userState);
+            StringBuilder parameterBuilder = new StringBuilder ();
+            parameterBuilder.AppendFormat ("?disable_uuids={0}&state={1}", disableUUID, userState);
+            if (!string.IsNullOrEmpty(channelGroups))
+            {
+                parameterBuilder.AppendFormat("&channel-group={0}",  Utility.EncodeUricomponent(channelGroups, ResponseType.Subscribe, true, false));
+            }
 
             List<string> url = new List<string> ();
 
@@ -238,9 +243,9 @@ namespace PubNubMessaging.Core
             url.Add ("sub_key");
             url.Add (subscribeKey);
             url.Add ("channel");
-            url.Add (channel);
+            url.Add (string.IsNullOrEmpty(channel) ? "," : channel);
 
-            return BuildRestApiRequest<Uri> (url, ResponseType.HereNow, uuid, ssl, origin, 0, authenticationKey, parameters);
+            return BuildRestApiRequest<Uri> (url, ResponseType.HereNow, uuid, ssl, origin, 0, authenticationKey, parameterBuilder.ToString());
         }
 
         internal static Uri BuildGlobalHereNowRequest (bool showUUIDList, bool includeUserState, string uuid, 
@@ -387,15 +392,10 @@ namespace PubNubMessaging.Core
             return BuildRestApiRequest<Uri> (url, ResponseType.AuditAccess, uuid, ssl, origin, 0, authenticationKey, parameters);
         }
 
-        internal static Uri BuildSetUserStateRequest (string channel, string channelGroup, string jsonUserState, string uuid, 
+        internal static Uri BuildSetUserStateRequest (string channel, string channelGroup, string jsonUserState, string uuid,  string sessionUUID,
             bool ssl, string origin, string authenticationKey, string subscribeKey)
         {
             StringBuilder paramBuilder = new StringBuilder ();
-            if (string.IsNullOrEmpty(channel))
-            {
-                channel = ",";
-            }
-
             paramBuilder.AppendFormat ("?state={0}", Utility.EncodeUricomponent (jsonUserState, ResponseType.SetUserState, false, false));
             if (!string.IsNullOrEmpty(channelGroup) && channelGroup.Trim().Length > 0)
             {
@@ -409,21 +409,17 @@ namespace PubNubMessaging.Core
             url.Add ("sub_key");
             url.Add (subscribeKey);
             url.Add ("channel");
-            url.Add (channel);
+            url.Add (string.IsNullOrEmpty(channel) ? "," : channel);
             url.Add ("uuid");
             url.Add (uuid);
             url.Add ("data");
 
-            return BuildRestApiRequest<Uri> (url, ResponseType.SetUserState, uuid, ssl, origin, 0, authenticationKey, paramBuilder.ToString ());
+            return BuildRestApiRequest<Uri> (url, ResponseType.SetUserState, sessionUUID, ssl, origin, 0, authenticationKey, paramBuilder.ToString ());
         }
 
-        internal static Uri BuildGetUserStateRequest (string channel, string channelGroup, string uuid,
+        internal static Uri BuildGetUserStateRequest (string channel, string channelGroup, string uuid, string sessionUUID,
             bool ssl, string origin, string authenticationKey, string subscribeKey)
         {
-            if (string.IsNullOrEmpty(channel))
-            {
-                channel = ",";
-            }
             string parameters = "";
             if (!string.IsNullOrEmpty(channelGroup) && channelGroup.Trim().Length > 0)
             {
@@ -437,11 +433,11 @@ namespace PubNubMessaging.Core
             url.Add ("sub_key");
             url.Add (subscribeKey);
             url.Add ("channel");
-            url.Add (channel);
+            url.Add (string.IsNullOrEmpty(channel) ? "," : channel);
             url.Add ("uuid");
             url.Add (uuid);
 
-            return BuildRestApiRequest<Uri> (url, ResponseType.GetUserState, uuid, ssl, origin, 0, authenticationKey, parameters);
+            return BuildRestApiRequest<Uri> (url, ResponseType.GetUserState, sessionUUID, ssl, origin, 0, authenticationKey, parameters);
         }
 
         internal static Uri BuildPresenceHeartbeatRequest (string channels, string channelGroups, string channelsJsonState, string uuid,
@@ -530,7 +526,7 @@ namespace PubNubMessaging.Core
             subscribeParamBuilder.AppendFormat ("&tt={0}", timetoken);
 
             if (!string.IsNullOrEmpty (filterExpr)) {
-                    subscribeParamBuilder.AppendFormat ("&filter-expr=({0})",  Utility.EncodeUricomponent(filterExpr, ResponseType.Subscribe, false, false));
+                subscribeParamBuilder.AppendFormat ("&filter-expr=({0})",  Utility.EncodeUricomponent(filterExpr, ResponseType.Subscribe, false, false));
             }
 
             if (!string.IsNullOrEmpty (region)) {

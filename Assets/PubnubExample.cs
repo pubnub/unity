@@ -100,12 +100,13 @@ public class PubnubExample : MonoBehaviour
     string text1 = "";
     string text2 = "";
     string text3 = "";
+    string text4 = "";
     bool storeInHistory = true;
 
     Rect publishWindowRect = new Rect (60, 365, 300, 250);
     Rect authWindowRect = new Rect (60, 365, 300, 200);
-    Rect textWindowRect = new Rect (60, 365, 300, 250);
-    Rect textWindowRect2 = new Rect (60, 365, 300, 300);
+    Rect textWindowRect = new Rect (60, 365, 300, 300);
+    Rect textWindowRect2 = new Rect (60, 365, 300, 350);
     bool allowUserSettingsChange = true;
     float fLeft = 20;
     float fLeftInit = 20;
@@ -412,11 +413,13 @@ public class PubnubExample : MonoBehaviour
         string label1 = "";
         string label2 = "";
         string label3 = "";
+        string label4 = "";
 
         if (state == PubnubState.GetUserState) {
             title = "Get User State";
             label1 = "Channel";
-            label2 = "UUID";
+            label2 = "Channel Group";
+            label3 = "UUID";
             buttonTitle = "Get";
         } else if (state == PubnubState.DelUserState) {
             title = "Delete User State";
@@ -426,14 +429,18 @@ public class PubnubExample : MonoBehaviour
         } else if (state == PubnubState.SetUserStateJson) {
             title = "Set User State";
             label1 = "Channel";
-            label2 = "UUID";
-            label3 = "Enter Json";
+            label2 = "Channel Group";
+            label3 = "UUID";
+            label4 = "Enter Json";
+
             buttonTitle = "Set";
         } else if (state == PubnubState.SetUserStateKeyValue) {
             title = "Set User State";
             label1 = "Channel";
-            label2 = "Key";
-            label3 = "Value";
+            label2 = "Channel Group";
+            label3 = "Key";
+            label4 = "Value";
+
             buttonTitle = "Set";
         } else if (state.Equals(PubnubState.Subscribe)){
             title = "Subscribe";
@@ -526,13 +533,29 @@ public class PubnubExample : MonoBehaviour
 
         if ((state == PubnubState.SetUserStateJson) || (state == PubnubState.SetUserStateKeyValue)) {
             fLeft = fLeftInit;
-            fTop = fTop + 2 * fHeight - 20;
+            fTop = fTop + 2 * fHeight - 30;
             GUI.Label (new Rect (fLeft, fTop, 100, fHeight + 30), label3);
             fLeft = fLeftInit + 100;
 
             text3 = GUI.TextField (new Rect (fLeft, fTop, 90, fButtonHeight), text3);
             fLeft = fLeftInit;
-            fTop = fTop + 3 * fHeight - 40;
+            fTop = fTop + 3 * fHeight - 30;
+
+            GUI.Label (new Rect (fLeft, fTop, 100, fHeight + 30), label4);
+            fLeft = fLeftInit + 100;
+
+            text4 = GUI.TextField (new Rect (fLeft, fTop, 90, fButtonHeight), text4);
+            fLeft = fLeftInit;
+            fTop = fTop + 4 * fHeight - 40;
+        } else if (state == PubnubState.GetUserState) {
+            fLeft = fLeftInit;
+            fTop = fTop + 2 * fHeight - 30;
+            GUI.Label (new Rect (fLeft, fTop, 100, fHeight + 30), label3);
+            fLeft = fLeftInit + 100;
+
+            text3 = GUI.TextField (new Rect (fLeft, fTop, 90, fButtonHeight), text3);
+            fLeft = fLeftInit;
+            fTop = fTop + 3 * fHeight - 30;
 
         } else {
             fLeft = fLeftInit;
@@ -543,7 +566,7 @@ public class PubnubExample : MonoBehaviour
             try{
                 if (state == PubnubState.GetUserState) {
                     AddToPubnubResultContainer ("Running get user state");
-                    pubnub.GetUserState<string> (text1, text2, DisplayReturnMessage, DisplayErrorMessage);
+                    pubnub.GetUserState<string> (text1, text2, text3, DisplayReturnMessage, DisplayErrorMessage);
                 } else if (state == PubnubState.DelUserState) {
                     AddToPubnubResultContainer ("Running delete user state");
                     string stateKey = text2;
@@ -551,29 +574,29 @@ public class PubnubExample : MonoBehaviour
 
                 } else if (state == PubnubState.SetUserStateJson) {
                     AddToPubnubResultContainer ("Running Set User State Json");
-                    string currentUuid = text2;
+                    string currentUuid = text3;
                     string jsonUserState = "";
 
-                    if (string.IsNullOrEmpty (text3)) {
+                    if (string.IsNullOrEmpty (text4)) {
                         //jsonUserState = pubnub.GetLocalUserState (text1);
                     } else {
-                        jsonUserState = text3;
+                        jsonUserState = text4;
                     }
-                    pubnub.SetUserState<string> (currentChannel, currentUuid, jsonUserState, DisplayReturnMessage, DisplayErrorMessage);
+                    pubnub.SetUserState<string> (currentChannel, text2, currentUuid, jsonUserState, DisplayReturnMessage, DisplayErrorMessage);
 
                 } else if (state == PubnubState.SetUserStateKeyValue) {
                     AddToPubnubResultContainer ("Running Set User State Key Value");
                     int valueInt;
                     double valueDouble;
-                    string stateKey = text2;
+                    string stateKey = text3;
 
-                    if (Int32.TryParse (text3, out valueInt)) {
-                        pubnub.SetUserState<string> (currentChannel, "", new KeyValuePair<string, object> (stateKey, valueInt), DisplayReturnMessage, DisplayErrorMessage);
-                    } else if (Double.TryParse (text3, out valueDouble)) {
-                        pubnub.SetUserState<string> (currentChannel, "", new KeyValuePair<string, object> (stateKey, valueDouble), DisplayReturnMessage, DisplayErrorMessage);
+                    if (Int32.TryParse (text4, out valueInt)) {
+                        pubnub.SetUserState<string> (currentChannel, text2,  "", new KeyValuePair<string, object> (stateKey, valueInt), DisplayReturnMessage, DisplayErrorMessage);
+                    } else if (Double.TryParse (text4, out valueDouble)) {
+                        pubnub.SetUserState<string> (currentChannel, text2, "", new KeyValuePair<string, object> (stateKey, valueDouble), DisplayReturnMessage, DisplayErrorMessage);
                     } else {
-                        string val = text3;
-                        pubnub.SetUserState<string> (currentChannel, "", new KeyValuePair<string, object> (stateKey, val), DisplayReturnMessage, DisplayErrorMessage);
+                        string val = text4;
+                        pubnub.SetUserState<string> (currentChannel, text2, "", new KeyValuePair<string, object> (stateKey, val), DisplayReturnMessage, DisplayErrorMessage);
                     }
                 } else if (state.Equals(PubnubState.Subscribe)){
                     string channelGroup = text2;
@@ -649,6 +672,9 @@ public class PubnubExample : MonoBehaviour
             text1 = "";
             text2 = "";
             if ((state == PubnubState.SetUserStateJson) || (state == PubnubState.SetUserStateKeyValue)) {
+                text3 = "";
+                text4 = "";
+            } else if (state == PubnubState.GetUserState){
                 text3 = "";
             }
             showTextWindow = false;
@@ -1434,10 +1460,10 @@ public class PubnubExample : MonoBehaviour
                 #endif
                 break;
             case PubnubState.SetUserStateJson:
-                AddToPubnubResultContainer ("Setting User State");
+                //AddToPubnubResultContainer ("Setting User State");
                 break;
             case PubnubState.GetUserState:
-                AddToPubnubResultContainer ("Getting User State");
+                //AddToPubnubResultContainer ("Getting User State");
                 break;
             case PubnubState.GetChannelsForChannelGroup:
                 AddToPubnubResultContainer ("List All Channel Groups");
@@ -1493,6 +1519,8 @@ public class PubnubExample : MonoBehaviour
             publishedMessage = "";
             showPublishPopupWindow = false;
             pubChannel = "";
+            publishedMetadataKey = "";
+            publishedMetadataValue = "";
         }
 
         if (GUI.Button (new Rect (150, 185, 100, 30), "Cancel")) {

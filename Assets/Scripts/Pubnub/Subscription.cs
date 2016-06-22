@@ -140,25 +140,30 @@ namespace PubNubMessaging.Core
 
         //public void Add(ChannelIdentity channelID, ChannelParameters channelParam){
         public void Add(ChannelEntity channelEntity, bool reset){
+            
             if (!channelEntitiesDictionary.ContainsKey (channelEntity.ChannelID)) {
                 channelEntity.ChannelParams.IsSubscribed = true;
                 channelEntitiesDictionary.Add (channelEntity.ChannelID, channelEntity.ChannelParams);
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Add: channelEntities key add {1} {2}", DateTime.Now.ToString (), 
-                    channelEntity.ChannelID.ChannelOrChannelGroupName, channelEntity.ChannelID.IsChannelGroup), LoggingMethod.LevelInfo);
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Add: channelEntities key add {1} {2} {3}", DateTime.Now.ToString (), 
+                    channelEntity.ChannelID.ChannelOrChannelGroupName, channelEntity.ChannelID.IsChannelGroup, 
+                    channelEntity.ChannelParams.IsSubscribed
+                ), LoggingMethod.LevelInfo);
                 #endif
             } else {
                 channelEntitiesDictionary [channelEntity.ChannelID].Callbacks = channelEntity.ChannelParams.Callbacks;
                 channelEntitiesDictionary [channelEntity.ChannelID].IsAwaitingConnectCallback = channelEntity.ChannelParams.IsAwaitingConnectCallback;
-                channelEntitiesDictionary [channelEntity.ChannelID].IsSubscribed = channelEntity.ChannelParams.IsSubscribed;
+                channelEntitiesDictionary [channelEntity.ChannelID].IsSubscribed = true;
                 channelEntitiesDictionary [channelEntity.ChannelID].TypeParameterType = channelEntity.ChannelParams.TypeParameterType;
                 Dictionary<string, object> userState = channelEntitiesDictionary [channelEntity.ChannelID].UserState;
                 if (userState == null) {
                     channelEntitiesDictionary [channelEntity.ChannelID].UserState = channelEntity.ChannelParams.UserState;
                 }
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Add: channelEntities key update {1} {2}", DateTime.Now.ToString (), 
-                    channelEntity.ChannelID.ChannelOrChannelGroupName, channelEntity.ChannelID.IsChannelGroup), LoggingMethod.LevelInfo);
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Add: channelEntities key update {1} {2} {3}", DateTime.Now.ToString (), 
+                    channelEntity.ChannelID.ChannelOrChannelGroupName, channelEntity.ChannelID.IsChannelGroup,
+                    channelEntity.ChannelParams.IsSubscribed
+                ), LoggingMethod.LevelInfo);
                 #endif
             }
             if (reset) {

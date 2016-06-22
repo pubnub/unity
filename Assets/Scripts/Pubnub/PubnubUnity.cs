@@ -790,7 +790,7 @@ namespace PubNubMessaging.Core
             } else {
                 Dictionary<string, object> deserializeUserState = JsonPluggableLibrary.DeserializeToDictionaryOfObject (jsonUserState);
                 if (deserializeUserState == null) {
-                    throw new MissingMemberException ("Missing json format user state");
+                    throw new MissingMemberException ("Missing JSON formatted user state");
                 } else {
                     string userState = "";
                     List<ChannelEntity> channelEntities;
@@ -820,6 +820,34 @@ namespace PubNubMessaging.Core
 
         #endregion
 
+        #region "User State"
+        private void SharedSetUserState<T> (string channel, string channelGroup, List<ChannelEntity> channelEntities, string uuid, string jsonUserState
+        )
+        {
+            if (string.IsNullOrEmpty (uuid)) {
+                uuid = this.SessionUUID;
+            }
+
+            Uri request = BuildRequests.BuildSetUserStateRequest (channel, channelGroup, jsonUserState, uuid, this.SessionUUID,
+                this.ssl, this.Origin, authenticationKey, this.subscribeKey);
+
+            RequestState<T> requestState = BuildRequests.BuildRequestState<T> (channelEntities, ResponseType.SetUserState, false, 
+                0, false, 0, null);
+
+            #if (ENABLE_PUBNUB_LOGGING)
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SharedSetUserState: channelEntities count {1} ", 
+                DateTime.Now.ToString (), (channelEntities!=null)?channelEntities.Count.ToString():"null"), LoggingMethod.LevelInfo);
+            #endif
+
+
+            UrlProcessRequest<T> (request, requestState);
+
+            //bounce the long-polling subscribe requests to update user state
+            TerminateCurrentSubscriberRequest<T> ();
+        }
+
+        #endregion
+
         #region "Get User State"
 
         public void GetUserState<T> (string channel, string channelGroup, string uuid, Action<T> userCallback, Action<PubnubClientError> errorCallback)
@@ -836,7 +864,7 @@ namespace PubNubMessaging.Core
 
             channelEntity.AddRange (channelGroupsEntity);
 
-            Uri request = BuildRequests.BuildGetUserStateRequest (channel, channelGroup, this.SessionUUID,
+            Uri request = BuildRequests.BuildGetUserStateRequest (channel, channelGroup, uuid, this.SessionUUID,
                 this.ssl, this.Origin, authenticationKey, this.subscribeKey);
 
             RequestState<T> requestState = BuildRequests.BuildRequestState<T> (channelEntity, ResponseType.GetUserState, false, 
@@ -1644,34 +1672,6 @@ namespace PubNubMessaging.Core
         {
             MultiplexExceptionEventArgs<T> mea = ea as MultiplexExceptionEventArgs<T>;
             MultiplexExceptionHandler<T> (mea.responseType, mea.reconnectMaxTried, mea.resumeOnReconnect);
-        }
-
-        #endregion
-
-        #region "User State"
-        private void SharedSetUserState<T> (string channel, string channelGroup, List<ChannelEntity> channelEntities, string uuid, string jsonUserState
-        )
-        {
-            if (string.IsNullOrEmpty (uuid)) {
-                uuid = this.SessionUUID;
-            }
-
-            Uri request = BuildRequests.BuildSetUserStateRequest (channel, channelGroup, jsonUserState, this.SessionUUID,
-                this.ssl, this.Origin, authenticationKey, this.subscribeKey);
-
-            RequestState<T> requestState = BuildRequests.BuildRequestState<T> (channelEntities, ResponseType.SetUserState, false, 
-                0, false, 0, null);
-
-            #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SharedSetUserState: channelEntities count {1} ", 
-                DateTime.Now.ToString (), (channelEntities!=null)?channelEntities.Count.ToString():"null"), LoggingMethod.LevelInfo);
-            #endif
-
-
-            UrlProcessRequest<T> (request, requestState);
-
-            //bounce the long-polling subscribe requests to update user state
-            TerminateCurrentSubscriberRequest<T> ();
         }
 
         #endregion

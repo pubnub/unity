@@ -437,9 +437,7 @@ namespace PubNubMessaging.Core
             for (int index = 0; index < rawChannels.Length; index++)
             {
                 string channelName = rawChannels[index].Trim();
-                #if (ENABLE_PUBNUB_LOGGING)
-                #endif
-
+               
                 if (channelName.Length > 0) {
                     if ((type == ResponseType.Presence) 
                         || (type == ResponseType.PresenceV2) 
@@ -456,7 +454,10 @@ namespace PubNubMessaging.Core
                     ChannelEntity ce = Helpers.CreateChannelEntity (channelName, true, isChannelGroup, null, 
                         userCallback, connectCallback, errorCallback, disconnectCallback, wildcardPresenceCallback);
 
-                    bool channelIsSubscribed = Subscription.Instance.ChannelEntitiesDictionary.ContainsKey (ce.ChannelID);
+                    bool channelIsSubscribed = false;
+                    if (Subscription.Instance.ChannelEntitiesDictionary.ContainsKey (ce.ChannelID)){
+                        channelIsSubscribed = Subscription.Instance.ChannelEntitiesDictionary [ce.ChannelID].IsSubscribed;
+                    }
 
                     if (unsubscribeCheck) {
                         if (!channelIsSubscribed) {
