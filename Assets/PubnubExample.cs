@@ -424,7 +424,8 @@ public class PubnubExample : MonoBehaviour
         } else if (state == PubnubState.DelUserState) {
             title = "Delete User State";
             label1 = "Channel";
-            label2 = "Key";
+            label2 = "Channel Group";
+            label3 = "Key";
             buttonTitle = "Delete";
         } else if (state == PubnubState.SetUserStateJson) {
             title = "Set User State";
@@ -539,23 +540,23 @@ public class PubnubExample : MonoBehaviour
 
             text3 = GUI.TextField (new Rect (fLeft, fTop, 90, fButtonHeight), text3);
             fLeft = fLeftInit;
-            fTop = fTop + 3 * fHeight - 30;
+            fTop = fTop + 3 * fHeight - 60;
 
-            GUI.Label (new Rect (fLeft, fTop, 100, fHeight + 30), label4);
+            GUI.Label (new Rect (fLeft, fTop, 100, 90), label4);
             fLeft = fLeftInit + 100;
 
             text4 = GUI.TextField (new Rect (fLeft, fTop, 90, fButtonHeight), text4);
             fLeft = fLeftInit;
-            fTop = fTop + 4 * fHeight - 40;
-        } else if (state == PubnubState.GetUserState) {
+            fTop = fTop + 4 * fHeight - 90;
+        } else if ((state == PubnubState.GetUserState) || (state == PubnubState.DelUserState)){
             fLeft = fLeftInit;
             fTop = fTop + 2 * fHeight - 30;
-            GUI.Label (new Rect (fLeft, fTop, 100, fHeight + 30), label3);
+            GUI.Label (new Rect (fLeft, fTop, 100, 90), label3);
             fLeft = fLeftInit + 100;
 
             text3 = GUI.TextField (new Rect (fLeft, fTop, 90, fButtonHeight), text3);
             fLeft = fLeftInit;
-            fTop = fTop + 3 * fHeight - 30;
+            fTop = fTop + 3 * fHeight - 60;
 
         } else {
             fLeft = fLeftInit;
@@ -566,17 +567,18 @@ public class PubnubExample : MonoBehaviour
             try{
                 if (state == PubnubState.GetUserState) {
                     AddToPubnubResultContainer ("Running get user state");
+                    UnityEngine.Debug.Log (string.Format("text2 {0}, text3 {1}", text2, text3));
                     pubnub.GetUserState<string> (text1, text2, text3, DisplayReturnMessage, DisplayErrorMessage);
                 } else if (state == PubnubState.DelUserState) {
                     AddToPubnubResultContainer ("Running delete user state");
-                    string stateKey = text2;
-                    pubnub.SetUserState<string> (currentChannel, new KeyValuePair<string, object> (stateKey, null), DisplayReturnMessage, DisplayErrorMessage);
+                    string stateKey = text3;
+                    pubnub.SetUserState<string> (currentChannel, text2, "", new KeyValuePair<string, object> (stateKey, null), DisplayReturnMessage, DisplayErrorMessage);
 
                 } else if (state == PubnubState.SetUserStateJson) {
                     AddToPubnubResultContainer ("Running Set User State Json");
                     string currentUuid = text3;
                     string jsonUserState = "";
-
+                    UnityEngine.Debug.Log (string.Format("text4 {0}, text3 {1}", text4, text3));
                     if (string.IsNullOrEmpty (text4)) {
                         //jsonUserState = pubnub.GetLocalUserState (text1);
                     } else {
@@ -589,7 +591,7 @@ public class PubnubExample : MonoBehaviour
                     int valueInt;
                     double valueDouble;
                     string stateKey = text3;
-
+                    UnityEngine.Debug.Log (string.Format("text4 {0}, text3 {1}", text4, text3));
                     if (Int32.TryParse (text4, out valueInt)) {
                         pubnub.SetUserState<string> (currentChannel, text2,  "", new KeyValuePair<string, object> (stateKey, valueInt), DisplayReturnMessage, DisplayErrorMessage);
                     } else if (Double.TryParse (text4, out valueDouble)) {
@@ -896,6 +898,8 @@ public class PubnubExample : MonoBehaviour
             toggleTitle2 = " include state ";
             labelTitle = "Channel";
             buttonTitle = "Run";
+            labelTitle2 = "Channel Group";
+            valueToSetSubs = "";
         } else if (state == PubnubState.GlobalHereNow) {
             title = "Global Here Now";
             toggleTitle1 = " show uuid ";
@@ -928,6 +932,10 @@ public class PubnubExample : MonoBehaviour
             GUI.Label (new Rect (30, 45, 100, fHeight), labelTitle);
 
             valueToSet = GUI.TextField (new Rect (110, 45, 100, fHeight), valueToSet);
+
+            valueToSetSubs = GUI.TextField (new Rect (110, 90, 100, fHeight), valueToSetSubs);
+            GUI.Label (new Rect (30, 90, 100, fHeight), labelTitle2);
+            fill = 40;
         } else if (state == PubnubState.GlobalHereNow) {
             //no text needed
         }
@@ -976,10 +984,14 @@ public class PubnubExample : MonoBehaviour
                 }
             } else if (state == PubnubState.HereNow) {
                 allowUserSettingsChange = false;
-                if (string.IsNullOrEmpty (valueToSet)) {
-                    DisplayErrorMessage ("Please enter channel name.");
-                } else {
+                if (!string.IsNullOrEmpty (valueToSet)) {
+                    AddToPubnubResultContainer ("Running Channel Here now");
                     pubnub.HereNow<string> (valueToSet, toggle1, toggle2, DisplayReturnMessage, DisplayErrorMessage);
+                } else if (!string.IsNullOrEmpty (valueToSetSubs)) {
+                    AddToPubnubResultContainer ("Running Channel Group Here now");
+                    pubnub.ChannelGroupHereNow<string> (valueToSetSubs, toggle1, toggle2, DisplayReturnMessage, DisplayErrorMessage);
+                } else {
+                    AddToPubnubResultContainer ("Please enter channel or channel group name.");
                 }
                 pubChannel = "";
             } else if (state == PubnubState.GlobalHereNow) {
@@ -1674,7 +1686,7 @@ public class PubnubExample : MonoBehaviour
         //print(result);
         UnityEngine.Debug.Log (string.Format ("CONNECT CALLBACK LOG: {0}", result));
         AddToPubnubResultContainer (string.Format ("CONNECT CALLBACK: {0}", result));
-        pubnub.HereNow<string> ("hello_world2", true, true, DisplayReturnMessage, DisplayErrorMessage);
+        //pubnub.HereNow<string> ("hello_world2", true, true, DisplayReturnMessage, DisplayErrorMessage);
     }
 
     void DisplayConnectStatusMessageObj (object result)

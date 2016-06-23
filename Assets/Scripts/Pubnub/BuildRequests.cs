@@ -879,6 +879,7 @@ namespace PubNubMessaging.Core
                 case ResponseType.GetUserState:
 
                     url = AppendUUIDToURL(url, uuid, true);
+                    url.Append (parameters);
                     url = AppendAuthKeyToURL(url, authenticationKey, type);
                     url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
                     break;

@@ -704,6 +704,9 @@ namespace PubNubMessaging.Core
 
         public bool GrantAccess<T> (string channel, string authenticationKey, bool read, bool write, int ttl, Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
+            if (ttl < 0)
+                ttl = 1440;
+            
             List<ChannelEntity> channelEntity = Helpers.CreateChannelEntity (new string[] {channel}, false, false, null, 
                 userCallback, null, errorCallback, null, null);
 
@@ -835,8 +838,11 @@ namespace PubNubMessaging.Core
                 0, false, 0, null);
 
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SharedSetUserState: channelEntities count {1} ", 
-                DateTime.Now.ToString (), (channelEntities!=null)?channelEntities.Count.ToString():"null"), LoggingMethod.LevelInfo);
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SharedSetUserState: channelEntities count {1}, " +
+                "channelGroup: {2}, channel: {3}, uuid: {4}, sessionUUID: {5}", 
+                DateTime.Now.ToString (), (channelEntities!=null)?channelEntities.Count.ToString():"null", 
+                channelGroup, channel, uuid, this.SessionUUID
+            ), LoggingMethod.LevelInfo);
             #endif
 
 
@@ -869,6 +875,14 @@ namespace PubNubMessaging.Core
 
             RequestState<T> requestState = BuildRequests.BuildRequestState<T> (channelEntity, ResponseType.GetUserState, false, 
                 0, false, 0, null);
+
+            #if (ENABLE_PUBNUB_LOGGING)
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, GetUserState: channelEntities count {1}, " +
+                "channelGroup: {2}, channel: {3}, uuid: {4}, sessionUUID: {5} ", 
+                DateTime.Now.ToString (), (channelEntity!=null)?channelEntity.Count.ToString():"null", channelGroup, channel,
+                uuid, this.SessionUUID
+            ), LoggingMethod.LevelInfo);
+            #endif
 
             UrlProcessRequest<T> (request, requestState);
         }
@@ -1034,6 +1048,9 @@ namespace PubNubMessaging.Core
         public bool ChannelGroupGrantAccess<T>(string channelGroup, string authenticationKey, bool read, bool write, bool manage, 
             int ttl, Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
+            if (ttl < 0)
+                ttl = 1440;
+            
             Uri request = BuildRequests.BuildChannelGroupGrantAccessRequest(channelGroup, read, write, manage, ttl, this.SessionUUID,
             this.ssl, this.Origin, authenticationKey, this.publishKey, this.subscribeKey, this.cipherKey, this.secretKey);
 
