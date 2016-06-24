@@ -269,14 +269,6 @@ public class PubnubExample : MonoBehaviour
                 authWindowRect = GUI.ModalWindow (0, authWindowRect, DoWhereNowWindow, "Where Now");
             } else if (state == PubnubState.PresenceHeartbeat) {
                 authWindowRect = GUI.ModalWindow (0, authWindowRect, DoPresenceHeartbeatWindow, "Presence Heartbeat");
-            /*} else if (state == PubnubState.AuditPresence) {
-                authWindowRect = GUI.ModalWindow (0, authWindowRect, DoAuditPresenceWindow, "Audit Presence");
-            } else if (state == PubnubState.AuditSubscribe) {
-                authWindowRect = GUI.ModalWindow (0, authWindowRect, DoAuditSubscribeWindow, "Audit Subscribe");
-            } else if (state == PubnubState.RevokePresence) {
-                authWindowRect = GUI.ModalWindow (0, authWindowRect, DoRevokePresenceWindow, "Revoke Presence");
-            } else if (state == PubnubState.RevokeSubscribe) {
-                authWindowRect = GUI.ModalWindow (0, authWindowRect, DoRevokeSubscribeWindow, "Revoke Subscribe");*/
             } else if (state == PubnubState.PresenceInterval) {
                 authWindowRect = GUI.ModalWindow (0, authWindowRect, DoPresenceIntervalWindow, "Presence Interval");
             } else if (state == PubnubState.DetailedHistory) {
@@ -289,7 +281,6 @@ public class PubnubExample : MonoBehaviour
                 authWindowRect = GUI.ModalWindow (0, authWindowRect, DoSetFilterExpression, "SetFilterExpression");
             }
                 
-            //state = PubnubState.None;
             GUI.backgroundColor = new Color (1, 1, 1, 1);
         }        
         if (showGrantWindow) {
@@ -1472,10 +1463,8 @@ public class PubnubExample : MonoBehaviour
                 #endif
                 break;
             case PubnubState.SetUserStateJson:
-                //AddToPubnubResultContainer ("Setting User State");
                 break;
             case PubnubState.GetUserState:
-                //AddToPubnubResultContainer ("Getting User State");
                 break;
             case PubnubState.GetChannelsForChannelGroup:
                 AddToPubnubResultContainer ("List All Channel Groups");
@@ -1698,7 +1687,6 @@ public class PubnubExample : MonoBehaviour
         //string result2 = string.Join(",", stringList.ToArray());
         string result2 = string.Join(",", stringList.ToArray());//myList.OfType<string>();
 
-        //string result2 = string.Join(",", result.ToArray());
         UnityEngine.Debug.Log (string.Format ("CONNECT CALLBACK LOG: {0}", result2));
         AddToPubnubResultContainer (string.Format ("CONNECT CALLBACK: {0}", result2));
     }

@@ -677,34 +677,10 @@ namespace PubNubMessaging.Core
             SetUserState<object>(channel, channelGroup, uuid, jsonUserState, userCallback, errorCallback);
         }
 
-        /*public void SetUserState<T>(string channel, string channelGroup, string jsonUserState, Action<T> userCallback, 
-            Action<PubnubClientError> errorCallback)
-        {
-            SetUserState<T>(channel, channelGroup, "", jsonUserState, userCallback, errorCallback);
-        }*/
-
         public void SetUserState<T>(string channel, string jsonUserState, Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
             SetUserState<T>(channel, "", "", jsonUserState, userCallback, errorCallback);
         }
-
-        /*public void SetUserState<T>(string channel, string channelGroup, string uuid, System.Collections.Generic.KeyValuePair<string, object> keyValuePair, 
-            Action<T> userCallback, Action<PubnubClientError> errorCallback)
-        {
-            SetUserState<T>(channel, channelGroup, uuid, keyValuePair, userCallback, errorCallback);
-        }
-
-        public void SetUserState<T>(string channel, string channelGroup, System.Collections.Generic.KeyValuePair<string, object> keyValuePair, 
-            Action<T> userCallback, Action<PubnubClientError> errorCallback)
-        {
-            SetUserState<T>(channel, channelGroup, "", keyValuePair, userCallback, errorCallback);
-        }
-
-        public void SetUserState<T>(string channel, System.Collections.Generic.KeyValuePair<string, object> keyValuePair, Action<T> userCallback, 
-            Action<PubnubClientError> errorCallback)
-        {
-            SetUserState<T>(channel, "", keyValuePair, userCallback, errorCallback);
-        }*/
 
         public void SetUserState<T> (string channel, string uuid, string jsonUserState, Action<T> userCallback, 
             Action<PubnubClientError> errorCallback)
@@ -734,11 +710,6 @@ namespace PubNubMessaging.Core
         {
             SetUserState<object> (channel, "", uuid, jsonUserState, userCallback, errorCallback);
         }
-
-        /*public void SetUserState<T> (string channel, string jsonUserState, Action<T> userCallback, Action<PubnubClientError> errorCallback)
-        {
-            SetUserState<T> (channel, "", "", jsonUserState, userCallback, errorCallback);
-        }*/
 
         public void SetUserState<T> (string channel, string uuid, System.Collections.Generic.KeyValuePair<string, object> keyValuePair, 
             Action<T> userCallback, Action<PubnubClientError> errorCallback)

@@ -5,13 +5,6 @@ using System.Net;
 namespace PubNubMessaging.Core
 {
     #region "Channel callback"
-    /*internal struct PubnubChannelCallbackKey
-    {
-        public string Channel;
-        public bool isChannelGroup;
-        public ResponseType Type;
-    }*/
-
     internal class PubnubChannelCallback<T>
     {
         public Action<T> SuccessCallback;
@@ -45,26 +38,6 @@ namespace PubNubMessaging.Core
 
     internal static class PubnubCallbacks
     {
-        /*internal static void CallCallback<T>(PubnubChannelCallbackKey callbackKey, SafeDictionary<PubnubChannelCallbackKey, object> channelCallbacks, 
-            IJsonPluggableLibrary jsonPluggableLibrary, List<object> itemMessage)
-        {
-            PubnubChannelCallback<T> currentPubnubCallback = channelCallbacks[callbackKey] as PubnubChannelCallback<T>;
-            if (currentPubnubCallback != null && currentPubnubCallback.SuccessCallback != null)
-            {
-                GoToCallback<T>(itemMessage, currentPubnubCallback.SuccessCallback, jsonPluggableLibrary);
-            }
-        }
-
-        internal static void CallCallbackKnownType<T>(PubnubChannelCallbackKey callbackKey, SafeDictionary<PubnubChannelCallbackKey, object> channelCallbacks, 
-            IJsonPluggableLibrary jsonPluggableLibrary, List<object> itemMessage)
-        {
-            PubnubChannelCallback<T> currentPubnubCallback = channelCallbacks[callbackKey] as PubnubChannelCallback<T>;
-            if (currentPubnubCallback != null && currentPubnubCallback.SuccessCallback != null)
-            {
-                GoToCallback(itemMessage, currentPubnubCallback.SuccessCallback, jsonPluggableLibrary);
-            }
-        }*/
-
         internal static void SendCallbacks<T>(IJsonPluggableLibrary jsonPluggableLibrary, ChannelEntity channelEntity, 
             List<object> itemMessage, CallbackType callbackType, bool checkType)
         {
@@ -178,15 +151,6 @@ namespace PubNubMessaging.Core
             #endif
         }
 
-        /*internal static void SendConnectCallback<T> (IJsonPluggableLibrary jsonPluggableLibrary, 
-            List<object> connectResult, ResponseType type, ChannelEntity channelEntity){
-
-            PubnubChannelCallback<T> channelCallbacks = channelEntity.ChannelParams.Callbacks as PubnubChannelCallback<T>;
-            if (channelCallbacks != null) {
-                GoToCallback<T> (connectResult, channelCallbacks.ConnectCallback, jsonPluggableLibrary);
-            }
-        }*/
-
         internal static void FireErrorCallbacksForAllChannels<T> (WebException webEx, RequestState<T> requestState, 
             PubnubErrorSeverity severity, PubnubErrorFilter.Level errorLevel){
 
@@ -268,16 +232,6 @@ namespace PubNubMessaging.Core
 
         }
 
-        /*internal static void FireErrorCallbacksForAllChannels<T> (Exception ex, List<ChannelEntity> channelEntities,
-            PubnubErrorSeverity severity, PubnubErrorCode errorType, 
-            ResponseType responseType, PubnubErrorFilter.Level errorLevel){
-
-            FireErrorCallbacksForAllChannelsCommon<T> (ex, "", null, channelEntities, severity,
-                errorType, responseType, errorLevel
-            );
-
-        }*/
-
         internal static void FireErrorCallbacksForAllChannels<T> (string message, RequestState<T> requestState,
             PubnubErrorSeverity severity, PubnubErrorCode errorType, 
             PubnubErrorFilter.Level errorLevel){
@@ -298,24 +252,6 @@ namespace PubNubMessaging.Core
 
         }
 
-        /*internal static PubnubChannelCallbackKey GetPubnubChannelCallbackKey(string activeChannel, ResponseType responseType, bool isChannelGroup){
-            PubnubChannelCallbackKey callbackKey = new PubnubChannelCallbackKey ();
-            callbackKey.Channel = activeChannel;
-            callbackKey.isChannelGroup = isChannelGroup;
-            callbackKey.Type = responseType;
-            return callbackKey;
-        }
-
-        internal static PubnubChannelCallback<T> GetPubnubChannelCallback<T>(Action<T> userCallback, Action<T> connectCallback, 
-            Action<PubnubClientError> errorCallback
-        ){
-            PubnubChannelCallback<T> pubnubChannelCallbacks = new PubnubChannelCallback<T> ();
-            pubnubChannelCallbacks.SuccessCallback = userCallback;
-            pubnubChannelCallbacks.ConnectCallback = connectCallback;
-            pubnubChannelCallbacks.ErrorCallback = errorCallback;
-            return pubnubChannelCallbacks;
-        }*/
-
         internal static PubnubChannelCallback<T> GetPubnubChannelCallback<T>(Action<T> userCallback, Action<T> connectCallback, 
             Action<PubnubClientError> errorCallback, Action<T> disconnectCallback, Action<T> wildcardPresenceCallback
         ){
@@ -330,15 +266,6 @@ namespace PubNubMessaging.Core
 
         #region "Error Callbacks"
 
-        /*internal static void CallErrorCallback<T>(Exception ex, 
-            RequestState<T> requestState, PubnubErrorCode errorCode, PubnubErrorSeverity severity,
-            PubnubErrorFilter.Level errorLevel){
-
-            PubnubClientError clientError = Helpers.CreatePubnubClientError (ex, requestState, errorCode, severity);
-
-            GoToCallback (clientError, errorCallback, errorLevel);
-        }*/
-
         internal static void CallErrorCallback<T>(Exception ex, 
             List<ChannelEntity> channelEntities, PubnubErrorCode errorCode, PubnubErrorSeverity severity,
             PubnubErrorFilter.Level errorLevel){
@@ -346,18 +273,6 @@ namespace PubNubMessaging.Core
             PubnubClientError clientError = Helpers.CreatePubnubClientError<T> (ex, null, channelEntities, errorCode, severity);
             CallCallbackForEachChannelEntity<T> (channelEntities, clientError, errorLevel);
         }
-
-        /*internal static void CallErrorCallback<T>(string message, 
-            RequestState<T> requestState, PubnubErrorCode errorCode, PubnubErrorSeverity severity,
-            PubnubErrorFilter.Level errorLevel){
-
-            //request state can be null
-
-            PubnubClientError clientError = Helpers.CreatePubnubClientError<T> (message, requestState, 
-                errorCode, severity);
-
-            GoToCallback (clientError, errorCallback, errorLevel);
-        }*/
 
         internal static void CallErrorCallback<T>(string message, 
             Action<PubnubClientError> errorCallback, PubnubErrorCode errorCode, PubnubErrorSeverity severity,
@@ -411,19 +326,6 @@ namespace PubNubMessaging.Core
                 #endif
             }
         }
-
-
-        /*internal static void CallErrorCallback<T>(List<ChannelEntity> channelEntities, string message,
-            PubnubErrorCode errorCode, PubnubErrorSeverity severity,
-            PubnubErrorFilter.Level errorLevel){
-
-
-            PubnubClientError clientError = Helpers.CreatePubnubClientError<T> (message, null, 
-                errorCode, severity);
-            foreach (ChannelEntity ce in channelEntities) {
-                GoToCallback (clientError, errorCallback, errorLevel);
-            }
-        }*/
 
         private static void JsonResponseToCallback<T> (List<object> result, Action<T> callback, IJsonPluggableLibrary jsonPluggableLibrary)
         {

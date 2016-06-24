@@ -379,29 +379,6 @@ namespace PubNubMessaging.Core
             return channelEntities;
         }
 
-        /*internal static bool CheckChannelsInMultiChannelSubscribeRequest(string multiChannel)
-        {
-            if (!channelRequest.ContainsKey(multiChannel))
-            {
-                #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog(string.Format("DateTime {0}, MultiChannelSubscribeRequest _channelRequest doesnt contain {1}", DateTime.Now.ToString(), multiChannel), LoggingMethod.LevelInfo);
-                #endif
-                string[] currentChannels = multiChannelSubscribe.Keys.ToArray<string>();
-                if (currentChannels != null && currentChannels.Length > 0)
-                {
-                    #if (ENABLE_PUBNUB_LOGGING)    
-                    string currentSubChannels = string.Join(",", currentChannels);
-                    LoggingMethod.WriteToLog(string.Format("DateTime {0}, using existing channels: {1}", DateTime.Now.ToString(), currentSubChannels), LoggingMethod.LevelInfo);
-                    #endif
-                }
-                else
-                {
-                    return true;
-                }
-            }
-            return false;
-        }*/
-
         internal static IEnumerable<string> GetDuplicates(string[] 
             rawChannels)
         {
@@ -578,16 +555,6 @@ namespace PubNubMessaging.Core
             return bReturn;
         }
 
-        /*internal static string[] GetCurrentSubscriberChannels (SafeDictionary<string, bool> multiChannelSubscribe, bool isChannelGroup)
-        {
-            string[] channels = null;
-            if (multiChannelSubscribe != null && multiChannelSubscribe.Keys.Count > 0) {
-                channels = multiChannelSubscribe.Keys.ToArray<string> ();
-            }
-
-            return channels;
-        }*/
-
         internal static void ProcessResponseCallbacksV2<T> (ref SubscribeEnvelope resultSubscribeEnvelope, RequestState<T> asynchRequestState, 
             string cipherKey, IJsonPluggableLibrary jsonPluggableLibrary)
         {
@@ -608,12 +575,11 @@ namespace PubNubMessaging.Core
             } 
         }
 
-
         internal static void ProcessResponseCallbacks<T> (ref List<object> result, RequestState<T> asynchRequestState, 
             string cipherKey, IJsonPluggableLibrary jsonPluggableLibrary)
         {
             if (result != null && result.Count >= 1) {
-                Helpers.ResponseToConnectCallback<T> (asynchRequestState, jsonPluggableLibrary);
+                //Helpers.ResponseToConnectCallback<T> (asynchRequestState, jsonPluggableLibrary);
                 Helpers.ResponseToUserCallback<T> (result, asynchRequestState, cipherKey, jsonPluggableLibrary);
             } 
         }
@@ -740,16 +706,6 @@ namespace PubNubMessaging.Core
         public static void WrapResultBasedOnResponseType<T> (RequestState<T> pubnubRequestState, string jsonString, 
             IJsonPluggableLibrary jsonPluggableLibrary, PubnubErrorFilter.Level errorLevel, string cipherKey, ref List<object> result)
         {
-            /*return WrapResultBasedOnResponseType<T> (jsonString, pubnubRequestState,
-                 jsonPluggableLibrary, 
-                errorLevel, cipherKey
-            );
-        }
-
-        public static List<object> WrapResultBasedOnResponseType<T> (ResponseType type, string jsonString, string[] channels, 
-            IJsonPluggableLibrary jsonPluggableLibrary, PubnubErrorFilter.Level errorLevel, string cipherKey
-        )
-        {*/
             try {
                 string multiChannel = Helpers.GetNamesFromChannelEntities(pubnubRequestState.ChannelEntities, false); 
                 string multiChannelGroup = Helpers.GetNamesFromChannelEntities(pubnubRequestState.ChannelEntities, true);
@@ -838,7 +794,6 @@ namespace PubNubMessaging.Core
                 #endif
                 ProcessWrapResultBasedOnResponseTypeException<T> (pubnubRequestState, errorLevel, ex);
             }
-            //return result;
         }
 
         internal static List<object> DeserializeAndAddToResult (string jsonString, string multiChannel, 
@@ -870,7 +825,7 @@ namespace PubNubMessaging.Core
             }
         }
 
-        internal static object[] CreateMessageList(List<object> result, object[] messageList)
+        /*internal static object[] CreateMessageList(List<object> result, object[] messageList)
         {
             int i = 0;
             foreach (object o in result)
@@ -1024,7 +979,7 @@ namespace PubNubMessaging.Core
                     #endif
                 }
             }
-        }
+        }*/
 
         internal static void CreatePNMessageResult(SubscribeMessage subscribeMessage, out PNMessageResult messageResult)
         {
@@ -1089,9 +1044,6 @@ namespace PubNubMessaging.Core
                     ce.ChannelID.IsPresenceChannel.ToString()
                 ), LoggingMethod.LevelInfo);
                 #endif
-                //PNMessageResult messageResult; 
-                //TODO Decrypt
-                //CreatePNMessageResult(subscribeMessage, out messageResult);
 
                 List<object> itemMessage;
                 AddMessageToListV2(cipherKey, jsonPluggableLibrary, subscribeMessage, ce, out itemMessage);
@@ -1192,7 +1144,7 @@ namespace PubNubMessaging.Core
             }
         }
 
-        internal static void ResponseToUserCallbackForSubscribe<T> (List<object> result, List<ChannelEntity> channelEntities,
+        /*internal static void ResponseToUserCallbackForSubscribe<T> (List<object> result, List<ChannelEntity> channelEntities,
             string cipherKey, IJsonPluggableLibrary jsonPluggableLibrary)
         {
             var messages = (from item in result
@@ -1205,23 +1157,12 @@ namespace PubNubMessaging.Core
             if (messages != null && messages.Length > 0) {
                 ResponseToUserCallbackForSubscribeSendCallbacks <T>(result, cipherKey, channelEntities, jsonPluggableLibrary, messages);
             }            
-        }
-            
-        /*internal static void CheckResultListAndCallCallback<T>(List<object> result, List<ChannelEntity> channelEntities, 
-            IJsonPluggableLibrary jsonPluggableLibrary){
-            if (result != null && result.Count > 0) {
-                PubnubCallbacks.GoToCallback<T> (result, userCallback, jsonPluggableLibrary);
-            }
         }*/
-
+            
         internal static void ResponseToUserCallback<T> (List<object> result, RequestState<T> asynchRequestState, string cipherKey, 
             IJsonPluggableLibrary jsonPluggableLibrary)
         {
             switch (asynchRequestState.RespType) {
-                case ResponseType.Subscribe:
-                case ResponseType.Presence:
-                    ResponseToUserCallbackForSubscribe<T> (result, asynchRequestState.ChannelEntities, cipherKey, jsonPluggableLibrary);
-                    break;
                 case ResponseType.Leave:
                 //No response to callback
                     break;

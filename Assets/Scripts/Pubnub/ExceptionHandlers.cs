@@ -170,15 +170,6 @@ namespace PubNubMessaging.Core
         internal static void UrlRequestCommonExceptionHandler<T> (string message, RequestState<T> requestState,
             bool requestTimeout, bool resumeOnReconnect, PubnubErrorFilter.Level errorLevel)
         {
-            /*UrlRequestCommonExceptionHandler<T> (message, requestState.RespType, requestState.Channels, requestTimeout, 
-                requestState.UserCallback, requestState.ConnectCallback, requestState.ErrorCallback,
-                resumeOnReconnect, errorLevel, requestState.ChannelGroups
-            );
-        }
-
-        internal static void UrlRequestCommonExceptionHandler<T> (string message, RequestState<T> requestState, 
-            bool requestTimeout, bool resumeOnReconnect, PubnubErrorFilter.Level errorLevel)
-        {*/
             switch (requestState.RespType)
             {
                 case ResponseType.Presence:
@@ -235,7 +226,6 @@ namespace PubNubMessaging.Core
             if (requestTimeout)
             {
                 string message = (requestTimeout) ? "Operation Timeout" : "Network connnect error";
-                //string channelAndChannelGroupMessage = string.Format("channels: {0}, channelGroups: {1}", channel, channelGroup);
 
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog(string.Format("DateTime {0}, ChannelGroupExceptionHandler response={1}, {2}", 

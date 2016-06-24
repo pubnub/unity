@@ -182,7 +182,6 @@ namespace PubNubMessaging.Core
         public float heartbeatPauseTimer = 10;
         public float presenceHeartbeatPauseTimer = 10;
         public float subscribePauseTimer = 10;
-        //public float t;
 
         #if(REDUCE_PUBNUB_COROUTINES)
         internal bool runSubscribeTimer = false;
@@ -422,7 +421,6 @@ namespace PubNubMessaging.Core
         }
 
         void Start(){
-            //t = Time.time;
             #if (ENABLE_PUBNUB_LOGGING)
             LoggingMethod.WriteToLog (string.Format ("DateTime {0}, REDUCE_PUBNUB_COROUTINES is set.",
                 DateTime.Now.ToString ()
@@ -431,43 +429,34 @@ namespace PubNubMessaging.Core
         }
 
         void Update() {
-            //if ((Time.time - t) > .20) {
-                //t = Time.time;
-                /*
-                 * #if (ENABLE_PUBNUB_LOGGING)
-                 * LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Update {1} {2}", DateTime.Now.ToString (), t.ToString (), (Time.time - t).ToString()), LoggingMethod.LevelInfo);
-                 * #endif
-                */
-                
-                if (runSubscribeTimer) {
-                    subscribeTimer -= Time.deltaTime;
-                    CheckElapsedTime (CurrentRequestType.Subscribe, subscribeTimer, subscribeWww);
-                }
-                if (runHeartbeatTimer) {
-                    heartbeatTimer -= Time.deltaTime;
-                    CheckElapsedTime (CurrentRequestType.Heartbeat, heartbeatTimer, heartbeatWww);
-                }
-                if (runPresenceHeartbeatTimer) {
-                    presenceHeartbeatTimer -= Time.deltaTime;
-                    CheckElapsedTime (CurrentRequestType.PresenceHeartbeat, presenceHeartbeatTimer, presenceHeartbeatWww);
-                }
-                if (runNonSubscribeTimer) {
-                    nonSubscribeTimer -= Time.deltaTime;
-                    CheckElapsedTime (CurrentRequestType.NonSubscribe, nonSubscribeTimer, nonSubscribeWww);
-                }
-                if (runPresenceHeartbeatPauseTimer) {
-                    presenceHeartbeatPauseTimer -= Time.deltaTime;
-                    CheckPauseTime (CurrentRequestType.PresenceHeartbeat, presenceHeartbeatPauseTimer);
-                }
-                if (runHeartbeatPauseTimer) {
-                    heartbeatPauseTimer -= Time.deltaTime;
-                    CheckPauseTime (CurrentRequestType.Heartbeat, heartbeatPauseTimer);
-                }
-                if (runSubscribePauseTimer) {
-                    subscribePauseTimer -= Time.deltaTime;
-                    CheckPauseTime (CurrentRequestType.Subscribe, subscribePauseTimer);
-                }
-            //}
+            if (runSubscribeTimer) {
+                subscribeTimer -= Time.deltaTime;
+                CheckElapsedTime (CurrentRequestType.Subscribe, subscribeTimer, subscribeWww);
+            }
+            if (runHeartbeatTimer) {
+                heartbeatTimer -= Time.deltaTime;
+                CheckElapsedTime (CurrentRequestType.Heartbeat, heartbeatTimer, heartbeatWww);
+            }
+            if (runPresenceHeartbeatTimer) {
+                presenceHeartbeatTimer -= Time.deltaTime;
+                CheckElapsedTime (CurrentRequestType.PresenceHeartbeat, presenceHeartbeatTimer, presenceHeartbeatWww);
+            }
+            if (runNonSubscribeTimer) {
+                nonSubscribeTimer -= Time.deltaTime;
+                CheckElapsedTime (CurrentRequestType.NonSubscribe, nonSubscribeTimer, nonSubscribeWww);
+            }
+            if (runPresenceHeartbeatPauseTimer) {
+                presenceHeartbeatPauseTimer -= Time.deltaTime;
+                CheckPauseTime (CurrentRequestType.PresenceHeartbeat, presenceHeartbeatPauseTimer);
+            }
+            if (runHeartbeatPauseTimer) {
+                heartbeatPauseTimer -= Time.deltaTime;
+                CheckPauseTime (CurrentRequestType.Heartbeat, heartbeatPauseTimer);
+            }
+            if (runSubscribePauseTimer) {
+                subscribePauseTimer -= Time.deltaTime;
+                CheckPauseTime (CurrentRequestType.Subscribe, subscribePauseTimer);
+            }
         }
 
         void CoroutineClass_CompleteEvent<T> (object sender, EventArgs e)
@@ -539,35 +528,27 @@ namespace PubNubMessaging.Core
         internal void StopTimeouts(CurrentRequestType crt){
             switch (crt) {
             case CurrentRequestType.Heartbeat:
-                //if(runHeartbeatTimer){
-                    runHeartbeatTimer = false;
-                    heartbeatTimer = 0;
-                    runHeartbeatPauseTimer = false;
-                    heartbeatPauseTimer = 0;
-                //}
+                runHeartbeatTimer = false;
+                heartbeatTimer = 0;
+                runHeartbeatPauseTimer = false;
+                heartbeatPauseTimer = 0;
                 break;
             case CurrentRequestType.PresenceHeartbeat:
-                //if(runPresenceHeartbeatTimer){
-                    runPresenceHeartbeatTimer = false;
-                    presenceHeartbeatTimer = 0;
-                    runPresenceHeartbeatPauseTimer = false;
-                    presenceHeartbeatPauseTimer = 0;
-                //}
+                runPresenceHeartbeatTimer = false;
+                presenceHeartbeatTimer = 0;
+                runPresenceHeartbeatPauseTimer = false;
+                presenceHeartbeatPauseTimer = 0;
                 break;
             case CurrentRequestType.Subscribe:
-                //if(runSubscribeTimer){
-                    runSubscribeTimer = false;
-                    subscribeTimer = 0;
-                    runSubscribePauseTimer = false;
-                    subscribePauseTimer = 0;
-                //}
+                runSubscribeTimer = false;
+                subscribeTimer = 0;
+                runSubscribePauseTimer = false;
+                subscribePauseTimer = 0;
 
                 break;
             case CurrentRequestType.NonSubscribe:
-                //if (runNonSubscribeTimer) {
-                    runNonSubscribeTimer = false;
-                    nonSubscribeTimer = 0;
-                //}
+                runNonSubscribeTimer = false;
+                nonSubscribeTimer = 0;
                 break;
             default:
                 break;
@@ -934,13 +915,13 @@ namespace PubNubMessaging.Core
         }
         #endif
 
-        public void CallFireEvent<T> (string message, bool isError, bool isTimeout, RequestState<T> pubnubRequestState, CoroutineParams<T> cp)
+        /*public void CallFireEvent<T> (string message, bool isError, bool isTimeout, RequestState<T> pubnubRequestState, CoroutineParams<T> cp)
         {
             #if (ENABLE_PUBNUB_LOGGING)
             LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CallFireEvent: RequestType {1} {2} {3}", DateTime.Now.ToString (), typeof(T), pubnubRequestState.GetType (), Helpers.GetNamesFromChannelEntities(pubnubRequestState.ChannelEntities)), LoggingMethod.LevelInfo);
             #endif
             FireEvent (message, isError, false, pubnubRequestState, cp.crt);
-        }
+        }*/
         
         internal void SetComplete (CurrentRequestType crt)
         {
@@ -1139,7 +1120,7 @@ namespace PubNubMessaging.Core
                 CheckComplete (crt);
                 #endif
                 SetComplete (crt);
-                //if (((pubnubRequestState != null) && fireEvent) || (fireEvent && crt.Equals(CurrentRequestType.Subscribe))) {
+
                 if ((pubnubRequestState != null) && fireEvent) {
                     FireEvent ("Aborted", true, false, pubnubRequestState, crt);
                     #if (ENABLE_PUBNUB_LOGGING)

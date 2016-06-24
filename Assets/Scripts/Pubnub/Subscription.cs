@@ -88,7 +88,6 @@ namespace PubNubMessaging.Core
             private set;
         }
 
-        //public SafeDictionary<ChannelIdentity, ChannelParameters> SubscribedChannelsAndChannelGroupsAwaitingConnectCallback {
         public List<ChannelEntity> ChannelsAndChannelGroupsAwaitingConnectCallback {
             get;
             private set;
@@ -138,7 +137,6 @@ namespace PubNubMessaging.Core
 
         private SafeDictionary<ChannelIdentity, ChannelParameters> channelEntitiesDictionary = new SafeDictionary<ChannelIdentity, ChannelParameters>();
 
-        //public void Add(ChannelIdentity channelID, ChannelParameters channelParam){
         public void Add(ChannelEntity channelEntity, bool reset){
             
             if (!channelEntitiesDictionary.ContainsKey (channelEntity.ChannelID)) {
@@ -247,7 +245,6 @@ namespace PubNubMessaging.Core
         }
 
         public bool UpdateOrAddUserStateOfEntity(ChannelEntity channelEntity, Dictionary<string, object> userState){
-            //channelEntitiesDictionary [channelEntity.ChannelID].UserState = userState;
             bool stateChanged = false;
             if (channelEntitiesDictionary.ContainsKey (channelEntity.ChannelID)) {
                 
@@ -276,9 +273,6 @@ namespace PubNubMessaging.Core
 
         public void UpdateIsAwaitingConnectCallbacksOfEntity(List<ChannelEntity> channelEntity, bool isAwaitingConnectCallback){
             foreach (ChannelEntity ce in channelEntity) {
-                //int index = channelEntities.IndexOf (ce);
-                //if (index != -1)
-                //channelEntities [index].ChannelParams.IsAwaitingConnectCallback = IsAwaitingConnectCallback;
                 if (channelEntitiesDictionary.ContainsKey (ce.ChannelID)) {
                     channelEntitiesDictionary [ce.ChannelID].IsAwaitingConnectCallback = isAwaitingConnectCallback;
                     #if (ENABLE_PUBNUB_LOGGING)
@@ -328,122 +322,5 @@ namespace PubNubMessaging.Core
             HasPresenceChannels = false;
         }
     }
-
-
-    //Combine request state
-    /*public sealed class Subscription
-    {
-        public PubnubWebRequest Request;
-        public PubnubWebResponse Response;
-        public ResponseType RespType;
-        public CurrentRequestType CurrRequestType;
-        public bool Timeout;
-        public bool Reconnect;
-        public long Timetoken;
-        public Type TypeParameterType;
-        public long ID;
-
-        /*public string Id { get; private set; }
-
-        private Subscription(string id)
-        {
-            Id = id;
-        }
-
-        private static volatile Subscription instance;
-        private static object syncRoot = new Object();
-
-        public static Subscription Instance
-        {
-            get 
-            {
-                if (instance == null) 
-                {
-                    lock (syncRoot) 
-                    {
-                        if (instance == null) 
-                            instance = new Subscription();
-                    }
-                }
-
-                return instance;
-            }
-        }
-
-        private Subscription()
-        {                
-            //Id = Guid.NewGuid();
-        }
-
-        public static SafeDictionary<string, string[]> CurrentSubscribedChannelsAndChannelGroups {
-            get;
-            set;
-        }
-
-        public static int CurrentSubscribedChannelsCount {
-            get;
-            set;
-        }
-
-        public static int CurrentSubscribedChannelGroupsCount {
-            get;
-            set;
-        }
-
-        public static SafeDictionary<string, string[]> SubscribedChannelsAndChannelGroupsAwaitingConnectCallback {
-            get;
-            set;
-        }
-
-        public static string CompiledUserState {
-            get;
-            set;
-        }
-
-        public static SafeDictionary<string, Dictionary<string, object>>  ChannelAndChannelGroupCallbacks {
-            get;
-            set;
-        }
-
-        public static bool ConnectCallbackSent {
-            get;
-            set;
-            //update SubscribedChannelsAndChannelGroupsAwaitingConnectCallback
-            //and set isAwaitingConnectCallback false
-        }
-
-        public static SafeDictionary<ChannelIdentity, ChannelParameters> ChannelEntities 
-        {
-            get {return channelEntities;}
-        }
-
-        public static SafeDictionary<ChannelIdentity, ChannelParameters> channelEntities = new SafeDictionary<ChannelIdentity, ChannelParameters>();
-        public static IEnumerable<ChannelEntity> AllChannelEntities
-        {
-            get {return channelEntities;}
-        }
-
-        public static void Add(ChannelIdentity channelID, ChannelParameters channelParam){
-            channelEntities.Add(channelID, channelParam);
-            ResetChannelsAndChannelGroups ();
-            return newSubscription;
-
-        }
-        public void Delete(Subscription itemToRemove)
-        {
-            channelEntities.Remove(itemToRemove);
-            ResetChannelsAndChannelGroups ();
-        }
-
-        public void ResetChannelsAndChannelGroups(){
-            SafeDictionary<string, string[]> currentChannelsAndChannelGroups = new SafeDictionary<string, string[]> ();
-            CurrentSubscribedChannelsAndChannelGroups = currentChannelsAndChannelGroups;
-        }
-
-        public void ResetChannelsAndChannelGroups(){
-            SafeDictionary<string, string[]> currentChannelsAndChannelGroups = new SafeDictionary<string, string[]> ();
-            CurrentSubscribedChannelsAndChannelGroups = currentChannelsAndChannelGroups;
-        }
-    }*/
 }
 

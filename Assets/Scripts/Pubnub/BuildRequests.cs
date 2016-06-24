@@ -7,23 +7,6 @@ namespace PubNubMessaging.Core
     public class BuildRequests
     {
 
-        /*internal static RequestState<T> BuildRequestState<T>(string[] channel, ResponseType responseType, 
-            bool reconnect, Action<T> userCallback, Action<T> connectCallback, Action<PubnubClientError> errorCallback,
-            long id, bool timeout, long timetoken, Type typeParam
-        ){
-            return BuildRequestState<T> (channel, responseType, reconnect, userCallback, connectCallback, errorCallback,
-                id, timeout, timetoken, typeParam, null);
-        }*/
-
-        /*internal static RequestState<T> BuildRequestState<T>(string[] channels, string[] channelGroups, ResponseType responseType, 
-            bool reconnect, Action<T> userCallback, Action<T> connectCallback, Action<PubnubClientError> errorCallback,
-            long id, bool timeout, long timetoken, Type typeParam
-        ){
-            List<ChannelEntity> channelEntities = Helpers.CreateChannelEntity (channels, false, false, null, userCallback, null, 
-                errorCallback, null, null);
-
-            List<ChannelEntity> channelGroupEntities = Helpers.CreateChannelEntity (channelGroups, false, true, null, userCallback, null, 
-                errorCallback, null, null);*/
         #region "Build Request State"
 
         internal static RequestState<T> BuildRequestState<T>(List<ChannelEntity> channelEntities, ResponseType responseType, 
@@ -48,7 +31,7 @@ namespace PubNubMessaging.Core
             bool reconnect, long id, bool timeout, long timetoken, Type typeParam
         ){
             return BuildRequestState<T> (channelEntities, responseType, reconnect, id, timeout, timetoken,
-                typeParam, "", null, null);
+                typeParam, String.Empty, null, null);
         }
         
         internal static RequestState<T> BuildRequestState<T>(Action<T> userCallback, Action<PubnubClientError> errorCallback, ResponseType responseType, 
@@ -451,11 +434,6 @@ namespace PubNubMessaging.Core
             {
                 presenceParamBuilder.AppendFormat("&channel-group={0}", Utility.EncodeUricomponent(channelGroups, ResponseType.PresenceHeartbeat, true, false));
             }
-
-            /*#if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, presenceHeartbeatParameters {1}", DateTime.Now.ToString (), 
-                    presenceParamBuilder.ToString()), LoggingMethod.LevelInfo);
-            #endif*/
 
             List<string> url = new List<string> ();
 
@@ -863,7 +841,6 @@ namespace PubNubMessaging.Core
 
                     url = AppendUUIDToURL(url, uuid, true);
                     url.Append (parameters);
-                    //url = AppendPresenceHeartbeatToURL(url, pubnubPresenceHeartbeatInSeconds);
                     url = AppendAuthKeyToURL(url, authenticationKey, type);
                     url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
                     break;
