@@ -1169,13 +1169,14 @@ namespace PubNubMessaging.Core
         void StartPresenceHeartbeat<T> (bool pause, int pauseTime, RequestState<T> pubnubRequestState)
         {
             try {
-                if((Subscription.Instance.AllPresenceChannelsOrChannelGroups.Count <= 0) 
-                    && (Subscription.Instance.AllNonPresenceChannelsOrChannelGroups.Count > 0)){
+                if(Subscription.Instance.AllNonPresenceChannelsOrChannelGroups.Count > 0){
                     isPresenceHearbeatRunning = true;
                     string channelsJsonState = Subscription.Instance.CompiledUserState;
 
-                    Uri requestUrl = BuildRequests.BuildPresenceHeartbeatRequest (Helpers.GetNamesFromChannelEntities(Subscription.Instance.AllChannels, false), 
-                    Helpers.GetNamesFromChannelEntities(Subscription.Instance.AllChannelGroups, true), channelsJsonState, this.SessionUUID,
+                    Uri requestUrl = BuildRequests.BuildPresenceHeartbeatRequest (
+                        Helpers.GetNamesFromChannelEntities(Subscription.Instance.AllNonPresenceChannelsOrChannelGroups, false), 
+                        Helpers.GetNamesFromChannelEntities(Subscription.Instance.AllNonPresenceChannelsOrChannelGroups, true), 
+                        channelsJsonState, this.SessionUUID,
                         this.ssl, this.Origin, authenticationKey, this.subscribeKey);
 
                     coroutine.PresenceHeartbeatCoroutineComplete += CoroutineCompleteHandler<T>;
