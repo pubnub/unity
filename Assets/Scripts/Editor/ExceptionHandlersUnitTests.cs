@@ -2266,7 +2266,7 @@ namespace PubNubMessaging.Tests
                 foreach (ChannelEntity c in mea.channelEntities) {
                     channelMatch = ExceptionChannel.Contains(c.ChannelID.ChannelOrChannelGroupName);
                     if(channelMatch)
-                        break;
+                        continue;
                 }
             }
             string channels = Helpers.GetNamesFromChannelEntities(mea.channelEntities, false);

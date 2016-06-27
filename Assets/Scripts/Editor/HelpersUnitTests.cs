@@ -271,14 +271,35 @@ namespace PubNubMessaging.Tests
                 errorcb = null;
             }
             List<ChannelEntity> channelEntities;
-            
+
             Helpers.RemoveDuplicatesCheckAlreadySubscribedAndGetChannels<T> (responseType, null, null, 
                 errorcb, null, null, multiChannel, null, errorLevel, false, out channelEntities
             );
+
+            List<ChannelEntity> channelEntities2;
+
+            Helpers.RemoveDuplicatesCheckAlreadySubscribedAndGetChannels<T> (responseType, null, null, 
+                errorcb, null, null, new string[] {channel}, null, errorLevel, false, out channelEntities2
+            );
+
             if (!readCallback) {
-                string channels2 = Helpers.GetNamesFromChannelEntities(channelEntities, false);
-                UnityEngine.Debug.Log ("not fireCallback");
-                Assert.IsTrue (channels2.Contains (channel));
+                string channels2 = Helpers.GetNamesFromChannelEntities(channelEntities2, false);
+
+                bool channelMatch = false;
+                if (channelEntities != null) {
+                    foreach (ChannelEntity c in channelEntities2) {
+                        string ch2= c.ChannelID.ChannelOrChannelGroupName;
+                        if(c.ChannelID.IsPresenceChannel){
+                            channel = channel + Utility.PresenceChannelSuffix;
+                        }
+                        channelMatch = channel.Equals(ch2);
+                        if(channelMatch)
+                            break;
+                    }
+                }
+                UnityEngine.Debug.Log ("not fireCallback:" +channelMatch + channels2 + channel);
+                Assert.IsTrue (channelMatch);
+
             }
         }
 
@@ -1779,6 +1800,11 @@ namespace PubNubMessaging.Tests
                 MessageToCheck = "Presence Unsubscribed after 10";
             }
             CheckMessage = true;
+            if(isPresence){
+                for(int i=0; i<multiChannel.Length; i++ ){
+                    multiChannel[i] += Utility.PresenceChannelSuffix;
+                }
+            }
 
             List<ChannelEntity> channelEntities = Helpers.CreateChannelEntity<T>(multiChannel, 
                 true, false, null, userCallback, connectCallback, errorCallback, null, null);  
