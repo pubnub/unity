@@ -975,15 +975,8 @@ public class PubnubExample : MonoBehaviour
                 }
             } else if (state == PubnubState.HereNow) {
                 allowUserSettingsChange = false;
-                if (!string.IsNullOrEmpty (valueToSet)) {
-                    AddToPubnubResultContainer ("Running Channel Here now");
-                    pubnub.HereNow<string> (valueToSet, toggle1, toggle2, DisplayReturnMessage, DisplayErrorMessage);
-                } else if (!string.IsNullOrEmpty (valueToSetSubs)) {
-                    AddToPubnubResultContainer ("Running Channel Group Here now");
-                    pubnub.ChannelGroupHereNow<string> (valueToSetSubs, toggle1, toggle2, DisplayReturnMessage, DisplayErrorMessage);
-                } else {
-                    AddToPubnubResultContainer ("Please enter channel or channel group name.");
-                }
+                AddToPubnubResultContainer ("Running Channel Here now");
+                pubnub.HereNow<string> (valueToSet, valueToSetSubs, toggle1, toggle2, DisplayReturnMessage, DisplayErrorMessage);
                 pubChannel = "";
             } else if (state == PubnubState.GlobalHereNow) {
                 pubnub.GlobalHereNow<string> (toggle1, toggle2, DisplayReturnMessage, DisplayErrorMessage);

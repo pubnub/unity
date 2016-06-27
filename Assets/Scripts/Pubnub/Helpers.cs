@@ -261,7 +261,7 @@ namespace PubNubMessaging.Core
 
                 }
             }
-            return string.Format ("GetNamesFromChannelEntities: channel(s) = {0} and channelGroups(s) = {1}", sbCh.ToString(), sbChGrp.ToString());
+            return string.Format ("channel(s) = {0} and channelGroups(s) = {1}", sbCh.ToString(), sbChGrp.ToString());
         }
 
         internal static bool UpdateOrAddUserStateOfEntity<T>(string channel, bool isChannelGroup, Dictionary<string, object> userState,
@@ -416,8 +416,9 @@ namespace PubNubMessaging.Core
                 string channelName = rawChannels[index].Trim();
                
                 if (channelName.Length > 0) {
-                    if ((type == ResponseType.Presence) 
-                        || (type == ResponseType.PresenceV2) 
+                    /*if ((type == ResponseType.Presence) 
+                        ||*/
+                    if((type == ResponseType.PresenceV2) 
                         || (type == ResponseType.PresenceUnsubscribe)) {
                         channelName = string.Format ("{0}{1}", channelName, Utility.PresenceChannelSuffix);
                     }
@@ -732,8 +733,8 @@ namespace PubNubMessaging.Core
                             result.Add (c [0]);
                         }
                         break;
-                    case ResponseType.Subscribe:
-                    case ResponseType.Presence:
+                    //case ResponseType.Subscribe:
+                    //case ResponseType.Presence:
                     case ResponseType.Leave:
                         if (!string.IsNullOrEmpty(multiChannelGroup))
                         {
@@ -812,8 +813,9 @@ namespace PubNubMessaging.Core
             PubnubErrorFilter.Level errorLevel, Exception ex)
         {
             if (pubnubRequestState.ChannelEntities != null) {
-                if (pubnubRequestState.RespType.Equals(ResponseType.Subscribe) || pubnubRequestState.RespType.Equals(ResponseType.Presence)
-                    || pubnubRequestState.RespType.Equals(ResponseType.SubscribeV2) || pubnubRequestState.RespType.Equals(ResponseType.PresenceV2)
+                /*if (pubnubRequestState.RespType.Equals(ResponseType.Subscribe) || pubnubRequestState.RespType.Equals(ResponseType.Presence)
+                    ||*/
+                if(pubnubRequestState.RespType.Equals(ResponseType.SubscribeV2) || pubnubRequestState.RespType.Equals(ResponseType.PresenceV2)
                 ) {
                     PubnubCallbacks.FireErrorCallbacksForAllChannels<T> (ex, pubnubRequestState, PubnubErrorSeverity.Critical, 
                         PubnubErrorCode.None, errorLevel);
@@ -1216,14 +1218,14 @@ namespace PubNubMessaging.Core
                         #endif
 
                         switch (asynchRequestState.RespType) {
-                        case ResponseType.Subscribe:
+                        //case ResponseType.Subscribe:
                         case ResponseType.SubscribeV2:
                             var connectResult = Helpers.CreateJsonResponse ("Connected", channelEntity.ChannelID.ChannelOrChannelGroupName, jsonPluggableLibrary);
                             PubnubCallbacks.SendCallbacks<T> (jsonPluggableLibrary, channelEntity, connectResult, 
                                 CallbackType.Connect, false);
 
                             break;
-                        case ResponseType.Presence:
+                        //case ResponseType.Presence:
                         case ResponseType.PresenceV2:
                             var connectResult2 = Helpers.CreateJsonResponse ("Presence Connected", 
                                                  channelEntity.ChannelID.ChannelOrChannelGroupName.Replace (Utility.PresenceChannelSuffix, ""), jsonPluggableLibrary);

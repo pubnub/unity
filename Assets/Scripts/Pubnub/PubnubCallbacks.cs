@@ -189,10 +189,10 @@ namespace PubNubMessaging.Core
 
                     PubnubClientError error = null;
                     if (ex != null) {
-                        error = Helpers.CreatePubnubClientError<T> (ex, requestState, PubnubErrorCode.None,
+                        error = Helpers.CreatePubnubClientError<T> (ex, requestState, errorType,
                             severity, channel, channelGroup);  
                     } else {
-                        error = Helpers.CreatePubnubClientError<T> (message, requestState, PubnubErrorCode.None,
+                        error = Helpers.CreatePubnubClientError<T> (message, requestState, errorType,
                             severity, channel, channelGroup);  
                     }
 
@@ -205,10 +205,10 @@ namespace PubNubMessaging.Core
                 if ((requestState != null) && (requestState.ErrorCallback != null)) {
                     PubnubClientError error = null;
                     if (ex != null) {
-                        error = Helpers.CreatePubnubClientError<T> (ex, requestState, PubnubErrorCode.None,
+                        error = Helpers.CreatePubnubClientError<T> (ex, requestState, errorType,
                             severity, "", "");  
                     } else {
-                        error = Helpers.CreatePubnubClientError<T> (message, requestState, PubnubErrorCode.None,
+                        error = Helpers.CreatePubnubClientError<T> (message, requestState, errorType,
                             severity, "", "");  
                     }
 

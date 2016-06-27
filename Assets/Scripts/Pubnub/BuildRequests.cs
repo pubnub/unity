@@ -216,7 +216,7 @@ namespace PubNubMessaging.Core
             parameterBuilder.AppendFormat ("?disable_uuids={0}&state={1}", disableUUID, userState);
             if (!string.IsNullOrEmpty(channelGroups))
             {
-                parameterBuilder.AppendFormat("&channel-group={0}",  Utility.EncodeUricomponent(channelGroups, ResponseType.Subscribe, true, false));
+                parameterBuilder.AppendFormat("&channel-group={0}",  Utility.EncodeUricomponent(channelGroups, ResponseType.HereNow, true, false));
             }
 
             List<string> url = new List<string> ();
@@ -452,7 +452,10 @@ namespace PubNubMessaging.Core
             bool ssl, string origin, string authenticationKey, string subscribeKey)
         {
             StringBuilder unsubscribeParamBuilder = new StringBuilder ();
-            unsubscribeParamBuilder.AppendFormat("&state={0}", Utility.EncodeUricomponent(Subscription.Instance.CompiledUserState, ResponseType.Leave, false, false));
+            if(!string.IsNullOrEmpty(Subscription.Instance.CompiledUserState)){
+                unsubscribeParamBuilder.AppendFormat("&state={0}", Utility.EncodeUricomponent(Subscription.Instance.CompiledUserState, 
+                    ResponseType.Leave, false, false));
+            }
             if (channelGroups != null && channelGroups.Length > 0)
             {
                 unsubscribeParamBuilder.AppendFormat("&channel-group={0}",  Utility.EncodeUricomponent(channelGroups, ResponseType.Leave, true, false));
@@ -471,7 +474,7 @@ namespace PubNubMessaging.Core
             return BuildRestApiRequest<Uri> (url, ResponseType.Leave, uuid, ssl, origin, 0, authenticationKey, unsubscribeParamBuilder.ToString());
         }
 
-        internal static Uri BuildMultiChannelSubscribeRequest (string channels, string channelGroups, object timetoken, 
+        /*internal static Uri BuildMultiChannelSubscribeRequest (string channels, string channelGroups, object timetoken, 
                 string channelsJsonState, string uuid,
             bool ssl, string origin, string authenticationKey, string subscribeKey)
         {
@@ -494,7 +497,7 @@ namespace PubNubMessaging.Core
             url.Add (timetoken.ToString ());
 
             return BuildRestApiRequest<Uri> (url, ResponseType.Subscribe, uuid, ssl, origin, 0, authenticationKey, subscribeParamBuilder.ToString ());
-        }
+        }*/
 
         internal static Uri BuildMultiChannelSubscribeRequestV2 (string channels, string channelGroups, string timetoken, 
                 string channelsJsonState, string uuid, string region, string filterExpr,
@@ -504,20 +507,20 @@ namespace PubNubMessaging.Core
             subscribeParamBuilder.AppendFormat ("&tt={0}", timetoken);
 
             if (!string.IsNullOrEmpty (filterExpr)) {
-                subscribeParamBuilder.AppendFormat ("&filter-expr=({0})",  Utility.EncodeUricomponent(filterExpr, ResponseType.Subscribe, false, false));
+                subscribeParamBuilder.AppendFormat ("&filter-expr=({0})",  Utility.EncodeUricomponent(filterExpr, ResponseType.SubscribeV2, false, false));
             }
 
             if (!string.IsNullOrEmpty (region)) {
-                subscribeParamBuilder.AppendFormat ("&tr={0}", Utility.EncodeUricomponent(region, ResponseType.Subscribe, false, false));
+                subscribeParamBuilder.AppendFormat ("&tr={0}", Utility.EncodeUricomponent(region, ResponseType.SubscribeV2, false, false));
             }
 
             if (channelsJsonState != "{}" && channelsJsonState != "") {
-                subscribeParamBuilder.AppendFormat ("&state={0}", Utility.EncodeUricomponent (channelsJsonState, ResponseType.Subscribe, false, false));
+                subscribeParamBuilder.AppendFormat ("&state={0}", Utility.EncodeUricomponent (channelsJsonState, ResponseType.SubscribeV2, false, false));
             }
 
             if (!string.IsNullOrEmpty(channelGroups))
             {
-                subscribeParamBuilder.AppendFormat ("&channel-group={0}", Utility.EncodeUricomponent (channelGroups, ResponseType.Subscribe, true, false));
+                subscribeParamBuilder.AppendFormat ("&channel-group={0}", Utility.EncodeUricomponent (channelGroups, ResponseType.SubscribeV2, true, false));
             }                   
 
             List<string> url = new List<string> ();
@@ -823,8 +826,8 @@ namespace PubNubMessaging.Core
             url = AddSSLAndEncodeURL<T>(urlComponents, type, ssl, origin, url);
 
             switch (type) {
-                case ResponseType.Presence:
-                case ResponseType.Subscribe:
+                //case ResponseType.Presence:
+                //case ResponseType.Subscribe:
                 case ResponseType.Leave:
                 case ResponseType.SubscribeV2:
                 case ResponseType.PresenceV2:

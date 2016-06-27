@@ -258,7 +258,8 @@ namespace PubNubMessaging.Core
             return HereNow<T> (channel, true, false, userCallback, errorCallback);
         }
 
-        public bool HereNow<T> (string channel, bool showUUIDList, bool includeUserState, Action<T> userCallback, Action<PubnubClientError> errorCallback)
+        public bool HereNow<T> (string channel, bool showUUIDList, bool includeUserState, 
+            Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
             Utility.CheckChannel(channel);
             Utility.CheckCallback(userCallback, CallbackType.Success);
@@ -267,32 +268,21 @@ namespace PubNubMessaging.Core
 
             return pubnub.HereNow<T> (channel, "", showUUIDList, includeUserState, userCallback, errorCallback);
         }
-        #endregion
 
-        #region "ChannelGroup HereNow Methods"
-        public bool ChannelGroupHereNow (string channelGroup, Action<object> userCallback, Action<PubnubClientError> errorCallback)
+        public bool HereNow (string channel, string channelGroup, bool showUUIDList, bool includeUserState, 
+            Action<object> userCallback, Action<PubnubClientError> errorCallback)
         {
-            return ChannelGroupHereNow<object> (channelGroup, true, false, userCallback, errorCallback);
+            return HereNow<object>(channel, channelGroup, showUUIDList, includeUserState, userCallback, errorCallback);
         }
 
-        public bool ChannelGroupHereNow (string channelGroup, bool showUUIDList, bool includeUserState, Action<object> userCallback, Action<PubnubClientError> errorCallback)
-        {
-            return ChannelGroupHereNow<object> (channelGroup, showUUIDList, includeUserState, userCallback, errorCallback);
-        }
-
-        public bool ChannelGroupHereNow<T> (string channelGroup, Action<T> userCallback, Action<PubnubClientError> errorCallback)
-        {
-            return ChannelGroupHereNow<T> (channelGroup, true, false, userCallback, errorCallback);
-        }
-
-        public bool ChannelGroupHereNow<T> (string channelGroup, bool showUUIDList, bool includeUserState, Action<T> userCallback, Action<PubnubClientError> errorCallback)
+        public bool HereNow<T> (string channel, string channelGroup, bool showUUIDList, bool includeUserState, Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
             Utility.CheckChannel(channelGroup);
             Utility.CheckCallback(userCallback, CallbackType.Success);
             Utility.CheckCallback(errorCallback, CallbackType.Error);
             Utility.CheckJSONPluggableLibrary();
 
-            return pubnub.HereNow<T> ("", channelGroup, showUUIDList, includeUserState, userCallback, errorCallback);
+            return pubnub.HereNow<T> (channel, channelGroup, showUUIDList, includeUserState, userCallback, errorCallback);
         }
         #endregion
 

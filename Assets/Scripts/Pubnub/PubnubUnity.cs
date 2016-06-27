@@ -1375,8 +1375,8 @@ namespace PubNubMessaging.Core
                 PresenceHeartbeatHandler<T> (cea);
 
                 break;
-            case ResponseType.Subscribe:
-            case ResponseType.Presence:
+            //case ResponseType.Subscribe:
+            //case ResponseType.Presence:
             case ResponseType.SubscribeV2:
             case ResponseType.PresenceV2:
 
@@ -1603,8 +1603,9 @@ namespace PubNubMessaging.Core
 
         private void RunRequests<T> (Uri requestUri, RequestState<T> pubnubRequestState)
         {
-            if (pubnubRequestState.RespType.Equals(ResponseType.Subscribe) || pubnubRequestState.RespType.Equals(ResponseType.Presence)
-                || pubnubRequestState.RespType.Equals(ResponseType.SubscribeV2) || pubnubRequestState.RespType.Equals(ResponseType.PresenceV2)
+            /*if (pubnubRequestState.RespType.Equals(ResponseType.Subscribe) || pubnubRequestState.RespType.Equals(ResponseType.Presence)
+                ||*/
+            if(pubnubRequestState.RespType.Equals(ResponseType.SubscribeV2) || pubnubRequestState.RespType.Equals(ResponseType.PresenceV2)
             ) {
                 RequestState<T> pubnubRequestStateHB = pubnubRequestState;
                 pubnubRequestStateHB.ID = DateTime.Now.Ticks;
