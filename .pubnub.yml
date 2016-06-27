@@ -16,9 +16,14 @@ changelog:
       - type: improvement
         text: Refactored code.
       - type: improvement
-        text: JSON library: the pre-compiler directives to choose between MiniJSON and JSONFx have been moved to the class JSONSerializer.cs.
+        text: "JSON library: the pre-compiler directives to choose between MiniJSON and JSONFx have been moved to the class JSONSerializer.cs."
       - type: improvement
-        text: Logging: In addition to setting the variables PubnubLogLevel = LoggingMethod.Level.Info and PubnubErrorLevel = PubnubErrorFilter.Level.Info you also need to add a "define symbol": ENABLE_PUBNUB_LOGGING for each of the platform you want to enable logging. This setting is available in the Unity Editor: File-> Build Settings -> Player Settings -> Other Settings -> Configuration -> Scripting define symbols. After you type ENABLE_PUBNUB_LOGGING in it do remember to press return with the focus still in the text box or your setting will not be saved.
+        text: | 
+          `Logging: In addition to setting the variables PubnubLogLevel = LoggingMethod.Level.Info and PubnubErrorLevel = PubnubErrorFilter.Level.Info you also need to add a "define symbol": ENABLE_PUBNUB_LOGGING for each of the platform you want to enable logging. 
+
+          This setting is available in the Unity Editor: File-> Build Settings -> Player Settings -> Other Settings -> Configuration -> Scripting define symbols. 
+          After you type ENABLE_PUBNUB_LOGGING in it do remember to press return with the focus still in the text box or your setting will not be saved.
+          `
       - type: feature
         text: Add mobile push methods.
       - type: improvement
