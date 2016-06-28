@@ -1,8 +1,12 @@
-﻿#if (UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_ANDROID || UNITY_IOS || UNITY_5 || UNITY_WEBGL)
-#define USE_JSONFX_UNITY_IOS
+﻿//#if (UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_ANDROID || UNITY_IOS || UNITY_5 || UNITY_WEBGL)
+//#define USE_JSONFX_UNITY_IOS
 //comment/remove #define USE_JSONFX_UNITY_IOS and uncomment #define USE_MiniJSON
 //to use MiniJSON as the serialization library
 //#define USE_MiniJSON
+//#endif
+
+#if((!USE_JSONFX_UNITY_IOS) && (!USE_MiniJSON))
+#define USE_JSONFX_UNITY_IOS
 #endif
 
 #if (USE_JSONFX_UNITY_IOS)

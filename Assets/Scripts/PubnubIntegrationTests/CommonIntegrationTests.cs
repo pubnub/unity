@@ -2139,9 +2139,13 @@ namespace PubNubMessaging.Tests
             Crt = crt;
             RespType = respType;
 
-            RequestState<string> pubnubRequestState = BuildRequests.BuildRequestState<string> (channels, respType, 
-            resumeOnReconnect, UserCallbackCommonExceptionHandler, 
-            ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 0, isTimeout, timetoken, typeof(string));
+            List<ChannelEntity> channelEntities = Helpers.CreateChannelEntity<string>(channels, 
+                true, false, null, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, 
+                ErrorCallbackCommonExceptionHandler, null, null);  
+
+            RequestState<string> pubnubRequestState = BuildRequests.BuildRequestState<string> (channelEntities, respType, 
+                resumeOnReconnect, 0, isTimeout, timetoken, (asObject)?typeof(object):typeof(string), "", UserCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler);
+
             GameObject go = new GameObject ();
             CoroutineClass cc = go.AddComponent<CoroutineClass> ();
             
@@ -2204,9 +2208,14 @@ namespace PubNubMessaging.Tests
                 Action<T> userCallback, Action<T> connectCallback, Action<PubnubClientError> errorCallback,
                 bool isTimeout, bool isError, long timetoken
         ){
-            RequestState<T> pubnubRequestState = BuildRequests.BuildRequestState<T> (channels, respType, 
-                resumeOnReconnect, userCallback, 
-                connectCallback, errorCallback, 0, isTimeout, timetoken, typeof(T));
+            List<ChannelEntity> channelEntities = Helpers.CreateChannelEntity<T>(channels, 
+                true, false, null, userCallback, 
+                connectCallback, errorCallback, null, null);  
+
+            RequestState<T> pubnubRequestState = BuildRequests.BuildRequestState<T> (channelEntities, respType, 
+                resumeOnReconnect, 0, isTimeout, timetoken, typeof(T), "", userCallback, 
+                errorCallback);
+
             GameObject go = new GameObject ();
             CoroutineClass cc = go.AddComponent<CoroutineClass> ();
 
@@ -2260,9 +2269,14 @@ namespace PubNubMessaging.Tests
             Action<T> userCallback, Action<T> connectCallback, Action<PubnubClientError> errorCallback,
             bool isTimeout, bool isError, long timetoken
         ){
-            RequestState<T> pubnubRequestState = BuildRequests.BuildRequestState<T> (channels, respType, 
-            resumeOnReconnect, userCallback, 
-            connectCallback, errorCallback, 0, isTimeout, timetoken, typeof(T));
+            List<ChannelEntity> channelEntities = Helpers.CreateChannelEntity<T>(channels, 
+                true, false, null, userCallback, 
+                connectCallback, errorCallback, null, null);  
+
+            RequestState<T> pubnubRequestState = BuildRequests.BuildRequestState<T> (channelEntities, respType, 
+                resumeOnReconnect, 0, isTimeout, timetoken, typeof(T), "", userCallback, 
+                errorCallback);
+
             GameObject go = new GameObject ();
             CoroutineClass cc = go.AddComponent<CoroutineClass> ();
 
