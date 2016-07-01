@@ -936,17 +936,20 @@ namespace PubNubMessaging.Core
                 #endif
                 if (crt == CurrentRequestType.Heartbeat) {
                     #if(!REDUCE_PUBNUB_COROUTINES)
-                    StopCoroutine (HeartbeatTimeoutCoroutine);
+                    if(HeartbeatTimeoutCoroutine != null)
+                        StopCoroutine (HeartbeatTimeoutCoroutine);
                     #endif
                     isHearbeatComplete = true;
                 } else if (crt == CurrentRequestType.PresenceHeartbeat) {
                     #if(!REDUCE_PUBNUB_COROUTINES)
-                    StopCoroutine (PresenceHeartbeatTimeoutCoroutine);
+                    if(PresenceHeartbeatTimeoutCoroutine != null)
+                        StopCoroutine (PresenceHeartbeatTimeoutCoroutine);
                     #endif
                     isPresenceHeartbeatComplete = true;
                 } else if (crt == CurrentRequestType.Subscribe) {
                     #if(!REDUCE_PUBNUB_COROUTINES)
-                    StopCoroutine (SubTimeoutCoroutine);
+                    if(SubTimeoutCoroutine != null)
+                        StopCoroutine (SubTimeoutCoroutine);
                     #endif
                     
                     #if (ENABLE_PUBNUB_LOGGING)
@@ -956,7 +959,8 @@ namespace PubNubMessaging.Core
                     isSubscribeComplete = true;
                 } else {
                     #if(!REDUCE_PUBNUB_COROUTINES)
-                    StopCoroutine (NonSubTimeoutCoroutine);
+                    if(NonSubTimeoutCoroutine != null)
+                        StopCoroutine (NonSubTimeoutCoroutine);
                     #endif
                     isNonSubscribeComplete = true;
                 } 
@@ -978,7 +982,8 @@ namespace PubNubMessaging.Core
                 {
                     heartbeatWww.Dispose();
                     heartbeatWww = null;
-                    StopCoroutine(HeartbeatCoroutine);
+                    if(HeartbeatCoroutine != null)
+                        StopCoroutine(HeartbeatCoroutine);
                 }
                 if (DelayRequestCoroutineHB != null)
                 {
@@ -991,7 +996,8 @@ namespace PubNubMessaging.Core
                 {
                     presenceHeartbeatWww.Dispose();
                     presenceHeartbeatWww = null;
-                    StopCoroutine(PresenceHeartbeatCoroutine);
+                    if(PresenceHeartbeatCoroutine != null)
+                        StopCoroutine(PresenceHeartbeatCoroutine);
                 }
                 if (DelayRequestCoroutinePHB != null)
                 {
@@ -1001,7 +1007,8 @@ namespace PubNubMessaging.Core
             else if ((crt == CurrentRequestType.Subscribe) && (subscribeWww != null) && (!subscribeWww.isDone))
             {
                 subscribeWww = null;
-                StopCoroutine(SubCoroutine);
+                if(SubCoroutine != null)
+                    StopCoroutine(SubCoroutine);
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog(string.Format("DateTime {0}, Coroutine stopped Subscribe: ", DateTime.Now.ToString()), LoggingMethod.LevelInfo);
                 #endif
@@ -1017,7 +1024,8 @@ namespace PubNubMessaging.Core
                 #endif
                 nonSubscribeWww.Dispose();
                 nonSubscribeWww = null;
-                StopCoroutine(NonSubCoroutine);
+                if(NonSubCoroutine != null)
+                    StopCoroutine(NonSubCoroutine);
             }
         }
         #endif
@@ -1032,23 +1040,27 @@ namespace PubNubMessaging.Core
 
                 #if(!REDUCE_PUBNUB_COROUTINES)
                 if (crt == CurrentRequestType.Heartbeat) {
-                    if ((!isHearbeatComplete) && (heartbeatWww != null) && (!heartbeatWww.isDone)) {    
-                        StopCoroutine (HeartbeatCoroutine);
+                    if ((!isHearbeatComplete) && (heartbeatWww != null) && (!heartbeatWww.isDone)) {   
+                        if(HeartbeatCoroutine != null)
+                            StopCoroutine (HeartbeatCoroutine);
                         return false;
                     }
                 } else if (crt == CurrentRequestType.PresenceHeartbeat) {
                     if ((!isPresenceHeartbeatComplete) && (presenceHeartbeatWww != null) && (!presenceHeartbeatWww.isDone)) {
-                        StopCoroutine (PresenceHeartbeatCoroutine);
+                        if(PresenceHeartbeatCoroutine != null)
+                            StopCoroutine (PresenceHeartbeatCoroutine);
                         return false;
                     }
                 } else if (crt == CurrentRequestType.Subscribe) {
                     if ((!isSubscribeComplete) && (subscribeWww != null) && (!subscribeWww.isDone)) {
-                        StopCoroutine (SubCoroutine);
+                        if(SubCoroutine != null)
+                            StopCoroutine (SubCoroutine);
                         return false;
                     }
                 } else {
                     if ((!isNonSubscribeComplete) && (nonSubscribeWww != null) && (!nonSubscribeWww.isDone)) {
-                        StopCoroutine (NonSubCoroutine);
+                        if(NonSubCoroutine != null)
+                            StopCoroutine (NonSubCoroutine);
                         return false;
                     }
                 }

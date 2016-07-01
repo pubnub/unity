@@ -1225,9 +1225,35 @@ public class PubnubExample : MonoBehaviour
 
     }
 
+    string currentRTT = "RTT";
+    public IEnumerator PublishMultiple(){
+        for(int i =0; i<=100; i++){
+            pubnub.Publish<string>(currentRTT, DateTime.Now.Ticks, (string o) => {print(o);}, DisplayErrorMessage);
+            yield return new WaitForSeconds (0.2f);  
+        }
+        yield return null;
+    }
+
     void RunDetailedHistoryForMultipleChannels(string[] chArr, int pos){
         UnityEngine.Debug.Log (string.Format ("Running DH for channel: {0}", chArr[pos]));
-        pubnub.DetailedHistory<string> (chArr[pos], 100, 
+
+        pubnub.Subscribe<string> (currentRTT, "", 
+            (string s) => {
+                var result = pubnub.JsonPluggableLibrary.DeserializeToListOfObject(s);
+                long ticks;
+                if(long.TryParse(result[0].ToString(), out ticks)){
+                    long timetaken = (DateTime.Now.Ticks - ticks)/TimeSpan.TicksPerMillisecond;
+                    print(timetaken.ToString());
+                }
+            }
+            , 
+            (string o) => {
+                StartCoroutine(PublishMultiple());
+            }
+            , 
+            DisplayWildcardReturnMessage, DisplayErrorMessage);
+        
+        /*pubnub.DetailedHistory<string> (chArr[pos], 100, 
             (string o) => { 
                 UnityEngine.Debug.Log (string.Format ("DisplayHistoryMessage CALLBACK LOG: {0}", o));
                 AddToPubnubResultContainer (string.Format ("DisplayHistoryMessage CALLBACK: {0}", o));
@@ -1237,7 +1263,7 @@ public class PubnubExample : MonoBehaviour
                     RunDetailedHistoryForMultipleChannels(chArr, pos);
                 }
             }, 
-            DisplayErrorMessage);
+            DisplayErrorMessage);*/
     }
 
     void DoActionWindow (int windowID)

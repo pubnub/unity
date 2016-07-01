@@ -73,7 +73,7 @@ namespace PubNubMessaging.Tests
         public static string PublishKey = "demo-36";
         public static string SubscribeKey = "demo-36";
         public static string SecretKey = "demo-36";
-        public static float WaitTimeBetweenCalls = 5;
+        public static float WaitTimeBetweenCalls = 3;
         public static float WaitTimeBetweenCallsLow = 2;
         public static float WaitTimeToReadResponse = 15;
         public static float WaitTime = 20;
@@ -1847,21 +1847,18 @@ namespace PubNubMessaging.Tests
         {
             CustomEventArgs<T> cea = ea as CustomEventArgs<T>;
             if (cea != null && cea.PubnubRequestState != null){
-                UnityEngine.Debug.Log (":"+ExpectedChannels);
-                UnityEngine.Debug.Log ("IsError:"+IsError);
-                UnityEngine.Debug.Log ("IsTimeout:"+IsTimeout);
-                UnityEngine.Debug.Log ("Crt:"+Crt);
-                UnityEngine.Debug.Log ("RespType:"+RespType);
-                UnityEngine.Debug.Log ("ExpectedMessage:"+ExpectedMessage);
+            
+                UnityEngine.Debug.Log (string.Format("ExpectedChannels: {0}, " +
+                    "IsError: {1}, IsTimeout: {2}, Crt: {3}, RespType: {4}, ExpectedMessage: {5}", 
+                    ExpectedChannels, IsError, IsTimeout, Crt, RespType, ExpectedMessage));
 
-                UnityEngine.Debug.Log ("cea.PubnubRequestState.Channels:" + Helpers.GetNamesFromChannelEntities(cea.PubnubRequestState.ChannelEntities, false));
-                UnityEngine.Debug.Log ("cea.IsError:"+cea.IsError);
-                UnityEngine.Debug.Log ("cea.IsTimeout:"+cea.IsTimeout);
-                UnityEngine.Debug.Log ("cea.CurrRequestType:"+cea.CurrRequestType);
-                UnityEngine.Debug.Log ("cea.PubnubRequestState.RespType:"+cea.PubnubRequestState.RespType);
-                UnityEngine.Debug.Log ("cea.Message:"+cea.Message);
-                
-                if(Helpers.GetNamesFromChannelEntities(cea.PubnubRequestState.ChannelEntities).Equals (ExpectedChannels)
+
+                UnityEngine.Debug.Log (string.Format("cea.PubnubRequestState.Channels: {0}, " +
+                    "cea.IsError: {1}, cea.IsTimeout: {2}, cea.Crt: {3}, cea.RespType: {4}, cea.Message: {5}", 
+                    Helpers.GetNamesFromChannelEntities(cea.PubnubRequestState.ChannelEntities, false), cea.IsError, cea.IsTimeout, cea.CurrRequestType
+                    ,cea.PubnubRequestState.RespType, cea.Message));
+
+                if(Helpers.GetNamesFromChannelEntities(cea.PubnubRequestState.ChannelEntities, false).Equals (ExpectedChannels)
                     && cea.IsError.Equals (IsError)
                     && cea.IsTimeout.Equals (IsTimeout)
                     && cea.CurrRequestType.Equals (Crt)
@@ -1870,10 +1867,10 @@ namespace PubNubMessaging.Tests
                 ){
                     IntegrationTest.Pass();
                 } else {
-                    IntegrationTest.Fail ();
+                    IntegrationTest.Fail ("Cea value not matching");
                 }
             } else {
-                IntegrationTest.Fail ();
+                IntegrationTest.Fail (string.Format("cea {0}, cea req state ?", (cea==null)?"null":"not null"));
             }
         }
 
@@ -1980,7 +1977,7 @@ namespace PubNubMessaging.Tests
         {
             CustomEventArgs<T> cea = ea as CustomEventArgs<T>;
             if (cea != null && cea.PubnubRequestState != null){
-                UnityEngine.Debug.Log (":"+ExpectedChannels);
+                /*UnityEngine.Debug.Log (":"+ExpectedChannels);
                 UnityEngine.Debug.Log ("IsError:"+IsError);
                 UnityEngine.Debug.Log ("IsTimeout:"+IsTimeout);
                 UnityEngine.Debug.Log ("Crt:"+Crt);
@@ -1992,9 +1989,18 @@ namespace PubNubMessaging.Tests
                 UnityEngine.Debug.Log ("cea.IsTimeout:"+cea.IsTimeout);
                 UnityEngine.Debug.Log ("cea.CurrRequestType:"+cea.CurrRequestType);
                 UnityEngine.Debug.Log ("cea.PubnubRequestState.RespType:"+cea.PubnubRequestState.RespType);
-                UnityEngine.Debug.Log ("cea.Message:"+cea.Message);
+                UnityEngine.Debug.Log ("cea.Message:"+cea.Message);*/
+                UnityEngine.Debug.Log (string.Format("ExpectedChannels: {0}, " +
+                "IsError: {1}, IsTimeout: {2}, Crt: {3}, RespType: {4}, ExpectedMessage: {5}", 
+                ExpectedChannels, IsError, IsTimeout, Crt, RespType, ExpectedMessage));
+
+                UnityEngine.Debug.Log (string.Format("cea.PubnubRequestState.Channels: {0}, " +
+                "cea.IsError: {1}, cea.IsTimeout: {2}, cea.Crt: {3}, cea.RespType: {4}, cea.Message: {5}", 
+                Helpers.GetNamesFromChannelEntities(cea.PubnubRequestState.ChannelEntities, false), cea.IsError, cea.IsTimeout, cea.CurrRequestType
+                ,cea.PubnubRequestState.RespType, cea.Message));
+
                 
-                if(Helpers.GetNamesFromChannelEntities(cea.PubnubRequestState.ChannelEntities).Equals (ExpectedChannels)
+                if(Helpers.GetNamesFromChannelEntities(cea.PubnubRequestState.ChannelEntities, false).Equals (ExpectedChannels)
                     && cea.IsError.Equals (IsError)
                     && cea.IsTimeout.Equals (IsTimeout)
                     && cea.CurrRequestType.Equals (Crt)
@@ -2003,10 +2009,10 @@ namespace PubNubMessaging.Tests
                 ){
                     IntegrationTest.Pass();
                 } else {
-                    IntegrationTest.Fail ();
+                    IntegrationTest.Fail ("Cea value not matching" + cea.Message.Contains(ExpectedMessage));
                 }
             } else {
-                IntegrationTest.Fail ();
+                IntegrationTest.Fail (string.Format("cea {0}, cea req state ?", (cea==null)?"null":"not null"));
             }
         }
 
@@ -2090,12 +2096,13 @@ namespace PubNubMessaging.Tests
             /*while (dt.AddSeconds (6) > DateTime.Now) {
             }*/
             cc.BounceRequest<T>(crt, pubnubRequestState, true);
-            
+            UnityEngine.Debug.Log ("Bouncing request");
             
             /*while (dt.AddSeconds(6) > DateTime.Now) {
                 //UnityEngine.Debug.Log ("waiting");
             }*/
             cc.CheckComplete (crt);
+            UnityEngine.Debug.Log ("After check Complete");
             bool failTest = false;
             if(crt.Equals(CurrentRequestType.Subscribe)){
                 if ((cc.subscribeWww != null) && (!cc.subscribeWww.isDone) && !cc.isSubscribeComplete) {
@@ -2123,6 +2130,7 @@ namespace PubNubMessaging.Tests
                 }
             }            
             if (failTest) {
+                UnityEngine.Debug.Log ("www not null or done");
                 IntegrationTest.Fail ("www not null and done");
             }
         }
