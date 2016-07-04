@@ -1,4 +1,4 @@
-//Build Date: May 24, 2016
+//Build Date: Jul 4, 2016
 //ver3.7/Unity5
 using System;
 using UnityEngine;
@@ -759,7 +759,8 @@ namespace PubNubMessaging.Core
                 } else {
                     string userState = "";
                     List<ChannelEntity> channelEntities;
-                    if (Helpers.CheckAndAddExistingUserState<T> (channel, channelGroup, deserializeUserState, userCallback, errorCallback, errorLevel,
+                    if (Helpers.CheckAndAddExistingUserState<T> (channel, channelGroup, 
+                        deserializeUserState, userCallback, errorCallback, errorLevel, false,
                         out userState, out channelEntities
                     )) {
                         SharedSetUserState<T> (channel, channelGroup,
@@ -769,14 +770,15 @@ namespace PubNubMessaging.Core
             }
         }
 
-        public void SetUserState<T> (string channel, string channelGroup, string uuid, KeyValuePair<string, object> keyValuePair, 
+        public void SetUserState<T> (string channel, string channelGroup, string uuid, 
+            KeyValuePair<string, object> keyValuePair, 
             Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
             string userState = "";
             List<ChannelEntity> channelEntities;
             if (Helpers.CheckAndAddExistingUserState<T> (channel, channelGroup, 
                 new Dictionary<string, object> { { keyValuePair.Key, keyValuePair.Value } }, userCallback, 
-                errorCallback, errorLevel, out userState, out channelEntities
+                errorCallback, errorLevel, true, out userState, out channelEntities
             )) {
 
                 SharedSetUserState<T> (channel, channelGroup, channelEntities, uuid, userState);
@@ -786,7 +788,8 @@ namespace PubNubMessaging.Core
         #endregion
 
         #region "User State"
-        private void SharedSetUserState<T> (string channel, string channelGroup, List<ChannelEntity> channelEntities, string uuid, string jsonUserState
+        private void SharedSetUserState<T> (string channel, string channelGroup, 
+            List<ChannelEntity> channelEntities, string uuid, string jsonUserState
         )
         {
             if (string.IsNullOrEmpty (uuid)) {
@@ -1683,7 +1686,7 @@ namespace PubNubMessaging.Core
                 string channelToBeRemoved = ce.ChannelID.ChannelOrChannelGroupName;
                 PubnubChannelCallback<T> channelCallback = ce.ChannelParams.Callbacks as PubnubChannelCallback<T>;
                 if (Subscription.Instance.Delete (ce)) {
-                    string jsonString = string.Format ("{0}, Unsubscribed from {1}", (ce.ChannelID.IsPresenceChannel) ? "Presence" : "", channelToBeRemoved.Replace (Utility.PresenceChannelSuffix, ""));
+                    string jsonString = string.Format ("{0} Unsubscribed from {1}", (ce.ChannelID.IsPresenceChannel) ? "Presence" : "", channelToBeRemoved.Replace (Utility.PresenceChannelSuffix, ""));
                     List<object> result = Helpers.CreateJsonResponse (jsonString, channelToBeRemoved.Replace (Utility.PresenceChannelSuffix, ""), JsonPluggableLibrary);
                     #if (ENABLE_PUBNUB_LOGGING)
                     LoggingMethod.WriteToLog (string.Format ("DateTime {0}, RemoveUnsubscribedChannelsAndDeleteUserState: JSON response={1}", DateTime.Now.ToString (), jsonString), LoggingMethod.LevelInfo);

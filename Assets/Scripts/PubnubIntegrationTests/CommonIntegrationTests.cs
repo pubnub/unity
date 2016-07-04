@@ -1055,9 +1055,9 @@ namespace PubNubMessaging.Tests
 
             UnityEngine.Debug.Log (string.Format ("{0} {1}: Waiting ", DateTime.Now.ToString (), testName));
             if (parseAsString) {
-                pubnub.WhereNow<string> ("", this.DisplayReturnMessage, this.DisplayErrorMessage);
+                pubnub.WhereNow<string> (pubnub.SessionUUID, this.DisplayReturnMessage, this.DisplayErrorMessage);
             } else {
-                pubnub.WhereNow<object> ("", this.DisplayReturnMessage, this.DisplayErrorMessage);
+                pubnub.WhereNow<object> (pubnub.SessionUUID, this.DisplayReturnMessage, this.DisplayErrorMessage);
             }
 
             yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls);
@@ -1068,8 +1068,9 @@ namespace PubNubMessaging.Tests
             } else {
                 bool found = false;
                 if (parseAsString) {
-                    if (this.Response.ToString ().Contains (pubnub.SessionUUID)
-                        && this.Response.ToString ().Contains (channel)) {
+                    //if (this.Response.ToString ().Contains (pubnub.SessionUUID)
+                        //&& this.Response.ToString ().Contains (channel)) {
+                    if(this.Response.ToString ().Contains (channel)) {
                         found = true;
                     }
                 } else {

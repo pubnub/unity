@@ -264,12 +264,14 @@ namespace PubNubMessaging.Core
             return string.Format ("channel(s) = {0} and channelGroups(s) = {1}", sbCh.ToString(), sbChGrp.ToString());
         }
 
-        internal static bool UpdateOrAddUserStateOfEntity<T>(string channel, bool isChannelGroup, Dictionary<string, object> userState,
+        internal static bool UpdateOrAddUserStateOfEntity<T>(string channel, bool isChannelGroup, 
+            Dictionary<string, object> userState, bool edit,
             Action<T> userCallback, Action<PubnubClientError> errorCallback, 
             PubnubErrorFilter.Level errorLevel, ref List<ChannelEntity> channelEntities)
         {
-            ChannelEntity ce = CreateChannelEntity<T> (channel, false, isChannelGroup, userState, userCallback, null, errorCallback, null, null);
-            bool stateChanged = Subscription.Instance.UpdateOrAddUserStateOfEntity (ce, userState);
+            ChannelEntity ce = CreateChannelEntity<T> (channel, false, isChannelGroup, 
+                userState, userCallback, null, errorCallback, null, null);
+            bool stateChanged = Subscription.Instance.UpdateOrAddUserStateOfEntity (ce, userState, edit);
             if (!stateChanged) {
                 string message = "No change in User State";
 
@@ -283,7 +285,8 @@ namespace PubNubMessaging.Core
 
         internal static bool CheckAndAddExistingUserState<T>(string channel, string channelGroup, Dictionary<string, object> userState,
             Action<T> userCallback, Action<PubnubClientError> errorCallback, 
-            PubnubErrorFilter.Level errorLevel, out string returnUserState, out List<ChannelEntity> channelEntities 
+            PubnubErrorFilter.Level errorLevel, bool edit,
+            out string returnUserState, out List<ChannelEntity> channelEntities 
         )
         {
             string[] channels = channel.Trim().Split (',');
@@ -293,7 +296,8 @@ namespace PubNubMessaging.Core
 
             foreach (string ch in channels) {
                 if (!string.IsNullOrEmpty (ch)) {
-                    bool changeState = UpdateOrAddUserStateOfEntity<T> (ch, false, userState, userCallback, errorCallback, errorLevel, ref channelEntities);
+                    bool changeState = UpdateOrAddUserStateOfEntity<T> (ch, false, userState, edit,
+                        userCallback, errorCallback, errorLevel, ref channelEntities);
                     if (changeState && !stateChanged) {
                         stateChanged = true;
                     }
@@ -302,7 +306,8 @@ namespace PubNubMessaging.Core
 
             foreach (string ch in channelGroups) {
                 if (!string.IsNullOrEmpty (ch)) {
-                    bool changeState = UpdateOrAddUserStateOfEntity<T> (ch, true, userState, userCallback, errorCallback, errorLevel, ref channelEntities);
+                    bool changeState = UpdateOrAddUserStateOfEntity<T> (ch, true, userState, edit,
+                        userCallback, errorCallback, errorLevel, ref channelEntities);
                     if (changeState && !stateChanged) {
                         stateChanged = true;
                     }

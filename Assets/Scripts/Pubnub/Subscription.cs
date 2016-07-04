@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PubNubMessaging.Core
 {
@@ -244,7 +245,24 @@ namespace PubNubMessaging.Core
             CompiledUserState = Helpers.BuildJsonUserState (AllSubscribedChannelsAndChannelGroups);
         }
 
-        public bool UpdateOrAddUserStateOfEntity(ChannelEntity channelEntity, Dictionary<string, object> userState){
+        public Dictionary<string, object> EditUserState(Dictionary<string, object> newUserState, 
+            Dictionary<string, object> oldUserState)
+        {
+            if(newUserState != null){
+                string[] userStateKeys = newUserState.Keys.ToArray<string> ();
+                for (int keyIndex = 0; keyIndex < userStateKeys.Length; keyIndex++) {
+                    string userStateKey = userStateKeys [keyIndex];
+                    if(oldUserState.ContainsKey(userStateKey)){
+                        oldUserState[userStateKey] = newUserState [userStateKey];
+                    } else {
+                        oldUserState.Add(userStateKey, newUserState [userStateKey]);
+                    }
+                }
+            }
+            return oldUserState;
+        }
+
+        public bool UpdateOrAddUserStateOfEntity(ChannelEntity channelEntity, Dictionary<string, object> userState, bool edit){
             bool stateChanged = false;
             if (channelEntitiesDictionary.ContainsKey (channelEntity.ChannelID)) {
                 
@@ -252,7 +270,11 @@ namespace PubNubMessaging.Core
                 if (channelEntitiesDictionary [channelEntity.ChannelID].UserState != null) {
                     string oldState = Helpers.BuildJsonUserState (channelEntitiesDictionary [channelEntity.ChannelID].UserState);
                     if (!oldState.Equals (newState)) {
-                        channelEntitiesDictionary [channelEntity.ChannelID].UserState = userState;
+                        if(edit){
+                            channelEntitiesDictionary [channelEntity.ChannelID].UserState = EditUserState(userState, channelEntitiesDictionary [channelEntity.ChannelID].UserState);
+                        } else {
+                            channelEntitiesDictionary [channelEntity.ChannelID].UserState = userState;
+                        }
                         stateChanged = true;
                     }
                 } else {
