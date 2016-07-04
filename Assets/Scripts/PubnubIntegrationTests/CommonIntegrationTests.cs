@@ -852,7 +852,8 @@ namespace PubNubMessaging.Tests
             commonState.DeliveryStatus = false;
             commonState.Response = null;
             commonState.Name = string.Format ("{0} State", testName);
-
+            UnityEngine.Debug.Log (string.Format ("{0} {1}: Set State k1 ", DateTime.Now.ToString (), testName));
+            
             pubnub.SetUserState<string> (channel, kvp, commonState.DisplayReturnMessage, commonState.DisplayErrorMessage);
             yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls);
 
@@ -860,12 +861,14 @@ namespace PubNubMessaging.Tests
             commonState.DeliveryStatus = false;
             commonState.Response = null;
 
+            UnityEngine.Debug.Log (string.Format ("{0} {1}: Set State k2 ", DateTime.Now.ToString (), testName));            
             pubnub.SetUserState<string> (channel, kvp2, commonState.DisplayReturnMessage, commonState.DisplayErrorMessage);
             yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
 
             pubnub.GetUserState<string> (channel, this.DisplayReturnMessage, this.DisplayErrorMessage);
             yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
 
+            UnityEngine.Debug.Log (string.Format ("{0} {1}: Set State 3 null ", DateTime.Now.ToString (), testName));
             pubnub.SetUserState<string> (channel, new KeyValuePair<string, object> ("k2", null), commonState.DisplayReturnMessage, commonState.DisplayErrorMessage);
             yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
 

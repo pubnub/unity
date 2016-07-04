@@ -246,23 +246,39 @@ namespace PubNubMessaging.Core
         }
 
         public Dictionary<string, object> EditUserState(Dictionary<string, object> newUserState, 
-            Dictionary<string, object> oldUserState)
+            Dictionary<string, object> oldUserState, bool edit)
         {
             if(newUserState != null){
                 string[] userStateKeys = newUserState.Keys.ToArray<string> ();
                 for (int keyIndex = 0; keyIndex < userStateKeys.Length; keyIndex++) {
                     string userStateKey = userStateKeys [keyIndex];
+                    object userStateObj = newUserState [userStateKey];
+
                     if(oldUserState.ContainsKey(userStateKey)){
-                        oldUserState[userStateKey] = newUserState [userStateKey];
+                        if(userStateObj != null){
+                            oldUserState[userStateKey] = userStateObj;
+                        } else {
+                            oldUserState.Remove(userStateKey);
+                        }
                     } else {
-                        oldUserState.Add(userStateKey, newUserState [userStateKey]);
+                        if(userStateObj != null){
+                            oldUserState.Add(userStateKey, userStateObj);
+                        }
                     }
+
                 }
             }
+            #if (ENABLE_PUBNUB_LOGGING)
+            foreach(KeyValuePair<string, object> kvp in oldUserState){
+                LoggingMethod.WriteToLog(string.Format("DateTime {0}, EditUserState: userstate kvp: {1}, {2}, edit: {3}\n",
+                    DateTime.Now.ToString(), 
+                    kvp.Key, kvp.Value, edit), LoggingMethod.LevelInfo);
+            }
+            #endif
             return oldUserState;
         }
 
-        public bool UpdateOrAddUserStateOfEntity(ChannelEntity channelEntity, Dictionary<string, object> userState, bool edit){
+        public bool UpdateOrAddUserStateOfEntity(ref ChannelEntity channelEntity, Dictionary<string, object> userState, bool edit){
             bool stateChanged = false;
             if (channelEntitiesDictionary.ContainsKey (channelEntity.ChannelID)) {
                 
@@ -270,11 +286,9 @@ namespace PubNubMessaging.Core
                 if (channelEntitiesDictionary [channelEntity.ChannelID].UserState != null) {
                     string oldState = Helpers.BuildJsonUserState (channelEntitiesDictionary [channelEntity.ChannelID].UserState);
                     if (!oldState.Equals (newState)) {
-                        if(edit){
-                            channelEntitiesDictionary [channelEntity.ChannelID].UserState = EditUserState(userState, channelEntitiesDictionary [channelEntity.ChannelID].UserState);
-                        } else {
-                            channelEntitiesDictionary [channelEntity.ChannelID].UserState = userState;
-                        }
+                        channelEntitiesDictionary [channelEntity.ChannelID].UserState = EditUserState(userState, 
+                            channelEntitiesDictionary [channelEntity.ChannelID].UserState, edit);
+
                         stateChanged = true;
                     }
                 } else {
@@ -287,6 +301,9 @@ namespace PubNubMessaging.Core
                 channelEntity.ChannelParams.IsSubscribed = false;
                 channelEntitiesDictionary.Add (channelEntity.ChannelID, channelEntity.ChannelParams);
                 stateChanged = true;
+            }
+            if(stateChanged){
+                channelEntity.ChannelParams.UserState = channelEntitiesDictionary[channelEntity.ChannelID].UserState;
             }
             ResetChannelsAndChannelGroupsAndBuildState ();
 

@@ -271,7 +271,7 @@ namespace PubNubMessaging.Core
         {
             ChannelEntity ce = CreateChannelEntity<T> (channel, false, isChannelGroup, 
                 userState, userCallback, null, errorCallback, null, null);
-            bool stateChanged = Subscription.Instance.UpdateOrAddUserStateOfEntity (ce, userState, edit);
+            bool stateChanged = Subscription.Instance.UpdateOrAddUserStateOfEntity (ref ce, userState, edit);
             if (!stateChanged) {
                 string message = "No change in User State";
 
