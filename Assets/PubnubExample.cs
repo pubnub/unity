@@ -889,8 +889,8 @@ public class PubnubExample : MonoBehaviour
             toggleTitle2 = " include state ";
             labelTitle = "Channel";
             buttonTitle = "Run";
-            labelTitle2 = "Channel Group";
-            valueToSetSubs = "";
+            labelTitle2 = "Channel Grp";
+            //valueToSetSubs = "";
         } else if (state == PubnubState.GlobalHereNow) {
             title = "Global Here Now";
             toggleTitle1 = " show uuid ";
@@ -975,9 +975,10 @@ public class PubnubExample : MonoBehaviour
                 }
             } else if (state == PubnubState.HereNow) {
                 allowUserSettingsChange = false;
-                AddToPubnubResultContainer ("Running Channel Here now");
-                pubnub.HereNow<string> (valueToSet, valueToSetSubs, toggle1, toggle2, DisplayReturnMessage, DisplayErrorMessage);
-                pubChannel = "";
+                AddToPubnubResultContainer ("Running Here now: " + valueToSet + ":" + valueToSetSubs);
+                pubnub.HereNow<string> (valueToSet, valueToSetSubs, toggle1, toggle2, 
+                    DisplayReturnMessage, DisplayErrorMessage);
+
             } else if (state == PubnubState.GlobalHereNow) {
                 pubnub.GlobalHereNow<string> (toggle1, toggle2, DisplayReturnMessage, DisplayErrorMessage);
             }

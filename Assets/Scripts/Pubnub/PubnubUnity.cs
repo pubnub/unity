@@ -1378,8 +1378,6 @@ namespace PubNubMessaging.Core
                 PresenceHeartbeatHandler<T> (cea);
 
                 break;
-            //case ResponseType.Subscribe:
-            //case ResponseType.Presence:
             case ResponseType.SubscribeV2:
             case ResponseType.PresenceV2:
 
@@ -1606,8 +1604,6 @@ namespace PubNubMessaging.Core
 
         private void RunRequests<T> (Uri requestUri, RequestState<T> pubnubRequestState)
         {
-            /*if (pubnubRequestState.RespType.Equals(ResponseType.Subscribe) || pubnubRequestState.RespType.Equals(ResponseType.Presence)
-                ||*/
             if(pubnubRequestState.RespType.Equals(ResponseType.SubscribeV2) || pubnubRequestState.RespType.Equals(ResponseType.PresenceV2)
             ) {
                 RequestState<T> pubnubRequestStateHB = pubnubRequestState;
@@ -1834,21 +1830,6 @@ namespace PubNubMessaging.Core
             }
             return false;
         }
-
-        /*private bool CheckSystemActiveAndRetriesExceeded<T>(ResponseType type, List<ChannelEntity> channelEntities)
-        {
-            if (pubnetSystemActive && retriesExceeded)
-            {
-                #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog(string.Format("DateTime {0}, CheckSystemActiveAndRetriesExceeded: Subscribe channel={1} - No internet connection. MAXed retries for internet connection", 
-                    DateTime.Now.ToString(), Helpers.GetNamesFromChannelEntities(channelEntities)), LoggingMethod.LevelInfo);
-                #endif
-                MultiplexExceptionHandler<T>(type, true, false);
-                retriesExceeded = false;
-                return true;
-            }
-            return false;
-        }*/
 
         long SaveLastTimetoken(long timetoken)
         {

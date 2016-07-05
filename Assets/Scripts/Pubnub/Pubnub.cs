@@ -261,12 +261,7 @@ namespace PubNubMessaging.Core
         public bool HereNow<T> (string channel, bool showUUIDList, bool includeUserState, 
             Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
-            Utility.CheckChannel(channel);
-            Utility.CheckCallback(userCallback, CallbackType.Success);
-            Utility.CheckCallback(errorCallback, CallbackType.Error);
-            Utility.CheckJSONPluggableLibrary();
-
-            return pubnub.HereNow<T> (channel, "", showUUIDList, includeUserState, userCallback, errorCallback);
+            return HereNow<T> (channel, "", showUUIDList, includeUserState, userCallback, errorCallback);
         }
 
         public bool HereNow (string channel, string channelGroup, bool showUUIDList, bool includeUserState, 
@@ -277,7 +272,7 @@ namespace PubNubMessaging.Core
 
         public bool HereNow<T> (string channel, string channelGroup, bool showUUIDList, bool includeUserState, Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
-            Utility.CheckChannel(channelGroup);
+            Utility.CheckChannelOrChannelGroup(channel, channelGroup);
             Utility.CheckCallback(userCallback, CallbackType.Success);
             Utility.CheckCallback(errorCallback, CallbackType.Error);
             Utility.CheckJSONPluggableLibrary();

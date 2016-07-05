@@ -474,31 +474,6 @@ namespace PubNubMessaging.Core
             return BuildRestApiRequest<Uri> (url, ResponseType.Leave, uuid, ssl, origin, 0, authenticationKey, unsubscribeParamBuilder.ToString());
         }
 
-        /*internal static Uri BuildMultiChannelSubscribeRequest (string channels, string channelGroups, object timetoken, 
-                string channelsJsonState, string uuid,
-            bool ssl, string origin, string authenticationKey, string subscribeKey)
-        {
-            StringBuilder subscribeParamBuilder = new StringBuilder ();
-
-            if (channelsJsonState != "{}" && channelsJsonState != "") {
-                subscribeParamBuilder.AppendFormat ("&state={0}", Utility.EncodeUricomponent (channelsJsonState, ResponseType.Subscribe, false, false));
-            }
-
-            if (!string.IsNullOrEmpty(channelGroups))
-            {
-                subscribeParamBuilder.AppendFormat("&channel-group={0}",  Utility.EncodeUricomponent(channelGroups, ResponseType.Subscribe, true, false));
-            }
-
-            List<string> url = new List<string> ();
-            url.Add ("subscribe");
-            url.Add (subscribeKey);
-            url.Add (string.IsNullOrEmpty(channels) ? "," : channels);
-            url.Add ("0");
-            url.Add (timetoken.ToString ());
-
-            return BuildRestApiRequest<Uri> (url, ResponseType.Subscribe, uuid, ssl, origin, 0, authenticationKey, subscribeParamBuilder.ToString ());
-        }*/
-
         internal static Uri BuildMultiChannelSubscribeRequestV2 (string channels, string channelGroups, string timetoken, 
                 string channelsJsonState, string uuid, string region, string filterExpr,
                 bool ssl, string origin, string authenticationKey, string subscribeKey, int presenceHeartbeat)
@@ -826,8 +801,6 @@ namespace PubNubMessaging.Core
             url = AddSSLAndEncodeURL<T>(urlComponents, type, ssl, origin, url);
 
             switch (type) {
-                //case ResponseType.Presence:
-                //case ResponseType.Subscribe:
                 case ResponseType.Leave:
                 case ResponseType.SubscribeV2:
                 case ResponseType.PresenceV2:

@@ -421,8 +421,6 @@ namespace PubNubMessaging.Core
                 string channelName = rawChannels[index].Trim();
                
                 if (channelName.Length > 0) {
-                    /*if ((type == ResponseType.Presence) 
-                        ||*/
                     if((type == ResponseType.PresenceV2) 
                         || (type == ResponseType.PresenceUnsubscribe)) {
                         channelName = string.Format ("{0}{1}", channelName, Utility.PresenceChannelSuffix);
@@ -470,16 +468,15 @@ namespace PubNubMessaging.Core
                         }
                     }
                 } else {
+                    #if (ENABLE_PUBNUB_LOGGING)
                     string message = "Invalid Channel Name";
                     if (isChannelGroup) {
                         message = "Invalid Channel Group Name";
                     }
-                    #if (ENABLE_PUBNUB_LOGGING)
+
                     LoggingMethod.WriteToLog(string.Format("DateTime {0}, CreateChannelEntityAndAddToSubscribe: channel={1} response={2}", DateTime.Now.ToString(), channelName, message), 
                         LoggingMethod.LevelInfo);
                     #endif
-                    //PubnubCallbacks.CallErrorCallback<T>(message, errorCallback, PubnubErrorCode.InvalidChannel, 
-                        //PubnubErrorSeverity.Info, errorLevel);
                 }
             }
             return bReturn;
@@ -585,7 +582,6 @@ namespace PubNubMessaging.Core
             string cipherKey, IJsonPluggableLibrary jsonPluggableLibrary)
         {
             if (result != null && result.Count >= 1) {
-                //Helpers.ResponseToConnectCallback<T> (asynchRequestState, jsonPluggableLibrary);
                 Helpers.ResponseToUserCallback<T> (result, asynchRequestState, cipherKey, jsonPluggableLibrary);
             } 
         }
@@ -738,8 +734,6 @@ namespace PubNubMessaging.Core
                             result.Add (c [0]);
                         }
                         break;
-                    //case ResponseType.Subscribe:
-                    //case ResponseType.Presence:
                     case ResponseType.Leave:
                         if (!string.IsNullOrEmpty(multiChannelGroup))
                         {
@@ -818,8 +812,6 @@ namespace PubNubMessaging.Core
             PubnubErrorFilter.Level errorLevel, Exception ex)
         {
             if (pubnubRequestState.ChannelEntities != null) {
-                /*if (pubnubRequestState.RespType.Equals(ResponseType.Subscribe) || pubnubRequestState.RespType.Equals(ResponseType.Presence)
-                    ||*/
                 if(pubnubRequestState.RespType.Equals(ResponseType.SubscribeV2) || pubnubRequestState.RespType.Equals(ResponseType.PresenceV2)
                 ) {
                     PubnubCallbacks.FireErrorCallbacksForAllChannels<T> (ex, pubnubRequestState, PubnubErrorSeverity.Critical, 
@@ -831,162 +823,6 @@ namespace PubNubMessaging.Core
                 }
             }
         }
-
-        /*internal static object[] CreateMessageList(List<object> result, object[] messageList)
-        {
-            int i = 0;
-            foreach (object o in result)
-            {
-                if (i == 0)
-                {
-                    IList collection = (IList)o;
-                    messageList = new object[collection.Count];
-                    bool added = false;
-                    int j = 0;
-                    foreach (object c in collection)
-                    {
-                        if ((c.GetType() == typeof(System.Int32)) || (c.GetType() == typeof(System.Double)) || (c.GetType() == typeof(System.Int64)) || (c.GetType() == typeof(System.Boolean)))
-                        {
-                            added = true;
-                            #if (ENABLE_PUBNUB_LOGGING)
-                            LoggingMethod.WriteToLog(string.Format("DateTime {0}, CreateMessageList: collection: {1} in type: {2}", DateTime.Now.ToString(), c.ToString(), c.GetType().ToString()), LoggingMethod.LevelInfo);
-                            #endif
-                            messageList[j] = c;
-                        }
-                        else if (c.GetType() == typeof(System.String))
-                        {
-                            added = true;
-                            #if (ENABLE_PUBNUB_LOGGING)
-                            LoggingMethod.WriteToLog(string.Format("DateTime {0}, CreateMessageList: collection: {1} in type: {2}", DateTime.Now.ToString(), c.ToString(), c.GetType().ToString()), LoggingMethod.LevelInfo);
-                            #endif
-                            messageList[j] = c.ToString();
-                        }
-                        else
-                        {
-                            try
-                            {
-                                messageList[j] = c;
-                                added = true;
-                                #if (ENABLE_PUBNUB_LOGGING)
-                                LoggingMethod.WriteToLog(string.Format("DateTime {0}, CreateMessageList: collection other types: {1} in type: {2}", DateTime.Now.ToString(), c.ToString(), c.GetType().ToString()), LoggingMethod.LevelInfo);
-                                #endif
-                            }
-                            catch (Exception ex)
-                            {
-                                added = false;
-                                #if (ENABLE_PUBNUB_LOGGING)
-                                LoggingMethod.WriteToLog(string.Format("DateTime {0}, CreateMessageList: collection other types: {1} in type: {2}, exception {3} ", DateTime.Now.ToString(), c.ToString(), c.GetType().ToString(), ex.ToString()), LoggingMethod.LevelInfo);
-                                #endif
-                            }
-                        }
-                        j++;
-                    }
-                    if (!added)
-                    {
-                        collection.CopyTo(messageList, 0);
-                    }
-                }
-                i++;
-            }
-            return messageList;
-        }
-
-        internal static List<object> AddMessageToList(string cipherKey, IJsonPluggableLibrary jsonPluggableLibrary, 
-            object[] messages, int messageIndex, string currentChannel, object[] messageList)
-        {
-            List<object> itemMessage = new List<object>();
-            if (currentChannel.Contains(Utility.PresenceChannelSuffix))
-            {
-                itemMessage.Add(messageList[messageIndex]);
-            }
-            else
-            {
-                //decrypt the subscriber message if cipherkey is available
-                if (cipherKey.Length > 0)
-                {
-                    object decodeMessage;
-                    try
-                    {
-                        PubnubCrypto aes = new PubnubCrypto(cipherKey);
-                        string decryptMessage = aes.Decrypt(messageList[messageIndex].ToString());
-                        decodeMessage = (decryptMessage == "**DECRYPT ERROR**") ? decryptMessage : jsonPluggableLibrary.DeserializeToObject(decryptMessage);
-                    }
-                    catch (Exception decryptEx)
-                    {
-                        decodeMessage = messageList[messageIndex].ToString();
-                        #if (ENABLE_PUBNUB_LOGGING)
-                        LoggingMethod.WriteToLog(string.Format("DateTime {0}, AddMessageToList: decodeMessage Exception: {1}", DateTime.Now.ToString(), decryptEx.ToString()), LoggingMethod.LevelError);
-                        #endif
-                    }
-                    itemMessage.Add(decodeMessage);
-                }
-                else
-                {
-                    itemMessage.Add(messageList[messageIndex]);
-                }
-            }
-            itemMessage.Add(messages[1].ToString());
-            string[] messageChannelsWithCG;
-            string channelGroup = "";
-            if (messages.Length > 3) {
-                messageChannelsWithCG = messages [3].ToString ().Split (',');    
-                if (messageChannelsWithCG.Length > messageIndex) {
-                    channelGroup = messageChannelsWithCG [messageIndex].Replace (Utility.PresenceChannelSuffix, "");
-                    if (!channelGroup.Equals (currentChannel)) {
-                        itemMessage.Add (channelGroup);
-                    }
-                }
-            }
-
-            itemMessage.Add(currentChannel.Replace(Utility.PresenceChannelSuffix, ""));
-
-            #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog(string.Format("DateTime {0}, AddMessageToList: messageList: {1} index {2}, timestamp {3}, channel {4}, channelGroup {5}", 
-                DateTime.Now.ToString(), messageList[messageIndex], messageIndex.ToString(), 
-                messages[1].ToString(), currentChannel, channelGroup), LoggingMethod.LevelInfo);
-            #endif
-
-            return itemMessage;
-        }
-
-        internal static void ResponseToUserCallbackForSubscribeSendCallbacks<T> (List<object> result, string cipherKey, 
-            List<ChannelEntity> channelEntities,
-            IJsonPluggableLibrary jsonPluggableLibrary, object[] messages)
-        {
-            #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ResponseToUserCallbackForSubscribeSendCallbacks: messageList typeOF: {1}", DateTime.Now.ToString (), 
-                messages [0].GetType ().ToString ()), LoggingMethod.LevelInfo);
-            #endif
-
-            var messageList = messages [0] as object[];
-            messageList = CreateMessageList(result, messageList);
-
-            string[] messageChannels = messages [2].ToString ().Split (',');
-
-            #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog(string.Format("DateTime {0}, ResponseToUserCallbackForSubscribeSendCallbacks: messageChannels: {1}", DateTime.Now.ToString(), messageChannels.ToString()), LoggingMethod.LevelInfo);
-            #endif
-
-            if (messageList != null && messageList.Length > 0)
-            {
-                for (int messageIndex = 0; messageIndex < messageList.Length; messageIndex++)
-                {
-                    string currentChannel = (messageChannels.Length == 1) ? (string)messageChannels[0] : (string)messageChannels[messageIndex];
-                    var itemMessage = AddMessageToList(cipherKey, jsonPluggableLibrary, messages, messageIndex, currentChannel, messageList);
-
-                    ChannelEntity ce = channelEntities [messageIndex];
-                    if (ce != null) {
-                        PubnubCallbacks.SendCallbacks<T> (jsonPluggableLibrary, ce, itemMessage, CallbackType.Success, true);
-                    }
-                    #if (ENABLE_PUBNUB_LOGGING)
-                    else {
-                        LoggingMethod.WriteToLog(string.Format("DateTime {0}, ResponseToUserCallbackForSubscribeSendCallbacks: ChannelEntity null: {1} index {2}", DateTime.Now.ToString(),
-                            messageChannels.ToString(), messageIndex.ToString()), LoggingMethod.LevelInfo);
-                    }
-                    #endif
-                }
-            }
-        }*/
 
         internal static void CreatePNMessageResult(SubscribeMessage subscribeMessage, out PNMessageResult messageResult)
         {
@@ -1150,21 +986,6 @@ namespace PubNubMessaging.Core
 
             }
         }
-
-        /*internal static void ResponseToUserCallbackForSubscribe<T> (List<object> result, List<ChannelEntity> channelEntities,
-            string cipherKey, IJsonPluggableLibrary jsonPluggableLibrary)
-        {
-            var messages = (from item in result
-                select item as object).ToArray ();
-
-            #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ResponseToUserCallbackForSubscribe result: {1}", DateTime.Now.ToString (), result.ToString ()), LoggingMethod.LevelInfo);
-            #endif
-
-            if (messages != null && messages.Length > 0) {
-                ResponseToUserCallbackForSubscribeSendCallbacks <T>(result, cipherKey, channelEntities, jsonPluggableLibrary, messages);
-            }            
-        }*/
             
         internal static void ResponseToUserCallback<T> (List<object> result, RequestState<T> asynchRequestState, string cipherKey, 
             IJsonPluggableLibrary jsonPluggableLibrary)
@@ -1223,14 +1044,12 @@ namespace PubNubMessaging.Core
                         #endif
 
                         switch (asynchRequestState.RespType) {
-                        //case ResponseType.Subscribe:
                         case ResponseType.SubscribeV2:
                             var connectResult = Helpers.CreateJsonResponse ("Connected", channelEntity.ChannelID.ChannelOrChannelGroupName, jsonPluggableLibrary);
                             PubnubCallbacks.SendCallbacks<T> (jsonPluggableLibrary, channelEntity, connectResult, 
                                 CallbackType.Connect, false);
 
                             break;
-                        //case ResponseType.Presence:
                         case ResponseType.PresenceV2:
                             var connectResult2 = Helpers.CreateJsonResponse ("Presence Connected", 
                                                  channelEntity.ChannelID.ChannelOrChannelGroupName.Replace (Utility.PresenceChannelSuffix, ""), jsonPluggableLibrary);

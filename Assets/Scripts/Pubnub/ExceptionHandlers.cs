@@ -83,9 +83,6 @@ namespace PubNubMessaging.Core
             PubnubErrorFilter.Level errorLevel){
             if ((requestState!=null) && (requestState.ChannelEntities != null || requestState.RespType != ResponseType.Time)) {
 
-                /*if (requestState.RespType.Equals(ResponseType.Subscribe)
-                    || requestState.RespType.Equals(ResponseType.Presence)
-                    ||*/
                 if(requestState.RespType.Equals(ResponseType.SubscribeV2)
                     || requestState.RespType.Equals(ResponseType.PresenceV2)
                 ) {
@@ -112,9 +109,6 @@ namespace PubNubMessaging.Core
             #endif
             if (requestState.ChannelEntities != null) {
 
-                /*if (requestState.RespType.Equals(ResponseType.Subscribe)
-                    || requestState.RespType.Equals(ResponseType.Presence)
-                    || */
                 if(requestState.RespType.Equals(ResponseType.SubscribeV2)
                     || requestState.RespType.Equals(ResponseType.PresenceV2)
                 ) {
@@ -174,8 +168,6 @@ namespace PubNubMessaging.Core
         {
             switch (requestState.RespType)
             {
-                //case ResponseType.Presence:
-                //case ResponseType.Subscribe:
                 case ResponseType.PresenceV2:
                 case ResponseType.SubscribeV2:
                     FireMultiplexException<T>(resumeOnReconnect, requestState);

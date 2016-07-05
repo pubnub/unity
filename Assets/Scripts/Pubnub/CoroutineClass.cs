@@ -356,25 +356,21 @@ namespace PubNubMessaging.Core
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CheckElapsedTime: www null request running {1}", DateTime.Now.ToString (), crt.ToString ()), LoggingMethod.LevelInfo);
                 #endif  
 
-                //RaiseEvents (true, crt);
             } else if ((timer > 0) && (www == null) && (!CheckIfRequestIsRunning(crt))) {
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CheckElapsedTime: www null request not running timer running {1}", DateTime.Now.ToString (), crt.ToString ()), LoggingMethod.LevelInfo);
                 #endif  
 
-                //RaiseEvents (true, crt);
             } else if ((timer > 0) && (!CheckIfRequestIsRunning(crt))) {
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CheckElapsedTime: request not running timer running {1}", DateTime.Now.ToString (), crt.ToString ()), LoggingMethod.LevelInfo);
                 #endif  
 
-                //RaiseEvents (true, crt);
             } else if ((timer > 0) && (www == null)) {
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CheckElapsedTime: www null timer running {1}", DateTime.Now.ToString (), crt.ToString ()), LoggingMethod.LevelInfo);
                 #endif
 
-                //RaiseEvents (true, crt);
             } else {
                 #if (ENABLE_PUBNUB_LOGGING)
                 //LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CheckElapsedTime: timer {1}", DateTime.Now.ToString (), timer.ToString ()), LoggingMethod.LevelInfo);
@@ -616,7 +612,6 @@ namespace PubNubMessaging.Core
                 } else {
                     StartCoroutinesByName<T> (url, pubnubRequestState, timeout, pause, crt);
                 }
-            //} else if (pubnubRequestState.RespType.Equals(ResponseType.Subscribe) || pubnubRequestState.RespType.Equals(ResponseType.Presence) ||
             } else if (pubnubRequestState.RespType.Equals(ResponseType.SubscribeV2) || pubnubRequestState.RespType.Equals(ResponseType.PresenceV2)
                 ) {
                 crt = CurrentRequestType.Subscribe;
@@ -915,14 +910,6 @@ namespace PubNubMessaging.Core
         }
         #endif
 
-        /*public void CallFireEvent<T> (string message, bool isError, bool isTimeout, RequestState<T> pubnubRequestState, CoroutineParams<T> cp)
-        {
-            #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CallFireEvent: RequestType {1} {2} {3}", DateTime.Now.ToString (), typeof(T), pubnubRequestState.GetType (), Helpers.GetNamesFromChannelEntities(pubnubRequestState.ChannelEntities)), LoggingMethod.LevelInfo);
-            #endif
-            FireEvent (message, isError, false, pubnubRequestState, cp.crt);
-        }*/
-        
         internal void SetComplete (CurrentRequestType crt)
         {
             try {
