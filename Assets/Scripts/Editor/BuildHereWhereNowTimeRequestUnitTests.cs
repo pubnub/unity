@@ -105,8 +105,221 @@ namespace PubNubMessaging.Tests
             TestBuildHereNowRequestCommon (true, true, true, "");
         }
 
+        //=======CG
+
+        public void TestBuildHereNowRequestCG ()
+        {
+            TestBuildHereNowRequestCommon (true, false, false, false, "authKey");
+        }
+
+        [Test]
+        public void TestBuildHereNowRequestSSLCG ()
+        {
+            TestBuildHereNowRequestCommon (true, true, false, false, "authKey");
+        }
+
+        [Test]
+        public void TestBuildHereNowRequestShowUUIDCG ()
+        {
+            TestBuildHereNowRequestCommon (true, false, true, false, "authKey");
+        }
+
+        [Test]
+        public void TestBuildHereNowRequestShowUUIDSSLCG ()
+        {
+            TestBuildHereNowRequestCommon (true, true, true, false, "authKey");
+        }
+
+        [Test]
+        public void TestBuildHereNowRequestInclStateCG ()
+        {
+            TestBuildHereNowRequestCommon (true, false, false, true, "authKey");
+        }
+
+        [Test]
+        public void TestBuildHereNowRequestInclStateSSLCG ()
+        {
+            TestBuildHereNowRequestCommon (true, true, false, true, "authKey");
+        }
+
+        [Test]
+        public void TestBuildHereNowRequestShowUUIDInclStateCG ()
+        {
+            TestBuildHereNowRequestCommon (true, false, true, true, "authKey");
+        }
+
+        [Test]
+        public void TestBuildHereNowRequestShowUUIDInclStateSSLCG ()
+        {
+            TestBuildHereNowRequestCommon (true, true, true, true, "authKey");
+        }
+
+        [Test]
+        public void TestBuildHereNowRequestNoAuthCG ()
+        {
+            TestBuildHereNowRequestCommon (true, false, false, false, "");
+        }
+
+        [Test]
+        public void TestBuildHereNowRequestSSLNoAuthCG ()
+        {
+            TestBuildHereNowRequestCommon (true, true, false, false, "");
+        }
+
+        [Test]
+        public void TestBuildHereNowRequestShowUUIDNoAuthCG ()
+        {
+            TestBuildHereNowRequestCommon (true, false, true, false, "");
+        }
+
+        [Test]
+        public void TestBuildHereNowRequestShowUUIDSSLNoAuthCG ()
+        {
+            TestBuildHereNowRequestCommon (true, true, true, false, "");
+        }
+
+        [Test]
+        public void TestBuildHereNowRequestInclStateNoAuthCG ()
+        {
+            TestBuildHereNowRequestCommon (true, false, false, true, "");
+        }
+
+        [Test]
+        public void TestBuildHereNowRequestInclStateSSLNoAuthCG ()
+        {
+            TestBuildHereNowRequestCommon (true, true, false, true, "");
+        }
+
+        [Test]
+        public void TestBuildHereNowRequestShowUUIDInclStateNoAuthCG ()
+        {
+            TestBuildHereNowRequestCommon (true, false, true, true, "");
+        }
+
+        [Test]
+        public void TestBuildHereNowRequestShowUUIDInclStateSSLNoAuthCG ()
+        {
+            TestBuildHereNowRequestCommon (true, true, true, true, "");
+        }
+
+        //========CGnCH
+
+        public void TestBuildHereNowRequestCGnCH ()
+        {
+            TestBuildHereNowRequestCommon (true, true, false, false, false, "authKey");
+        }
+
+        [Test]
+        public void TestBuildHereNowRequestSSLCGnCH ()
+        {
+            TestBuildHereNowRequestCommon (true, true, true, false, false, "authKey");
+        }
+
+        [Test]
+        public void TestBuildHereNowRequestShowUUIDCGnCH ()
+        {
+            TestBuildHereNowRequestCommon (true, true, false, true, false, "authKey");
+        }
+
+        [Test]
+        public void TestBuildHereNowRequestShowUUIDSSLCGnCH ()
+        {
+            TestBuildHereNowRequestCommon (true, true, true, true, false, "authKey");
+        }
+
+        [Test]
+        public void TestBuildHereNowRequestInclStateCGnCH ()
+        {
+            TestBuildHereNowRequestCommon (true, true, false, false, true, "authKey");
+        }
+
+        [Test]
+        public void TestBuildHereNowRequestInclStateSSLCGnCH ()
+        {
+            TestBuildHereNowRequestCommon (true, true, true, false, true, "authKey");
+        }
+
+        [Test]
+        public void TestBuildHereNowRequestShowUUIDInclStateCGnCH ()
+        {
+            TestBuildHereNowRequestCommon (true, true, false, true, true, "authKey");
+        }
+
+        [Test]
+        public void TestBuildHereNowRequestShowUUIDInclStateSSLCGnCH ()
+        {
+            TestBuildHereNowRequestCommon (true, true, true, true, true, "authKey");
+        }
+
+        [Test]
+        public void TestBuildHereNowRequestNoAuthCGnCH ()
+        {
+            TestBuildHereNowRequestCommon (true, true, false, false, false, "");
+        }
+
+        [Test]
+        public void TestBuildHereNowRequestSSLNoAuthCGnCH ()
+        {
+            TestBuildHereNowRequestCommon (true, true, true, false, false, "");
+        }
+
+        [Test]
+        public void TestBuildHereNowRequestShowUUIDNoAuthCGnCH ()
+        {
+            TestBuildHereNowRequestCommon (true, true, false, true, false, "");
+        }
+
+        [Test]
+        public void TestBuildHereNowRequestShowUUIDSSLNoAuthCGnCH ()
+        {
+            TestBuildHereNowRequestCommon (true, true, true, true, false, "");
+        }
+
+        [Test]
+        public void TestBuildHereNowRequestInclStateNoAuthCGnCH ()
+        {
+            TestBuildHereNowRequestCommon (true, true, false, false, true, "");
+        }
+
+        [Test]
+        public void TestBuildHereNowRequestInclStateSSLNoAuthCGnCH ()
+        {
+            TestBuildHereNowRequestCommon (true, true, true, false, true, "");
+        }
+
+        [Test]
+        public void TestBuildHereNowRequestShowUUIDInclStateNoAuthCGnCH ()
+        {
+            TestBuildHereNowRequestCommon (true, true, false, true, true, "");
+        }
+
+        [Test]
+        public void TestBuildHereNowRequestShowUUIDInclStateSSLNoAuthCGnCH ()
+        {
+            TestBuildHereNowRequestCommon (true, true, true, true, true, "");
+        }
+
         public void TestBuildHereNowRequestCommon(bool ssl, bool showUUIDList, bool includeUserState, string authKey){
+            TestBuildHereNowRequestCommon(true, false, ssl, showUUIDList, includeUserState, authKey);
+        }
+
+        public void TestBuildHereNowRequestCommon(bool testCg, bool ssl, bool showUUIDList, bool includeUserState, string authKey){
+            TestBuildHereNowRequestCommon(false, testCg, ssl, showUUIDList, includeUserState, authKey);
+        }
+
+        public void TestBuildHereNowRequestCommon(bool testCh, bool testCg, bool ssl, bool showUUIDList, bool includeUserState, string authKey){
+            
             string channel = "here_now_channel";
+            string channelGroup = "here_now_channelGroup";
+            string channelGroupStr = string.Format("&channel-group={0}",  Utility.EncodeUricomponent(channelGroup, ResponseType.HereNow, true, false));
+            if(testCh && testCg){
+                // test both
+            } else if(testCg){
+                channel = ",";
+            } else {
+                channelGroup = "";
+                channelGroupStr = ""; 
+            }
             string uuid = "customuuid";
 
             Pubnub pubnub = new Pubnub (
@@ -126,16 +339,18 @@ namespace PubNubMessaging.Tests
             int userState = (includeUserState) ? 1 : 0;
             string parameters = string.Format ("disable_uuids={0}&state={1}", disableUUID, userState);
 
-            Uri uri = BuildRequests.BuildHereNowRequest (channel, "", showUUIDList, includeUserState,
+            Uri uri = BuildRequests.BuildHereNowRequest (channel, channelGroup, showUUIDList, includeUserState,
                 uuid, ssl, pubnub.Origin, pubnub.AuthenticationKey, Common.SubscribeKey
             );
 
             //http://pubsub.pubnub.com/v2/presence/sub_key/demo-36/channel/here_now_channel?disable_uuids=1&state=0&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityOSX/3.6.9.0
-            string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/channel/{3}?{4}&uuid={5}{6}&pnsdk={7}",
+            string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/channel/{3}?{4}{8}&uuid={5}{6}&pnsdk={7}",
                 ssl?"s":"", pubnub.Origin, Common.SubscribeKey, channel, parameters,
-                uuid, authKeyString, PubnubUnity.Version
+                uuid, authKeyString, 
+                Utility.EncodeUricomponent(PubnubUnity.Version, ResponseType.HereNow, false, true),
+                channelGroupStr
             );
-            string received = uri.ToString ();
+            string received = uri.OriginalString;
             Common.LogAndCompare (expected, received);
         }
 
@@ -262,9 +477,10 @@ namespace PubNubMessaging.Tests
             //http://pubsub.pubnub.com/v2/presence/sub_key/demo-36?disable_uuids=1&state=0&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityOSX/3.6.9.0
             string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}?{3}&uuid={4}{5}&pnsdk={6}",
                 ssl?"s":"", pubnub.Origin, Common.SubscribeKey, parameters,
-                uuid, authKeyString, PubnubUnity.Version
+                uuid, authKeyString, 
+                Utility.EncodeUricomponent(PubnubUnity.Version, ResponseType.GlobalHereNow, false, false)
             );
-            string received = uri.ToString ();
+            string received = uri.OriginalString;
             Common.LogAndCompare (expected, received);
         }
 
@@ -339,9 +555,10 @@ namespace PubNubMessaging.Tests
             //http://pubsub.pubnub.com/v2/presence/sub_key/demo-36/uuid/customuuid?uuid=&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
             string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/uuid/{3}?uuid={4}{5}&pnsdk={6}",
                 ssl?"s":"", pubnub.Origin, Common.SubscribeKey, uuid, sessionUUID,
-                authKeyString, PubnubUnity.Version
+                authKeyString,
+                Utility.EncodeUricomponent(PubnubUnity.Version, ResponseType.WhereNow, false, false)
             );
-            string received = uri.ToString ();
+            string received = uri.OriginalString;
             Common.LogAndCompare (expected, received);
         }
 
@@ -370,9 +587,10 @@ namespace PubNubMessaging.Tests
 
             //https://pubsub.pubnub.com/time/0?uuid=customuuid&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
             string expected = string.Format ("http{0}://{1}/time/0?uuid={2}&pnsdk={3}",
-                ssl?"s":"", pubnub.Origin, uuid, PubnubUnity.Version
+                ssl?"s":"", pubnub.Origin, uuid, 
+                Utility.EncodeUricomponent(PubnubUnity.Version, ResponseType.Time, false, false)
             );
-            string received = uri.ToString ();
+            string received = uri.OriginalString;
             Common.LogAndCompare (expected, received);
         }
 

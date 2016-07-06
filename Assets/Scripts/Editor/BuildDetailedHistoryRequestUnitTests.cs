@@ -1058,9 +1058,10 @@ namespace PubNubMessaging.Tests
             string expected = string.Format ("http{0}://{1}/v2/history/sub-key/{2}/channel/{3}?count={4}{5}{6}{7}{8}{9}&uuid={10}&pnsdk={11}",
                 ssl?"s":"", pubnub.Origin, Common.SubscribeKey, channel, count,
                 includeTimetoken?"&include_token=true":"", reverse?"&reverse=true":"",
-                startTimeString, endTimeString,    authKeyString, uuid, PubnubUnity.Version
+                startTimeString, endTimeString,    authKeyString, uuid, 
+                Utility.EncodeUricomponent(PubnubUnity.Version, ResponseType.DetailedHistory, false, true)
             );
-            string received = uri.ToString ();
+            string received = uri.OriginalString;
             Common.LogAndCompare (expected, received);
         }
         #endif

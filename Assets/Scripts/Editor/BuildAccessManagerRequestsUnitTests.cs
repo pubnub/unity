@@ -797,13 +797,15 @@ namespace PubNubMessaging.Tests
                                   ssl ? "s" : "", pubnub.Origin, Common.SubscribeKey);
 
             string expected2 = string.Format ("{0}{1}&pnsdk={2}&r={3}&timestamp=",
-                (channel=="")?"":"&channel=", channel, PubnubUnity.Version, Convert.ToInt32 (read).ToString());
+                (channel=="")?"":"&channel=", channel, 
+                Utility.EncodeUricomponent(PubnubUnity.Version, ResponseType.GrantAccess, false, true), 
+                Convert.ToInt32 (read).ToString());
             
             string expected3 = string.Format ("&ttl={0}&uuid={1}&w={2}",
                 ttl, uuid, Convert.ToInt32 (write).ToString()
             );
 
-            string received = uri.ToString ();
+            string received = uri.OriginalString;
             UnityEngine.Debug.Log("Expected:" + expected1);
             UnityEngine.Debug.Log("Expected:" + expected2);
             UnityEngine.Debug.Log("Expected:" + expected3);
@@ -952,11 +954,12 @@ namespace PubNubMessaging.Tests
                 ssl ? "s" : "", pubnub.Origin, Common.SubscribeKey);
 
             string expected2 = string.Format ("{0}{1}&pnsdk={2}&timestamp=",
-                (channel=="")?"":"&channel=", channel, PubnubUnity.Version);
+                (channel=="")?"":"&channel=", channel, 
+                Utility.EncodeUricomponent(PubnubUnity.Version, ResponseType.AuditAccess, false, true));
 
             string expected3 = string.Format ("&uuid={0}", uuid);
 
-            string received = uri.ToString ();
+            string received = uri.OriginalString;
             UnityEngine.Debug.Log("Expected:" + expected1);
             UnityEngine.Debug.Log("Expected:" + expected2);
             UnityEngine.Debug.Log("Expected:" + expected3);
