@@ -1531,7 +1531,302 @@ namespace PubNubMessaging.Tests
             TestBuildPresenceHeartbeatRequestCommon (channels, userState, false, "");
         }
 
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestMultipleChannelsWithStateAuthSSLCG ()
+        {
+            string[] channels = { "test", "test2" };
+            string[] channelGroups = { "cg", "cg2" };
+            string userState = "{\"test\":{\"key1\":\"value1\",\"key2\":\"value2\"},\"test2\":{\"key1\":\"value1\",\"key2\":\"value2\"}}";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups,  null, userState, true, "authKey");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestMultipleChannelsAuthSSLCG ()
+        {
+            string[] channels = { "test", "test2" };
+            string[] channelGroups = { "cg", "cg2" };
+            string userState = "";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups,  null, userState, true, "authKey");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestWithStateAuthSSLCG ()
+        {
+            string[] channels = { "test" };
+            string[] channelGroups = { "cg", "cg2" };
+            string userState = "{\"k\":\"v\"}";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups,  null, userState, true, "authKey");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestAuthSSLCG ()
+        {
+            string[] channels = { "test" };
+            string[] channelGroups = { "cg", "cg2" };
+            string userState = "";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups,  null, userState, true, "authKey");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestMultipleChannelsWithStateAuthCG ()
+        {
+            string[] channels = { "test", "test2" };
+            string[] channelGroups = { "cg", "cg2" };
+            string userState = "{\"test\":{\"key1\":\"value1\",\"key2\":\"value2\"},\"test2\":{\"key1\":\"value1\",\"key2\":\"value2\"}}";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups,  null, userState, false, "authKey");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestMultipleChannelsAuthCG ()
+        {
+            string[] channels = { "test", "test2" };
+            string[] channelGroups = { "cg" };
+            string userState = "";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups,  null, userState, false, "authKey");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestWithStateAuthCG ()
+        {
+            string[] channels = { "test" };
+            string[] channelGroups = { "cg", "cg2" };
+            string userState = "{\"k\":\"v\"}";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups,  null, userState, false, "authKey");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestAuthCG ()
+        {
+            string[] channels = { "test" };
+            string[] channelGroups = { "cg", "cg2" };
+            string userState = "";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups,  null, userState, false, "authKey");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestMultipleChannelsWithStateSSLCG ()
+        {
+            string[] channels = { "test", "test2" };
+            string[] channelGroups = { "cg", "cg2" };
+            string userState = "{\"test\":{\"key1\":\"value1\",\"key2\":\"value2\"},\"test2\":{\"key1\":\"value1\",\"key2\":\"value2\"}}";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups,  null, userState, true, "");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestMultipleChannelsSSLCG ()
+        {
+            string[] channels = { "test", "test2" };
+            string[] channelGroups = { "cg", "cg2" };
+            string userState = "";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups,  null, userState, true, "");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestWithStateSSLCG ()
+        {
+            string[] channels = { "test" };
+            string[] channelGroups = { "cg", "cg2" };
+            string userState = "{\"k\":\"v\"}";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups,  null, userState, true, "");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestSSLCG ()
+        {
+            string[] channels = { "test" };
+            string[] channelGroups = { "cg", "cg2" };
+            string userState = "";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups,  null, userState, true, "");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestMultipleChannelsWithStateCG ()
+        {
+            string[] channels = { "test", "test2" };
+            string[] channelGroups = { "cg", "cg2" };
+            string userState = "{\"test\":{\"key1\":\"value1\",\"key2\":\"value2\"},\"test2\":{\"key1\":\"value1\",\"key2\":\"value2\"}}";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups,  null, userState, false, "");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestMultipleChannelsCG ()
+        {
+            string[] channels = { "test", "test2" };
+            string[] channelGroups = { "cg", "cg2" };
+            string userState = "";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups,  null, userState, false, "");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestWithStateCG ()
+        {
+            string[] channels = { "test" };
+            string[] channelGroups = { "cg", "cg2" };
+            string userState = "{\"k\":\"v\"}";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups,  null, userState, false, "");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestCG ()
+        {
+            string[] channels = { "test" };
+            string[] channelGroups = { "cg", "cg2" };
+            string userState = "";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups,  null, userState, false, "");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestMultipleChannelsWithStateAuthSSLCGnCH ()
+        {
+            string[] channels = { "test", "test2" };
+            string[] channelGroups = { "cg", "cg2" };
+            string userState = "{\"test\":{\"key1\":\"value1\",\"key2\":\"value2\"},\"test2\":{\"key1\":\"value1\",\"key2\":\"value2\"}}";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups, channels, userState, true, "authKey");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestMultipleChannelsAuthSSLCGnCH ()
+        {
+            string[] channels = { "test", "test2" };
+            string[] channelGroups = { "cg", "cg2" };
+            string userState = "";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups, channels, userState, true, "authKey");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestWithStateAuthSSLCGnCH ()
+        {
+            string[] channels = { "test" };
+            string[] channelGroups = { "cg", "cg2" };
+            string userState = "{\"k\":\"v\"}";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups, channels, userState, true, "authKey");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestAuthSSLCGnCH ()
+        {
+            string[] channels = { "test" };
+            string[] channelGroups = { "cg", "cg2" };
+            string userState = "";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups, channels, userState, true, "authKey");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestMultipleChannelsWithStateAuthCGnCH ()
+        {
+            string[] channels = { "test", "test2" };
+            string[] channelGroups = { "cg", "cg2" };
+            string userState = "{\"test\":{\"key1\":\"value1\",\"key2\":\"value2\"},\"test2\":{\"key1\":\"value1\",\"key2\":\"value2\"}}";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups, channels, userState, false, "authKey");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestMultipleChannelsAuthCGnCH ()
+        {
+            string[] channels = { "test", "test2" };
+            string[] channelGroups = { "cg" };
+            string userState = "";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups, channels, userState, false, "authKey");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestWithStateAuthCGnCH ()
+        {
+            string[] channels = { "test" };
+            string[] channelGroups = { "cg", "cg2" };
+            string userState = "{\"k\":\"v\"}";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups, channels, userState, false, "authKey");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestAuthCGnCH ()
+        {
+            string[] channels = { "test" };
+            string[] channelGroups = { "cg", "cg2" };
+            string userState = "";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups, channels, userState, false, "authKey");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestMultipleChannelsWithStateSSLCGnCH ()
+        {
+            string[] channels = { "test", "test2" };
+            string[] channelGroups = { "cg", "cg2" };
+            string userState = "{\"test\":{\"key1\":\"value1\",\"key2\":\"value2\"},\"test2\":{\"key1\":\"value1\",\"key2\":\"value2\"}}";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups, channels, userState, true, "");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestMultipleChannelsSSLCGnCH ()
+        {
+            string[] channels = { "test", "test2" };
+            string[] channelGroups = { "cg", "cg2" };
+            string userState = "";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups, channels, userState, true, "");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestWithStateSSLCGnCH ()
+        {
+            string[] channels = { "test" };
+            string[] channelGroups = { "cg", "cg2" };
+            string userState = "{\"k\":\"v\"}";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups, channels, userState, true, "");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestSSLCGnCH ()
+        {
+            string[] channels = { "test" };
+            string[] channelGroups = { "cg", "cg2" };
+            string userState = "";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups, channels, userState, true, "");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestMultipleChannelsWithStateCGnCH ()
+        {
+            string[] channels = { "test", "test2" };
+            string[] channelGroups = { "cg", "cg2" };
+            string userState = "{\"test\":{\"key1\":\"value1\",\"key2\":\"value2\"},\"test2\":{\"key1\":\"value1\",\"key2\":\"value2\"}}";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups, channels, userState, false, "");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestMultipleChannelsCGnCH ()
+        {
+            string[] channels = { "test", "test2" };
+            string[] channelGroups = { "cg", "cg2" };
+            string userState = "";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups, channels, userState, false, "");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestWithStateCGnCH ()
+        {
+            string[] channels = { "test" };
+            string[] channelGroups = { "cg", "cg2" };
+            string userState = "{\"k\":\"v\"}";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups, channels, userState, false, "");
+        }
+
+        [Test]
+        public void TestBuildPresenceHeartbeatRequestCGnCH ()
+        {
+            string[] channels = { "test" };
+            string[] channelGroups = { "cg", "cg2" };
+            string userState = "";
+            TestBuildPresenceHeartbeatRequestCommon (channelGroups, channels, userState, false, "");
+        }
+
+
+
         public void TestBuildPresenceHeartbeatRequestCommon(string[] channels, string userState, 
+            bool ssl, string authKey){
+            TestBuildPresenceHeartbeatRequestCommon(null, channels, userState, ssl, authKey);
+        }
+
+        public void TestBuildPresenceHeartbeatRequestCommon(string[] channelGroups, string[] channels, string userState, 
             bool ssl, string authKey){
 
             string uuid = "customuuid";
@@ -1550,18 +1845,37 @@ namespace PubNubMessaging.Tests
                 authKeyString = string.Format ("&auth={0}", pubnub.AuthenticationKey);
             }
 
-            Uri uri = BuildRequests.BuildPresenceHeartbeatRequest (string.Join(",",channels), "", userState, uuid, ssl, 
+            string cgStr = "";
+            string cg = ""; 
+            if (channelGroups != null)
+            {
+                cg = string.Join (",", channelGroups);
+                cgStr = string.Format("&channel-group={0}", Utility.EncodeUricomponent (cg, ResponseType.SubscribeV2, true, false));
+            }        
+
+            string chStr = ",";
+            string ch = "";
+            if (channels != null){
+                ch = string.Join (",", channels);
+                chStr = ch;
+            }
+
+            Uri uri = BuildRequests.BuildPresenceHeartbeatRequest (ch, cg, userState, uuid, ssl, 
                 pubnub.Origin, pubnub.AuthenticationKey, Common.SubscribeKey
             );
 
             //https://pubsub.pubnub.com/v2/presence/sub_key/demo-36/channel/user_state_channel/heartbeat?uuid=customuuid&state={"k":"v"}&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
 
-            string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/channel/{3}/heartbeat?uuid={4}{5}{6}{7}&pnsdk={8}",
-                ssl?"s":"", pubnub.Origin, Common.SubscribeKey, string.Join (",", channels), uuid, 
+            string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/channel/{3}/heartbeat?uuid={4}{5}{6}{9}{7}&pnsdk={8}",
+                ssl?"s":"", pubnub.Origin, 
+                Common.SubscribeKey, 
+                chStr, 
+                uuid, 
                 (userState=="")?"":"&state=", 
                 Utility.EncodeUricomponent(userState, ResponseType.PresenceHeartbeat, false, false),
                 authKeyString, 
-                Utility.EncodeUricomponent(PubnubUnity.Version, ResponseType.PresenceHeartbeat, false, true)
+                Utility.EncodeUricomponent(PubnubUnity.Version, ResponseType.PresenceHeartbeat, false, true),
+                cgStr
             );
             string received = uri.OriginalString;
             Common.LogAndCompare (expected, received);
@@ -1591,10 +1905,72 @@ namespace PubNubMessaging.Tests
             TestBuildSetUserStateRequestCommon (true, "authKey");
         }
 
+        [Test]
+        public void TestBuildSetUserStateRequestCGnCH ()
+        {
+            TestBuildSetUserStateRequestCommon ( true, true, false, "");
+        }
+
+        [Test]
+        public void TestBuildSetUserStateRequestAuthCGnCH ()
+        {
+            TestBuildSetUserStateRequestCommon ( true, true, false, "authKey");
+        }
+
+        [Test]
+        public void TestBuildSetUserStateRequestSSLCGnCH ()
+        {
+            TestBuildSetUserStateRequestCommon ( true, true, true, "");
+        }
+
+        [Test]
+        public void TestBuildSetUserStateRequestAuthSSLCGnCH ()
+        {
+            TestBuildSetUserStateRequestCommon ( true, true, true, "authKey");
+        }
+
+        [Test]
+        public void TestBuildSetUserStateRequestCG ()
+        {
+            TestBuildSetUserStateRequestCommon ( true, false,  false, "");
+        }
+
+        [Test]
+        public void TestBuildSetUserStateRequestAuthCG ()
+        {
+            TestBuildSetUserStateRequestCommon ( true, false,  false, "authKey");
+        }
+
+        [Test]
+        public void TestBuildSetUserStateRequestSSLCG ()
+        {
+            TestBuildSetUserStateRequestCommon ( true, false,  true, "");
+        }
+
+        [Test]
+        public void TestBuildSetUserStateRequestAuthSSLCG ()
+        {
+            TestBuildSetUserStateRequestCommon ( true, false,  true, "authKey");
+        }
+
         public void TestBuildSetUserStateRequestCommon(bool ssl, string authKey){
+            TestBuildSetUserStateRequestCommon(false, false, ssl, authKey);
+        }
+
+        public void TestBuildSetUserStateRequestCommon(bool testCg, bool testCh, bool ssl, string authKey){
             string channel = "user_state_channel";
             string userState = "{\"k\":\"v\"}";
             string uuid = "customuuid";
+            string channelGroup = "user_state_channelGroup";
+            string channelGroupStr = string.Format("&channel-group={0}",  Utility.EncodeUricomponent(channelGroup, ResponseType.HereNow, true, false));
+            if(testCh && testCg){
+                // test both
+            } else if(testCg){
+                channel = ",";
+            } else {
+                channelGroup = "";
+                channelGroupStr = ""; 
+            }
 
             Pubnub pubnub = new Pubnub (
                 Common.PublishKey,
@@ -1609,17 +1985,18 @@ namespace PubNubMessaging.Tests
                 authKeyString = string.Format ("&auth={0}", pubnub.AuthenticationKey);
             }
 
-            Uri uri = BuildRequests.BuildSetUserStateRequest (channel, "", userState, uuid, uuid, ssl, 
+            Uri uri = BuildRequests.BuildSetUserStateRequest (channel, channelGroup, userState, uuid, uuid, ssl, 
                 pubnub.Origin, pubnub.AuthenticationKey, Common.SubscribeKey
             );
 
             //https://pubsub.pubnub.com/v2/presence/sub_key/demo-36/channel/user_state_channel/uuid/customuuid/data?state={"k":"v"}&uuid=customuuid&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
             //https://pubsub.pubnub.com/v2/presence/sub_key/demo-36/channel/user_state_channel/uuid/customuuid/data?state={"k":"v"}&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
-            string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/channel/{3}/uuid/{4}/data?state={5}&uuid={6}{7}&pnsdk={8}",
+            string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/channel/{3}/uuid/{4}/data?state={5}{9}&uuid={6}{7}&pnsdk={8}",
                 ssl?"s":"", pubnub.Origin, Common.SubscribeKey, channel, uuid, 
                 Utility.EncodeUricomponent(userState, ResponseType.SetUserState, false, false),
                 uuid, authKeyString, 
-                Utility.EncodeUricomponent(PubnubUnity.Version, ResponseType.SetUserState, false, false)
+                Utility.EncodeUricomponent(PubnubUnity.Version, ResponseType.SetUserState, false, false),
+                channelGroupStr
             );
             string received = uri.OriginalString;
             Common.LogAndCompare (expected, received);
@@ -1649,10 +2026,72 @@ namespace PubNubMessaging.Tests
             TestBuildGetUserStateRequestCommon (true, "");
         }
 
+        [Test]
+        public void TestBuildGetUserStateRequestAuthSSLCGnCH()
+        {
+            TestBuildGetUserStateRequestCommon (true, true, true, "authKey");
+        }
+
+        [Test]
+        public void TestBuildGetUserStateRequestAuthCGnCH()
+        {
+            TestBuildGetUserStateRequestCommon (true, true, false, "authKey");
+        }
+
+        [Test]
+        public void TestBuildGetUserStateRequestCGnCH()
+        {
+            TestBuildGetUserStateRequestCommon (true, true, false, "");
+        }
+
+        [Test]
+        public void TestBuildGetUserStateRequestSSLCGnCH()
+        {
+            TestBuildGetUserStateRequestCommon (true, true, true, "");
+        }
+
+        [Test]
+        public void TestBuildGetUserStateRequestAuthSSLCG()
+        {
+            TestBuildGetUserStateRequestCommon (true, false, true, "authKey");
+        }
+
+        [Test]
+        public void TestBuildGetUserStateRequestAuthCG()
+        {
+            TestBuildGetUserStateRequestCommon (true, false, false, "authKey");
+        }
+
+        [Test]
+        public void TestBuildGetUserStateRequestCG()
+        {
+            TestBuildGetUserStateRequestCommon (true, false, false, "");
+        }
+
+        [Test]
+        public void TestBuildGetUserStateRequestSSLCG()
+        {
+            TestBuildGetUserStateRequestCommon (true, false, true, "");
+        }
+
         public void TestBuildGetUserStateRequestCommon(bool ssl, string authKey){
+            TestBuildGetUserStateRequestCommon(false, false, ssl, authKey);
+        }
+
+        public void TestBuildGetUserStateRequestCommon(bool testCg, bool testCh, bool ssl, string authKey){
             string channel = "user_state_channel";
             string userState = "{\"k\":\"v\"}";
             string uuid = "customuuid";
+            string channelGroup = "user_state_channelGroup";
+            string channelGroupStr = string.Format("&channel-group={0}",  Utility.EncodeUricomponent(channelGroup, ResponseType.HereNow, true, false));
+            if(testCh && testCg){
+                // test both
+            } else if(testCg){
+                channel = ",";
+            } else {
+                channelGroup = "";
+                channelGroupStr = ""; 
+            }
 
             Pubnub pubnub = new Pubnub (
                 Common.PublishKey,
@@ -1667,16 +2106,17 @@ namespace PubNubMessaging.Tests
                 authKeyString = string.Format ("&auth={0}", pubnub.AuthenticationKey);
             }
 
-            Uri uri = BuildRequests.BuildGetUserStateRequest (channel, "", uuid, uuid, ssl, 
+            Uri uri = BuildRequests.BuildGetUserStateRequest (channel, channelGroup, uuid, uuid, ssl, 
                 pubnub.Origin, pubnub.AuthenticationKey, Common.SubscribeKey
             );
 
             //https://pubsub.pubnub.com/v2/presence/sub_key/demo-36/channel/user_state_channel/uuid/customuuid?uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
-            string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/channel/{3}/uuid/{4}?uuid={6}{7}&pnsdk={8}",
+            string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/channel/{3}/uuid/{4}?uuid={6}{9}{7}&pnsdk={8}",
                 ssl?"s":"", pubnub.Origin, Common.SubscribeKey, channel, uuid, 
                 Utility.EncodeUricomponent(userState, ResponseType.GetUserState, false, false),
                 uuid, authKeyString, 
-                Utility.EncodeUricomponent(PubnubUnity.Version, ResponseType.GetUserState, false, false)
+                Utility.EncodeUricomponent(PubnubUnity.Version, ResponseType.GetUserState, false, false),
+                channelGroupStr
             );
             string received = uri.OriginalString;
             Common.LogAndCompare (expected, received);

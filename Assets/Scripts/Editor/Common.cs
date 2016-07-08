@@ -58,11 +58,10 @@ namespace PubNubMessaging.Tests
 
         public static void LogAndCompare(string expected, string received)
         {
-            UnityEngine.Debug.Log("Expected:" + expected);
-            UnityEngine.Debug.Log("Received:" + received);
-            Assert.IsTrue (expected.Equals (received));
+            string expNRec = string.Format("Expected: {0}\nReceived: {1} ", expected, received);
+            UnityEngine.Debug.Log(expNRec + expected.Equals (received));
+            Assert.IsTrue (expected.Equals (received), expNRec);
         }
-
 
         /// <summary>
         /// Blocks the current thread unit the response is received
