@@ -782,7 +782,7 @@ public class PubnubExample : MonoBehaviour
                 }
             } else if (state == PubnubState.DetailedHistory) {
                 AddToPubnubResultContainer ("Running Detailed History");
-                pubnub.DetailedHistory<string> (input, 100, DisplayReturnMessage, DisplayErrorMessage);
+                pubnub.DetailedHistory<string> (input, 100, DisplayReturnMessageHistory, DisplayErrorMessage);
             } else if (state == PubnubState.RemoveChannelGroup) {
                 AddToPubnubResultContainer ("Running RemoveChannelGroup");
                 pubnub.RemoveChannelGroup<string> (input, DisplayReturnMessage, DisplayErrorMessage);
@@ -1648,6 +1648,30 @@ public class PubnubExample : MonoBehaviour
             pubnub.EndPendingRequests ();
             pubnub.CleanUp ();
             pubnub = null;
+        }
+    }
+
+    void  DisplayReturnMessageHistory (string result)
+    {
+        UnityEngine.Debug.Log (string.Format ("REGULAR CALLBACK LOG: {0}", result));
+        AddToPubnubResultContainer (string.Format ("REGULAR CALLBACK: {0}", result));
+        if (!string.IsNullOrEmpty(result) && !string.IsNullOrEmpty(result.Trim()))
+        {
+            List<object> deserializedMessage = pubnub.JsonPluggableLibrary.DeserializeToListOfObject(result);
+            if (deserializedMessage != null && deserializedMessage.Count > 0)
+            {
+                object[] message = (from item in deserializedMessage select item as object).ToArray ();
+                if ((message != null)&&(message.Length >= 0)){
+                    {
+                        IList<object> enumerable = message [0] as IList<object>;
+                        foreach (object item in enumerable)
+                        {
+                            UnityEngine.Debug.Log (string.Format ("Message: {0}", item.ToString()));
+                            //IF CUSTOM OBJECT IS EXCEPTED, YOU CAN CAST THIS OBJECT TO YOUR CUSTOM CLASS TYPE
+                        }
+                    }
+                }
+            }
         }
     }
 

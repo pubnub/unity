@@ -873,9 +873,6 @@ namespace PubNubMessaging.Core
                 case ResponseType.PushUnregister:
                 case ResponseType.ChannelGroupAdd:
                 case ResponseType.ChannelGroupRemove:
-                case ResponseType.ChannelGroupGrantAccess:
-                case ResponseType.ChannelGroupAuditAccess:
-                case ResponseType.ChannelGroupRevokeAccess:
                     url.Append (parameters);
                     url = AppendUUIDToURL (url, uuid, false);
                     url = AppendAuthKeyToURL (url, authenticationKey, type);
@@ -893,6 +890,10 @@ namespace PubNubMessaging.Core
                 case ResponseType.GrantAccess:
                 case ResponseType.AuditAccess:
                 case ResponseType.RevokeAccess:
+                case ResponseType.ChannelGroupGrantAccess:
+                case ResponseType.ChannelGroupAuditAccess:
+                case ResponseType.ChannelGroupRevokeAccess:
+                
                     url.Append (parameters);
                     break;
                 default:
