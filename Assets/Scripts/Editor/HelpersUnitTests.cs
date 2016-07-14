@@ -2034,6 +2034,114 @@ namespace PubNubMessaging.Tests
 
         }*/
 
+        [Test]
+        public void TestCounterClassNextValue(){
+            Counter publishMessageCounter = new Counter ();
+            publishMessageCounter.NextValue();
+            Assert.True(publishMessageCounter.NextValue().Equals(2));
+        }
+
+        [Test]
+        public void TestCounterClassReset(){
+            Counter publishMessageCounter = new Counter ();
+            publishMessageCounter.NextValue();
+            publishMessageCounter.NextValue();
+            publishMessageCounter.Reset();
+            Assert.True(publishMessageCounter.NextValue().Equals(1));
+        }
+
+        [Test]
+        public void TestCreateTimetokenMetadata(){
+            var dict = new Dictionary<string, object>(); 
+            dict.Add("t", 14685037252884276);
+            dict.Add("r", "east");
+            TimetokenMetadata ttm= Helpers.CreateTimetokenMetadata(dict, "orig");
+            Assert.True(
+                ttm.Region.Equals("east")
+                && ttm.Timetoken.Equals(14685037252884276));
+        }
+
+        [Test]
+        public void TestAddToSubscribeMessageList(){
+            List<SubscribeMessage> lsm = new List<SubscribeMessage>();
+
+            Helpers.AddToSubscribeMessageList(Common.CreateSubscribeDictionary(), ref lsm);
+
+            if(lsm!=null){
+                ParseSubscribeMessageList(lsm);
+            }
+            else {
+                Assert.True(false, "Lsm null");
+            }
+        }
+
+        internal void ParseSubscribeMessageList(List<SubscribeMessage> lsm){
+            var dictUR = lsm[0].UserMetadata as Dictionary<string, object>;
+            string log=
+                String.Format(" " 
+                    +"\n lsm[0].Channel.Equals('Channel') {0} "
+                    +"\n lsm[0].Flags.Equals('flags') {1} "
+                    +"\n lsm[0].IssuingClientId.Equals('issuingClientId') {2} "
+                    +"\n lsm[0].OriginatingTimetoken.Region.Equals('west') {3} "
+                    +"\n lsm[0].OriginatingTimetoken.Timetoken.Equals(14685037252884276) {4} "
+                    +"\n lsm[0].Payload.Equals('Message') {5} "
+                    +"\n lsm[0].PublishTimetokenMetadata.Region.Equals('east') {6} "
+                    +"\n lsm[0].PublishTimetokenMetadata.Timetoken.Equals(14685037252884348) {7} "
+                    +"\n lsm[0].SequenceNumber.Equals('10') {8} "
+                    +"\n lsm[0].Shard.Equals('1') {9} "
+                    +"\n lsm[0].SubscribeKey.Equals('subscribeKey') {10} "
+                    +"\n lsm[0].SubscriptionMatch.Equals('SM') {11} "
+                    +"\n dictUR.ContainsKey('region')  {12} "
+                    +"\n dictUR.ContainsValue('north')  {13} ",
+                    lsm[0].Channel.Equals("Channel")
+                    , lsm[0].Flags.Equals("flags")
+                    , lsm[0].IssuingClientId.Equals("issuingClientId")
+                    , lsm[0].OriginatingTimetoken.Region.Equals("west")
+                    , lsm[0].OriginatingTimetoken.Timetoken.Equals(14685037252884276)
+                    , lsm[0].Payload.Equals("Message")
+                    , lsm[0].PublishTimetokenMetadata.Region.Equals("east")
+                    , lsm[0].PublishTimetokenMetadata.Timetoken.Equals(14685037252884348)
+                    , lsm[0].SequenceNumber.Equals(10)
+                    , lsm[0].Shard.Equals("1")
+                    , lsm[0].SubscribeKey.Equals("subscribeKey")
+                    , lsm[0].SubscriptionMatch.Equals("SM")
+                    , dictUR.ContainsKey("region")
+                    , dictUR.ContainsValue("north") 
+                );
+            UnityEngine.Debug.Log(log);
+            Assert.True(
+                lsm[0].Channel.Equals("Channel")
+                && lsm[0].Flags.Equals("flags")
+                && lsm[0].IssuingClientId.Equals("issuingClientId")
+                && lsm[0].OriginatingTimetoken.Region.Equals("west")
+                && lsm[0].OriginatingTimetoken.Timetoken.Equals(14685037252884276)
+                && lsm[0].Payload.Equals("Message")
+                && lsm[0].PublishTimetokenMetadata.Region.Equals("east")
+                && lsm[0].PublishTimetokenMetadata.Timetoken.Equals(14685037252884348)
+                && lsm[0].SequenceNumber.Equals(10)
+                && lsm[0].Shard.Equals("1")
+                && lsm[0].SubscribeKey.Equals("subscribeKey")
+                && lsm[0].SubscriptionMatch.Equals("SM")
+                && dictUR.ContainsKey("region")
+                && dictUR.ContainsValue("north"), log);
+
+        }
+
+        [Test]
+        public void TestCreateListOfSubscribeMessage(){
+            object[] obj = {Common.CreateSubscribeDictionary()}; 
+            List<SubscribeMessage> lsm = Helpers.CreateListOfSubscribeMessage(obj);
+
+            if(lsm!=null){
+                ParseSubscribeMessageList(lsm);
+            }
+            else {
+                Assert.True(false, "Lsm null");
+            }
+
+        }
+
+
             
         #endif
     }

@@ -55,6 +55,32 @@ namespace PubNubMessaging.Tests
             return "UnityUnitTests_" + r.Next (100);
         }
 
+        public static Dictionary<string, object> CreateSubscribeDictionary(){
+            var dictSM = new Dictionary<string, object>();
+            dictSM.Add("a", "1");
+            dictSM.Add("b", "SM");
+            dictSM.Add("c", "Channel");
+            dictSM.Add("d", "Message");
+            dictSM.Add("f", "flags");
+            dictSM.Add("i", "issuingClientId");
+            dictSM.Add("k", "subscribeKey");
+            dictSM.Add("s", "10");
+
+            var dictOT = new Dictionary<string, object>(); 
+            dictOT.Add("t", 14685037252884276);
+            dictOT.Add("r", "west");
+            dictSM.Add("o", dictOT);
+
+            var dictPM = new Dictionary<string, object>(); 
+            dictPM.Add("t", 14685037252884348);
+            dictPM.Add("r", "east");
+            dictSM.Add("p", dictPM);
+
+            var dictU = new Dictionary<string, object>(); 
+            dictU.Add("region", "north");
+            dictSM.Add("u", dictU);
+            return dictSM;
+        }
 
         public static void LogAndCompare(string expected, string received)
         {
