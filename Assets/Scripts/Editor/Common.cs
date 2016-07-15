@@ -269,6 +269,52 @@ namespace PubNubMessaging.Tests
                 }     
             );
         }
+
+        public static void WildcardPresenceCallback (object result)
+        {
+            UnityEngine.Debug.Log (string.Format ("WildcardPresenceCallback CALLBACK LOG: {0}", result.ToString()));
+        }
+
+        public static void WildcardPresenceCallback (string result)
+        {
+            UnityEngine.Debug.Log (string.Format ("WildcardPresenceCallback CALLBACK LOG: {0}", result));
+        }
+
+        public static void UserCallback (string result)
+        {
+            UnityEngine.Debug.Log (string.Format ("REGULAR CALLBACK LOG: {0}", result));
+        }
+
+        public static void UserCallback (object result)
+        {
+            UnityEngine.Debug.Log (string.Format ("REGULAR CALLBACK LOG: {0}", result.ToString()));
+        }
+
+        public static void DisconnectCallback (string result)
+        {
+            UnityEngine.Debug.Log (string.Format ("Disconnect CALLBACK LOG: {0}", result));
+        }
+
+        public static void DisconnectCallback (object result)
+        {
+            UnityEngine.Debug.Log (string.Format ("Disconnect CALLBACK LOG: {0}", result));
+        }
+
+        public static void ConnectCallback (string result)
+        {
+            UnityEngine.Debug.Log (string.Format ("CONNECT CALLBACK LOG: {0}", result));
+        }
+
+        public static void ConnectCallback (object result)
+        {
+            UnityEngine.Debug.Log (string.Format ("CONNECT CALLBACK LOG: {0}", result.ToString()));
+        }
+
+        public static void ErrorCallback (PubnubClientError result)
+        {
+            UnityEngine.Debug.Log (string.Format ("Error CALLBACK LOG: {0}", result.ToString()));
+        }
+
     }
 
     /// <summary>

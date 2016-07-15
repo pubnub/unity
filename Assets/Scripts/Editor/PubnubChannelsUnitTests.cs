@@ -65,7 +65,7 @@ namespace PubNubMessaging.Tests
 
         void WildcardCallback (object result)
         {
-            UnityEngine.Debug.Log (string.Format ("Disconnect CALLBACK LOG: {0}", result.ToString()));
+            UnityEngine.Debug.Log (string.Format ("Wildcard CALLBACK LOG: {0}", result.ToString()));
         }
 
         void ConnectCallback (string result)
