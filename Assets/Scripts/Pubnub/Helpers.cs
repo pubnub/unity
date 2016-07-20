@@ -319,7 +319,8 @@ namespace PubNubMessaging.Core
             return stateChanged;
         }
 
-        internal static ChannelEntity CreateChannelEntity<T>(string channelOrChannelGroupName2, bool isAwaitingConnectCallback,
+        internal static ChannelEntity CreateChannelEntity<T>(string channelOrChannelGroupName2, 
+            bool isAwaitingConnectCallback,
             bool isChannelGroup, Dictionary<string, object> userState,
             Action<T> userCallback, Action<T> connectCallback, 
             Action<PubnubClientError> errorCallback, Action<T> disconnectCallback, Action<T> wildcardPresenceCallback
