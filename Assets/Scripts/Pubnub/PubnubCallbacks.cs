@@ -297,6 +297,10 @@ namespace PubNubMessaging.Core
 
             PubnubChannelCallback<T> channelCallback = channelEntity.ChannelParams.Callbacks as PubnubChannelCallback<T>;
             if (channelCallback != null) {
+                #if (ENABLE_PUBNUB_LOGGING)
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CallErrorCallback calling GoToCallback: clientError={1} ", DateTime.Now.ToString (), clientError), LoggingMethod.LevelInfo);
+                #endif
+
                 GoToCallback (clientError, channelCallback.ErrorCallback, errorLevel);
             }
 

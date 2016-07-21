@@ -410,7 +410,8 @@ namespace PubNubMessaging.Core
         }
         #endif
 
-        internal static bool CreateChannelEntityAndAddToSubscribe <T>(ResponseType type, string[] rawChannels, bool isChannelGroup,
+        internal static bool CreateChannelEntityAndAddToSubscribe <T>(ResponseType type, string[] rawChannels, 
+            bool isChannelGroup,
             Action<T> userCallback, Action<T> connectCallback, Action<PubnubClientError> errorCallback, 
             Action<T> wildcardPresenceCallback, Action<T> disconnectCallback,
             PubnubErrorFilter.Level errorLevel, bool unsubscribeCheck, ref List<ChannelEntity> channelEntities

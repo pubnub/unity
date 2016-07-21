@@ -55,51 +55,110 @@ namespace PubNubMessaging.Tests
             return "UnityUnitTests_" + r.Next (100);
         }
 
-        public static List<ChannelEntity> CreateListOfChannelEntities<T>(bool channelGroup, bool channel){
+        public static List<ChannelEntity> CreateListOfChannelEntities<T>(bool channelGroup, bool channel, 
+            bool presence, bool awaitingConnectCallback,
+            Action<T> userCallback, Action<T> connectCallback,
+            Action<T> wildcardPresenceCallback, Action<T> disconnectCallback
+            ){
             var dictSM = new Dictionary<string, object>();
             dictSM.Add("k","v");
             dictSM.Add("k2","v2");
 
+
             ChannelEntity ce1 = Helpers.CreateChannelEntity<T>("ch1", false, false, dictSM, 
-            Common.UserCallback, Common.ConnectCallback,
-            Common.ErrorCallback, Common.DisconnectCallback, 
-            Common.WildcardPresenceCallback);
+            userCallback, connectCallback,
+            Common.ErrorCallback, disconnectCallback, 
+            wildcardPresenceCallback);
 
             var dictSM2 = new Dictionary<string, object>();
             dictSM2.Add("k3","v3");
             dictSM2.Add("k4","v4");
 
             ChannelEntity ce2 = Helpers.CreateChannelEntity<T>("ch2", false, false, dictSM2, 
-            Common.UserCallback, Common.ConnectCallback,
-            Common.ErrorCallback, Common.DisconnectCallback, 
-            Common.WildcardPresenceCallback);
+            userCallback, connectCallback,
+            Common.ErrorCallback, disconnectCallback, 
+            wildcardPresenceCallback);
 
             var dictSM3 = new Dictionary<string, object>();
             dictSM3.Add("k5","v5");
             dictSM3.Add("k6","v6");
 
             ChannelEntity ce3 = Helpers.CreateChannelEntity<T>("cg1", false, true, dictSM3, 
-            Common.UserCallback, Common.ConnectCallback,
-            Common.ErrorCallback, Common.DisconnectCallback, 
-            Common.WildcardPresenceCallback);
+            userCallback, connectCallback,
+            Common.ErrorCallback, disconnectCallback, 
+            wildcardPresenceCallback);
 
             var dictSM4 = new Dictionary<string, object>();
             dictSM4.Add("k7","v7");
             dictSM4.Add("k8","v8");
 
             ChannelEntity ce4 = Helpers.CreateChannelEntity<T>("cg2", false, true, dictSM4, 
-            Common.UserCallback, Common.ConnectCallback,
-            Common.ErrorCallback, Common.DisconnectCallback, 
-            Common.WildcardPresenceCallback);
+            userCallback, connectCallback,
+            Common.ErrorCallback, disconnectCallback, 
+            wildcardPresenceCallback);
+
+            var dictSM5 = new Dictionary<string, object>();
+            dictSM5.Add("k7","v7");
+            dictSM5.Add("k8","v8");
+
+            ChannelEntity ce5 = Helpers.CreateChannelEntity<T>("cg2-pnpres", false, true, dictSM5, 
+            userCallback, connectCallback,
+            Common.ErrorCallback, disconnectCallback, 
+            wildcardPresenceCallback);
+
+
+            var dictSM6 = new Dictionary<string, object>();
+            dictSM6.Add("k7","v7");
+            dictSM6.Add("k8","v8");
+
+            ChannelEntity ce6 = Helpers.CreateChannelEntity<T>("ch2-pnpres", false, false, dictSM6, 
+            userCallback, connectCallback,
+            Common.ErrorCallback, disconnectCallback, 
+            wildcardPresenceCallback);
+
+
+            var dictSM7 = new Dictionary<string, object>();
+            dictSM7.Add("k7","v7");
+            dictSM7.Add("k8","v8");
+
+            ChannelEntity ce7 = Helpers.CreateChannelEntity<T>("ch7", true, false, dictSM7, 
+            userCallback, connectCallback,
+            Common.ErrorCallback, disconnectCallback, 
+            wildcardPresenceCallback);
+
+            var dictSM8 = new Dictionary<string, object>();
+            dictSM8.Add("k7","v7");
+            dictSM8.Add("k8","v8");
+
+            ChannelEntity ce8 = Helpers.CreateChannelEntity<T>("cg8", true, true, dictSM8, 
+            userCallback, connectCallback,
+            Common.ErrorCallback, disconnectCallback, 
+            wildcardPresenceCallback);
 
             List<ChannelEntity> lstCE = new List<ChannelEntity>();
             if(channel){
                 lstCE.Add(ce1);
                 lstCE.Add(ce2);
+                if(presence){
+                    lstCE.Add(ce6);
+                }
+
+                if(awaitingConnectCallback){
+                    lstCE.Add(ce7);
+                }
+
             }
             if(channelGroup){
                 lstCE.Add(ce3);
                 lstCE.Add(ce4);
+                if(presence){
+                    lstCE.Add(ce5);
+                }
+
+                if(awaitingConnectCallback){
+                    lstCE.Add(ce8);
+                }
+
             }
             return lstCE;
         }

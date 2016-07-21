@@ -129,36 +129,49 @@ namespace PubNubMessaging.Tests
 
         [Test]
         public void TestBuildJsonUserStateCEObj(){
-            TestBuildJsonUserStateCommon<object>(false, true);
+            TestBuildJsonUserStateCommon<object>(false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestBuildJsonUserStateCECGObj(){
-            TestBuildJsonUserStateCommon<object>(true, false);
+            TestBuildJsonUserStateCommon<object>(true, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestBuildJsonUserStateCECGnCHObj(){
-            TestBuildJsonUserStateCommon<object>(true, true);
+            TestBuildJsonUserStateCommon<object>(true, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestBuildJsonUserStateCE(){
-            TestBuildJsonUserStateCommon<string>(false, true);
+            TestBuildJsonUserStateCommon<string>(false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestBuildJsonUserStateCECG(){
-            TestBuildJsonUserStateCommon<string>(true, false);
+            TestBuildJsonUserStateCommon<string>(true, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestBuildJsonUserStateCECGnCH(){
-            TestBuildJsonUserStateCommon<string>(true, true);
+            TestBuildJsonUserStateCommon<string>(true, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
-        public void TestBuildJsonUserStateCommon<T>(bool channelGroup, bool channel){
-            List<ChannelEntity> lstCE= Common.CreateListOfChannelEntities<T>(channelGroup, channel);
+        public void TestBuildJsonUserStateCommon<T>(bool channelGroup, bool channel,
+            Action<T> userCallback, Action<T> connectCallback,
+            Action<T> wildcardPresenceCallback, Action<T> disconnectCallback
+        ){
+            List<ChannelEntity> lstCE= Common.CreateListOfChannelEntities<T>(channelGroup, channel,
+                false, false,
+                userCallback, connectCallback,  
+                wildcardPresenceCallback,
+                disconnectCallback);
             string ret = Helpers.BuildJsonUserState(lstCE);
             if(channel && channelGroup){
                 Assert.AreEqual(ret, "{\"ch1\":{\"k\":\"v\",\"k2\":\"v2\"},\"ch2\":{\"k3\":\"v3\",\"k4\":\"v4\"},\"cg1\":{\"k5\":\"v5\",\"k6\":\"v6\"},\"cg2\":{\"k7\":\"v7\",\"k8\":\"v8\"}}", ret);
@@ -171,36 +184,50 @@ namespace PubNubMessaging.Tests
 
         [Test]
         public void TestGetNamesFromChannelEntitiesObj(){
-            TestGetNamesFromChannelEntitiesCommon<object>(true, true);
+            TestGetNamesFromChannelEntitiesCommon<object>(true, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestGetNamesFromChannelEntitiesCGObj(){
-            TestGetNamesFromChannelEntitiesCommon<object>(true, false);
+            TestGetNamesFromChannelEntitiesCommon<object>(true, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestGetNamesFromChannelEntitiesCNObj(){
-            TestGetNamesFromChannelEntitiesCommon<object>(false, true);
+            TestGetNamesFromChannelEntitiesCommon<object>(false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestGetNamesFromChannelEntities(){
-            TestGetNamesFromChannelEntitiesCommon<string>(true, true);
+            TestGetNamesFromChannelEntitiesCommon<string>(true, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestGetNamesFromChannelEntitiesCG(){
-            TestGetNamesFromChannelEntitiesCommon<string>(true, false);
+            TestGetNamesFromChannelEntitiesCommon<string>(true, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestGetNamesFromChannelEntitiesCN(){
-            TestGetNamesFromChannelEntitiesCommon<string>(false, true);
+            TestGetNamesFromChannelEntitiesCommon<string>(false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
-        public void TestGetNamesFromChannelEntitiesCommon<T>(bool channelGroup, bool channel){
-            List<ChannelEntity> lstCE= Common.CreateListOfChannelEntities<T>(channelGroup, channel);    
+
+        public void TestGetNamesFromChannelEntitiesCommon<T>(bool channelGroup, bool channel,
+            Action<T> userCallback, Action<T> connectCallback,
+            Action<T> wildcardPresenceCallback, Action<T> disconnectCallback){
+            List<ChannelEntity> lstCE= Common.CreateListOfChannelEntities<T>(channelGroup, channel,
+                false, false,
+                userCallback, connectCallback, 
+                wildcardPresenceCallback,
+                disconnectCallback
+            );    
             string ces = Helpers.GetNamesFromChannelEntities(lstCE);
 
             bool ceFound = true;
@@ -214,26 +241,37 @@ namespace PubNubMessaging.Tests
         }
         [Test]
         public void TestGetNamesFromChannelEntitiesCG2Obj(){
-            TestGetNamesFromChannelEntitiesCommon2<object>(true, false);
+            TestGetNamesFromChannelEntitiesCommon2<object>(true, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestGetNamesFromChannelEntitiesCN2Obj(){
-            TestGetNamesFromChannelEntitiesCommon2<object>(false, true);
+            TestGetNamesFromChannelEntitiesCommon2<object>(false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestGetNamesFromChannelEntitiesCG2(){
-            TestGetNamesFromChannelEntitiesCommon2<string>(true, false);
+            TestGetNamesFromChannelEntitiesCommon2<string>(true, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestGetNamesFromChannelEntitiesCN2(){
-            TestGetNamesFromChannelEntitiesCommon2<string>(false, true);
+            TestGetNamesFromChannelEntitiesCommon2<string>(false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
-        public void TestGetNamesFromChannelEntitiesCommon2<T>(bool channelGroup, bool channel){
-            List<ChannelEntity> lstCE= Common.CreateListOfChannelEntities<T>(channelGroup, channel);    
+        public void TestGetNamesFromChannelEntitiesCommon2<T>(bool channelGroup, bool channel,
+            Action<T> userCallback, Action<T> connectCallback,
+            Action<T> wildcardPresenceCallback, Action<T> disconnectCallback){
+            List<ChannelEntity> lstCE= Common.CreateListOfChannelEntities<T>(channelGroup, channel,
+                false, false,
+                userCallback, connectCallback,  
+                wildcardPresenceCallback,
+                disconnectCallback
+            );    
             string ces = Helpers.GetNamesFromChannelEntities(lstCE, channelGroup);
 
             bool ceFound = true;
@@ -258,46 +296,55 @@ namespace PubNubMessaging.Tests
 
         [Test]
         public void TestUpdateOrAddUserStateOfEntityErrorCallbackObj(){
-            TestUpdateOrAddUserStateOfEntityCommon<object>(true, false, true, false);
+            TestUpdateOrAddUserStateOfEntityCommon<object>(true, false, true, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestUpdateOrAddUserStateOfEntityObj(){
-            TestUpdateOrAddUserStateOfEntityCommon<object>(false, false, false, false);
+            TestUpdateOrAddUserStateOfEntityCommon<object>(false, false, false, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestUpdateOrAddUserStateOfEntityErrorCallbackEditObj(){
-            TestUpdateOrAddUserStateOfEntityCommon<object>(true, true, false, false);
+            TestUpdateOrAddUserStateOfEntityCommon<object>(true, true, false, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestUpdateOrAddUserStateOfEntityEditObj(){
-            TestUpdateOrAddUserStateOfEntityCommon<object>(false, true, false, false);
+            TestUpdateOrAddUserStateOfEntityCommon<object>(false, true, false, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestUpdateOrAddUserStateOfEntityErrorCallback(){
-            TestUpdateOrAddUserStateOfEntityCommon<string>(true, false, true, false);
+            TestUpdateOrAddUserStateOfEntityCommon<string>(true, false, true, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestUpdateOrAddUserStateOfEntity(){
-            TestUpdateOrAddUserStateOfEntityCommon<string>(false, false, false, false);
+            TestUpdateOrAddUserStateOfEntityCommon<string>(false, false, false, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestUpdateOrAddUserStateOfEntityErrorCallbackEdit(){
-            TestUpdateOrAddUserStateOfEntityCommon<string>(true, true, false, false);
+            TestUpdateOrAddUserStateOfEntityCommon<string>(true, true, false, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestUpdateOrAddUserStateOfEntityEdit(){
-            TestUpdateOrAddUserStateOfEntityCommon<string>(false, true, false, false);
+            TestUpdateOrAddUserStateOfEntityCommon<string>(false, true, false, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         public void TestUpdateOrAddUserStateOfEntityCommon<T>(bool isChannelGroup, bool edit, 
-            bool checkErrorCallback, bool ssl){
+            bool checkErrorCallback, bool ssl, Action<T> userCallback, Action<T> connectCallback,
+            Action<T> wildcardPresenceCallback, Action<T> disconnectCallback){
 
             var dictSM = new Dictionary<string, object>();
             dictSM.Add("k","v");
@@ -313,9 +360,9 @@ namespace PubNubMessaging.Tests
             string state = pubnub.JsonPluggableLibrary.SerializeToJsonString(dictSM);
 
             ChannelEntity ce1 = Helpers.CreateChannelEntity<T>("ch1", false, isChannelGroup, dictSM, 
-                Common.UserCallback, Common.ConnectCallback,
-                ErrorCallbackUserState, Common.DisconnectCallback, 
-                Common.WildcardPresenceCallback);
+                userCallback, connectCallback,
+                ErrorCallbackUserState, disconnectCallback, 
+                wildcardPresenceCallback);
 
             List<ChannelEntity> lstCe = new List<ChannelEntity>();
             lstCe.Add(ce1);
@@ -329,7 +376,7 @@ namespace PubNubMessaging.Tests
                 lstCe2.Add(ce1);
 
                 Helpers.UpdateOrAddUserStateOfEntity<T>(channelName, isChannelGroup, dictSM2, edit,
-                    Common.UserCallback, ErrorCallbackUserState, PubnubErrorFilter.Level.Info
+                    userCallback, ErrorCallbackUserState, PubnubErrorFilter.Level.Info
                     , ref lstCe2);
                 string ustate = pubnub.JsonPluggableLibrary.SerializeToJsonString(lstCe2[0].ChannelParams.UserState);
                 string state2 = pubnub.JsonPluggableLibrary.SerializeToJsonString(dictSM2);
@@ -337,7 +384,7 @@ namespace PubNubMessaging.Tests
             }
 
             if(Helpers.UpdateOrAddUserStateOfEntity<T>(channelName, isChannelGroup, dictSM, edit,
-                Common.UserCallback, ErrorCallbackUserState, PubnubErrorFilter.Level.Info
+                userCallback, ErrorCallbackUserState, PubnubErrorFilter.Level.Info
                 , ref lstCe)){
                 string ustate = pubnub.JsonPluggableLibrary.SerializeToJsonString(lstCe[0].ChannelParams.UserState);
                 UnityEngine.Debug.Log(string.Format("{0}\n{1}", state, ustate));
@@ -360,15 +407,18 @@ namespace PubNubMessaging.Tests
 
         [Test]
         public void TestCheckAndAddExistingUserStateEdit(){
-            TestCheckAndAddExistingUserStateCommon<string>(false);
+            TestCheckAndAddExistingUserStateCommon<string>(false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestCheckAndAddExistingUserStateEditObj(){
-            TestCheckAndAddExistingUserStateCommon<object>(false);
+            TestCheckAndAddExistingUserStateCommon<object>(false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
-        public void TestCheckAndAddExistingUserStateCommon<T>( bool edit 
+        public void TestCheckAndAddExistingUserStateCommon<T>( bool edit, Action<T> userCallback, Action<T> connectCallback,
+            Action<T> wildcardPresenceCallback, Action<T> disconnectCallback
         ){
             var dictSM = new Dictionary<string, object>();
             dictSM.Add("k","v");
@@ -389,7 +439,7 @@ namespace PubNubMessaging.Tests
             string[] ch = {"ch1", "ch2"};
             string[] cg = {"cg1", "cg2"};
             bool stateChanged = Helpers.CheckAndAddExistingUserState<T>(string.Join(",",ch), 
-                string.Join(",",cg), dictSM,  Common.UserCallback, 
+                string.Join(",",cg), dictSM,  userCallback, 
                 ErrorCallbackUserState,PubnubErrorFilter.Level.Info
                 , edit, out userstate, out lstCE);
 
@@ -434,47 +484,55 @@ namespace PubNubMessaging.Tests
 
         [Test]
         public void TestCreateChannelEntity(){
-            TestCreateChannelEntityCommon<string>(false, false, false);
+            TestCreateChannelEntityCommon<string>(false, false, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestCreateChannelEntityObj(){
-            TestCreateChannelEntityCommon<object>(false, false, false);
+            TestCreateChannelEntityCommon<object>(false, false, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestCreateChannelEntityCG(){
-            TestCreateChannelEntityCommon<string>(true, false, false);
+            TestCreateChannelEntityCommon<string>(true, false, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestCreateChannelEntityObjCG(){
-            TestCreateChannelEntityCommon<object>(true, false, false);
+            TestCreateChannelEntityCommon<object>(true, false, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestCreateChannelEntityPres(){
-            TestCreateChannelEntityCommon<string>(false, false, true);
+            TestCreateChannelEntityCommon<string>(false, false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestCreateChannelEntityObjPres(){
-            TestCreateChannelEntityCommon<object>(false, false, true);
+            TestCreateChannelEntityCommon<object>(false, false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestCreateChannelEntityCGPres(){
-            TestCreateChannelEntityCommon<string>(true, false, true);
+            TestCreateChannelEntityCommon<string>(true, false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestCreateChannelEntityObjCGPres(){
-            TestCreateChannelEntityCommon<object>(true, false, true);
+            TestCreateChannelEntityCommon<object>(true, false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
-
         public void TestCreateChannelEntityCommon<T>( bool isChannelGroup, bool isAwaitingConnectCallback,
-            bool isPresence
+            bool isPresence, Action<T> userCallback, Action<T> connectCallback,
+            Action<T> wildcardPresenceCallback, Action<T> disconnectCallback
         ){
             var dictSM = new Dictionary<string, object>();
             dictSM.Add("k","v");
@@ -487,65 +545,80 @@ namespace PubNubMessaging.Tests
 
             ChannelEntity ce1 = Helpers.CreateChannelEntity<T>(channelName, isAwaitingConnectCallback, 
                 isChannelGroup, dictSM, 
-                Common.UserCallback, Common.ConnectCallback,
-                ErrorCallbackUserState, Common.DisconnectCallback, 
-                Common.WildcardPresenceCallback);
-            CreateChannelEntityMatch<T>(ce1, isChannelGroup, isAwaitingConnectCallback, isPresence, channelName);
+                userCallback, connectCallback,
+                ErrorCallbackUserState, disconnectCallback, 
+                wildcardPresenceCallback);
+            CreateChannelEntityMatch<T>(ce1, isChannelGroup, isAwaitingConnectCallback, isPresence, channelName,
+                userCallback,
+                connectCallback,
+                disconnectCallback, 
+                wildcardPresenceCallback);
 
         }
 
         [Test]
         public void TestCreateChannelEntityCGPresMulti(){
-            TestCreateChannelEntityMultiCommon<string>(true, false, true);
+            TestCreateChannelEntityMultiCommon<string>(true, false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestCreateChannelEntityObjCGPresMulti(){
-            TestCreateChannelEntityMultiCommon<object>(true, false, true);
+            TestCreateChannelEntityMultiCommon<object>(true, false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestCreateChannelEntityMulti(){
-            TestCreateChannelEntityMultiCommon<string>(false, false, false);
+            TestCreateChannelEntityMultiCommon<string>(false, false, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestCreateChannelEntityObjMulti(){
-            TestCreateChannelEntityMultiCommon<object>(false, false, false);
+            TestCreateChannelEntityMultiCommon<object>(false, false, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestCreateChannelEntityPresMulti(){
-            TestCreateChannelEntityMultiCommon<string>(false, false, true);
+            TestCreateChannelEntityMultiCommon<string>(false, false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestCreateChannelEntityObjPresMulti(){
-            TestCreateChannelEntityMultiCommon<object>(false, false, true);
+            TestCreateChannelEntityMultiCommon<object>(false, false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestCreateChannelEntityPresMultiCb(){
-            TestCreateChannelEntityMultiCommon<string>(false, true, true);
+            TestCreateChannelEntityMultiCommon<string>(false, true, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestCreateChannelEntityObjPresMultiCb(){
-            TestCreateChannelEntityMultiCommon<object>(false, true, true);
+            TestCreateChannelEntityMultiCommon<object>(false, true, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestCreateChannelEntityCGPresMultiCb(){
-            TestCreateChannelEntityMultiCommon<string>(true, true, true);
+            TestCreateChannelEntityMultiCommon<string>(true, true, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         [Test]
         public void TestCreateChannelEntityObjCGPresMultiCb(){
-            TestCreateChannelEntityMultiCommon<object>(true, true, true);
+            TestCreateChannelEntityMultiCommon<object>(true, true, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
         }
 
         public void TestCreateChannelEntityMultiCommon<T>( bool isChannelGroup, bool isAwaitingConnectCallback,
-            bool isPresence
+            bool isPresence, Action<T> userCallback, Action<T> connectCallback,
+            Action<T> wildcardPresenceCallback, Action<T> disconnectCallback
         ){
             var dictSM = new Dictionary<string, object>();
             dictSM.Add("k","v");
@@ -561,15 +634,21 @@ namespace PubNubMessaging.Tests
 
             List<ChannelEntity> ce1 = Helpers.CreateChannelEntity<T>(channelArr, isAwaitingConnectCallback, 
                 isChannelGroup, dictSM, 
-                Common.UserCallback, Common.ConnectCallback,
-                ErrorCallbackUserState, Common.DisconnectCallback, 
-                Common.WildcardPresenceCallback);
-            CreateChannelEntityMatch<T>(ce1[0], isChannelGroup, isAwaitingConnectCallback, isPresence, channelName);
+                userCallback, connectCallback,
+                ErrorCallbackUserState, disconnectCallback, 
+                wildcardPresenceCallback);
+            CreateChannelEntityMatch<T>(ce1[0], isChannelGroup, isAwaitingConnectCallback, isPresence, channelName,
+                userCallback,
+                connectCallback,
+                disconnectCallback, 
+                wildcardPresenceCallback);
 
         }
 
         void CreateChannelEntityMatch<T>(ChannelEntity ce1, bool isChannelGroup, bool isAwaitingConnectCallback,
-            bool isPresence, string channelName){
+            bool isPresence, string channelName, Action<T> userCallback, Action<T> connectCallback,
+            Action<T> disconnectCallback, Action<T> wildcardPresenceCallback){
+
             bool chMatch = ce1.ChannelID.ChannelOrChannelGroupName.Equals(channelName);
             bool isAwaitingConnectCallbackMatch = ce1.ChannelParams.IsAwaitingConnectCallback.Equals(isAwaitingConnectCallback);
             bool isPresenceMatch = ce1.ChannelID.IsPresenceChannel.Equals(isPresence);
@@ -577,11 +656,11 @@ namespace PubNubMessaging.Tests
             bool typeMatch = ce1.ChannelParams.TypeParameterType.Equals(typeof(T));
 
             PubnubChannelCallback<T> channelCallbacks = ce1.ChannelParams.Callbacks as PubnubChannelCallback<T>;
-            bool UserCallbackMatch = channelCallbacks.SuccessCallback == Common.UserCallback;
-            bool ConnectCallbackMatch = channelCallbacks.ConnectCallback == Common.ConnectCallback;
+            bool UserCallbackMatch = channelCallbacks.SuccessCallback == userCallback;
+            bool ConnectCallbackMatch = channelCallbacks.ConnectCallback == connectCallback;
             bool ErrorCallbackUserStateMatch = channelCallbacks.ErrorCallback == ErrorCallbackUserState;
-            bool DisconnectCallbackMatch = channelCallbacks.DisconnectCallback == Common.DisconnectCallback;
-            bool WildcardPresenceCallbackMatch = channelCallbacks.WildcardPresenceCallback == Common.WildcardPresenceCallback;
+            bool DisconnectCallbackMatch = channelCallbacks.DisconnectCallback == disconnectCallback;
+            bool WildcardPresenceCallbackMatch = channelCallbacks.WildcardPresenceCallback == wildcardPresenceCallback;
 
             var userState = ce1.ChannelParams.UserState as Dictionary<string, object>;
             bool userStateMatch = false;
@@ -601,6 +680,471 @@ namespace PubNubMessaging.Tests
                 isPresenceMatch & isChannelGroupMatch & typeMatch &
                 UserCallbackMatch & ConnectCallbackMatch & ErrorCallbackUserStateMatch &
                 DisconnectCallbackMatch & WildcardPresenceCallbackMatch, resp);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribe(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<string>(false, false, false, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribeObj(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<object>(false, false, false, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribeCG(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<string>(true, false, false, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribeObjCG(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<object>(true, false, false, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribePres(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<string>(false, true, false, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribeObjPres(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<object>(false, true, false, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribeCGPres(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<string>(true, true, false, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribeObjCGPres(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<object>(true, true, false, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribeUnsub(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<string>(false, false, true, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribeObjUnsub(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<object>(false, false, true, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribeCGUnsub(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<string>(true, false, true, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribeObjCGUnsub(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<object>(true, false, true, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribePresUnsub(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<string>(false, true, true, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribeObjPresUnsub(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<object>(false, true, true, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribeCGPresUnsub(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<string>(true, true, true, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribeObjCGPresUnsub(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<object>(true, true, true, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribeErrorCB(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<string>(false, false, false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribeObjErrorCB(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<object>(false, false, false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribeCGErrorCB(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<string>(true, false, false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribeObjCGErrorCB(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<object>(true, false, false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribePresErrorCB(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<string>(false, true, false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribeObjPresErrorCB(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<object>(false, true, false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribeCGPresErrorCB(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<string>(true, true, false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribeObjCGPresErrorCB(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<object>(true, true, false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribeUnsubErrorCB(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<string>(false, false, true, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribeObjUnsubErrorCB(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<object>(false, false, true, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribeCGUnsubErrorCB(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<string>(true, false, true, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribeObjCGUnsubErrorCB(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<object>(true, false, true, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribePresUnsubErrorCB(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<string>(false, true, true, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribeObjPresUnsubErrorCB(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<object>(false, true, true, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribeCGPresUnsubErrorCB(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<string>(true, true, true, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreateChannelEntityAndAddToSubscribeObjCGPresUnsubErrorCB(){
+            TestCreateChannelEntityAndAddToSubscribeCommon<object>(true, true, true, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        public void TestCreateChannelEntityAndAddToSubscribeCommon<T>(bool isChannelGroup,
+            bool isPresence, bool isUnsubscribe, bool testErrorCB, Action<T> userCallback, Action<T> connectCallback,
+            Action<T> wildcardPresenceCallback, Action<T> disconnectCallback
+        ){
+            //subscribe
+            //resubscribe -> Already sub
+
+            //Subscribe
+
+            //unsubscribe -> not subscribed
+
+            //subscribe
+            //unsubscrube
+
+            //presence
+            Subscription.Instance.CleanUp();
+            ResponseType resp = ResponseType.SubscribeV2;
+            if(isPresence && isUnsubscribe){
+                resp = ResponseType.PresenceUnsubscribe;
+            } else if(isPresence) {
+                resp = ResponseType.PresenceV2;
+            } else if(isUnsubscribe) {
+                resp = ResponseType.Unsubscribe;
+            }
+
+            Action<PubnubClientError> errcb = Common.ErrorCallback;;
+
+            string[] ch = {"ch1", "ch2"};
+            string[] chpres = new string[ch.Length];
+            for(int i=0; i<ch.Length; i++){
+                chpres[i] = string.Format("{0}{1}", ch[i], Utility.PresenceChannelSuffix);
+            }
+            List<ChannelEntity> lstCE = new List<ChannelEntity>();
+            if(testErrorCB && isUnsubscribe){
+                errcb = ErrorCallbackCENotSub;
+            } else if(testErrorCB){
+                Helpers.CreateChannelEntityAndAddToSubscribe<T>(resp, ch, isChannelGroup, 
+                    userCallback, connectCallback, 
+                    Common.ErrorCallback, 
+                    wildcardPresenceCallback,
+                    disconnectCallback, PubnubErrorFilter.Level.Info, false, ref lstCE);
+                errcb = ErrorCallbackCEAlreadySub;
+                Subscription.Instance.Add (lstCE);
+                lstCE.Clear();
+            } else if(isUnsubscribe){
+                Helpers.CreateChannelEntityAndAddToSubscribe<T>(resp, ch, isChannelGroup, 
+                    userCallback, connectCallback, 
+                    Common.ErrorCallback, 
+                    wildcardPresenceCallback,
+                    disconnectCallback, PubnubErrorFilter.Level.Info, false, ref lstCE);
+                errcb = Common.ErrorCallback;
+                Subscription.Instance.Add (lstCE);
+                lstCE.Clear();
+            }
+
+            bool retBool = Helpers.CreateChannelEntityAndAddToSubscribe<T>(resp, ch, isChannelGroup, 
+                userCallback, connectCallback, 
+                errcb, 
+                wildcardPresenceCallback,
+                disconnectCallback, PubnubErrorFilter.Level.Info, isUnsubscribe, ref lstCE);
+
+            bool ceFound = ParseListCE(lstCE, ch, chpres, isPresence, isChannelGroup, testErrorCB);
+            string logStr = string.Format("{0} {1}", ceFound, retBool);
+            UnityEngine.Debug.Log(logStr);
+            if(!testErrorCB){
+                Assert.True(ceFound & retBool, logStr);
+            } else {
+                Assert.True(ceFound & !retBool, logStr);
+            }
+        }
+
+        public static bool ParseListCE(List<ChannelEntity> lstCE, string[] ch, string[] chpres,
+            bool isPresence, bool isChannelGroup, bool testErrorCB
+        ){
+            bool ceFound = true;
+            foreach(ChannelEntity ch2 in lstCE){
+                if(isChannelGroup && !ch2.ChannelID.IsChannelGroup){
+                    continue;
+                }
+                if(!isChannelGroup && ch2.ChannelID.IsChannelGroup){
+                    continue;
+                }
+
+                bool chFound = false;
+                for(int i=0; i<ch.Length; i++){
+                    if(((!isPresence) && ch[i].Equals(ch2.ChannelID.ChannelOrChannelGroupName)) 
+                        || ((isPresence) && chpres[i].Equals(ch2.ChannelID.ChannelOrChannelGroupName)))
+                    {
+                        bool presenceMatch = (isPresence)?ch2.ChannelID.IsPresenceChannel:true;
+                        bool cgMatch = (isChannelGroup)?ch2.ChannelID.IsChannelGroup:true;
+                        chFound = cgMatch & presenceMatch;
+                        UnityEngine.Debug.Log (string.Format("{0} found, {1}, {2}, {3}", ch[i],
+                            chFound, presenceMatch, cgMatch
+                        ));
+                        break;
+                    }
+                }
+                if(!chFound){
+                    UnityEngine.Debug.Log (string.Format("{0} not found", ch2.ChannelID.ChannelOrChannelGroupName
+
+                    ));
+                    ceFound = false;
+                    break;
+                }
+            }
+            return ceFound;
+        }
+
+        void ErrorCallbackCENotSub (PubnubClientError result)
+        {
+            PubnubErrorCode errorType =  PubnubErrorCode.NotSubscribed;
+            if(result.Channel.Contains(Utility.PresenceChannelSuffix) 
+                || result.ChannelGroup.Contains(Utility.PresenceChannelSuffix) ){
+                errorType = PubnubErrorCode.NotPresenceSubscribed;
+            }
+            string logstr = string.Format("{0} {1}", result.StatusCode, (int)errorType);
+            UnityEngine.Debug.Log (logstr);
+            Assert.True(result.StatusCode.Equals((int)errorType), logstr);
+        }
+
+        void ErrorCallbackCEAlreadySub (PubnubClientError result)
+        {
+            
+            PubnubErrorCode errorType =  PubnubErrorCode.AlreadySubscribed;
+            if(result.Channel.Contains(Utility.PresenceChannelSuffix) 
+                || result.ChannelGroup.Contains(Utility.PresenceChannelSuffix) ){
+                errorType = PubnubErrorCode.AlreadyPresenceSubscribed;
+            }
+            string logstr = string.Format("{0} {1}", result.StatusCode, (int)errorType);
+            UnityEngine.Debug.Log (logstr);
+            Assert.True(result.StatusCode.Equals((int)errorType), logstr);
+        }
+
+        [Test]
+        public void TestRemoveDuplicatesCheckAlreadySubscribedAndGetChannels(){
+            TestRemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCommon<string>(true, false, false, false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestRemoveDuplicatesCheckAlreadySubscribedAndGetChannelsObj(){
+            TestRemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCommon<object>(true, false, false, false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestRemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCG(){
+            TestRemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCommon<string>(false, true, false, false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestRemoveDuplicatesCheckAlreadySubscribedAndGetChannelsObjCG(){
+            TestRemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCommon<object>(false, true, false, false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestRemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCGnCH(){
+            TestRemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCommon<string>(true, true, false, false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestRemoveDuplicatesCheckAlreadySubscribedAndGetChannelsObjCGnCH(){
+            TestRemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCommon<object>(true, true, false, false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestRemoveDuplicatesCheckAlreadySubscribedAndGetChannelsPres(){
+            TestRemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCommon<string>(true, false, true, false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestRemoveDuplicatesCheckAlreadySubscribedAndGetChannelsObjPres(){
+            TestRemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCommon<object>(true, false, true, false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestRemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCGPres(){
+            TestRemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCommon<string>(false, true, true, false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestRemoveDuplicatesCheckAlreadySubscribedAndGetChannelsObjCGPres(){
+            TestRemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCommon<object>(false, true, true, false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestRemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCGnCHPres(){
+            TestRemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCommon<string>(true, true, true, false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestRemoveDuplicatesCheckAlreadySubscribedAndGetChannelsObjCGnCHPres(){
+            TestRemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCommon<object>(true, true, true, false, true,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        public void TestRemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCommon<T>(bool testChannelGroup,
+            bool testChannel,
+            bool isPresence, bool isUnsubscribe, bool testErrorCB, Action<T> userCallback, Action<T> connectCallback,
+            Action<T> wildcardPresenceCallback, Action<T> disconnectCallback
+        ){
+            string[] ch = {"ch1", "ch2", "ch1", "ch2"};
+            string[] chpres = new string[ch.Length];
+            for(int i=0; i<ch.Length; i++){
+                chpres[i] = string.Format("{0}{1}", ch[i], Utility.PresenceChannelSuffix);
+            }
+            string[] cg = {"cg1", "cg2", "cg1", "cg2"};
+            string[] cgpres = new string[cg.Length];
+            for(int i=0; i<cg.Length; i++){
+                cgpres[i] = string.Format("{0}{1}", cg[i], Utility.PresenceChannelSuffix);
+            }
+
+            if(!testChannel){
+                ch = null;
+            }
+
+            if(!testChannelGroup){
+                cg = null;
+            }
+
+            List<ChannelEntity> lstCE;
+            ResponseType resp = ResponseType.SubscribeV2;
+            if(isPresence && isUnsubscribe){
+                resp = ResponseType.PresenceUnsubscribe;
+            } else if(isPresence) {
+                resp = ResponseType.PresenceV2;
+            } else if(isUnsubscribe) {
+                resp = ResponseType.Unsubscribe;
+            }
+
+            bool retBool = Helpers.RemoveDuplicatesCheckAlreadySubscribedAndGetChannels(resp, userCallback,
+                connectCallback, ErrorCallbackDup, wildcardPresenceCallback, disconnectCallback, ch, cg,
+                PubnubErrorFilter.Level.Info, isUnsubscribe, out lstCE);
+
+            bool ceFound = true;
+            if(testChannel){
+                ceFound = ParseListCE(lstCE, ch, chpres, isPresence, false, false);
+            }
+            bool cgFound = true;
+            if(testChannelGroup){
+                cgFound = ParseListCE(lstCE, cg, cgpres, isPresence, true, false);
+            }
+
+            string logStr = string.Format("{0} {1} {2}", ceFound, cgFound, retBool);
+            UnityEngine.Debug.Log(logStr);
+            //if(!testErrorCB){
+                Assert.True(ceFound & cgFound & retBool, logStr);
+            //}
+
+
+        } 
+
+        void ErrorCallbackDup (PubnubClientError result)
+        {
+
+            PubnubErrorCode errorType =  PubnubErrorCode.DuplicateChannel;
+            if(!string.IsNullOrEmpty(result.ChannelGroup)){
+                errorType = PubnubErrorCode.DuplicateChannelGroup;
+            }
+            string logstr = string.Format("{0} {1}", result.StatusCode, (int)errorType);
+            UnityEngine.Debug.Log (logstr);
+            Assert.True(result.StatusCode.Equals((int)errorType), logstr);
         }
 
         #endif
