@@ -1145,6 +1145,227 @@ namespace PubNubMessaging.Tests
             string logstr = string.Format("{0} {1}", result.StatusCode, (int)errorType);
             UnityEngine.Debug.Log (logstr);
             Assert.True(result.StatusCode.Equals((int)errorType), logstr);
+
+        }
+
+        [Test]
+        public void TestProcessResponseCallbacksV2(){
+            TestProcessResponseCallbacksV2Common<string>(false, true, false, true, false, true,
+                UserCallbackProcessReponse, ConnectCallbackProcessReponse, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestProcessResponseCallbacksV2WC(){
+            TestProcessResponseCallbacksV2Common<string>(false, false, true, false, false, true,
+                UserCallbackProcessReponseWC, ConnectCallbackProcessReponseWC, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestProcessResponseCallbacksV2WCPres(){
+            TestProcessResponseCallbacksV2Common<string>(false, false, true, true, false, true,
+                UserCallbackProcessReponseWC, ConnectCallbackProcessReponseWC, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestProcessResponseCallbacksV2CG(){
+            TestProcessResponseCallbacksV2Common<string>(true, false, false, true, false, true,
+                UserCallbackProcessReponseCG, ConnectCallbackProcessReponseCG, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        public void TestProcessResponseCallbacksV2Common<T>(bool testChannelGroup,
+            bool testChannel, bool testwc,
+            bool isPresence, bool isUnsubscribe, bool connectcallback, Action<T> userCallback, Action<T> connectCallback,
+            Action<T> wildcardPresenceCallback, Action<T> disconnectCallback
+        ){
+            Pubnub pubnub = new Pubnub (
+                Common.PublishKey,
+                Common.SubscribeKey,
+                "",
+                "",
+                true
+            );
+
+            List<ChannelEntity> channelEntities = Common.CreateListOfChannelEntities(true, true, 
+                true, true, userCallback, connectCallback, wildcardPresenceCallback, disconnectCallback);
+            
+            string uuid = "CustomUUID";
+            bool testUUID = false;
+
+            ChannelEntity ce8 = Helpers.CreateChannelEntity<T>("ch8-pnpres", true, true, null, 
+                userCallback, 
+                connectCallback, 
+                Common.ErrorCallback, 
+                disconnectCallback, 
+                wildcardPresenceCallback
+                );
+            channelEntities.Add(ce8);
+
+            RequestState<T> requestState = BuildRequests.BuildRequestState<T> (channelEntities, 
+                ResponseType.SubscribeV2, false, 0, false, 0, typeof(T), uuid,
+                userCallback, Common.ErrorCallback
+            );
+              
+            TimetokenMetadata ott = new TimetokenMetadata(14691896187882984, "");
+            TimetokenMetadata ptt = new TimetokenMetadata(14691896542063327, "");
+            SubscribeMessage sm = new SubscribeMessage("0", "cg2", "ch2", "test-cg", "", "", "", 2, ott, ptt, null);
+            SubscribeMessage sm2 = new SubscribeMessage("0", "ch2", "ch2", "test", "", "", "", 2, ott, ptt, null);
+            SubscribeMessage sm3 = new SubscribeMessage("0", "ch2.*", "ch2", "test-wc", "", "", "", 2, ott, ptt, null);
+            SubscribeMessage sm4 = new SubscribeMessage("0", "ch2.*", "ch2", "test-pnpres", "", "", "", 2, ott, ptt, null);
+            List<SubscribeMessage> smLst = new List<SubscribeMessage>();
+            if(testwc && isPresence){
+                smLst.Add(sm4);
+            }else if(testwc){    
+                smLst.Add(sm3);
+            }else if(testChannelGroup){
+                smLst.Add(sm);
+            } else if (testChannel){
+                smLst.Add(sm2);
+            }
+
+            SubscribeEnvelope subscribeEnvelope = new SubscribeEnvelope ();
+
+            subscribeEnvelope.Messages = smLst;
+            subscribeEnvelope.TimetokenMeta = new TimetokenMetadata(14691897960994791,"");
+
+            Helpers.ProcessResponseCallbacksV2(ref subscribeEnvelope, requestState, "", pubnub.JsonPluggableLibrary);
+        }
+
+        public  void UserCallbackProcessReponse (string result)
+        {
+            TestAssertions(result, false, false, false);
+
+        }
+
+        public  void UserCallbackProcessReponse (object result)
+        {
+            TestAssertions(result.ToString(), false, false, false);
+        }
+
+        public  void ConnectCallbackProcessReponse (string result)
+        {
+            TestAssertions(result, true, false, false);
+        }
+
+        public  void ConnectCallbackProcessReponse (object result)
+        {
+            TestAssertions(result.ToString(), true, false, false);
+        }
+
+        public  void UserCallbackProcessReponseWC (string result)
+        {
+            TestAssertions(result, false, true, false);
+
+        }
+
+        public  void UserCallbackProcessReponseWC (object result)
+        {
+            TestAssertions(result.ToString(), false, true, false);
+        }
+
+        public  void ConnectCallbackProcessReponseWC (string result)
+        {
+            TestAssertions(result, true, true, false);
+        }
+
+        public  void ConnectCallbackProcessReponseWC (object result)
+        {
+            TestAssertions(result.ToString(), true, true, false);
+        }
+
+        public  void UserCallbackProcessReponseCG (string result)
+        {
+            TestAssertions(result, false, false, true);
+
+        }
+
+        public  void UserCallbackProcessReponseCG (object result)
+        {
+            TestAssertions(result.ToString(), false, false, true);
+        }
+
+        public  void ConnectCallbackProcessReponseCG (string result)
+        {
+            TestAssertions(result, true, false, true);
+        }
+
+        public  void ConnectCallbackProcessReponseCG (object result)
+        {
+            TestAssertions(result.ToString(), true, false, true);
+        }
+
+        void TestAssertions(string result, bool connect, bool wc, bool cg){
+            if(wc){
+                if(connect){
+                    UnityEngine.Debug.Log (string.Format ("CONNECT CALLBACK LOG: {0}", result));
+                    if(result.Contains(Utility.PresenceChannelSuffix)){
+                        Assert.True(result.Contains("Presence Connected"));
+                        Assert.True(result.Contains("ch2.*"));
+                        Assert.True(result.Contains("ch2"));
+                        Assert.True(result.Contains("test-pnpres"));
+
+                    } else {
+                        Assert.True(result.Contains("Connected"));
+                        Assert.True(result.Contains("ch2.*"));
+                        Assert.True(result.Contains("ch2"));
+                        Assert.True(result.Contains("test-wc"));
+                    }
+                } else {
+                    UnityEngine.Debug.Log (string.Format ("REGULAR CALLBACK LOG: {0}", result));
+                    if(result.Contains(Utility.PresenceChannelSuffix)){
+                    } else {
+                        Assert.True(result.Contains("ch2"));
+                        Assert.True(result.Contains("test"));
+                        Assert.True(result.Contains("14691897960994791"));
+
+                    }
+                }
+            } else if (cg){
+                if(connect){
+                    UnityEngine.Debug.Log (string.Format ("CONNECT CALLBACK LOG: {0}", result));
+                    if(result.Contains(Utility.PresenceChannelSuffix)){
+                        Assert.True(result.Contains("Presence Connected"));
+                        Assert.True(result.Contains("ch8-pnpres"));
+                    } else {
+                        Assert.True(result.Contains("Connected"));
+                        Assert.True(result.Contains("cg2"));
+                        Assert.True(result.Contains("ch2"));
+                    }
+                } else {
+                    UnityEngine.Debug.Log (string.Format ("REGULAR CALLBACK LOG: {0}", result));
+                    if(result.Contains(Utility.PresenceChannelSuffix)){
+                    } else {
+                        Assert.True(result.Contains("cg2"));
+                        Assert.True(result.Contains("ch2"));
+                        Assert.True(result.Contains("test-cg"));
+                        Assert.True(result.Contains("14691897960994791"));
+
+                    }
+                }
+            } else{
+                if(connect){
+                    UnityEngine.Debug.Log (string.Format ("CONNECT CALLBACK LOG: {0}", result));
+                    if(result.Contains(Utility.PresenceChannelSuffix)){
+                        Assert.True(result.Contains("Presence Connected"));
+                        Assert.True(result.Contains("ch8-pnpres"));
+                    } else {
+                        Assert.True(result.Contains("Connected"));
+                        Assert.True(result.Contains("ch2"));
+                    }
+                } else {
+                    UnityEngine.Debug.Log (string.Format ("REGULAR CALLBACK LOG: {0}", result));
+                    if(result.Contains(Utility.PresenceChannelSuffix)){
+                    } else {
+                        Assert.True(result.Contains("ch2"));
+                        Assert.True(result.Contains("test"));
+                        Assert.True(result.Contains("14691897960994791"));
+
+                    }
+                }
+            }
         }
 
         #endif
