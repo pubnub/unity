@@ -873,7 +873,7 @@ namespace PubNubMessaging.Core
             }
             itemMessage.Add((subscribeMessage.PublishTimetokenMetadata != null) ? subscribeMessage.PublishTimetokenMetadata.Timetoken.ToString() : "");
             if (ce.ChannelID.IsChannelGroup) {
-                itemMessage.Add (ce.ChannelID.ChannelOrChannelGroupName);
+                itemMessage.Add (ce.ChannelID.ChannelOrChannelGroupName.Replace(Utility.PresenceChannelSuffix, ""));
             }
 
             itemMessage.Add(subscribeMessage.Channel.Replace(Utility.PresenceChannelSuffix, ""));

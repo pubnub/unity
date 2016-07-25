@@ -1368,6 +1368,481 @@ namespace PubNubMessaging.Tests
             }
         }
 
+        [Test]
+        public void TestCreatePubnubClientErrorWebEx(){
+            TestCreatePubnubClientErrorCommon<string>(false, false, false, false, true,
+                UserCallbackProcessReponseWC, ConnectCallbackProcessReponseWC, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreatePubnubClientErrorMessageCh(){
+            TestCreatePubnubClientErrorCommon<string>(false, false, false, true, false,
+                UserCallbackProcessReponseCG, ConnectCallbackProcessReponseCG, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreatePubnubClientErrorMessageCE(){
+            TestCreatePubnubClientErrorCommon<string>(false, false, true, false, false,
+                UserCallbackProcessReponseCG, ConnectCallbackProcessReponseCG, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreatePubnubClientErrorExCh(){
+            TestCreatePubnubClientErrorCommon<string>(false, true, false, false, false,
+                UserCallbackProcessReponseCG, ConnectCallbackProcessReponseCG, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestCreatePubnubClientErrorExCE(){
+            TestCreatePubnubClientErrorCommon<string>(true, false, false, false, false,
+                UserCallbackProcessReponseCG, ConnectCallbackProcessReponseCG, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        public void TestCreatePubnubClientErrorCommon<T>(bool testExceptionCE,
+            bool testExceptionChannels, bool testMessageCE,
+            bool testMessageChannels, bool testWebException, Action<T> userCallback, Action<T> connectCallback,
+            Action<T> wildcardPresenceCallback, Action<T> disconnectCallback
+        ){
+            List<ChannelEntity> channelEntities = Common.CreateListOfChannelEntities(false, true, 
+                true, true, userCallback, connectCallback, wildcardPresenceCallback, disconnectCallback);
+
+            string uuid = "CustomUUID";
+
+            RequestState<T> requestState = BuildRequests.BuildRequestState<T> (channelEntities, 
+                ResponseType.SubscribeV2, false, 0, false, 0, typeof(T), uuid,
+                userCallback, Common.ErrorCallback
+            );
+
+            string ch = Helpers.GetNamesFromChannelEntities(channelEntities, false);
+            string cg = Helpers.GetNamesFromChannelEntities(channelEntities, true);
+
+            if(testWebException){
+                string message = "testWebException";
+                WebException webex = new WebException(message, WebExceptionStatus.ConnectFailure);
+
+                PubnubClientError pubnubClientError = Helpers.CreatePubnubClientError(webex, requestState, ch
+                    , PubnubErrorSeverity.Info); 
+                ParsePubnubClientError(pubnubClientError, ch, cg, message, 
+                    PubnubErrorSeverity.Info, (int)PubnubErrorCode.ConnectFailure);
+            } else if (testExceptionCE){
+                string message = "Test Exception";
+                Exception ex = new Exception (message);
+
+                PubnubClientError pubnubClientError = Helpers.CreatePubnubClientError<T> (ex, requestState, 
+                    channelEntities, PubnubErrorCode.None,
+                    PubnubErrorSeverity.Info);  
+                ParsePubnubClientError(pubnubClientError, ch, cg, message, 
+                    PubnubErrorSeverity.Info, (int)PubnubErrorCode.None);
+            } else if (testExceptionChannels){
+                string message = "testExceptionChannels";
+                PubnubErrorCode pnErrorCode = PubnubErrorCode.UnsubscribedAfterMaxRetries;
+
+                PubnubClientError pubnubClientError = Helpers.CreatePubnubClientError<T> (message, null, 
+                    pnErrorCode,
+                    PubnubErrorSeverity.Info, ch, cg );  
+                ParsePubnubClientError(pubnubClientError, ch, cg, message, 
+                    PubnubErrorSeverity.Info, (int)pnErrorCode);
+            } else if (testMessageCE){
+                string message = "testMessageCE";
+                PubnubErrorCode pnErrorCode = PubnubErrorCode.UnsubscribedAfterMaxRetries;
+
+                PubnubClientError pubnubClientError = Helpers.CreatePubnubClientError<T> (message, null, 
+                    channelEntities, pnErrorCode,
+                    PubnubErrorSeverity.Warn);  
+                ParsePubnubClientError(pubnubClientError, ch, cg, message, 
+                    PubnubErrorSeverity.Warn, (int)pnErrorCode);
+            } else if (testMessageChannels){
+                Exception ex = new Exception ("Test Exception");
+                string message = "testMessageChannels";
+                PubnubErrorCode pnErrorCode = PubnubErrorCode.UnsubscribedAfterMaxRetries;
+
+                PubnubClientError pubnubClientError = Helpers.CreatePubnubClientError<T> (message, null, 
+                    pnErrorCode,
+                    PubnubErrorSeverity.Critical, ch, cg );  
+                ParsePubnubClientError(pubnubClientError, ch, cg, message, 
+                    PubnubErrorSeverity.Critical, (int)pnErrorCode);
+                
+            }
+        }
+
+        void ParsePubnubClientError(PubnubClientError pubnubClientError, 
+            string channel, string channelGroup, string message, 
+            PubnubErrorSeverity severity, int statusCode){
+            if(channel!=""){
+                Assert.IsTrue(pubnubClientError.Channel.Equals(channel), "CH");
+            }
+            if(channelGroup!=""){
+                Assert.IsTrue(pubnubClientError.ChannelGroup.Equals(channelGroup), "CG");
+            }
+            Assert.IsTrue(pubnubClientError.Message.Equals(message), "message:"+pubnubClientError.Message);
+            Assert.IsTrue(pubnubClientError.Severity.Equals(severity), "severity:"+pubnubClientError.Severity);
+            Assert.IsTrue(pubnubClientError.StatusCode.Equals(statusCode), "statusCode:"+ pubnubClientError.StatusCode + statusCode);
+        }
+
+        [Test]
+        public void TestJsonEncodePublishMsg(){
+            TestJsonEncodePublishMsgCommon("testmessage", false, "\"testmessage\"");
+        }
+
+        [Test]
+        public void TestJsonEncodePublishMsgCipher(){
+            TestJsonEncodePublishMsgCommon("testmessage", true, "\"cpStRYxH32LTowAezXLlxw==\"");
+        }
+
+        public void TestJsonEncodePublishMsgCommon(object message, bool cipher, string expected
+        ){
+            Pubnub pubnub = new Pubnub (
+                Common.PublishKey,
+                Common.SubscribeKey,
+                "",
+                "",
+                true
+            );
+
+            string str = Helpers.JsonEncodePublishMsg(message, cipher?"enigma":"", pubnub.JsonPluggableLibrary);
+            Assert.True(str.Equals(expected), str);
+        }
+
+
+        [Test]
+        public void TestWrapResultBasedOnResponseTypeSubV2(){
+            TestWrapResultBasedOnResponseTypeCommon<string>("testmessage", false, "{\"t\":{\"t\":\"14694563235781852\",\"r\":4},\"m\":[{\"a\":\"1\",\"f\":514,\"p\":{\"t\":\"14694563234675841\",\"r\":3},\"k\":\"demo\",\"c\":\"hello_world\",\"d\":\"Hello World\",\"b\":\"hello_world\"}]}",
+                false, ResponseType.SubscribeV2,
+                UserCallbackProcessReponseCG, ConnectCallbackProcessReponseCG, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        /*[Test]
+        public void TestWrapResultBasedOnResponseTypeCipherSubV2(){
+            TestWrapResultBasedOnResponseTypeCommon<string>("testmessage", true, "\"cpStRYxH32LTowAezXLlxw==\"",
+                false,ResponseType.SubscribeV2,
+                UserCallbackProcessReponseCG, ConnectCallbackProcessReponseCG, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        /*[Test]
+        public void TestWrapResultBasedOnResponseTypePresV2(){
+            TestWrapResultBasedOnResponseTypeCommon<string>("testmessage", false, "\"testmessage\"",
+                false, ResponseType.PresenceV2,
+                UserCallbackProcessReponseCG, ConnectCallbackProcessReponseCG, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestWrapResultBasedOnResponseTypeCipherPresV2(){
+            TestWrapResultBasedOnResponseTypeCommon<string>("testmessage", true, "\"cpStRYxH32LTowAezXLlxw==\"",
+                false,ResponseType.PresenceV2,
+                UserCallbackProcessReponseCG, ConnectCallbackProcessReponseCG, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }*/
+
+        [Test]
+        public void TestWrapResultBasedOnResponseTypePub(){
+            TestWrapResultBasedOnResponseTypeCommon<string>("testmessage", false, "[1, \"Sent\", 14606134331557853]",
+                false, ResponseType.Publish,
+                UserCallbackProcessReponseCG, ConnectCallbackProcessReponseCG, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestWrapResultBasedOnResponseTypeCipherPub(){
+            TestWrapResultBasedOnResponseTypeCommon<string>("testmessage", true, "[1, \"Sent\", 14606134331557853]",
+                false,ResponseType.Publish,
+                UserCallbackProcessReponseCG, ConnectCallbackProcessReponseCG, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestWrapResultBasedOnResponseTypeDH(){
+            TestWrapResultBasedOnResponseTypeCommon<string>("testmessage", false, "[[\"m1\",\"m2\",\"m3\"],14606134331557853,14606134485013970]",
+                false, ResponseType.DetailedHistory,
+                UserCallbackProcessReponseCG, ConnectCallbackProcessReponseCG, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestWrapResultBasedOnResponseTypeCipherDH(){
+            TestWrapResultBasedOnResponseTypeCommon<string>("testmessage", true, "[[\"EGwV+Ti43wh2TprPIq7o0KMuW5j6B3yWy352ucWIOmU=\\n\",\"EGwV+Ti43wh2TprPIq7o0KMuW5j6B3yWy352ucWIOmU=\\n\",\"EGwV+Ti43wh2TprPIq7o0KMuW5j6B3yWy352ucWIOmU=\\n\"],14606134331557853,14606134485013970]",
+                false,ResponseType.DetailedHistory,
+                UserCallbackProcessReponseCG, ConnectCallbackProcessReponseCG, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestWrapResultBasedOnResponseTypeTime(){
+            TestWrapResultBasedOnResponseTypeCommon<string>(14606134331557853, false, "[14606134331557853]",
+                false, ResponseType.Time,
+                UserCallbackProcessReponseCG, ConnectCallbackProcessReponseCG, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestWrapResultBasedOnResponseTypeLeave(){
+            TestWrapResultBasedOnResponseTypeCommon<string>("testmessage", true, "{\"action\":\"leave\"}",
+                false,ResponseType.Leave,
+                UserCallbackProcessReponseCG, ConnectCallbackProcessReponseCG, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestWrapResultBasedOnResponseTypeHN(){
+            TestWrapResultBasedOnResponseTypeCommon<string>("testmessage", true, "{\"status\": 200, \"message\": \"OK\", \"payload\": {\"hello_world\": {\"jf\": \"k\"}}, \"service\": \"Presence\"}",
+                false,ResponseType.HereNow,
+                UserCallbackProcessReponseCG, ConnectCallbackProcessReponseCG, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        /*[Test]
+        public void TestWrapResultBasedOnResponseTypeCipherSubV2(){
+            TestWrapResultBasedOnResponseTypeCommon<string>("testmessage", true, "\"cpStRYxH32LTowAezXLlxw==\"",
+                false,ResponseType.ChannelGroupAdd,
+                UserCallbackProcessReponseCG, ConnectCallbackProcessReponseCG, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestWrapResultBasedOnResponseTypeCipherSubV2(){
+            TestWrapResultBasedOnResponseTypeCommon<string>("testmessage", true, "\"cpStRYxH32LTowAezXLlxw==\"",
+                false,ResponseType.GlobalHereNow,
+                UserCallbackProcessReponseCG, ConnectCallbackProcessReponseCG, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }
+
+        [Test]
+        public void TestWrapResultBasedOnResponseTypeCipherSubV2(){
+            TestWrapResultBasedOnResponseTypeCommon<string>("testmessage", true, "\"cpStRYxH32LTowAezXLlxw==\"",
+                false,ResponseType.ChannelGroupGrantAccess,
+                UserCallbackProcessReponseCG, ConnectCallbackProcessReponseCG, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback);
+        }*/
+
+        public void TestWrapResultBasedOnResponseTypeCommon<T>(object expectedMessage, bool cipher, string json,
+            bool isChannelGroup, ResponseType respType,
+            Action<T> userCallback, Action<T> connectCallback,
+            Action<T> wildcardPresenceCallback, Action<T> disconnectCallback
+        ){
+            Pubnub pubnub = new Pubnub (
+                Common.PublishKey,
+                Common.SubscribeKey,
+                "",
+                "",
+                true
+            );
+            List<ChannelEntity> channelEntities = Common.CreateListOfChannelEntities(isChannelGroup, true, 
+                false, true, userCallback, connectCallback, wildcardPresenceCallback, disconnectCallback);
+
+            string uuid = "CustomUUID";
+
+            RequestState<T> requestState = BuildRequests.BuildRequestState<T> (channelEntities, 
+                respType, false, 0, false, 0, typeof(T), uuid,
+                userCallback, Common.ErrorCallback
+            );
+
+            string ch = Helpers.GetNamesFromChannelEntities(channelEntities, false);
+            string cg = Helpers.GetNamesFromChannelEntities(channelEntities, true);
+
+            List<object> lstObj = new List<object>();
+            Helpers.WrapResultBasedOnResponseType(requestState, json, pubnub.JsonPluggableLibrary,
+                PubnubErrorFilter.Level.Info,
+                cipher?"enigma":"", ref lstObj);
+
+            UnityEngine.Debug.Log(string.Format("COUNT: {0} {1}",
+                lstObj.Count, respType)
+            );
+
+            switch (respType) {
+            case ResponseType.DetailedHistory:
+                Assert.True(lstObj.Count.Equals(4));
+                //Assert.True(lstObj[0].Equals(expectedMessage), lstObj[0].ToString());
+                Assert.True(lstObj[1].Equals(14606134331557853), lstObj[1].ToString());
+                Assert.True(lstObj[2].Equals(14606134485013970), lstObj[2].ToString());
+                Assert.True(lstObj[3].Equals("ch1,ch2,ch7"), lstObj[3].ToString());
+                break;
+            case ResponseType.Time:
+                Assert.True(lstObj.Count.Equals(1));
+                Assert.True(lstObj[0].Equals(expectedMessage), lstObj[0].ToString());
+                break;
+            case ResponseType.Leave:
+                Assert.True(lstObj.Count.Equals(2));
+                //Assert.True(lstObj[0].Equals(expectedMessage), lstObj[0].ToString());
+                Assert.True(lstObj[1].Equals("ch1,ch2,ch7"), lstObj[1].ToString());
+                break;
+            case ResponseType.SubscribeV2:
+            case ResponseType.PresenceV2:
+                Assert.True(lstObj.Count.Equals(2));
+                //Assert.True(lstObj[0].Equals(expectedMessage), lstObj[0].ToString());
+                //Assert.True(lstObj[1].Equals("ch1,ch2,ch7"), lstObj[1].ToString());
+                break;
+            case ResponseType.Publish:
+            case ResponseType.PushRegister:
+            case ResponseType.PushRemove:
+            case ResponseType.PushGet:
+            case ResponseType.PushUnregister:
+                Assert.True(lstObj.Count.Equals(4));
+                Assert.True(lstObj[0].Equals(1), lstObj[0].ToString());
+                Assert.True(lstObj[1].Equals("Sent"), lstObj[1].ToString());
+                Assert.True(lstObj[2].Equals(14606134331557853), lstObj[2].ToString());
+                Assert.True(lstObj[3].Equals("ch1,ch2,ch7"), lstObj[3].ToString());
+                break;
+            case ResponseType.GrantAccess:
+            case ResponseType.AuditAccess:
+            case ResponseType.RevokeAccess:
+            case ResponseType.GetUserState:
+            case ResponseType.SetUserState:
+            case ResponseType.WhereNow:
+            case ResponseType.HereNow:
+                Assert.True(lstObj.Count.Equals(2));
+                //Assert.True(lstObj[0].Equals(expectedMessage), lstObj[0].ToString());
+                Assert.True(lstObj[1].Equals("ch1,ch2,ch7"), lstObj[1].ToString());
+                break;
+            case ResponseType.GlobalHereNow:
+                Assert.True(lstObj.Count.Equals(2));
+                Assert.True(lstObj[0].Equals(expectedMessage), lstObj[0].ToString());
+                Assert.True(lstObj[1].Equals("ch1,ch2,ch7"), lstObj[1].ToString());
+                break;
+            case ResponseType.ChannelGroupAdd:
+            case ResponseType.ChannelGroupRemove:
+            case ResponseType.ChannelGroupGet:
+                Assert.True(lstObj.Count.Equals(1));
+                Assert.True(lstObj[0].Equals(expectedMessage), lstObj[0].ToString());
+
+                break;
+            case ResponseType.ChannelGroupGrantAccess:
+            case ResponseType.ChannelGroupAuditAccess:
+            case ResponseType.ChannelGroupRevokeAccess:
+                Assert.True(lstObj.Count.Equals(1));
+                Assert.True(lstObj[0].Equals(expectedMessage), lstObj[0].ToString());
+                break;
+
+            default:
+                break;
+            }
+
+
+/*            UnityEngine.Debug.Log(string.Format("{0} {1} {2} {3}",
+                lstObj[0].ToString(),
+                lstObj[1].ToString(),
+                lstObj[2].ToString(),
+                (isChannelGroup)?lstObj[3].ToString():"")
+            );*/
+
+        }
+
+        [Test]
+        public void TestAddMessageToListV2(){
+            TestAddMessageToListV2Common<string>("testmessage", false, "\"testmessage\"", false, false,
+                UserCallbackProcessReponseCG, ConnectCallbackProcessReponseCG, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback
+            );
+        }
+
+        [Test]
+        public void TestAddMessageToListV2Cipher(){
+            TestAddMessageToListV2Common<string>("testmessage", true, "\"cpStRYxH32LTowAezXLlxw==\"", false, false,
+                UserCallbackProcessReponseCG, ConnectCallbackProcessReponseCG, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback
+            );
+        }
+
+        [Test]
+        public void TestAddMessageToListV2CG(){
+            TestAddMessageToListV2Common<string>("testmessage", false, "\"testmessage\"", true, false,
+                UserCallbackProcessReponseCG, ConnectCallbackProcessReponseCG, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback
+            );
+        }
+
+        [Test]
+        public void TestAddMessageToListV2CipherCG(){
+            TestAddMessageToListV2Common<string>("testmessage", true, "\"cpStRYxH32LTowAezXLlxw==\"", true, false,
+                UserCallbackProcessReponseCG, ConnectCallbackProcessReponseCG, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback
+            );
+        }
+
+        [Test]
+        public void TestAddMessageToListV2Pres(){
+            TestAddMessageToListV2Common<string>("testmessage", false, "\"testmessage\"", false, true,
+                UserCallbackProcessReponseCG, ConnectCallbackProcessReponseCG, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback
+            );
+        }
+
+        [Test]
+        public void TestAddMessageToListV2CipherPres(){
+            TestAddMessageToListV2Common<string>("testmessage", true, "\"cpStRYxH32LTowAezXLlxw==\"", false, true,
+                UserCallbackProcessReponseCG, ConnectCallbackProcessReponseCG, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback
+            );
+        }
+
+        [Test]
+        public void TestAddMessageToListV2CGPres(){
+            TestAddMessageToListV2Common<string>("testmessage", false, "\"testmessage\"", true, true,
+                UserCallbackProcessReponseCG, ConnectCallbackProcessReponseCG, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback
+            );
+        }
+
+        [Test]
+        public void TestAddMessageToListV2CipherCGPres(){
+            TestAddMessageToListV2Common<string>("testmessage", true, "\"cpStRYxH32LTowAezXLlxw==\"", true, true,
+                UserCallbackProcessReponseCG, ConnectCallbackProcessReponseCG, 
+                Common.WildcardPresenceCallback, Common.DisconnectCallback
+            );
+        }
+
+        public void TestAddMessageToListV2Common<T>(object message, bool cipher, string expected, 
+            bool isChannelGroup, bool isPresence,
+            Action<T> userCallback, Action<T> connectCallback,
+            Action<T> wildcardPresenceCallback, Action<T> disconnectCallback
+        ){
+            Pubnub pubnub = new Pubnub (
+                Common.PublishKey,
+                Common.SubscribeKey,
+                "",
+                "",
+                true
+            );
+            string ch = (isChannelGroup)?"cg2":"ch2";
+            string pres =  (isPresence)?ch+"-pnpres":ch;
+
+            ChannelEntity ce1 = Helpers.CreateChannelEntity<T>(pres, 
+                false, isChannelGroup, null, 
+                userCallback, connectCallback,
+                ErrorCallbackUserState, disconnectCallback, 
+                wildcardPresenceCallback);
+
+            List<object> lstObj;
+            TimetokenMetadata ott = new TimetokenMetadata(14691896187882984, "");
+            TimetokenMetadata ptt = new TimetokenMetadata(14691896542063327, "");
+            SubscribeMessage sm = new SubscribeMessage("0", "cg2", "ch2", message, "", "", "", 2, ott, ptt, null);
+
+            Helpers.AddMessageToListV2(cipher?"enigma":"", pubnub.JsonPluggableLibrary,
+                sm, ce1, out lstObj);
+
+            UnityEngine.Debug.Log(string.Format("{0} {1} {2} {3}",
+                lstObj[0].ToString(),
+                lstObj[1].ToString(),
+                lstObj[2].ToString(),
+                (isChannelGroup)?lstObj[3].ToString():"")
+            );
+
+            Assert.True(lstObj[0].Equals(message), lstObj[0].ToString());
+            Assert.True(lstObj[1].Equals("14691896542063327"), lstObj[1].ToString());
+            if(isChannelGroup){
+                Assert.True(lstObj[2].Equals("cg2"), lstObj[2].ToString());
+                Assert.True(lstObj[3].Equals("ch2"), lstObj[3].ToString());
+            } else {
+                Assert.True(lstObj[2].Equals("ch2"), lstObj[2].ToString());
+            }
+        }
+
         #endif
     }
 }
