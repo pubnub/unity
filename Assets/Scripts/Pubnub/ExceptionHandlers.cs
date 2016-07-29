@@ -128,7 +128,10 @@ namespace PubNubMessaging.Core
             PubnubErrorFilter.Level errorLevel)
         {
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ProcessResponseCallbackExceptionHandler Exception= {1} for URL: {2}", DateTime.Now.ToString (), ex.ToString (), asynchRequestState.Request.RequestUri.ToString ()), LoggingMethod.LevelInfo);
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ProcessResponseCallbackExceptionHandler Exception= {1} for URL: {2}", 
+                DateTime.Now.ToString (), ex.ToString (), 
+                (asynchRequestState.Request!=null)?asynchRequestState.Request.RequestUri.ToString (): "asynchRequestState.Request null"),
+                LoggingMethod.LevelInfo);
             #endif
             UrlRequestCommonExceptionHandler<T> (ex.Message, asynchRequestState, asynchRequestState.Timeout, 
                 false, errorLevel);

@@ -1031,7 +1031,8 @@ namespace PubNubMessaging.Core
             //Check callback exists and make sure previous timetoken = 0
             if (asynchRequestState.ChannelEntities != null) {
                 bool updateIsAwaitingConnectCallback = false;
-                foreach (ChannelEntity channelEntity in asynchRequestState.ChannelEntities) {
+                for(int i=0; i< asynchRequestState.ChannelEntities.Count; i++){
+                    ChannelEntity channelEntity = asynchRequestState.ChannelEntities[i];
                     #if (ENABLE_PUBNUB_LOGGING)
                     LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Check ResponseToConnectCallback {1}", 
                         DateTime.Now.ToString (), channelEntity.ChannelID.ChannelOrChannelGroupName), LoggingMethod.LevelInfo);
