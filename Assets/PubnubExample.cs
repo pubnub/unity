@@ -1238,6 +1238,45 @@ public class PubnubExample : MonoBehaviour
     void RunDetailedHistoryForMultipleChannels(string[] chArr, int pos){
         UnityEngine.Debug.Log (string.Format ("Running DH for channel: {0}", chArr[pos]));
 
+        /*Dictionary<string, string> message = new Dictionary<string, string>();
+        message.Add("From", "me");
+        message.Add("To", "you");
+        message.Add("Message", "the message");
+        pubnub.Publish<string>("tc", message, DisplayReturnMessage,DisplayErrorMessage);
+
+        pubnub.DetailedHistory<string> ("tc", 100, 
+            (string result) => { 
+                UnityEngine.Debug.Log (string.Format ("DisplayHistoryMessage CALLBACK LOG: {0}", result));
+                if (!string.IsNullOrEmpty(result) && !string.IsNullOrEmpty(result.Trim()))
+                {
+                    List<object> deserializedMessage = pubnub.JsonPluggableLibrary.DeserializeToListOfObject(result);
+                    if (deserializedMessage != null && deserializedMessage.Count > 0)
+                    {
+                        object[] message2 = (from item in deserializedMessage select item as object).ToArray ();
+                        if ((message2 != null)&&(message2.Length >= 0))
+                        {
+                            IList<object> enumerable = message2 [0] as IList<object>;
+                            foreach (object item in enumerable)
+                            {
+                                UnityEngine.Debug.Log (string.Format ("Message2: {0}", item.ToString()));
+                                //IF CUSTOM OBJECT IS EXCEPTED, YOU CAN CAST THIS OBJECT TO YOUR CUSTOM CLASS TYPE
+                                try{
+                                    Dictionary<string, object> retmessage = (Dictionary<string, object>)item;
+                                    UnityEngine.Debug.Log (string.Format ("retmessage count: {0}", retmessage.Count()));
+                                UnityEngine.Debug.Log (string.Format ("retmessage 0: {0}", retmessage["From"]));
+                                UnityEngine.Debug.Log (string.Format ("retmessage 1: {0}", retmessage["To"]));
+                                UnityEngine.Debug.Log (string.Format ("retmessage 2: {0}", retmessage["Message"]));
+                                }catch (Exception ex){
+                                    UnityEngine.Debug.Log (string.Format ("Exception {0}", ex.ToString()));
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }, 
+            DisplayErrorMessage);*/
+
         pubnub.Subscribe<string> (currentRTT, "", 
             (string s) => {
                 var result = pubnub.JsonPluggableLibrary.DeserializeToListOfObject(s);
