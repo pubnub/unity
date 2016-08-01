@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace PubNubMessaging.Core
 {
@@ -28,8 +29,10 @@ namespace PubNubMessaging.Core
         Publish,
         History,
         Time,
-        Subscribe,
-        Presence,
+        //Subscribe,
+        SubscribeV2,
+        //Presence,
+        PresenceV2,
         HereNow,
         Heartbeat,
         DetailedHistory,
@@ -47,7 +50,14 @@ namespace PubNubMessaging.Core
         PushRegister,
         PushRemove,
         PushGet,
-        PushUnregister
+        PushUnregister,
+        ChannelGroupAdd,
+        ChannelGroupRemove,
+        ChannelGroupRemoveAll,
+        ChannelGroupGet,
+        ChannelGroupGrantAccess,
+        ChannelGroupAuditAccess,
+        ChannelGroupRevokeAccess
     }
 
     internal class InternetState<T>
@@ -93,18 +103,33 @@ namespace PubNubMessaging.Core
         {
             object reqState = requestState as object;
             requestStates.AddOrUpdate (key, reqState, (oldData, newData) => reqState);
+            #if (ENABLE_PUBNUB_LOGGING)
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, SetStoredRequestState {1}", 
+                DateTime.Now.ToString (), key.ToString()), LoggingMethod.LevelInfo);
+            #endif
+
         }
 
         public object GetStoredRequestState (CurrentRequestType aKey)
         {
             if (requestStates.ContainsKey (aKey)) {
                 if (requestStates.ContainsKey (aKey)) {
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, GetStoredRequestState {1}", 
+                        DateTime.Now.ToString (), aKey.ToString()), LoggingMethod.LevelInfo);
+                    #endif
                     return requestStates [aKey];
                 }
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, returning false", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, GetStoredRequestState returning false", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
                 #endif
             }
+            #if (ENABLE_PUBNUB_LOGGING)
+            else {
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, GetStoredRequestState doesnt contain key {1}", 
+                    DateTime.Now.ToString (), aKey.ToString()), LoggingMethod.LevelInfo);
+            }
+            #endif
             return null;
         }
 
@@ -112,73 +137,41 @@ namespace PubNubMessaging.Core
 
     public class RequestState<T>
     {
-        public Action<T> UserCallback;
+        public Action<T> SuccessCallback;
         public Action<PubnubClientError> ErrorCallback;
-        public Action<T> ConnectCallback;
         public PubnubWebRequest Request;
         public PubnubWebResponse Response;
         public ResponseType RespType;
-        public string[] Channels;
+        public List<ChannelEntity> ChannelEntities;
         public bool Timeout;
         public bool Reconnect;
         public long Timetoken;
         public Type TypeParameterType;
         public long ID;
+        public string UUID;
 
         public RequestState ()
         {
-            UserCallback = null;
-            ConnectCallback = null;
+            SuccessCallback = null;
             Request = null;
             Response = null;
-            Channels = null;
+            ChannelEntities = null;
             ID = 0;
         }
 
         public RequestState (RequestState<T> requestState)
         {
-            Channels = requestState.Channels;
-            #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Channels {1}", DateTime.Now.ToString (), Channels.ToString ()), LoggingMethod.LevelInfo);
-            #endif
-            ConnectCallback = requestState.ConnectCallback as Action<T>;
             ErrorCallback = requestState.ErrorCallback;
+            ChannelEntities = requestState.ChannelEntities;
             Reconnect = requestState.Reconnect;
             Request = requestState.Request;
             Response = requestState.Response;
             Timeout = requestState.Timeout;
             Timetoken = requestState.Timetoken;
             TypeParameterType = requestState.TypeParameterType;
-            UserCallback = requestState.UserCallback as Action<T>;
+            SuccessCallback = requestState.SuccessCallback as Action<T>;
             ID = requestState.ID;
             RespType = requestState.RespType;
-        }
-
-        public void SetRequestState<U> (
-            string[] channels, 
-            Action<T> connectCallback, 
-            Action<PubnubClientError> errorCallback,
-            bool reconnect,
-            PubnubWebRequest request,
-            PubnubWebResponse response,
-            bool timeout,
-            long timetoken,
-            Type typeParameterType,
-            Action<T> userCallback,
-            long id
-        )
-        {
-            Channels = channels;
-            ConnectCallback = connectCallback as Action<T>;
-            ErrorCallback = errorCallback;
-            Reconnect = reconnect;
-            Request = request;
-            Response = response;
-            Timeout = timeout;
-            Timetoken = timetoken;
-            TypeParameterType = typeParameterType;
-            UserCallback = userCallback as Action<T>;
-            ID = id;
         }
     }
 

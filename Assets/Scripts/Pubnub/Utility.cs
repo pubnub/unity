@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Text;
+using System.Collections.Generic;
+using System.Collections;
 
 namespace PubNubMessaging.Core
 {
@@ -34,11 +36,86 @@ namespace PubNubMessaging.Core
         }
         #endif    
 
+        internal static long CheckKeyAndParseLong(IDictionary dict, string what, string key){
+            long sequenceNumber = 0; 
+            if (dict.Contains (key)) {
+                long seqNumber;
+                if (!Int64.TryParse (dict [key].ToString(), out seqNumber)) {
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, {1}, {2} conversion failed: {3}.", 
+                        DateTime.Now.ToString (), what, key, dict [key].ToString ()), LoggingMethod.LevelInfo);
+                    #endif
+                }
+                sequenceNumber = seqNumber;
+            }
+            return sequenceNumber;
+        }
+
+        internal static long ValidateTimetoken(string timetoken, bool raiseError){
+            if(!string.IsNullOrEmpty(timetoken)){
+                long r;
+                if (long.TryParse (timetoken, out r)) {
+                    return r;
+                } else if (raiseError) {
+                    throw new ArgumentException ("Invalid timetoken");
+                } else {
+                    return 0;
+                }
+            } else {
+                return 0;
+            }
+        }
+
+        internal static string CheckChannelGroup(string channelGroup, bool convertToPresence){
+            string[] multiChannelGroups = channelGroup.Split(',');
+            if (multiChannelGroups.Length > 0) {
+                for (int index = 0; index < multiChannelGroups.Length; index++) {
+                    if (!string.IsNullOrEmpty (multiChannelGroups [index]) && multiChannelGroups [index].Trim ().Length > 0) {
+                        if (convertToPresence) {
+                            multiChannelGroups [index] = string.Format ("{0}{1}", multiChannelGroups [index], Utility.PresenceChannelSuffix);
+                        } 
+                    } else {
+                        throw new MissingMemberException (string.Format("Invalid channel group '{0}'", multiChannelGroups [index]));
+                    }
+                }
+            } else {
+                throw new ArgumentException(string.Format("Channel Group is null"));
+            }
+            return string.Join(",", multiChannelGroups);
+        }
+
+        internal static List<string> CheckAndAddNameSpace(string nameSpace){
+            List<string> url = new List<string>();
+            if (!string.IsNullOrEmpty(nameSpace) && nameSpace.Trim().Length > 0)
+            {
+                url.Add("namespace");
+                url.Add(nameSpace);
+                return url;
+            }
+            return null;
+        }
+
         internal static void CheckPushType(PushTypeService pushType)
         {
             if (pushType == PushTypeService.None)
             {
                 throw new ArgumentException("Missing PushTypeService");
+            }
+        }
+
+        internal static void CheckChannelOrChannelGroup(string channel, string channelGroup){
+            if ((string.IsNullOrEmpty(channel) || string.IsNullOrEmpty(channel.Trim())) 
+                && (string.IsNullOrEmpty(channelGroup) || string.IsNullOrEmpty(channelGroup.Trim())))
+            {
+                throw new ArgumentException("Both Channel and ChannelGroup are empty.");
+            }
+        }
+
+        internal static void CheckChannels(string[] channels)
+        {
+            if (channels == null || channels.Length == 0)
+            {
+                throw new ArgumentException("Missing channel(s)");
             }
         }
 

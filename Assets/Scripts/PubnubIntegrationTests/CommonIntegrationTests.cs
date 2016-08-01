@@ -70,10 +70,10 @@ namespace PubNubMessaging.Tests
 
     public class CommonIntergrationTests
     {
-        public static string PublishKey = "demo-36";
-        public static string SubscribeKey = "demo-36";
-        public static string SecretKey = "demo-36";
-        public static float WaitTimeBetweenCalls = 5;
+        public static string PublishKey = "pub-c-ba32728d-f52a-4043-a42a-af220b045237";//"demo-36";
+        public static string SubscribeKey = "sub-c-1bcbfc56-20fe-11e6-84f2-02ee2ddab7fe";//"demo-36";
+        public static string SecretKey = "sec-c-MmQwYjk0YzItYTQ5Mi00MWE5LThhOTctMTM5ZDBiMmY0NzE0";//"demo-36";
+        public static float WaitTimeBetweenCalls = 3;
         public static float WaitTimeBetweenCallsLow = 2;
         public static float WaitTimeToReadResponse = 15;
         public static float WaitTime = 20;
@@ -201,6 +201,206 @@ namespace PubNubMessaging.Tests
                                 ssl);
             pubnub.Time<object> (this.DisplayReturnMessage, this.DisplayErrorMessage);
         }
+
+        public IEnumerator DoCGAddListRemoveSubscribeStateHereNowUnsub (bool ssl, string testName, bool asObject, bool withCipher, object message, string expectedStringResponse, bool matchExpectedStringResponse)
+        {
+        /*  ⁃   Add CH to CG
+        ⁃   List CG
+        ⁃   Get all CGs
+        ⁃   
+        ⁃   */
+
+            string channel = Init (testName, ssl, withCipher);
+            System.Random r = new System.Random ();
+            string cg = "UnityIntegrationTest_CG_" + r.Next (100);
+            UnityEngine.Debug.Log (string.Format ("{0} {1}: Start coroutine ", DateTime.Now.ToString (), testName));
+            bool bAddChannel = false;
+            bool bGetChannel = false;
+            bool bGetAllCG = true;
+            string uuid = "UnityIntegrationTest_UUID";
+            pubnub.ChangeUUID(uuid);
+            pubnub.AddChannelsToChannelGroup<string>(new string[]{channel}, cg, (string result) =>{
+                    //[{"status":200,"message":"OK","service":"channel-registry","error":false}]
+                    UnityEngine.Debug.Log (string.Format ("{0}: {1} AddChannelsToChannelGroup {2}", DateTime.Now.ToString (), testName, result));
+                    if(result.Contains("OK") && result.Contains("\"error\":false")){
+                        bAddChannel = true;
+                        pubnub.GetChannelsForChannelGroup(cg, (string result2) =>{
+                            //[{"status":200,"payload":{"channels":["UnityIntegrationTests_30","a","c","ch","tj"],"group":"cg"},"service":"channel-registry","error":false}] 
+
+                            UnityEngine.Debug.Log (string.Format ("{0}: {1} GetChannelsOfChannelGroup {2}", DateTime.Now.ToString (), testName, result2));
+                            if(result2.Contains(cg) && result2.Contains(channel)){
+                                bGetChannel = true;
+                            } else {
+                                bGetChannel = false;
+                            }
+                        }, this.DisplayErrorMessage);
+                    }
+                }, this.DisplayErrorMessage);
+            UnityEngine.Debug.Log (string.Format ("{0}: {1} Waiting for response", DateTime.Now.ToString (), testName));
+
+            string strLog = string.Format ("{0}: {1} After wait {2} {3}", 
+                DateTime.Now.ToString (), 
+                testName, 
+                bAddChannel, 
+                bGetChannel);
+            UnityEngine.Debug.Log (strLog);
+            yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCallsLow); 
+            
+            /*Subscribe CG
+            ⁃   Publish to CH
+            ⁃   Read Message on CG*/
+
+            bool bSubConnected = false;
+            bool bSubMessage = false;
+            string pubMessage = "TestMessage";
+            pubnub.Subscribe<string>("", cg, (string retM)=>{
+                UnityEngine.Debug.Log (string.Format ("{0}: {1} Subscribe {2}", DateTime.Now.ToString (), testName, retM));
+                    if(retM.Contains(pubMessage) && retM.Contains(channel) && retM.Contains(cg)){
+                        bSubMessage = true;
+                    }
+                }, (string retConnect)=>{
+                    bSubConnected = true;
+                    UnityEngine.Debug.Log (string.Format ("{0}: {1} Subscribe Connected {2}", DateTime.Now.ToString (), testName, retConnect));
+                    pubnub.Publish(channel, pubMessage, (string pub)=>{
+                        UnityEngine.Debug.Log (string.Format ("{0}: {1} Published {2}", DateTime.Now.ToString (), testName, pub));
+                    },this.DisplayErrorMessage);  
+            },this.DisplayErrorMessage); 
+            yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCallsLow); 
+            /*
+            ⁃   Set State of CG
+            ⁃   Get State of CG
+            */
+            bool bSetState = false;
+            bool bGetState = false;
+            string state = "{\"k\":\"v\"}";
+            pubnub.SetUserState<string>("", cg, "", state, (string retM)=>{
+                UnityEngine.Debug.Log (string.Format ("{0}: {1} SetUserState {2} {3} {4}", 
+                    DateTime.Now.ToString (), testName, retM, retM.Contains(state), retM.Contains(channel)));
+                if(retM.Contains(state) && retM.Contains(cg)){
+                    bSetState = true;
+                    pubnub.GetUserState(channel, (string pub)=>{
+                        UnityEngine.Debug.Log (string.Format ("{0}: {1} GetUserState {2}", DateTime.Now.ToString (), testName, pub));
+                        if(pub.Contains(state) && pub.Contains(cg)){
+                            bGetState = true;
+                        }
+                    },this.DisplayErrorMessage);  
+                }
+            },this.DisplayErrorMessage);             
+             
+            yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCallsLow); 
+/*
+            ⁃   Run Here Now CG with State
+            ⁃   Run Here Now CG without State
+*/
+            bool bHereNow = false;
+            pubnub.HereNow("", cg, true, false, (string retM)=>{
+                UnityEngine.Debug.Log (string.Format ("{0}: {1} HereNow {2}", 
+                DateTime.Now.ToString (), testName, retM));
+                if(retM.Contains(uuid)){
+                    bHereNow = true;
+                };    
+            }, this.DisplayErrorMessage);
+
+            yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCallsLow);
+
+            bool bHereNowState = false;
+            pubnub.HereNow("", cg, true, true, (string retM)=>{
+                UnityEngine.Debug.Log (string.Format ("{0}: {1} HereNowWithState {2}", 
+                DateTime.Now.ToString (), testName, retM));
+                if(retM.Contains(uuid) && retM.Contains(state)){
+                    bHereNowState = true;
+                };    
+            }, this.DisplayErrorMessage);
+
+            yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCallsLow);
+/*
+            ⁃   Del State of CG
+
+*/
+            bool bSetUserState2 = false;
+            bool bGetUserState2 = false;
+            pubnub.SetUserState("", cg, uuid, new KeyValuePair<string,object>("k",""), (string retM)=>{
+                UnityEngine.Debug.Log (string.Format ("{0}: {1} SetUserState2 {2} {3} {4}", 
+                DateTime.Now.ToString (), testName, retM, retM.Contains(state), retM.Contains(channel)));
+                if(!retM.Contains(state) && retM.Contains(cg)){
+                    bSetUserState2 = true;
+                    pubnub.GetUserState(channel, (string pub)=>{
+                        UnityEngine.Debug.Log (string.Format ("{0}: {1} GetUserState2 {2}", DateTime.Now.ToString (), testName, pub));
+                        if(!pub.Contains(state) && pub.Contains(cg)){
+                            bGetUserState2 = true;
+                        }
+                    },this.DisplayErrorMessage);  
+                }
+
+            }, this.DisplayErrorMessage);
+
+            yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCallsLow);
+            
+/*
+⁃   Remove CH from CG
+⁃   List CG
+*/
+
+
+            /*⁃   Unsub from CG*/
+
+            bool bUnsub = false;
+            pubnub.Unsubscribe<string>("", cg, this.DisplayReturnMessageDummy, this.DisplayReturnMessageDummy, (string retM)=> {
+            UnityEngine.Debug.Log (string.Format ("{0}: {1} Unsubscribe {2} {3} {4}", 
+                DateTime.Now.ToString (), testName, retM, retM.Contains("Unsubscribed"), retM.Contains(cg)));
+
+            if(retM.Contains("Unsubscribed") && retM.Contains(cg)){
+                    bUnsub = true;
+                }
+            },  this.DisplayErrorMessage);
+
+            bool bRemoveCh = true;
+            bool bGetChannel2 = true;
+
+            yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCallsLow);   
+
+
+            string strLog2 = string.Format ("{0}: {1} After wait2   {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14}", 
+                DateTime.Now.ToString (), 
+                testName, 
+                bAddChannel, 
+                bGetChannel,
+                bGetAllCG,
+                bSubMessage,
+                bGetState,
+                bSetState,
+                bHereNowState,
+                bHereNow,
+                bUnsub,
+                bSetUserState2,
+                bGetUserState2,
+                bRemoveCh,
+                bGetChannel2
+                );
+            UnityEngine.Debug.Log (strLog2);
+
+            if(bAddChannel 
+                & bGetAllCG
+                & bGetChannel
+                & bGetState
+                & bSetState
+                & bSubMessage
+                & bHereNowState
+                & bHereNow
+                & bUnsub
+                & bSetUserState2
+                & bGetUserState2
+                & bRemoveCh
+                & bGetChannel2
+            
+            ){
+                IntegrationTest.Pass();
+            }            
+            pubnub.EndPendingRequests ();
+            pubnub.CleanUp();
+        }
+
+        
 
         public IEnumerator DoSubscribeThenPublishAndParse (bool ssl, string testName, bool asObject, bool withCipher, object message, string expectedStringResponse, bool matchExpectedStringResponse)
         {
@@ -852,7 +1052,8 @@ namespace PubNubMessaging.Tests
             commonState.DeliveryStatus = false;
             commonState.Response = null;
             commonState.Name = string.Format ("{0} State", testName);
-
+            UnityEngine.Debug.Log (string.Format ("{0} {1}: Set State k1 ", DateTime.Now.ToString (), testName));
+            
             pubnub.SetUserState<string> (channel, kvp, commonState.DisplayReturnMessage, commonState.DisplayErrorMessage);
             yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls);
 
@@ -860,12 +1061,14 @@ namespace PubNubMessaging.Tests
             commonState.DeliveryStatus = false;
             commonState.Response = null;
 
+            UnityEngine.Debug.Log (string.Format ("{0} {1}: Set State k2 ", DateTime.Now.ToString (), testName));            
             pubnub.SetUserState<string> (channel, kvp2, commonState.DisplayReturnMessage, commonState.DisplayErrorMessage);
             yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
 
             pubnub.GetUserState<string> (channel, this.DisplayReturnMessage, this.DisplayErrorMessage);
             yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
 
+            UnityEngine.Debug.Log (string.Format ("{0} {1}: Set State 3 null ", DateTime.Now.ToString (), testName));
             pubnub.SetUserState<string> (channel, new KeyValuePair<string, object> ("k2", null), commonState.DisplayReturnMessage, commonState.DisplayErrorMessage);
             yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
 
@@ -1044,6 +1247,8 @@ namespace PubNubMessaging.Tests
             pubnub.EndPendingRequests ();
             pubnub.CleanUp();
         }
+    
+
 
         public IEnumerator DoSubscribeThenDoWhereNowAndParse (bool ssl, string testName, bool parseAsString)
         {
@@ -1055,9 +1260,9 @@ namespace PubNubMessaging.Tests
 
             UnityEngine.Debug.Log (string.Format ("{0} {1}: Waiting ", DateTime.Now.ToString (), testName));
             if (parseAsString) {
-                pubnub.WhereNow<string> ("", this.DisplayReturnMessage, this.DisplayErrorMessage);
+                pubnub.WhereNow<string> (pubnub.SessionUUID, this.DisplayReturnMessage, this.DisplayErrorMessage);
             } else {
-                pubnub.WhereNow<object> ("", this.DisplayReturnMessage, this.DisplayErrorMessage);
+                pubnub.WhereNow<object> (pubnub.SessionUUID, this.DisplayReturnMessage, this.DisplayErrorMessage);
             }
 
             yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls);
@@ -1068,8 +1273,9 @@ namespace PubNubMessaging.Tests
             } else {
                 bool found = false;
                 if (parseAsString) {
-                    if (this.Response.ToString ().Contains (pubnub.SessionUUID)
-                        && this.Response.ToString ().Contains (channel)) {
+                    //if (this.Response.ToString ().Contains (pubnub.SessionUUID)
+                        //&& this.Response.ToString ().Contains (channel)) {
+                    if(this.Response.ToString ().Contains (channel)) {
                         found = true;
                     }
                 } else {
@@ -1724,9 +1930,13 @@ namespace PubNubMessaging.Tests
             Action<T> userCallback, Action<T> connectCallback, Action<PubnubClientError> errorCallback,
             bool isTimeout, bool isError, long timetoken
         ){
-            RequestState<T> pubnubRequestState = BuildRequests.BuildRequestState<T> (channels, respType, 
-                resumeOnReconnect, userCallback, 
-                connectCallback, errorCallback, 0, isTimeout, timetoken, typeof(T));
+            List<ChannelEntity> channelEntities = Helpers.CreateChannelEntity<T>(channels, 
+                    true, false, null, userCallback, connectCallback, errorCallback, null, null);  
+
+            RequestState<T> pubnubRequestState = BuildRequests.BuildRequestState<T> (channelEntities, respType, 
+                resumeOnReconnect, 0, isTimeout, timetoken, typeof(T), "", userCallback, 
+                errorCallback);
+
             GameObject go = new GameObject ();
             CoroutineClass cc = go.AddComponent<CoroutineClass> ();
 
@@ -1810,9 +2020,13 @@ namespace PubNubMessaging.Tests
             Action<T> userCallback, Action<T> connectCallback, Action<PubnubClientError> errorCallback,
             bool isTimeout, bool isError, long timetoken
         ){
-            RequestState<T> pubnubRequestState = BuildRequests.BuildRequestState<T> (channels, respType, 
-                resumeOnReconnect, userCallback, 
-                connectCallback, errorCallback, 0, isTimeout, timetoken, typeof(T));
+            List<ChannelEntity> channelEntities = Helpers.CreateChannelEntity<T>(channels, 
+                true, false, null, userCallback, connectCallback, errorCallback, null, null);  
+
+            RequestState<T> pubnubRequestState = BuildRequests.BuildRequestState<T> (channelEntities, respType, 
+                resumeOnReconnect, 0, isTimeout, timetoken, typeof(T), "", userCallback, 
+                errorCallback);
+
             CoroutineParams<T> cp = new CoroutineParams<T> (url, timeout, pause, crt, typeof(T), pubnubRequestState);
             GameObject go = new GameObject ();
             CoroutineClass cc = go.AddComponent<CoroutineClass> ();
@@ -1839,21 +2053,18 @@ namespace PubNubMessaging.Tests
         {
             CustomEventArgs<T> cea = ea as CustomEventArgs<T>;
             if (cea != null && cea.PubnubRequestState != null){
-                UnityEngine.Debug.Log (":"+ExpectedChannels);
-                UnityEngine.Debug.Log ("IsError:"+IsError);
-                UnityEngine.Debug.Log ("IsTimeout:"+IsTimeout);
-                UnityEngine.Debug.Log ("Crt:"+Crt);
-                UnityEngine.Debug.Log ("RespType:"+RespType);
-                UnityEngine.Debug.Log ("ExpectedMessage:"+ExpectedMessage);
+            
+                UnityEngine.Debug.Log (string.Format("ExpectedChannels: {0}, " +
+                    "IsError: {1}, IsTimeout: {2}, Crt: {3}, RespType: {4}, ExpectedMessage: {5}", 
+                    ExpectedChannels, IsError, IsTimeout, Crt, RespType, ExpectedMessage));
 
-                UnityEngine.Debug.Log ("cea.PubnubRequestState.Channels:"+string.Join (",", cea.PubnubRequestState.Channels));
-                UnityEngine.Debug.Log ("cea.IsError:"+cea.IsError);
-                UnityEngine.Debug.Log ("cea.IsTimeout:"+cea.IsTimeout);
-                UnityEngine.Debug.Log ("cea.CurrRequestType:"+cea.CurrRequestType);
-                UnityEngine.Debug.Log ("cea.PubnubRequestState.RespType:"+cea.PubnubRequestState.RespType);
-                UnityEngine.Debug.Log ("cea.Message:"+cea.Message);
-                
-                if(string.Join (",", cea.PubnubRequestState.Channels).Equals (ExpectedChannels)
+
+                UnityEngine.Debug.Log (string.Format("cea.PubnubRequestState.Channels: {0}, " +
+                    "cea.IsError: {1}, cea.IsTimeout: {2}, cea.Crt: {3}, cea.RespType: {4}, cea.Message: {5}", 
+                    Helpers.GetNamesFromChannelEntities(cea.PubnubRequestState.ChannelEntities, false), cea.IsError, cea.IsTimeout, cea.CurrRequestType
+                    ,cea.PubnubRequestState.RespType, cea.Message));
+
+                if(Helpers.GetNamesFromChannelEntities(cea.PubnubRequestState.ChannelEntities, false).Equals (ExpectedChannels)
                     && cea.IsError.Equals (IsError)
                     && cea.IsTimeout.Equals (IsTimeout)
                     && cea.CurrRequestType.Equals (Crt)
@@ -1862,10 +2073,10 @@ namespace PubNubMessaging.Tests
                 ){
                     IntegrationTest.Pass();
                 } else {
-                    IntegrationTest.Fail ();
+                    IntegrationTest.Fail ("Cea value not matching");
                 }
             } else {
-                IntegrationTest.Fail ();
+                IntegrationTest.Fail (string.Format("cea {0}, cea req state ?", (cea==null)?"null":"not null"));
             }
         }
 
@@ -1936,9 +2147,13 @@ namespace PubNubMessaging.Tests
             Action<T> userCallback, Action<T> connectCallback, Action<PubnubClientError> errorCallback,
             bool isTimeout, bool isError, long timetoken
         ){
-            RequestState<T> pubnubRequestState = BuildRequests.BuildRequestState<T> (channels, respType, 
-                resumeOnReconnect, userCallback, 
-                connectCallback, errorCallback, 0, isTimeout, timetoken, typeof(T));
+            List<ChannelEntity> channelEntities = Helpers.CreateChannelEntity<T>(channels, 
+               true, false, null, userCallback, connectCallback, errorCallback, null, null);  
+
+            RequestState<T> pubnubRequestState = BuildRequests.BuildRequestState<T> (channelEntities, respType, 
+                resumeOnReconnect, 0, isTimeout, timetoken, typeof(T), "", userCallback, 
+                errorCallback);
+
             CoroutineParams<T> cp = new CoroutineParams<T> (url, timeout, pause, crt, typeof(T), pubnubRequestState);
 
             GameObject go = new GameObject ();
@@ -1968,21 +2183,30 @@ namespace PubNubMessaging.Tests
         {
             CustomEventArgs<T> cea = ea as CustomEventArgs<T>;
             if (cea != null && cea.PubnubRequestState != null){
-                UnityEngine.Debug.Log (":"+ExpectedChannels);
+                /*UnityEngine.Debug.Log (":"+ExpectedChannels);
                 UnityEngine.Debug.Log ("IsError:"+IsError);
                 UnityEngine.Debug.Log ("IsTimeout:"+IsTimeout);
                 UnityEngine.Debug.Log ("Crt:"+Crt);
                 UnityEngine.Debug.Log ("RespType:"+RespType);
                 UnityEngine.Debug.Log ("ExpectedMessage:"+ExpectedMessage);
 
-                UnityEngine.Debug.Log ("cea.PubnubRequestState.Channels:"+string.Join (",", cea.PubnubRequestState.Channels));
+                UnityEngine.Debug.Log ("cea.PubnubRequestState.Channels:" + Helpers.GetNamesFromChannelEntities(cea.PubnubRequestState.ChannelEntities, false));
                 UnityEngine.Debug.Log ("cea.IsError:"+cea.IsError);
                 UnityEngine.Debug.Log ("cea.IsTimeout:"+cea.IsTimeout);
                 UnityEngine.Debug.Log ("cea.CurrRequestType:"+cea.CurrRequestType);
                 UnityEngine.Debug.Log ("cea.PubnubRequestState.RespType:"+cea.PubnubRequestState.RespType);
-                UnityEngine.Debug.Log ("cea.Message:"+cea.Message);
+                UnityEngine.Debug.Log ("cea.Message:"+cea.Message);*/
+                UnityEngine.Debug.Log (string.Format("ExpectedChannels: {0}, " +
+                "IsError: {1}, IsTimeout: {2}, Crt: {3}, RespType: {4}, ExpectedMessage: {5}", 
+                ExpectedChannels, IsError, IsTimeout, Crt, RespType, ExpectedMessage));
+
+                UnityEngine.Debug.Log (string.Format("cea.PubnubRequestState.Channels: {0}, " +
+                "cea.IsError: {1}, cea.IsTimeout: {2}, cea.Crt: {3}, cea.RespType: {4}, cea.Message: {5}", 
+                Helpers.GetNamesFromChannelEntities(cea.PubnubRequestState.ChannelEntities, false), cea.IsError, cea.IsTimeout, cea.CurrRequestType
+                ,cea.PubnubRequestState.RespType, cea.Message));
+
                 
-                if(string.Join (",", cea.PubnubRequestState.Channels).Equals (ExpectedChannels)
+                if(Helpers.GetNamesFromChannelEntities(cea.PubnubRequestState.ChannelEntities, false).Equals (ExpectedChannels)
                     && cea.IsError.Equals (IsError)
                     && cea.IsTimeout.Equals (IsTimeout)
                     && cea.CurrRequestType.Equals (Crt)
@@ -1991,10 +2215,10 @@ namespace PubNubMessaging.Tests
                 ){
                     IntegrationTest.Pass();
                 } else {
-                    IntegrationTest.Fail ();
+                    IntegrationTest.Fail ("Cea value not matching" + cea.Message.Contains(ExpectedMessage));
                 }
             } else {
-                IntegrationTest.Fail ();
+                IntegrationTest.Fail (string.Format("cea {0}, cea req state ?", (cea==null)?"null":"not null"));
             }
         }
 
@@ -2041,7 +2265,7 @@ namespace PubNubMessaging.Tests
 
                     isTimeout, isError, timetoken);
             } else {
-            TestBounce<string> (url, timeout, pause, channels, false, RespType, Crt,
+                TestBounce<string> (url, timeout, pause, channels, false, RespType, Crt,
                     UserCallbackCommonExceptionHandler, 
                     ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler,
                     isTimeout, isError, timetoken);
@@ -2054,9 +2278,13 @@ namespace PubNubMessaging.Tests
             Action<T> userCallback, Action<T> connectCallback, Action<PubnubClientError> errorCallback,
             bool isTimeout, bool isError, long timetoken
         ){
-            RequestState<T> pubnubRequestState = BuildRequests.BuildRequestState<T> (channels, respType, 
-                resumeOnReconnect, userCallback, 
-                connectCallback, errorCallback, 0, isTimeout, timetoken, typeof(T));
+            List<ChannelEntity> channelEntities = Helpers.CreateChannelEntity<T>(channels, 
+                true, false, null, userCallback, connectCallback, errorCallback, null, null);  
+
+            RequestState<T> pubnubRequestState = BuildRequests.BuildRequestState<T> (channelEntities, respType, 
+                resumeOnReconnect, 0, isTimeout, timetoken, typeof(T), "", userCallback, 
+                errorCallback);
+
             GameObject go = new GameObject ();
             CoroutineClass cc = go.AddComponent<CoroutineClass> ();
 
@@ -2074,12 +2302,13 @@ namespace PubNubMessaging.Tests
             /*while (dt.AddSeconds (6) > DateTime.Now) {
             }*/
             cc.BounceRequest<T>(crt, pubnubRequestState, true);
-            
+            UnityEngine.Debug.Log ("Bouncing request");
             
             /*while (dt.AddSeconds(6) > DateTime.Now) {
                 //UnityEngine.Debug.Log ("waiting");
             }*/
             cc.CheckComplete (crt);
+            UnityEngine.Debug.Log ("After check Complete");
             bool failTest = false;
             if(crt.Equals(CurrentRequestType.Subscribe)){
                 if ((cc.subscribeWww != null) && (!cc.subscribeWww.isDone) && !cc.isSubscribeComplete) {
@@ -2107,6 +2336,7 @@ namespace PubNubMessaging.Tests
                 }
             }            
             if (failTest) {
+                UnityEngine.Debug.Log ("www not null or done");
                 IntegrationTest.Fail ("www not null and done");
             }
         }
@@ -2123,9 +2353,13 @@ namespace PubNubMessaging.Tests
             Crt = crt;
             RespType = respType;
 
-            RequestState<string> pubnubRequestState = BuildRequests.BuildRequestState<string> (channels, respType, 
-            resumeOnReconnect, UserCallbackCommonExceptionHandler, 
-            ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 0, isTimeout, timetoken, typeof(string));
+            List<ChannelEntity> channelEntities = Helpers.CreateChannelEntity<string>(channels, 
+                true, false, null, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, 
+                ErrorCallbackCommonExceptionHandler, null, null);  
+
+            RequestState<string> pubnubRequestState = BuildRequests.BuildRequestState<string> (channelEntities, respType, 
+                resumeOnReconnect, 0, isTimeout, timetoken, (asObject)?typeof(object):typeof(string), "", UserCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler);
+
             GameObject go = new GameObject ();
             CoroutineClass cc = go.AddComponent<CoroutineClass> ();
             
@@ -2188,9 +2422,14 @@ namespace PubNubMessaging.Tests
                 Action<T> userCallback, Action<T> connectCallback, Action<PubnubClientError> errorCallback,
                 bool isTimeout, bool isError, long timetoken
         ){
-            RequestState<T> pubnubRequestState = BuildRequests.BuildRequestState<T> (channels, respType, 
-                resumeOnReconnect, userCallback, 
-                connectCallback, errorCallback, 0, isTimeout, timetoken, typeof(T));
+            List<ChannelEntity> channelEntities = Helpers.CreateChannelEntity<T>(channels, 
+                true, false, null, userCallback, 
+                connectCallback, errorCallback, null, null);  
+
+            RequestState<T> pubnubRequestState = BuildRequests.BuildRequestState<T> (channelEntities, respType, 
+                resumeOnReconnect, 0, isTimeout, timetoken, typeof(T), "", userCallback, 
+                errorCallback);
+
             GameObject go = new GameObject ();
             CoroutineClass cc = go.AddComponent<CoroutineClass> ();
 
@@ -2244,9 +2483,14 @@ namespace PubNubMessaging.Tests
             Action<T> userCallback, Action<T> connectCallback, Action<PubnubClientError> errorCallback,
             bool isTimeout, bool isError, long timetoken
         ){
-            RequestState<T> pubnubRequestState = BuildRequests.BuildRequestState<T> (channels, respType, 
-            resumeOnReconnect, userCallback, 
-            connectCallback, errorCallback, 0, isTimeout, timetoken, typeof(T));
+            List<ChannelEntity> channelEntities = Helpers.CreateChannelEntity<T>(channels, 
+                true, false, null, userCallback, 
+                connectCallback, errorCallback, null, null);  
+
+            RequestState<T> pubnubRequestState = BuildRequests.BuildRequestState<T> (channelEntities, respType, 
+                resumeOnReconnect, 0, isTimeout, timetoken, typeof(T), "", userCallback, 
+                errorCallback);
+
             GameObject go = new GameObject ();
             CoroutineClass cc = go.AddComponent<CoroutineClass> ();
 

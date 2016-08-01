@@ -4,6 +4,7 @@ using PubNubMessaging.Core;
 using NUnit.Framework;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace PubNubMessaging.Tests
 {
@@ -18,7 +19,7 @@ namespace PubNubMessaging.Tests
             CurrentRequestType crt = CurrentRequestType.Subscribe;
             string expectedMessage = "[[]";
             string expectedChannels = string.Join (",", multiChannel);
-            ResponseType respType =  ResponseType.Subscribe;
+            ResponseType respType =  ResponseType.SubscribeV2;
 
             Pubnub pubnub = new Pubnub (
                 CommonIntergrationTests.PublishKey,
@@ -111,10 +112,12 @@ namespace PubNubMessaging.Tests
         public void SetGetCoroutineParams<T>(string[] multiChannel, string url, CurrentRequestType crt, ResponseType respType,
             int timeout, bool resumeOnReconnect, bool isTimeout
         ){
-            
-            RequestState<T> pubnubRequestState = BuildRequests.BuildRequestState<T> (multiChannel, respType, 
-                resumeOnReconnect, null, 
-                null, null, 0, isTimeout, 0, typeof(T));
+            List<ChannelEntity> channelEntities = Helpers.CreateChannelEntity<T>(multiChannel, 
+                true, false, null, null, 
+                null, null, null, null);  
+
+            RequestState<T> pubnubRequestState = BuildRequests.BuildRequestState<T> (channelEntities, respType, 
+                resumeOnReconnect, 0, isTimeout, 0, typeof(T));
 
             CoroutineParams<T> cp = new CoroutineParams<T> (url, timeout, 0, crt, typeof(T), pubnubRequestState);
 
@@ -136,7 +139,7 @@ namespace PubNubMessaging.Tests
 
             string expectedMessage = "[[]";
             string expectedChannels = string.Join (",", multiChannel);
-            ResponseType respType =  ResponseType.Subscribe;
+            ResponseType respType =  ResponseType.SubscribeV2;
 
             Pubnub pubnub = new Pubnub (
                 CommonIntergrationTests.PublishKey,

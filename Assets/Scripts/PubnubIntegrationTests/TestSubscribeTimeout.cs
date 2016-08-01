@@ -39,7 +39,7 @@ namespace PubNubMessaging.Tests
             string url = string.Format ("http://pubsub.pubnub.com/subscribe/{0}/{1}/0/{2}?uuid={3}&pnsdk={4}", CommonIntergrationTests.SubscribeKey, 
                 expectedChannels, nanoSecondTime, pubnub.SessionUUID, pubnub.Version
             );
-            ResponseType respType =  ResponseType.Subscribe;
+            ResponseType respType =  ResponseType.SubscribeV2;
                 
             common.TestCoroutineRun(url, 5, 0, multiChannel, false,
                 false, this.name, expectedMessage, expectedChannels, true, true, false, 0, crt, respType);
