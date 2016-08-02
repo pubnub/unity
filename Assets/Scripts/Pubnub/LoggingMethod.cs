@@ -67,7 +67,7 @@ namespace PubNubMessaging.Core
                 #if (SILVERLIGHT || WINDOWS_PHONE || MONOTOUCH || __IOS__ || MONODROID || __ANDROID__)
                 System.Diagnostics.Debug.WriteLine(logText);
                 #elif (UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_IOS || UNITY_ANDROID || UNITY_5 || UNITY_WEBGL)
-                UnityEngine.Debug.Log (logText);
+                UnityEngine.Debug.Log (string.Format("\n** {0} \n", logText));
                 #else
                 try {
                     Trace.WriteLine (logText);
@@ -100,6 +100,7 @@ namespace PubNubMessaging.Core
         PubnubMessageSource _messageSource;
         string _message = "";
         string _channel = "";
+        string _channelGroup = "";
         Exception _detailedDotNetException = null;
         PubnubWebRequest _pubnubWebRequest = null;
         PubnubWebResponse _pubnubWebResponse = null;
@@ -110,7 +111,18 @@ namespace PubNubMessaging.Core
         {
         }
 
-        public PubnubClientError (int statusCode, PubnubErrorSeverity errorSeverity, bool isDotNetException, string message, Exception detailedDotNetException, PubnubMessageSource source, PubnubWebRequest pubnubWebRequest, PubnubWebResponse pubnubWebResponse, string description, string channel)
+        public PubnubClientError (int statusCode, PubnubErrorSeverity errorSeverity, bool isDotNetException, string message, 
+            Exception detailedDotNetException, PubnubMessageSource source, PubnubWebRequest pubnubWebRequest, 
+            PubnubWebResponse pubnubWebResponse, string description, List<ChannelEntity> channelEntitles)
+            :this(statusCode, errorSeverity, isDotNetException, message, detailedDotNetException, source, pubnubWebRequest,
+                pubnubWebResponse, description, Helpers.GetNamesFromChannelEntities(channelEntitles, false),
+                Helpers.GetNamesFromChannelEntities(channelEntitles, true))
+        {
+        }
+
+        public PubnubClientError (int statusCode, PubnubErrorSeverity errorSeverity, bool isDotNetException, string message, 
+            Exception detailedDotNetException, PubnubMessageSource source, PubnubWebRequest pubnubWebRequest, 
+            PubnubWebResponse pubnubWebResponse, string description, string channels, string channelGroups)
         {
             _dateTimeGMT = DateTime.Now.ToUniversalTime ();
             _statusCode = statusCode;
@@ -118,26 +130,27 @@ namespace PubNubMessaging.Core
             _message = message;
             _errorSeverity = errorSeverity;
             _messageSource = source;
-            _channel = channel;
+            _channel = channels;
+            _channelGroup = channelGroups;
             _detailedDotNetException = detailedDotNetException;
             _pubnubWebRequest = pubnubWebRequest;
             _pubnubWebResponse = pubnubWebResponse;
             _description = description;
         }
 
-        public PubnubClientError (int statusCode, PubnubErrorSeverity errorSeverity, string message, PubnubMessageSource source, PubnubWebRequest pubnubWebRequest, PubnubWebResponse pubnubWebResponse, string description, string channel)
+        public PubnubClientError (int statusCode, PubnubErrorSeverity errorSeverity, string message, 
+            PubnubMessageSource source, PubnubWebRequest pubnubWebRequest, PubnubWebResponse pubnubWebResponse, string description, 
+            List<ChannelEntity> channelEntitles)
+            : this (statusCode, errorSeverity, false, message, null, source, pubnubWebRequest, pubnubWebResponse, description, channelEntitles) 
         {
-            _dateTimeGMT = DateTime.Now.ToUniversalTime ();
-            _statusCode = statusCode;
-            _isDotNetException = false;
-            _message = message;
-            _errorSeverity = errorSeverity;
-            _messageSource = source;
-            _channel = channel;
-            _detailedDotNetException = null;
-            _pubnubWebRequest = pubnubWebRequest;
-            _pubnubWebResponse = pubnubWebResponse;
-            _description = description;
+        }
+
+        public PubnubClientError (int statusCode, PubnubErrorSeverity errorSeverity, string message, 
+            PubnubMessageSource source, PubnubWebRequest pubnubWebRequest, PubnubWebResponse pubnubWebResponse, string description, 
+            string channels, string channelGroups)
+            : this (statusCode, errorSeverity, false, message, null, source, pubnubWebRequest, pubnubWebResponse, description
+                , channels, channelGroups) 
+        {
         }
 
         public int StatusCode {
@@ -194,6 +207,12 @@ namespace PubNubMessaging.Core
             }
         }
 
+        public string ChannelGroup {
+            get {
+                return _channelGroup;
+            }
+        }
+
         public string Description {
             get {
                 return _description;
@@ -226,6 +245,8 @@ namespace PubNubMessaging.Core
             errorBuilder.AppendFormat ("PubnubWebResponse={0} ", (_pubnubWebResponse != null) ? _pubnubWebResponse.ToString () : "");
             errorBuilder.AppendLine ();
             errorBuilder.AppendFormat ("Channel={0} ", _channel);
+            errorBuilder.AppendLine ();
+            errorBuilder.AppendFormat ("ChannelGroup={0} ", _channelGroup);
             errorBuilder.AppendLine ();
             errorBuilder.AppendFormat ("Description={0} ", _description);
             errorBuilder.AppendLine ();
@@ -440,6 +461,10 @@ namespace PubNubMessaging.Core
         UserStateUnchanged = 136,
         PushNotificationTimeout = 137,
         OperationTimeout = 138,
+        ChannelGroupTimeout = 139,
+        DuplicateChannelGroup = 140,
+        ReceiveFailure = 141,
+
         MessageTooLarge = 4000,
         BadRequest = 4001,
         InvalidKey = 4002,
@@ -515,6 +540,12 @@ namespace PubNubMessaging.Core
             dictionaryCodes.Add (134, "Timeout occured while running GlobalHereNow. Please try again. If it continues, please contact PubNub support");
             dictionaryCodes.Add (135, "Timeout occured while running PAM operations. Please try again. If it continues, please contact PubNub support");
             dictionaryCodes.Add (136, "User State Unchanged");
+            dictionaryCodes.Add (137, "Timeout occured while registering device for push notifications. Please try again. If it continues, please contact PubNub support");
+            dictionaryCodes.Add (138, "Operation Timeout.");
+            dictionaryCodes.Add (139, "Timeout occured while performing operation related to channel group. Please try again. If it continues, please contact PubNub support");
+            dictionaryCodes.Add (140, "Duplicate channel group subscription is not allowed. Internally Pubnub API removes the duplicates before processing");
+            dictionaryCodes.Add (141, "WebExcepton. The underlying connection was closed: An unexpected error occurred on a receive. If it continues, please contact PubNub support");
+
             dictionaryCodes.Add (0, "Undocumented error. Please contact PubNub support with full error object details for further investigation");
         }
 

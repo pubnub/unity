@@ -1,8 +1,5 @@
-﻿#if (UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_ANDROID || UNITY_IOS || UNITY_5 || UNITY_WEBGL)
+﻿#if((!USE_JSONFX_UNITY_IOS) && (!USE_MiniJSON))
 #define USE_JSONFX_UNITY_IOS
-//comment/remove #define USE_JSONFX_UNITY_IOS and uncomment #define USE_MiniJSON
-//to use MiniJSON as the serialization library
-//#define USE_MiniJSON
 #endif
 
 #if (USE_JSONFX_UNITY_IOS)
@@ -39,12 +36,12 @@ namespace PubNubMessaging.Core
             get {
                 #if (USE_MiniJSON)
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog("USE_MiniJSON", LoggingMethod.LevelInfo);
+                LoggingMethod.WriteToLog("JSON LIB: USE_MiniJSON", LoggingMethod.LevelInfo);
                 #endif
                 jsonPluggableLibrary = new MiniJSONObjectSerializer();
                 #elif (USE_JSONFX_UNITY_IOS)
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog ("USE_JSONFX_UNITY_IOS", LoggingMethod.LevelInfo);
+                LoggingMethod.WriteToLog ("JSON LIB: USE_JSONFX_UNITY_IOS", LoggingMethod.LevelInfo);
                 #endif
                 jsonPluggableLibrary = new JsonFxUnitySerializer ();
                 #endif
@@ -83,6 +80,12 @@ namespace PubNubMessaging.Core
         public object DeserializeToObject (string jsonString)
         {
             var output = JsonReader.Deserialize<object> (jsonString) as object;
+            return output;
+        }
+
+        public T Deserialize<T> (string jsonString)
+        {
+            var output = JsonReader.Deserialize<T> (jsonString);
             return output;
         }
 

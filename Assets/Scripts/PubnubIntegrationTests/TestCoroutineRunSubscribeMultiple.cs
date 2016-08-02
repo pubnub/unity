@@ -32,15 +32,15 @@ namespace PubNubMessaging.Tests
             string expectedChannels = string.Join (",", multiChannel);
             long nanoSecondTime = Pubnub.TranslateDateTimeToPubnubUnixNanoSeconds (DateTime.UtcNow);
 
-            string url = string.Format ("http://pubsub.pubnub.com/subscribe/{0}/{1}/0/{2}?uuid={3}&pnsdk={4}", CommonIntergrationTests.SubscribeKey, 
+            string url = string.Format ("http://pubsub.pubnub.com/v2/subscribe/{0}/{1}/0/{2}?uuid={3}&tt={2}&pnsdk={4}", CommonIntergrationTests.SubscribeKey, 
                 expectedChannels, nanoSecondTime, pubnub.SessionUUID, pubnub.Version
             );
             multiChannel [1] = channel2;
             expectedChannels = string.Join (",", multiChannel);
-            string url2 = string.Format ("http://pubsub.pubnub.com/subscribe/{0}/{1}/0/{2}?uuid={3}&pnsdk={4}", CommonIntergrationTests.SubscribeKey, 
+            string url2 = string.Format ("http://pubsub.pubnub.com/v2/subscribe/{0}/{1}/0?uuid={3}&tt={2}&pnsdk={4}", CommonIntergrationTests.SubscribeKey, 
                 expectedChannels, nanoSecondTime, pubnub.SessionUUID, pubnub.Version
             );
-            ResponseType respType =  ResponseType.Subscribe;
+            ResponseType respType =  ResponseType.SubscribeV2;
 
             IEnumerator ienum = common.TestCoroutineRunSubscribeMultiple(url, url2, 20, -1, multiChannel, false,
                 false, this.name, expectedMessage, expectedChannels, false, false, false, 0, crt, respType);

@@ -55,33 +55,148 @@ namespace PubNubMessaging.Tests
             return "UnityUnitTests_" + r.Next (100);
         }
 
+        public static List<ChannelEntity> CreateListOfChannelEntities<T>(bool channelGroup, bool channel, 
+            bool presence, bool awaitingConnectCallback,
+            Action<T> userCallback, Action<T> connectCallback,
+            Action<T> wildcardPresenceCallback, Action<T> disconnectCallback
+            ){
+            var dictSM = new Dictionary<string, object>();
+            dictSM.Add("k","v");
+            dictSM.Add("k2","v2");
+
+
+            ChannelEntity ce1 = Helpers.CreateChannelEntity<T>("ch1", false, false, dictSM, 
+            userCallback, connectCallback,
+            Common.ErrorCallback, disconnectCallback, 
+            wildcardPresenceCallback);
+
+            var dictSM2 = new Dictionary<string, object>();
+            dictSM2.Add("k3","v3");
+            dictSM2.Add("k4","v4");
+
+            ChannelEntity ce2 = Helpers.CreateChannelEntity<T>("ch2", false, false, dictSM2, 
+            userCallback, connectCallback,
+            Common.ErrorCallback, disconnectCallback, 
+            wildcardPresenceCallback);
+
+            var dictSM3 = new Dictionary<string, object>();
+            dictSM3.Add("k5","v5");
+            dictSM3.Add("k6","v6");
+
+            ChannelEntity ce3 = Helpers.CreateChannelEntity<T>("cg1", false, true, dictSM3, 
+            userCallback, connectCallback,
+            Common.ErrorCallback, disconnectCallback, 
+            wildcardPresenceCallback);
+
+            var dictSM4 = new Dictionary<string, object>();
+            dictSM4.Add("k7","v7");
+            dictSM4.Add("k8","v8");
+
+            ChannelEntity ce4 = Helpers.CreateChannelEntity<T>("cg2", false, true, dictSM4, 
+            userCallback, connectCallback,
+            Common.ErrorCallback, disconnectCallback, 
+            wildcardPresenceCallback);
+
+            var dictSM5 = new Dictionary<string, object>();
+            dictSM5.Add("k7","v7");
+            dictSM5.Add("k8","v8");
+
+            ChannelEntity ce5 = Helpers.CreateChannelEntity<T>("cg2-pnpres", false, true, dictSM5, 
+            userCallback, connectCallback,
+            Common.ErrorCallback, disconnectCallback, 
+            wildcardPresenceCallback);
+
+
+            var dictSM6 = new Dictionary<string, object>();
+            dictSM6.Add("k7","v7");
+            dictSM6.Add("k8","v8");
+
+            ChannelEntity ce6 = Helpers.CreateChannelEntity<T>("ch2-pnpres", false, false, dictSM6, 
+            userCallback, connectCallback,
+            Common.ErrorCallback, disconnectCallback, 
+            wildcardPresenceCallback);
+
+
+            var dictSM7 = new Dictionary<string, object>();
+            dictSM7.Add("k7","v7");
+            dictSM7.Add("k8","v8");
+
+            ChannelEntity ce7 = Helpers.CreateChannelEntity<T>("ch7", true, false, dictSM7, 
+            userCallback, connectCallback,
+            Common.ErrorCallback, disconnectCallback, 
+            wildcardPresenceCallback);
+
+            var dictSM8 = new Dictionary<string, object>();
+            dictSM8.Add("k7","v7");
+            dictSM8.Add("k8","v8");
+
+            ChannelEntity ce8 = Helpers.CreateChannelEntity<T>("cg8", true, true, dictSM8, 
+            userCallback, connectCallback,
+            Common.ErrorCallback, disconnectCallback, 
+            wildcardPresenceCallback);
+
+            List<ChannelEntity> lstCE = new List<ChannelEntity>();
+            if(channel){
+                lstCE.Add(ce1);
+                lstCE.Add(ce2);
+                if(presence){
+                    lstCE.Add(ce6);
+                }
+
+                if(awaitingConnectCallback){
+                    lstCE.Add(ce7);
+                }
+
+            }
+            if(channelGroup){
+                lstCE.Add(ce3);
+                lstCE.Add(ce4);
+                if(presence){
+                    lstCE.Add(ce5);
+                }
+
+                if(awaitingConnectCallback){
+                    lstCE.Add(ce8);
+                }
+
+            }
+            return lstCE;
+        }
+
+        public static Dictionary<string, object> CreateSubscribeDictionary(){
+            var dictSM = new Dictionary<string, object>();
+            dictSM.Add("a", "1");
+            dictSM.Add("b", "SM");
+            dictSM.Add("c", "Channel");
+            dictSM.Add("d", "Message");
+            dictSM.Add("f", "flags");
+            dictSM.Add("i", "issuingClientId");
+            dictSM.Add("k", "subscribeKey");
+            dictSM.Add("s", "10");
+
+            var dictOT = new Dictionary<string, object>(); 
+            dictOT.Add("t", 14685037252884276);
+            dictOT.Add("r", "west");
+            dictSM.Add("o", dictOT);
+
+            var dictPM = new Dictionary<string, object>(); 
+            dictPM.Add("t", 14685037252884348);
+            dictPM.Add("r", "east");
+            dictSM.Add("p", dictPM);
+
+            var dictU = new Dictionary<string, object>(); 
+            dictU.Add("region", "north");
+            dictSM.Add("u", dictU);
+            return dictSM;
+        }
 
         public static void LogAndCompare(string expected, string received)
         {
-            UnityEngine.Debug.Log("Expected:" + expected);
-            UnityEngine.Debug.Log("Received:" + received);
-            Assert.IsTrue (expected.Equals (received));
+            string expNRec = string.Format("Expected: {0}\nReceived: {1} ", expected, received);
+            UnityEngine.Debug.Log(expNRec + expected.Equals (received));
+            Assert.IsTrue (expected.Equals (received), expNRec);
         }
 
-
-        internal static SafeDictionary<PubnubChannelCallbackKey, object> CreateChannelCallbacks<T>(string[] channels, ResponseType responseType,
-            Action<T> userCallback, Action<T> connectCallback, Action<PubnubClientError> errorCallback){
-
-            SafeDictionary<PubnubChannelCallbackKey, object> channelCallbacks = new SafeDictionary<PubnubChannelCallbackKey, object> ();
-
-            foreach (string channel in channels) {
-                PubnubChannelCallbackKey callbackKey = new PubnubChannelCallbackKey ();
-                callbackKey.Channel = channel;
-                callbackKey.Type = responseType;
-                PubnubChannelCallback<T> pubnubChannelCallbacks = new PubnubChannelCallback<T> ();
-                pubnubChannelCallbacks.Callback = userCallback;
-                pubnubChannelCallbacks.ConnectCallback = connectCallback;
-                pubnubChannelCallbacks.ErrorCallback = errorCallback;
-                channelCallbacks.AddOrUpdate (callbackKey, pubnubChannelCallbacks, (key, oldValue) => pubnubChannelCallbacks);
-            }
-            return channelCallbacks;
-
-        }
         /// <summary>
         /// Blocks the current thread unit the response is received
         /// or timeout occurs
@@ -262,6 +377,52 @@ namespace PubNubMessaging.Tests
                 }     
             );
         }
+
+        public static void WildcardPresenceCallback (object result)
+        {
+            UnityEngine.Debug.Log (string.Format ("WildcardPresenceCallback CALLBACK LOG: {0}", result.ToString()));
+        }
+
+        public static void WildcardPresenceCallback (string result)
+        {
+            UnityEngine.Debug.Log (string.Format ("WildcardPresenceCallback CALLBACK LOG: {0}", result));
+        }
+
+        public static void UserCallback (string result)
+        {
+            UnityEngine.Debug.Log (string.Format ("REGULAR CALLBACK LOG: {0}", result));
+        }
+
+        public static void UserCallback (object result)
+        {
+            UnityEngine.Debug.Log (string.Format ("REGULAR CALLBACK LOG: {0}", result.ToString()));
+        }
+
+        public static void DisconnectCallback (string result)
+        {
+            UnityEngine.Debug.Log (string.Format ("Disconnect CALLBACK LOG: {0}", result));
+        }
+
+        public static void DisconnectCallback (object result)
+        {
+            UnityEngine.Debug.Log (string.Format ("Disconnect CALLBACK LOG: {0}", result));
+        }
+
+        public static void ConnectCallback (string result)
+        {
+            UnityEngine.Debug.Log (string.Format ("CONNECT CALLBACK LOG: {0}", result));
+        }
+
+        public static void ConnectCallback (object result)
+        {
+            UnityEngine.Debug.Log (string.Format ("CONNECT CALLBACK LOG: {0}", result.ToString()));
+        }
+
+        public static void ErrorCallback (PubnubClientError result)
+        {
+            UnityEngine.Debug.Log (string.Format ("Error CALLBACK LOG: {0}", result.ToString()));
+        }
+
     }
 
     /// <summary>

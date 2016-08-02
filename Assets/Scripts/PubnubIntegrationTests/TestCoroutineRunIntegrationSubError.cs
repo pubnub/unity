@@ -17,7 +17,7 @@ namespace PubNubMessaging.Tests
             CurrentRequestType crt = CurrentRequestType.Subscribe;
             string expectedMessage = "404 Nothing";
             string expectedChannels = string.Join (",", multiChannel);
-            ResponseType respType =  ResponseType.Subscribe;
+            ResponseType respType =  ResponseType.SubscribeV2;
 
             IEnumerator ienum = common.TestCoroutineRunError(url, 20, -1, multiChannel, false,
                 false, this.name, expectedMessage, expectedChannels, true, false, false, 0, crt, respType);

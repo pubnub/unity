@@ -5,6 +5,7 @@ using System.Text;
 using UnityEngine;
 using System.Collections;
 using System.Net;
+using System.Collections.Generic;
 
 namespace PubNubMessaging.Tests
 {
@@ -30,7 +31,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
 
             TestResponseCallbackWebExceptionHandlerCommon<string> ("test message", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -57,8 +58,11 @@ namespace PubNubMessaging.Tests
                 IsError = false;
             }
 
-            RequestState<T> requestState = BuildRequests.BuildRequestState<T> (channels, responseType, 
-                resumeOnReconnect, userCallback, connectCallback, errorCallback, 0, isTimeout, timetoken, typeof(T));
+            List<ChannelEntity> channelEntities = Helpers.CreateChannelEntity<T>(channels, 
+                true, false, null, userCallback, connectCallback, errorCallback, null, null);  
+
+            RequestState<T> requestState = BuildRequests.BuildRequestState<T> (channelEntities, responseType, 
+                resumeOnReconnect, 0, isTimeout, timetoken, typeof(T), "", userCallback, errorCallback);
 
             CustomEventArgs<T> cea = new CustomEventArgs<T> ();
             cea.PubnubRequestState = requestState;
@@ -68,25 +72,15 @@ namespace PubNubMessaging.Tests
             cea.CurrRequestType = crt;
 
             CRequestType = responseType;
-            if (responseType == ResponseType.Presence || responseType == ResponseType.Subscribe) {
+            if (responseType == ResponseType.PresenceV2 || responseType == ResponseType.SubscribeV2) {
                 ExceptionHandlers.MultiplexException += HandleMultiplexException<T>;
                 resultPart1 = false;
             }
 
             WebException webEx = new WebException ("Test web exception");
 
-            SafeDictionary<PubnubChannelCallbackKey, object> channelCallbacks = new SafeDictionary<PubnubChannelCallbackKey, object> ();
 
-            PubnubChannelCallbackKey callbackKey = new PubnubChannelCallbackKey();
-            callbackKey.Channel = ExceptionChannel;
-            callbackKey.Type = responseType;
-            PubnubChannelCallback<T> pubnubChannelCallbacks = new PubnubChannelCallback<T>();
-            pubnubChannelCallbacks.Callback = userCallback;
-            pubnubChannelCallbacks.ConnectCallback = connectCallback;
-            pubnubChannelCallbacks.ErrorCallback = errorCallback;
-            channelCallbacks.AddOrUpdate(callbackKey, pubnubChannelCallbacks, (key, oldValue) => pubnubChannelCallbacks);
-
-            ExceptionHandlers.ResponseCallbackWebExceptionHandler<T> (cea, requestState, webEx, ExceptionChannel, channelCallbacks,
+            ExceptionHandlers.ResponseCallbackWebExceptionHandler<T> (cea, requestState, webEx,
                 errorLevel);
 
             /*if (responseType == ResponseType.Presence || responseType == ResponseType.Subscribe) {
@@ -106,20 +100,21 @@ namespace PubNubMessaging.Tests
         {
             ExceptionHandlers.MultiplexException -= HandleMultiplexException<T>;
             MultiplexExceptionEventArgs<T> mea = ea as MultiplexExceptionEventArgs<T>;
+            string channels = Helpers.GetNamesFromChannelEntities(mea.channelEntities, false);
             UnityEngine.Debug.Log (mea.responseType.Equals (CRequestType));
-            UnityEngine.Debug.Log (string.Join (",", mea.channels).Equals (ExceptionChannel));
+            UnityEngine.Debug.Log (channels.Equals (ExceptionChannel));
             UnityEngine.Debug.Log (mea.resumeOnReconnect.Equals(ResumeOnReconnect));
 
             UnityEngine.Debug.Log (string.Format ("HandleMultiplexException LOG: {0} {1} {2} {3} {4} {5} {6} {7} {8} {9}",
                 mea.responseType.Equals (CRequestType),
-                string.Join (",", mea.channels).Equals (ExceptionChannel),
+                channels.Equals (ExceptionChannel),
                 mea.resumeOnReconnect.Equals(ResumeOnReconnect), CRequestType.ToString(), 
                 ExceptionChannel, ResumeOnReconnect, mea.responseType,
-                string.Join(",",mea.channels), mea.resumeOnReconnect, resultPart1
+                channels, mea.resumeOnReconnect, resultPart1
             ));
             bool resultPart2 = false;
             if (mea.responseType.Equals (CRequestType)
-                && string.Join (",", mea.channels).Equals (ExceptionChannel)
+                && channels.Equals (ExceptionChannel)
                 && mea.resumeOnReconnect.Equals (ResumeOnReconnect)) {
                 resultPart2 = true;
             }

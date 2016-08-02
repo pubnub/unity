@@ -4,6 +4,7 @@ using NUnit.Framework;
 using System.Text;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace PubNubMessaging.Tests
 {
@@ -13,6 +14,7 @@ namespace PubNubMessaging.Tests
         #if DEBUG
         string ExceptionMessage ="";
         string ExceptionChannel = "";
+        string ExceptionChannelGroups = "";
         int ExceptionStatusCode = 0;
 
         ResponseType CRequestType;
@@ -23,13 +25,2873 @@ namespace PubNubMessaging.Tests
         bool IsError = false;
 
         [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerSubscribe400CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "test message", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerSubscribe404CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "404 test message", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerSubscribe414CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 414;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "414 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerSubscribe504CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 504;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "504 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerSubscribe503CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 503;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "503 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerSubscribe500CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 500;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "500 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerSubscribe403CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "403 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerSubscribeNameResolutionFailureCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "NameResolutionFailure 400", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerSubscribeConnectFailureCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "ConnectFailure 400", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerSubscribeServerProtocolViolationCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "ServerProtocolViolation 400 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerSubscribeProtocolErrorCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "ProtocolError 400 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerSubscribeFNFCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "java.io.FileNotFoundException 400 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerSubscribeFailedDLCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "Failed downloading UnityWeb", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        /*[Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerSubscribeFailedTOCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "timed out", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                true, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }*/
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerRORSubscribe400CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "test message", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerRORSubscribe404CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "404 test message", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerRORSubscribe414CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 414;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "414 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerRORSubscribe504CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 504;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "504 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerRORSubscribe503CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 503;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "503 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerRORSubscribe500CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 500;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "500 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerRORSubscribe403CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "403 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerRORSubscribeNameResolutionFailureCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "NameResolutionFailure 400", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerRORSubscribeConnectFailureCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "ConnectFailure 400", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerRORSubscribeServerProtocolViolationCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "ServerProtocolViolation 400 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerRORSubscribeProtocolErrorCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "ProtocolError 400 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerRORSubscribeFNFCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "java.io.FileNotFoundException 400 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerRORSubscribeFailedDLCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "Failed downloading UnityWeb", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        /*[Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerRORSubscribeFailedTOCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "timedout", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                true, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }*/
+
+        [Test] 
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribe400CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "test message", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribe404CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "404 test message", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribe414CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 414;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "414 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribe504CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 504;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "504 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribe503CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 503;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "503 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribe500CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 500;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "500 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribe403CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "403 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribeNameResolutionFailureCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "NameResolutionFailure 400", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribeConnectFailureCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "ConnectFailure 400", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribeServerProtocolViolationCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "ServerProtocolViolation 400 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribeProtocolErrorCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "ProtocolError 400 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribeFNFCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "java.io.FileNotFoundException 400 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribeFailedDLCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "Failed downloading UnityWeb", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        /*[Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribeFailedTOCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "timedout", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                true, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }*/
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrRORSubscribe400CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "test message", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrRORSubscribe404CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "404 test message", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrRORSubscribe414CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 414;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "414 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrRORSubscribe504CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 504;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "504 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrRORSubscribe503CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 503;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "503 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrRORSubscribe500CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 500;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "500 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrRORSubscribe403CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "403 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrRORSubscribeNameResolutionFailureCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "NameResolutionFailure 400", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrRORSubscribeConnectFailureCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "ConnectFailure 400", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrRORSubscribeServerProtocolViolationCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "ServerProtocolViolation 400 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrRORSubscribeProtocolErrorCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "ProtocolError 400 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrRORSubscribeFNFCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "java.io.FileNotFoundException 400 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrRORSubscribeFailedDLCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "Failed downloading UnityWeb", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjSubscribe400CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "test message", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjSubscribe404CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "404 test message", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjSubscribe414CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 414;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "414 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjSubscribe504CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 504;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "504 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjSubscribe503CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 503;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "503 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjSubscribe500CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 500;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "500 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjSubscribe403CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "403 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjSubscribeNameResolutionFailureCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "NameResolutionFailure 400", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjSubscribeConnectFailureCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "ConnectFailure 400", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjSubscribeServerProtocolViolationCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "ServerProtocolViolation 400 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjSubscribeProtocolErrorCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "ProtocolError 400 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjSubscribeFNFCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "java.io.FileNotFoundException 400 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjSubscribeFailedDLCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "Failed downloading UnityWeb", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        /*[Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjSubscribeFailedTOCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "timed out", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                true, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }*/
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjRORSubscribe400CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "test message", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjRORSubscribe404CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "404 test message", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjRORSubscribe414CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 414;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "414 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjRORSubscribe504CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 504;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "504 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjRORSubscribe503CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 503;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "503 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjRORSubscribe500CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 500;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "500 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjRORSubscribe403CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "403 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjRORSubscribeNameResolutionFailureCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "NameResolutionFailure 400", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjRORSubscribeConnectFailureCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "ConnectFailure 400", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjRORSubscribeServerProtocolViolationCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "ServerProtocolViolation 400 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjRORSubscribeProtocolErrorCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "ProtocolError 400 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjRORSubscribeFNFCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "java.io.FileNotFoundException 400 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjRORSubscribeFailedDLCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "Failed downloading UnityWeb", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        /*[Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjRORSubscribeFailedTOCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "timedout", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                true, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }*/
+
+        [Test] 
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrSubscribe400CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "test message", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrSubscribe404CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "404 test message", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrSubscribe414CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 414;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "414 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrSubscribe504CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 504;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "504 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrSubscribe503CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 503;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "503 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrSubscribe500CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 500;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "500 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrSubscribe403CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "403 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrSubscribeNameResolutionFailureCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "NameResolutionFailure 400", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrSubscribeConnectFailureCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "ConnectFailure 400", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrSubscribeServerProtocolViolationCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "ServerProtocolViolation 400 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrSubscribeProtocolErrorCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "ProtocolError 400 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrSubscribeFNFCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "java.io.FileNotFoundException 400 response", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrSubscribeFailedDLCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "Failed downloading UnityWeb", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        /*[Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrSubscribeFailedTOCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "timedout", channels, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                true, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }*/
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrRORSubscribe400CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "test message", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrRORSubscribe404CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "404 test message", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrRORSubscribe414CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 414;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "414 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrRORSubscribe504CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 504;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "504 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrRORSubscribe503CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 503;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "503 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrRORSubscribe500CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 500;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "500 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrRORSubscribe403CGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "403 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrRORSubscribeNameResolutionFailureCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "NameResolutionFailure 400", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrRORSubscribeConnectFailureCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "ConnectFailure 400", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrRORSubscribeServerProtocolViolationCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "ServerProtocolViolation 400 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrRORSubscribeProtocolErrorCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "ProtocolError 400 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrRORSubscribeFNFCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "java.io.FileNotFoundException 400 response", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrRORSubscribeFailedDLCGnCH()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "Failed downloading UnityWeb", channels, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerSubscribe400CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "test message", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerSubscribe404CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "404 test message", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerSubscribe414CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 414;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "414 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerSubscribe504CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 504;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "504 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerSubscribe503CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 503;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "503 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerSubscribe500CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 500;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "500 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerSubscribe403CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "403 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerSubscribeNameResolutionFailureCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "NameResolutionFailure 400", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerSubscribeConnectFailureCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "ConnectFailure 400", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerSubscribeServerProtocolViolationCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "ServerProtocolViolation 400 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerSubscribeProtocolErrorCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "ProtocolError 400 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerSubscribeFNFCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "java.io.FileNotFoundException 400 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerSubscribeFailedDLCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "Failed downloading UnityWeb", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        /*[Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerSubscribeFailedTOCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "timed out", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                true, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }*/
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerRORSubscribe400CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "test message", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerRORSubscribe404CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "404 test message", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerRORSubscribe414CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 414;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "414 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerRORSubscribe504CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 504;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "504 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerRORSubscribe503CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 503;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "503 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerRORSubscribe500CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 500;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "500 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerRORSubscribe403CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "403 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerRORSubscribeNameResolutionFailureCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "NameResolutionFailure 400", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerRORSubscribeConnectFailureCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "ConnectFailure 400", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerRORSubscribeServerProtocolViolationCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "ServerProtocolViolation 400 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerRORSubscribeProtocolErrorCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "ProtocolError 400 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerRORSubscribeFNFCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "java.io.FileNotFoundException 400 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerRORSubscribeFailedDLCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "Failed downloading UnityWeb", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        /*[Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerRORSubscribeFailedTOCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "timedout", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                true, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }*/
+
+        [Test] 
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribe400CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "test message", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribe404CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "404 test message", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribe414CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 414;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "414 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribe504CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 504;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "504 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribe503CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 503;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "503 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribe500CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 500;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "500 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribe403CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "403 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribeNameResolutionFailureCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "NameResolutionFailure 400", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribeConnectFailureCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "ConnectFailure 400", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribeServerProtocolViolationCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "ServerProtocolViolation 400 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribeProtocolErrorCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "ProtocolError 400 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribeFNFCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "java.io.FileNotFoundException 400 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribeFailedDLCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "Failed downloading UnityWeb", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        /*[Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribeFailedTOCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "timedout", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                true, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }*/
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrRORSubscribe400CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "test message", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrRORSubscribe404CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "404 test message", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrRORSubscribe414CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 414;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "414 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrRORSubscribe504CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 504;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "504 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrRORSubscribe503CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 503;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "503 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrRORSubscribe500CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 500;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "500 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrRORSubscribe403CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "403 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrRORSubscribeNameResolutionFailureCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "NameResolutionFailure 400", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrRORSubscribeConnectFailureCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "ConnectFailure 400", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrRORSubscribeServerProtocolViolationCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "ServerProtocolViolation 400 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrRORSubscribeProtocolErrorCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "ProtocolError 400 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrRORSubscribeFNFCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "java.io.FileNotFoundException 400 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerErrRORSubscribeFailedDLCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "Failed downloading UnityWeb", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjSubscribe400CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "test message", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjSubscribe404CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "404 test message", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjSubscribe414CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 414;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "414 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjSubscribe504CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 504;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "504 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjSubscribe503CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 503;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "503 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjSubscribe500CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 500;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "500 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjSubscribe403CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "403 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjSubscribeNameResolutionFailureCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "NameResolutionFailure 400", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjSubscribeConnectFailureCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "ConnectFailure 400", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjSubscribeServerProtocolViolationCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "ServerProtocolViolation 400 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjSubscribeProtocolErrorCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "ProtocolError 400 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjSubscribeFNFCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "java.io.FileNotFoundException 400 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjSubscribeFailedDLCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "Failed downloading UnityWeb", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        /*[Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjSubscribeFailedTOCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "timed out", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                true, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }*/
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjRORSubscribe400CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "test message", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjRORSubscribe404CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "404 test message", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjRORSubscribe414CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 414;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "414 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjRORSubscribe504CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 504;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "504 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjRORSubscribe503CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 503;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "503 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjRORSubscribe500CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 500;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "500 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjRORSubscribe403CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "403 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjRORSubscribeNameResolutionFailureCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "NameResolutionFailure 400", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjRORSubscribeConnectFailureCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "ConnectFailure 400", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjRORSubscribeServerProtocolViolationCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "ServerProtocolViolation 400 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjRORSubscribeProtocolErrorCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "ProtocolError 400 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjRORSubscribeFNFCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "java.io.FileNotFoundException 400 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjRORSubscribeFailedDLCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "Failed downloading UnityWeb", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        /*[Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjRORSubscribeFailedTOCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "timedout", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                true, false, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }*/
+
+        [Test] 
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrSubscribe400CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "test message", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrSubscribe404CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "404 test message", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrSubscribe414CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 414;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "414 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrSubscribe504CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 504;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "504 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrSubscribe503CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 503;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "503 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrSubscribe500CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 500;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "500 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrSubscribe403CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "403 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrSubscribeNameResolutionFailureCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "NameResolutionFailure 400", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrSubscribeConnectFailureCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "ConnectFailure 400", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrSubscribeServerProtocolViolationCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "ServerProtocolViolation 400 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrSubscribeProtocolErrorCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "ProtocolError 400 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrSubscribeFNFCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "java.io.FileNotFoundException 400 response", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrSubscribeFailedDLCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "Failed downloading UnityWeb", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        /*[Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrSubscribeFailedTOCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "timedout", null, false,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                true, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }*/
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrRORSubscribe400CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "test message", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrRORSubscribe404CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "404 test message", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrRORSubscribe414CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 414;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "414 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrRORSubscribe504CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 504;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "504 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrRORSubscribe503CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 503;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "503 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrRORSubscribe500CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 500;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "500 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrRORSubscribe403CG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "403 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrRORSubscribeNameResolutionFailureCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "NameResolutionFailure 400", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrRORSubscribeConnectFailureCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "ConnectFailure 400", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrRORSubscribeServerProtocolViolationCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "ServerProtocolViolation 400 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrRORSubscribeProtocolErrorCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 122;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "ProtocolError 400 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrRORSubscribeFNFCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 403;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "java.io.FileNotFoundException 400 response", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Critical
+            );
+        }
+
+        [Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrRORSubscribeFailedDLCG()
+        {
+            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channelGroups, "Failed downloading UnityWeb", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }
+
+        [Test]
         public void TestResponseCallbackErrorOrTimeoutHandlerSubscribe400 ()
         {
             string[] channels = {"testSubscribe","test2Subscribe"}; 
             ExceptionStatusCode = 400;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("test message", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -42,7 +2904,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("404 test message", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -55,7 +2917,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 414;
             
             TestResponseCallbackErrorOrTimeoutHandler<string> ("414 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -68,7 +2930,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 504;
             
             TestResponseCallbackErrorOrTimeoutHandler<string> ("504 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -81,7 +2943,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 503;
             
             TestResponseCallbackErrorOrTimeoutHandler<string> ("503 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -94,7 +2956,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 500;
             
             TestResponseCallbackErrorOrTimeoutHandler<string> ("500 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -107,7 +2969,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 403;
             
             TestResponseCallbackErrorOrTimeoutHandler<string> ("403 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -120,7 +2982,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
             
             TestResponseCallbackErrorOrTimeoutHandler<string> ("NameResolutionFailure 400", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -133,7 +2995,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
             
             TestResponseCallbackErrorOrTimeoutHandler<string> ("ConnectFailure 400", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -146,7 +3008,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
             
             TestResponseCallbackErrorOrTimeoutHandler<string> ("ServerProtocolViolation 400 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -159,7 +3021,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
             
             TestResponseCallbackErrorOrTimeoutHandler<string> ("ProtocolError 400 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -172,7 +3034,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 403;
             
             TestResponseCallbackErrorOrTimeoutHandler<string> ("java.io.FileNotFoundException 400 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -185,7 +3047,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
             
             TestResponseCallbackErrorOrTimeoutHandler<string> ("Failed downloading UnityWeb", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -198,7 +3060,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("timed out", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 true, false, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -211,7 +3073,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("test message", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -224,7 +3086,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("404 test message", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -237,7 +3099,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 414;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("414 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -250,7 +3112,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 504;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("504 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -263,7 +3125,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 503;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("503 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -276,7 +3138,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 500;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("500 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -289,7 +3151,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 403;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("403 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -302,7 +3164,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("NameResolutionFailure 400", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -315,7 +3177,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("ConnectFailure 400", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -328,7 +3190,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("ServerProtocolViolation 400 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -341,7 +3203,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("ProtocolError 400 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -354,7 +3216,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 403;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("java.io.FileNotFoundException 400 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -367,7 +3229,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("Failed downloading UnityWeb", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -380,7 +3242,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("timedout", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 true, false, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -393,7 +3255,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("test message", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -406,7 +3268,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("404 test message", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -419,7 +3281,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 414;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("414 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -432,7 +3294,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 504;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("504 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -445,7 +3307,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 503;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("503 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -458,7 +3320,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 500;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("500 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -471,7 +3333,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 403;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("403 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -484,7 +3346,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("NameResolutionFailure 400", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -497,7 +3359,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("ConnectFailure 400", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -510,7 +3372,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("ServerProtocolViolation 400 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -523,7 +3385,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("ProtocolError 400 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -536,7 +3398,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 403;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("java.io.FileNotFoundException 400 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -549,7 +3411,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("Failed downloading UnityWeb", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -562,7 +3424,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("timedout", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 true, true, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -575,7 +3437,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("test message", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -588,7 +3450,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("404 test message", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -601,7 +3463,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 414;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("414 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -614,7 +3476,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 504;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("504 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -627,7 +3489,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 503;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("503 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -640,7 +3502,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 500;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("500 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -653,7 +3515,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 403;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("403 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -666,7 +3528,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("NameResolutionFailure 400", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -679,7 +3541,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("ConnectFailure 400", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -692,7 +3554,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("ServerProtocolViolation 400 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -705,7 +3567,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("ProtocolError 400 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -718,7 +3580,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 403;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("java.io.FileNotFoundException 400 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -731,7 +3593,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("Failed downloading UnityWeb", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -744,7 +3606,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("test message", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -757,7 +3619,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("404 test message", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -770,7 +3632,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 414;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("414 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -783,7 +3645,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 504;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("504 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -796,7 +3658,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 503;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("503 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -809,7 +3671,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 500;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("500 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -822,7 +3684,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 403;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("403 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -835,7 +3697,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("NameResolutionFailure 400", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -848,7 +3710,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("ConnectFailure 400", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -861,7 +3723,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("ServerProtocolViolation 400 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -874,7 +3736,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("ProtocolError 400 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -887,7 +3749,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 403;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("java.io.FileNotFoundException 400 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -900,7 +3762,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("Failed downloading UnityWeb", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -913,7 +3775,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("timed out", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 true, false, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -926,7 +3788,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("test message", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -939,7 +3801,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("404 test message", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -952,7 +3814,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 414;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("414 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -965,7 +3827,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 504;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("504 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -978,7 +3840,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 503;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("503 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -991,7 +3853,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 500;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("500 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -1004,7 +3866,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 403;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("403 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -1017,7 +3879,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("NameResolutionFailure 400", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -1030,7 +3892,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("ConnectFailure 400", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -1043,7 +3905,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("ServerProtocolViolation 400 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -1056,7 +3918,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("ProtocolError 400 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -1069,7 +3931,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 403;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("java.io.FileNotFoundException 400 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -1082,7 +3944,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("Failed downloading UnityWeb", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, false, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -1095,7 +3957,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("timedout", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 true, false, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -1108,7 +3970,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("test message", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -1121,7 +3983,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("404 test message", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -1134,7 +3996,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 414;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("414 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -1147,7 +4009,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 504;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("504 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -1160,7 +4022,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 503;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("503 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -1173,7 +4035,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 500;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("500 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -1186,7 +4048,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 403;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("403 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -1199,7 +4061,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("NameResolutionFailure 400", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -1212,7 +4074,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("ConnectFailure 400", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -1225,7 +4087,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("ServerProtocolViolation 400 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -1238,7 +4100,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("ProtocolError 400 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -1251,7 +4113,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 403;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("java.io.FileNotFoundException 400 response", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -1264,7 +4126,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("Failed downloading UnityWeb", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -1277,7 +4139,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("timedout", channels, false,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 true, true, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -1290,7 +4152,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("test message", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -1303,7 +4165,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("404 test message", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -1316,7 +4178,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 414;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("414 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -1329,7 +4191,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 504;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("504 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -1342,7 +4204,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 503;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("503 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -1355,7 +4217,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 500;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("500 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -1368,7 +4230,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 403;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("403 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -1381,7 +4243,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("NameResolutionFailure 400", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -1394,7 +4256,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("ConnectFailure 400", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -1407,7 +4269,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("ServerProtocolViolation 400 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -1420,7 +4282,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 122;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("ProtocolError 400 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -1433,7 +4295,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 403;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("java.io.FileNotFoundException 400 response", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Critical
             );
@@ -1446,7 +4308,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
 
             TestResponseCallbackErrorOrTimeoutHandler<object> ("Failed downloading UnityWeb", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 false, true, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -1459,7 +4321,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = 400;
 
             TestResponseCallbackErrorOrTimeoutHandler<string> ("timedout", channels, true,
-                ResponseType.Subscribe, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 true, true, 0, false, PubnubErrorFilter.Level.Warning
             );
@@ -2193,13 +5055,38 @@ namespace PubNubMessaging.Tests
             );
         }*/
 
+        /*[Test]
+        public void TestResponseCallbackErrorOrTimeoutHandlerObjErrRORSubscribeFailedDLCG ()
+        {
+            string[] channels = {"testSubscribe","test2Subscribe"}; 
+            ExceptionStatusCode = 400;
+
+            TestResponseCallbackErrorOrTimeoutHandler<object> (channels, "Failed downloading UnityWeb", null, true,
+                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
+                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
+                false, true, 0, false, PubnubErrorFilter.Level.Warning
+            );
+        }*/
+
         public void TestResponseCallbackErrorOrTimeoutHandler<T>(string message, string[] channels,
             bool resumeOnReconnect, ResponseType responseType, CurrentRequestType crt, Action<T> userCallback,
             Action<T> connectCallback, Action<PubnubClientError> errorCallback,
             bool isTimeout, bool isError, long timetoken, bool ssl, PubnubErrorFilter.Level errorLevel
         ){
+            TestResponseCallbackErrorOrTimeoutHandler(null, message, channels, resumeOnReconnect, responseType,
+                crt, userCallback, connectCallback, errorCallback, isTimeout, isError, timetoken, ssl, errorLevel);
+        }
+
+
+        public void TestResponseCallbackErrorOrTimeoutHandler<T>( 
+            string[] channelGroups, string message, string[] channels,
+            bool resumeOnReconnect, ResponseType responseType, CurrentRequestType crt, Action<T> userCallback,
+            Action<T> connectCallback, Action<PubnubClientError> errorCallback,
+            bool isTimeout, bool isError, long timetoken, bool ssl, PubnubErrorFilter.Level errorLevel
+        ){
             ExceptionMessage = message;
-            ExceptionChannel = string.Join (",", channels);
+            ExceptionChannel = (channels!=null)?string.Join (",", channels):"";
+            ExceptionChannelGroups = (channelGroups!=null)?string.Join (",", channelGroups):"";
 
             if (isTimeout) { 
                 ExceptionMessage = "Operation Timeout";
@@ -2214,8 +5101,20 @@ namespace PubNubMessaging.Tests
                 IsError = false;
             }
 
-            RequestState<T> requestState = BuildRequests.BuildRequestState<T> (channels, responseType, 
-                resumeOnReconnect, userCallback, connectCallback, errorCallback, 0, isTimeout, timetoken, typeof(T));
+            List<ChannelEntity> channelEntities = Helpers.CreateChannelEntity<T>(channels, 
+                true, false, null, userCallback, connectCallback, errorCallback, null, null);  
+
+            List<ChannelEntity> channelGroupEntities = Helpers.CreateChannelEntity<T>(channelGroups, 
+                true, true, null, userCallback, connectCallback, errorCallback, null, null);  
+
+            if((channelEntities != null) && (channelGroupEntities != null)){
+                channelEntities.AddRange(channelGroupEntities);
+            } else if(channelEntities == null) {
+                channelEntities = channelGroupEntities;
+            }
+
+            RequestState<T> requestState = BuildRequests.BuildRequestState<T> (channelEntities, responseType, 
+                resumeOnReconnect, 0, isTimeout, timetoken, typeof(T));
 
             Pubnub pubnub = new Pubnub (
                 Common.PublishKey,
@@ -2233,14 +5132,14 @@ namespace PubNubMessaging.Tests
             cea.CurrRequestType = crt;
 
             CRequestType = responseType;
-            if (responseType == ResponseType.Presence || responseType == ResponseType.Subscribe) {
+            if (responseType == ResponseType.PresenceV2 || responseType == ResponseType.SubscribeV2) {
                 ExceptionHandlers.MultiplexException += HandleMultiplexException<T>;
                 resultPart1 = false;
             }
-            ExceptionHandlers.ResponseCallbackErrorOrTimeoutHandler<T> (cea, requestState, ExceptionChannel, 
-                errorLevel, pubnub.JsonPluggableLibrary);
+            ExceptionHandlers.ResponseCallbackErrorOrTimeoutHandler<T> (cea, requestState, 
+                errorLevel);
 
-            /*if (responseType == ResponseType.Presence || responseType == ResponseType.Subscribe) {
+            /*if (responseType == ResponseType.PresenceV2 || responseType == ResponseType.SubscribeV2) {
                 DateTime dt = DateTime.Now;
                 while (dt.AddSeconds(2) > DateTime.Now) {
                     UnityEngine.Debug.Log ("waiting");
@@ -2257,20 +5156,50 @@ namespace PubNubMessaging.Tests
         {
             ExceptionHandlers.MultiplexException -= HandleMultiplexException<T>;
             MultiplexExceptionEventArgs<T> mea = ea as MultiplexExceptionEventArgs<T>;
-            UnityEngine.Debug.Log (mea.responseType.Equals (CRequestType));
-            UnityEngine.Debug.Log (string.Join (",", mea.channels).Equals (ExceptionChannel));
-            UnityEngine.Debug.Log (mea.resumeOnReconnect.Equals(ResumeOnReconnect));
+            bool channelMatch = false;
+            bool channelGroupMatch = false;
+            if (mea.channelEntities != null) {
+                foreach (ChannelEntity c in mea.channelEntities) {
+                    channelMatch = ExceptionChannel.Contains(c.ChannelID.ChannelOrChannelGroupName);
+                    channelGroupMatch = ExceptionChannelGroups.Contains(c.ChannelID.ChannelOrChannelGroupName);
+                    if(channelMatch || channelGroupMatch)
+                        continue;
+                }
+            }
+            string channels = Helpers.GetNamesFromChannelEntities(mea.channelEntities, false);
 
-            UnityEngine.Debug.Log (string.Format ("HandleMultiplexException LOG: {0} {1} {2} {3} {4} {5} {6} {7} {8} {9}",
+            UnityEngine.Debug.Log (string.Format("mea.responseType.Equals (CRequestType) {0}\n" +
+                "channelMatch {1}\n" +
+                "mea.resumeOnReconnect.Equals(ResumeOnReconnect) {2}\n"
+                , mea.responseType.Equals (CRequestType),
+            channelMatch,
+                mea.resumeOnReconnect.Equals(ResumeOnReconnect)));
+
+            UnityEngine.Debug.Log (string.Format ("HandleMultiplexException LOG: \n" +
+                "mea.responseType.Equals (CRequestType): {0} \n" +
+                "channelMatch: {1} \n" +
+                "mea.resumeOnReconnect.Equals(ResumeOnReconnect): {2} \n" +
+                "CRequestType:{3} \n" +
+                "ExceptionChannel: {4} \n" +
+                "ResumeOnReconnect: {5} \n" +
+                "mea.responseType: {6} \n" +
+                "channels: {7} \n" +
+                "mea.resumeOnReconnect: {8} \n" +
+                "resultPart1: {9} \n" +
+                "channelGroupMatch: {10}\n",
+                "channelGroups: {11}\n",
                 mea.responseType.Equals (CRequestType),
-                string.Join (",", mea.channels).Equals (ExceptionChannel),
+                channelMatch,
                 mea.resumeOnReconnect.Equals(ResumeOnReconnect), CRequestType.ToString(), 
                 ExceptionChannel, ResumeOnReconnect, mea.responseType,
-                string.Join(",",mea.channels), mea.resumeOnReconnect, resultPart1
-            ));
+                channels, mea.resumeOnReconnect, resultPart1,
+                channelGroupMatch,
+                ExceptionChannelGroups
+                ));
             bool resultPart2 = false;
             if (mea.responseType.Equals (CRequestType)
-                && string.Join (",", mea.channels).Equals (ExceptionChannel)
+                && (string.IsNullOrEmpty(ExceptionChannel))?true:channelMatch
+                && (string.IsNullOrEmpty(ExceptionChannelGroups))?true:channelGroupMatch
                 && mea.resumeOnReconnect.Equals (ResumeOnReconnect)) {
                 resultPart2 = true;
             }
@@ -2279,10 +5208,25 @@ namespace PubNubMessaging.Tests
             
         void ErrorCallbackCommonExceptionHandler (PubnubClientError result)
         {
-            UnityEngine.Debug.Log (string.Format ("DisplayErrorMessage LOG: {0} {1} {2} {3} {4} {5} {6} {7} {8}",
+            UnityEngine.Debug.Log (string.Format ("DisplayErrorMessage LOG: \n" +
+                "result: {0} \n" +
+                "result.Message.Equals (ExceptionMessage): {1} \n" +
+                "ExceptionChannel.Contains(result.ChannelGroup): {2} \n" +
+                "result.StatusCode.Equals(ExceptionStatusCode): {3} \n" +
+                "result.StatusCode.ToString(): {4} \n" +
+                "ExceptionMessage: {5} \n" +
+                "ExceptionChannel: {6} \n" +
+                "ExceptionStatusCode: {7} \n" +
+                "IsTimeout: {8} \n" +
+                "result.Channel: {9} \n" +
+                "ExceptionChannelGroups.Contains(result.ChannelGroup): {10}\n",
+                "ExceptionChannelGroups: {11}\n",
                 result, result.Message.Equals (ExceptionMessage),
-                result.Channel.Equals (ExceptionChannel),
-                result.StatusCode.Equals(ExceptionStatusCode), result.StatusCode.ToString(), ExceptionMessage, ExceptionChannel, ExceptionStatusCode, IsTimeout
+                ExceptionChannel.Contains(result.ChannelGroup),
+                result.StatusCode.Equals(ExceptionStatusCode), result.StatusCode.ToString(), ExceptionMessage,
+                ExceptionChannel, ExceptionStatusCode, IsTimeout, result.Channel,
+                ExceptionChannelGroups.Contains(result.ChannelGroup),
+                ExceptionChannelGroups
             ));
 
             bool statusCodeCheck = false;
@@ -2294,19 +5238,30 @@ namespace PubNubMessaging.Tests
                 statusCodeCheck = result.StatusCode.Equals (ExceptionStatusCode);
             }
 
-            if ((result.Channel.Contains ("Subscribe")) || (result.Channel.Contains ("Presence"))) {
-                if (result.Message.Equals (ExceptionMessage)
-                    && result.Channel.Equals (ExceptionChannel)
-                    && statusCodeCheck) {
+            if ((result.Channel.Contains ("Subscribe")) || (result.Channel.Contains ("Presence"))
+                || (result.ChannelGroup.Contains ("Subscribe")) || (result.ChannelGroup.Contains ("Presence"))
+            ) {
+                if ((result.Message.Equals (ExceptionMessage)
+                    && (string.IsNullOrEmpty(ExceptionChannel))?true:ExceptionChannel.Contains(result.Channel)
+                    && (string.IsNullOrEmpty(ExceptionChannelGroups))?true:ExceptionChannelGroups.Contains(result.ChannelGroup)
+                    && statusCodeCheck)) {
                     resultPart1 = true;
                 } else {
                     resultPart1 = false;
                 }
                 UnityEngine.Debug.Log ("Subscribe || Presence " + resultPart1);
             } else {
-                Assert.IsTrue (result.Message.Equals (ExceptionMessage)
-                && result.Channel.Equals (ExceptionChannel)
-                && statusCodeCheck);
+                //if (IsChannelGroup){
+                    Assert.IsTrue (result.Message.Equals (ExceptionMessage)
+                    && (string.IsNullOrEmpty(ExceptionChannel))?true:ExceptionChannel.Contains(result.Channel)
+                    && (string.IsNullOrEmpty(ExceptionChannelGroups))?true:ExceptionChannelGroups.Contains(result.ChannelGroup)
+                    && statusCodeCheck);
+                /*}else{
+                    Assert.IsTrue (result.Message.Equals (ExceptionMessage)
+                        && ExceptionChannel.Contains(result.ChannelGroup)
+                        && statusCodeCheck);
+                    
+                }*/
             }
         }
 

@@ -4,6 +4,7 @@ using NUnit.Framework;
 using System.Text;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace PubNubMessaging.Tests
 {
@@ -71,7 +72,7 @@ namespace PubNubMessaging.Tests
         public void TestBuildRequestStateSubscribeObj ()
         {
             string[] channels = new string[] { "test" };
-            TestBuildRequestStateCommon<object> (channels, CurrentRequestType.Subscribe, ResponseType.Subscribe, 
+            TestBuildRequestStateCommon<object> (channels, CurrentRequestType.Subscribe, ResponseType.SubscribeV2, 
                 false, UserCallback, ConnectCallback, ErrorCallback, DateTime.Now.Ticks, false, 0, null
             );
         }
@@ -80,7 +81,7 @@ namespace PubNubMessaging.Tests
         public void TestBuildRequestStateSubscribeReconnectObj ()
         {
             string[] channels = new string[] { "test" };
-            TestBuildRequestStateCommon<object> (channels, CurrentRequestType.Subscribe, ResponseType.Subscribe, 
+            TestBuildRequestStateCommon<object> (channels, CurrentRequestType.Subscribe, ResponseType.SubscribeV2, 
                 true, UserCallback, ConnectCallback, ErrorCallback, DateTime.Now.Ticks, false, 0, null
             );
         }
@@ -89,7 +90,7 @@ namespace PubNubMessaging.Tests
         public void TestBuildRequestStateSubscribeTimeoutObj ()
         {
             string[] channels = new string[] { "test" };
-            TestBuildRequestStateCommon<object> (channels, CurrentRequestType.Subscribe, ResponseType.Subscribe, 
+            TestBuildRequestStateCommon<object> (channels, CurrentRequestType.Subscribe, ResponseType.SubscribeV2, 
                 true, UserCallback, ConnectCallback, ErrorCallback, DateTime.Now.Ticks, false, 0, null
             );
         }
@@ -98,7 +99,7 @@ namespace PubNubMessaging.Tests
         public void TestBuildRequestStateSubscribeTimetokenObj ()
         {
             string[] channels = new string[] { "test" };
-            TestBuildRequestStateCommon<object> (channels, CurrentRequestType.Subscribe, ResponseType.Subscribe, 
+            TestBuildRequestStateCommon<object> (channels, CurrentRequestType.Subscribe, ResponseType.SubscribeV2, 
                 true, UserCallback, ConnectCallback, ErrorCallback, DateTime.Now.Ticks, false, 14498416434364941, null
             );
         }
@@ -125,7 +126,7 @@ namespace PubNubMessaging.Tests
         public void TestBuildRequestStateSubscribe ()
         {
             string[] channels = new string[] { "test" };
-            TestBuildRequestStateCommon<string> (channels, CurrentRequestType.Subscribe, ResponseType.Subscribe, 
+            TestBuildRequestStateCommon<string> (channels, CurrentRequestType.Subscribe, ResponseType.SubscribeV2, 
                 false, UserCallback, ConnectCallback, ErrorCallback, DateTime.Now.Ticks, false, 0, null
             );
         }
@@ -134,7 +135,7 @@ namespace PubNubMessaging.Tests
         public void TestBuildRequestStateSubscribeReconnect ()
         {
             string[] channels = new string[] { "test" };
-            TestBuildRequestStateCommon<string> (channels, CurrentRequestType.Subscribe, ResponseType.Subscribe, 
+            TestBuildRequestStateCommon<string> (channels, CurrentRequestType.Subscribe, ResponseType.SubscribeV2, 
                 true, UserCallback, ConnectCallback, ErrorCallback, DateTime.Now.Ticks, false, 0, null
             );
         }
@@ -143,7 +144,7 @@ namespace PubNubMessaging.Tests
         public void TestBuildRequestStateSubscribeTimeout ()
         {
             string[] channels = new string[] { "test" };
-            TestBuildRequestStateCommon<string> (channels, CurrentRequestType.Subscribe, ResponseType.Subscribe, 
+            TestBuildRequestStateCommon<string> (channels, CurrentRequestType.Subscribe, ResponseType.SubscribeV2, 
                 true, UserCallback, ConnectCallback, ErrorCallback, DateTime.Now.Ticks, false, 0, null
             );
         }
@@ -152,7 +153,7 @@ namespace PubNubMessaging.Tests
         public void TestBuildRequestStateSubscribeTimetoken ()
         {
             string[] channels = new string[] { "test" };
-            TestBuildRequestStateCommon<string> (channels, CurrentRequestType.Subscribe, ResponseType.Subscribe, 
+            TestBuildRequestStateCommon<string> (channels, CurrentRequestType.Subscribe, ResponseType.SubscribeV2, 
                 true, UserCallback, ConnectCallback, ErrorCallback, DateTime.Now.Ticks, false, 14498416434364941, null
             );
         }
@@ -161,7 +162,7 @@ namespace PubNubMessaging.Tests
         public void TestBuildRequestStateSubscribeTimetokenId ()
         {
             string[] channels = new string[] { "test" };
-            TestBuildRequestStateCommon<string> (channels, CurrentRequestType.Subscribe, ResponseType.Subscribe, 
+            TestBuildRequestStateCommon<string> (channels, CurrentRequestType.Subscribe, ResponseType.SubscribeV2, 
                 true, UserCallback, ConnectCallback, ErrorCallback, 0, false, 14498416434364941, null
             );
         }
@@ -170,7 +171,7 @@ namespace PubNubMessaging.Tests
         public void TestBuildRequestStateSubscribeTimetokenObjId ()
         {
             string[] channels = new string[] { "test" };
-            TestBuildRequestStateCommon<object> (channels, CurrentRequestType.Subscribe, ResponseType.Subscribe, 
+            TestBuildRequestStateCommon<object> (channels, CurrentRequestType.Subscribe, ResponseType.SubscribeV2, 
                 true, UserCallback, ConnectCallback, ErrorCallback, 0, false, 14498416434364941, null
             );
         }
@@ -324,20 +325,24 @@ namespace PubNubMessaging.Tests
             Action<T> connectCallback, Action<PubnubClientError> errorCallback,
             long id, bool timeout, long timetoken, Type typeParam
         ){
-            RequestState<T> requestState = BuildRequests.BuildRequestState<T> (channels, responseType, 
-                reconnect, userCallback, connectCallback, errorCallback, id, timeout, timetoken, typeof(T));
+            List<ChannelEntity> channelEntities = Helpers.CreateChannelEntity<T>(channels, 
+                true, false, null, userCallback, connectCallback, errorCallback, null, null);  
+
+            RequestState<T> requestState = BuildRequests.BuildRequestState<T> (channelEntities, responseType, 
+                reconnect, id, timeout, timetoken, typeof(T), "", userCallback, errorCallback);
 
             StoredRequestState.Instance.SetRequestState (requestType, requestState);
+
             RequestState<T> reqState = StoredRequestState.Instance.GetStoredRequestState(requestType) as RequestState<T>;
+            string channels2 = Helpers.GetNamesFromChannelEntities(reqState.ChannelEntities, false);
             Assert.IsTrue (reqState.Equals (requestState));
             Assert.IsTrue (reqState.ID.Equals(id));
-            Assert.IsTrue (string.Join(",", reqState.Channels).Equals(string.Join(",", channels)));
+            Assert.IsTrue (channels2.Equals(string.Join(",", channels)));
             Assert.IsTrue (reqState.Reconnect.Equals(reconnect));
             Assert.IsTrue (reqState.RespType.Equals(responseType));
             Assert.IsTrue (reqState.Timeout.Equals(timeout));
             Assert.IsTrue (reqState.Timetoken.Equals(timetoken));
-            Assert.IsTrue (reqState.ConnectCallback.Equals(connectCallback));
-            Assert.IsTrue (reqState.UserCallback.Equals(userCallback));
+            Assert.IsTrue (reqState.SuccessCallback.Equals(userCallback));
             Assert.IsTrue (reqState.ErrorCallback.Equals(errorCallback));
         }    
 
@@ -347,7 +352,7 @@ namespace PubNubMessaging.Tests
             string channel = "test";
             ExceptionStatusCode = (int)PubnubErrorCode.OperationTimeout;
             TestCommonExceptionHandlerCommon<object> ("test message", channel,
-                ResponseType.Subscribe, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
+                ResponseType.SubscribeV2, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
             );
         }
 
@@ -357,7 +362,7 @@ namespace PubNubMessaging.Tests
             string channel = "test";
 
             TestCommonExceptionHandlerCommon<object> ("test message", channel,
-                ResponseType.Subscribe, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
+                ResponseType.SubscribeV2, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
             );
         }
 
@@ -623,7 +628,7 @@ namespace PubNubMessaging.Tests
             string channel = "test";
             ExceptionStatusCode = (int)PubnubErrorCode.OperationTimeout;
             TestCommonExceptionHandlerCommon<object> ("test message", channel,
-                ResponseType.Presence, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
+                ResponseType.PresenceV2, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
             );
         }
 
@@ -633,7 +638,7 @@ namespace PubNubMessaging.Tests
             string channel = "test";
 
             TestCommonExceptionHandlerCommon<object> ("test message", channel,
-                ResponseType.Presence, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
+                ResponseType.PresenceV2, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
             );
         }
 
@@ -683,7 +688,7 @@ namespace PubNubMessaging.Tests
             string channel = "test";
             ExceptionStatusCode = (int)PubnubErrorCode.OperationTimeout;
             TestCommonExceptionHandlerCommon<string> ("test message", channel,
-                ResponseType.Subscribe, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
+                ResponseType.SubscribeV2, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
             );
         }
 
@@ -693,7 +698,7 @@ namespace PubNubMessaging.Tests
             string channel = "test";
 
             TestCommonExceptionHandlerCommon<string> ("test message", channel,
-                ResponseType.Subscribe, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
+                ResponseType.SubscribeV2, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
             );
         }
 
@@ -959,7 +964,7 @@ namespace PubNubMessaging.Tests
             string channel = "test";
             ExceptionStatusCode = (int)PubnubErrorCode.OperationTimeout;
             TestCommonExceptionHandlerCommon<string> ("test message", channel,
-                ResponseType.Presence, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
+                ResponseType.PresenceV2, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
             );
         }
 
@@ -969,7 +974,7 @@ namespace PubNubMessaging.Tests
             string channel = "test";
 
             TestCommonExceptionHandlerCommon<string> ("test message", channel,
-                ResponseType.Presence, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
+                ResponseType.PresenceV2, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
             );
         }
 
@@ -1026,7 +1031,14 @@ namespace PubNubMessaging.Tests
             }
 
             ExceptionChannel = channel;
-            ExceptionHandlers.CommonExceptionHandler<T> (message, channel, timeout, errorCallback, errorLevel, responseType);
+
+            List<ChannelEntity> channelEntities = Helpers.CreateChannelEntity<T>(new string[] {channel}, 
+                true, false, null, null, null, errorCallback, null, null);  
+
+            RequestState<T> reqState = BuildRequests.BuildRequestState<T> (channelEntities, responseType, false, 0, timeout, 0, null, "", 
+                null, errorCallback);
+            
+            ExceptionHandlers.CommonExceptionHandler<T> (reqState, message, timeout, errorLevel);
         }    
 
         void ErrorCallbackCommonExceptionHandler (PubnubClientError result)
@@ -1077,7 +1089,7 @@ namespace PubNubMessaging.Tests
 
             ExceptionHandlers.MultiplexException += HandleMultiplexException<object>;
             TestUrlRequestCommonExceptionHandlerCommon<object> ("test message", channel, true,
-                ResponseType.Subscribe, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
+                ResponseType.SubscribeV2, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
             );
 
         }
@@ -1090,7 +1102,7 @@ namespace PubNubMessaging.Tests
             ResumeOnReconnect = true;
             ExceptionHandlers.MultiplexException += HandleMultiplexException<object>;
             TestUrlRequestCommonExceptionHandlerCommon<object> ("test message", channel, true,
-                ResponseType.Subscribe, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
+                ResponseType.SubscribeV2, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
             );
         }
 
@@ -1103,7 +1115,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = (int)PubnubErrorCode.OperationTimeout;
             ExceptionHandlers.MultiplexException += HandleMultiplexException<object>;
             TestUrlRequestCommonExceptionHandlerCommon<object> ("test message", channel, false,
-                ResponseType.Subscribe, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
+                ResponseType.SubscribeV2, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
             );
         }
 
@@ -1115,7 +1127,7 @@ namespace PubNubMessaging.Tests
             ResumeOnReconnect = false;
             ExceptionHandlers.MultiplexException += HandleMultiplexException<object>;
             TestUrlRequestCommonExceptionHandlerCommon<object> ("test message", channel, false,
-                ResponseType.Subscribe, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
+                ResponseType.SubscribeV2, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
             );
         }
 
@@ -1128,7 +1140,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = (int)PubnubErrorCode.OperationTimeout;
             ExceptionHandlers.MultiplexException += HandleMultiplexException<object>;
             TestUrlRequestCommonExceptionHandlerCommon<object> ("test message", channel, true,
-                ResponseType.Presence, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
+                ResponseType.PresenceV2, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
             );
         }
 
@@ -1140,7 +1152,7 @@ namespace PubNubMessaging.Tests
             ResumeOnReconnect = true;
             ExceptionHandlers.MultiplexException += HandleMultiplexException<object>;
             TestUrlRequestCommonExceptionHandlerCommon<object> ("test message", channel, true,
-                ResponseType.Presence, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
+                ResponseType.PresenceV2, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
             );
         }
 
@@ -1153,7 +1165,7 @@ namespace PubNubMessaging.Tests
             ExceptionHandlers.MultiplexException += HandleMultiplexException<object>;
             ExceptionStatusCode = (int)PubnubErrorCode.OperationTimeout;
             TestUrlRequestCommonExceptionHandlerCommon<object> ("test message", channel, false,
-                ResponseType.Presence, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
+                ResponseType.PresenceV2, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
             );
         }
 
@@ -1165,7 +1177,7 @@ namespace PubNubMessaging.Tests
             ResumeOnReconnect = false;
             ExceptionHandlers.MultiplexException += HandleMultiplexException<object>;
             TestUrlRequestCommonExceptionHandlerCommon<object> ("test message", channel, false,
-                ResponseType.Presence, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
+                ResponseType.PresenceV2, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
             );
         }
 
@@ -1466,7 +1478,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = (int)PubnubErrorCode.OperationTimeout;
             ExceptionHandlers.MultiplexException += HandleMultiplexException<string>;
             TestUrlRequestCommonExceptionHandlerCommon<string> ("test message", channel, true,
-                ResponseType.Subscribe, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
+                ResponseType.SubscribeV2, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
             );
         }
 
@@ -1478,7 +1490,7 @@ namespace PubNubMessaging.Tests
             ResumeOnReconnect = true;
             ExceptionHandlers.MultiplexException += HandleMultiplexException<string>;
             TestUrlRequestCommonExceptionHandlerCommon<string> ("test message", channel, true,
-                ResponseType.Subscribe, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
+                ResponseType.SubscribeV2, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
             );
         }
 
@@ -1491,7 +1503,7 @@ namespace PubNubMessaging.Tests
             ExceptionStatusCode = (int)PubnubErrorCode.OperationTimeout;
             ExceptionHandlers.MultiplexException += HandleMultiplexException<string>;
             TestUrlRequestCommonExceptionHandlerCommon<string> ("test message", channel, false,
-                ResponseType.Subscribe, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
+                ResponseType.SubscribeV2, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
             );
         }
 
@@ -1503,7 +1515,7 @@ namespace PubNubMessaging.Tests
             ResumeOnReconnect = false;
             ExceptionHandlers.MultiplexException += HandleMultiplexException<string>;
             TestUrlRequestCommonExceptionHandlerCommon<string> ("test message", channel, false,
-                ResponseType.Subscribe, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
+                ResponseType.SubscribeV2, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
             );
         }
 
@@ -1516,7 +1528,7 @@ namespace PubNubMessaging.Tests
             ExceptionHandlers.MultiplexException += HandleMultiplexException<string>;
             ExceptionStatusCode = (int)PubnubErrorCode.OperationTimeout;
             TestUrlRequestCommonExceptionHandlerCommon<string> ("test message", channel, true,
-                ResponseType.Presence, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
+                ResponseType.PresenceV2, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
             );
         }
 
@@ -1528,7 +1540,7 @@ namespace PubNubMessaging.Tests
             ResumeOnReconnect = true;
             ExceptionHandlers.MultiplexException += HandleMultiplexException<string>;
             TestUrlRequestCommonExceptionHandlerCommon<string> ("test message", channel, true,
-                ResponseType.Presence, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
+                ResponseType.PresenceV2, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
             );
         }
 
@@ -1541,7 +1553,7 @@ namespace PubNubMessaging.Tests
             ExceptionHandlers.MultiplexException += HandleMultiplexException<string>;
             ExceptionStatusCode = (int)PubnubErrorCode.OperationTimeout;
             TestUrlRequestCommonExceptionHandlerCommon<string> ("test message", channel, false,
-                ResponseType.Presence, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
+                ResponseType.PresenceV2, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, true, PubnubErrorFilter.Level.Critical
             );
         }
 
@@ -1553,7 +1565,7 @@ namespace PubNubMessaging.Tests
             ResumeOnReconnect = false;
             ExceptionHandlers.MultiplexException += HandleMultiplexException<string>;
             TestUrlRequestCommonExceptionHandlerCommon<string> ("test message", channel, false,
-                ResponseType.Presence, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
+                ResponseType.PresenceV2, UserCallbackCommonExceptionHandler, ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, false, PubnubErrorFilter.Level.Critical
             );
         }
 
@@ -2028,10 +2040,15 @@ namespace PubNubMessaging.Tests
                 ExceptionStatusCode = (int)PubnubErrorCode.None;
             }
             CRequestType = responseType;
-            ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (message, responseType, channels, 
-                timeout, userCallback, connectCallback, errorCallback, resumeOnReconnect, errorLevel );
+            List<ChannelEntity> channelEntities = Helpers.CreateChannelEntity<T>(channels, 
+                true, false, null, userCallback, connectCallback, errorCallback, null, null);  
 
-            /*if (responseType == ResponseType.Presence || responseType == ResponseType.Subscribe) {
+            RequestState<T> reqState = BuildRequests.BuildRequestState<T> (channelEntities, responseType, resumeOnReconnect, 0, timeout, 0, null, "", 
+                userCallback, errorCallback);
+            ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (message, reqState, 
+                timeout, resumeOnReconnect, errorLevel);
+
+            /*if (responseType == ResponseType.Presence || responseType == ResponseType.SubscribeV2) {
                 //waitForCompletion = true;
                 DateTime dt = DateTime.Now;
                 while (dt.AddSeconds(2) > DateTime.Now) {
@@ -2049,16 +2066,17 @@ namespace PubNubMessaging.Tests
         {
             ExceptionHandlers.MultiplexException -= HandleMultiplexException<T>;
             MultiplexExceptionEventArgs<T> mea = ea as MultiplexExceptionEventArgs<T>;
+            string channels = Helpers.GetNamesFromChannelEntities(mea.channelEntities, false);
             UnityEngine.Debug.Log (string.Format ("HandleMultiplexException LOG: {0} {1} {2} {3} {4} {5} {6} {7} {8}",
                 mea.responseType.Equals (CRequestType) ,
-                mea.channels.Equals (Channels),
+                channels.Equals (Channels),
                 mea.resumeOnReconnect.Equals(ResumeOnReconnect), CRequestType.ToString(), 
                 string.Join(",",Channels), ResumeOnReconnect, mea.responseType,
-                string.Join(",",mea.channels), mea.resumeOnReconnect
+                channels, mea.resumeOnReconnect
             ));
             //waitForCompletion = false;
             Assert.True (mea.responseType.Equals (CRequestType) 
-                && string.Join(",",mea.channels).Equals (string.Join(",",Channels))
+                && channels.Equals (string.Join(",",Channels))
                 && mea.resumeOnReconnect.Equals(ResumeOnReconnect)
             );
         }

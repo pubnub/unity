@@ -1,8 +1,21 @@
 name: unity
-version: 3.6.9.1
+version: 3.7.2
 schema: 1
 scm: github.com/pubnub/unity
 changelog:
+  - version: v3.7.2
+    date: 
+    changes:
+      - type: feature
+        text: PubSub v2
+      - type: feature
+        text: Channel Groups
+      - type: feature
+        text: Message Filtering
+      - type: feature
+        text: Wildcard Subscribe
+      - type: improvement
+        text: Code optimizations
   - version: v3.6.9.1
     date: 
     changes:
