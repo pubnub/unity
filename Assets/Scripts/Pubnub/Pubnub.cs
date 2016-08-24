@@ -21,25 +21,25 @@ namespace PubNubMessaging.Core
             Subscribe<object> (channel, "", "", subscribeCallback, connectCallback, null, errorCallback);
         }
 
-        public void Subscribe (string channel, Action<object> subscribeCallback, Action<object> connectCallback, 
+        public void Subscribe (string channel, Action<object> subscribeCallback, Action<object> connectCallback,
             Action<object> wildcardPresenceCallback, Action<PubnubClientError> errorCallback)
         {
             Subscribe<object> (channel, "", "", subscribeCallback, connectCallback, wildcardPresenceCallback, errorCallback);
         }
 
-        public void Subscribe<T> (string channel, string channelGroup, Action<T> subscribeCallback, Action<T> connectCallback, 
+        public void Subscribe<T> (string channel, string channelGroup, Action<T> subscribeCallback, Action<T> connectCallback,
             Action<T> wildcardPresenceCallback, Action<PubnubClientError> errorCallback)
         {
             Subscribe<T> (channel, channelGroup, "", subscribeCallback, connectCallback, wildcardPresenceCallback, errorCallback);
         }
 
-        public void Subscribe<T> (string channel, Action<T> subscribeCallback, Action<T> connectCallback, 
+        public void Subscribe<T> (string channel, Action<T> subscribeCallback, Action<T> connectCallback,
             Action<PubnubClientError> errorCallback, string timetoken)
         {
             Subscribe<T> (channel, "", timetoken, subscribeCallback, connectCallback, null, errorCallback);
         }
 
-        public void Subscribe<T> (string channel, string channelGroup, string timetoken, Action<T> subscribeCallback, Action<T> connectCallback, 
+        public void Subscribe<T> (string channel, string channelGroup, string timetoken, Action<T> subscribeCallback, Action<T> connectCallback,
             Action<T> wildcardPresenceCallback, Action<PubnubClientError> errorCallback)
         {
             Utility.CheckChannelOrChannelGroup(channel, channelGroup);
@@ -52,19 +52,19 @@ namespace PubNubMessaging.Core
             pubnub.Subscribe<T> (channel, channelGroup, lTimetoken, subscribeCallback, connectCallback, wildcardPresenceCallback, errorCallback);
         }
 
-        public void Subscribe<T> (string channel, string channelGroup, Action<T> subscribeCallback, Action<T> connectCallback, 
+        public void Subscribe<T> (string channel, string channelGroup, Action<T> subscribeCallback, Action<T> connectCallback,
             Action<PubnubClientError> errorCallback)
         {
             Subscribe<T> (channel, channelGroup, "", subscribeCallback, connectCallback, null, errorCallback);
         }
 
-        public void Subscribe (string channel, string channelGroup, Action<object> subscribeCallback, Action<object> connectCallback, 
+        public void Subscribe (string channel, string channelGroup, Action<object> subscribeCallback, Action<object> connectCallback,
             Action<object> wildcardPresenceCallback, Action<PubnubClientError> errorCallback)
         {
             Subscribe<object> (channel, channelGroup, "", subscribeCallback, connectCallback, wildcardPresenceCallback, errorCallback);
         }
 
-        public void Subscribe (string channel, string channelGroup, Action<object> subscribeCallback, Action<object> connectCallback, 
+        public void Subscribe (string channel, string channelGroup, Action<object> subscribeCallback, Action<object> connectCallback,
             Action<PubnubClientError> errorCallback)
         {
             Subscribe<object> (channel, channelGroup, "", subscribeCallback, connectCallback, null, errorCallback);
@@ -258,13 +258,13 @@ namespace PubNubMessaging.Core
             return HereNow<T> (channel, true, false, userCallback, errorCallback);
         }
 
-        public bool HereNow<T> (string channel, bool showUUIDList, bool includeUserState, 
+        public bool HereNow<T> (string channel, bool showUUIDList, bool includeUserState,
             Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
             return HereNow<T> (channel, "", showUUIDList, includeUserState, userCallback, errorCallback);
         }
 
-        public bool HereNow (string channel, string channelGroup, bool showUUIDList, bool includeUserState, 
+        public bool HereNow (string channel, string channelGroup, bool showUUIDList, bool includeUserState,
             Action<object> userCallback, Action<PubnubClientError> errorCallback)
         {
             return HereNow<object>(channel, channelGroup, showUUIDList, includeUserState, userCallback, errorCallback);
@@ -324,7 +324,7 @@ namespace PubNubMessaging.Core
         #endregion
 
         #region "Unsubscribe Methods"
-        public void Unsubscribe<T> (string channel, string channelGroup, Action<T> userCallback, Action<T> connectCallback, Action<T> disconnectCallback, 
+        public void Unsubscribe<T> (string channel, string channelGroup, Action<T> userCallback, Action<T> connectCallback, Action<T> disconnectCallback,
             Action<T> wildcardPresenceCallback, Action<PubnubClientError> errorCallback)
         {
             Utility.CheckChannelOrChannelGroup(channel, channelGroup);
@@ -347,13 +347,13 @@ namespace PubNubMessaging.Core
             Unsubscribe<object> (channel, "", userCallback, connectCallback, disconnectCallback, null, errorCallback);
         }
 
-        public void Unsubscribe<T> (string channel, Action<T> userCallback, Action<T> connectCallback, Action<T> disconnectCallback, 
+        public void Unsubscribe<T> (string channel, Action<T> userCallback, Action<T> connectCallback, Action<T> disconnectCallback,
             Action<PubnubClientError> errorCallback)
         {
             Unsubscribe<T> (channel, "", userCallback, connectCallback, disconnectCallback, null, errorCallback);
         }
 
-        public void Unsubscribe<T> (string channel, string channelGroup, Action<T> userCallback, Action<T> connectCallback, Action<T> disconnectCallback, 
+        public void Unsubscribe<T> (string channel, string channelGroup, Action<T> userCallback, Action<T> connectCallback, Action<T> disconnectCallback,
             Action<PubnubClientError> errorCallback)
         {
             Unsubscribe<T> (channel, channelGroup, userCallback, connectCallback, disconnectCallback, null, errorCallback);
@@ -467,7 +467,7 @@ namespace PubNubMessaging.Core
             ChannelGroupAuditPresenceAccess<T>(channelGroup, userCallback, errorCallback);
         }
 
-        public void ChannelGroupAuditPresenceAccess<T>(string channelGroup, string authenticationKey, Action<T> userCallback, 
+        public void ChannelGroupAuditPresenceAccess<T>(string channelGroup, string authenticationKey, Action<T> userCallback,
             Action<PubnubClientError> errorCallback)
         {
             Utility.CheckSecretKey(pubnub.SecretKey);
@@ -478,7 +478,7 @@ namespace PubNubMessaging.Core
             pubnub.ChannelGroupAuditAccess<T>(channelGroup, authenticationKey, userCallback, errorCallback);
         }
 
-        public bool ChannelGroupGrantAccess<T>(string channelGroup, bool read, bool manage, int ttl, Action<T> userCallback, 
+        public bool ChannelGroupGrantAccess<T>(string channelGroup, bool read, bool manage, int ttl, Action<T> userCallback,
             Action<PubnubClientError> errorCallback)
         {
             return ChannelGroupGrantAccess<T>(channelGroup, "", read, manage, ttl, userCallback, errorCallback);
@@ -489,7 +489,7 @@ namespace PubNubMessaging.Core
             return ChannelGroupGrantAccess<T>(channelGroup, read, manage, -1, userCallback, errorCallback);
         }
 
-        public bool ChannelGroupGrantAccess<T>(string channelGroup, string authenticationKey, bool read, bool manage, int ttl, Action<T> userCallback, 
+        public bool ChannelGroupGrantAccess<T>(string channelGroup, string authenticationKey, bool read, bool manage, int ttl, Action<T> userCallback,
             Action<PubnubClientError> errorCallback)
         {
             Utility.CheckSecretKey(pubnub.SecretKey);
@@ -500,32 +500,32 @@ namespace PubNubMessaging.Core
             return pubnub.ChannelGroupGrantAccess<T>(channelGroup, authenticationKey, read, false, manage, ttl, userCallback, errorCallback);
         }
 
-        public bool ChannelGroupGrantAccess<T>(string channelGroup, string authenticationKey, bool read, bool manage, Action<T> userCallback, 
+        public bool ChannelGroupGrantAccess<T>(string channelGroup, string authenticationKey, bool read, bool manage, Action<T> userCallback,
             Action<PubnubClientError> errorCallback)
         {
             return ChannelGroupGrantAccess<T>(channelGroup, authenticationKey, read, manage, -1, userCallback, errorCallback);
         }
 
 
-        public bool ChannelGroupGrantPresenceAccess<T>(string channelGroup, bool read, bool manage, Action<T> userCallback, 
+        public bool ChannelGroupGrantPresenceAccess<T>(string channelGroup, bool read, bool manage, Action<T> userCallback,
             Action<PubnubClientError> errorCallback)
         {
             return ChannelGroupGrantPresenceAccess<T>(channelGroup, read, manage, -1, userCallback, errorCallback);
         }
 
-        public bool ChannelGroupGrantPresenceAccess<T>(string channelGroup, bool read, bool manage, int ttl, Action<T> userCallback, 
+        public bool ChannelGroupGrantPresenceAccess<T>(string channelGroup, bool read, bool manage, int ttl, Action<T> userCallback,
             Action<PubnubClientError> errorCallback)
         {
             return ChannelGroupGrantPresenceAccess(channelGroup, read, manage, ttl, userCallback, errorCallback);
         }
 
-        public bool ChannelGroupGrantPresenceAccess<T>(string channelGroup, string authenticationKey, bool read, bool manage, 
+        public bool ChannelGroupGrantPresenceAccess<T>(string channelGroup, string authenticationKey, bool read, bool manage,
             Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
             return ChannelGroupGrantPresenceAccess<T>(channelGroup, authenticationKey, read, manage, -1, userCallback, errorCallback);
         }
 
-        public bool ChannelGroupGrantPresenceAccess<T>(string channelGroup, string authenticationKey, bool read, bool manage, int ttl, 
+        public bool ChannelGroupGrantPresenceAccess<T>(string channelGroup, string authenticationKey, bool read, bool manage, int ttl,
             Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
             Utility.CheckSecretKey(pubnub.SecretKey);
@@ -656,7 +656,7 @@ namespace PubNubMessaging.Core
         #endregion
 
         #region "SetUserState Methods"
-        public void SetUserState(string channel, string channelGroup, string uuid, string jsonUserState, Action<object> userCallback, 
+        public void SetUserState(string channel, string channelGroup, string uuid, string jsonUserState, Action<object> userCallback,
             Action<PubnubClientError> errorCallback)
         {
             SetUserState<object>(channel, channelGroup, uuid, jsonUserState, userCallback, errorCallback);
@@ -667,13 +667,13 @@ namespace PubNubMessaging.Core
             SetUserState<T>(channel, "", "", jsonUserState, userCallback, errorCallback);
         }
 
-        public void SetUserState<T> (string channel, string uuid, string jsonUserState, Action<T> userCallback, 
+        public void SetUserState<T> (string channel, string uuid, string jsonUserState, Action<T> userCallback,
             Action<PubnubClientError> errorCallback)
         {
             SetUserState<T> (channel, "", uuid, jsonUserState, userCallback, errorCallback);
         }
 
-        public void SetUserState<T> (string channel, string channelGroup, string uuid, string jsonUserState, Action<T> userCallback, 
+        public void SetUserState<T> (string channel, string channelGroup, string uuid, string jsonUserState, Action<T> userCallback,
             Action<PubnubClientError> errorCallback)
         {
             Utility.CheckChannelOrChannelGroup(channel, channelGroup);
@@ -696,12 +696,12 @@ namespace PubNubMessaging.Core
             SetUserState<object> (channel, "", uuid, jsonUserState, userCallback, errorCallback);
         }
 
-        public void SetUserState<T> (string channel, string uuid, System.Collections.Generic.KeyValuePair<string, object> keyValuePair, 
+        public void SetUserState<T> (string channel, string uuid, System.Collections.Generic.KeyValuePair<string, object> keyValuePair,
             Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
             SetUserState<T> (channel, "", uuid, keyValuePair, userCallback, errorCallback);
         }
-         
+
         public void SetUserState<T> (string channel, string channelGroup, string uuid, System.Collections.Generic.KeyValuePair<string, object> keyValuePair,
             Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
@@ -713,7 +713,7 @@ namespace PubNubMessaging.Core
             pubnub.SetUserState<T> (channel, channelGroup, uuid, keyValuePair, userCallback, errorCallback);
         }
 
-        public void SetUserState<T> (string channel, System.Collections.Generic.KeyValuePair<string, object> keyValuePair, 
+        public void SetUserState<T> (string channel, System.Collections.Generic.KeyValuePair<string, object> keyValuePair,
             Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
             SetUserState<T> (channel, "", "", keyValuePair, userCallback, errorCallback);
@@ -724,7 +724,7 @@ namespace PubNubMessaging.Core
             SetUserState<object> (channel, "", uuid, keyValuePair, userCallback, errorCallback);
         }
 
-        public void SetUserState (string channel, System.Collections.Generic.KeyValuePair<string, object> keyValuePair, 
+        public void SetUserState (string channel, System.Collections.Generic.KeyValuePair<string, object> keyValuePair,
             Action<object> userCallback, Action<PubnubClientError> errorCallback)
         {
             SetUserState<object> (channel, "", "", keyValuePair, userCallback, errorCallback);
@@ -772,7 +772,7 @@ namespace PubNubMessaging.Core
         #region "Mobile Push"
         public void RegisterDeviceForPush(string channel, PushTypeService pushType, string pushToken, Action<object> userCallback, Action<PubnubClientError> errorCallback)
         {
-            RegisterDeviceForPush<object>(channel, pushType, pushToken, userCallback, errorCallback); 
+            RegisterDeviceForPush<object>(channel, pushType, pushToken, userCallback, errorCallback);
         }
 
         public void RegisterDeviceForPush<T>(string channel, PushTypeService pushType, string pushToken, Action<T> userCallback, Action<PubnubClientError> errorCallback)
@@ -788,7 +788,7 @@ namespace PubNubMessaging.Core
 
         public void UnregisterDeviceForPush(PushTypeService pushType, string pushToken, Action<object> userCallback, Action<PubnubClientError> errorCallback)
         {
-            UnregisterDeviceForPush<object>(pushType, pushToken, userCallback, errorCallback); 
+            UnregisterDeviceForPush<object>(pushType, pushToken, userCallback, errorCallback);
         }
 
         public void UnregisterDeviceForPush<T>(PushTypeService pushType, string pushToken, Action<T> userCallback, Action<PubnubClientError> errorCallback)
@@ -803,7 +803,7 @@ namespace PubNubMessaging.Core
 
         public void RemoveChannelForDevicePush(string channel, PushTypeService pushType, string pushToken, Action<object> userCallback, Action<PubnubClientError> errorCallback)
         {
-            RemoveChannelForDevicePush<object>(channel, pushType, pushToken, userCallback, errorCallback); 
+            RemoveChannelForDevicePush<object>(channel, pushType, pushToken, userCallback, errorCallback);
         }
 
         public void RemoveChannelForDevicePush<T>(string channel, PushTypeService pushType, string pushToken, Action<T> userCallback, Action<PubnubClientError> errorCallback)
@@ -819,7 +819,7 @@ namespace PubNubMessaging.Core
 
         public void GetChannelsForDevicePush(PushTypeService pushType, string pushToken, Action<object> userCallback, Action<PubnubClientError> errorCallback)
         {
-            GetChannelsForDevicePush<object>(pushType, pushToken, userCallback, errorCallback); 
+            GetChannelsForDevicePush<object>(pushType, pushToken, userCallback, errorCallback);
         }
 
         public void GetChannelsForDevicePush<T>(PushTypeService pushType, string pushToken, Action<T> userCallback, Action<PubnubClientError> errorCallback)
@@ -849,7 +849,7 @@ namespace PubNubMessaging.Core
 
             pubnub.AddChannelsToChannelGroup<T>(channels, "",  channelGroup, userCallback, errorCallback);
         }
-            
+
         public void RemoveChannelsFromChannelGroup<T>(string[] channels, string channelGroup, Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
             Utility.CheckChannels(channels);
@@ -878,7 +878,7 @@ namespace PubNubMessaging.Core
 
             pubnub.RemoveChannelGroup<T>("", channelGroup, userCallback, errorCallback);
         }
-            
+
         public void GetChannelsForChannelGroup(string channelGroup, Action<object> userCallback, Action<PubnubClientError> errorCallback)
         {
             GetChannelsForChannelGroup<object>(channelGroup, userCallback, errorCallback);
@@ -1087,10 +1087,10 @@ namespace PubNubMessaging.Core
         /// <value>The set game object.</value>
         public static GameObject SetGameObject {
             get {
-                return Pubnub.SetGameObject;
+                return PubnubUnity.SetGameObject;
             }
             set {
-                Pubnub.SetGameObject = value;
+                PubnubUnity.SetGameObject = value;
             }
         }
 
