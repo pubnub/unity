@@ -1,8 +1,11 @@
 name: unity
-version: 3.7.3
+version: 3.7.4
 schema: 1
 scm: github.com/pubnub/unity
 changelog:
+  - version: v3.7.4
+      - type: feature
+        text: Added a debug symbol `PUBNUB_PS_V2_RESPONSE` to enable v4 subscribe response.
   - version: v3.7.3
       - type: bug
         text: Fixed SetGameObject
