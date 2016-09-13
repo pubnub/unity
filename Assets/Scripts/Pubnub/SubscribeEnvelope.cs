@@ -30,17 +30,19 @@ namespace PubNubMessaging.Core
     public class PNMessageResult
     {
         public object Payload { get; set;} 
-        public string SubscribedChannel { get; set;} 
-        public string ActualChannel { get; set;} 
+        public string ChannelGroup { get; set;} 
+        public string Channel { get; set;} 
         public long Timetoken { get; set;} 
+        public long OriginatingTimetoken { get; set;} 
         public object UserMetadata { get; set;} 
 
         public PNMessageResult(string subscribedChannel, string actualchannel, object payload,
-            long timetoken, object userMetadata){
-            this.SubscribedChannel = subscribedChannel;
-            this.ActualChannel = actualchannel;
+            long timetoken, long originatingTimetoken, object userMetadata){
+            this.ChannelGroup = subscribedChannel;// change to channel group
+            this.Channel = actualchannel; // change to channel
             this.Payload = payload;
             this.Timetoken = timetoken;
+            this.OriginatingTimetoken = originatingTimetoken;
             this.UserMetadata = userMetadata;
         }
     }

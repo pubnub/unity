@@ -1,4 +1,5 @@
-﻿using System;
+﻿//#define PUBNUB_PS_V2_RESPONSE
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Linq;
@@ -829,11 +830,13 @@ namespace PubNubMessaging.Core
         internal static void CreatePNMessageResult(SubscribeMessage subscribeMessage, out PNMessageResult messageResult)
         {
             long timetoken = (subscribeMessage.PublishTimetokenMetadata != null) ? subscribeMessage.PublishTimetokenMetadata.Timetoken : 0;
+            long originatingTimetoken = (subscribeMessage.OriginatingTimetoken != null) ? subscribeMessage.OriginatingTimetoken.Timetoken : 0;
             messageResult = new PNMessageResult (
                 subscribeMessage.SubscriptionMatch, 
                 subscribeMessage.Channel, 
                 subscribeMessage.Payload, 
                 timetoken,
+                originatingTimetoken,
                 subscribeMessage.UserMetadata);
         }
 
@@ -890,9 +893,16 @@ namespace PubNubMessaging.Core
                 ), LoggingMethod.LevelInfo);
                 #endif
 
+                PubnubChannelCallback<T> channelCallbacks = ce.ChannelParams.Callbacks as PubnubChannelCallback<T>;
+
+                #if (PUBNUB_PS_V2_RESPONSE)
+                PNMessageResult messageResult; 
+                CreatePNMessageResult(subscribeMessage, out messageResult);
+                #else
                 List<object> itemMessage;
                 AddMessageToListV2(cipherKey, jsonPluggableLibrary, subscribeMessage, ce, out itemMessage);
-                PubnubChannelCallback<T> channelCallbacks = ce.ChannelParams.Callbacks as PubnubChannelCallback<T>;
+                #endif
+
 
                 if ((subscribeMessage.SubscriptionMatch.Contains (".*")) && Utility.IsPresenceChannel(subscribeMessage.Channel)) {
                     #if (ENABLE_PUBNUB_LOGGING)
@@ -900,11 +910,19 @@ namespace PubNubMessaging.Core
                         ce.ChannelID.ChannelOrChannelGroupName
                     ), LoggingMethod.LevelInfo);
                     #endif
-
+                    #if (PUBNUB_PS_V2_RESPONSE)
+                    PubnubCallbacks.GoToCallback<T>(messageResult, channelCallbacks.WildcardPresenceCallback, jsonPluggableLibrary);
+                    #else
                     PubnubCallbacks.GoToCallback<T> (itemMessage, channelCallbacks.WildcardPresenceCallback, jsonPluggableLibrary);
+                    #endif
                 } else {
+                    #if (PUBNUB_PS_V2_RESPONSE)
+                    PubnubCallbacks.GoToCallback<T>(messageResult, channelCallbacks.SuccessCallback, jsonPluggableLibrary);
+                    #else
                     PubnubCallbacks.GoToCallback<T> (itemMessage, channelCallbacks.SuccessCallback, jsonPluggableLibrary);
+                    #endif
                 }
+
             }
             #if (ENABLE_PUBNUB_LOGGING)
             else {
