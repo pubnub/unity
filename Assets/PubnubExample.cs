@@ -60,9 +60,9 @@ public class PubnubExample : MonoBehaviour
     bool ssl = true;
     bool resumeOnReconnect = true;
     string cipherKey = "";
-    string secretKey = "sec-c-ZGI2OWU0M2QtMDMxMC00ZDFjLWI0MzAtMjQ3MmYzMWM1OTBm";//"demo";
-    string publishKey = "pub-c-39d6d56a-d913-46c3-8b8e-3db890a490ef";//"demo";
-    string subscribeKey = "sub-c-acd23c76-5ed2-11e6-8ee6-0619f8945a4f";//"demo";
+    string secretKey = "demo";
+    string publishKey = "demo";
+    string subscribeKey = "demo";
     string uuid = Guid.NewGuid ().ToString ();
     string subscribeTimeoutInSeconds = "310";
     string operationTimeoutInSeconds = "45";
@@ -635,7 +635,7 @@ public class PubnubExample : MonoBehaviour
 
                             UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.Payload));
                             UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.Channel));
-                            UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.ChannelGroup));
+                            UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.Subscription));
                             UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.OriginatingTimetoken));
                             UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.Timetoken));
                             UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.UserMetadata.ToString()));
@@ -643,7 +643,7 @@ public class PubnubExample : MonoBehaviour
 
                             AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.Payload));
                             AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.Channel));
-                            AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.ChannelGroup));
+                            AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.Subscription));
                             AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.OriginatingTimetoken));
 
                             AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.Timetoken));
@@ -1799,7 +1799,7 @@ public class PubnubExample : MonoBehaviour
 
         UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.Payload));
         UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.Channel));
-        UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.ChannelGroup));
+        UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.Subscription));
         UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.OriginatingTimetoken));
         UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.Timetoken));
         UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.UserMetadata.ToString()));
@@ -1807,7 +1807,7 @@ public class PubnubExample : MonoBehaviour
 
         AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.Payload));
         AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.Channel));
-        AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.ChannelGroup));
+        AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.Subscription));
         AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.OriginatingTimetoken));
 
         AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.Timetoken));
