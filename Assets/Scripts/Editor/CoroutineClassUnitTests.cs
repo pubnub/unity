@@ -121,7 +121,7 @@ namespace PubNubMessaging.Tests
 
             CoroutineParams<T> cp = new CoroutineParams<T> (url, timeout, 0, crt, typeof(T), pubnubRequestState);
 
-            GameObject go = new GameObject ();
+            GameObject go = new GameObject ("PubnubCoroutine");
             CoroutineClass cc = go.AddComponent<CoroutineClass> ();
 
             cc.SetCoroutineParams<T>(crt, cp);
