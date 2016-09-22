@@ -3,6 +3,13 @@ changeling:
   - 
     changes: 
       - 
+        text: "Added a debug symbol `PUBNUB_PS_V2_RESPONSE` to enable v4 subscribe"
+        type: feature
+    date: ~
+    version: v3.7.4
+  - 
+    changes: 
+      - 
         text: "Fixed SetGameObject"
         type: feature
     date: ~
@@ -153,4 +160,4 @@ features:
 name: unity
 schema: 1
 scm: github.com/pubnub/unity
-version: "3.7.3"
+version: "3.7.4"
