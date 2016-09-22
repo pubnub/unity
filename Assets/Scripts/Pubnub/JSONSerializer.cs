@@ -72,6 +72,12 @@ namespace PubNubMessaging.Core
 
         public List<object> DeserializeToListOfObject (string jsonString)
         {
+            #if (ENABLE_PUBNUB_LOGGING)
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, DeserializeToListOfObject: jsonString: {1}", 
+                        DateTime.Now.ToString (), jsonString), 
+                        LoggingMethod.LevelInfo);
+            #endif
+        
             var output = JsonReader.Deserialize<object[]> (jsonString) as object[];
             List<object> messageList = output.Cast<object> ().ToList ();
             return messageList;
@@ -79,6 +85,12 @@ namespace PubNubMessaging.Core
 
         public object DeserializeToObject (string jsonString)
         {
+            #if (ENABLE_PUBNUB_LOGGING)
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, DeserializeToObject: jsonString: {1}", 
+                        DateTime.Now.ToString (), jsonString), 
+                        LoggingMethod.LevelInfo);
+            #endif
+        
             var output = JsonReader.Deserialize<object> (jsonString) as object;
             return output;
         }

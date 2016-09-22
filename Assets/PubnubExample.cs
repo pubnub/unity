@@ -60,9 +60,9 @@ public class PubnubExample : MonoBehaviour
     bool ssl = true;
     bool resumeOnReconnect = true;
     string cipherKey = "";
-    string secretKey = "demo";
-    string publishKey = "demo";
-    string subscribeKey = "demo";
+	string secretKey = "demo";
+	string publishKey = "demo";
+	string subscribeKey = "demo";
     string uuid = Guid.NewGuid ().ToString ();
     string subscribeTimeoutInSeconds = "310";
     string operationTimeoutInSeconds = "45";
@@ -594,12 +594,155 @@ public class PubnubExample : MonoBehaviour
                 } else if (state.Equals(PubnubState.Subscribe)){
                     string channelGroup = text2;
                     AddToPubnubResultContainer ("Running Subscribe");
-                    pubnub.Subscribe<string> (currentChannel, channelGroup, DisplayReturnMessage, DisplayConnectStatusMessage, 
+
+                    #if PUBNUB_PS_V2_RESPONSE
+                    pubnub.Subscribe<string> (currentChannel, channelGroup, 
+                        (string returnMessage) => {
+                            object obj = pubnub.JsonPluggableLibrary.DeserializeToObject(returnMessage);
+                            Dictionary<string, object> dict = obj as Dictionary<string, object>;
+                            UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeString Object: result:{0}\nobj:{1}\nCount:{2}\n", returnMessage,
+                                obj.ToString(), dict.Count));
+
+                            foreach(var pair in dict){
+                                UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeString pair.Key: {0}, pair.Value:{1}", 
+                                    pair.Key, pair.Value));
+                                AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeString:- {0}:{1}", pair.Key, pair.Value));
+                            }
+
+                            //PNMessageResult pnMessageResult = (PNMessageResult)Convert.ChangeType(obj, typeof(PNMessageResult));
+                            //UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeString: {0}", pnMessageResult.Payload));
+                            //AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeString: {0}", pnMessageResult.Payload));                            
+                        }, 
+                        (string connectStatus) => {
+                            UnityEngine.Debug.Log (string.Format ("DisplayConnectMessage: {0}", connectStatus));
+                            AddToPubnubResultContainer (string.Format ("DisplayConnectMessage: {0}", connectStatus));
+
+                        }, 
+                        (string wildcardMessage) => {
+                            UnityEngine.Debug.Log (string.Format ("Wildcard CALLBACK LOG: {0}", wildcardMessage));
+                            AddToPubnubResultContainer (string.Format ("Wildcard CALLBACK: {0}", wildcardMessage));
+
+                        },
+                        (PubnubClientError result) => {
+                            UnityEngine.Debug.Log (string.Format ("REGULAR CALLBACK LOG: {0}", result));
+                            AddToPubnubResultContainer (string.Format ("REGULAR CALLBACK: {0}", result));
+
+                        });
+
+                    /*pubnub.Subscribe<object> (currentChannel, channelGroup, 
+                        (object returnMessage) => {
+                            PNMessageResult pnMessageResult = returnMessage as PNMessageResult;
+
+							UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0} {1} {2} {3} {4} {5}", 
+								pnMessageResult.Payload, 
+                            	pnMessageResult.Channel, 
+                            	pnMessageResult.Subscription,
+                            	pnMessageResult.OriginatingTimetoken,
+                           		pnMessageResult.Timetoken,
+                            	pnMessageResult.UserMetadata.ToString()));
+
+
+							AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeObject: {0} {1} {2} {3} {4} {5}", 
+								pnMessageResult.Payload, 
+                            	pnMessageResult.Channel, 
+                            	pnMessageResult.Subscription, 
+                            	pnMessageResult.OriginatingTimetoken,
+								pnMessageResult.Timetoken,
+                            	pnMessageResult.UserMetadata.ToString())); 
+                        }, 
+                        (object connectStatus) => {
+                            var myList = connectStatus as List<object>;
+                            var stringList = myList.OfType<string>();
+                            string result2 = string.Join(",", stringList.ToArray());
+
+                            UnityEngine.Debug.Log (string.Format ("DisplayConnectMessage: {0}", result2));
+                            AddToPubnubResultContainer (string.Format ("DisplayConnectMessage: {0}", result2));
+
+                        }, 
+                        (object wildcardMessage) => {
+                            var myList = wildcardMessage as List<object>;
+                            var stringList = myList.OfType<string>();
+                            string result2 = string.Join(",", stringList.ToArray());
+
+                            UnityEngine.Debug.Log (string.Format ("Wildcard CALLBACK LOG: {0}", result2));
+                            AddToPubnubResultContainer (string.Format ("Wildcard CALLBACK: {0}", result2));
+
+                        },
+                        (PubnubClientError result) => {
+                            UnityEngine.Debug.Log (string.Format ("REGULAR CALLBACK LOG: {0}", result));
+                            AddToPubnubResultContainer (string.Format ("REGULAR CALLBACK: {0}", result));
+
+                        });*/
+                      #else
+                      pubnub.Subscribe<string> (currentChannel, channelGroup, DisplayReturnMessage, DisplayConnectStatusMessage, 
                         DisplayWildcardReturnMessage, DisplayErrorMessage);
+                      #endif
                 } else if (state.Equals(PubnubState.Presence)){
                     string channelGroup = text2;
                     AddToPubnubResultContainer ("Running Presence");
+                    #if PUBNUB_PS_V2_RESPONSE
+                    pubnub.Presence<string> (currentChannel, channelGroup, 
+                        (string returnMessage) => {
+                            object obj = pubnub.JsonPluggableLibrary.DeserializeToObject(returnMessage);
+                            Dictionary<string, object> dict = obj as Dictionary<string, object>;
+                            UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeString Object: result:{0}\nobj:{1}\nCount:{2}\n", returnMessage,
+                                obj.ToString(), dict.Count));
+
+                            foreach(var pair in dict){
+                                UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeString pair.Key: {0}, pair.Value:{1}", 
+                                    pair.Key, pair.Value));
+                                AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeString:- {0}:{1}", pair.Key, pair.Value));
+                            }
+
+                            //PNMessageResult pnMessageResult = (PNMessageResult)Convert.ChangeType(obj, typeof(PNMessageResult));
+                            //UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeString: {0}", pnMessageResult.Payload));
+                            //AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeString: {0}", pnMessageResult.Payload));                            
+                        }, 
+                        (string connectStatus) => {
+                            UnityEngine.Debug.Log (string.Format ("DisplayConnectMessage: {0}", connectStatus));
+                            AddToPubnubResultContainer (string.Format ("DisplayConnectMessage: {0}", connectStatus));
+
+                        }, 
+                        (PubnubClientError result) => {
+                            UnityEngine.Debug.Log (string.Format ("REGULAR CALLBACK LOG: {0}", result));
+                            AddToPubnubResultContainer (string.Format ("REGULAR CALLBACK: {0}", result));
+
+                        });
+                    
+                    /*pubnub.Presence<object> (currentChannel, channelGroup, 
+                        (object returnMessage) => {
+                            PNPresenceEventResult pnMessageResult = returnMessage as PNPresenceEventResult;
+
+							UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0}  {1} {2} {3} {4} {5} {6}", pnMessageResult.Event,
+                            	pnMessageResult.Channel,
+                            	pnMessageResult.Subscription,
+                            	pnMessageResult.Occupancy,
+                            	pnMessageResult.Timetoken, 
+                            	pnMessageResult.UUID,
+								pnMessageResult.Timestamp));
+
+
+							AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeObject: {0} {1} {2} {3} {4} ", pnMessageResult.Event,
+                             pnMessageResult.Channel, pnMessageResult.Subscription, pnMessageResult.Occupancy, pnMessageResult.Timetoken));
+
+                        }, 
+                        (object connectStatus) => {
+                            var myList = connectStatus as List<object>;
+                            var stringList = myList.OfType<string>();
+                            string result2 = string.Join(",", stringList.ToArray());
+
+                            UnityEngine.Debug.Log (string.Format ("DisplayConnectMessage: {0}", result2));
+                            AddToPubnubResultContainer (string.Format ("DisplayConnectMessage: {0}", result2));
+
+                        }, 
+                        (PubnubClientError result) => {
+                            UnityEngine.Debug.Log (string.Format ("REGULAR CALLBACK LOG: {0}", result));
+                            AddToPubnubResultContainer (string.Format ("REGULAR CALLBACK: {0}", result));
+
+                        });*/
+                    #else
                     pubnub.Presence<string> (currentChannel, channelGroup, DisplayReturnMessage, DisplayConnectStatusMessage, DisplayErrorMessage);
+                    #endif
                 } else if (state.Equals(PubnubState.Unsubscribe)){
                     string channelGroup = text2;
                     AddToPubnubResultContainer ("Running Unsubscribe");
@@ -791,7 +934,7 @@ public class PubnubExample : MonoBehaviour
                 pubnub.GetChannelsForChannelGroup<string> (input, DisplayReturnMessage, DisplayErrorMessage);
             } else if (state == PubnubState.SetFilterExpression) {
                 AddToPubnubResultContainer ("Running SetFilterExpression");
-                pubnub.FilterExpression = input;
+                pubnub.FilterExpression = input;//"(aoi_x >= 0 && aoi_x <= 2) && (aoi_y >= 0 && aoi_y <= 2)";//input;
             }
 
             input = "";
@@ -1571,11 +1714,13 @@ public class PubnubExample : MonoBehaviour
         string stringMessage = publishedMessage;
         if (GUI.Button (new Rect (30, 185, 100, 30), "Publish")) {
             //stringMessage = "Text with 😜 emoji 🎉.";
+			//stringMessage = "{'operation':'ReturnData','channel':'Mobile1','sequenceNumber':0,'data':['ping 1.0.0.1']}";
             Dictionary<string, string> metadataDict = new Dictionary<string, string>();
             if(!string.IsNullOrEmpty(publishedMetadataKey) && (!string.IsNullOrEmpty(publishedMetadataValue))){
                 metadataDict.Add (publishedMetadataKey, publishedMetadataValue);
             }
             pubnub.Publish<string> (pubChannel, stringMessage, storeInHistory, metadataDict, DisplayReturnMessage, DisplayErrorMessage);
+
             publishedMessage = "";
             showPublishPopupWindow = false;
             pubChannel = "";
@@ -1714,7 +1859,61 @@ public class PubnubExample : MonoBehaviour
         }
     }
 
+    void DisplayReturnMessageSubscribe (object result){
+        PNMessageResult pnMessageResult = result as PNMessageResult;
+
+        UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.Payload));
+        UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.Channel));
+        UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.Subscription));
+        UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.OriginatingTimetoken));
+        UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.Timetoken));
+        UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.UserMetadata.ToString()));
+
+
+        AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.Payload));
+        AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.Channel));
+        AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.Subscription));
+        AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.OriginatingTimetoken));
+
+        AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.Timetoken));
+        AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.UserMetadata.ToString()));
+
+    }
+
+    void DisplayReturnMessageSubscribe (string result){
+        object obj = pubnub.JsonPluggableLibrary.DeserializeToObject(result);
+        Dictionary<string, object> dict = obj as Dictionary<string, object>;
+        UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeString Object: result:{0}\nobj:{1}\nCount:{2}\n", result,
+            obj.ToString(), dict.Count));
+
+        foreach(var pair in dict){
+            UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeString pair.Key: {0}, pair.Value:{1}", 
+                pair.Key, pair.Value));
+            AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeString:- {0}:{1}", pair.Key, pair.Value));
+        }
+
+        //PNMessageResult pnMessageResult = (PNMessageResult)Convert.ChangeType(obj, typeof(PNMessageResult));
+        //UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeString: {0}", pnMessageResult.Payload));
+        //AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeString: {0}", pnMessageResult.Payload));
+    }
+
+    void DisplayConnectMessage (string result){
+        UnityEngine.Debug.Log (string.Format ("DisplayConnectMessage: {0}", result));
+        AddToPubnubResultContainer (string.Format ("DisplayConnectMessage: {0}", result));
+    }
+
+    void DisplayConnectMessage (object result){
+        UnityEngine.Debug.Log (string.Format ("DisplayConnectMessage: {0}", result.ToString()));
+        AddToPubnubResultContainer (string.Format ("DisplayConnectMessage: {0}", result.ToString()));
+    }
+
     void DisplayReturnMessage (string result)
+    {
+        UnityEngine.Debug.Log (string.Format ("REGULAR CALLBACK LOG: {0}", result));
+        AddToPubnubResultContainer (string.Format ("REGULAR CALLBACK: {0}", result));
+    }
+
+    void DisplayReturnMessage (object result)
     {
         UnityEngine.Debug.Log (string.Format ("REGULAR CALLBACK LOG: {0}", result));
         AddToPubnubResultContainer (string.Format ("REGULAR CALLBACK: {0}", result));

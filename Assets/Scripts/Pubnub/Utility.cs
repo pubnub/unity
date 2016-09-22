@@ -51,6 +51,21 @@ namespace PubNubMessaging.Core
             return sequenceNumber;
         }
 
+        internal static int CheckKeyAndParseInt(IDictionary dict, string what, string key){
+            int sequenceNumber = 0; 
+            if (dict.Contains (key)) {
+                int seqNumber;
+                if (!int.TryParse (dict [key].ToString(), out seqNumber)) {
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, {1}, {2} conversion failed: {3}.", 
+                        DateTime.Now.ToString (), what, key, dict [key].ToString ()), LoggingMethod.LevelInfo);
+                    #endif
+                }
+                sequenceNumber = seqNumber;
+            }
+            return sequenceNumber;
+        }
+
         internal static long ValidateTimetoken(string timetoken, bool raiseError){
             if(!string.IsNullOrEmpty(timetoken)){
                 long r;
