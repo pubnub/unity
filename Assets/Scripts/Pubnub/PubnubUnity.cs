@@ -1722,12 +1722,19 @@ namespace PubNubMessaging.Core
 				RequestState<T> reqState = StoredRequestState.Instance.GetStoredRequestState (CurrentRequestType.Subscribe) as RequestState<T>;
 				if (reqState == null) {
 					if (typeof(T).Equals (typeof(object))) {
-						RequestState<string> reqStateStr = StoredRequestState.Instance.GetStoredRequestState (CurrentRequestType.Subscribe) as RequestState<string>;
-						MultiChannelSubscribeRequest<string>(type, 0, false);
+						RequestState<object> reqStateStr = StoredRequestState.Instance.GetStoredRequestState (CurrentRequestType.Subscribe) as RequestState<object>;
+						MultiChannelSubscribeRequest<string> (type, 0, false);
 					} else if (typeof(T).Equals (typeof(string))) {
-						RequestState<object> reqStateObj = StoredRequestState.Instance.GetStoredRequestState (CurrentRequestType.Subscribe) as RequestState<object>;
-						MultiChannelSubscribeRequest<object>(type, 0, false);
+						RequestState<string> reqStateObj = StoredRequestState.Instance.GetStoredRequestState (CurrentRequestType.Subscribe) as RequestState<string>;
+						MultiChannelSubscribeRequest<object> (type, 0, false);
+					} else {
+						#if (ENABLE_PUBNUB_LOGGING)
+						LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ContinueToSubscribeRestOfChannels: reqState none matched", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+						#endif
 					}
+				} else {
+					RequestState<T> reqStateStr = StoredRequestState.Instance.GetStoredRequestState (CurrentRequestType.Subscribe) as RequestState<T>;
+					MultiChannelSubscribeRequest<T> (type, 0, false);
 				}
             }
             else
