@@ -2,9 +2,11 @@ name: unity
 version: 3.7.3
 schema: 1
 scm: github.com/pubnub/unity
-changelog:
-  - version: v3.7.3
-      - type: bug
+changeling:
+  - version: v3.7.2
+    date: 
+    changes:
+      - type: feature
         text: Fixed SetGameObject
   - version: v3.7.2
     date: 
