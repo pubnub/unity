@@ -5,11 +5,11 @@ using PubNubMessaging.Core;
 
 namespace PubNubMessaging.Tests
 {
-	public class TestCoroutineRunIntegrationTests: MonoBehaviour
-	{
-		public IEnumerator Start ()
-		{
-			CommonIntergrationTests common = new CommonIntergrationTests ();
+    public class TestCoroutineRunIntegrationTests: MonoBehaviour
+    {
+        public IEnumerator Start ()
+        {
+            CommonIntergrationTests common = new CommonIntergrationTests ();
             string url = "https://pubsub.pubnub.com/time/0";
             string[] multiChannel = {"testChannel"};
             //
@@ -22,10 +22,10 @@ namespace PubNubMessaging.Tests
                 false, this.name, expectedMessage, expectedChannels, false, false, false, 0, crt, respType);
             yield return StartCoroutine(ienum);
             
-			UnityEngine.Debug.Log (string.Format("{0}: After StartCoroutine", this.name));
-			yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls);
-		}
-	}
+            UnityEngine.Debug.Log (string.Format("{0}: After StartCoroutine", this.name));
+            yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls);
+        }
+    }
 
 }
 

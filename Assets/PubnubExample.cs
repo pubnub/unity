@@ -60,9 +60,9 @@ public class PubnubExample : MonoBehaviour
     bool ssl = true;
     bool resumeOnReconnect = true;
     string cipherKey = "";
-	string secretKey = "sec-c-MjQyYjk2ODMtNjZkMS00YzVmLWI5ZWMtZDMyNmNmZjgwZDky";
-	string publishKey = "pub-c-1fd43d19-c5dd-47f3-b251-a329f06a58f8";
-	string subscribeKey = "sub-c-5a634b98-7eca-11e6-9387-02ee2ddab7fe";
+    string secretKey = "demo";
+    string publishKey = "demo";
+    string subscribeKey = "demo";
     string uuid = Guid.NewGuid ().ToString ();
     string subscribeTimeoutInSeconds = "310";
     string operationTimeoutInSeconds = "45";
@@ -633,22 +633,22 @@ public class PubnubExample : MonoBehaviour
                         (object returnMessage) => {
                             PNMessageResult pnMessageResult = returnMessage as PNMessageResult;
 
-							UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0} {1} {2} {3} {4} {5}", 
-								pnMessageResult.Payload, 
-                            	pnMessageResult.Channel, 
-                            	pnMessageResult.Subscription,
-                            	pnMessageResult.OriginatingTimetoken,
-                           		pnMessageResult.Timetoken,
-                            	pnMessageResult.UserMetadata.ToString()));
+                            UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0} {1} {2} {3} {4} {5}", 
+                                pnMessageResult.Payload, 
+                                pnMessageResult.Channel, 
+                                pnMessageResult.Subscription,
+                                pnMessageResult.OriginatingTimetoken,
+                                   pnMessageResult.Timetoken,
+                                pnMessageResult.UserMetadata.ToString()));
 
 
-							AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeObject: {0} {1} {2} {3} {4} {5}", 
-								pnMessageResult.Payload, 
-                            	pnMessageResult.Channel, 
-                            	pnMessageResult.Subscription, 
-                            	pnMessageResult.OriginatingTimetoken,
-								pnMessageResult.Timetoken,
-                            	pnMessageResult.UserMetadata.ToString())); 
+                            AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeObject: {0} {1} {2} {3} {4} {5}", 
+                                pnMessageResult.Payload, 
+                                pnMessageResult.Channel, 
+                                pnMessageResult.Subscription, 
+                                pnMessageResult.OriginatingTimetoken,
+                                pnMessageResult.Timetoken,
+                                pnMessageResult.UserMetadata.ToString())); 
                         }, 
                         (object connectStatus) => {
                             var myList = connectStatus as List<object>;
@@ -713,16 +713,16 @@ public class PubnubExample : MonoBehaviour
                         (object returnMessage) => {
                             PNPresenceEventResult pnMessageResult = returnMessage as PNPresenceEventResult;
 
-							UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0}  {1} {2} {3} {4} {5} {6}", pnMessageResult.Event,
-                            	pnMessageResult.Channel,
-                            	pnMessageResult.Subscription,
-                            	pnMessageResult.Occupancy,
-                            	pnMessageResult.Timetoken, 
-                            	pnMessageResult.UUID,
-								pnMessageResult.Timestamp));
+                            UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0}  {1} {2} {3} {4} {5} {6}", pnMessageResult.Event,
+                                pnMessageResult.Channel,
+                                pnMessageResult.Subscription,
+                                pnMessageResult.Occupancy,
+                                pnMessageResult.Timetoken, 
+                                pnMessageResult.UUID,
+                                pnMessageResult.Timestamp));
 
 
-							AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeObject: {0} {1} {2} {3} {4} ", pnMessageResult.Event,
+                            AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeObject: {0} {1} {2} {3} {4} ", pnMessageResult.Event,
                              pnMessageResult.Channel, pnMessageResult.Subscription, pnMessageResult.Occupancy, pnMessageResult.Timetoken));
 
                         }, 
@@ -1714,7 +1714,7 @@ public class PubnubExample : MonoBehaviour
         string stringMessage = publishedMessage;
         if (GUI.Button (new Rect (30, 185, 100, 30), "Publish")) {
             //stringMessage = "Text with 😜 emoji 🎉.";
-			//stringMessage = "{'operation':'ReturnData','channel':'Mobile1','sequenceNumber':0,'data':['ping 1.0.0.1']}";
+            //stringMessage = "{'operation':'ReturnData','channel':'Mobile1','sequenceNumber':0,'data':['ping 1.0.0.1']}";
             Dictionary<string, string> metadataDict = new Dictionary<string, string>();
             if(!string.IsNullOrEmpty(publishedMetadataKey) && (!string.IsNullOrEmpty(publishedMetadataValue))){
                 metadataDict.Add (publishedMetadataKey, publishedMetadataValue);
