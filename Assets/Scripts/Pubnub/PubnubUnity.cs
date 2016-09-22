@@ -419,7 +419,7 @@ namespace PubNubMessaging.Core
             #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog ("Initilizing new GameObject", LoggingMethod.LevelInfo);
             #endif
-                gobj = new GameObject ();
+                gobj = new GameObject ("PubnubGameObject");
                 localGobj = true;
             } else {
             #if (ENABLE_PUBNUB_LOGGING)
@@ -1719,7 +1719,23 @@ namespace PubNubMessaging.Core
                     type = ResponseType.SubscribeV2;
                 }
                 //Continue with any remaining channels for subscribe/presence
-                MultiChannelSubscribeRequest<T>(type, 0, false);
+				RequestState<T> reqState = StoredRequestState.Instance.GetStoredRequestState (CurrentRequestType.Subscribe) as RequestState<T>;
+				if (reqState == null) {
+					if (typeof(T).Equals (typeof(object))) {
+						RequestState<object> reqStateStr = StoredRequestState.Instance.GetStoredRequestState (CurrentRequestType.Subscribe) as RequestState<object>;
+						MultiChannelSubscribeRequest<string> (type, 0, false);
+					} else if (typeof(T).Equals (typeof(string))) {
+						RequestState<string> reqStateObj = StoredRequestState.Instance.GetStoredRequestState (CurrentRequestType.Subscribe) as RequestState<string>;
+						MultiChannelSubscribeRequest<object> (type, 0, false);
+					} else {
+						#if (ENABLE_PUBNUB_LOGGING)
+						LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ContinueToSubscribeRestOfChannels: reqState none matched", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+						#endif
+					}
+				} else {
+					RequestState<T> reqStateStr = StoredRequestState.Instance.GetStoredRequestState (CurrentRequestType.Subscribe) as RequestState<T>;
+					MultiChannelSubscribeRequest<T> (type, 0, false);
+				}
             }
             else
             {

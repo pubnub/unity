@@ -16,6 +16,7 @@ namespace PubNubMessaging.Tests
         public bool BothString = false;
         public IEnumerator Start ()
         {
+			#if !PUBNUB_PS_V2_RESPONSE
             Dictionary<string, long> Message1 = new Dictionary<string, long>();
             Dictionary<string, string> Message2 = new Dictionary<string, string>();
             object Message = null;
@@ -39,6 +40,12 @@ namespace PubNubMessaging.Tests
             yield return StartCoroutine(common.DoSubscribeThenPublishAndParse(SslOn, this.name, AsObject, CipherOn, Message, expectedMessage, true));
             UnityEngine.Debug.Log (string.Format("{0}: After StartCoroutine", this.name));
             yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls);
+			#else
+			yield return null;
+			UnityEngine.Debug.Log (string.Format("{0}: Ignoring test", this.name));
+			IntegrationTest.Pass();
+			#endif
+
         }
     }
 }
