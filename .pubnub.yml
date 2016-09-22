@@ -3,7 +3,7 @@ version: 3.7.3
 schema: 1
 scm: github.com/pubnub/unity
 changeling:
-  - version: v3.7.2
+  - version: v3.7.3
     date: 
     changes:
       - type: feature
