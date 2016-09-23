@@ -1937,7 +1937,7 @@ namespace PubNubMessaging.Tests
                 resumeOnReconnect, 0, isTimeout, timetoken, typeof(T), "", userCallback, 
                 errorCallback);
 
-            GameObject go = new GameObject ();
+            GameObject go = new GameObject ("PubnubIntegrationTestCoroutine");
             CoroutineClass cc = go.AddComponent<CoroutineClass> ();
 
             if(crt.Equals(CurrentRequestType.Subscribe)){
@@ -2028,7 +2028,7 @@ namespace PubNubMessaging.Tests
                 errorCallback);
 
             CoroutineParams<T> cp = new CoroutineParams<T> (url, timeout, pause, crt, typeof(T), pubnubRequestState);
-            GameObject go = new GameObject ();
+            GameObject go = new GameObject ("PubnubIntegrationTestCoroutine");
             CoroutineClass cc = go.AddComponent<CoroutineClass> ();
 
             if(crt.Equals(CurrentRequestType.Subscribe)){
@@ -2156,7 +2156,7 @@ namespace PubNubMessaging.Tests
 
             CoroutineParams<T> cp = new CoroutineParams<T> (url, timeout, pause, crt, typeof(T), pubnubRequestState);
 
-            GameObject go = new GameObject ();
+            GameObject go = new GameObject ("PubnubIntegrationTestCoroutine");
             CoroutineClass cc = go.AddComponent<CoroutineClass> ();
 
             if (!isTimeout) {
@@ -2285,7 +2285,7 @@ namespace PubNubMessaging.Tests
                 resumeOnReconnect, 0, isTimeout, timetoken, typeof(T), "", userCallback, 
                 errorCallback);
 
-            GameObject go = new GameObject ();
+            GameObject go = new GameObject ("PubnubIntegrationTestCoroutine");
             CoroutineClass cc = go.AddComponent<CoroutineClass> ();
 
             if(crt.Equals(CurrentRequestType.Subscribe)){
@@ -2360,7 +2360,7 @@ namespace PubNubMessaging.Tests
             RequestState<string> pubnubRequestState = BuildRequests.BuildRequestState<string> (channelEntities, respType, 
                 resumeOnReconnect, 0, isTimeout, timetoken, (asObject)?typeof(object):typeof(string), "", UserCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler);
 
-            GameObject go = new GameObject ();
+            GameObject go = new GameObject ("PubnubIntegrationTestCoroutine");
             CoroutineClass cc = go.AddComponent<CoroutineClass> ();
             
             //cc.SubCoroutineComplete += CcCoroutineComplete<string>;
@@ -2430,7 +2430,7 @@ namespace PubNubMessaging.Tests
                 resumeOnReconnect, 0, isTimeout, timetoken, typeof(T), "", userCallback, 
                 errorCallback);
 
-            GameObject go = new GameObject ();
+            GameObject go = new GameObject ("PubnubIntegrationTestCoroutine");
             CoroutineClass cc = go.AddComponent<CoroutineClass> ();
 
             cc.Run<T>(url, pubnubRequestState, timeout, pause);
@@ -2491,7 +2491,7 @@ namespace PubNubMessaging.Tests
                 resumeOnReconnect, 0, isTimeout, timetoken, typeof(T), "", userCallback, 
                 errorCallback);
 
-            GameObject go = new GameObject ();
+            GameObject go = new GameObject ("PubnubIntegrationTestCoroutine");
             CoroutineClass cc = go.AddComponent<CoroutineClass> ();
 
             //check runSubscribeTimer
