@@ -1,4 +1,5 @@
-﻿using System;
+﻿//#define PUBNUB_PS_V2_RESPONSE
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Linq;
@@ -829,12 +830,56 @@ namespace PubNubMessaging.Core
         internal static void CreatePNMessageResult(SubscribeMessage subscribeMessage, out PNMessageResult messageResult)
         {
             long timetoken = (subscribeMessage.PublishTimetokenMetadata != null) ? subscribeMessage.PublishTimetokenMetadata.Timetoken : 0;
+            long originatingTimetoken = (subscribeMessage.OriginatingTimetoken != null) ? subscribeMessage.OriginatingTimetoken.Timetoken : 0;
             messageResult = new PNMessageResult (
-                subscribeMessage.SubscriptionMatch, 
-                subscribeMessage.Channel, 
+                subscribeMessage.SubscriptionMatch.Replace(Utility.PresenceChannelSuffix, ""), 
+                subscribeMessage.Channel.Replace(Utility.PresenceChannelSuffix, ""), 
                 subscribeMessage.Payload, 
                 timetoken,
+                originatingTimetoken,
                 subscribeMessage.UserMetadata);
+        }
+
+        internal static PNPresenceEvent CreatePNPresenceEvent (object payload)
+        {
+            Dictionary<string, object> pnPresenceEventDict = (Dictionary<string, object>)payload;
+            PNPresenceEvent pnPresenceEvent = new PNPresenceEvent (
+                (pnPresenceEventDict.ContainsKey("action"))?pnPresenceEventDict["action"].ToString():"",
+                (pnPresenceEventDict.ContainsKey("uuid"))?pnPresenceEventDict["uuid"].ToString():"",
+                Utility.CheckKeyAndParseInt(pnPresenceEventDict, "occupancy", "occupancy"),
+                Utility.CheckKeyAndParseLong(pnPresenceEventDict, "timestamp", "timestamp"),
+                (pnPresenceEventDict.ContainsKey("state"))?pnPresenceEventDict["state"]:null
+            );
+            //"action": "join", "timestamp": 1473952169, "uuid": "a7acb27c-f1da-4031-a2cc-58656196b06d", "occupancy": 1
+
+            #if (ENABLE_PUBNUB_LOGGING)
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Action: {1} \nTimestamp: {2} \nOccupancy: {3}\nUUID: {4}", 
+                DateTime.Now.ToString (), pnPresenceEvent.Action, pnPresenceEvent.Timestamp, 
+                pnPresenceEvent.Occupancy,
+                pnPresenceEvent.UUID
+            ), 
+                LoggingMethod.LevelInfo);
+            #endif
+
+            return pnPresenceEvent;
+        }
+
+        internal static void CreatePNPresenceEventResult(SubscribeMessage subscribeMessage, out PNPresenceEventResult messageResult)
+        {
+            long timetoken = (subscribeMessage.PublishTimetokenMetadata != null) ? subscribeMessage.PublishTimetokenMetadata.Timetoken : 0;
+            PNPresenceEvent pnPresenceEvent = CreatePNPresenceEvent(subscribeMessage.Payload);
+
+            messageResult = new PNPresenceEventResult (
+                subscribeMessage.SubscriptionMatch.Replace(Utility.PresenceChannelSuffix, ""), 
+                subscribeMessage.Channel.Replace(Utility.PresenceChannelSuffix, ""), 
+                pnPresenceEvent.Action,
+                timetoken,
+                pnPresenceEvent.Timestamp,
+                subscribeMessage.UserMetadata,
+                pnPresenceEvent.State,
+                pnPresenceEvent.UUID,
+                pnPresenceEvent.Occupancy
+                );
         }
 
         internal static void AddMessageToListV2(string cipherKey, IJsonPluggableLibrary jsonPluggableLibrary, 
@@ -890,21 +935,52 @@ namespace PubNubMessaging.Core
                 ), LoggingMethod.LevelInfo);
                 #endif
 
+                PubnubChannelCallback<T> channelCallbacks = ce.ChannelParams.Callbacks as PubnubChannelCallback<T>;
+                bool isPresenceChannel  = Utility.IsPresenceChannel(subscribeMessage.Channel);
+
+                #if (PUBNUB_PS_V2_RESPONSE)
+                object messageResult;
+                if(isPresenceChannel)
+                {
+                    PNPresenceEventResult subMessageResult; 
+                    CreatePNPresenceEventResult(subscribeMessage, out subMessageResult);
+                    messageResult = subMessageResult;
+                } else {
+                    PNMessageResult subMessageResult; 
+                    CreatePNMessageResult(subscribeMessage, out subMessageResult);
+                    messageResult = subMessageResult;
+                }
+                #else
                 List<object> itemMessage;
                 AddMessageToListV2(cipherKey, jsonPluggableLibrary, subscribeMessage, ce, out itemMessage);
-                PubnubChannelCallback<T> channelCallbacks = ce.ChannelParams.Callbacks as PubnubChannelCallback<T>;
+                #endif
 
-                if ((subscribeMessage.SubscriptionMatch.Contains (".*")) && Utility.IsPresenceChannel(subscribeMessage.Channel)) {
+                if ((subscribeMessage.SubscriptionMatch.Contains (".*")) && isPresenceChannel) {
                     #if (ENABLE_PUBNUB_LOGGING)
                     LoggingMethod.WriteToLog(string.Format("DateTime {0}, FindChannelEntityAndCallback: Wildcard match ChannelEntity : {1} ", DateTime.Now.ToString(),
                         ce.ChannelID.ChannelOrChannelGroupName
                     ), LoggingMethod.LevelInfo);
                     #endif
-
+                    #if (PUBNUB_PS_V2_RESPONSE)
+                    PubnubCallbacks.GoToCallback<T>(messageResult, channelCallbacks.WildcardPresenceCallback, jsonPluggableLibrary);
+                    #else
                     PubnubCallbacks.GoToCallback<T> (itemMessage, channelCallbacks.WildcardPresenceCallback, jsonPluggableLibrary);
+                    #endif
                 } else {
-                    PubnubCallbacks.GoToCallback<T> (itemMessage, channelCallbacks.SuccessCallback, jsonPluggableLibrary);
+                    if(channelCallbacks!=null){
+                        #if (PUBNUB_PS_V2_RESPONSE)
+                            PubnubCallbacks.GoToCallback<T>(messageResult, channelCallbacks.SuccessCallback, jsonPluggableLibrary);
+                        #else
+                            PubnubCallbacks.GoToCallback<T> (itemMessage, channelCallbacks.SuccessCallback, jsonPluggableLibrary);
+                        #endif
+                    }else{
+                        #if (ENABLE_PUBNUB_LOGGING)
+                        LoggingMethod.WriteToLog(string.Format("DateTime {0}, FindChannelEntityAndCallback: channelCallbacks null ", DateTime.Now.ToString()
+                        ), LoggingMethod.LevelInfo);
+                        #endif
+                    }
                 }
+
             }
             #if (ENABLE_PUBNUB_LOGGING)
             else {

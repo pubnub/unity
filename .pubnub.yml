@@ -1,117 +1,153 @@
-name: unity
-version: 3.7.3
-schema: 1
-scm: github.com/pubnub/unity
-changelog:
-  - version: v3.7.3
-      - type: bug
-        text: Fixed SetGameObject
-  - version: v3.7.2
-    date: 
-    changes:
-      - type: feature
-        text: PubSub v2
-      - type: feature
-        text: Channel Groups
-      - type: feature
-        text: Message Filtering
-      - type: feature
-        text: Wildcard Subscribe
-      - type: improvement
-        text: Code optimizations
-  - version: v3.6.9.1
-    date: 
-    changes:
-      - type: improvement
-        text: A new debug symbol to reduce the usage of coroutines. Set REDUCE_PUBNUB_COROUTINES, to use the alternate logic for www coroutines used by the PubNub's SDK. When using this option it is recommended that you call TerminateCurrentSubscriberRequest when the app comes back to the foreground else an ongoing long request will wait till the timeout value to abort and reinit the request.
-      - type: improvement
-        text: For iOS if the value of NonSubscribeTimeout and SubscribeTimeout is greater than 59 secs, the SDK will force the value to be 59 secs.
-  - version: v3.6.9.0
-    date: 
-    changes:
-      - type: improvement
-        text: Refactored code.
-      - type: improvement
+--- 
+changelog: 
+  - 
+    changes: 
+      - 
+        text: "Added a debug symbol `PUBNUB_PS_V2_RESPONSE` to enable v4 subscribe"
+        type: feature
+    date: ~
+    version: v3.7.4
+  - 
+    changes: 
+      - 
+        text: "Fixed SetGameObject"
+        type: feature
+    date: ~
+    version: v3.7.3
+  - 
+    changes: 
+      - 
+        text: "PubSub v2"
+        type: feature
+      - 
+        text: "Channel Groups"
+        type: feature
+      - 
+        text: "Message Filtering"
+        type: feature
+      - 
+        text: "Wildcard Subscribe"
+        type: feature
+      - 
+        text: "Code optimizations"
+        type: improvement
+    date: ~
+    version: v3.7.2
+  - 
+    changes: 
+      - 
+        text: "A new debug symbol to reduce the usage of coroutines. Set REDUCE_PUBNUB_COROUTINES, to use the alternate logic for www coroutines used by the PubNub's SDK. When using this option it is recommended that you call TerminateCurrentSubscriberRequest when the app comes back to the foreground else an ongoing long request will wait till the timeout value to abort and reinit the request."
+        type: improvement
+      - 
+        text: "For iOS if the value of NonSubscribeTimeout and SubscribeTimeout is greater than 59 secs, the SDK will force the value to be 59 secs."
+        type: improvement
+    date: ~
+    version: v3.6.9.1
+  - 
+    changes: 
+      - 
+        text: "Refactored code."
+        type: improvement
+      - 
         text: "JSON library: the pre-compiler directives to choose between MiniJSON and JSONFx have been moved to the class JSONSerializer.cs."
-      - type: improvement
-        text: | 
-          `Logging: In addition to setting the variables PubnubLogLevel = LoggingMethod.Level.Info and PubnubErrorLevel = PubnubErrorFilter.Level.Info you also need to add a "define symbol": ENABLE_PUBNUB_LOGGING for each of the platform you want to enable logging. 
-
-          This setting is available in the Unity Editor: File-> Build Settings -> Player Settings -> Other Settings -> Configuration -> Scripting define symbols. 
-          After you type ENABLE_PUBNUB_LOGGING in it do remember to press return with the focus still in the text box or your setting will not be saved.
-          `
-      - type: feature
-        text: Add mobile push methods.
-      - type: improvement
-        text: Default value of SSL is now true.
-  - version: v3.6.8.8
-    date: 
-    changes:
-      - type: bug
-        text: some fixes for subscribe request timeouts.
-  - version: v3.6.8.7
-    date: 
-    changes:
-      - type: improvement
-        text: removes forceful garbage collection.
-  - version: v3.6.8.6
-    date:
-    changes:
-      - type: bug
-        text: Fix for "null" message in callback when a message contains multiple messages, one of which is of type System.Collections.Generic.Dictionary`2[System.String,System.Object].
-  - version: v3.6.8.4
-    date:
-    changes:
-      - type: bug
-        text: Duplicate messages on some occasions.
-  - version: v3.6.8.3
-    date:
-    changes:
-      - type: bug
-        text: Non subscribe callbacks were not fired when called from within a callback of an earlier request.
-  - version: v3.6.8.1
-    date:
-    changes:
-      - type: bug
-        text: Missed messages when adding a channel to multiplexed.
-      - type: bug
-        text: Sub timeout gets fired when in app goes in background and the request is not complete.
-      - type: bug
-        text: User State didn't change in some cases.
-      - type: bug
-        text: Multiple requests heartbeats were running.
-features:
-  access:
+        type: improvement
+      - 
+        text: |
+            `Logging: In addition to setting the variables PubnubLogLevel = LoggingMethod.Level.Info and PubnubErrorLevel = PubnubErrorFilter.Level.Info you also need to add a "define symbol": ENABLE_PUBNUB_LOGGING for each of the platform you want to enable logging. 
+            
+            This setting is available in the Unity Editor: File-> Build Settings -> Player Settings -> Other Settings -> Configuration -> Scripting define symbols. 
+            After you type ENABLE_PUBNUB_LOGGING in it do remember to press return with the focus still in the text box or your setting will not be saved.
+            `
+        type: improvement
+      - 
+        text: "Add mobile push methods."
+        type: feature
+      - 
+        text: "Default value of SSL is now true."
+        type: improvement
+    date: ~
+    version: v3.6.9.0
+  - 
+    changes: 
+      - 
+        text: "some fixes for subscribe request timeouts."
+        type: bug
+    date: ~
+    version: v3.6.8.8
+  - 
+    changes: 
+      - 
+        text: "removes forceful garbage collection."
+        type: improvement
+    date: ~
+    version: v3.6.8.7
+  - 
+    changes: 
+      - 
+        text: "Fix for \"null\" message in callback when a message contains multiple messages, one of which is of type System.Collections.Generic.Dictionary`2[System.String,System.Object]."
+        type: bug
+    date: ~
+    version: v3.6.8.6
+  - 
+    changes: 
+      - 
+        text: "Duplicate messages on some occasions."
+        type: bug
+    date: ~
+    version: v3.6.8.4
+  - 
+    changes: 
+      - 
+        text: "Non subscribe callbacks were not fired when called from within a callback of an earlier request."
+        type: bug
+    date: ~
+    version: v3.6.8.3
+  - 
+    changes: 
+      - 
+        text: "Missed messages when adding a channel to multiplexed."
+        type: bug
+      - 
+        text: "Sub timeout gets fired when in app goes in background and the request is not complete."
+        type: bug
+      - 
+        text: "User State didn't change in some cases."
+        type: bug
+      - 
+        text: "Multiple requests heartbeats were running."
+        type: bug
+    date: ~
+    version: v3.6.8.1
+features: 
+  access: 
     - ACCESS-GRANT
-  channel-groups:
+  channel-groups: 
     - CHANNEL-GROUPS-ADD-CHANNELS
     - CHANNEL-GROUPS-REMOVE-CHANNELS
     - CHANNEL-GROUPS-REMOVE-GROUPS
     - CHANNEL-GROUPS-LIST-CHANNELS-IN-GROUP
-  push:
-    - PUSH-ADD-DEVICE-TO-CHANNELS
-    - PUSH-REMOVE-DEVICE-FROM-CHANNELS
-    - PUSH-LIST-CHANNELS-FROM-DEVICE
-    - PUSH-REMOVE-DEVICE
-  presence:
+  presence: 
     - PRESENCE-HERE-NOW
     - PRESENCE-WHERE-NOW
     - PRESENCE-SET-STATE
     - PRESENCE-GET-STATE
     - PRESENCE-HEARTBEAT
-  publish:
+  publish: 
     - PUBLISH-STORE-FLAG
     - PUBLISH-WITH-METADATA
     - PUBLISH-GET
     - PUBLISH-ASYNC
-  storage:
+  push: 
+    - PUSH-ADD-DEVICE-TO-CHANNELS
+    - PUSH-REMOVE-DEVICE-FROM-CHANNELS
+    - PUSH-LIST-CHANNELS-FROM-DEVICE
+    - PUSH-REMOVE-DEVICE
+  storage: 
     - STORAGE-REVERSE
     - STORAGE-INCLUDE-TIMETOKEN
     - STORAGE-START-END
     - STORAGE-COUNT
-  time:
-    - TIME-TIME
-  subscribe:
+  subscribe: 
     - SUBSCRIBE-CHANNELS
     - SUBSCRIBE-CHANNEL-GROUPS
     - SUBSCRIBE-PRESENCE-CHANNELS
@@ -119,3 +155,9 @@ features:
     - SUBSCRIBE-WITH-TIMETOKEN
     - SUBSCRIBE-WILDCARD
     - SUBSCRIBE-FILTER-EXPRESSION
+  time: 
+    - TIME-TIME
+name: unity
+schema: 1
+scm: github.com/pubnub/unity
+version: "3.7.4"
