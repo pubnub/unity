@@ -121,7 +121,7 @@ namespace PubNubMessaging.Tests
 
             CoroutineParams<T> cp = new CoroutineParams<T> (url, timeout, 0, crt, typeof(T), pubnubRequestState);
 
-            GameObject go = new GameObject ("PubnubCoroutine");
+            GameObject go = new GameObject ("PubnubUnitTestCoroutine");
             CoroutineClass cc = go.AddComponent<CoroutineClass> ();
 
             cc.SetCoroutineParams<T>(crt, cp);
@@ -263,7 +263,7 @@ namespace PubNubMessaging.Tests
         void CheckElapsedTime<T>(CurrentRequestType crt, float timer, WWW www, bool completeFlag){
 
 
-            GameObject go = new GameObject ();
+            GameObject go = new GameObject ("PubnubUnitTestCoroutine");
             CoroutineClass cc = go.AddComponent<CoroutineClass> ();
 
             if(crt.Equals(CurrentRequestType.Subscribe)){
@@ -349,7 +349,7 @@ namespace PubNubMessaging.Tests
         }
 
         void CheckIfRequestIsRunning<T>(CurrentRequestType crt, bool completeFlag){
-            GameObject go = new GameObject ();
+            GameObject go = new GameObject ("PubnubUnitTestCoroutine");
             CoroutineClass cc = go.AddComponent<CoroutineClass> ();
             if(crt.Equals(CurrentRequestType.Subscribe)){
                 cc.isSubscribeComplete = completeFlag;
@@ -388,7 +388,7 @@ namespace PubNubMessaging.Tests
         }
 
         void StopTimeouts(CurrentRequestType crt){
-            GameObject go = new GameObject ();
+            GameObject go = new GameObject ("PubnubUnitTestCoroutine");
             CoroutineClass cc = go.AddComponent<CoroutineClass> ();
             if(crt.Equals(CurrentRequestType.Subscribe)){
                 cc.runSubscribeTimer = true;
