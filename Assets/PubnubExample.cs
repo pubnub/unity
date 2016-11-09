@@ -9,7 +9,6 @@ using System.Text.RegularExpressions;
 using PubNubMessaging.Core;
 using System;
 using System.Reflection;
-using System.Net.Security;
 using System.Text;
 using System.Linq;
 using System.Collections.Generic;

@@ -5,8 +5,9 @@
 [Oo]bj/
 UnityGenerated/
 [Bb]uild/
-[Ll]ibrary
-[Pp]roject[Ss]ettings
+[Ll]ibrary/
+[Pp]roject[Ss]ettings/
+UWP/
 
 # ===================================== #
 # Visual Studio / MonoDevelop generated #

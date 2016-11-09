@@ -70,9 +70,9 @@ namespace PubNubMessaging.Tests
 
     public class CommonIntergrationTests
     {
-		public static string PublishKey = "demo";
-		public static string SubscribeKey = "demo";
-		public static string SecretKey = "demo";
+        public static string PublishKey = "demo";
+        public static string SubscribeKey = "demo";
+        public static string SecretKey = "demo";
         public static float WaitTimeBetweenCalls = 5;
         public static float WaitTimeBetweenCallsLow = 4;
         public static float WaitTimeToReadResponse = 15;
@@ -1507,11 +1507,11 @@ namespace PubNubMessaging.Tests
 
             if (expectedType==valueType)
             {
-
+                objUuid = uuids as string[];
             }
             else if (expectedType2==valueType)
             {
-
+                objUuid = uuids as object[];
             }
             else if (uuids is IList && uuids.GetType()==Type.GetType("Generic"))
             {
