@@ -1,3 +1,8 @@
+#if UNITY_WSA || UNITY_WSA_8_1 || UNITY_WSA_10_0
+#else
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
+#endif
 using UnityEngine;
 using System.Collections;
 using System.Text.RegularExpressions;
@@ -5,7 +10,6 @@ using PubNubMessaging.Core;
 using System;
 using System.Reflection;
 using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Linq;
 using System.Collections.Generic;
@@ -1739,6 +1743,7 @@ public class PubnubExample : MonoBehaviour
         //System.Net.ServicePointManager.ServerCertificateValidationCallback = ValidateServerCertificate;
     }
 
+#if !UNITY_WSA && !UNITY_WSA_8_1 && !UNITY_WSA_10_0
     private static bool ValidateServerCertificate (object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
     {
         if (sslPolicyErrors == SslPolicyErrors.None)
@@ -1775,6 +1780,7 @@ public class PubnubExample : MonoBehaviour
         // Do not allow this client to communicate with unauthenticated servers. 
         return false;
     }
+#endif
 
     void Update ()
     {

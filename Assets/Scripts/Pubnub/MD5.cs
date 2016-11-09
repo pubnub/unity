@@ -1,9 +1,15 @@
 using System;
 using System.IO;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Globalization;
+#if UNITY_WSA || UNITY_WSA_8_1 || UNITY_WSA_10_0
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Security;
+#else
+using System.Security.Cryptography;
+#endif
 
 namespace PubNubMessaging.Core
 {
@@ -670,6 +676,27 @@ namespace PubNubMessaging.Core
             return sb.ToString ();
         }
 
+#if UNITY_WSA || UNITY_WSA_8_1 || UNITY_WSA_10_0
+        public string PubnubAccessManagerSign(string key, string data)
+        {
+            string secret = key;
+            string message = data;
+
+            var encoding = new System.Text.UTF8Encoding();
+            byte[] keyByte = encoding.GetBytes(secret);
+            byte[] messageBytes = encoding.GetBytes(message);
+
+            //http://mycsharp.de/wbb2/thread.php?postid=3550104
+            KeyParameter paramKey = new KeyParameter(keyByte);
+            IMac mac = MacUtilities.GetMac("HMac-SHA256");
+            mac.Init(paramKey);
+            mac.Reset();
+            mac.BlockUpdate(messageBytes, 0, messageBytes.Length);
+            byte[] hashmessage = new byte[mac.GetMacSize()];
+            mac.DoFinal(hashmessage, 0);
+            return Convert.ToBase64String(hashmessage).Replace('+', '-').Replace('/', '_');
+        }
+#else
         public string PubnubAccessManagerSign (string key, string data)
         {
             string secret = key;
@@ -685,6 +712,7 @@ namespace PubNubMessaging.Core
                 ;
             }
         }
+#endif
     }
     #endregion
 }

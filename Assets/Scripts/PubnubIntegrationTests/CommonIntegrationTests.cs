@@ -70,11 +70,11 @@ namespace PubNubMessaging.Tests
 
     public class CommonIntergrationTests
     {
-        public static string PublishKey = "demo-36";
-        public static string SubscribeKey = "demo-36";
-        public static string SecretKey = "demo-36";
-        public static float WaitTimeBetweenCalls = 3;
-        public static float WaitTimeBetweenCallsLow = 2;
+		public static string PublishKey = "demo";
+		public static string SubscribeKey = "demo";
+		public static string SecretKey = "demo";
+        public static float WaitTimeBetweenCalls = 5;
+        public static float WaitTimeBetweenCallsLow = 4;
         public static float WaitTimeToReadResponse = 15;
         public static float WaitTime = 20;
         Pubnub pubnub;
@@ -1486,6 +1486,8 @@ namespace PubNubMessaging.Tests
             var expectedType = typeof(string[]);
             var expectedType2 = typeof(object[]);
 
+#if !(UNITY_WSA || UNITY_WSA_8_1 || UNITY_WSA_10_0)
+
             if (expectedType.IsAssignableFrom (valueType)) {
                 objUuid = uuids as string[];
             } else if (expectedType2.IsAssignableFrom (valueType)) {
@@ -1501,19 +1503,46 @@ namespace PubNubMessaging.Tests
                     return true;
                 }
             }
+#else
+
+            if (expectedType==valueType)
+            {
+
+            }
+            else if (expectedType2==valueType)
+            {
+
+            }
+            else if (uuids is IList && uuids.GetType()==Type.GetType("Generic"))
+            {
+                objUuid = ((IEnumerable)uuids).Cast<object>().ToArray();
+            }
+            else
+            {
+                objUuid = CommonIntergrationTests.Deserialize<object[]>(uuids.ToString());
+            }
+            foreach (object obj in objUuid)
+            {
+                UnityEngine.Debug.Log("session:" + obj.ToString());
+                if (obj.Equals(matchUUID))
+                {
+                    return true;
+                }
+            }
+#endif
             return false;
         }
 
         public static T Deserialize<T> (string message)
         {
             object retMessage;
-            #if (USE_JSONFX) || (USE_JSONFX_UNITY)
+#if (USE_JSONFX) || (USE_JSONFX_UNITY)
             var reader = new JsonFx.Json.JsonReader ();
             retMessage = reader.Read<T> (message);
-            #elif (USE_JSONFX_UNITY_IOS)
+#elif (USE_JSONFX_UNITY_IOS)
             UnityEngine.Debug.Log ("message: " + message);
             retMessage = JsonReader.Deserialize<T> (message);
-            #elif (USE_MiniJSON)
+#elif (USE_MiniJSON)
             UnityEngine.Debug.Log ("message: " + message);
             object retMessage1 = Json.Deserialize (message) as object;
             Type type = typeof(T);
@@ -1523,9 +1552,9 @@ namespace PubNubMessaging.Tests
             } else {
                 retMessage    = retMessage1;
             }
-            #else
+#else
             retMessage = JsonConvert.DeserializeObject<T> (message);
-            #endif
+#endif
             return (T)retMessage;
         }
 
@@ -2341,7 +2370,7 @@ namespace PubNubMessaging.Tests
             }
         }
 
-        #if(REDUCE_PUBNUB_COROUTINES)
+#if (REDUCE_PUBNUB_COROUTINES)
         public IEnumerator TestCoroutineRunSubscribeMultiple(string url, string url2, int timeout, int pause, string[] channels,
             bool resumeOnReconnect,bool ssl, string testName, string expectedMessage, string expectedChannels,
             bool isError, bool isTimeout, bool asObject, long timetoken, CurrentRequestType crt, ResponseType respType
@@ -2551,6 +2580,6 @@ namespace PubNubMessaging.Tests
             UnityEngine.Debug.Log ("Event handler fired");
             IntegrationTest.Pass();
         }*/
-        #endif
+#endif
     }
 }
