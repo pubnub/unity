@@ -3,6 +3,13 @@ changelog:
   - 
     changes: 
       - 
+        text: "Windows Store (Windows 10 UWP) compatibility"
+        type: improvement
+    date: ~
+    version: v3.7.5
+  - 
+    changes: 
+      - 
         text: "Added a debug symbol `PUBNUB_PS_V2_RESPONSE` to enable v4 subscribe"
         type: feature
     date: ~
@@ -160,4 +167,4 @@ features:
 name: unity
 schema: 1
 scm: github.com/pubnub/unity
-version: "3.7.4"
+version: "3.7.5"
