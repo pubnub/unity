@@ -11,7 +11,7 @@ After checking out the general setup video, [For iOS targets](https://vimeo.com/
 * 3.7.5
  * Windows Store Universal 10 store compatibility. 
  * Changed the JSON lib to use: https://github.com/MarkerMetro/MarkerMetro.Unity.JsonFx, as it is compatible with Windows store.
- * BouncyCastle(http://www.bouncycastle.org/csharp/) is used to crypto functionality.
+ * BouncyCastle(http://www.bouncycastle.org/csharp/) is used for crypto functionality.
 * 3.7.4
  * Added a debug symbol `PUBNUB_PS_V2_RESPONSE` to enable v4 subscribe response.
 * 3.7.3
