@@ -9,7 +9,7 @@ After checking out the general setup video, [For iOS targets](https://vimeo.com/
 
 ### Important changes from previous version
 * 3.7.5
- * Windows Store Universal 10 store. 
+ * Windows Store Universal 10 store compatibility. 
  * Changed the JSON lib to use: https://github.com/MarkerMetro/MarkerMetro.Unity.JsonFx, as it is compatible with Windows store.
  * BouncyCastle(http://www.bouncycastle.org/csharp/) is used to crypto functionality.
 * 3.7.4
