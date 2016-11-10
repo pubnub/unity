@@ -3,7 +3,13 @@ changelog:
   - 
     changes: 
       - 
-        text: "Windows Store (Windows 10 UWP) compatibility"
+        text: "Windows Store Universal 10 store compatibility"
+        type: improvement
+      - 
+        text: "Changed the JSON lib to use: https://github.com/MarkerMetro/MarkerMetro.Unity.JsonFx, as it is compatible with Windows store."
+        type: improvement
+      - 
+        text: "BouncyCastle(http://www.bouncycastle.org/csharp/) is used to crypto functionality."
         type: improvement
     date: ~
     version: v3.7.5
