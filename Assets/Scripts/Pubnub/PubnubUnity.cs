@@ -1,5 +1,5 @@
-//Build Date: Nov 10, 2016
-//ver3.7.5/Unity5
+//Build Date: Dec 6, 2016
+//ver3.7.6/Unity5
 using System;
 using UnityEngine;
 using System.Collections;
@@ -51,8 +51,8 @@ namespace PubNubMessaging.Core
         private bool ssl = true;
         private static long lastSubscribeTimetoken = 0;
         private static long lastSubscribeTimetokenForNewMultiplex = 0;
-        private const string build = "3.7.5";
-        private static string pnsdkVersion = "PubNub-CSharp-Unity5/3.7.5";
+        private const string build = "3.7.6";
+        private static string pnsdkVersion = "PubNub-CSharp-Unity5/3.7.6";
 
         private int pubnubWebRequestCallbackIntervalInSeconds = 310;
         private int pubnubOperationTimeoutIntervalInSeconds = 15;
@@ -497,7 +497,7 @@ namespace PubNubMessaging.Core
 
         #region "Publish"
 
-        public bool Publish<T> (string channel, object message, bool storeInHistory, Dictionary<string, string> metadata,
+        public bool Publish<T> (string channel, object message, bool storeInHistory, Dictionary<string, string> metadata, int ttl,
             Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
             string jsonMessage = (enableJsonEncodingForPublish) ? Helpers.JsonEncodePublishMsg (message, this.cipherKey, JsonPluggableLibrary) : message.ToString ();
@@ -509,7 +509,7 @@ namespace PubNubMessaging.Core
 
             Uri request = BuildRequests.BuildPublishRequest (channel, jsonMessage, storeInHistory, this.SessionUUID,
                 this.ssl, this.Origin, this.AuthenticationKey, this.publishKey, this.subscribeKey, this.cipherKey,
-                this.secretKey, jsonMetadata, this.publishMessageCounter.NextValue());
+                this.secretKey, jsonMetadata, this.publishMessageCounter.NextValue(), ttl);
 
             RequestState<T> requestState = BuildRequests.BuildRequestState<T> (channelEntity, ResponseType.Publish,
                 false, 0, false, 0, null);

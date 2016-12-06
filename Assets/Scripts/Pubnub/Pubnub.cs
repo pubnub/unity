@@ -110,6 +110,11 @@ namespace PubNubMessaging.Core
 
         public bool Publish<T>(string channel, object message, bool storeInHistory, Dictionary<string, string> metadata, Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
+            pubnub.Publish<T>(channel, message, storeInHistory, metadata, -1, userCallback, errorCallback);
+        }
+
+        public bool Publish<T>(string channel, object message, bool storeInHistory, Dictionary<string, string> metadata, int ttl, Action<T> userCallback, Action<PubnubClientError> errorCallback)
+        {
             Utility.CheckChannel(channel);
             Utility.CheckMessage(message);
 
@@ -119,8 +124,14 @@ namespace PubNubMessaging.Core
 
             Utility.CheckJSONPluggableLibrary();
 
-            return pubnub.Publish<T>(channel, message, storeInHistory, metadata, userCallback, errorCallback);
+            return pubnub.Publish<T>(channel, message, storeInHistory, metadata, ttl, userCallback, errorCallback);
         }
+
+        public bool Publish(string channel, object message, bool storeInHistory, Dictionary<string, string> metadata, int ttl, Action<object> userCallback, Action<PubnubClientError> errorCallback)
+        {
+            return Publish<object> (channel, message, storeInHistory, metadata, ttl, userCallback, errorCallback);
+        }
+
         #endregion
 
         #region "Presence Methods"
