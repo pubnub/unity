@@ -446,7 +446,7 @@ namespace PubNubMessaging.Tests
 
             Uri uri = BuildRequests.BuildPublishRequest (channel, originalMessage, storeInHistory, uuid, ssl, 
                 pubnub.Origin, pubnub.AuthenticationKey, Common.PublishKey, Common.SubscribeKey,
-                cipherKey, secretKey, metadata, 0
+                cipherKey, secretKey, metadata, 0, -1
             );
 
             //http://pubsub.pubnub.com/publish/demo-36/demo-36/0/publish_channel/0?uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityOSX/3.6.9.0
