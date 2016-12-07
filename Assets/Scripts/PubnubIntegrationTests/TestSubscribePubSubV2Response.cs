@@ -57,9 +57,13 @@ namespace PubNubMessaging.Tests
                     UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.Subscription));
                     UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.OriginatingTimetoken));
                     UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.Timetoken));
+                    UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.IssuingClientId));
                     //UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.UserMetadata.ToString()));
 
-                    if(pnMessageResult.Payload.ToString().Contains(pubMessage) && pnMessageResult.Channel.Contains(ch)){
+                    if(pnMessageResult.Payload.ToString().Contains(pubMessage) 
+                        && pnMessageResult.Channel.Contains(ch)
+                        && pnMessageResult.IssuingClientId.Equals(pubnub.SessionUUID)
+                    ){
                         bSubMessage2 = true;
                     }
                 }, (object retConnect)=>{

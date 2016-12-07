@@ -1722,7 +1722,7 @@ public class PubnubExample : MonoBehaviour
             if(!string.IsNullOrEmpty(publishedMetadataKey) && (!string.IsNullOrEmpty(publishedMetadataValue))){
                 metadataDict.Add (publishedMetadataKey, publishedMetadataValue);
             }
-            pubnub.Publish<string> (pubChannel, stringMessage, storeInHistory, metadataDict, 10, DisplayReturnMessage, DisplayErrorMessage);
+            pubnub.Publish<string> (pubChannel, stringMessage, storeInHistory, metadataDict, -1, DisplayReturnMessage, DisplayErrorMessage);
 
             publishedMessage = "";
             showPublishPopupWindow = false;
