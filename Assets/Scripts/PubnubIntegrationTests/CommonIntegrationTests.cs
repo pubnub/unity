@@ -70,9 +70,9 @@ namespace PubNubMessaging.Tests
 
     public class CommonIntergrationTests
     {
-        public static string PublishKey = "demo";
-        public static string SubscribeKey = "demo";
-        public static string SecretKey = "demo";
+public static string PublishKey = "pub-c-25f8616c-9e80-4846-8d47-0a9257f84516";
+public static string SubscribeKey = "sub-c-f6e09df0-bd35-11e6-963b-0619f8945a4f";
+public static string SecretKey = "sec-c-Mjk1OGYwNTMtZmMwYS00YjRmLWIxYjctNWU5ZTFlNWJiNDY4";
         public static float WaitTimeBetweenCalls = 5;
         public static float WaitTimeBetweenCallsLow = 4;
         public static float WaitTimeToReadResponse = 15;

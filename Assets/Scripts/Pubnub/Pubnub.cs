@@ -110,7 +110,7 @@ namespace PubNubMessaging.Core
 
         public bool Publish<T>(string channel, object message, bool storeInHistory, Dictionary<string, string> metadata, Action<T> userCallback, Action<PubnubClientError> errorCallback)
         {
-            return pubnub.Publish<T>(channel, message, storeInHistory, metadata, -1, userCallback, errorCallback);
+            return Publish<T>(channel, message, storeInHistory, metadata, -1, userCallback, errorCallback);
         }
 
         public bool Publish<T>(string channel, object message, bool storeInHistory, Dictionary<string, string> metadata, int ttl, Action<T> userCallback, Action<PubnubClientError> errorCallback)
