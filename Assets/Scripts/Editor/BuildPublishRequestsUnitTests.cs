@@ -393,14 +393,61 @@ namespace PubNubMessaging.Tests
             TestBuildPublishRequestCommon (true, false, true, "Secret", "enigma", "authKey");
         }
 
+        [Test]
+        public void TestBuildPublishRequestCipherSecretAuthMetaStoreTrueTTL ()
+        {
+            TestBuildPublishRequestCommonWithTTL (true, false, true, "Secret", "enigma", "authKey", 10);
+        }
+
+        [Test]
+        public void TestBuildPublishRequestCipherSecretAuthMetaStoreTrueNoTTL ()
+        {
+            TestBuildPublishRequestCommonWithTTL (true, false, true, "Secret", "enigma", "authKey", -1);
+        }
+
+        [Test]
+        public void TestBuildPublishRequestCipherSecretAuthMetaStoreFalseNoTTL ()
+        {
+            TestBuildPublishRequestCommonWithTTL (true, false, false, "Secret", "enigma", "authKey", -1);
+        }
+
+        [Test]
+        public void TestBuildPublishRequestCipherSecretAuthMetaStoreFalseTTL ()
+        {
+            TestBuildPublishRequestCommonWithTTL (true, false, false, "Secret", "enigma", "authKey", 10);
+        }
+
+        [Test]
+        public void TestBuildPublishRequestCipherSecretMetaStoreTrueTTL ()
+        {
+            TestBuildPublishRequestCommonWithTTL (true, false, true, "Secret", "enigma", "", 10);
+        }
+
+        [Test]
+        public void TestBuildPublishRequestCipherSecretMetaStoreTrueNoTTL ()
+        {
+            TestBuildPublishRequestCommonWithTTL (true, false, true, "Secret", "enigma", "", -1);
+        }
+
+        [Test]
+        public void TestBuildPublishRequestCipherSecretMetaStoreFalseNoTTL ()
+        {
+            TestBuildPublishRequestCommonWithTTL (true, false, false, "Secret", "enigma", "", -1);
+        }
+
+        [Test]
+        public void TestBuildPublishRequestCipherSecretMetaStoreFalseTTL ()
+        {
+            TestBuildPublishRequestCommonWithTTL (true, false, false, "Secret", "enigma", "", 10);
+        }
+
         public void TestBuildPublishRequestCommon(bool ssl, bool storeInHistory, string secretKey, 
             string cipherKey, string authKey){
             TestBuildPublishRequestCommon(false, ssl, storeInHistory, secretKey, cipherKey, authKey);
         }
 
-        public void TestBuildPublishRequestCommon(bool sendMeta, bool ssl, bool storeInHistory, string secretKey, 
-            string cipherKey, string authKey){
-
+        public void TestBuildPublishRequestCommonWithTTL(bool sendMeta, bool ssl, bool storeInHistory, string secretKey, 
+            string cipherKey, string authKey, int ttl){
             string channel = "publish_channel";
             string message = "Test message";
             string uuid = "customuuid";
@@ -446,19 +493,27 @@ namespace PubNubMessaging.Tests
 
             Uri uri = BuildRequests.BuildPublishRequest (channel, originalMessage, storeInHistory, uuid, ssl, 
                 pubnub.Origin, pubnub.AuthenticationKey, Common.PublishKey, Common.SubscribeKey,
-                cipherKey, secretKey, metadata, 0
+                cipherKey, secretKey, metadata, 0, ttl
             );
 
+            string ttlStr = (ttl == -1) ? "" : string.Format("&ttl={0}", ttl.ToString());
+
             //http://pubsub.pubnub.com/publish/demo-36/demo-36/0/publish_channel/0?uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityOSX/3.6.9.0
-            string expected = string.Format ("http{0}://{1}/publish/{2}/{3}/{4}/{5}/0/{6}?uuid={7}&seqn=0{8}{11}{9}&pnsdk={10}",
+            string expected = string.Format ("http{0}://{1}/publish/{2}/{3}/{4}/{5}/0/{6}?uuid={7}&seqn=0{8}{12}{11}{9}&pnsdk={10}",
                 ssl?"s":"", pubnub.Origin, Common.PublishKey, Common.SubscribeKey, signature, channel, 
                 Utility.EncodeUricomponent(originalMessage, ResponseType.Publish, false, false), 
                 uuid, storeInHistory?"":"&store=0", authKeyString,
                 Utility.EncodeUricomponent(PubnubUnity.Version, ResponseType.Publish, false, false),
-                meta
+                meta,
+                ttlStr
             );
             string received = uri.OriginalString;
             Common.LogAndCompare (expected, received);
+        }
+
+        public void TestBuildPublishRequestCommon(bool sendMeta, bool ssl, bool storeInHistory, string secretKey, 
+            string cipherKey, string authKey){
+            TestBuildPublishRequestCommonWithTTL(false, ssl, storeInHistory, secretKey, cipherKey, authKey, -1);
         }
 
         #endif

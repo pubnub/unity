@@ -3,6 +3,16 @@ changelog:
   - 
     changes: 
       - 
+        text: "Offers the ability to set a per message time to live in storage."
+        type: feature
+      - 
+        text: "Find out which UUID sent the message (only avialable when debug symbol `PUBNUB_PS_V2_RESPONSE` is used)."
+        type: feature
+    date: ~
+    version: v3.7.6
+  - 
+    changes: 
+      - 
         text: "Windows Store Universal 10 store compatibility"
         type: improvement
       - 

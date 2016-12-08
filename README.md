@@ -1,6 +1,6 @@
 # Please direct all Support Questions and Concerns to Support@PubNub.com
 
-## PubNub 3.7.5 Web Data Push Cloud-Hosted API for Unity 5
+## PubNub 3.7.6 Web Data Push Cloud-Hosted API for Unity 5
 ### Supports PC, Mac, Linux, iOS, Android, WebPlayer, Windows Store Universal 10 and WebGL
 
 ### View this First!
@@ -8,6 +8,9 @@ We've made a [screencast](https://vimeo.com/69591819) that will walk you through
 After checking out the general setup video, [For iOS targets](https://vimeo.com/71549964) be sure to view this walkthrough next. Check it out!
 
 ### Important changes from previous version
+* 3.7.6
+ *  Offers the ability to set a per message time to live in storage.
+ *  Find out which UUID sent the message (only avialable when debug symbol `PUBNUB_PS_V2_RESPONSE` is used).
 * 3.7.5
  * Windows Store Universal 10 store compatibility. 
  * Changed the JSON lib to use: https://github.com/MarkerMetro/MarkerMetro.Unity.JsonFx, as it is compatible with Windows store.

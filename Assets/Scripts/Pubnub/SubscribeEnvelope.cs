@@ -53,15 +53,17 @@ namespace PubNubMessaging.Core
         public long Timetoken { get; set;} 
         public long OriginatingTimetoken { get; set;} 
         public object UserMetadata { get; set;} 
+        public string IssuingClientId { get; set;} 
 
         public PNMessageResult(string subscribedChannel, string actualchannel, object payload,
-            long timetoken, long originatingTimetoken, object userMetadata){
+            long timetoken, long originatingTimetoken, object userMetadata, string issuingClientId){
             this.Subscription = subscribedChannel;// change to channel group
             this.Channel = actualchannel; // change to channel
             this.Payload = payload;
             this.Timetoken = timetoken;
             this.OriginatingTimetoken = originatingTimetoken;
             this.UserMetadata = userMetadata;
+            this.IssuingClientId = issuingClientId;
         }
     }
 
@@ -76,9 +78,12 @@ namespace PubNubMessaging.Core
         public int Occupancy { get; set;} 
         public object State { get; set;} 
         public object UserMetadata { get; set;} 
+        public string IssuingClientId { get; set;} 
 
         public PNPresenceEventResult(string subscribedChannel, string actualchannel, string presenceEvent,
-            long timetoken, long timestamp, object userMetadata, object state, string uuid, int occupancy){
+            long timetoken, long timestamp, object userMetadata, object state, string uuid, int occupancy,
+            string issuingClientId
+        ){
             this.Subscription = subscribedChannel;// change to channel group
             this.Channel = actualchannel; // change to channel
             this.Event = presenceEvent;
@@ -88,6 +93,7 @@ namespace PubNubMessaging.Core
             this.Timestamp = timestamp;
             this.State = state;
             this.UserMetadata = userMetadata;
+            this.IssuingClientId = issuingClientId;
         }
     }
 
