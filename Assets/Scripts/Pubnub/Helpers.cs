@@ -837,7 +837,10 @@ namespace PubNubMessaging.Core
                 subscribeMessage.Payload, 
                 timetoken,
                 originatingTimetoken,
-                subscribeMessage.UserMetadata);
+                subscribeMessage.UserMetadata,
+                subscribeMessage.IssuingClientId
+            );
+
         }
 
         internal static PNPresenceEvent CreatePNPresenceEvent (object payload)
@@ -878,7 +881,8 @@ namespace PubNubMessaging.Core
                 subscribeMessage.UserMetadata,
                 pnPresenceEvent.State,
                 pnPresenceEvent.UUID,
-                pnPresenceEvent.Occupancy
+                pnPresenceEvent.Occupancy,
+                subscribeMessage.IssuingClientId
                 );
         }
 

@@ -1722,7 +1722,7 @@ public class PubnubExample : MonoBehaviour
             if(!string.IsNullOrEmpty(publishedMetadataKey) && (!string.IsNullOrEmpty(publishedMetadataValue))){
                 metadataDict.Add (publishedMetadataKey, publishedMetadataValue);
             }
-            pubnub.Publish<string> (pubChannel, stringMessage, storeInHistory, metadataDict, DisplayReturnMessage, DisplayErrorMessage);
+            pubnub.Publish<string> (pubChannel, stringMessage, storeInHistory, metadataDict, -1, DisplayReturnMessage, DisplayErrorMessage);
 
             publishedMessage = "";
             showPublishPopupWindow = false;
@@ -1882,6 +1882,7 @@ public class PubnubExample : MonoBehaviour
 
         AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.Timetoken));
         AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeObject: {0}", pnMessageResult.UserMetadata.ToString()));
+        AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeObject IssuingClientId: {0}", pnMessageResult.IssuingClientId.ToString()));
 
     }
 

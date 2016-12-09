@@ -126,11 +126,17 @@ namespace PubNubMessaging.Core
 
         internal static Uri BuildPublishRequest (string channel, string message, bool storeInHistory, string uuid, 
             bool ssl, string origin, string authenticationKey, 
-                string publishKey, string subscribeKey, string cipherKey, string secretKey, string metadata, uint messageCounter)
+            string publishKey, string subscribeKey, string cipherKey, string secretKey, 
+            string metadata, uint messageCounter, int ttl
+        )
         {
             StringBuilder parameterBuilder = new StringBuilder ();
             parameterBuilder.AppendFormat ("&seqn={0}", messageCounter.ToString ());
             parameterBuilder.Append ((storeInHistory) ? "" : "&store=0");
+            if (ttl >= 0) {
+                parameterBuilder.AppendFormat ("&ttl={0}", ttl.ToString());
+            }
+
             if (!string.IsNullOrEmpty (metadata) || metadata.Equals("\"\"")) {
                 parameterBuilder.AppendFormat ("&meta={0}", Utility.EncodeUricomponent (metadata, ResponseType.Publish, false, false));
             }
