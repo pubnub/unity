@@ -10,7 +10,7 @@ namespace PubNubMessaging.Tests
         public IEnumerator Start ()
         {
             CommonIntergrationTests common = new CommonIntergrationTests ();
-            string url = "http://pubsub.pubnub.com";
+            string url = "http://ps.pndsn.com";
             string[] multiChannel = {"testChannel"};
 
             //Inducing Error by setting wrong request type

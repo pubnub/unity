@@ -1052,9 +1052,9 @@ namespace PubNubMessaging.Tests
             if (count == -1) {
                 count = 100;
             }
-            //Received:http://pubsub.pubnub.com/v2/history/sub-key/demo-36/channel/history_channel?count=90&reverse=true&start=14498416434364941&end=14498416799269095&auth=authKey&uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX/3.6.9.0
-            //Received:https://pubsub.pubnub.com/v2/history/sub-key/demo-36/channel/history_channel?count=90&include_token=true&start=14498416434364941&end=14498416799269095&auth=authKey&uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX/3.6.9.0
-            //http://pubsub.pubnub.com/v2/history/sub-key/demo-36/channel/publish_channel?count=90&start=14498416434364941&end=14498416799269095&auth=authKey&uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX/3.6.9.0
+            //Received:http://ps.pndsn.com/v2/history/sub-key/demo-36/channel/history_channel?count=90&reverse=true&start=14498416434364941&end=14498416799269095&auth=authKey&uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX/3.6.9.0
+            //Received:https://ps.pndsn.com/v2/history/sub-key/demo-36/channel/history_channel?count=90&include_token=true&start=14498416434364941&end=14498416799269095&auth=authKey&uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX/3.6.9.0
+            //http://ps.pndsn.com/v2/history/sub-key/demo-36/channel/publish_channel?count=90&start=14498416434364941&end=14498416799269095&auth=authKey&uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX/3.6.9.0
             string expected = string.Format ("http{0}://{1}/v2/history/sub-key/{2}/channel/{3}?count={4}{5}{6}{7}{8}{9}&uuid={10}&pnsdk={11}",
                 ssl?"s":"", pubnub.Origin, Common.SubscribeKey, channel, count,
                 includeTimetoken?"&include_token=true":"", reverse?"&reverse=true":"",

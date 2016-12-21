@@ -498,7 +498,7 @@ namespace PubNubMessaging.Tests
 
             string ttlStr = (ttl == -1) ? "" : string.Format("&ttl={0}", ttl.ToString());
 
-            //http://pubsub.pubnub.com/publish/demo-36/demo-36/0/publish_channel/0?uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityOSX/3.6.9.0
+            //http://ps.pndsn.com/publish/demo-36/demo-36/0/publish_channel/0?uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityOSX/3.6.9.0
             string expected = string.Format ("http{0}://{1}/publish/{2}/{3}/{4}/{5}/0/{6}?uuid={7}&seqn=0{8}{12}{11}{9}&pnsdk={10}",
                 ssl?"s":"", pubnub.Origin, Common.PublishKey, Common.SubscribeKey, signature, channel, 
                 Utility.EncodeUricomponent(originalMessage, ResponseType.Publish, false, false), 

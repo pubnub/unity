@@ -10,7 +10,7 @@ namespace PubNubMessaging.Tests
         public IEnumerator Start ()
         {
             CommonIntergrationTests common = new CommonIntergrationTests ();
-            string url = "https://pubsub.pubnub.com/time/0";
+            string url = "https://ps.pndsn.com/time/0";
             string[] multiChannel = {"testChannel"};
             //
             CurrentRequestType crt = CurrentRequestType.NonSubscribe;

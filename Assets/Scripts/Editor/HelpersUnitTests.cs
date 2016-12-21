@@ -55,7 +55,7 @@ namespace PubNubMessaging.Tests
             }
 
             SafeDictionary<string, PubnubWebRequest> channelRequest = new SafeDictionary<string, PubnubWebRequest> ();
-            PubnubWebRequest pnwr = new PubnubWebRequest(new UnityEngine.WWW("pubsub.pubnub.com"));
+            PubnubWebRequest pnwr = new PubnubWebRequest(new UnityEngine.WWW("ps.pndsn.com"));
             foreach (string currentChannel in multiChannel) {
                 channelRequest.AddOrUpdate (currentChannel, pnwr, (key, oldState) => pnwr);
             }

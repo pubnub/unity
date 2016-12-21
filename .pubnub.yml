@@ -3,6 +3,13 @@ changelog:
   - 
     changes: 
       - 
+        text: "Changed origin to ps.pndsn.com"
+        type: feature
+    date: Dec 21, 16
+    version: v3.7.6.1
+  - 
+    changes: 
+      - 
         text: "Offers the ability to set a per message time to live in storage."
         type: feature
       - 
@@ -186,4 +193,4 @@ features:
 name: unity
 schema: 1
 scm: github.com/pubnub/unity
-version: "3.7.6"
+version: “3.7.6.1”
