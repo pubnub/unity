@@ -343,7 +343,7 @@ namespace PubNubMessaging.Tests
                 uuid, ssl, pubnub.Origin, pubnub.AuthenticationKey, Common.SubscribeKey
             );
 
-            //http://pubsub.pubnub.com/v2/presence/sub_key/demo-36/channel/here_now_channel?disable_uuids=1&state=0&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityOSX/3.6.9.0
+            //http://ps.pndsn.com/v2/presence/sub_key/demo-36/channel/here_now_channel?disable_uuids=1&state=0&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityOSX/3.6.9.0
             string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/channel/{3}?{4}{8}&uuid={5}{6}&pnsdk={7}",
                 ssl?"s":"", pubnub.Origin, Common.SubscribeKey, channel, parameters,
                 uuid, authKeyString, 
@@ -474,7 +474,7 @@ namespace PubNubMessaging.Tests
                 uuid, ssl, pubnub.Origin, pubnub.AuthenticationKey, Common.SubscribeKey
             );
 
-            //http://pubsub.pubnub.com/v2/presence/sub_key/demo-36?disable_uuids=1&state=0&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityOSX/3.6.9.0
+            //http://ps.pndsn.com/v2/presence/sub_key/demo-36?disable_uuids=1&state=0&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityOSX/3.6.9.0
             string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}?{3}&uuid={4}{5}&pnsdk={6}",
                 ssl?"s":"", pubnub.Origin, Common.SubscribeKey, parameters,
                 uuid, authKeyString, 
@@ -552,7 +552,7 @@ namespace PubNubMessaging.Tests
                 ssl, pubnub.Origin, pubnub.AuthenticationKey, Common.SubscribeKey
             );
 
-            //http://pubsub.pubnub.com/v2/presence/sub_key/demo-36/uuid/customuuid?uuid=&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
+            //http://ps.pndsn.com/v2/presence/sub_key/demo-36/uuid/customuuid?uuid=&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
             string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/uuid/{3}?uuid={4}{5}&pnsdk={6}",
                 ssl?"s":"", pubnub.Origin, Common.SubscribeKey, uuid, sessionUUID,
                 authKeyString,
@@ -585,7 +585,7 @@ namespace PubNubMessaging.Tests
             );
             Uri uri = BuildRequests.BuildTimeRequest (uuid, ssl, pubnub.Origin);
 
-            //https://pubsub.pubnub.com/time/0?uuid=customuuid&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
+            //https://ps.pndsn.com/time/0?uuid=customuuid&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
             string expected = string.Format ("http{0}://{1}/time/0?uuid={2}&pnsdk={3}",
                 ssl?"s":"", pubnub.Origin, uuid, 
                 Utility.EncodeUricomponent(PubnubUnity.Version, ResponseType.Time, false, false)

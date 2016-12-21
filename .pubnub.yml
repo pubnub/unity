@@ -3,6 +3,13 @@ changelog:
   - 
     changes: 
       - 
+        text: "Changed origin to ps.pndsn.com"
+        type: feature
+    date: Dec 21, 16
+    version: v3.7.6.1
+  - 
+    changes: 
+      - 
         text: "Offers the ability to set a per message time to live in storage."
         type: feature
       - 
@@ -160,6 +167,7 @@ features:
     - PUBLISH-WITH-METADATA
     - PUBLISH-GET
     - PUBLISH-ASYNC
+    - PUBLISH-MESSAGE-TTL
   push: 
     - PUSH-ADD-DEVICE-TO-CHANNELS
     - PUSH-REMOVE-DEVICE-FROM-CHANNELS
@@ -179,9 +187,10 @@ features:
     - SUBSCRIBE-WILDCARD
     - SUBSCRIBE-FILTER-EXPRESSION
     - SUBSCRIBE-PUBSUB-V2
+    - SUBSCRIBE-PUBLISHER-UUID
   time: 
     - TIME-TIME
 name: unity
 schema: 1
 scm: github.com/pubnub/unity
-version: "3.7.6"
+version: “3.7.6.1”

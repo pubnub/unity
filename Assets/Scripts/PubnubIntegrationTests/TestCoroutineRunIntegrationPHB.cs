@@ -24,7 +24,7 @@ namespace PubNubMessaging.Tests
             CurrentRequestType crt = CurrentRequestType.PresenceHeartbeat;
             string expectedMessage = "{\"status\": 200, \"message\": \"OK\", \"service\": \"Presence\"}";
             string expectedChannels = string.Join (",", multiChannel);
-            string url = string.Format ("http://pubsub.pubnub.com/v2/presence/sub_key/{0}/channel/{1}/heartbeat?uuid={2}&heartbeat=62&pnsdk={3}", CommonIntergrationTests.SubscribeKey, 
+            string url = string.Format ("http://ps.pndsn.com/v2/presence/sub_key/{0}/channel/{1}/heartbeat?uuid={2}&heartbeat=62&pnsdk={3}", CommonIntergrationTests.SubscribeKey, 
                 expectedChannels, pubnub.SessionUUID, pubnub.Version
             );
             ResponseType respType =  ResponseType.PresenceHeartbeat;

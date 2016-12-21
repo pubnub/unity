@@ -36,7 +36,7 @@ namespace PubNubMessaging.Tests
             long nanoSecondTime = Pubnub.TranslateDateTimeToPubnubUnixNanoSeconds (DateTime.UtcNow);
 
             //Send a sub request (intentional) that waits for response
-            string url = string.Format ("http://pubsub.pubnub.com/v2/subscribe/{0}/{1}/0?uuid={3}&tt={2}&pnsdk={4}", CommonIntergrationTests.SubscribeKey, 
+            string url = string.Format ("http://ps.pndsn.com/v2/subscribe/{0}/{1}/0?uuid={3}&tt={2}&pnsdk={4}", CommonIntergrationTests.SubscribeKey, 
                 expectedChannels, nanoSecondTime, pubnub.SessionUUID, pubnub.Version
             );
             ResponseType respType =  ResponseType.Heartbeat;

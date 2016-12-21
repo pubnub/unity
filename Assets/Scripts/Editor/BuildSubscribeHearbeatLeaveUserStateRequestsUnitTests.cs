@@ -1155,8 +1155,8 @@ namespace PubNubMessaging.Tests
                 reg = string.Format ("&tr=({0})", Utility.EncodeUricomponent(region, ResponseType.SubscribeV2, false, false));
             }
                 
-            //http://pubsub.pubnub.com/v2/subscribe/demo-36/test/0?uuid=customuuid&tt=21221&state={"k":"v"}&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
-            //http://pubsub.pubnub.com/v2/subscribe/demo-36/test/0?uuid=customuuid&tt=0&filter-expr=(region%20%3D%3D%20%22east%22)&channel-group=cg&auth=authKey&pnsdk=PubNub-CSharp-UnityOSX/3.7
+            //http://ps.pndsn.com/v2/subscribe/demo-36/test/0?uuid=customuuid&tt=21221&state={"k":"v"}&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
+            //http://ps.pndsn.com/v2/subscribe/demo-36/test/0?uuid=customuuid&tt=0&filter-expr=(region%20%3D%3D%20%22east%22)&channel-group=cg&auth=authKey&pnsdk=PubNub-CSharp-UnityOSX/3.7
             string expected = string.Format ("http{0}://{1}/v2/subscribe/{2}/{3}/0?uuid={5}{4}{10}{11}{6}{7}{12}{8}{13}&pnsdk={9}",
                 ssl?"s":"", pubnub.Origin, Common.SubscribeKey, 
                 chStr, 
@@ -1393,7 +1393,7 @@ namespace PubNubMessaging.Tests
                 pubnub.Origin, pubnub.AuthenticationKey, Common.SubscribeKey
             );
 
-            //https://pubsub.pubnub.com/v2/presence/sub_key/demo-36/channel/test/leave?uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
+            //https://ps.pndsn.com/v2/presence/sub_key/demo-36/channel/test/leave?uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
             string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/channel/{3}/leave?uuid={4}{7}{5}&pnsdk={6}",
                 ssl?"s":"", pubnub.Origin, Common.SubscribeKey, chStr,
                 uuid, authKeyString, Utility.EncodeUricomponent(PubnubUnity.Version, ResponseType.Leave, false, true),
@@ -1864,7 +1864,7 @@ namespace PubNubMessaging.Tests
                 pubnub.Origin, pubnub.AuthenticationKey, Common.SubscribeKey
             );
 
-            //https://pubsub.pubnub.com/v2/presence/sub_key/demo-36/channel/user_state_channel/heartbeat?uuid=customuuid&state={"k":"v"}&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
+            //https://ps.pndsn.com/v2/presence/sub_key/demo-36/channel/user_state_channel/heartbeat?uuid=customuuid&state={"k":"v"}&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
 
             string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/channel/{3}/heartbeat?uuid={4}{5}{6}{9}{7}&pnsdk={8}",
                 ssl?"s":"", pubnub.Origin, 
@@ -1989,8 +1989,8 @@ namespace PubNubMessaging.Tests
                 pubnub.Origin, pubnub.AuthenticationKey, Common.SubscribeKey
             );
 
-            //https://pubsub.pubnub.com/v2/presence/sub_key/demo-36/channel/user_state_channel/uuid/customuuid/data?state={"k":"v"}&uuid=customuuid&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
-            //https://pubsub.pubnub.com/v2/presence/sub_key/demo-36/channel/user_state_channel/uuid/customuuid/data?state={"k":"v"}&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
+            //https://ps.pndsn.com/v2/presence/sub_key/demo-36/channel/user_state_channel/uuid/customuuid/data?state={"k":"v"}&uuid=customuuid&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
+            //https://ps.pndsn.com/v2/presence/sub_key/demo-36/channel/user_state_channel/uuid/customuuid/data?state={"k":"v"}&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
             string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/channel/{3}/uuid/{4}/data?state={5}{9}&uuid={6}{7}&pnsdk={8}",
                 ssl?"s":"", pubnub.Origin, Common.SubscribeKey, channel, uuid, 
                 Utility.EncodeUricomponent(userState, ResponseType.SetUserState, false, false),
@@ -2110,7 +2110,7 @@ namespace PubNubMessaging.Tests
                 pubnub.Origin, pubnub.AuthenticationKey, Common.SubscribeKey
             );
 
-            //https://pubsub.pubnub.com/v2/presence/sub_key/demo-36/channel/user_state_channel/uuid/customuuid?uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
+            //https://ps.pndsn.com/v2/presence/sub_key/demo-36/channel/user_state_channel/uuid/customuuid?uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
             string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/channel/{3}/uuid/{4}?uuid={6}{9}{7}&pnsdk={8}",
                 ssl?"s":"", pubnub.Origin, Common.SubscribeKey, channel, uuid, 
                 Utility.EncodeUricomponent(userState, ResponseType.GetUserState, false, false),
@@ -2240,7 +2240,7 @@ namespace PubNubMessaging.Tests
             );
 
             //[1, "Modified Channels"]
-            //https://pubsub.pubnub.com/v1/push/sub-key/demo-36/devices/pushToken?add=push_channel&type=apns&uuid=customuuid&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
+            //https://ps.pndsn.com/v1/push/sub-key/demo-36/devices/pushToken?add=push_channel&type=apns&uuid=customuuid&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
             string expected = string.Format ("http{0}://{1}/v1/push/sub-key/{2}/devices/{3}?add={4}&type={5}&uuid={6}{7}&pnsdk={8}",
                 ssl?"s":"", pubnub.Origin, Common.SubscribeKey, pushToken, 
                 Utility.EncodeUricomponent(channel, ResponseType.PushRegister, true, false), pushType.ToString().ToLower(),
@@ -2370,7 +2370,7 @@ namespace PubNubMessaging.Tests
                 pubnub.Origin, pubnub.AuthenticationKey, Common.SubscribeKey
             );
             //[1, "Modified Channels"]
-            //http://pubsub.pubnub.com/v1/push/sub-key/demo-36/devices/pushToken?remove=push_channel&type=mpns&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
+            //http://ps.pndsn.com/v1/push/sub-key/demo-36/devices/pushToken?remove=push_channel&type=mpns&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
             string expected = string.Format ("http{0}://{1}/v1/push/sub-key/{2}/devices/{3}?remove={4}&type={5}&uuid={6}{7}&pnsdk={8}",
                 ssl?"s":"", pubnub.Origin, Common.SubscribeKey, pushToken, 
                 Utility.EncodeUricomponent(channel, ResponseType.PushRemove, true, false), pushType.ToString().ToLower(),
@@ -2501,8 +2501,8 @@ namespace PubNubMessaging.Tests
 
             //[1, "Modified Channels"]
             //["push_channel"]
-            //https://pubsub.pubnub.com/v1/push/sub-key/demo-36/devices/pushToken?type=wns&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
-            //https://pubsub.pubnub.com/v1/push/sub-key/demo-36/devices/pushToken?type=mpns&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
+            //https://ps.pndsn.com/v1/push/sub-key/demo-36/devices/pushToken?type=wns&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
+            //https://ps.pndsn.com/v1/push/sub-key/demo-36/devices/pushToken?type=mpns&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
             string expected = string.Format ("http{0}://{1}/v1/push/sub-key/{2}/devices/{3}?type={4}&uuid={5}{6}&pnsdk={7}",
                 ssl?"s":"", pubnub.Origin, Common.SubscribeKey, pushToken, 
                 pushType.ToString().ToLower(),
@@ -2631,7 +2631,7 @@ namespace PubNubMessaging.Tests
                 pubnub.Origin, pubnub.AuthenticationKey, Common.SubscribeKey
             );
             //[1, "Removed Device"]
-            //https://pubsub.pubnub.com/v1/push/sub-key/demo-36/devices/pushToken/remove?type=wns&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
+            //https://ps.pndsn.com/v1/push/sub-key/demo-36/devices/pushToken/remove?type=wns&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
             string expected = string.Format ("http{0}://{1}/v1/push/sub-key/{2}/devices/{3}/remove?type={4}&uuid={5}{6}&pnsdk={7}",
                 ssl?"s":"", pubnub.Origin, Common.SubscribeKey, pushToken, 
                 pushType.ToString().ToLower(),

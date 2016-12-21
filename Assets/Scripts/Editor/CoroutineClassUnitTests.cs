@@ -29,8 +29,8 @@ namespace PubNubMessaging.Tests
                 true
             );
 
-            //http://pubsub.pubnub.com/subscribe/{0}/{1}/0/{2}?uuid={3}&pnsdk={4}
-            string url = string.Format ("http://pubsub.pubnub.com/subscribe/{0}/{1}/0/{2}?uuid={3}&pnsdk={4}", CommonIntergrationTests.SubscribeKey, 
+            //http://ps.pndsn.com/subscribe/{0}/{1}/0/{2}?uuid={3}&pnsdk={4}
+            string url = string.Format ("http://ps.pndsn.com/subscribe/{0}/{1}/0/{2}?uuid={3}&pnsdk={4}", CommonIntergrationTests.SubscribeKey, 
                 expectedChannels, 0, pubnub.SessionUUID, pubnub.Version
             );
 
@@ -55,7 +55,7 @@ namespace PubNubMessaging.Tests
                 true
             );
 
-            string url = "https://pubsub.pubnub.com/time/0";
+            string url = "https://ps.pndsn.com/time/0";
 
             SetGetCoroutineParams<string> (multiChannel, url, crt, respType, pubnub.NonSubscribeTimeout, false, false);
 
@@ -78,7 +78,7 @@ namespace PubNubMessaging.Tests
                 true
             );
 
-            string url = "https://pubsub.pubnub.com/time/0";
+            string url = "https://ps.pndsn.com/time/0";
 
             SetGetCoroutineParams<string> (multiChannel, url, crt, respType, pubnub.NonSubscribeTimeout, false, false);
 
@@ -101,7 +101,7 @@ namespace PubNubMessaging.Tests
                 true
             );
 
-            string url = string.Format ("http://pubsub.pubnub.com/v2/presence/sub_key/{0}/channel/{1}/heartbeat?uuid={2}&heartbeat=62&pnsdk={3}", CommonIntergrationTests.SubscribeKey, 
+            string url = string.Format ("http://ps.pndsn.com/v2/presence/sub_key/{0}/channel/{1}/heartbeat?uuid={2}&heartbeat=62&pnsdk={3}", CommonIntergrationTests.SubscribeKey, 
                 expectedChannels, pubnub.SessionUUID, pubnub.Version
             );
 
@@ -149,8 +149,8 @@ namespace PubNubMessaging.Tests
                 true
             );
 
-            //http://pubsub.pubnub.com/subscribe/{0}/{1}/0/{2}?uuid={3}&pnsdk={4}
-            string url = string.Format ("http://pubsub.pubnub.com/subscribe/{0}/{1}/0/{2}?uuid={3}&pnsdk={4}", CommonIntergrationTests.SubscribeKey, 
+            //http://ps.pndsn.com/subscribe/{0}/{1}/0/{2}?uuid={3}&pnsdk={4}
+            string url = string.Format ("http://ps.pndsn.com/subscribe/{0}/{1}/0/{2}?uuid={3}&pnsdk={4}", CommonIntergrationTests.SubscribeKey, 
                 expectedChannels, 0, pubnub.SessionUUID, pubnub.Version
             );
             WWW www = new WWW (url);
@@ -178,7 +178,7 @@ namespace PubNubMessaging.Tests
                 "",
                 true
             );
-            string url = "https://pubsub.pubnub.com/time/0";
+            string url = "https://ps.pndsn.com/time/0";
             WWW www = new WWW (url);
             CheckElapsedTime<string> (CurrentRequestType.Heartbeat, 0, www, false);
         }
@@ -204,7 +204,7 @@ namespace PubNubMessaging.Tests
                 "",
                 true
             );
-            string url = "https://pubsub.pubnub.com/time/0";
+            string url = "https://ps.pndsn.com/time/0";
             WWW www = new WWW (url);
             CheckElapsedTime<string> (CurrentRequestType.NonSubscribe, 0, www, false);
         }
@@ -238,7 +238,7 @@ namespace PubNubMessaging.Tests
                 true
             );
 
-            string url = string.Format ("http://pubsub.pubnub.com/v2/presence/sub_key/{0}/channel/{1}/heartbeat?uuid={2}&heartbeat=62&pnsdk={3}", CommonIntergrationTests.SubscribeKey, 
+            string url = string.Format ("http://ps.pndsn.com/v2/presence/sub_key/{0}/channel/{1}/heartbeat?uuid={2}&heartbeat=62&pnsdk={3}", CommonIntergrationTests.SubscribeKey, 
                 expectedChannels, pubnub.SessionUUID, pubnub.Version
             );
             WWW www = new WWW (url);

@@ -36,7 +36,7 @@ namespace PubNubMessaging.Tests
 	}
     public class Common
     {
-        public static string Origin = "pubsub.pubnub.com";
+        public static string Origin = "ps.pndsn.com";
         public static string PublishKey = "demo-36";
         public static string SubscribeKey = "demo-36";
         public static string SecretKey = "demo-36";
