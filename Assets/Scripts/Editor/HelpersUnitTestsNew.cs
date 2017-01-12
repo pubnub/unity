@@ -342,6 +342,54 @@ namespace PubNubMessaging.Tests
                 Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback, false);
         }
 
+        [Test]
+        public void TestUpdateOrAddUserStateOfEntityErrorCallbackObjOther(){
+            TestUpdateOrAddUserStateOfEntityCommon<object>(true, false, true, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback, true);
+        }
+
+        [Test]
+        public void TestUpdateOrAddUserStateOfEntityObjOther(){
+            TestUpdateOrAddUserStateOfEntityCommon<object>(false, false, false, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback, true);
+        }
+
+        [Test]
+        public void TestUpdateOrAddUserStateOfEntityErrorCallbackEditObjOther(){
+            TestUpdateOrAddUserStateOfEntityCommon<object>(true, true, false, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback, true);
+        }
+
+        [Test]
+        public void TestUpdateOrAddUserStateOfEntityEditObjOther(){
+            TestUpdateOrAddUserStateOfEntityCommon<object>(false, true, false, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback, true);
+        }
+
+        [Test]
+        public void TestUpdateOrAddUserStateOfEntityErrorCallbackOther(){
+            TestUpdateOrAddUserStateOfEntityCommon<string>(true, false, true, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback, true);
+        }
+
+        [Test]
+        public void TestUpdateOrAddUserStateOfEntityOther(){
+            TestUpdateOrAddUserStateOfEntityCommon<string>(false, false, false, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback, true);
+        }
+
+        [Test]
+        public void TestUpdateOrAddUserStateOfEntityErrorCallbackEditOther(){
+            TestUpdateOrAddUserStateOfEntityCommon<string>(true, true, false, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback, true);
+        }
+
+        [Test]
+        public void TestUpdateOrAddUserStateOfEntityEditOther(){
+            TestUpdateOrAddUserStateOfEntityCommon<string>(false, true, false, false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback, true);
+        }
+
         public void TestUpdateOrAddUserStateOfEntityCommon<T>(bool isChannelGroup, bool edit, 
             bool checkErrorCallback, bool ssl, Action<T> userCallback, Action<T> connectCallback,
             Action<T> wildcardPresenceCallback, Action<T> disconnectCallback, bool isForOtherUUID){
@@ -415,6 +463,26 @@ namespace PubNubMessaging.Tests
         public void TestCheckAndAddExistingUserStateEditObj(){
             TestCheckAndAddExistingUserStateCommon<object>(false,
                 Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback, "", "");
+        }
+
+        [Test]
+        public void TestCheckAndAddExistingUserStateEditOther(){
+            TestCheckAndAddExistingUserStateCommon<string>(false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback, "uuid1", "uuid2");
+        }
+
+        [Test]
+        public void TestCheckAndAddExistingUserStateEditObjOther(){
+            TestCheckAndAddExistingUserStateCommon<object>(false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback, "uuid1", "uuid2");
+        }
+
+        [Test]
+        public void TestCheckAndAddExistingUserStateEditObjBoth(){
+            TestCheckAndAddExistingUserStateCommon<object>(false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback, "", "");
+            TestCheckAndAddExistingUserStateCommon<object>(false,
+                Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback, "uuid1", "uuid2");
         }
 
         public void TestCheckAndAddExistingUserStateCommon<T>( bool edit, Action<T> userCallback, Action<T> connectCallback,
