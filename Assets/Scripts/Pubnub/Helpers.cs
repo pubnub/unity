@@ -268,37 +268,48 @@ namespace PubNubMessaging.Core
         internal static bool UpdateOrAddUserStateOfEntity<T>(string channel, bool isChannelGroup, 
             Dictionary<string, object> userState, bool edit,
             Action<T> userCallback, Action<PubnubClientError> errorCallback, 
-            PubnubErrorFilter.Level errorLevel, ref List<ChannelEntity> channelEntities)
+            PubnubErrorFilter.Level errorLevel, bool isForOtherUUID, ref List<ChannelEntity> channelEntities)
         {
             ChannelEntity ce = CreateChannelEntity<T> (channel, false, isChannelGroup, 
                 userState, userCallback, null, errorCallback, null, null);
-            bool stateChanged = Subscription.Instance.UpdateOrAddUserStateOfEntity (ref ce, userState, edit);
-            if (!stateChanged) {
-                string message = "No change in User State";
+            bool stateChanged = false;
 
-                PubnubCallbacks.CallErrorCallback<T> (ce, message,
-                    PubnubErrorCode.UserStateUnchanged, PubnubErrorSeverity.Info, errorLevel);
-            } else {
+            if (isForOtherUUID) {
+                ce.ChannelParams.UserState = userState;
                 channelEntities.Add (ce);
+                stateChanged = true;
+            } else {
+                stateChanged = Subscription.Instance.UpdateOrAddUserStateOfEntity (ref ce, userState, edit);
+                if (!stateChanged) {
+                    string message = "No change in User State";
+
+                    PubnubCallbacks.CallErrorCallback<T> (ce, message,
+                        PubnubErrorCode.UserStateUnchanged, PubnubErrorSeverity.Info, errorLevel);
+                } else {
+                    channelEntities.Add (ce);
+                }
             }
             return stateChanged;
         }
 
         internal static bool CheckAndAddExistingUserState<T>(string channel, string channelGroup, Dictionary<string, object> userState,
             Action<T> userCallback, Action<PubnubClientError> errorCallback, 
-            PubnubErrorFilter.Level errorLevel, bool edit,
+            PubnubErrorFilter.Level errorLevel, bool edit, string uuid, string sessionUUID,
             out string returnUserState, out List<ChannelEntity> channelEntities 
         )
         {
             string[] channels = channel.Trim().Split (',');
             string[] channelGroups = channelGroup.Trim().Split (',');
             bool stateChanged = false;
+            bool isForOtherUUID = false;
             channelEntities = new List<ChannelEntity> ();
-
+            if (!string.IsNullOrEmpty (uuid) && !sessionUUID.Equals (uuid)) {
+                isForOtherUUID = true;
+            } 
             foreach (string ch in channels) {
                 if (!string.IsNullOrEmpty (ch)) {
                     bool changeState = UpdateOrAddUserStateOfEntity<T> (ch, false, userState, edit,
-                        userCallback, errorCallback, errorLevel, ref channelEntities);
+                        userCallback, errorCallback, errorLevel, isForOtherUUID, ref channelEntities);
                     if (changeState && !stateChanged) {
                         stateChanged = true;
                     }
@@ -308,7 +319,7 @@ namespace PubNubMessaging.Core
             foreach (string ch in channelGroups) {
                 if (!string.IsNullOrEmpty (ch)) {
                     bool changeState = UpdateOrAddUserStateOfEntity<T> (ch, true, userState, edit,
-                        userCallback, errorCallback, errorLevel, ref channelEntities);
+                        userCallback, errorCallback, errorLevel, isForOtherUUID, ref channelEntities);
                     if (changeState && !stateChanged) {
                         stateChanged = true;
                     }

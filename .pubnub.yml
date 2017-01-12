@@ -3,6 +3,13 @@ changelog:
   - 
     changes: 
       - 
+        text: "Fixed user state issue for other UUID"
+        type: bug
+    date: Jan 12, 17
+    version: v3.7.6.2
+  - 
+    changes: 
+      - 
         text: "Changed origin to ps.pndsn.com"
         type: feature
     date: Dec 21, 16
@@ -193,4 +200,4 @@ features:
 name: unity
 schema: 1
 scm: github.com/pubnub/unity
-version: “3.7.6.1”
+version: “3.7.6.2”
