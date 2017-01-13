@@ -22,7 +22,7 @@ changelog:
       - 
         text: "Find out which UUID sent the message (only avialable when debug symbol `PUBNUB_PS_V2_RESPONSE` is used)."
         type: feature
-    date: ~
+    date: Dec 9, 16
     version: v3.7.6
   - 
     changes: 
@@ -42,7 +42,7 @@ changelog:
       - 
         text: "Added a debug symbol `PUBNUB_PS_V2_RESPONSE` to enable v4 subscribe"
         type: feature
-    date: ~
+    date: Sep 24, 16
     version: v3.7.4
   - 
     changes: 
@@ -68,7 +68,7 @@ changelog:
       - 
         text: "Code optimizations"
         type: improvement
-    date: ~
+    date: Aug 2, 16
     version: v3.7.2
   - 
     changes: 
@@ -78,7 +78,7 @@ changelog:
       - 
         text: "For iOS if the value of NonSubscribeTimeout and SubscribeTimeout is greater than 59 secs, the SDK will force the value to be 59 secs."
         type: improvement
-    date: ~
+    date: Jun 21, 16
     version: v3.6.9.1
   - 
     changes: 
