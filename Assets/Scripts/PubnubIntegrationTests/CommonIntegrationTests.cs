@@ -1041,6 +1041,17 @@ namespace PubNubMessaging.Tests
             pubnub.SetUserState<string> (channel, state, commonState.DisplayReturnMessage, commonState.DisplayErrorMessage);
         }
 
+        private void SetStateUUID (string channel, string testName, string state, string uuid)
+        {
+            UnityEngine.Debug.Log (string.Format ("{0} {1}: Running Set State ", DateTime.Now.ToString (), testName));
+            CommonIntergrationTests commonState = new CommonIntergrationTests ();
+            commonState.DeliveryStatus = false;
+            commonState.Response = null;
+            commonState.Name = string.Format ("{0} State", testName);
+
+            pubnub.SetUserState<string> (channel, uuid, state, commonState.DisplayReturnMessage, commonState.DisplayErrorMessage);
+        }
+
         public IEnumerator SetAndDeleteStateAndParse (bool ssl, string testName)
         {
             string channel = Init (testName, ssl);
@@ -1120,6 +1131,43 @@ namespace PubNubMessaging.Tests
                     IntegrationTest.Fail (string.Format ("{0}: {1}", testName, this.Response.ToString ())); 
                 }
             }
+
+            pubnub.EndPendingRequests ();
+            pubnub.CleanUp();
+        }
+
+        public IEnumerator SetAndGetStateAndParseUUID (bool ssl, string testName)
+        {
+            string channel = Init (testName, ssl);
+
+            string state1 = "{\"testkey1\":\"testval2\"}";
+            SetState (channel, testName, state1);
+            yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
+            string state2 = "{\"testkey3\":\"testval4\"}";
+            SetStateUUID (channel, testName, state2, "customuuid");
+            yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
+            bool b1 = false, b2 = false, b3 = false, b4 = false;
+            pubnub.GetUserState<string> (channel, (string returnMessage) => {
+                b1=returnMessage.Contains(state1);
+                b2=!returnMessage.Contains(state2);
+            }, this.DisplayErrorMessage);
+
+            yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
+            pubnub.GetUserState<string> (channel, "customuuid", (string returnMessage) => {
+                b3=!returnMessage.Contains(state1);
+                b4=returnMessage.Contains(state2);
+            }, this.DisplayErrorMessage);
+
+            yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls); 
+
+            /*if (this.Response == null) {
+                IntegrationTest.Fail (string.Format ("{0}: Null response", testName)); 
+            } else {*/
+            UnityEngine.Debug.Log (string.Format ("{0} {1}: b1: {2} b2: {2} b3: {3} b4: {4} ", DateTime.Now.ToString (), testName, b1, b2, b3, b4));     
+            if (b1 && b2 && b3 && b4) {
+                IntegrationTest.Pass (); 
+            }
+            //}
 
             pubnub.EndPendingRequests ();
             pubnub.CleanUp();

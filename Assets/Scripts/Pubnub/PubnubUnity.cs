@@ -1,5 +1,5 @@
-//Build Date: Dec 21, 2016
-//ver3.7.6.1/Unity5
+//Build Date: Jan 12, 2017
+//ver3.7.6.2/Unity5
 using System;
 using UnityEngine;
 using System.Collections;
@@ -51,8 +51,8 @@ namespace PubNubMessaging.Core
         private bool ssl = true;
         private static long lastSubscribeTimetoken = 0;
         private static long lastSubscribeTimetokenForNewMultiplex = 0;
-        private const string build = "3.7.6.1";
-        private static string pnsdkVersion = "PubNub-CSharp-Unity5/3.7.6.1";
+        private const string build = "3.7.6.2";
+        private static string pnsdkVersion = "PubNub-CSharp-Unity5/3.7.6.2";
 
         private int pubnubWebRequestCallbackIntervalInSeconds = 310;
         private int pubnubOperationTimeoutIntervalInSeconds = 15;
@@ -761,6 +761,7 @@ namespace PubNubMessaging.Core
                     List<ChannelEntity> channelEntities;
                     if (Helpers.CheckAndAddExistingUserState<T> (channel, channelGroup,
                         deserializeUserState, userCallback, errorCallback, errorLevel, false,
+                        uuid, this.SessionUUID,
                         out userState, out channelEntities
                     )) {
                         SharedSetUserState<T> (channel, channelGroup,
@@ -778,7 +779,8 @@ namespace PubNubMessaging.Core
             List<ChannelEntity> channelEntities;
             if (Helpers.CheckAndAddExistingUserState<T> (channel, channelGroup,
                 new Dictionary<string, object> { { keyValuePair.Key, keyValuePair.Value } }, userCallback,
-                errorCallback, errorLevel, true, out userState, out channelEntities
+                errorCallback, errorLevel, true, uuid, this.SessionUUID,
+                out userState, out channelEntities
             )) {
 
                 SharedSetUserState<T> (channel, channelGroup, channelEntities, uuid, userState);
