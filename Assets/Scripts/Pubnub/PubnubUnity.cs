@@ -1,5 +1,5 @@
-//Build Date: Jan 12, 2017
-//ver3.7.6.2/Unity5
+//Build Date: Feb 20, 2017
+//ver3.7.7/Unity5
 using System;
 using UnityEngine;
 using System.Collections;
@@ -51,8 +51,8 @@ namespace PubNubMessaging.Core
         private bool ssl = true;
         private static long lastSubscribeTimetoken = 0;
         private static long lastSubscribeTimetokenForNewMultiplex = 0;
-        private const string build = "3.7.6.2";
-        private static string pnsdkVersion = "PubNub-CSharp-Unity5/3.7.6.2";
+        private const string build = "3.7.7";
+        private static string pnsdkVersion = "PubNub-CSharp-Unity5/3.7.7";
 
         private int pubnubWebRequestCallbackIntervalInSeconds = 310;
         private int pubnubOperationTimeoutIntervalInSeconds = 15;
@@ -282,7 +282,7 @@ namespace PubNubMessaging.Core
         public string SessionUUID {
             get {
                 if (string.IsNullOrEmpty (sessionUUID) || string.IsNullOrEmpty (sessionUUID.Trim ())) {
-                    sessionUUID = Guid.NewGuid ().ToString ();
+                    sessionUUID = string.Format("pn-{0}", Guid.NewGuid ().ToString ());
                 }
 
                 return sessionUUID;

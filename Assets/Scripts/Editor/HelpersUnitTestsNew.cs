@@ -39,6 +39,16 @@ namespace PubNubMessaging.Tests
         }
 
         [Test]
+        public void TestCreateTimetokenMetadataWithoutRegion(){
+            var dict = new Dictionary<string, object>(); 
+            dict.Add("t", 14685037252884276);
+            TimetokenMetadata ttm= Helpers.CreateTimetokenMetadata(dict, "orig");
+            Assert.True(
+                ttm.Region.Equals("")
+                && ttm.Timetoken.Equals(14685037252884276));
+        }
+
+        [Test]
         public void TestAddToSubscribeMessageList(){
             List<SubscribeMessage> lsm = new List<SubscribeMessage>();
 
