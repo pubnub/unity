@@ -8,6 +8,9 @@ We've made a [screencast](https://vimeo.com/69591819) that will walk you through
 After checking out the general setup video, [For iOS targets](https://vimeo.com/71549964) be sure to view this walkthrough next. Check it out!
 
 ### Important changes from previous version
+* 3.7.7
+ * Region check in Timetoken dictionary
+ * Prefix UUID with 'pn-'
 * 3.7.6.2
  *  Fixed user state issue for other UUID
 * 3.7.6.1
