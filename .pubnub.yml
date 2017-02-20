@@ -3,6 +3,16 @@ changelog:
   - 
     changes: 
       - 
+        text: "Region check in Timetoken dictionary"
+        type: bug
+      - 
+        text: "Prefix UUID with 'pn-'"
+        type: improvement
+    date: Feb 20, 17
+    version: v3.7.7
+  - 
+    changes: 
+      - 
         text: "Fixed user state issue for other UUID"
         type: bug
     date: Jan 12, 17
@@ -200,4 +210,4 @@ features:
 name: unity
 schema: 1
 scm: github.com/pubnub/unity
-version: “3.7.6.2”
+version: “3.7.7”
