@@ -1,6 +1,6 @@
 # Please direct all Support Questions and Concerns to Support@PubNub.com
 
-## PubNub 3.7.6.2 Web Data Push Cloud-Hosted API for Unity 5
+## PubNub 3.7.7 Web Data Push Cloud-Hosted API for Unity 5
 ### Supports PC, Mac, Linux, iOS, Android, WebPlayer, Windows Store Universal 10 and WebGL
 
 ### View this First!
