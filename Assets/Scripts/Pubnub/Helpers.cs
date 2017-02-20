@@ -41,7 +41,7 @@ namespace PubNubMessaging.Core
         {
             Dictionary<string, object> timeTokenData = (Dictionary<string, object>)timeTokenDataObject;
             TimetokenMetadata timetokenMetadata = new TimetokenMetadata (Utility.CheckKeyAndParseLong(timeTokenData, whichTT, "t"), 
-                timeTokenData["r"].ToString());
+                (timeTokenData.ContainsKey ("r")) ? timeTokenData["r"].ToString(): "");
 
             #if (ENABLE_PUBNUB_LOGGING)
             LoggingMethod.WriteToLog (string.Format ("DateTime {0}, TimetokenMetadata: {1} \nTimetoken: {2} \nRegion: {3}", 
