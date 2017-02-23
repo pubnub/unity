@@ -213,7 +213,7 @@ supported-platforms:
     - iOS player, will require iOS 7.0 or higher.
     - Android, OS 2.3.1 or later; ARMv7 (Cortex) CPU with NEON support or Atom CPU; OpenGL ES 2.0 or later.
     - Windows Phone, 8.1 or later.
-    - Windows Store Apps: 8.1 or later.
+    - Windows Store Apps, 8.1 or later.
     - WebGL, Any recent desktop version of Firefox, Chrome, Edge or Safari.
     - Windows 7+, with Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support.
     - Ubuntu 12.04+, with Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support.
