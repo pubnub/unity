@@ -209,7 +209,7 @@ features:
     - TIME-TIME
 supported-platforms:
   - 
-    version: Unity5.5.1
+    version: PubNub Unity SDK 3.7.7
     platforms:
       - iOS player, will require iOS 7.0 or higher.
       - Android, OS 2.3.1 or later; ARMv7 (Cortex) CPU with NEON support or Atom CPU; OpenGL ES 2.0 or later.
