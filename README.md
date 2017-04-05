@@ -9,60 +9,60 @@ After checking out the general setup video, [For iOS targets](https://vimeo.com/
 
 ### Important changes from previous version
 * 3.7.7
- * Region check in Timetoken dictionary
- * Prefix UUID with 'pn-'
+  * Region check in Timetoken dictionary
+  * Prefix UUID with 'pn-'
 * 3.7.6.2
- *  Fixed user state issue for other UUID
+  *  Fixed user state issue for other UUID
 * 3.7.6.1
- *  Changed origin to ps.pndsn.com
+  *  Changed origin to ps.pndsn.com
 * 3.7.6
- *  Offers the ability to set a per message time to live in storage.
- *  Find out which UUID sent the message (only avialable when debug symbol `PUBNUB_PS_V2_RESPONSE` is used).
+  *  Offers the ability to set a per message time to live in storage.
+  *  Find out which UUID sent the message (only avialable when debug symbol `PUBNUB_PS_V2_RESPONSE` is used).
 * 3.7.5
- * Windows Store Universal 10 store compatibility. 
- * Changed the JSON lib to use: https://github.com/MarkerMetro/MarkerMetro.Unity.JsonFx, as it is compatible with Windows store.
- * BouncyCastle(http://www.bouncycastle.org/csharp/) is used for crypto functionality.
+  * Windows Store Universal 10 store compatibility. 
+  * Changed the JSON lib to use: https://github.com/MarkerMetro/MarkerMetro.Unity.JsonFx, as it is compatible with Windows store.
+  * BouncyCastle(http://www.bouncycastle.org/csharp/) is used for crypto functionality.
 * 3.7.4
- * Added a debug symbol `PUBNUB_PS_V2_RESPONSE` to enable v4 subscribe response.
+  * Added a debug symbol `PUBNUB_PS_V2_RESPONSE` to enable v4 subscribe response.
 * 3.7.3
- * Fixed SetGameObject
+  * Fixed SetGameObject
 * 3.7.2
- * PubSub v2.
- * Channel Groups.
- * Message Filtering
- * Wildcard Subscribe
- * Code optimizations.
+  * PubSub v2.
+  * Channel Groups.
+  * Message Filtering
+  * Wildcard Subscribe
+  * Code optimizations.
 * 3.6.9.1: A new debug symbol to reduce the usage of coroutines
- * Set `REDUCE_PUBNUB_COROUTINES`, to use the alternate logic for www coroutines used by the PubNub's SDK. When using this option it is recommended that you call `TerminateCurrentSubscriberRequest` when the app comes back to the foreground else an ongoing long request will wait till the timeout value to abort and reinit the request. 
- * For iOS if the value of `NonSubscribeTimeout` and `SubscribeTimeout` is greater than 59 secs, the SDK will force the value to be 59 secs. 
+  * Set `REDUCE_PUBNUB_COROUTINES`, to use the alternate logic for www coroutines used by the PubNub's SDK. When using this option it is recommended that you call `TerminateCurrentSubscriberRequest` when the app comes back to the foreground else an ongoing long request will wait till the timeout value to abort and reinit the request. 
+  * For iOS if the value of `NonSubscribeTimeout` and `SubscribeTimeout` is greater than 59 secs, the SDK will force the value to be 59 secs. 
 * 3.6.9.0: refactored code
- * JSON library: the pre-compiler directives to choose between MiniJSON and JSONFx have been moved to the class [JSONSerializer.cs](Assets/Scripts/Pubnub/JSONSerializer.cs)
- * **Logging: In addition to setting the variables `PubnubLogLevel = LoggingMethod.Level.Info` and `PubnubErrorLevel = PubnubErrorFilter.Level.Info` you also need to add a "define symbol": `ENABLE_PUBNUB_LOGGING` for each of the platform you want to enable logging. This setting is available in the Unity Editor: `File-> Build Settings -> Player Settings -> Other Settings -> Configuration -> Scripting define symbols`. After you type `ENABLE_PUBNUB_LOGGING` in it do remember to press `return` with the focus still in the text box or your setting will not be saved.**
- * Add mobile push methods.
- * Default value of SSL is now true.
+  * JSON library: the pre-compiler directives to choose between MiniJSON and JSONFx have been moved to the class [JSONSerializer.cs](Assets/Scripts/Pubnub/JSONSerializer.cs)
+  * **Logging: In addition to setting the variables `PubnubLogLevel = LoggingMethod.Level.Info` and `PubnubErrorLevel = PubnubErrorFilter.Level.Info` you also need to add a "define symbol": `ENABLE_PUBNUB_LOGGING` for each of the platform you want to enable logging. This setting is available in the Unity Editor: `File-> Build Settings -> Player Settings -> Other Settings -> Configuration -> Scripting define symbols`. After you type `ENABLE_PUBNUB_LOGGING` in it do remember to press `return` with the focus still in the text box or your setting will not be saved.**
+  * Add mobile push methods.
+  * Default value of SSL is now true.
 * 3.6.8.8 some fixes for subscribe request timeouts.
 * 3.6.8.7 removes forceful garbage collection.
 * 3.6.8.6 has fixes for
- * Fix for "null" message in callback when a message contains multiple messages, one of which is of type System.Collections.Generic.Dictionary`2[System.String,System.Object] 
+  * Fix for "null" message in callback when a message contains multiple messages, one of which is of type System.Collections.Generic.Dictionary`2[System.String,System.Object] 
 * 3.6.8.4 has fixes for
- * Duplicate messages on some occasions.
+  * Duplicate messages on some occasions.
 * 3.6.8.3 has fixes for
- * Non subscribe callbacks were not fired when called from within a callback of an earlier request.
+  * Non subscribe callbacks were not fired when called from within a callback of an earlier request.
 * 3.6.8.1 has fixes for 
- * Missed messages when adding a channel to multiplexed, 
- * Sub timeout gets fired when in app goes in background and the request is not complete.
- * User State didn't change in some cases
- * Multiple requests heartbeats were running
+  * Missed messages when adding a channel to multiplexed, 
+  * Sub timeout gets fired when in app goes in background and the request is not complete.
+  * User State didn't change in some cases
+  * Multiple requests heartbeats were running
 * **For iOS Unity's www class times out the request after 60 secs, so the subscribe timeout setting of > 60 secs won't work.**
 * A new method CleanUp is introduced to dispose the GameObject (if it is not set externally) and the Coroutine.
 * GameObject is not released on EndPendingRequests.
 * Reorganization of code:
- * The PubNub code has been moved to the [Assets/Scripts](Assets/Scripts) folder. 
- * The third party libs required by PubNub SDK are in the [Assets/ThirdParty](Assets/ThirdParty) 
- * You need to import both Scripts and ThirdParty folder in your project.
- * PubNub SDK for Unity has the support for 2 JSON serialization libs, [jsonfx-for-unity3d](https://bitbucket.org/TowerOfBricks/jsonfx-for-unity3d-git) and MiniJSON. By default jsonfx-for-unity3d is used. To use MiniJSON you need to replace the directive `#define USE_JSONFX_UNITY_IOS` with `#define USE_MiniJSON` in the files [Pubnub.cs](Assets/Scripts/PubNub/Pubnub.cs) and [CommonIntergrationTests.cs] (Assets/Scripts/PubnubUnitTests/CommonIntergrationTests.cs)
- * To run PubNub Unit and Integration tests you need to add the folder [Assets/UnityTestTools](Assets/UnityTestTools), [Assets/Scrips/Editor](Assets/Scripts/Editor) and [Assets/Scrips/PubnubUnitTests](Assets/Scripts/PubnubUnitTests) to your project.
- * [PubnubExample.cs](Assets/PubnubExample.cs) and [ExampleScene.unity](Assets/ExampleScene.unity) are the demo example scene and script.
+  * The PubNub code has been moved to the [Assets/Scripts](Assets/Scripts) folder. 
+  * The third party libs required by PubNub SDK are in the [Assets/ThirdParty](Assets/ThirdParty) 
+  * You need to import both Scripts and ThirdParty folder in your project.
+  * PubNub SDK for Unity has the support for 2 JSON serialization libs, [jsonfx-for-unity3d](https://bitbucket.org/TowerOfBricks/jsonfx-for-unity3d-git) and MiniJSON. By default jsonfx-for-unity3d is used. To use MiniJSON you need to replace the directive `#define USE_JSONFX_UNITY_IOS` with `#define USE_MiniJSON` in the files [Pubnub.cs](Assets/Scripts/PubNub/Pubnub.cs) and [CommonIntergrationTests.cs] (Assets/Scripts/PubnubUnitTests/CommonIntergrationTests.cs)
+  * To run PubNub Unit and Integration tests you need to add the folder [Assets/UnityTestTools](Assets/UnityTestTools), [Assets/Scrips/Editor](Assets/Scripts/Editor) and [Assets/Scrips/PubnubUnitTests](Assets/Scripts/PubnubUnitTests) to your project.
+  * [PubnubExample.cs](Assets/PubnubExample.cs) and [ExampleScene.unity](Assets/ExampleScene.unity) are the demo example scene and script.
 * Removed dependency on System.Threading.
 * This code uses Unity's www class and coroutines all around for network communication. This means all the calls to the PubNub SDK should be made from the main thread.
 * Updated the JsonFx version with the latest one from here (mod by TowerOBricks, https://bitbucket.org/TowerOfBricks/jsonfx-for-unity3d-git).  
@@ -114,7 +114,7 @@ Please note the other serialization libraries used in the pubnubCore.cs and pubn
 
 The directive `USE_JSONFX_UNITY` (uses JSONFx 1.4 dll) works only for UNITY_STANDALONE or UNITY_WEBPLAYER or UNITY_ANDROID and NOT for UNITY_IOS. This directive is not recommended to be used in this version.
 
-To enable MiniJSON, you need to replace `#define USE_JSONFX_UNITY_IOS` here `https://github.com/pubnub/c-sharp/blob/pt87102862/unity5/Assets/Pubnub/Pubnub.cs#L4` with `#define USE_MiniJSON` 
+To enable MiniJSON, you need to replace `#define USE_JSONFX_UNITY_IOS` here `https://github.com/pubnub/unity/blob/master/Assets/Scripts/Pubnub/JSONSerializer.cs#L2` with `#define USE_MiniJSON` 
 
 #### To run the unit tests, in addition to the above, you need to 
 1. Import UnityTestTools package (this is already present in the Pubnub client code under the path Assets/UnityTestTools) into your Assets. (https://www.assetstore.unity3d.com/#/content/13802)
