@@ -862,9 +862,13 @@ namespace PubNubMessaging.Core
                 (pnPresenceEventDict.ContainsKey("uuid"))?pnPresenceEventDict["uuid"].ToString():"",
                 Utility.CheckKeyAndParseInt(pnPresenceEventDict, "occupancy", "occupancy"),
                 Utility.CheckKeyAndParseLong(pnPresenceEventDict, "timestamp", "timestamp"),
-                (pnPresenceEventDict.ContainsKey("state"))?pnPresenceEventDict["state"]:null
+                (pnPresenceEventDict.ContainsKey("state"))?pnPresenceEventDict["state"]:null,
+                Utility.CheckKeyAndConvertObjToStringArr((pnPresenceEventDict.ContainsKey("join"))?pnPresenceEventDict["join"]:null),
+                Utility.CheckKeyAndConvertObjToStringArr((pnPresenceEventDict.ContainsKey("leave"))?pnPresenceEventDict["leave"]:null),
+                Utility.CheckKeyAndConvertObjToStringArr((pnPresenceEventDict.ContainsKey("timeout"))?pnPresenceEventDict["timeout"]:null)
             );
             //"action": "join", "timestamp": 1473952169, "uuid": "a7acb27c-f1da-4031-a2cc-58656196b06d", "occupancy": 1
+            //"action": "interval", "timestamp": 1490700797, "occupancy": 3, "join": ["Client-odx4y", "test"]
 
             #if (ENABLE_PUBNUB_LOGGING)
             LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Action: {1} \nTimestamp: {2} \nOccupancy: {3}\nUUID: {4}", 
@@ -893,7 +897,10 @@ namespace PubNubMessaging.Core
                 pnPresenceEvent.State,
                 pnPresenceEvent.UUID,
                 pnPresenceEvent.Occupancy,
-                subscribeMessage.IssuingClientId
+                subscribeMessage.IssuingClientId,
+                pnPresenceEvent.Join,
+                pnPresenceEvent.Leave,
+                pnPresenceEvent.Timeout
                 );
         }
 

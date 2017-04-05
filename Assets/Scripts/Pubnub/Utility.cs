@@ -2,6 +2,7 @@
 using System.Text;
 using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
 
 namespace PubNubMessaging.Core
 {
@@ -306,6 +307,19 @@ namespace PubNubMessaging.Core
             double timeStamp = unixNanoSecondTime / 10000000;
             DateTime dateTime = new DateTime (1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds (timeStamp);
             return dateTime;
+        }
+
+        internal static List<string> CheckKeyAndConvertObjToStringArr(object obj){
+            if (obj == null) {
+                return null;
+            }
+            List<string> lstArr = ((IEnumerable)obj).Cast<string> ().ToList ();
+            #if (ENABLE_PUBNUB_LOGGING)
+            foreach (string lst in lstArr){
+                UnityEngine.Debug.Log ("clientlist:" + lst);
+            }
+            #endif
+            return lstArr;
         }
 
     }
