@@ -114,6 +114,119 @@ namespace PubNubMessaging.Tests
 
         }
 
+        public static Dictionary<string, object> CreatePresenceDictionary(bool joinNull, bool leaveNull, bool timeoutNull){
+
+            Dictionary<string, object> pnPresenceEventDict = new Dictionary<string, object> ();
+
+            pnPresenceEventDict["action"] = "interval";
+            pnPresenceEventDict["uuid"] = "a7acb27c-f1da-4031-a2cc-58656196b06d";
+            pnPresenceEventDict["occupancy"] = 3;
+            pnPresenceEventDict["timestamp"] = 1490700797;
+            pnPresenceEventDict["state"] = null;
+            if (joinNull) {
+                pnPresenceEventDict ["join"] = null;
+            } else {
+                pnPresenceEventDict ["join"] = new List<string> (){ "Client-odx4y", "test" };
+            }
+            if (leaveNull) {
+                pnPresenceEventDict ["leave"] = null;
+            } else {
+                pnPresenceEventDict ["leave"] = new List<string> (){ "Client-2", "test2" };
+            }
+            if (timeoutNull) {
+                pnPresenceEventDict ["timeout"] = null;
+            } else {
+                pnPresenceEventDict["timeout"] = new List<string> (){ "Client-3", "test3"};
+            }
+
+            var dictSM = new Dictionary<string, object>();
+            dictSM.Add("a", "1");
+            dictSM.Add("b", "SM");
+            dictSM.Add("c", "Channel");
+            dictSM.Add("d", (object)pnPresenceEventDict);
+            dictSM.Add("f", "flags");
+            dictSM.Add("i", "issuingClientId");
+            dictSM.Add("k", "subscribeKey");
+            dictSM.Add("s", "10");
+
+            var dictOT = new Dictionary<string, object>(); 
+            dictOT.Add("t", 14685037252884276);
+            dictOT.Add("r", "west");
+            dictSM.Add("o", dictOT);
+
+            var dictPM = new Dictionary<string, object>(); 
+            dictPM.Add("t", 14685037252884348);
+            dictPM.Add("r", "east");
+            dictSM.Add("p", dictPM);
+
+            var dictU = new Dictionary<string, object>(); 
+            dictU.Add("region", "north");
+            dictSM.Add("u", dictU);
+            return dictSM;
+        }
+
+        [Test]
+        public void TestCreatePNPresenceEventResult(){
+            bool joinNull = false, leaveNull = false, timeoutNull = false;
+            TestCreatePNPresenceEventResultCommon (joinNull, leaveNull, timeoutNull);
+        }
+
+        [Test]
+        public void TestCreatePNPresenceEventResultTimeoutNull(){
+            bool joinNull = false, leaveNull = false, timeoutNull = true;
+            TestCreatePNPresenceEventResultCommon (joinNull, leaveNull, timeoutNull);
+        }
+
+        [Test]
+        public void TestCreatePNPresenceEventResultLeaveNull(){
+            bool joinNull = false, leaveNull = true, timeoutNull = false;
+            TestCreatePNPresenceEventResultCommon (joinNull, leaveNull, timeoutNull);
+        }
+
+        [Test]
+        public void TestCreatePNPresenceEventResultJoinNull(){
+            bool joinNull = true, leaveNull = false, timeoutNull = false;
+            TestCreatePNPresenceEventResultCommon (joinNull, leaveNull, timeoutNull);
+        }
+
+        [Test]
+        public void TestCreatePNPresenceEventResultAllNull(){
+            bool joinNull = true, leaveNull = true, timeoutNull = true;
+            TestCreatePNPresenceEventResultCommon (joinNull, leaveNull, timeoutNull);
+        }
+
+        public void TestCreatePNPresenceEventResultCommon(bool joinNull, bool leaveNull, bool timeoutNull){
+            List<SubscribeMessage> lsm = new List<SubscribeMessage>();
+            Helpers.AddToSubscribeMessageList(CreatePresenceDictionary(joinNull, leaveNull, timeoutNull), ref lsm);
+
+            PNPresenceEventResult subMessageResult; 
+            Helpers.CreatePNPresenceEventResult(lsm[0], out subMessageResult);
+
+            Assert.IsTrue (subMessageResult.Channel.Equals("Channel"));
+            Assert.IsTrue (subMessageResult.Event.Equals("interval"));
+            Assert.IsTrue (subMessageResult.Occupancy.Equals(3));
+            Assert.IsTrue (subMessageResult.UUID.Equals("a7acb27c-f1da-4031-a2cc-58656196b06d"));
+            Assert.IsTrue (subMessageResult.Timestamp.Equals(1490700797));
+            if (!joinNull) {
+                Assert.IsTrue (subMessageResult.Join != null);
+                Assert.IsTrue ((subMessageResult.Join != null) ? subMessageResult.Join.Contains ("Client-odx4y") && subMessageResult.Join.Contains ("test") : false);
+            } else {
+                Assert.IsTrue (subMessageResult.Join == null);
+            }
+            if (!leaveNull) {
+                Assert.IsTrue (subMessageResult.Leave != null);
+                Assert.IsTrue ((subMessageResult.Leave != null) ? subMessageResult.Leave.Contains ("Client-2") && subMessageResult.Leave.Contains ("test2") : false);
+            } else {
+                Assert.IsTrue (subMessageResult.Leave == null);
+            }
+            if (!timeoutNull) {
+                Assert.IsTrue (subMessageResult.Timeout != null);
+                Assert.IsTrue ((subMessageResult.Timeout != null) ? subMessageResult.Timeout.Contains ("Client-3") && subMessageResult.Timeout.Contains ("test3") : false);
+            } else {
+                Assert.IsTrue (subMessageResult.Timeout == null);
+            }
+        }
+
         [Test]
         public void TestCreateListOfSubscribeMessage(){
             object[] obj = {Common.CreateSubscribeDictionary()}; 
