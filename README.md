@@ -1,6 +1,6 @@
 # Please direct all Support Questions and Concerns to Support@PubNub.com
 
-## PubNub 3.7.7 Web Data Push Cloud-Hosted API for Unity 5
+## PubNub 3.7.8 Web Data Push Cloud-Hosted API for Unity 5
 ### Supports PC, Mac, Linux, iOS, Android, WebPlayer, Windows Store Universal 10 and WebGL
 
 ### View this First!
@@ -8,6 +8,8 @@ We've made a [screencast](https://vimeo.com/69591819) that will walk you through
 After checking out the general setup video, [For iOS targets](https://vimeo.com/71549964) be sure to view this walkthrough next. Check it out!
 
 ### Important changes from previous version
+* 3.7.8
+  * Presence delta intervals
 * 3.7.7
   * Region check in Timetoken dictionary
   * Prefix UUID with 'pn-'

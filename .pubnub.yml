@@ -3,6 +3,13 @@ changelog:
   - 
     changes: 
       - 
+        text: “Presence delta intervals”
+        type: improvement
+    date: Mar 31, 17
+    version: v3.7.8
+  - 
+    changes: 
+      - 
         text: "Region check in Timetoken dictionary"
         type: bug
       - 
@@ -209,7 +216,7 @@ features:
     - TIME-TIME
 supported-platforms:
   - 
-    version: PubNub Unity SDK 3.7.7
+    version: PubNub Unity SDK
     platforms:
       - iOS player, will require iOS 7.0 or higher.
       - Android, OS 2.3.1 or later; ARMv7 (Cortex) CPU with NEON support or Atom CPU; OpenGL ES 2.0 or later.
@@ -224,4 +231,4 @@ supported-platforms:
 name: unity
 schema: 1
 scm: github.com/pubnub/unity
-version: “3.7.7”
+version: “3.7.8”

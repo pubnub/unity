@@ -63,7 +63,7 @@ public class PubnubExample : MonoBehaviour
     bool ssl = true;
     bool resumeOnReconnect = true;
     string cipherKey = "";
-    string secretKey = "demo";
+    string secretKey = "";
     string publishKey = "demo";
     string subscribeKey = "demo";
     string uuid = Guid.NewGuid ().ToString ();
@@ -694,6 +694,15 @@ public class PubnubExample : MonoBehaviour
                             foreach(var pair in dict){
                                 UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeString pair.Key: {0}, pair.Value:{1}", 
                                     pair.Key, pair.Value));
+                                if(pair.Value!=null){
+                                    Type valueType = pair.Value.GetType();
+                                    Type expectedType = typeof(String);
+                                    if (valueType.IsArray && expectedType.IsAssignableFrom(valueType.GetElementType())){
+                                    //if(pair.Value is string[]){
+                                        string[] lstStr = pair.Value as string[];
+                                        AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeString []:- {0}:{1}", pair.Key, (lstStr!=null) ?string.Join(",", lstStr.ToArray()) : null));
+                                    }
+                                }
                                 AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeString:- {0}:{1}", pair.Key, pair.Value));
                             }
 
@@ -716,17 +725,27 @@ public class PubnubExample : MonoBehaviour
                         (object returnMessage) => {
                             PNPresenceEventResult pnMessageResult = returnMessage as PNPresenceEventResult;
 
-                            UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0}  {1} {2} {3} {4} {5} {6}", pnMessageResult.Event,
+                            UnityEngine.Debug.Log (string.Format ("DisplayReturnMessageSubscribeObject: {0} {1} {2} {3} {4} {5} {6} Join: {7} Leave:{8} Timeout:{9}", pnMessageResult.Event,
                                 pnMessageResult.Channel,
                                 pnMessageResult.Subscription,
                                 pnMessageResult.Occupancy,
                                 pnMessageResult.Timetoken, 
                                 pnMessageResult.UUID,
-                                pnMessageResult.Timestamp));
+                                pnMessageResult.Timestamp,
+                                (pnMessageResult.Join!=null)? string.Join(",", pnMessageResult.Join.ToArray()) : null,
+                                (pnMessageResult.Leave!=null)? string.Join(",", pnMessageResult.Leave.ToArray()) : null,
+                                (pnMessageResult.Timeout!=null) ?string.Join(",", pnMessageResult.Timeout.ToArray()) : null
+                            ));
 
 
-                            AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeObject: {0} {1} {2} {3} {4} ", pnMessageResult.Event,
-                             pnMessageResult.Channel, pnMessageResult.Subscription, pnMessageResult.Occupancy, pnMessageResult.Timetoken));
+                            AddToPubnubResultContainer (string.Format ("DisplayReturnMessageSubscribeObject: {0} {1} {2} {3} {4} {5} {6} Join: {7} Leave:{8} Timeout:{9}", pnMessageResult.Event,
+                             pnMessageResult.Channel, pnMessageResult.Subscription, pnMessageResult.Occupancy, pnMessageResult.Timetoken,
+                                pnMessageResult.UUID,
+                                pnMessageResult.Timestamp,
+                                (pnMessageResult.Join!=null)? string.Join(",", pnMessageResult.Join.ToArray()) : null,
+                                (pnMessageResult.Leave!=null)? string.Join(",", pnMessageResult.Leave.ToArray()) : null,
+                                (pnMessageResult.Timeout!=null) ?string.Join(",", pnMessageResult.Timeout.ToArray()) : null
+                            ));
 
                         }, 
                         (object connectStatus) => {
