@@ -2,7 +2,7 @@
 
 namespace PubNubAPI
 {
-    public class ChannelIdentity
+    public struct ChannelIdentity
     {
         public string ChannelOrChannelGroupName {get; set;}
         public bool IsChannelGroup {get; set;}

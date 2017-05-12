@@ -5,7 +5,7 @@ namespace PubNubAPI
 {
     public class QueueManager: MonoBehaviour
     {
-
+        //TODO handle running requests
         bool NoRunningReuqets = true;
         void Update(){
             //TODO: READ pnconfig from pubnub.cs, handle property change
@@ -13,7 +13,8 @@ namespace PubNubAPI
             if ((RequestQueue.Instance.HasItems) && (NoRunningReuqets)) {
                 QueueStorage qs =  RequestQueue.Instance.Dequeue ();
                 PNOperationType operationType = qs.OperationType;
-                OperationParams operationParams = qs.OperationParams;
+                //OperationParams operationParams = qs.OperationParams;
+                object operationParams = qs.OperationParams;
                 switch(operationType){
                     case PNOperationType.PNTimeOperation:
                         Action<PNTimeResult, PNStatus> timeCallback = qs.Callback as Action<PNTimeResult, PNStatus>;
@@ -24,6 +25,7 @@ namespace PubNubAPI
                         Action<PNWhereNowResult, PNStatus> whereNowCallback = qs.Callback as Action<PNWhereNowResult, PNStatus>;
                         NonSubscribeWorker<PNWhereNowResult> whereNowNonSubscribeWorker = new NonSubscribeWorker<PNWhereNowResult> ();
                         //whereNowNonSubscribeWorker.RunWhereNowRequest (null, whereNowCallback, (WhereNowOperationParams)operationParams);
+
                         whereNowNonSubscribeWorker.RunWhereNowRequest (null, whereNowCallback, (WhereNowBuilder)operationParams);
                         break;
 

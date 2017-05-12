@@ -32,7 +32,7 @@ namespace PubNubAPI
             
 
         }
-
+            
         public void RunTimeRequest(PNConfiguration pnConfig, Action<T, PNStatus> callback){
             //Uri request = BuildRequests.BuildTimeRequest (this.SessionUUID, this.ssl, this.Origin);
 

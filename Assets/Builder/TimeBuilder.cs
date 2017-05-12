@@ -5,28 +5,17 @@ using UnityEngine;
 
 namespace PubNubAPI
 {
-    public class TimeBuilder: OperationParams,IPubNubNoChannelsBuilder<TimeBuilder, PNTimeResult>
+    public class TimeBuilder: PubNubBuilder<TimeBuilder>, IPubNubNoChannelsBuilder<TimeBuilder, PNTimeResult>
     {
-        private PubNubBuilder<TimeBuilder> pubNubBuilder;
-
-        /*public TimeBuilder(PNConfiguration pnConfig){
-            Debug.Log ("TimeBuilder Construct");
-            pubNubBuilder = new PubNubBuilder<TimeBuilder> (pnConfig);
-        }*/
-        public TimeBuilder(){
-            Debug.Log ("TimeBuilder Construct");
-            pubNubBuilder = new PubNubBuilder<TimeBuilder> ();
-        }
-
         #region IPubNubBuilder implementation
 
         public void Async(Action<PNTimeResult, PNStatus> callback)
         {
+            
             Debug.Log ("TimeBuilder Async");
-            //RequestQueue.Instance.Enqueue<PNTimeResult>(PNConfig, callback, PNOperationType.PNTimeOperation, null);
-            pubNubBuilder.Async<PNTimeResult>(callback, PNOperationType.PNTimeOperation, null, CurrentRequestType.NonSubscribe);
+            base.Async<PNTimeResult>(callback, PNOperationType.PNTimeOperation, CurrentRequestType.NonSubscribe, this);
         }
-        #endregion
+        #endregion*/
     }
 }
 

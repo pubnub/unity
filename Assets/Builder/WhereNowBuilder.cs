@@ -5,19 +5,12 @@ using UnityEngine;
 
 namespace PubNubAPI
 {
-    public class WhereNowBuilder: OperationParams, IPubNubNoChannelsBuilder<WhereNowBuilder, PNWhereNowResult>
+    public class WhereNowBuilder: PubNubBuilder<WhereNowBuilder>, IPubNubNoChannelsBuilder<WhereNowBuilder, PNWhereNowResult>
     {
-        private PubNubBuilder<WhereNowBuilder> pubNubBuilder;
-
-        /*public TimeBuilder(PNConfiguration pnConfig){
-            Debug.Log ("TimeBuilder Construct");
-            pubNubBuilder = new PubNubBuilder<TimeBuilder> (pnConfig);
-        }*/
         public string UuidForWhereNow { get; private set;}
 
-        public WhereNowBuilder(){
+        public WhereNowBuilder(): base(){
             Debug.Log ("WhereNowBuilder Construct");
-            pubNubBuilder = new PubNubBuilder<WhereNowBuilder> ();
         }
 
         public WhereNowBuilder Uuid(string uuid){
@@ -30,11 +23,7 @@ namespace PubNubAPI
         public void Async(Action<PNWhereNowResult, PNStatus> callback)
         {
             Debug.Log ("PNWherNowResult Async");
-            //WhereNowOperationParams whereNowOperationParams = new WhereNowOperationParams (UuidForWhereNow);
-
-            //RequestQueue.Instance.Enqueue<PNTimeResult>(PNConfig, callback, PNOperationType.PNTimeOperation, null);
-            //pubNubBuilder.Async<PNWhereNowResult>(callback, PNOperationType.PNWhereNowOperation, whereNowOperationParams);
-            pubNubBuilder.Async<PNWhereNowResult>(callback, PNOperationType.PNWhereNowOperation, this, CurrentRequestType.NonSubscribe);
+            base.Async<PNWhereNowResult>(callback, PNOperationType.PNWhereNowOperation, CurrentRequestType.NonSubscribe, this);
         }
         #endregion
     }

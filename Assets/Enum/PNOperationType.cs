@@ -7,6 +7,7 @@ namespace PubNubAPI
         PNSubscribeOperation,
         PNPresenceOperation,
         PNUnsubscribeOperation,
+        PNPresenceUnsubscribeOperation,
 
         PNPublishOperation,
 

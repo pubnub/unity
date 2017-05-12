@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using System.Linq;
 
 namespace PubNubAPI
 {
@@ -7,6 +8,22 @@ namespace PubNubAPI
     {
         //TODO INotifyPropertyChanged
         public static PNConfiguration PNConfig { get; set;}
+
+        //public static EventHandler<EventArgs> SusbcribeEvent;
+        //public delegate void SusbcribeEvent(PNStatus pnStatus, PNMessageResult pnMessageResut, PNPresenceEventResult pnPresenceEventResult);
+        public static event EventHandler<EventArgs> SusbcribeCallback; /*{
+            add {
+                if (SusbcribeEvent == null || !SusbcribeEvent.GetInvocationList ().Contains (value)) {
+                    SusbcribeEvent += value;
+                }
+            }
+            remove {
+                SusbcribeEvent -= value;
+            }
+        }*/
+        public static void RaiseEvent(EventArgs ea){
+            SusbcribeCallback.Raise (typeof(PubNub), ea);
+        }
 
         /// <summary>
         /// Gets or sets the set game object.
@@ -32,6 +49,28 @@ namespace PubNubAPI
                 localGobj = false;
             }
             QueueManager queueManager = PubNub.GameObjectRef.AddComponent<QueueManager> ();
+        }
+
+        public void AddListener(Action<PNStatus> callback, Action<PNMessageResult> callback2, Action<PNPresenceEventResult> callback3)
+        {
+            SusbcribeCallback += (object sender, EventArgs e) => {
+                SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
+
+                Debug.Log ("AddListener SusbcribeCallback");
+                if(mea.pnStatus != null){
+                    
+                    Debug.Log ("AddListener SusbcribeCallback in status" + String.Join(", ", mea.pnStatus.AffectedChannelGroups.ToArray()) + String.Join(", ", mea.pnStatus.AffectedChannels.ToArray()));
+                    callback(mea.pnStatus);
+                }
+                if(mea.pnmr != null){
+                    Debug.Log ("AddListener SusbcribeCallback in message" + mea.pnmr.Channel + mea.pnmr.Payload);
+                    callback2(mea.pnmr);
+                }
+                if(mea.pnper != null){
+                    Debug.Log ("AddListener SusbcribeCallback in presence" + mea.pnper.Channel + mea.pnper.Occupancy + mea.pnper.Event);
+                    callback3(mea.pnper);
+                }
+            };
         }
 
         public SubscribeBuilder Subscribe(){

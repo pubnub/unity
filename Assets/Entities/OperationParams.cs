@@ -7,6 +7,7 @@ namespace PubNubAPI
         public OperationParams ()
         {
         }
+        protected string s{ get; set;}
     }
 
     /*public class WhereNowOperationParams: OperationParams

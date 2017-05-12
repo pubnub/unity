@@ -11,20 +11,26 @@ namespace PubNubAPI
         /*public PubNubBuilder(PNConfiguration pnConfig){
             PNConfig = pnConfig;    
         }*/
-
-        public void Execute (PNOperationType pnOpType, OperationParams operationParams){
+        public void Execute (PNOperationType pnOpType, PubNubBuilder<U> pnBuilder){
             //HandleSubscribe
+            SubscriptionWorker.Instance.Add(pnOpType, pnBuilder);
         }
 
-        public void Async<T>(Action<T, PNStatus> callback, PNOperationType pnOpType, OperationParams operationParams, CurrentRequestType crt){
-            switch (crt) {
+        //public void Async<T>(Action<T, PNStatus> callback, PNOperationType pnOpType, OperationParams operationParams, CurrentRequestType crt){
+        public void Async<T>(Action<T, PNStatus> callback, PNOperationType pnOpType, CurrentRequestType crt, PubNubBuilder<U> pnBuilder){
+            /*switch (crt) {
             case CurrentRequestType.Heartbeat:
                 break;
             case CurrentRequestType.PresenceHeartbeat:
                 break;
-            default:
-                RequestQueue.Instance.Enqueue<T> (callback, pnOpType, operationParams);
-                break;
+            default:*/
+
+            //RequestQueue.Instance.Enqueue<T, U> (callback, pnOpType, pnBuilder);
+            RequestQueue.Instance.Enqueue (callback, pnOpType, pnBuilder);
+
+
+            //RequestQueue.Instance.Enqueue<T> (callback, pnOpType, this);
+                /*break;
             }
             //Handle presence heartbeat
             //Handle heartbeat
@@ -43,13 +49,7 @@ namespace PubNubAPI
             //return U;
         }
 
-        public void SetChannels(List<string> channels){
-            //return U;
-        }
 
-        public void SetChannelGroups(List<string> channelGroups){
-            //return U;
-        }
     }
 }
 

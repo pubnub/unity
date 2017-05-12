@@ -5,7 +5,7 @@ namespace PubNubAPI
 {
     internal interface IPubNubSubcribeBuilder<U>
     {
-        void Execute(PNOperationType pnOpType, OperationParams operationParams);
+        void Execute();
 
         U SetChannels (List<string> channels);
         U SetChannelGroups (List<string> channelGroups);
