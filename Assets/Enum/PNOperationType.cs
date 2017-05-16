@@ -10,7 +10,7 @@ namespace PubNubAPI
         PNPresenceUnsubscribeOperation,
 
         PNPublishOperation,
-
+        PNLeaveOperation,
         PNHistoryOperation,
         PNFetchMessagesOperation,
 
@@ -18,7 +18,6 @@ namespace PubNubAPI
 
         PNHeartbeatOperation,
         PNPresenceHeartbeatOperation,
-
         PNSetStateOperation,
         PNAddChannelsToGroupOperation,
         PNRemoveChannelsFromGroupOperation,

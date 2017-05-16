@@ -11,45 +11,22 @@ namespace PubNubAPI
         /*public PubNubBuilder(PNConfiguration pnConfig){
             PNConfig = pnConfig;    
         }*/
+        protected PubNub PubNubInstance { get; set;}
+        protected PubNubBuilder(PubNub pn){
+            PubNubInstance = pn;
+        }
+
+        protected RequestState<U> ReqState { get; set;}
+
         public void Execute (PNOperationType pnOpType, PubNubBuilder<U> pnBuilder){
             //HandleSubscribe
-            SubscriptionWorker.Instance.Add(pnOpType, pnBuilder);
+            Debug.Log("pn"+this.PubNubInstance.Test);
+            SubscriptionWorker<U>.Instance.Add(pnOpType, pnBuilder, ReqState, this.PubNubInstance);
         }
 
-        //public void Async<T>(Action<T, PNStatus> callback, PNOperationType pnOpType, OperationParams operationParams, CurrentRequestType crt){
         public void Async<T>(Action<T, PNStatus> callback, PNOperationType pnOpType, CurrentRequestType crt, PubNubBuilder<U> pnBuilder){
-            /*switch (crt) {
-            case CurrentRequestType.Heartbeat:
-                break;
-            case CurrentRequestType.PresenceHeartbeat:
-                break;
-            default:*/
-
-            //RequestQueue.Instance.Enqueue<T, U> (callback, pnOpType, pnBuilder);
-            RequestQueue.Instance.Enqueue (callback, pnOpType, pnBuilder);
-
-
-            //RequestQueue.Instance.Enqueue<T> (callback, pnOpType, this);
-                /*break;
-            }
-            //Handle presence heartbeat
-            //Handle heartbeat
-            //NonSubscribe
-            //RequestQueue.Instance.Enqueue<T>(callback, pnOpType, operationParams);
-            /*switch(pnOpType)
-            {
-            case PNOperationType.PNTimeOperation:
-                    Debug.Log ("In Async");
-                    //RequestQueue.Instance.Enqueue<T>(PNConfig, callback, PNOperationType.PNTimeOperation, null);
-
-                    break;
-                default:
-                    break;
-            }*/
-            //return U;
+            RequestQueue.Instance.Enqueue (callback, pnOpType, pnBuilder, this.PubNubInstance);
         }
-
-
     }
 }
 

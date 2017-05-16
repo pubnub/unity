@@ -43,12 +43,13 @@ namespace PubNubAPI
             RespType = requestState.RespType;
         }
     }
+
     public class BuildRequests
     {
 
-        /*#region "Build Request State"
+        #region "Build Request State"
 
-        internal static RequestState<T> BuildRequestState<T>(List<ChannelEntity> channelEntities, ResponseType responseType, 
+        /*internal static RequestState<T> BuildRequestState<T>(List<ChannelEntity> channelEntities, ResponseType responseType, 
             bool reconnect, long id, bool timeout, long timetoken, Type typeParam, string uuid,
             Action<T> userCallback, Action<PubnubClientError> errorCallback
         ){
@@ -517,9 +518,9 @@ namespace PubNubAPI
             url.Add ("leave");
 
             return BuildRestApiRequest<Uri> (url, ResponseType.Leave, uuid, ssl, origin, 0, authenticationKey, unsubscribeParamBuilder.ToString());
-        }
+        }*/
 
-        internal static Uri BuildMultiChannelSubscribeRequestV2 (string channels, string channelGroups, string timetoken, 
+        internal static Uri BuildMultiChannelSubscribeRequest (string channels, string channelGroups, string timetoken, 
             string channelsJsonState, string uuid, string region, string filterExpr,
             bool ssl, string origin, string authenticationKey, string subscribeKey, int presenceHeartbeat)
         {
@@ -527,20 +528,20 @@ namespace PubNubAPI
             subscribeParamBuilder.AppendFormat ("&tt={0}", timetoken);
 
             if (!string.IsNullOrEmpty (filterExpr)) {
-                subscribeParamBuilder.AppendFormat ("&filter-expr=({0})",  Utility.EncodeUricomponent(filterExpr, ResponseType.SubscribeV2, false, false));
+                subscribeParamBuilder.AppendFormat ("&filter-expr=({0})",  Utility.EncodeUricomponent(filterExpr, PNOperationType.PNSubscribeOperation, false, false));
             }
 
             if (!string.IsNullOrEmpty (region)) {
-                subscribeParamBuilder.AppendFormat ("&tr={0}", Utility.EncodeUricomponent(region, ResponseType.SubscribeV2, false, false));
+                subscribeParamBuilder.AppendFormat ("&tr={0}", Utility.EncodeUricomponent(region, PNOperationType.PNSubscribeOperation, false, false));
             }
 
             if (channelsJsonState != "{}" && channelsJsonState != "") {
-                subscribeParamBuilder.AppendFormat ("&state={0}", Utility.EncodeUricomponent (channelsJsonState, ResponseType.SubscribeV2, false, false));
+                subscribeParamBuilder.AppendFormat ("&state={0}", Utility.EncodeUricomponent (channelsJsonState, PNOperationType.PNSubscribeOperation, false, false));
             }
 
             if (!string.IsNullOrEmpty(channelGroups))
             {
-                subscribeParamBuilder.AppendFormat ("&channel-group={0}", Utility.EncodeUricomponent (channelGroups, ResponseType.SubscribeV2, true, false));
+                subscribeParamBuilder.AppendFormat ("&channel-group={0}", Utility.EncodeUricomponent (channelGroups, PNOperationType.PNSubscribeOperation, true, false));
             }                   
 
             List<string> url = new List<string> ();
@@ -550,10 +551,10 @@ namespace PubNubAPI
             url.Add (string.IsNullOrEmpty(channels) ? "," : channels);
             url.Add ("0");
 
-            return BuildRestApiRequest<Uri> (url, ResponseType.SubscribeV2, uuid, ssl, origin, presenceHeartbeat, authenticationKey, subscribeParamBuilder.ToString ());
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNSubscribeOperation, uuid, ssl, origin, presenceHeartbeat, authenticationKey, subscribeParamBuilder.ToString ());
         }
 
-        internal static Uri BuildAddChannelsToChannelGroupRequest(string[] channels, string nameSpace, string groupName, string uuid,
+        /*internal static Uri BuildAddChannelsToChannelGroupRequest(string[] channels, string nameSpace, string groupName, string uuid,
             bool ssl, string origin, string authenticationKey, string subscribeKey)
         {
             string parameters = string.Format("?add={0}", Utility.EncodeUricomponent(string.Join(",", channels), ResponseType.ChannelGroupAdd, true, false));
@@ -767,9 +768,9 @@ namespace PubNubAPI
 
             return BuildRestApiRequest<Uri>(url, ResponseType.ChannelGroupGrantAccess,
                 uuid, ssl, origin, 0, authenticationKey, parameters);
-        }
+        }*/
 
-        static StringBuilder AddSSLAndEncodeURL<T>(List<string> urlComponents, ResponseType type, bool ssl, string origin, StringBuilder url)
+        static StringBuilder AddSSLAndEncodeURL<T>(List<string> urlComponents, PNOperationType type, bool ssl, string origin, StringBuilder url)
         {
             // Add http or https based on SSL flag
             if (ssl)
@@ -786,7 +787,7 @@ namespace PubNubAPI
             for (int componentIndex = 0; componentIndex < urlComponents.Count; componentIndex++)
             {
                 url.Append("/");
-                if (type == ResponseType.Publish && componentIndex == urlComponents.Count - 1)
+                if (type == PNOperationType.PNPublishOperation && componentIndex == urlComponents.Count - 1)
                 {
                     url.Append(Utility.EncodeUricomponent(urlComponents[componentIndex].ToString(), type, false, false));
                 }
@@ -798,7 +799,7 @@ namespace PubNubAPI
             return url;
         }
 
-        private static StringBuilder AppendAuthKeyToURL(StringBuilder url, string authenticationKey, ResponseType type){
+        private static StringBuilder AppendAuthKeyToURL(StringBuilder url, string authenticationKey, PNOperationType type){
             if (!string.IsNullOrEmpty (authenticationKey)) {
                 url.AppendFormat ("&auth={0}", Utility.EncodeUricomponent (authenticationKey, type, false, false));
             }
@@ -824,10 +825,11 @@ namespace PubNubAPI
             return url;
         }
 
-        private static StringBuilder AppendPNSDKVersionToURL(StringBuilder url, string pnsdkVersion, ResponseType type){
+        private static StringBuilder AppendPNSDKVersionToURL(StringBuilder url, string pnsdkVersion, PNOperationType type){
             url.AppendFormat ("&pnsdk={0}", Utility.EncodeUricomponent (pnsdkVersion, type, false, true));
             return url;
         }
+        
         //sessionid
         //ssl
         //origin
@@ -835,19 +837,19 @@ namespace PubNubAPI
         //authenticationKey
         //pnsdkVersion    
         //parameters
-        private static Uri BuildRestApiRequest<T> (List<string> urlComponents, ResponseType type, string uuid, bool ssl, string origin, 
+        private static Uri BuildRestApiRequest<T> (List<string> urlComponents, PNOperationType type, string uuid, bool ssl, string origin, 
             int pubnubPresenceHeartbeatInSeconds, string authenticationKey, string parameters)
         {
             StringBuilder url = new StringBuilder ();
-            string pnsdkVersion = PubnubUnity.Version;
+            string pnsdkVersion = PubNub.Version;
             uuid = Utility.EncodeUricomponent (uuid, type, false, false);
 
             url = AddSSLAndEncodeURL<T>(urlComponents, type, ssl, origin, url);
 
             switch (type) {
-            case ResponseType.Leave:
-            case ResponseType.SubscribeV2:
-            case ResponseType.PresenceV2:
+            //case ResponseType.Leave:
+            case PNOperationType.PNSubscribeOperation:
+            case PNOperationType.PNPresenceOperation:
 
                 url = AppendUUIDToURL(url, uuid, true);
                 url.Append(parameters);
@@ -857,7 +859,7 @@ namespace PubNubAPI
                 url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
                 break;
 
-            case ResponseType.PresenceHeartbeat:
+            /*case ResponseType.PresenceHeartbeat:
 
                 url = AppendUUIDToURL(url, uuid, true);
                 url.Append (parameters);
@@ -939,7 +941,7 @@ namespace PubNubAPI
             case ResponseType.ChannelGroupRevokeAccess:
 
                 url.Append (parameters);
-                break;
+                break;*/
             default:
                 url = AppendUUIDToURL(url, uuid, true);
                 url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
@@ -951,7 +953,7 @@ namespace PubNubAPI
             return requestUri;
 
         }
-        #endregion*/
+        #endregion
     }
 }
 

@@ -7,6 +7,9 @@ namespace PubNubAPI
 {
     public class TimeBuilder: PubNubBuilder<TimeBuilder>, IPubNubNoChannelsBuilder<TimeBuilder, PNTimeResult>
     {
+        public TimeBuilder(PubNub pn):base(pn){
+            
+        }
         #region IPubNubBuilder implementation
 
         public void Async(Action<PNTimeResult, PNStatus> callback)
@@ -15,7 +18,7 @@ namespace PubNubAPI
             Debug.Log ("TimeBuilder Async");
             base.Async<PNTimeResult>(callback, PNOperationType.PNTimeOperation, CurrentRequestType.NonSubscribe, this);
         }
-        #endregion*/
+        #endregion
     }
 }
 

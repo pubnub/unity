@@ -2,13 +2,13 @@
 
 namespace PubNubAPI
 {
-    public class OperationParams
+    /*public class OperationParams
     {
         public OperationParams ()
         {
         }
         protected string s{ get; set;}
-    }
+    }*/
 
     /*public class WhereNowOperationParams: OperationParams
     {

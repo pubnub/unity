@@ -13,7 +13,7 @@ namespace PubNubAPI
         public PNMessageResult pnmr;
     }
 
-    public class SubscriptionWorker
+    public class SubscriptionWorker<U>
     {
         //Allow one instance only
         private SubscriptionWorker ()
@@ -23,7 +23,8 @@ namespace PubNubAPI
         internal const string PresenceChannelSuffix = "-pnpres";
         private static long lastSubscribeTimetoken = 0;
         private static long lastSubscribeTimetokenForNewMultiplex = 0;
-
+        private PNUnityWebRequest webRequest;
+        private PubNub PubNubInstance { get; set;}
 
         internal static bool IsPresenceChannel (string channel)
         {
@@ -34,10 +35,10 @@ namespace PubNubAPI
             }
         }
 
-        private static volatile SubscriptionWorker instance;
+        private static volatile SubscriptionWorker<U> instance;
         private static object syncRoot = new System.Object();
 
-        public static SubscriptionWorker Instance
+        public static SubscriptionWorker<U> Instance
         {
             get 
             {
@@ -45,8 +46,12 @@ namespace PubNubAPI
                 {
                     lock (syncRoot) 
                     {
-                        if (instance == null) 
-                            instance = new SubscriptionWorker();
+                        if (instance == null) {
+                            instance = new SubscriptionWorker<U> ();
+                            instance.webRequest = PubNub.GameObjectRef.AddComponent<PNUnityWebRequest> ();
+                            instance.webRequest.SubCoroutineComplete += instance.CoroutineCompleteHandler;
+
+                        }
                     }
                 }
 
@@ -54,66 +59,59 @@ namespace PubNubAPI
             }
         }
 
-        public void Add (PNOperationType pnOpType, object pnBuilder){
+        public void Add (PNOperationType pnOpType, object pnBuilder, RequestState<U> reqState, PubNub pn){
             //Abort existing request
-            SubscribeBuilder subscribeBuilder = (SubscribeBuilder)pnBuilder;
+            try{
+                PubNubInstance = pn;
+                Debug.Log("in add:" + reqState.Reconnect + this.PubNubInstance.Test);
+                SubscribeBuilder subscribeBuilder = (SubscribeBuilder)pnBuilder;
 
-            List<ChannelEntity> subscribedChannels = Subscription.Instance.AllSubscribedChannelsAndChannelGroups;
-            List<ChannelEntity> newChannelEntities;
-            List<string> rawChannels = subscribeBuilder.Channels;
-            List<string> rawChannelGroups = subscribeBuilder.ChannelGroups;
-            PNOperationType opType = PNOperationType.PNSubscribeOperation;
-            long timetokenToUse = subscribeBuilder.TimetokenToUse;
+                //subscribeBuilder.Reconnect = false;
+                List<ChannelEntity> subscribedChannels = Subscription.Instance.AllSubscribedChannelsAndChannelGroups;
+                List<ChannelEntity> newChannelEntities;
+                List<string> rawChannels = subscribeBuilder.Channels;
+                List<string> rawChannelGroups = subscribeBuilder.ChannelGroups;
+                PNOperationType opType = PNOperationType.PNSubscribeOperation;
+                long timetokenToUse = subscribeBuilder.Timetoken;
+                Debug.Log("after add");
+                bool channelsOrChannelGroupsAdded = RemoveDuplicatesCheckAlreadySubscribedAndGetChannels (opType, rawChannels, rawChannelGroups, false, out newChannelEntities);
 
-            bool channelsOrChannelGroupsAdded = RemoveDuplicatesCheckAlreadySubscribedAndGetChannels (opType, rawChannels, rawChannelGroups, false, out newChannelEntities);
+                bool internetStatus = true;
+                if ((channelsOrChannelGroupsAdded) && (internetStatus)) {
+                    Subscription.Instance.Add (newChannelEntities);
 
-            bool internetStatus = true;
-            if ((channelsOrChannelGroupsAdded) && (internetStatus)) {
-                Subscription.Instance.Add (newChannelEntities);
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    Helpers.LogChannelEntitiesDictionary ();
+                    #endif
 
+                    if (!timetokenToUse.Equals (0)) {
+                        lastSubscribeTimetokenForNewMultiplex = timetokenToUse;
+                    } else if (subscribedChannels.Count > 0) {
+                        lastSubscribeTimetokenForNewMultiplex = lastSubscribeTimetoken;
+                    }
+                    //AbortPreviousRequest<T> (subscribedChannels);
+                    MultiChannelSubscribeRequest (opType, 0, false);
+                }
                 #if (ENABLE_PUBNUB_LOGGING)
-                Helpers.LogChannelEntitiesDictionary ();
+                else {
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, MultiChannelSubscribeInit: channelsOrChannelGroupsAdded {1}, internet status {2}",
+                DateTime.Now.ToString (), channelsOrChannelGroupsAdded.ToString (), internetStatus.ToString ()), LoggingMethod.LevelInfo);
+                }
                 #endif
 
-                if (!timetokenToUse.Equals (0)) {
-                    lastSubscribeTimetokenForNewMultiplex = timetokenToUse;
-                } else if (subscribedChannels.Count > 0) {
-                    lastSubscribeTimetokenForNewMultiplex = lastSubscribeTimetoken;
-                }
-                //AbortPreviousRequest<T> (subscribedChannels);
-                MultiChannelSubscribeRequest (opType, 0, false);
+                Debug.Log ("channelsOrChannelGroupsAdded" + channelsOrChannelGroupsAdded);
+                Debug.Log ("newChannelEntities" + newChannelEntities.Count);
+               
+                /*EventHandler handler = PubNub.SusbcribeCallback;
+                if (handler != null) {
+                    Debug.Log ("Raising SusbcribeEvent");
+                    handler (typeof(SubscriptionWorker), mea);
+                } else {
+                    Debug.Log ("SusbcribeEvent null");
+                }*/
+            }catch (Exception ex){
+                Debug.Log (ex.ToString());
             }
-            #if (ENABLE_PUBNUB_LOGGING)
-            else {
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, MultiChannelSubscribeInit: channelsOrChannelGroupsAdded {1}, internet status {2}",
-            DateTime.Now.ToString (), channelsOrChannelGroupsAdded.ToString (), internetStatus.ToString ()), LoggingMethod.LevelInfo);
-            }
-            #endif
-
-            Debug.Log ("channelsOrChannelGroupsAdded" + channelsOrChannelGroupsAdded);
-            Debug.Log ("newChannelEntities" + newChannelEntities.Count);
-            PNStatus pns = new PNStatus ();
-            pns.AffectedChannels = rawChannels;
-            pns.AffectedChannelGroups = rawChannelGroups;
-
-            PNMessageResult pnmr = new PNMessageResult ("a", "b", "p", 11232234, 13431241234, null, "");
-
-            PNPresenceEventResult pnper = new PNPresenceEventResult ("a", "b", "join", 11232234, 13431241234, null, null, "", 1, "");
-
-            SusbcribeEventEventArgs mea = new SusbcribeEventEventArgs();
-            mea.pnmr = pnmr;
-            mea.pnper = pnper;
-            mea.pnStatus = pns;
-
-            PubNub.RaiseEvent (mea);
-            /*EventHandler handler = PubNub.SusbcribeCallback;
-            if (handler != null) {
-                Debug.Log ("Raising SusbcribeEvent");
-                handler (typeof(SubscriptionWorker), mea);
-            } else {
-                Debug.Log ("SusbcribeEvent null");
-            }*/
-
 
         }
 
@@ -460,9 +458,10 @@ namespace PubNubAPI
         private void MultiChannelSubscribeRequest (PNOperationType type, long timetoken, bool reconnect)
         {
             //Exit if the channel is unsubscribed
+            Debug.Log("in  MultiChannelSubscribeRequest");
             if (CheckAllChannelsAreUnsubscribed())
             {
-                return;
+                //return;
             }
             List<ChannelEntity> channelEntities = Subscription.Instance.AllSubscribedChannelsAndChannelGroups;
 
@@ -476,25 +475,42 @@ namespace PubNubAPI
                 #endif
                 // Build URL
                 string channelsJsonState = Subscription.Instance.CompiledUserState;
+                //TODO fix and remove
+                channelsJsonState = "";
 
                 string channels = GetNamesFromChannelEntities(channelEntities, false);
                 string channelGroups = GetNamesFromChannelEntities(channelEntities, true);
 
                 //v2
                 string filterExpr = (!string.IsNullOrEmpty(this.FilterExpr)) ? this.FilterExpr : string.Empty;
-                Uri requestUrl = BuildRequests.BuildMultiChannelSubscribeRequestV2 (channels,
+                Uri requestUrl = BuildRequests.BuildMultiChannelSubscribeRequest (channels,
+                    channelGroups, lastTimetoken.ToString(), channelsJsonState, "a", "",
+                    filterExpr, true, "ps.pndsn.com", "", "demo", 0);
+                
+                /*Uri requestUrl = BuildRequests.BuildMultiChannelSubscribeRequest (channels,
                     channelGroups, lastTimetoken.ToString(), channelsJsonState, this.SessionUUID, this.Region,
-                    filterExpr, this.ssl, this.Origin, authenticationKey, this.subscribeKey, this.PresenceHeartbeat);
+                    filterExpr, this.ssl, this.Origin, authenticationKey, this.subscribeKey, this.PresenceHeartbeat);*/
 
-                PNUnityWebRequest webRequest = PubNub.GameObjectRef.AddComponent<PNUnityWebRequest> ();
-                webRequest.SubCoroutineComplete += CoroutineCompleteHandler;
 
-                RequestState<T> pubnubRequestState = BuildRequests.BuildRequestState<T> (channelEntities, type, reconnect,
-                    0, false, Convert.ToInt64 (timetoken.ToString ()), typeof(T));
+                //RequestState<T> pubnubRequestState = BuildRequests.BuildRequestState<T> (channelEntities, type, reconnect,
+                    //0, false, Convert.ToInt64 (timetoken.ToString ()), typeof(T));
                 // Wait for message
                 //ExceptionHandlers.MultiplexException += HandleMultiplexException<T>;
-                UrlProcessRequest<T> (requestUrl, pubnubRequestState);
+
+                //UrlProcessRequest<T> (requestUrl, pubnubRequestState);
+                Debug.Log ("RunSubscribeRequest coroutine" + requestUrl.OriginalString);
+
+                RequestState<SubscribeBuilder> requestState = new RequestState<SubscribeBuilder> ();
+                //requestState.ChannelEntities = channelEntities;
+                requestState.RespType = PNOperationType.PNSubscribeOperation;
+                requestState.ChannelEntities = channelEntities;
+
+                //PNCallback<T> timeCallback = new PNTimeCallback<T> (callback);
+                //http://ps.pndsn.com/v2/presence/sub-key/sub-c-5c4fdcc6-c040-11e5-a316-0619f8945a4f/uuid/UUID_WhereNow?pnsdk=PubNub-Go%2F3.14.0&uuid=UUID_WhereNow
+                webRequest.Run<SubscribeBuilder>(requestUrl.OriginalString, requestState, 310, 0);
+
             } catch (Exception ex) {
+                Debug.Log("in  MultiChannelSubscribeRequest" + ex.ToString());
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, MultiChannelSubscribeRequest: method:_subscribe \n channel={1} \n timetoken={2} \n Exception Details={3}",
                 DateTime.Now.ToString (), Helpers.GetNamesFromChannelEntities(channelEntities), timetoken.ToString (), ex.ToString ()), LoggingMethod.LevelError);
@@ -502,7 +518,7 @@ namespace PubNubAPI
                 //PubnubCallbacks.CallErrorCallback<T> (ex, channelEntities,
                   //  PubnubErrorCode.None, PubnubErrorSeverity.Critical, PubnubErrorLevel);
 
-                this.MultiChannelSubscribeRequest (type, timetoken, false);
+                //this.MultiChannelSubscribeRequest (type, timetoken, false);
             }
         }
 
@@ -513,14 +529,30 @@ namespace PubNubAPI
 
             try {
                 if (cea != null) {
+                    Debug.Log("cea"+ cea.Message);
+                    PNStatus pns = new PNStatus ();
+                    //cea.PubnubRequestState.ChannelEntities
+                    //pns.AffectedChannels = rawChannels;
+                    //pns.AffectedChannelGroups = rawChannelGroups;
 
+                    PNMessageResult pnmr = new PNMessageResult ("a", "b", "p", 11232234, 13431241234, null, "");
+
+                    PNPresenceEventResult pnper = new PNPresenceEventResult ("a", "b", "join", 11232234, 13431241234, null, null, "", 1, "");
+
+                    SusbcribeEventEventArgs mea = new SusbcribeEventEventArgs();
+                    mea.pnmr = pnmr;
+                    mea.pnper = pnper;
+                    mea.pnStatus = pns;
+
+                    PubNubInstance.RaiseEvent (mea);
                     //TODO identify from T instead of request state
                     /*RequestState<T> requestState = cea.PubnubRequestState;        
                     Debug.Log ("inCoroutineCompleteHandler " + requestState.RespType);
                     switch(requestState.RespType){
                     case PNOperationType.PNSubscribeOperation:*/
                         //PNTimeCallback<T> timeCallback = new PNTimeCallback<T> ();
-                    PNMessageResult pnMessageResult = new PNMessageResult();
+
+                    /*PNMessageResult pnMessageResult = new PNMessageResult();
                     pnMessageResult.Channel = cea.Message;
                         PNStatus pnStatus = new PNStatus();
                         pnStatus.Error = false;
@@ -528,7 +560,7 @@ namespace PubNubAPI
                         //return (T)pnTimeResult;
                         //Callback((T)pnTimeResult, pnStatus);
                         } else {*/
-                        try {
+                        /*try {
                             //return (T)Convert.ChangeType(pnTimeResult, typeof(T));
                             Debug.Log ("Callback");
                         Callback((SubscribeBuilder)Convert.ChangeType(pnTimeResult, typeof(SubscribeBuilder)), pnStatus);

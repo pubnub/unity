@@ -6,16 +6,22 @@ namespace PubNubAPI
     public class SubscribeBuilder: PubNubBuilder<SubscribeBuilder>, IPubNubSubcribeBuilder<SubscribeBuilder>
     {
         //private PubNubBuilder<SubscribeBuilder> pubNubBuilder;
-
+        private bool Reconnect { get; set;}
+        public long Timetoken { get; set;}
         public List<string> Channels { get; private set;}
         public List<string> ChannelGroups { get; private set;}
 
-        public long TimetokenToUse { get; private set;}
+        //public long TimetokenToUse { get; private set;}
+        public SubscribeBuilder(PubNub pn): base(pn){
+        }
 
         #region IPubNubBuilder implementation
 
         public void Execute(){
-            
+            Reconnect = true;
+            base.ReqState = new RequestState<SubscribeBuilder> ();
+            base.ReqState.Reconnect = true;
+
             base.Execute (PNOperationType.PNSubscribeOperation, this);
         }
 
@@ -26,7 +32,7 @@ namespace PubNubAPI
         }
 
         public SubscribeBuilder SetTimeToken(long timetoken){
-            TimetokenToUse = timetoken;
+            Timetoken = timetoken;
             return this;
         }
 

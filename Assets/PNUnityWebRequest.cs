@@ -339,6 +339,7 @@ namespace PubNubAPI
 
         void CoroutineClass_CompleteEvent<T> (object sender, EventArgs e)
         {
+            Debug.Log ("in CoroutineClass_CompleteEvent");
             CurrentRequestTypeEventArgs crtEa = e as CurrentRequestTypeEventArgs;
             if (crtEa != null) {
                 CoroutineParams<T> cp = GetCoroutineParams<T> (crtEa.CurrRequestType) as CoroutineParams<T>;
@@ -348,6 +349,7 @@ namespace PubNubAPI
                 } else {
                     switch (crtEa.CurrRequestType) {
                     case CurrentRequestType.Subscribe:
+                        Debug.Log ("in CoroutineClass_CompleteEvent switch");
                         ProcessResponse<T> (subscribeWww, cp);
                         break;
                     case CurrentRequestType.Heartbeat:
@@ -529,7 +531,7 @@ namespace PubNubAPI
             } else if (pubnubRequestState.RespType.Equals(PNOperationType.PNSubscribeOperation) || pubnubRequestState.RespType.Equals(PNOperationType.PNPresenceOperation)
             ) {
                 crt = CurrentRequestType.Subscribe;
-
+                Debug.Log ("Run crt"+ crt);
                 CheckComplete (crt);
 
                 #if (ENABLE_PUBNUB_LOGGING)
@@ -570,8 +572,9 @@ namespace PubNubAPI
                 runSubscribeTimer = true;
                 SubCompleteOrTimeoutEvent += CoroutineClass_CompleteEvent<T>;
                 isSubscribeComplete = false;
-
+                Debug.Log ("Run Subscribe StartCoroutinesByName");
                 subscribeWww =  UnityWebRequest.Get (cp.url);
+                AsyncOperation async = subscribeWww.Send ();
                
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, StartCoroutinesByName: {1} running", DateTime.Now.ToString (), cp.crt.ToString ()), LoggingMethod.LevelInfo);
@@ -728,6 +731,7 @@ namespace PubNubAPI
         public void ProcessResponse<T> (UnityWebRequest www, CoroutineParams<T> cp)
         {
             try {
+                Debug.Log("in process response");
                 RemoveEventHandler<T>(cp.crt, false);
 
                 #if (ENABLE_PUBNUB_LOGGING)

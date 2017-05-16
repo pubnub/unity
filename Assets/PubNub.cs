@@ -6,23 +6,54 @@ namespace PubNubAPI
 {
     public class PubNub
     {
+        private const string build = "4.0";
+        private static string pnsdkVersion = string.Format ("PubNub-CSharp-Unity/{0}", build);
+        public static string Version {
+            get {
+                return pnsdkVersion;
+            }
+            set {
+                pnsdkVersion = value;
+            }
+        }
+
         //TODO INotifyPropertyChanged
         public static PNConfiguration PNConfig { get; set;}
+        public string Test { get; set;}
 
-        //public static EventHandler<EventArgs> SusbcribeEvent;
-        //public delegate void SusbcribeEvent(PNStatus pnStatus, PNMessageResult pnMessageResut, PNPresenceEventResult pnPresenceEventResult);
-        public static event EventHandler<EventArgs> SusbcribeCallback; /*{
-            add {
-                if (SusbcribeEvent == null || !SusbcribeEvent.GetInvocationList ().Contains (value)) {
-                    SusbcribeEvent += value;
-                }
+        public event EventHandler<EventArgs> SusbcribeCallback; 
+        public void RaiseEvent(EventArgs ea){
+            if (SusbcribeCallback != null) {
+                SusbcribeCallback.Raise (typeof(PubNub), ea);
             }
-            remove {
-                SusbcribeEvent -= value;
-            }
-        }*/
-        public static void RaiseEvent(EventArgs ea){
-            SusbcribeCallback.Raise (typeof(PubNub), ea);
+        }
+
+        public void CleanUp (){
+            //publishMessageCounter.Reset ();
+
+            #if (ENABLE_PUBNUB_LOGGING)
+            LoggingMethod.WriteToLog ("CleanUp: Destructing coroutine", LoggingMethod.LevelInfo);
+            #endif
+            /*if (coroutine != null) {
+                UnityEngine.Object.Destroy (coroutine);
+            }*/
+            #if (ENABLE_PUBNUB_LOGGING)
+            LoggingMethod.WriteToLog ("CleanUp: Destructing GameObject", LoggingMethod.LevelInfo);
+            #endif
+            /*if(localGobj && (gobj != null))
+            {
+                UnityEngine.Object.Destroy (gobj);
+            }*/
+            #if (ENABLE_PUBNUB_LOGGING)
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0} Clean up complete.", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+            #endif
+        }
+
+        ~PubNub(){
+            #if (ENABLE_PUBNUB_LOGGING)
+            LoggingMethod.WriteToLog ("Destructing PubnubUnity", LoggingMethod.LevelInfo);
+            #endif
+            this.CleanUp ();
         }
 
         /// <summary>
@@ -35,7 +66,30 @@ namespace PubNubAPI
 
         public PubNub (PNConfiguration pnConfiguration)
         {
+            Test = "saddsads";
             PNConfig = pnConfiguration;
+
+            #if(UNITY_IOS)
+            Version = string.Format("PubNub-CSharp-UnityIOS/{0}", build);
+            #elif(UNITY_STANDALONE_WIN)
+            Version = string.Format("PubNub-CSharp-UnityWin/{0}", build);
+            #elif(UNITY_STANDALONE_OSX)
+            Version = string.Format("PubNub-CSharp-UnityOSX/{0}", build);
+            #elif(UNITY_ANDROID)
+            Version = string.Format("PubNub-CSharp-UnityAndroid/{0}", build);
+            #elif(UNITY_STANDALONE_LINUX)
+            Version = string.Format("PubNub-CSharp-UnityLinux/{0}", build);
+            #elif(UNITY_WEBPLAYER)
+            Version = string.Format("PubNub-CSharp-UnityWeb/{0}", build);
+            #elif(UNITY_WEBGL)
+            Version = string.Format("PubNub-CSharp-UnityWebGL/{0}", build);
+            #else
+            Version = string.Format("PubNub-CSharp-Unity/{0}", build);
+            #endif
+            #if (ENABLE_PUBNUB_LOGGING)
+            LoggingMethod.WriteToLog (Version, LoggingMethod.LevelInfo);
+            #endif
+
             if (GameObjectRef == null) {
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog ("Initilizing new GameObject", LoggingMethod.LevelInfo);
@@ -74,17 +128,17 @@ namespace PubNubAPI
         }
 
         public SubscribeBuilder Subscribe(){
-            return new SubscribeBuilder ();
+            return new SubscribeBuilder (this);
         }
 
         public TimeBuilder Time(){
             Debug.Log ("TimeBuilder");
-            return new TimeBuilder ();
+            return new TimeBuilder (this);
         }
 
         public WhereNowBuilder WhereNow(){
             Debug.Log ("WhereNowBuilder");
-            return new WhereNowBuilder ();
+            return new WhereNowBuilder (this);
         }
        /* #region "PubNub API Channel Methods"
 

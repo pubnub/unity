@@ -44,11 +44,11 @@ namespace PubNubAPI
         //public void Enqueue<T>(PNConfiguration pnConfig, Action<T, PNStatus> callback, PNOperationType operationType, OperationParams operationParams){
         //public void Enqueue<T>(Action<T, PNStatus> callback, PNOperationType operationType, OperationParams operationParams){
         //public void Enqueue<T, U>(Action<T, PNStatus> callback, PNOperationType operationType, PubNubBuilder<U> operationParams){
-        public void Enqueue(object callback, PNOperationType operationType, object operationParams){
+        public void Enqueue(object callback, PNOperationType operationType, object operationParams, PubNub pn){
 
             //queuedRequests.AddOrUpdate (operationType, callback, (oldData, newData) => callback);
             //this.PNConfig = pnConfig;
-            QueueStorage qs = new QueueStorage(callback, operationType, (object)operationParams);
+            QueueStorage qs = new QueueStorage(callback, operationType, (object)operationParams, pn);
             q.Enqueue(qs);
             Reset ();
         }
