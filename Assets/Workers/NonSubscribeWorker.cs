@@ -5,6 +5,7 @@ namespace PubNubAPI
 {
     public class NonSubscribeWorker<T>: IDisposable
     {
+        QueueManager queueManager;
         public static int InstanceCount;
         private static object syncRoot = new System.Object();
         #region IDisposable implementation
@@ -33,9 +34,9 @@ namespace PubNubAPI
 
         }
             
-        public void RunTimeRequest(PNConfiguration pnConfig, Action<T, PNStatus> callback){
+        public void RunTimeRequest(PNConfiguration pnConfig, Action<T, PNStatus> callback, QueueManager queueManager){
             //Uri request = BuildRequests.BuildTimeRequest (this.SessionUUID, this.ssl, this.Origin);
-
+            this.queueManager = queueManager;
             RequestState<T> requestState = new RequestState<T> ();
             //requestState.ChannelEntities = channelEntities;
             requestState.RespType = PNOperationType.PNTimeOperation;
@@ -66,10 +67,10 @@ namespace PubNubAPI
         }
 
         //public void RunWhereNowRequest(PNConfiguration pnConfig, Action<T, PNStatus> callback, WhereNowOperationParams operationParams){
-        public void RunWhereNowRequest(PNConfiguration pnConfig, Action<T, PNStatus> callback, WhereNowBuilder operationParams){
+        public void RunWhereNowRequest(PNConfiguration pnConfig, Action<T, PNStatus> callback, WhereNowBuilder operationParams, QueueManager queueManager){
             //Uri request = BuildRequests.BuildTimeRequest (this.SessionUUID, this.ssl, this.Origin);
 
-
+            this.queueManager = queueManager;
 
             RequestState<T> requestState = new RequestState<T> ();
             //requestState.ChannelEntities = channelEntities;
@@ -101,14 +102,14 @@ namespace PubNubAPI
 
         }
 
-        public static T ConvertValue<T,U>(U value) where U : IConvertible
+        public static U ConvertValue<U,V>(V value) where V : IConvertible
         {
-            return (T)Convert.ChangeType(value, typeof(T));
+            return (U)Convert.ChangeType(value, typeof(U));
         }
 
-        public static T ConvertValue<T>(string value)
+        public static U ConvertValue<U>(string value)
         {
-            return (T)Convert.ChangeType(value, typeof(T));
+            return (U)Convert.ChangeType(value, typeof(U));
         }
 
         private void CoroutineCompleteHandler (object sender, EventArgs ea)
@@ -154,6 +155,7 @@ namespace PubNubAPI
                         /*if (cea.PubnubRequestState != null) {
                         ProcessCoroutineCompleteResponse<T> (cea);
                         }*/
+                        this.queueManager.RaiseRunningRequestEnd(requestState.RespType);
                         break;
                     case PNOperationType.PNWhereNowOperation:
                         PNWhereNowResult pnWhereNowResult = new PNWhereNowResult();
@@ -175,6 +177,7 @@ namespace PubNubAPI
                             Debug.Log (ice.ToString());
                             throw ice;
                         }
+                        this.queueManager.RaiseRunningRequestEnd(requestState.RespType);
                         break;
                     default:
                         Debug.Log ("default");

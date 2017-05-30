@@ -5,12 +5,47 @@ namespace PubNubAPI
 {
     public class QueueManager: MonoBehaviour
     {
-        //TODO handle running requests
-        bool NoRunningReuqets = true;
+        private readonly object lockObj = new object();
+
+        public delegate void RunningRequestEndDelegate(PNOperationType operationType);
+        public event RunningRequestEndDelegate RunningRequestEnd;
+
+        bool NoRunningRequests = true;
+        ushort NoOfConcurrentRequests = 1;
+        ushort RunningRequests = 0;
+
+        void Start(){
+            this.RunningRequestEnd += delegate(PNOperationType operationType) {
+                //Debug.Log(operationType + DateTime.Now.ToLongTimeString());
+                UpdateRunningRequests(true);
+            };
+        }
+
+        void UpdateRunningRequests(bool RequestComplete){
+            lock(lockObj){
+                if (RequestComplete) {
+                    RunningRequests--;
+                } else {
+                    RunningRequests++;
+                }
+                //Debug.Log(RunningRequests.ToString() + RequestComplete.ToString());
+                if (RunningRequests <= NoOfConcurrentRequests) {
+                    NoRunningRequests = true;
+                } else {
+                    NoRunningRequests = false;
+                }
+            }
+        }
+
+        public void RaiseRunningRequestEnd(PNOperationType operationType){
+            this.RunningRequestEnd(operationType);
+        }
+
         void Update(){
             //TODO: READ pnconfig from pubnub.cs, handle property change
-
-            if ((RequestQueue.Instance.HasItems) && (NoRunningReuqets)) {
+            //Debug.Log(RunningRequests.ToString() + NoRunningRequests);
+            if ((RequestQueue.Instance.HasItems) && (NoRunningRequests)) {
+                UpdateRunningRequests(false);
                 QueueStorage qs =  RequestQueue.Instance.Dequeue ();
                 PNOperationType operationType = qs.OperationType;
                 //OperationParams operationParams = qs.OperationParams;
@@ -19,14 +54,14 @@ namespace PubNubAPI
                     case PNOperationType.PNTimeOperation:
                         Action<PNTimeResult, PNStatus> timeCallback = qs.Callback as Action<PNTimeResult, PNStatus>;
                         NonSubscribeWorker<PNTimeResult> timeNonSubscribeWorker = new NonSubscribeWorker<PNTimeResult> ();
-                        timeNonSubscribeWorker.RunTimeRequest (null, timeCallback);
+                        timeNonSubscribeWorker.RunTimeRequest (null, timeCallback, this);
                         break;
                     case PNOperationType.PNWhereNowOperation:
                         Action<PNWhereNowResult, PNStatus> whereNowCallback = qs.Callback as Action<PNWhereNowResult, PNStatus>;
                         NonSubscribeWorker<PNWhereNowResult> whereNowNonSubscribeWorker = new NonSubscribeWorker<PNWhereNowResult> ();
                         //whereNowNonSubscribeWorker.RunWhereNowRequest (null, whereNowCallback, (WhereNowOperationParams)operationParams);
 
-                        whereNowNonSubscribeWorker.RunWhereNowRequest (null, whereNowCallback, (WhereNowBuilder)operationParams);
+                        whereNowNonSubscribeWorker.RunWhereNowRequest (null, whereNowCallback, (WhereNowBuilder)operationParams, this);
                         break;
 
                 }

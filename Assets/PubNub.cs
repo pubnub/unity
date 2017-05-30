@@ -18,13 +18,34 @@ namespace PubNubAPI
         }
 
         //TODO INotifyPropertyChanged
-        public static PNConfiguration PNConfig { get; set;}
+        public PNConfiguration PNConfig { get; set;}
         public string Test { get; set;}
 
         public event EventHandler<EventArgs> SusbcribeCallback; 
         public void RaiseEvent(EventArgs ea){
             if (SusbcribeCallback != null) {
                 SusbcribeCallback.Raise (typeof(PubNub), ea);
+            }
+        }
+
+        private IJsonLibrary jsonLibrary = null;
+
+        public IJsonLibrary JsonLibrary {
+            get {
+                if (jsonLibrary == null)
+                {
+                    jsonLibrary = JSONSerializer.JsonLibrary;
+                }
+                return jsonLibrary;
+            }
+
+            set {
+                if (value is IJsonLibrary) {
+                    jsonLibrary = value;
+                } else {
+                    jsonLibrary = null;
+                    throw new ArgumentException ("Missing or Incorrect JsonLibrary value");
+                }
             }
         }
 
@@ -111,18 +132,16 @@ namespace PubNubAPI
                 SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
 
                 Debug.Log ("AddListener SusbcribeCallback");
-                if(mea.pnStatus != null){
-                    
-                    Debug.Log ("AddListener SusbcribeCallback in status" + String.Join(", ", mea.pnStatus.AffectedChannelGroups.ToArray()) + String.Join(", ", mea.pnStatus.AffectedChannels.ToArray()));
-                    callback(mea.pnStatus);
-                }
-                if(mea.pnmr != null){
-                    Debug.Log ("AddListener SusbcribeCallback in message" + mea.pnmr.Channel + mea.pnmr.Payload);
-                    callback2(mea.pnmr);
-                }
-                if(mea.pnper != null){
-                    Debug.Log ("AddListener SusbcribeCallback in presence" + mea.pnper.Channel + mea.pnper.Occupancy + mea.pnper.Event);
-                    callback3(mea.pnper);
+                if(mea!=null){
+                    if(mea.pnStatus != null){
+                        callback(mea.pnStatus);
+                    }
+                    if(mea.pnmr != null){
+                        callback2(mea.pnmr);
+                    }
+                    if(mea.pnper != null){
+                        callback3(mea.pnper);
+                    }
                 }
             };
         }

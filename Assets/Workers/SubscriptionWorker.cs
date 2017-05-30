@@ -522,13 +522,103 @@ namespace PubNubAPI
             }
         }
 
+        SubscribeEnvelope ParseReceiedJSONV2 (RequestState<U> requestState, string jsonString)
+        {
+            if (!string.IsNullOrEmpty (jsonString)) {
+                #if (ENABLE_PUBNUB_LOGGING)
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ParseReceiedJSONV2: jsonString = {1}", DateTime.Now.ToString (), jsonString), LoggingMethod.LevelInfo);
+                #endif
+                
+                //this doesnt work on JSONFx for Unity in case a string is passed in an variable of type object
+                //SubscribeEnvelope resultSubscribeEnvelope = jsonPluggableLibrary.Deserialize<SubscribeEnvelope>(jsonString);
+                object resultSubscribeEnvelope = PubNubInstance.JsonLibrary.DeserializeToObject(jsonString);
+                SubscribeEnvelope subscribeEnvelope = new SubscribeEnvelope ();
+
+                if (resultSubscribeEnvelope is Dictionary<string, object>) {
+
+                    Dictionary<string, object> message = (Dictionary<string, object>)resultSubscribeEnvelope;
+                    subscribeEnvelope.TimetokenMeta = Helpers.CreateTimetokenMetadata (message ["t"], "Subscribe TT: ");
+                    subscribeEnvelope.Messages = Helpers.CreateListOfSubscribeMessage (message ["m"]);
+
+                    return subscribeEnvelope;
+                } else {
+                    #if (ENABLE_PUBNUB_LOGGING)
+
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ParseReceiedJSONV2: resultSubscribeEnvelope is not dict",
+                        DateTime.Now.ToString ()), LoggingMethod.LevelError);
+
+                    #endif
+
+                    return null;
+                }
+            } else {
+                return null;
+            }
+
+        }
+
+        void ParseReceiedTimetoken (RequestState<U> requestState, long receivedTimetoken)
+        {
+            #if (ENABLE_PUBNUB_LOGGING)
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ParseReceiedTimetoken: receivedTimetoken = {1}",
+            DateTime.Now.ToString (), receivedTimetoken.ToString()),
+            LoggingMethod.LevelInfo);
+            #endif
+            lastSubscribeTimetoken = receivedTimetoken;
+
+            //TODO 
+            /*if (!enableResumeOnReconnect) {
+                lastSubscribeTimetoken = receivedTimetoken;
+            }
+            else {
+                //do nothing. keep last subscribe token
+            }
+            if (requestState.Reconnect) {
+                if (enableResumeOnReconnect) {
+                    //do nothing. keep last subscribe token
+                }
+                else {
+                    lastSubscribeTimetoken = receivedTimetoken;
+                }
+            }*/
+        }
+
         private void CoroutineCompleteHandler (object sender, EventArgs ea)
         {
-            CustomEventArgs<SubscribeBuilder> cea = ea as CustomEventArgs<SubscribeBuilder>;
+            CustomEventArgs<U> cea = ea as CustomEventArgs<U>;
 
 
             try {
                 if (cea != null) {
+
+                    SubscribeEnvelope resultSubscribeEnvelope = null;
+                    string jsonString = cea.Message;
+                    if (!jsonString.Equals("[]")) {
+                        resultSubscribeEnvelope = ParseReceiedJSONV2 (cea.PubnubRequestState, jsonString);
+                    }
+
+                    switch (cea.PubnubRequestState.RespType) {
+                    case PNOperationType.PNSubscribeOperation:
+                    case PNOperationType.PNPresenceOperation:
+                        //Helpers.ProcessResponseCallbacksV2<T> (ref resultSubscribeEnvelope, cea.PubnubRequestState, this.cipherKey, PubNubInstance.JsonPluggableLibrary);
+                        if ((resultSubscribeEnvelope != null) && (resultSubscribeEnvelope.TimetokenMeta != null)) {
+                            ParseReceiedTimetoken (cea.PubnubRequestState, resultSubscribeEnvelope.TimetokenMeta.Timetoken);
+
+                            MultiChannelSubscribeRequest (cea.PubnubRequestState.RespType, resultSubscribeEnvelope.TimetokenMeta.Timetoken, false);
+                        }
+
+                        else {
+                            #if (ENABLE_PUBNUB_LOGGING)
+                            LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ResponseCallbackNonErrorHandler ERROR: Couldn't extract timetoken, initiating fresh subscribe request. \nJSON response:\n {1}",
+                                DateTime.Now.ToString (), jsonString), LoggingMethod.LevelError);
+                            #endif
+                            MultiChannelSubscribeRequest (cea.PubnubRequestState.RespType, 0, false);
+                        }
+
+                        break;
+                    default:
+                        break;
+                    }
                     Debug.Log("cea"+ cea.Message);
                     PNStatus pns = new PNStatus ();
                     //cea.PubnubRequestState.ChannelEntities

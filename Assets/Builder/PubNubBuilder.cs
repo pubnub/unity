@@ -20,8 +20,16 @@ namespace PubNubAPI
 
         public void Execute (PNOperationType pnOpType, PubNubBuilder<U> pnBuilder){
             //HandleSubscribe
-            Debug.Log("pn"+this.PubNubInstance.Test);
-            SubscriptionWorker<U>.Instance.Add(pnOpType, pnBuilder, ReqState, this.PubNubInstance);
+            switch (pnOpType) {
+            case PNOperationType.PNSubscribeOperation:
+            case PNOperationType.PNPresenceOperation:
+                Debug.Log ("pn" + this.PubNubInstance.Test);
+                SubscriptionWorker<U>.Instance.Add (pnOpType, pnBuilder, ReqState, this.PubNubInstance);
+                break;
+            default:
+                Debug.Log ("pn" + this.PubNubInstance.Test);
+                break;
+            }
         }
 
         public void Async<T>(Action<T, PNStatus> callback, PNOperationType pnOpType, CurrentRequestType crt, PubNubBuilder<U> pnBuilder){

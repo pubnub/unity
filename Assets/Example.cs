@@ -13,13 +13,13 @@ namespace PubNubExample
             Debug.Log ("Starting");
             PNConfiguration pnConfiguration = new PNConfiguration ();
             pnConfiguration.SetSecure = true;
-            Debug.Log ("PNConfiguration");
+            Debug.Log ("PNConfiguration");  
             PubNub pubnub = new PubNub (pnConfiguration);
 
             pubnub.AddListener (
                 (s) => {
                     
-                    Debug.Log ("AddListener in status" + String.Join(", ", s.AffectedChannelGroups.ToArray()) + String.Join(", ", s.AffectedChannels.ToArray()));
+                    //Debug.Log ("AddListener in status" + String.Join(", ", s.AffectedChannelGroups.ToArray()) + String.Join(", ", s.AffectedChannels.ToArray()));
                 },
                 (m) => {
                     Debug.Log ("AddListener in message" + m.Channel + m.Payload);
@@ -38,7 +38,7 @@ namespace PubNubExample
 
                 Debug.Log ("SusbcribeCallback");
                 if(mea.pnStatus != null){
-                    Debug.Log ("SusbcribeCallback in status" + String.Join(", ", mea.pnStatus.AffectedChannelGroups.ToArray()) + String.Join(", ", mea.pnStatus.AffectedChannels.ToArray()));
+                    //Debug.Log ("SusbcribeCallback in status" + String.Join(", ", mea.pnStatus.AffectedChannelGroups.ToArray()) + String.Join(", ", mea.pnStatus.AffectedChannels.ToArray()));
                 }
                 if(mea.pnmr != null){
                     Debug.Log ("SusbcribeCallback in message" + mea.pnmr.Channel + mea.pnmr.Payload);
@@ -61,7 +61,7 @@ namespace PubNubExample
                     Debug.Log ("in Time");
                 }
             ));*/
-            /*pubnub.Time ().Async ((result, status) => {
+            pubnub.Time ().Async ((result, status) => {
                 Debug.Log ("in Time");
                 Debug.Log (string.Format("DateTime {0}, result: {1}", DateTime.Now ,result.TimeToken));
                 Debug.Log (status.Error);
@@ -69,7 +69,7 @@ namespace PubNubExample
             //pubnub.Time ().Async (new PNCallback<PNTimeResult>(){
 
                 //Debug.Log ("in Time")
-            //});
+            //});*/
 
 
             Debug.Log ("after Time");
@@ -79,7 +79,7 @@ namespace PubNubExample
                 Debug.Log (string.Format("DateTime {0}, result: {1}", DateTime.Now ,result.Result));
                 Debug.Log (status.Error);
 
-            });*/
+            });
             //pubnub.Subscribe ().Async<string> ();
     	}
 
