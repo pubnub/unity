@@ -12,7 +12,7 @@ namespace PubNubExample
     	void Start () {
             Debug.Log ("Starting");
             PNConfiguration pnConfiguration = new PNConfiguration ();
-            pnConfiguration.SetSecure = true;
+            pnConfiguration.Secure = true;
             Debug.Log ("PNConfiguration");  
             PubNub pubnub = new PubNub (pnConfiguration);
 

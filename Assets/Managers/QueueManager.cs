@@ -10,9 +10,9 @@ namespace PubNubAPI
         public delegate void RunningRequestEndDelegate(PNOperationType operationType);
         public event RunningRequestEndDelegate RunningRequestEnd;
 
-        bool NoRunningRequests = true;
-        ushort NoOfConcurrentRequests = 1;
-        ushort RunningRequests = 0;
+        private bool NoRunningRequests = true;
+        internal ushort NoOfConcurrentRequests = 1;
+        private ushort RunningRequests = 0;
 
         void Start(){
             this.RunningRequestEnd += delegate(PNOperationType operationType) {
@@ -63,7 +63,6 @@ namespace PubNubAPI
 
                         whereNowNonSubscribeWorker.RunWhereNowRequest (null, whereNowCallback, (WhereNowBuilder)operationParams, this);
                         break;
-
                 }
                     
                 //NonSubscribeWorker<T> nsw = new NonSubscribeWorker<T> ();

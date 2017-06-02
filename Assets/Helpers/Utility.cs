@@ -16,7 +16,7 @@ namespace PubNubAPI
         internal static int CheckTimeoutValue(int value){
         if (value > iOSRequestTimeout) {
         #if (ENABLE_PUBNUB_LOGGING)
-        LoggingMethod.WriteToLog (string.Format("Forcing timeout value to {0} as iOS force closes the www request after {0} secs", iOSRequestTimeout), LoggingMethod.LevelInfo);
+        LoggingMethod.WriteToLog (string.Format("Forcing timeout value to {0} as iOS force closes the www request after {0} secs", iOSRequestTimeout), LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
         #endif
 
         return iOSRequestTimeout;
@@ -32,8 +32,8 @@ namespace PubNubAPI
                 long seqNumber;
                 if (!Int64.TryParse (dict [key].ToString(), out seqNumber)) {
                     #if (ENABLE_PUBNUB_LOGGING)
-                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, {1}, {2} conversion failed: {3}.", 
-                    DateTime.Now.ToString (), what, key, dict [key].ToString ()), LoggingMethod.LevelInfo);
+                    LoggingMethod.WriteToLog (string.Format ("{1}, {2} conversion failed: {3}.", 
+                     what, key, dict [key].ToString ()), LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
                     #endif
                 }
                 sequenceNumber = seqNumber;
@@ -47,8 +47,8 @@ namespace PubNubAPI
                 int seqNumber;
                 if (!int.TryParse (dict [key].ToString(), out seqNumber)) {
                     #if (ENABLE_PUBNUB_LOGGING)
-                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, {1}, {2} conversion failed: {3}.", 
-                    DateTime.Now.ToString (), what, key, dict [key].ToString ()), LoggingMethod.LevelInfo);
+                    LoggingMethod.WriteToLog (string.Format ("{1}, {2} conversion failed: {3}.", 
+                     what, key, dict [key].ToString ()), LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
                     #endif
                 }
                 sequenceNumber = seqNumber;

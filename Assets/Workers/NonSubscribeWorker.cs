@@ -58,7 +58,7 @@ namespace PubNubAPI
 
             Debug.Log ("RunTimeRequest gobj");
             PNUnityWebRequest webRequest = PubNub.GameObjectRef.AddComponent<PNUnityWebRequest> ();
-            webRequest.NonSubCoroutineComplete += CoroutineCompleteHandler;
+            webRequest.NonSubWebRequestComplete += WebRequestCompleteHandler;
             Debug.Log ("RunTimeRequest coroutine");
             //PNCallback<T> timeCallback = new PNTimeCallback<T> (callback);
             webRequest.Run<T>("https://pubsub.pubnub.com/time/0", requestState, 10, 0);
@@ -93,7 +93,7 @@ namespace PubNubAPI
 
             Debug.Log ("RunWhereNowRequest gobj");
             PNUnityWebRequest webRequest = PubNub.GameObjectRef.AddComponent<PNUnityWebRequest> ();
-            webRequest.NonSubCoroutineComplete += CoroutineCompleteHandler;
+            webRequest.NonSubWebRequestComplete += WebRequestCompleteHandler;
             Debug.Log ("RunWhereNowRequest coroutine");
             //PNCallback<T> timeCallback = new PNTimeCallback<T> (callback);
             //http://ps.pndsn.com/v2/presence/sub-key/sub-c-5c4fdcc6-c040-11e5-a316-0619f8945a4f/uuid/UUID_WhereNow?pnsdk=PubNub-Go%2F3.14.0&uuid=UUID_WhereNow
@@ -112,7 +112,7 @@ namespace PubNubAPI
             return (U)Convert.ChangeType(value, typeof(U));
         }
 
-        private void CoroutineCompleteHandler (object sender, EventArgs ea)
+        private void WebRequestCompleteHandler (object sender, EventArgs ea)
         {
             CustomEventArgs<T> cea = ea as CustomEventArgs<T>;
 
@@ -185,20 +185,20 @@ namespace PubNubAPI
                     }
 
                     #if (ENABLE_PUBNUB_LOGGING)
-                    else {
-                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CoroutineCompleteHandler: PubnubRequestState null", DateTime.Now.ToString ()), LoggingMethod.LevelError);
-                    }
+                    //else {
+                    LoggingMethod.WriteToLog (string.Format ("CoroutineCompleteHandler: PubnubRequestState null", DateTime.Now.ToString ()), LoggingMethod.LevelError);
+                    //}
                     #endif
                 }
                 #if (ENABLE_PUBNUB_LOGGING)
                 else {
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CoroutineCompleteHandler: cea null", DateTime.Now.ToString ()), LoggingMethod.LevelError);
+                LoggingMethod.WriteToLog (string.Format ("CoroutineCompleteHandler: cea null", DateTime.Now.ToString ()), LoggingMethod.LevelError);
                 }
                 #endif
             } catch (Exception ex) {
                 Debug.Log (ex.ToString());
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CoroutineCompleteHandler: Exception={1}", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
+                LoggingMethod.WriteToLog (string.Format ("CoroutineCompleteHandler: Exception={1}",  ex.ToString ()), LoggingMethod.LevelError);
                 #endif
 
                 //ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (ex.Message, cea.PubnubRequestState,

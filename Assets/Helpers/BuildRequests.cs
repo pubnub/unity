@@ -841,7 +841,7 @@ namespace PubNubAPI
             int pubnubPresenceHeartbeatInSeconds, string authenticationKey, string parameters)
         {
             StringBuilder url = new StringBuilder ();
-            string pnsdkVersion = PubNub.Version;
+            string pnsdkVersion = "";//PubNub.Version;
             uuid = Utility.EncodeUricomponent (uuid, type, false, false);
 
             url = AddSSLAndEncodeURL<T>(urlComponents, type, ssl, origin, url);

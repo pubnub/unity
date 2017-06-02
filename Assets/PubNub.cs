@@ -6,19 +6,10 @@ namespace PubNubAPI
 {
     public class PubNub
     {
-        private const string build = "4.0";
-        private static string pnsdkVersion = string.Format ("PubNub-CSharp-Unity/{0}", build);
-        public static string Version {
-            get {
-                return pnsdkVersion;
-            }
-            set {
-                pnsdkVersion = value;
-            }
-        }
 
         //TODO INotifyPropertyChanged
         public PNConfiguration PNConfig { get; set;}
+        public Subscription SubscriptionInstance { get; set;}
         public string Test { get; set;}
 
         public event EventHandler<EventArgs> SusbcribeCallback; 
@@ -53,26 +44,26 @@ namespace PubNubAPI
             //publishMessageCounter.Reset ();
 
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog ("CleanUp: Destructing coroutine", LoggingMethod.LevelInfo);
+            LoggingMethod.WriteToLog ("CleanUp: Destructing coroutine", LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
             #endif
             /*if (coroutine != null) {
                 UnityEngine.Object.Destroy (coroutine);
             }*/
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog ("CleanUp: Destructing GameObject", LoggingMethod.LevelInfo);
+            LoggingMethod.WriteToLog ("CleanUp: Destructing GameObject", LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
             #endif
             /*if(localGobj && (gobj != null))
             {
                 UnityEngine.Object.Destroy (gobj);
             }*/
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0} Clean up complete.", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0} Clean up complete.", DateTime.Now.ToString ()), LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
             #endif
         }
 
         ~PubNub(){
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog ("Destructing PubnubUnity", LoggingMethod.LevelInfo);
+            LoggingMethod.WriteToLog ("Destructing PubnubUnity", LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
             #endif
             this.CleanUp ();
         }
@@ -91,39 +82,41 @@ namespace PubNubAPI
             PNConfig = pnConfiguration;
 
             #if(UNITY_IOS)
-            Version = string.Format("PubNub-CSharp-UnityIOS/{0}", build);
+            PNConfig.Version = string.Format("PubNub-CSharp-UnityIOS/{0}", PNConfig.Version);
             #elif(UNITY_STANDALONE_WIN)
-            Version = string.Format("PubNub-CSharp-UnityWin/{0}", build);
+            PNConfig.Version = string.Format("PubNub-CSharp-UnityWin/{0}", PNConfig.Version);
             #elif(UNITY_STANDALONE_OSX)
-            Version = string.Format("PubNub-CSharp-UnityOSX/{0}", build);
+            PNConfig.Version = string.Format("PubNub-CSharp-UnityOSX/{0}", PNConfig.Version);
             #elif(UNITY_ANDROID)
-            Version = string.Format("PubNub-CSharp-UnityAndroid/{0}", build);
+            PNConfig.Version = string.Format("PubNub-CSharp-UnityAndroid/{0}", PNConfig.Version);
             #elif(UNITY_STANDALONE_LINUX)
-            Version = string.Format("PubNub-CSharp-UnityLinux/{0}", build);
+            PNConfig.Version = string.Format("PubNub-CSharp-UnityLinux/{0}", PNConfig.Version);
             #elif(UNITY_WEBPLAYER)
-            Version = string.Format("PubNub-CSharp-UnityWeb/{0}", build);
+            PNConfig.Version = string.Format("PubNub-CSharp-UnityWeb/{0}", PNConfig.Version);
             #elif(UNITY_WEBGL)
-            Version = string.Format("PubNub-CSharp-UnityWebGL/{0}", build);
+            PNConfig.Version = string.Format("PubNub-CSharp-UnityWebGL/{0}", PNConfig.Version);
             #else
-            Version = string.Format("PubNub-CSharp-Unity/{0}", build);
+            PNConfig.Version = string.Format("PubNub-CSharp-Unity/{0}", PNConfig.Version);
             #endif
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (Version, LoggingMethod.LevelInfo);
+            LoggingMethod.WriteToLog (PNConfig.Version, LoggingMethod.LevelInfo, this.PNConfig.LogVerbosity);
             #endif
 
             if (GameObjectRef == null) {
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog ("Initilizing new GameObject", LoggingMethod.LevelInfo);
+                LoggingMethod.WriteToLog ("Initilizing new GameObject", LoggingMethod.LevelInfo, this.PNConfig.LogVerbosity);
                 #endif
                 GameObjectRef = new GameObject ("PubnubGameObject");
                 localGobj = true;
             } else {
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog ("Reusing already initialized GameObject", LoggingMethod.LevelInfo);
+                LoggingMethod.WriteToLog ("Reusing already initialized GameObject", LoggingMethod.LevelInfo, this.PNConfig.LogVerbosity);
                 #endif
                 localGobj = false;
             }
             QueueManager queueManager = PubNub.GameObjectRef.AddComponent<QueueManager> ();
+            SubscriptionInstance = new Subscription (this);
+            //queueManager.NoOfConcurrentRequests 
         }
 
         public void AddListener(Action<PNStatus> callback, Action<PNMessageResult> callback2, Action<PNPresenceEventResult> callback3)

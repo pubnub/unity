@@ -135,7 +135,7 @@ namespace PubNubAPI
                         return decrypted;
                     } catch (Exception ex) {
         #if (ENABLE_PUBNUB_LOGGING)
-        LoggingMethod.WriteToLog (string.Format ("DateTime {0} Decrypt Error. {1}", DateTime.Now.ToString (), ex.ToString ()), 
+        LoggingMethod.WriteToLog (string.Format ("DateTime {0} Decrypt Error. {1}",  ex.ToString ()), 
         LoggingMethod.LevelInfo);
         #endif
                         throw ex;

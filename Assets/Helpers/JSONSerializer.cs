@@ -37,12 +37,12 @@ namespace PubNubAPI
             get {
                 #if (USE_MiniJSON)
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog("JSON LIB: USE_MiniJSON", LoggingMethod.LevelInfo);
+                LoggingMethod.WriteToLog("JSON LIB: USE_MiniJSON", LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
                 #endif
                 jsonLibrary = new MiniJSONObjectSerializer();
                 #elif (USE_JSONFX_UNITY_IOS)
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog ("JSON LIB: USE_JSONFX_UNITY_IOS", LoggingMethod.LevelInfo);
+                LoggingMethod.WriteToLog ("JSON LIB: USE_JSONFX_UNITY_IOS", LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
                 #endif
                 jsonLibrary = new JsonFxUnitySerializer ();
                 #endif
@@ -74,8 +74,8 @@ namespace PubNubAPI
         public List<object> DeserializeToListOfObject (string jsonString)
         {
             #if (ENABLE_PUBNUB_LOGGING)
-                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, DeserializeToListOfObject: jsonString: {1}", 
-                        DateTime.Now.ToString (), jsonString), 
+                    LoggingMethod.WriteToLog (string.Format ("DeserializeToListOfObject: jsonString: {1}", 
+                         jsonString), 
                         LoggingMethod.LevelInfo);
             #endif
         
@@ -87,8 +87,8 @@ namespace PubNubAPI
         public object DeserializeToObject (string jsonString)
         {
             #if (ENABLE_PUBNUB_LOGGING)
-                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, DeserializeToObject: jsonString: {1}", 
-                        DateTime.Now.ToString (), jsonString), 
+                    LoggingMethod.WriteToLog (string.Format ("DeserializeToObject: jsonString: {1}", 
+                         jsonString), 
                         LoggingMethod.LevelInfo);
             #endif
         
