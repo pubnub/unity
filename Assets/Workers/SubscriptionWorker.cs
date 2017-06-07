@@ -67,7 +67,7 @@ namespace PubNubAPI
                 SubscribeBuilder subscribeBuilder = (SubscribeBuilder)pnBuilder;
 
                 //subscribeBuilder.Reconnect = false;
-                List<ChannelEntity> subscribedChannels = Subscription.Instance.AllSubscribedChannelsAndChannelGroups;
+                List<ChannelEntity> subscribedChannels = pn.SubscriptionInstance.AllSubscribedChannelsAndChannelGroups;
                 List<ChannelEntity> newChannelEntities;
                 List<string> rawChannels = subscribeBuilder.Channels;
                 List<string> rawChannelGroups = subscribeBuilder.ChannelGroups;
@@ -78,7 +78,7 @@ namespace PubNubAPI
 
                 bool internetStatus = true;
                 if ((channelsOrChannelGroupsAdded) && (internetStatus)) {
-                    Subscription.Instance.Add (newChannelEntities);
+                    pn.SubscriptionInstance.Add (newChannelEntities);
 
                     #if (ENABLE_PUBNUB_LOGGING)
                     Helpers.LogChannelEntitiesDictionary ();
@@ -115,7 +115,7 @@ namespace PubNubAPI
 
         }
 
-        internal static bool RemoveDuplicatesCheckAlreadySubscribedAndGetChannels(PNOperationType type, List<string> rawChannels, List<string> rawChannelGroups, bool unsubscribeCheck, out List<ChannelEntity> channelEntities)
+        internal bool RemoveDuplicatesCheckAlreadySubscribedAndGetChannels(PNOperationType type, List<string> rawChannels, List<string> rawChannelGroups, bool unsubscribeCheck, out List<ChannelEntity> channelEntities)
         {
             bool bReturn = false;
             bool channelAdded = false;
@@ -141,7 +141,7 @@ namespace PubNubAPI
         }
 
 
-        internal static bool RemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCommon(PNOperationType type, List<string> channelsOrChannelGroups, bool isChannelGroup, bool unsubscribeCheck, ref List<ChannelEntity> channelEntities)
+        internal bool RemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCommon(PNOperationType type, List<string> channelsOrChannelGroups, bool isChannelGroup, bool unsubscribeCheck, ref List<ChannelEntity> channelEntities)
         {
             bool bReturn = false;
             if (channelsOrChannelGroups.Count > 0) {
@@ -174,8 +174,7 @@ namespace PubNubAPI
                 LoggingMethod.LevelInfo);
                 #endif
 
-                bReturn = CreateChannelEntityAndAddToSubscribe (type, channelsOrChannelGroups, isChannelGroup, 
-                    unsubscribeCheck, ref channelEntities);
+                bReturn = CreateChannelEntityAndAddToSubscribe (type, channelsOrChannelGroups, isChannelGroup, unsubscribeCheck, ref channelEntities, PubNubInstance);
             } else {
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("RemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCommon: channelsOrChannelGroups len <=0", 
@@ -197,7 +196,7 @@ namespace PubNubAPI
                     yield return item;
         }
 
-        internal static ChannelEntity CreateChannelEntity(string channelOrChannelGroupName2, 
+        internal ChannelEntity CreateChannelEntity(string channelOrChannelGroupName2, 
             bool isAwaitingConnectCallback,
             bool isChannelGroup, Dictionary<string, object> userState
 
@@ -234,7 +233,7 @@ namespace PubNubAPI
             }
         }
 
-        internal static List<ChannelEntity> CreateChannelEntity(string[] channelOrChannelGroupNames, bool isAwaitingConnectCallback,
+        internal List<ChannelEntity> CreateChannelEntity(string[] channelOrChannelGroupNames, bool isAwaitingConnectCallback,
             bool isChannelGroup, Dictionary<string, object> userState
         ){
             List<ChannelEntity> channelEntities = null;
@@ -260,7 +259,7 @@ namespace PubNubAPI
             return channelEntities;
         }
 
-        internal static bool CreateChannelEntityAndAddToSubscribe(PNOperationType type, List<string> rawChannels, bool isChannelGroup, bool unsubscribeCheck, ref List<ChannelEntity> channelEntities)
+        internal bool CreateChannelEntityAndAddToSubscribe(PNOperationType type, List<string> rawChannels, bool isChannelGroup, bool unsubscribeCheck, ref List<ChannelEntity> channelEntities, PubNub pn)
         {
             bool bReturn = false;    
             for (int index = 0; index < rawChannels.Count; index++)
@@ -282,8 +281,8 @@ namespace PubNubAPI
                     ChannelEntity ce = CreateChannelEntity (channelName, true, isChannelGroup, null);
 
                     bool channelIsSubscribed = false;
-                    if (Subscription.Instance.ChannelEntitiesDictionary.ContainsKey (ce.ChannelID)){
-                        channelIsSubscribed = Subscription.Instance.ChannelEntitiesDictionary [ce.ChannelID].IsSubscribed;
+                    if (pn.SubscriptionInstance.ChannelEntitiesDictionary.ContainsKey (ce.ChannelID)){
+                        channelIsSubscribed = PubNubInstance.SubscriptionInstance.ChannelEntitiesDictionary [ce.ChannelID].IsSubscribed;
                     }
 
                     if (unsubscribeCheck) {
@@ -369,7 +368,7 @@ namespace PubNubAPI
 
         private bool CheckAllChannelsAreUnsubscribed()
         {
-            if (Subscription.Instance.AllSubscribedChannelsAndChannelGroups.Count <=0)
+            if (PubNubInstance.SubscriptionInstance.AllSubscribedChannelsAndChannelGroups.Count <=0)
             {
                 /*StopHeartbeat<T>();
                 if (isPresenceHearbeatRunning)
@@ -463,7 +462,7 @@ namespace PubNubAPI
             {
                 //return;
             }
-            List<ChannelEntity> channelEntities = Subscription.Instance.AllSubscribedChannelsAndChannelGroups;
+			List<ChannelEntity> channelEntities = PubNubInstance.SubscriptionInstance.AllSubscribedChannelsAndChannelGroups;
 
             // Begin recursive subscribe
             try {
@@ -474,7 +473,7 @@ namespace PubNubAPI
                     Helpers.GetNamesFromChannelEntities(channelEntities), lastTimetoken), LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
                 #endif
                 // Build URL
-                string channelsJsonState = Subscription.Instance.CompiledUserState;
+				string channelsJsonState = PubNubInstance.SubscriptionInstance.CompiledUserState;
                 //TODO fix and remove
                 channelsJsonState = "";
 
@@ -537,8 +536,8 @@ namespace PubNubAPI
                 if (resultSubscribeEnvelope is Dictionary<string, object>) {
 
                     Dictionary<string, object> message = (Dictionary<string, object>)resultSubscribeEnvelope;
-                    subscribeEnvelope.TimetokenMeta = Helpers.CreateTimetokenMetadata (message ["t"], "Subscribe TT: ");
-                    subscribeEnvelope.Messages = Helpers.CreateListOfSubscribeMessage (message ["m"]);
+					subscribeEnvelope.TimetokenMeta = Helpers.CreateTimetokenMetadata (message ["t"], "Subscribe TT: ", PubNubInstance.PNConfig.LogVerbosity);
+					subscribeEnvelope.Messages = Helpers.CreateListOfSubscribeMessage (message ["m"], PubNubInstance.PNConfig.LogVerbosity);
 
                     return subscribeEnvelope;
                 } else {
