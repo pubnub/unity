@@ -23,7 +23,7 @@ namespace PubNubAPI
         internal const string PresenceChannelSuffix = "-pnpres";
         private static long lastSubscribeTimetoken = 0;
         private static long lastSubscribeTimetokenForNewMultiplex = 0;
-        private PNUnityWebRequest webRequest;
+        //private PNUnityWebRequest webRequest;
         private PubNub PubNubInstance { get; set;}
 
         internal static bool IsPresenceChannel (string channel)
@@ -48,8 +48,8 @@ namespace PubNubAPI
                     {
                         if (instance == null) {
                             instance = new SubscriptionWorker<U> ();
-                            instance.webRequest = PubNub.GameObjectRef.AddComponent<PNUnityWebRequest> ();
-                            instance.webRequest.SubWebRequestComplete += instance.WebRequestCompleteHandler;
+                            //instance.webRequest = PubNub.GameObjectRef.AddComponent<PNUnityWebRequest> ();
+                            //instance.webRequest.SubWebRequestComplete += instance.WebRequestCompleteHandler;
 
                         }
                     }
@@ -506,7 +506,7 @@ namespace PubNubAPI
 
                 //PNCallback<T> timeCallback = new PNTimeCallback<T> (callback);
                 //http://ps.pndsn.com/v2/presence/sub-key/sub-c-5c4fdcc6-c040-11e5-a316-0619f8945a4f/uuid/UUID_WhereNow?pnsdk=PubNub-Go%2F3.14.0&uuid=UUID_WhereNow
-                webRequest.Run<SubscribeBuilder>(requestUrl.OriginalString, requestState, 310, 0);
+                //webRequest.Run<SubscribeBuilder>(requestUrl.OriginalString, requestState, 310, 0);
 
             } catch (Exception ex) {
                 Debug.Log("in  MultiChannelSubscribeRequest" + ex.ToString());

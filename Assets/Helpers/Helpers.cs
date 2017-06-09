@@ -103,11 +103,12 @@ namespace PubNubAPI
         internal static TimetokenMetadata CreateTimetokenMetadata (object timeTokenDataObject, string whichTT, PNLogVerbosity pnLogVerbosity)
         {
             Dictionary<string, object> timeTokenData = (Dictionary<string, object>)timeTokenDataObject;
-            TimetokenMetadata timetokenMetadata = new TimetokenMetadata (Utility.CheckKeyAndParseLong(timeTokenData, whichTT, "t"), 
-                (timeTokenData.ContainsKey ("r")) ? timeTokenData["r"].ToString(): "");
+            string log;
+            long timetoken = Utility.CheckKeyAndParseLong(timeTokenData, whichTT, "t", out log);
+            TimetokenMetadata timetokenMetadata = new TimetokenMetadata (timetoken, (timeTokenData.ContainsKey ("r")) ? timeTokenData["r"].ToString(): "");
 
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (string.Format ("TimetokenMetadata: {1} \nTimetoken: {2} \nRegion: {3}", whichTT, timetokenMetadata.Timetoken, timetokenMetadata.Region), LoggingMethod.LevelInfo, pnLogVerbosity);
+            LoggingMethod.WriteToLog (string.Format ("TimetokenMetadata: {1} \nTimetoken: {2} \nRegion: {3}\nlog : {4}", whichTT, timetokenMetadata.Timetoken, timetokenMetadata.Region, log), LoggingMethod.LevelInfo, pnLogVerbosity);
             #endif
 
             return timetokenMetadata;
@@ -124,8 +125,9 @@ namespace PubNubAPI
                 string flags = (dict.Contains ("f")) ? dict ["f"].ToString () : "";
                 string issuingClientId = (dict.Contains ("i")) ? dict ["i"].ToString () : "";
                 string subscribeKey = (dict.Contains ("k")) ? dict ["k"].ToString () : "";
-                long sequenceNumber = Utility.CheckKeyAndParseLong (dict, "sequenceNumber", "s"); 
-
+                string log; 
+                long sequenceNumber = Utility.CheckKeyAndParseLong (dict, "sequenceNumber", "s", out log);
+                
                 TimetokenMetadata originatingTimetoken = (dict.Contains ("o")) ? CreateTimetokenMetadata (dict ["o"], "Originating TT: ", pnLogVerbosity) : null;
                 TimetokenMetadata publishMetadata = (dict.Contains ("p")) ? CreateTimetokenMetadata (dict ["p"], "Publish TT: ", pnLogVerbosity) : null;
                 object userMetadata = (dict.Contains ("u")) ? (object)dict ["u"] : null;
@@ -157,7 +159,8 @@ namespace PubNubAPI
                 "originatingTimetoken region: {10},\n" +
                 "publishMetadata tt: {11},\n" +
                 "publishMetadata region: {12},\n" +
-                "userMetadata {13} \n",
+                "userMetadata {13} \n" +
+                "log {14} \n",
                  
                 shard,
                 subscriptionMatch,
@@ -171,7 +174,8 @@ namespace PubNubAPI
                 (originatingTimetoken != null) ? originatingTimetoken.Region : "",
                 (publishMetadata != null) ? publishMetadata.Timetoken.ToString () : "",
                 (publishMetadata != null) ? publishMetadata.Region : "",
-                (userMetadata != null) ? userMetadata.ToString () : "null"), 
+                (userMetadata != null) ? userMetadata.ToString () : "null",
+                log), 
                 LoggingMethod.LevelInfo, pnLogVerbosity);
                 #endif
 

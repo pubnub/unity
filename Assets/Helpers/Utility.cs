@@ -26,30 +26,28 @@ namespace PubNubAPI
         }
         #endif    
 
-        internal static long CheckKeyAndParseLong(IDictionary dict, string what, string key){
-            long sequenceNumber = 0; 
+        //TODO Handle exception
+        internal static long CheckKeyAndParseLong(IDictionary dict, string what, string key, out string log){
+            long sequenceNumber = 0;
+            log = ""; 
             if (dict.Contains (key)) {
                 long seqNumber;
                 if (!Int64.TryParse (dict [key].ToString(), out seqNumber)) {
-                    #if (ENABLE_PUBNUB_LOGGING)
-                    LoggingMethod.WriteToLog (string.Format ("{1}, {2} conversion failed: {3}.", 
-                     what, key, dict [key].ToString ()), LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
-                    #endif
+                    log = string.Format ("{1}, {2} conversion failed: {3}.", what, key, dict [key].ToString ());
                 }
                 sequenceNumber = seqNumber;
             }
             return sequenceNumber;
         }
 
-        internal static int CheckKeyAndParseInt(IDictionary dict, string what, string key){
+        //TODO Handle exception
+        internal static int CheckKeyAndParseInt(IDictionary dict, string what, string key, out string log){
             int sequenceNumber = 0; 
+            log = "";
             if (dict.Contains (key)) {
                 int seqNumber;
                 if (!int.TryParse (dict [key].ToString(), out seqNumber)) {
-                    #if (ENABLE_PUBNUB_LOGGING)
-                    LoggingMethod.WriteToLog (string.Format ("{1}, {2} conversion failed: {3}.", 
-                     what, key, dict [key].ToString ()), LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
-                    #endif
+                    log = string.Format ("{1}, {2} conversion failed: {3}.", what, key, dict [key].ToString ());
                 }
                 sequenceNumber = seqNumber;
             }

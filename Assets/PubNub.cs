@@ -44,26 +44,26 @@ namespace PubNubAPI
             //publishMessageCounter.Reset ();
 
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog ("CleanUp: Destructing coroutine", LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
+            LoggingMethod.WriteToLog ("CleanUp: Destructing coroutine", LoggingMethod.LevelInfo, this.PNConfig.LogVerbosity);
             #endif
             /*if (coroutine != null) {
                 UnityEngine.Object.Destroy (coroutine);
             }*/
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog ("CleanUp: Destructing GameObject", LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
+            LoggingMethod.WriteToLog ("CleanUp: Destructing GameObject", LoggingMethod.LevelInfo, this.PNConfig.LogVerbosity);
             #endif
             /*if(localGobj && (gobj != null))
             {
                 UnityEngine.Object.Destroy (gobj);
             }*/
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (string.Format ("DateTime {0} Clean up complete.", DateTime.Now.ToString ()), LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
+            LoggingMethod.WriteToLog (string.Format ("DateTime {0} Clean up complete.", DateTime.Now.ToString ()), LoggingMethod.LevelInfo, this.PNConfig.LogVerbosity);
             #endif
         }
 
         ~PubNub(){
             #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog ("Destructing PubnubUnity", LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
+            LoggingMethod.WriteToLog ("Destructing PubnubUnity", LoggingMethod.LevelInfo, this.PNConfig.LogVerbosity);
             #endif
             this.CleanUp ();
         }
@@ -73,14 +73,20 @@ namespace PubNubAPI
         /// This method should be called before init
         /// </summary>
         /// <value>The set game object.</value>
-        public static GameObject GameObjectRef { get; set;}
+        public GameObject GameObjectRef { get; set;}
         private bool localGobj;
 
         public PubNub (PNConfiguration pnConfiguration)
         {
             Test = "saddsads";
             PNConfig = pnConfiguration;
+			/*if (PNConfig.LogVerbosity.Equals (PNLogVerbosity.BODY)) {
+				//Debug.logger.logEnabled = true;
+			} else {
+				//Debug.logger.logEnabled = false;
+			}*/
 
+			Debug.Log ("Log test");
             #if(UNITY_IOS)
             PNConfig.Version = string.Format("PubNub-CSharp-UnityIOS/{0}", PNConfig.Version);
             #elif(UNITY_STANDALONE_WIN)
@@ -114,7 +120,10 @@ namespace PubNubAPI
                 #endif
                 localGobj = false;
             }
-            QueueManager queueManager = PubNub.GameObjectRef.AddComponent<QueueManager> ();
+            GameObjectRef.name = "ngo";
+            
+            QueueManager queueManager = this.GameObjectRef.AddComponent<QueueManager> ();
+            queueManager.PubNubInstance = this;
             SubscriptionInstance = new Subscription (this);
             //queueManager.NoOfConcurrentRequests 
         }

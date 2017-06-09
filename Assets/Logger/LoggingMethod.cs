@@ -57,11 +57,16 @@ namespace PubNubAPI
             }
         }
 
-        public static void WriteToLog (string logText, bool writeToLog, PNLogVerbosity pnLogVerbosity)
+		public static void WriteToLog (string logText, bool writeToLog)
+		{
+			UnityEngine.Debug.Log (string.Format("\n{0} {1} \n", DateTime.Now.ToString (), logText));
+		}
+
+		public static void WriteToLog (string logText, bool writeToLog, PNLogVerbosity pnLogVerbosity)
         {
-            if (pnLogVerbosity.Equals(PNLogVerbosity.BODY)) {
+            //if (pnLogVerbosity.Equals(PNLogVerbosity.BODY)) {
                 UnityEngine.Debug.Log (string.Format("\n{0} {1} \n", DateTime.Now.ToString (), logText));
-            }
+            //}
         }
     }
 

@@ -57,12 +57,12 @@ namespace PubNubAPI
             this.Callback = callback;
 
             Debug.Log ("RunTimeRequest gobj");
-            PNUnityWebRequest webRequest = PubNub.GameObjectRef.AddComponent<PNUnityWebRequest> ();
+            /*PNUnityWebRequest webRequest = PubNub.GameObjectRef.AddComponent<PNUnityWebRequest> ();
             webRequest.NonSubWebRequestComplete += WebRequestCompleteHandler;
             Debug.Log ("RunTimeRequest coroutine");
             //PNCallback<T> timeCallback = new PNTimeCallback<T> (callback);
             webRequest.Run<T>("https://pubsub.pubnub.com/time/0", requestState, 10, 0);
-            Debug.Log ("after coroutine");
+            Debug.Log ("after coroutine");*/
 
         }
 
@@ -92,13 +92,13 @@ namespace PubNubAPI
             this.Callback = callback;
 
             Debug.Log ("RunWhereNowRequest gobj");
-            PNUnityWebRequest webRequest = PubNub.GameObjectRef.AddComponent<PNUnityWebRequest> ();
+            /*PNUnityWebRequest webRequest = PubNub.GameObjectRef.AddComponent<PNUnityWebRequest> ();
             webRequest.NonSubWebRequestComplete += WebRequestCompleteHandler;
             Debug.Log ("RunWhereNowRequest coroutine");
             //PNCallback<T> timeCallback = new PNTimeCallback<T> (callback);
             //http://ps.pndsn.com/v2/presence/sub-key/sub-c-5c4fdcc6-c040-11e5-a316-0619f8945a4f/uuid/UUID_WhereNow?pnsdk=PubNub-Go%2F3.14.0&uuid=UUID_WhereNow
             webRequest.Run<T>("https://pubsub.pubnub.com/v2/presence/sub-key/demo/uuid/UUID_WhereNow?uuid=UUID_WhereNow", requestState, 10, 0);
-            Debug.Log ("after coroutine");
+            Debug.Log ("after coroutine");*/
 
         }
 

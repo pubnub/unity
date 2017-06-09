@@ -19,9 +19,7 @@ namespace PubNubAPI
                 pnsdkVersion = value;
             }
         }
-
-
-
+        
         public int ConcurrentNonSubscribeWorkers { get; set;}
 
         public string SubscribeKey { get; set;}

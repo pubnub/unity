@@ -42,7 +42,7 @@ namespace PubNubAPI
                 jsonLibrary = new MiniJSONObjectSerializer();
                 #elif (USE_JSONFX_UNITY_IOS)
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog ("JSON LIB: USE_JSONFX_UNITY_IOS", LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
+                LoggingMethod.WriteToLog ("JSON LIB: USE_JSONFX_UNITY_IOS", LoggingMethod.LevelInfo);
                 #endif
                 jsonLibrary = new JsonFxUnitySerializer ();
                 #endif
