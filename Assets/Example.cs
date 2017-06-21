@@ -19,7 +19,7 @@ namespace PubNubExample
             Debug.Log ("PNConfiguration");  
             PubNub pubnub = new PubNub (pnConfiguration);
 
-            pubnub.AddListener (
+            /*pubnub.AddListener (
                 (s) => {
                     
                     //Debug.Log ("AddListener in status" + String.Join(", ", s.AffectedChannelGroups.ToArray()) + String.Join(", ", s.AffectedChannels.ToArray()));
@@ -58,6 +58,7 @@ namespace PubNubExample
             List<string> listChannels = new List<string> (){"channel1", "channel2"};
             listChannels.Add ("channel1");
             pubnub.Subscribe ().SetChannelGroups (listChannelGroups).SetChannels(listChannels).Execute();
+*/
             Debug.Log ("before Time");
             /*pubnub.Time ().Async (new PNTimeCallback<PNTimeResult>(
                 (r, s) => {
@@ -65,9 +66,12 @@ namespace PubNubExample
                 }
             ));*/
             pubnub.Time ().Async ((result, status) => {
-                Debug.Log ("in Time");
-                Debug.Log (string.Format("DateTime {0}, result: {1}", DateTime.Now ,result.TimeToken));
-                Debug.Log (status.Error);
+                
+                if(status.Error){
+                    Debug.Log (string.Format("Time Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
+                } else {
+                    Debug.Log (string.Format("DateTime {0}, result: {1}", DateTime.Now ,result.TimeToken));
+                }
             });
             //pubnub.Time ().Async (new PNCallback<PNTimeResult>(){
 
@@ -75,14 +79,14 @@ namespace PubNubExample
             //});*/
 
 
-            Debug.Log ("after Time");
+            /*Debug.Log ("after Time");
 
             pubnub.WhereNow ().Uuid ("test uuid").Async ((result, status) => {
                 Debug.Log ("in WhereNow");
                 Debug.Log (string.Format("DateTime {0}, result: {1}", DateTime.Now ,result.Result));
                 Debug.Log (status.Error);
 
-            });
+            });*/
             //pubnub.Subscribe ().Async<string> ();
     	}
 

@@ -1,3 +1,4 @@
+#define ENABLE_PUBNUB_LOGGING
 #if((!USE_JSONFX_UNITY_IOS) && (!USE_MiniJSON))
 #define USE_JSONFX_UNITY_IOS
 //#define USE_MiniJSON
@@ -33,21 +34,19 @@ namespace PubNubAPI
 
     public static class JSONSerializer{
         private static IJsonLibrary jsonLibrary = null;
-        public static IJsonLibrary JsonLibrary{
-            get {
-                #if (USE_MiniJSON)
+        public static IJsonLibrary JsonLibrary(PubNubUnityBase pnUnityBase){
+            #if (USE_MiniJSON)
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog("JSON LIB: USE_MiniJSON", LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
+                pnUnityBase.PNLog.WriteToLog("JSON LIB: USE_MiniJSON", PNLoggingMethod.LevelInfo);
                 #endif
-                jsonLibrary = new MiniJSONObjectSerializer();
-                #elif (USE_JSONFX_UNITY_IOS)
+                jsonLibrary = new MiniJSONObjectSerializer(pnUnityBase);
+            #elif (USE_JSONFX_UNITY_IOS)
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog ("JSON LIB: USE_JSONFX_UNITY_IOS", LoggingMethod.LevelInfo);
+                pnUnityBase.PNLog.WriteToLog ("JSON LIB: USE_JSONFX_UNITY_IOS", PNLoggingMethod.LevelInfo);
                 #endif
-                jsonLibrary = new JsonFxUnitySerializer ();
-                #endif
-                return jsonLibrary;
-            }
+                jsonLibrary = new JsonFxUnitySerializer (pnUnityBase);
+            #endif
+            return jsonLibrary;
         }
 
     }
@@ -55,6 +54,11 @@ namespace PubNubAPI
     #if (USE_JSONFX_UNITY_IOS)
     public class JsonFxUnitySerializer : IJsonLibrary
     {
+        PubNubUnityBase pnUnityBase;
+        public JsonFxUnitySerializer(PubNubUnityBase pnUnityBase){
+            this.pnUnityBase = pnUnityBase;
+        }
+
         public bool IsArrayCompatible (string jsonString)
         {
             return false;
@@ -74,9 +78,7 @@ namespace PubNubAPI
         public List<object> DeserializeToListOfObject (string jsonString)
         {
             #if (ENABLE_PUBNUB_LOGGING)
-                    LoggingMethod.WriteToLog (string.Format ("DeserializeToListOfObject: jsonString: {1}", 
-                         jsonString), 
-                        LoggingMethod.LevelInfo);
+            pnUnityBase.PNLog.WriteToLog (string.Format ("DeserializeToListOfObject: jsonString: {1}", jsonString), PNLoggingMethod.LevelInfo);
             #endif
         
             var output = JsonReader.Deserialize<object[]> (jsonString) as object[];
@@ -87,9 +89,7 @@ namespace PubNubAPI
         public object DeserializeToObject (string jsonString)
         {
             #if (ENABLE_PUBNUB_LOGGING)
-                    LoggingMethod.WriteToLog (string.Format ("DeserializeToObject: jsonString: {1}", 
-                         jsonString), 
-                        LoggingMethod.LevelInfo);
+            pnUnityBase.PNLog.WriteToLog (string.Format ("DeserializeToObject: jsonString: {1}", jsonString), PNLoggingMethod.LevelInfo);
             #endif
         
             var output = JsonReader.Deserialize<object> (jsonString) as object;
@@ -118,6 +118,11 @@ namespace PubNubAPI
     #elif (USE_MiniJSON)
     public class MiniJSONObjectSerializer : IJsonLibrary
     {
+        PubNubUnityBase pnUnityBase;
+        public MiniJSONObjectSerializer(PubNubUnityBase pnUnityBase){
+            this.pnUnityBase = pnUnityBase;
+        }
+
         public bool IsArrayCompatible (string jsonString)
         {
             return jsonString.Trim().StartsWith("[");

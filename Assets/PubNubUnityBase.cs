@@ -1,4 +1,3 @@
-#define ENABLE_PUBNUB_LOGGING
 using System;
 using UnityEngine;
 using System.Linq;
@@ -27,7 +26,7 @@ namespace PubNubAPI
             get {
                 if (jsonLibrary == null)
                 {
-                    jsonLibrary = JSONSerializer.JsonLibrary;
+                    jsonLibrary = JSONSerializer.JsonLibrary(this);
                 }
                 return jsonLibrary;
             }
@@ -36,7 +35,7 @@ namespace PubNubAPI
                 if (value is IJsonLibrary) {
                     jsonLibrary = value;
                 } else {
-                    jsonLibrary = JSONSerializer.JsonLibrary;
+                    jsonLibrary = JSONSerializer.JsonLibrary(this);
                     this.PNLog.WriteToLog ("Missing or Incorrect JsonLibrary value, using default", PNLoggingMethod.LevelWarning);
                 }
             }
@@ -49,8 +48,11 @@ namespace PubNubAPI
         public PubNubUnityBase(PNConfiguration pnConfiguration, GameObject gameObjectRef, IJsonLibrary jsonLibrary){
             PNConfig = pnConfiguration;
             PNLog = new PNLoggingMethod(PNConfig.LogVerbosity);
-
-            this.jsonLibrary = jsonLibrary;
+            /*if (PNConfig.LogVerbosity.Equals (PNLogVerbosity.BODY)) {
+				//Debug.logger.logEnabled = true;
+			} else {
+				//Debug.logger.logEnabled = false;
+			}*/
 
             #if(UNITY_IOS)
             Version = string.Format("PubNub-CSharp-UnityIOS/{0}", build);

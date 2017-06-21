@@ -485,9 +485,21 @@ namespace PubNubAPI
 
                 //v2
                 string filterExpr = (!string.IsNullOrEmpty(this.FilterExpr)) ? this.FilterExpr : string.Empty;
-                Uri requestUrl = BuildRequests.BuildMultiChannelSubscribeRequest (channels,
-                    channelGroups, lastTimetoken.ToString(), channelsJsonState, "a", "",
-                    filterExpr, true, PubNubInstance.PNConfig.Origin, "", PubNubInstance.PNConfig.SubscribeKey, 0);
+                Uri requestUrl = BuildRequests.BuildMultiChannelSubscribeRequest (
+                    channels,
+                    channelGroups, 
+                    lastTimetoken.ToString(), 
+                    channelsJsonState, 
+                    "a", 
+                    "",
+                    filterExpr, 
+                    true, 
+                    PubNubInstance.PNConfig.Origin, 
+                    "", 
+                    PubNubInstance.PNConfig.SubscribeKey, 
+                    0,
+                    PubNubInstance.Version
+                );
                 
                 /*Uri requestUrl = BuildRequests.BuildMultiChannelSubscribeRequest (channels,
                     channelGroups, lastTimetoken.ToString(), channelsJsonState, this.SessionUUID, this.Region,

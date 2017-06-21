@@ -5,26 +5,31 @@ namespace PubNubAPI
 {
     public class NonSubscribeWorker<T>: IDisposable
     {
-        QueueManager queueManager;
+        private QueueManager queueManager;
         public static int InstanceCount;
         private static object syncRoot = new System.Object();
         #region IDisposable implementation
 
         public void Dispose ()
         {
+            queueManager.PubNubInstance.PNLog.WriteToLog("Disposing NonSubscribeWorker", PNLoggingMethod.LevelInfo);
+            webRequest.NonSubWebRequestComplete -= WebRequestCompleteHandler;
             lock (syncRoot) {
                 InstanceCount--;
             }
         }
 
         #endregion
+        private PNUnityWebRequest webRequest;
 
-
-        public NonSubscribeWorker ()
+        public NonSubscribeWorker (QueueManager queueManager)
         {
             lock (syncRoot) {
                 InstanceCount++;
             }
+            this.queueManager = queueManager;
+            webRequest = this.queueManager.PubNubInstance.GameObjectRef.AddComponent<PNUnityWebRequest> ();
+            webRequest.NonSubWebRequestComplete += WebRequestCompleteHandler;
         }
             
         Action<T, PNStatus> Callback;
@@ -34,43 +39,26 @@ namespace PubNubAPI
 
         }
             
-        public void RunTimeRequest(PNConfiguration pnConfig, Action<T, PNStatus> callback, QueueManager queueManager){
-            //Uri request = BuildRequests.BuildTimeRequest (this.SessionUUID, this.ssl, this.Origin);
-            this.queueManager = queueManager;
+        public void RunTimeRequest(PNConfiguration pnConfig, Action<T, PNStatus> callback){
             RequestState<T> requestState = new RequestState<T> ();
-            //requestState.ChannelEntities = channelEntities;
             requestState.RespType = PNOperationType.PNTimeOperation;
-            /*requestState.Reconnect = reconnect;
-            requestState.SuccessCallback = userCallback;
-            requestState.ErrorCallback = errorCallback;
-            requestState.ID = id;
-            requestState.Timeout = timeout;
-            requestState.Timetoken = timetoken;
-            requestState.TypeParameterType = typeParam;
-            requestState.UUID = uuid;
-            return requestState;*/
-            Debug.Log ("RunTimeRequest");
 
-
-
-            //save callback
             this.Callback = callback;
+            
+            Uri request = BuildRequests.BuildTimeRequest(
+                this.queueManager.PubNubInstance.PNConfig.UUID,
+                this.queueManager.PubNubInstance.PNConfig.Secure,
+                this.queueManager.PubNubInstance.PNConfig.Origin,
+                this.queueManager.PubNubInstance.Version
+            );
 
-            Debug.Log ("RunTimeRequest gobj");
-            /*PNUnityWebRequest webRequest = PubNub.GameObjectRef.AddComponent<PNUnityWebRequest> ();
-            webRequest.NonSubWebRequestComplete += WebRequestCompleteHandler;
-            Debug.Log ("RunTimeRequest coroutine");
-            //PNCallback<T> timeCallback = new PNTimeCallback<T> (callback);
-            webRequest.Run<T>("https://pubsub.pubnub.com/time/0", requestState, 10, 0);
-            Debug.Log ("after coroutine");*/
-
+            this.queueManager.PubNubInstance.PNLog.WriteToLog(string.Format("RunTimeRequest {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
+            webRequest.Run<T>(request.OriginalString, requestState, 10, 0); 
         }
 
         //public void RunWhereNowRequest(PNConfiguration pnConfig, Action<T, PNStatus> callback, WhereNowOperationParams operationParams){
-        public void RunWhereNowRequest(PNConfiguration pnConfig, Action<T, PNStatus> callback, WhereNowBuilder operationParams, QueueManager queueManager){
+        public void RunWhereNowRequest(PNConfiguration pnConfig, Action<T, PNStatus> callback, WhereNowBuilder operationParams){
             //Uri request = BuildRequests.BuildTimeRequest (this.SessionUUID, this.ssl, this.Origin);
-
-            this.queueManager = queueManager;
 
             RequestState<T> requestState = new RequestState<T> ();
             //requestState.ChannelEntities = channelEntities;

@@ -9,8 +9,8 @@ namespace PubNubAPI
         {
         }
 
-        //private PNStatusCategory category;
-        //private PNErrorData errorData;
+        public PNStatusCategory Category {get; set;}
+        public PNErrorData ErrorData  {get; set;}
         public bool Error {get; set;}
 
         // boolean automaticallyRetry;

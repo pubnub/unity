@@ -1,5 +1,4 @@
-﻿#define ENABLE_PUBNUB_LOGGING
-using System;
+﻿using System;
 using UnityEngine;
 using System.Linq;
 
@@ -54,15 +53,7 @@ namespace PubNubAPI
         public PubNubUnity (PNConfiguration pnConfiguration, GameObject gameObjectRef, IJsonLibrary jsonLibrary): base(pnConfiguration, gameObjectRef, jsonLibrary)
         {
             Test = "saddsads";
-            
-			/*if (PNConfig.LogVerbosity.Equals (PNLogVerbosity.BODY)) {
-				//Debug.logger.logEnabled = true;
-			} else {
-				//Debug.logger.logEnabled = false;
-			}*/
-
-			Debug.Log ("Log test");
-
+            base.PNLog.WriteToLog (string.Format("Init with UUID {0}", base.PNConfig.UUID), PNLoggingMethod.LevelInfo);
             SubscriptionInstance = new Subscription (this);
             SubWorker = new SubscriptionWorker<SubscribeBuilder>(this);
              

@@ -42,7 +42,6 @@ namespace PubNubAPI
         }
 
         void Update(){
-            //TODO: READ pnconfig from pubnub.cs, handle property change
             //Debug.Log(RunningRequests.ToString() + NoRunningRequests);
             if(PubNubInstance != null){
                 //Debug.Log(PubNubInstance.Test);
@@ -55,15 +54,15 @@ namespace PubNubAPI
                     switch(operationType){
                         case PNOperationType.PNTimeOperation:
                             Action<PNTimeResult, PNStatus> timeCallback = qs.Callback as Action<PNTimeResult, PNStatus>;
-                            NonSubscribeWorker<PNTimeResult> timeNonSubscribeWorker = new NonSubscribeWorker<PNTimeResult> ();
-                            timeNonSubscribeWorker.RunTimeRequest (null, timeCallback, this);
+                            NonSubscribeWorker<PNTimeResult> timeNonSubscribeWorker = new NonSubscribeWorker<PNTimeResult> (this);
+                            timeNonSubscribeWorker.RunTimeRequest (null, timeCallback);
                             break;
                         case PNOperationType.PNWhereNowOperation:
                             Action<PNWhereNowResult, PNStatus> whereNowCallback = qs.Callback as Action<PNWhereNowResult, PNStatus>;
-                            NonSubscribeWorker<PNWhereNowResult> whereNowNonSubscribeWorker = new NonSubscribeWorker<PNWhereNowResult> ();
+                            NonSubscribeWorker<PNWhereNowResult> whereNowNonSubscribeWorker = new NonSubscribeWorker<PNWhereNowResult> (this);
                             //whereNowNonSubscribeWorker.RunWhereNowRequest (null, whereNowCallback, (WhereNowOperationParams)operationParams);
 
-                            whereNowNonSubscribeWorker.RunWhereNowRequest (null, whereNowCallback, (WhereNowBuilder)operationParams, this);
+                            whereNowNonSubscribeWorker.RunWhereNowRequest (null, whereNowCallback, (WhereNowBuilder)operationParams);
                             break;
                     }
                         

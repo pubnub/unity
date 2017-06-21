@@ -7,9 +7,6 @@ using UnityEngine;
 
 namespace PubNubAPI
 {
-    //TODO Use PNLogVerbosity
-
-
     #region "Logging and error codes"
     public class PNLoggingMethod
     {
@@ -68,6 +65,7 @@ namespace PubNubAPI
             PNLogVerb = pnLogVerbosity;
         }
 
+        //writeToLog is kept for future improvements in logging, can be used to add levels to logging
 		public void WriteToLog (string logText, bool writeToLog)
         {
             if (PNLogVerb.Equals(PNLogVerbosity.BODY)) {
