@@ -11,8 +11,8 @@ namespace PubNubAPI
         /*public PubNubBuilder(PNConfiguration pnConfig){
             PNConfig = pnConfig;    
         }*/
-        protected PubNub PubNubInstance { get; set;}
-        protected PubNubBuilder(PubNub pn){
+        protected PubNubUnity PubNubInstance { get; set;}
+        protected PubNubBuilder(PubNubUnity pn){
             PubNubInstance = pn;
         }
 
@@ -24,7 +24,8 @@ namespace PubNubAPI
             case PNOperationType.PNSubscribeOperation:
             case PNOperationType.PNPresenceOperation:
                 Debug.Log ("pn" + this.PubNubInstance.Test);
-                SubscriptionWorker<U>.Instance.Add (pnOpType, pnBuilder, ReqState, this.PubNubInstance);
+                RequestState<SubscribeBuilder> reqStateSubscribeBuilder = ReqState as RequestState<SubscribeBuilder>;
+                this.PubNubInstance.SubWorker.Add (pnOpType, pnBuilder, reqStateSubscribeBuilder, this.PubNubInstance);
                 break;
             default:
                 Debug.Log ("pn" + this.PubNubInstance.Test);

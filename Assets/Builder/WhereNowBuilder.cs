@@ -9,7 +9,7 @@ namespace PubNubAPI
     {
         public string UuidForWhereNow { get; private set;}
 
-        public WhereNowBuilder(PubNub pn): base(pn){
+        public WhereNowBuilder(PubNubUnity pn): base(pn){
             Debug.Log ("WhereNowBuilder Construct");
         }
 

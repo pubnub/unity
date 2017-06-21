@@ -16,17 +16,20 @@ namespace PubNubAPI
     public class SubscriptionWorker<U>
     {
         //Allow one instance only
-        private SubscriptionWorker ()
+        public SubscriptionWorker (PubNubUnity pn)
         {
+            PubNubInstance = pn;
+            webRequest = PubNubInstance.GameObjectRef.AddComponent<PNUnityWebRequest> ();
+            webRequest.SubWebRequestComplete += WebRequestCompleteHandler;
         }
 
         internal const string PresenceChannelSuffix = "-pnpres";
-        private static long lastSubscribeTimetoken = 0;
-        private static long lastSubscribeTimetokenForNewMultiplex = 0;
-        //private PNUnityWebRequest webRequest;
-        private PubNub PubNubInstance { get; set;}
+        private long lastSubscribeTimetoken = 0;
+        private long lastSubscribeTimetokenForNewMultiplex = 0;
+        private PNUnityWebRequest webRequest;
+        private PubNubUnity PubNubInstance { get; set;}
 
-        internal static bool IsPresenceChannel (string channel)
+        internal bool IsPresenceChannel (string channel)
         {
             if (channel.LastIndexOf (PresenceChannelSuffix) > 0) {
                 return true;
@@ -35,10 +38,10 @@ namespace PubNubAPI
             }
         }
 
-        private static volatile SubscriptionWorker<U> instance;
-        private static object syncRoot = new System.Object();
+        //private static volatile SubscriptionWorker<U> instance;
+        //private static object syncRoot = new System.Object();
 
-        public static SubscriptionWorker<U> Instance
+        /*public static SubscriptionWorker<U> Instance
         {
             get 
             {
@@ -57,9 +60,9 @@ namespace PubNubAPI
 
                 return instance;
             }
-        }
+        }*/
 
-        public void Add (PNOperationType pnOpType, object pnBuilder, RequestState<U> reqState, PubNub pn){
+        public void Add (PNOperationType pnOpType, object pnBuilder, RequestState<U> reqState, PubNubUnity pn){
             //Abort existing request
             try{
                 PubNubInstance = pn;
@@ -259,7 +262,7 @@ namespace PubNubAPI
             return channelEntities;
         }
 
-        internal bool CreateChannelEntityAndAddToSubscribe(PNOperationType type, List<string> rawChannels, bool isChannelGroup, bool unsubscribeCheck, ref List<ChannelEntity> channelEntities, PubNub pn)
+        internal bool CreateChannelEntityAndAddToSubscribe(PNOperationType type, List<string> rawChannels, bool isChannelGroup, bool unsubscribeCheck, ref List<ChannelEntity> channelEntities, PubNubUnity pn)
         {
             bool bReturn = false;    
             for (int index = 0; index < rawChannels.Count; index++)
@@ -484,7 +487,7 @@ namespace PubNubAPI
                 string filterExpr = (!string.IsNullOrEmpty(this.FilterExpr)) ? this.FilterExpr : string.Empty;
                 Uri requestUrl = BuildRequests.BuildMultiChannelSubscribeRequest (channels,
                     channelGroups, lastTimetoken.ToString(), channelsJsonState, "a", "",
-                    filterExpr, true, "ps.pndsn.com", "", "demo", 0);
+                    filterExpr, true, PubNubInstance.PNConfig.Origin, "", PubNubInstance.PNConfig.SubscribeKey, 0);
                 
                 /*Uri requestUrl = BuildRequests.BuildMultiChannelSubscribeRequest (channels,
                     channelGroups, lastTimetoken.ToString(), channelsJsonState, this.SessionUUID, this.Region,
@@ -506,7 +509,7 @@ namespace PubNubAPI
 
                 //PNCallback<T> timeCallback = new PNTimeCallback<T> (callback);
                 //http://ps.pndsn.com/v2/presence/sub-key/sub-c-5c4fdcc6-c040-11e5-a316-0619f8945a4f/uuid/UUID_WhereNow?pnsdk=PubNub-Go%2F3.14.0&uuid=UUID_WhereNow
-                //webRequest.Run<SubscribeBuilder>(requestUrl.OriginalString, requestState, 310, 0);
+                webRequest.Run<SubscribeBuilder>(requestUrl.OriginalString, requestState, 310, 0);
 
             } catch (Exception ex) {
                 Debug.Log("in  MultiChannelSubscribeRequest" + ex.ToString());

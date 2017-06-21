@@ -7,7 +7,7 @@ namespace PubNubAPI
 {
     public class TimeBuilder: PubNubBuilder<TimeBuilder>, IPubNubNoChannelsBuilder<TimeBuilder, PNTimeResult>
     {
-        public TimeBuilder(PubNub pn):base(pn){
+        public TimeBuilder(PubNubUnity pn):base(pn){
             
         }
         #region IPubNubBuilder implementation

@@ -8,10 +8,10 @@ namespace PubNubAPI
         internal PNOperationType OperationType { get; set;} 
         //internal OperationParams OperationParams { get; set;}
         internal object OperationParams { get; set;}
-        internal PubNub PubNubInstance { get; set;}
+        internal PubNubUnity PubNubInstance { get; set;}
 
         //public QueueStorage (object callback, PNOperationType operationType, OperationParams operationParams)
-        public QueueStorage (object callback, PNOperationType operationType, object operationParams, PubNub pn)
+        public QueueStorage (object callback, PNOperationType operationType, object operationParams, PubNubUnity pn)
         //public QueueStorage (object callback, PNOperationType operationType, PubNubBuilder<T> operationParams)
         {
             this.Callback = callback;

@@ -12,7 +12,10 @@ namespace PubNubExample
     	void Start () {
             Debug.Log ("Starting");
             PNConfiguration pnConfiguration = new PNConfiguration ();
+            pnConfiguration.SubscribeKey = "demo";
+            pnConfiguration.PublishKey = "demo";
             pnConfiguration.Secure = true;
+            pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
             Debug.Log ("PNConfiguration");  
             PubNub pubnub = new PubNub (pnConfiguration);
 

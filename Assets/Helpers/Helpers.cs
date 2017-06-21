@@ -90,7 +90,7 @@ namespace PubNubAPI
             return sb.ToString();
         }
 
-        internal static void LogChannelEntitiesDictionary(PubNub pn){
+        internal static void LogChannelEntitiesDictionary(PubNubUnity pn){
             StringBuilder sbLogs = new StringBuilder();
             foreach (var ci in pn.SubscriptionInstance.ChannelEntitiesDictionary) {
                 sbLogs.AppendFormat("\nChannelEntitiesDictionary \nChannelOrChannelGroupName:{0} \nIsChannelGroup:{1} \nIsPresenceChannel:{2}\n", ci.Key.ChannelOrChannelGroupName, ci.Key.IsChannelGroup.ToString(), ci.Key.IsPresenceChannel.ToString());

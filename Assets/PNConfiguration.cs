@@ -9,18 +9,15 @@ namespace PubNubAPI
             Secure = true;
         }
 
-        private const string build = "4.0";
-        private string pnsdkVersion = string.Format ("PubNub-CSharp-Unity/{0}", build);
-        public string Version {
+        private ushort concurrentNonSubscribeWorkers = 1;
+        public ushort ConcurrentNonSubscribeWorkers { 
             get {
-                return pnsdkVersion;
+                return concurrentNonSubscribeWorkers;
             }
-            set {
-                pnsdkVersion = value;
+            set{
+                concurrentNonSubscribeWorkers = value;
             }
         }
-        
-        public int ConcurrentNonSubscribeWorkers { get; set;}
 
         public string SubscribeKey { get; set;}
         public string PublishKey { get; set;}
@@ -34,7 +31,15 @@ namespace PubNubAPI
         public int NonSubscribeTimeout { get; set;}
         public string FilterExpression { get; set;}
         public PNHeartbeatNotificationOption HeartbeatNotificationOption { get; set;}
-        public string Origin { get; set;}
+        private string origin = "ps.pndsn.com";
+        public string Origin { 
+            get{
+                return origin;
+            } 
+            set{
+                origin = value;
+            }
+        }
         public PNReconnectionPolicy ReconnectionPolicy { get; set;}
         public int PresenceTimeout { get; set;}
         public int PresenceInterval { get; set;}

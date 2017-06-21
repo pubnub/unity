@@ -11,7 +11,7 @@ namespace PubNubAPI
         public event RunningRequestEndDelegate RunningRequestEnd;
         private bool NoRunningRequests = true;
         internal ushort NoOfConcurrentRequests = 1;
-        public PubNub PubNubInstance { get; set;}
+        public PubNubUnity PubNubInstance { get; set;}
         private ushort RunningRequests = 0;
 
         void Start(){
@@ -45,7 +45,7 @@ namespace PubNubAPI
             //TODO: READ pnconfig from pubnub.cs, handle property change
             //Debug.Log(RunningRequests.ToString() + NoRunningRequests);
             if(PubNubInstance != null){
-                Debug.Log(PubNubInstance.Test);
+                //Debug.Log(PubNubInstance.Test);
                 if ((RequestQueue.Instance.HasItems) && (NoRunningRequests)) {
                     UpdateRunningRequests(false);
                     QueueStorage qs =  RequestQueue.Instance.Dequeue ();

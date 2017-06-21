@@ -9,9 +9,9 @@ namespace PubNubAPI
         //private static volatile Subscription instance;
         private static object syncRoot = new Object();
 
-        private PubNub PubNubInstance;
+        private PubNubUnity PubNubInstance;
 
-        public Subscription(PubNub pn){
+        public Subscription(PubNubUnity pn){
             PubNubInstance = pn;
             ChannelsAndChannelGroupsAwaitingConnectCallback = new List<ChannelEntity> ();
             AllPresenceChannelsOrChannelGroups = new List<ChannelEntity> ();

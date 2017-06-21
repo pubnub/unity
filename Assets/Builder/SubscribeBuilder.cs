@@ -12,7 +12,7 @@ namespace PubNubAPI
         public List<string> ChannelGroups { get; private set;}
 
         //public long TimetokenToUse { get; private set;}
-        public SubscribeBuilder(PubNub pn): base(pn){
+        public SubscribeBuilder(PubNubUnity pn): base(pn){
         }
 
         #region IPubNubBuilder implementation
