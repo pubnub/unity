@@ -16,6 +16,9 @@ namespace PubNubExample
             pnConfiguration.PublishKey = "demo";
             pnConfiguration.Secure = true;
             pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
+
+            //TODO: remove
+            pnConfiguration.UUID = "a";
             Debug.Log ("PNConfiguration");  
             PubNub pubnub = new PubNub (pnConfiguration);
 
@@ -49,6 +52,12 @@ namespace PubNubExample
                 if(mea.pnper != null){
                     Debug.Log ("SusbcribeCallback in presence" + mea.pnper.Channel + mea.pnper.Occupancy + mea.pnper.Event);
                 }
+                pubnub.WhereNow ().Async ((result, status) => {
+                    Debug.Log ("in WhereNow");
+                    Debug.Log (string.Format("DateTime {0}, Channels: {1}", DateTime.Now , string.Join(",",result.Channels.ToArray())));
+                    Debug.Log (status.Error);
+
+                });
             };
 
             Debug.Log ("PubNub");
@@ -80,14 +89,9 @@ namespace PubNubExample
 
 
             /*Debug.Log ("after Time");*/
-
+            
             //pubnub.WhereNow ().Uuid ("test uuid").Async ((result, status) => {
-            pubnub.WhereNow ().Async ((result, status) => {
-                Debug.Log ("in WhereNow");
-                Debug.Log (string.Format("DateTime {0}, Channels: {1}", DateTime.Now , string.Join(",",result.Channels.ToArray())));
-                Debug.Log (status.Error);
-
-            });
+            
             //pubnub.Subscribe ().Async<string> ();
     	}
 

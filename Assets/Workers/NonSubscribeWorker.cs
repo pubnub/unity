@@ -66,7 +66,9 @@ namespace PubNubAPI
             requestState.RespType = PNOperationType.PNWhereNowOperation;
 
             Debug.Log ("WhereNowBuilder UuidForWhereNow: " + operationParams.UuidForWhereNow);
-            string uuidForWhereNow = "";
+
+            //TODO verify is this uuid is passed
+            string uuidForWhereNow = this.queueManager.PubNubInstance.PNConfig.UUID;
             if(!string.IsNullOrEmpty(operationParams.UuidForWhereNow)){
                 uuidForWhereNow = operationParams.UuidForWhereNow;
             }
@@ -84,15 +86,6 @@ namespace PubNubAPI
             );
             this.queueManager.PubNubInstance.PNLog.WriteToLog(string.Format("RunWhereNowRequest {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
             webRequest.Run<T>(request.OriginalString, requestState, this.queueManager.PubNubInstance.PNConfig.NonSubscribeTimeout, 0); 
-
-            /*PNUnityWebRequest webRequest = PubNub.GameObjectRef.AddComponent<PNUnityWebRequest> ();
-            webRequest.NonSubWebRequestComplete += WebRequestCompleteHandler;
-            Debug.Log ("RunWhereNowRequest coroutine");
-            //PNCallback<T> timeCallback = new PNTimeCallback<T> (callback);
-            //http://ps.pndsn.com/v2/presence/sub-key/sub-c-5c4fdcc6-c040-11e5-a316-0619f8945a4f/uuid/UUID_WhereNow?pnsdk=PubNub-Go%2F3.14.0&uuid=UUID_WhereNow
-            webRequest.Run<T>("https://pubsub.pubnub.com/v2/presence/sub-key/demo/uuid/UUID_WhereNow?uuid=UUID_WhereNow", requestState, 10, 0);
-            Debug.Log ("after coroutine");*/
-
         }
 
         public static U ConvertValue<U,V>(V value) where V : IConvertible
@@ -172,8 +165,17 @@ namespace PubNubAPI
                     case PNOperationType.PNWhereNowOperation:
                         PNWhereNowResult pnWhereNowResult = new PNWhereNowResult();
                         Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;//queueManager.PubNubInstance.JsonLibrary.DeserializeToDictionaryOfObject (jsonString);
-                        List<string> result1 = new List<string> ();
-                        result1.Add (dictionary["payload"] as string);
+                        Dictionary<string, object> dictionary2 = dictionary["payload"] as Dictionary<string, object>;
+                        string[] ch = dictionary2["channels"] as string[];
+                        List<string> result1 = ch.ToList<string>();//new List<string> ();
+                        /*foreach(KeyValuePair<string, object> key in dictionary["payload"] as Dictionary<string, object>){
+                            Debug.Log(key.Key + key.Value);
+                            result1.Add (key.Value as string);
+                        }*/
+                        foreach(string key in result1){
+                            Debug.Log(key);
+                        }
+
                         //result1.Add (multiChannel);
                         //List<string> result1 = ((IEnumerable)deSerializedResult).Cast<string> ().ToList ();
                         pnWhereNowResult.Channels = result1;
