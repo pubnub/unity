@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace PubNubAPI
 {
     public class PNTimeResult: PNResult
     {
-        public string TimeToken { get; set;}
+        public long TimeToken { get; set;}
         public PNTimeResult ()
         {
             
@@ -13,7 +14,7 @@ namespace PubNubAPI
 
     public class PNWhereNowResult: PNResult
     {
-        public string Result { get; set;}
+        public List<String> Channels { get; set;}
         public PNWhereNowResult ()
         {
 

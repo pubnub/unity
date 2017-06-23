@@ -1,5 +1,8 @@
 ﻿using System;
 using UnityEngine;
+using System.Collections;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace PubNubAPI
 {
@@ -53,33 +56,35 @@ namespace PubNubAPI
             );
 
             this.queueManager.PubNubInstance.PNLog.WriteToLog(string.Format("RunTimeRequest {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
-            webRequest.Run<T>(request.OriginalString, requestState, 10, 0); 
+            webRequest.Run<T>(request.OriginalString, requestState, this.queueManager.PubNubInstance.PNConfig.NonSubscribeTimeout, 0); 
         }
 
         //public void RunWhereNowRequest(PNConfiguration pnConfig, Action<T, PNStatus> callback, WhereNowOperationParams operationParams){
         public void RunWhereNowRequest(PNConfiguration pnConfig, Action<T, PNStatus> callback, WhereNowBuilder operationParams){
-            //Uri request = BuildRequests.BuildTimeRequest (this.SessionUUID, this.ssl, this.Origin);
 
             RequestState<T> requestState = new RequestState<T> ();
-            //requestState.ChannelEntities = channelEntities;
             requestState.RespType = PNOperationType.PNWhereNowOperation;
-            /*requestState.Reconnect = reconnect;
-            requestState.SuccessCallback = userCallback;
-            requestState.ErrorCallback = errorCallback;
-            requestState.ID = id;
-            requestState.Timeout = timeout;
-            requestState.Timetoken = timetoken;
-            requestState.TypeParameterType = typeParam;
-            requestState.UUID = uuid;
-            return requestState;*/
-            Debug.Log ("RunWhereNowRequest");
 
             Debug.Log ("WhereNowBuilder UuidForWhereNow: " + operationParams.UuidForWhereNow);
-
+            string uuidForWhereNow = "";
+            if(!string.IsNullOrEmpty(operationParams.UuidForWhereNow)){
+                uuidForWhereNow = operationParams.UuidForWhereNow;
+            }
             //save callback
             this.Callback = callback;
 
-            Debug.Log ("RunWhereNowRequest gobj");
+            Uri request = BuildRequests.BuildWhereNowRequest(
+                uuidForWhereNow,
+                this.queueManager.PubNubInstance.PNConfig.UUID,
+                this.queueManager.PubNubInstance.PNConfig.Secure,
+                this.queueManager.PubNubInstance.PNConfig.Origin,
+                this.queueManager.PubNubInstance.PNConfig.AuthKey,
+                this.queueManager.PubNubInstance.PNConfig.SubscribeKey,
+                this.queueManager.PubNubInstance.Version
+            );
+            this.queueManager.PubNubInstance.PNLog.WriteToLog(string.Format("RunWhereNowRequest {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
+            webRequest.Run<T>(request.OriginalString, requestState, this.queueManager.PubNubInstance.PNConfig.NonSubscribeTimeout, 0); 
+
             /*PNUnityWebRequest webRequest = PubNub.GameObjectRef.AddComponent<PNUnityWebRequest> ();
             webRequest.NonSubWebRequestComplete += WebRequestCompleteHandler;
             Debug.Log ("RunWhereNowRequest coroutine");
@@ -100,98 +105,172 @@ namespace PubNubAPI
             return (U)Convert.ChangeType(value, typeof(U));
         }
 
-        private void WebRequestCompleteHandler (object sender, EventArgs ea)
+        private void NonSubscribeHandler (CustomEventArgs<T> cea){
+            if (cea.IsTimeout || Utility.CheckRequestTimeoutMessageInError (cea)) {
+                #if (ENABLE_PUBNUB_LOGGING)
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, NonSubscribeHandler: NonSub timeout={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelError);
+                #endif
+                //ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (cea.Message.ToString (), cea.PubnubRequestState, true, false, PubnubErrorLevel);
+            } else if (cea.IsError) {
+                #if (ENABLE_PUBNUB_LOGGING)
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, NonSubscribeHandler: NonSub Error={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelError);
+                #endif
+                //ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (cea.Message.ToString (), cea.PubnubRequestState, false, false, PubnubErrorLevel);
+            } else {
+                PNResult result = new PNResult();
+                ProcessNonSubscribeResult (cea.PubnubRequestState, cea.Message, ref result);
+                #if (ENABLE_PUBNUB_LOGGING)
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, NonSubscribeHandler: result={1}", DateTime.Now.ToString (), (result!=null)?result.Count.ToString():"null"), LoggingMethod.LevelInfo);
+                #endif
+
+                PNStatus pnStatus = new PNStatus();
+                pnStatus.Error = false;
+                //Debug.Log("C4" + c [0]);
+                try {
+                    //TODO: add null check
+                    Callback((T)Convert.ChangeType(result, typeof(T)), pnStatus);
+                } catch (InvalidCastException ice) {
+                    Debug.Log (ice.ToString());
+                    throw ice;
+                }
+                this.queueManager.RaiseRunningRequestEnd(cea.PubnubRequestState.RespType);
+                //Helpers.ProcessResponseCallbacks<T> (ref result, cea.PubnubRequestState, this.cipherKey, JsonPluggableLibrary);
+            }
+        }
+
+        public void ProcessNonSubscribeResult (RequestState<T> pubnubRequestState, string jsonString, ref PNResult result)
         {
-            CustomEventArgs<T> cea = ea as CustomEventArgs<T>;
-
-
             try {
-                if (cea != null) {
+                
+                string multiChannel = Helpers.GetNamesFromChannelEntities(pubnubRequestState.ChannelEntities, false); 
+                string multiChannelGroup = Helpers.GetNamesFromChannelEntities(pubnubRequestState.ChannelEntities, true);
+                if (!string.IsNullOrEmpty (jsonString)) {
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ProcessNonSubscribeResult: jsonString = {1}", DateTime.Now.ToString (), jsonString), LoggingMethod.LevelInfo);
+                    #endif
+                    object deSerializedResult = queueManager.PubNubInstance.JsonLibrary.DeserializeToObject (jsonString);
+                    /*List<object> result1 = ((IEnumerable)deSerializedResult).Cast<object> ().ToList ();
+                    Debug.Log("C2" + result1[0]);
+                    if (result1 != null && result1.Count > 0) {
+                        result = result1;
+                    }*/
 
-                    //TODO identify from T instead of request state
-                    RequestState<T> requestState = cea.PubnubRequestState;        
-                    Debug.Log ("inCoroutineCompleteHandler " + requestState.RespType);
-                    switch(requestState.RespType){
+                    switch (pubnubRequestState.RespType) {
+                    /*case ResponseType.DetailedHistory:
+                        result = DecodeDecryptLoop (result, pubnubRequestState.ChannelEntities, cipherKey, jsonPluggableLibrary, errorLevel);
+                        result.Add (multiChannel);
+                        break;*/
                     case PNOperationType.PNTimeOperation:
-                        //PNTimeCallback<T> timeCallback = new PNTimeCallback<T> ();
-                        PNTimeResult pnTimeResult = new PNTimeResult();
-                        pnTimeResult.TimeToken = cea.Message;
-                        PNStatus pnStatus = new PNStatus();
-                        pnStatus.Error = false;
-                        /*if (pnTimeResult is T) {
-                        //return (T)pnTimeResult;
-                        //Callback((T)pnTimeResult, pnStatus);
-                        } else {*/
-                        try {
-                            //return (T)Convert.ChangeType(pnTimeResult, typeof(T));
-                            Debug.Log ("Callback");
-                            Callback((T)Convert.ChangeType(pnTimeResult, typeof(T)), pnStatus);
-
-                            Debug.Log ("After Callback");
-                        } catch (InvalidCastException ice) {
-                            //return default(T);
-                            Debug.Log (ice.ToString());
-                            throw ice;
+                        Int64[] c = deSerializedResult as Int64[];
+                        if ((c != null) && (c.Length > 0)) {
+                            PNTimeResult pnTimeResult = new PNTimeResult();
+                            pnTimeResult.TimeToken = c [0];
+                            result = pnTimeResult;
                         }
-                        //}
-
-                        //T pnTimeResult2 = (T)pnTimeResult as object;
-                        //Callback(pnTimeResult2, pnStatus);
-                        //PNTimeResult pnTimeResult2 = (T)pnTimeResult;
-                        //timeCallback.OnResponse(pnTimeResult, pnStatus);
-
-                        /*if (cea.PubnubRequestState != null) {
-                        ProcessCoroutineCompleteResponse<T> (cea);
-                        }*/
-                        this.queueManager.RaiseRunningRequestEnd(requestState.RespType);
+                        
                         break;
                     case PNOperationType.PNWhereNowOperation:
                         PNWhereNowResult pnWhereNowResult = new PNWhereNowResult();
-                        pnWhereNowResult.Result = cea.Message;
-                        PNStatus pnWhereNowStatus = new PNStatus();
-                        pnWhereNowStatus.Error = false;
-                        /*if (pnTimeResult is T) {
-                        //return (T)pnTimeResult;
-                        //Callback((T)pnTimeResult, pnStatus);
-                        } else {*/
-                        try {
-                            //return (T)Convert.ChangeType(pnTimeResult, typeof(T));
-                            Debug.Log ("Callback");
-                            Callback((T)Convert.ChangeType(pnWhereNowResult, typeof(T)), pnWhereNowStatus);
-
-                            Debug.Log ("After Callback");
-                        } catch (InvalidCastException ice) {
-                            //return default(T);
-                            Debug.Log (ice.ToString());
-                            throw ice;
+                        Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;//queueManager.PubNubInstance.JsonLibrary.DeserializeToDictionaryOfObject (jsonString);
+                        List<string> result1 = new List<string> ();
+                        result1.Add (dictionary["payload"] as string);
+                        //result1.Add (multiChannel);
+                        //List<string> result1 = ((IEnumerable)deSerializedResult).Cast<string> ().ToList ();
+                        pnWhereNowResult.Channels = result1;
+                        result = pnWhereNowResult;
+                        break;    
+                    
+                    /*case ResponseType.Leave:
+                        if (!string.IsNullOrEmpty(multiChannelGroup))
+                        {
+                            result.Add(multiChannelGroup);
                         }
-                        this.queueManager.RaiseRunningRequestEnd(requestState.RespType);
+                        if (!string.IsNullOrEmpty(multiChannel))
+                        {
+                            result.Add(multiChannel);
+                        }
                         break;
+                    case ResponseType.SubscribeV2:
+                    case ResponseType.PresenceV2:
+                        break;
+                    case ResponseType.Publish:
+                    case ResponseType.PushRegister:
+                    case ResponseType.PushRemove:
+                    case ResponseType.PushGet:
+                    case ResponseType.PushUnregister:
+                        result.Add (multiChannel);
+                        break;
+                    case ResponseType.GrantAccess:
+                    case ResponseType.AuditAccess:
+                    case ResponseType.RevokeAccess:
+                    case ResponseType.GetUserState:
+                    case ResponseType.SetUserState:
+                    case ResponseType.WhereNow:
+                    case ResponseType.HereNow:
+                        result = DeserializeAndAddToResult (jsonString, multiChannel, jsonPluggableLibrary, true);
+                        break;
+                    case ResponseType.GlobalHereNow:
+                        result = DeserializeAndAddToResult (jsonString, multiChannel, jsonPluggableLibrary, false);
+                        break;
+                    case ResponseType.ChannelGroupAdd:
+                    case ResponseType.ChannelGroupRemove:
+                    case ResponseType.ChannelGroupGet:
+                        result = DeserializeAndAddToResult (jsonString, multiChannel, jsonPluggableLibrary, false);
+
+                        break;
+                    case ResponseType.ChannelGroupGrantAccess:
+                    case ResponseType.ChannelGroupAuditAccess:
+                    case ResponseType.ChannelGroupRevokeAccess:
+                        result = DeserializeAndAddToResult (jsonString, "", jsonPluggableLibrary, false);
+                        result.Add(multiChannelGroup);
+                        break;*/
+
                     default:
-                        Debug.Log ("default");
                         break;
                     }
+                } 
+                #if (ENABLE_PUBNUB_LOGGING)
+                else {
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ProcessNonSubscribeResult: json string null ", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
+                }
+                #endif
+            } catch (Exception ex) {
+                #if (ENABLE_PUBNUB_LOGGING)
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, ProcessNonSubscribeResult: exception: {1} ", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
+                #endif
+                //ProcessWrapResultBasedOnResponseTypeException<T> (pubnubRequestState, errorLevel, ex);
+            }
+        }
 
+        private void WebRequestCompleteHandler (object sender, EventArgs ea)
+        {
+            CustomEventArgs<T> cea = ea as CustomEventArgs<T>;
+            try {
+                if (cea != null) {
+                    if (cea.PubnubRequestState != null) {
+                        NonSubscribeHandler(cea);
+                        //ProcessCoroutineCompleteResponse<T> (cea);
+                    }
                     #if (ENABLE_PUBNUB_LOGGING)
-                    //else {
-                    LoggingMethod.WriteToLog (string.Format ("CoroutineCompleteHandler: PubnubRequestState null", DateTime.Now.ToString ()), LoggingMethod.LevelError);
-                    //}
+                    else {
+                        LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CoroutineCompleteHandler: PubnubRequestState null", DateTime.Now.ToString ()), LoggingMethod.LevelError);
+                    }
                     #endif
                 }
                 #if (ENABLE_PUBNUB_LOGGING)
                 else {
-                LoggingMethod.WriteToLog (string.Format ("CoroutineCompleteHandler: cea null", DateTime.Now.ToString ()), LoggingMethod.LevelError);
+                    LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CoroutineCompleteHandler: cea null", DateTime.Now.ToString ()), LoggingMethod.LevelError);
                 }
                 #endif
             } catch (Exception ex) {
-                Debug.Log (ex.ToString());
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog (string.Format ("CoroutineCompleteHandler: Exception={1}",  ex.ToString ()), LoggingMethod.LevelError);
+                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CoroutineCompleteHandler: Exception={1}", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
                 #endif
 
-                //ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (ex.Message, cea.PubnubRequestState,
-                  //  false, false, PubnubErrorLevel);
+                //ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (ex.Message, cea.PubnubRequestState, false, false, PubnubErrorLevel);
             }
+
+            
         }
     }
 }

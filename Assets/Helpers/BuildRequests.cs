@@ -292,10 +292,9 @@ namespace PubNubAPI
             url.Add (subscribeKey);
 
             return BuildRestApiRequest<Uri> (url, ResponseType.GlobalHereNow, uuid, ssl, origin, 0, authenticationKey, parameters);
-        }
+        }*/
 
-        internal static Uri BuildWhereNowRequest (string uuid, string sessionUUID,
-            bool ssl, string origin, string authenticationKey, string subscribeKey)
+        internal static Uri BuildWhereNowRequest (string uuid, string sessionUUID, bool ssl, string origin, string authenticationKey, string subscribeKey, string pnSdkVersion)
         {
             List<string> url = new List<string> ();
 
@@ -306,8 +305,8 @@ namespace PubNubAPI
             url.Add ("uuid");
             url.Add (uuid);
 
-            return BuildRestApiRequest<Uri> (url, ResponseType.WhereNow, sessionUUID, ssl, origin, 0, authenticationKey, "");
-        }*/
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNWhereNowOperation, sessionUUID, ssl, origin, 0, authenticationKey, "", pnSdkVersion);
+        }
 
         internal static Uri BuildTimeRequest (string uuid, bool ssl, string origin, string pnSdkVersion)
         {

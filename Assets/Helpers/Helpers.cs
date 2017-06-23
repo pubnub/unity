@@ -114,6 +114,17 @@ namespace PubNubAPI
             return timetokenMetadata;
         }
 
+        internal static List<object> DeserializeAndAddToResult (string jsonString, string multiChannel, IJsonLibrary jsonPluggableLibrary, bool addChannel)
+        {
+            Dictionary<string, object> dictionary = jsonPluggableLibrary.DeserializeToDictionaryOfObject (jsonString);
+            List<object> result = new List<object> ();
+            result.Add (dictionary);
+            if (addChannel) {
+                result.Add (multiChannel);
+            }
+            return result;
+        }
+
         internal static void AddToSubscribeMessageList (object dictObject, ref List<SubscribeMessage> subscribeMessages, PNLogVerbosity pnLogVerbosity)
         {
             var dict = dictObject as IDictionary;      

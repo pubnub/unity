@@ -189,7 +189,7 @@ namespace PubNubAPI
         internal static Guid GenerateGuid ()
         {
             return Guid.NewGuid ();
-        }
+        }*/
 
         internal static bool CheckRequestTimeoutMessageInError<T>(CustomEventArgs<T> cea){
             if (cea.IsError && cea.Message.ToString().Contains ("The request timed out.")) {
@@ -197,7 +197,7 @@ namespace PubNubAPI
             } else {
                 return false;
             }
-        }*/
+        }
 
         internal static bool IsPresenceChannel (string channel)
         {

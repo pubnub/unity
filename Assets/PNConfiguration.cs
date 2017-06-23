@@ -41,7 +41,7 @@ namespace PubNubAPI
         public string AuthKey { get; set;}
         public bool Secure { get; set;}
 
-        private int subscribeTimeout;
+        private int subscribeTimeout = 310;
         public int SubscribeTimeout { 
             get {
                 return subscribeTimeout;
@@ -56,7 +56,7 @@ namespace PubNubAPI
             }
         }
 
-        private int nonSubscribeTimeout;
+        private int nonSubscribeTimeout = 15;
         public int NonSubscribeTimeout {
             get {
                 return nonSubscribeTimeout;

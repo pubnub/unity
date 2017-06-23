@@ -77,8 +77,9 @@ namespace PubNubAPI
 
         public List<object> DeserializeToListOfObject (string jsonString)
         {
+            
             #if (ENABLE_PUBNUB_LOGGING)
-            pnUnityBase.PNLog.WriteToLog (string.Format ("DeserializeToListOfObject: jsonString: {1}", jsonString), PNLoggingMethod.LevelInfo);
+            pnUnityBase.PNLog.WriteToLog (string.Format ("DeserializeToListOfObject: jsonString: {0}", jsonString), PNLoggingMethod.LevelInfo);
             #endif
         
             var output = JsonReader.Deserialize<object[]> (jsonString) as object[];
@@ -89,7 +90,7 @@ namespace PubNubAPI
         public object DeserializeToObject (string jsonString)
         {
             #if (ENABLE_PUBNUB_LOGGING)
-            pnUnityBase.PNLog.WriteToLog (string.Format ("DeserializeToObject: jsonString: {1}", jsonString), PNLoggingMethod.LevelInfo);
+            pnUnityBase.PNLog.WriteToLog (string.Format ("DeserializeToObject: jsonString: {0}", jsonString), PNLoggingMethod.LevelInfo);
             #endif
         
             var output = JsonReader.Deserialize<object> (jsonString) as object;
