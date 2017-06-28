@@ -211,15 +211,11 @@ namespace PubNubAPI
             url.Add (message);
 
             return BuildRestApiRequest<Uri> (url, ResponseType.Publish, uuid, ssl, origin, 0, authenticationKey, parameterBuilder.ToString ());
-        }
+        }*/
 
-        internal static Uri BuildDetailedHistoryRequest (string channel, long start, long end, 
-            int count, bool reverse, bool includeToken, string uuid, bool ssl, string origin, 
-            string authenticationKey, string subscribeKey)
+        internal static Uri BuildHistoryRequest (string channel, long start, long end, uint count, bool reverse, bool includeToken, string uuid, bool ssl, string origin, string authenticationKey, string subscribeKey, string pnSdkVersion)
         {
             StringBuilder parameterBuilder = new StringBuilder ();
-            if (count <= -1)
-                count = 100;
 
             parameterBuilder.AppendFormat ("?count={0}", count);
             if (includeToken) {
@@ -234,12 +230,12 @@ namespace PubNubAPI
             if (end != -1) {
                 parameterBuilder.AppendFormat ("&end={0}", end.ToString ().ToLower ());
             }
-            if (!string.IsNullOrEmpty (authenticationKey)) {
-                parameterBuilder.AppendFormat ("&auth={0}", Utility.EncodeUricomponent (authenticationKey, ResponseType.DetailedHistory, false, false));
-            }
+            /*if (!string.IsNullOrEmpty (authenticationKey)) {
+                parameterBuilder.AppendFormat ("&auth={0}", Utility.EncodeUricomponent (authenticationKey, PNOperationType.PNHistoryOperation, false, false));
+            }*/
 
-            parameterBuilder.AppendFormat ("&uuid={0}", Utility.EncodeUricomponent (uuid, ResponseType.DetailedHistory, false, false));
-            parameterBuilder.AppendFormat ("&pnsdk={0}", Utility.EncodeUricomponent (PubnubUnity.Version, ResponseType.DetailedHistory, false, true));
+            parameterBuilder.AppendFormat ("&uuid={0}", Utility.EncodeUricomponent (uuid, PNOperationType.PNHistoryOperation, false, false));
+            //parameterBuilder.AppendFormat ("&pnsdk={0}", Utility.EncodeUricomponent (pnSdkVersion, PNOperationType.PNHistoryOperation, false, true));
 
             List<string> url = new List<string> ();
 
@@ -250,10 +246,10 @@ namespace PubNubAPI
             url.Add ("channel");
             url.Add (channel);
 
-            return BuildRestApiRequest<Uri> (url, ResponseType.DetailedHistory, uuid, ssl, origin, 0, authenticationKey, parameterBuilder.ToString());
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNHistoryOperation, uuid, ssl, origin, 0, authenticationKey, parameterBuilder.ToString(), pnSdkVersion);
         }
 
-        internal static Uri BuildHereNowRequest (string channel, string channelGroups, bool showUUIDList, bool includeUserState, string uuid, 
+        /*internal static Uri BuildHereNowRequest (string channel, string channelGroups, bool showUUIDList, bool includeUserState, string uuid, 
             bool ssl, string origin, string authenticationKey, string subscribeKey)
         {
             int disableUUID = (showUUIDList) ? 0 : 1;
@@ -939,17 +935,19 @@ namespace PubNubAPI
                 url = AppendUUIDToURL(url, uuid, true);
                 url = AppendAuthKeyToURL(url, authenticationKey, type);
                 url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
-                break;
-            case ResponseType.DetailedHistory:
-            case ResponseType.GrantAccess:
+                break;*/
+            case PNOperationType.PNHistoryOperation:
+            /*case ResponseType.GrantAccess:
             case ResponseType.AuditAccess:
             case ResponseType.RevokeAccess:
             case ResponseType.ChannelGroupGrantAccess:
             case ResponseType.ChannelGroupAuditAccess:
-            case ResponseType.ChannelGroupRevokeAccess:
+            case ResponseType.ChannelGroupRevokeAccess:*/
 
                 url.Append (parameters);
-                break;*/
+                url = AppendAuthKeyToURL(url, authenticationKey, type);
+                url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
+                break;
             default:
                 url = AppendUUIDToURL(url, uuid, true);
                 url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);

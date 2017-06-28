@@ -54,6 +54,14 @@ namespace PubNubAPI
             return sequenceNumber;
         }
 
+        internal static bool IsDictionary(object o)
+        {
+            if(o == null) return false;
+            return o is IDictionary &&
+                o.GetType().IsGenericType &&
+                o.GetType().GetGenericTypeDefinition().IsAssignableFrom(typeof(Dictionary<,>));
+        }
+
         internal static long ValidateTimetoken(string timetoken, bool raiseError){
             if(!string.IsNullOrEmpty(timetoken)){
                 long r;

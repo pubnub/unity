@@ -4,6 +4,7 @@ using System.Net;
 using System.Linq;
 using System.Collections;
 using System.Text;
+using UnityEngine;
 
 namespace PubNubAPI
 {
@@ -13,7 +14,7 @@ namespace PubNubAPI
         private object syncRoot;
 
         public Counter(){
-            syncRoot = new Object();
+            syncRoot = new object();
             current = 0;
         }
 
@@ -199,7 +200,6 @@ namespace PubNubAPI
             #endif
         }
 
-
         internal static List<SubscribeMessage> CreateListOfSubscribeMessage (object message, PNLogVerbosity pnLogVerbosity)
         {
             List<SubscribeMessage> subscribeMessages = new List<SubscribeMessage> ();
@@ -234,6 +234,160 @@ namespace PubNubAPI
 
             return subscribeMessages;
         }
+
+        internal static void CreateHistoryResult(string cipherKey, object deSerializedResult, ref PNResult result, ref PNStatus pnStatus){
+            //[[{"message":{"text":"hey"},"timetoken":14985452911089049}],14985452911089049,14985452911089049] 
+            //[[{"text":"hey"}],14985452911089049,14985452911089049]
+            /*try{
+                PNHistoryResult pnHistoryResult = new PNHistoryResult();
+                var myObjectArray = deSerializedResult as object[];
+                if(myObjectArray != null){
+                    foreach (var it in myObjectArray){
+                        Debug.Log(it);
+                    }
+                    Dictionary<string, object>[] historyMessages = deSerializedResult as Dictionary<string, object>[];
+                    foreach(var historyMessage in historyMessages){
+                        if(cipherKey.Length > 0){
+                            PubnubCrypto aes = new PubnubCrypto (cipherKey);
+                            //Decrypt();
+                            aes.Decrypt();
+                        } 
+                        //non encrypted, 
+                        if(Utility.IsDictionary(historyMessage)){
+                            //user: dictionary
+                            //pn: message -> user, timetoken
+                            
+                        } else {
+                                //user: string, long, array
+                            
+                        }
+
+                    }
+
+                    if(myObjectArray.Length>=1){
+                        pnHistoryResult.StartTimetoken = Utility.ValidateTimetoken(myObjectArray[1].ToString(), true);
+                    }
+
+                    if(myObjectArray.Length>=2){
+                        pnHistoryResult.EndTimetoken = Utility.ValidateTimetoken(myObjectArray[2].ToString(), true);
+                    }
+                }
+            } catch (Exception ex) {
+                throw ex;
+            }*/
+            /*result = DecodeDecryptLoop (result, pubnubRequestState.ChannelEntities, cipherKey, jsonPluggableLibrary, errorLevel);
+            result.Add (multiChannel);*/
+        }
+
+        /*internal static void CreateWhereNowResult(object deSerializedResult, ref PNResult result, ref PNStatus pnStatus){
+            //TODO: handle {"message": "Not found: '/v2/presence/sub_key/demo/uuid'", "error": 1, "service": "Presence"}
+            //{"status": 200, "message": "OK", "payload": {"channels": ["channel1", "channel2"]}, "service": "Presence"}
+            PNWhereNowResult pnWhereNowResult = new PNWhereNowResult();
+            Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
+            if (dictionary!=null && dictionary.ContainsKey("error") && dictionary["error"].Equals(true)){
+                result = null;
+                pnStatus.Error = true;
+                //TODO create error data
+            } else if(dictionary!=null && dictionary.ContainsKey("payload")){
+                Dictionary<string, object> payload = dictionary["payload"] as Dictionary<string, object>;
+                string[] ch = payload["channels"] as string[];
+                List<string> channels = ch.ToList<string>();//new List<string> ();
+                /*foreach(KeyValuePair<string, object> key in dictionary["payload"] as Dictionary<string, object>){
+                    Debug.Log(key.Key + key.Value);
+                    result1.Add (key.Value as string);
+                }
+                foreach(string key in channels){
+                    Debug.Log(key);
+                }*/
+
+                //result1.Add (multiChannel);
+                //List<string> result1 = ((IEnumerable)deSerializedResult).Cast<string> ().ToList ();
+                /*  pnWhereNowResult.Channels = channels;
+                result = pnWhereNowResult;
+                pnStatus.Error = false;
+            } else{
+                result = null;
+                pnStatus.Error = true;
+            }
+        }*/
+        /*internal static void CreateTimeResult(object deSerializedResult, ref PNResult result, ref PNStatus pnStatus){
+            Int64[] c = deSerializedResult as Int64[];
+            if ((c != null) && (c.Length > 0)) {
+                PNTimeResult pnTimeResult = new PNTimeResult();
+                pnTimeResult.TimeToken = c [0];
+                result = pnTimeResult;
+                pnStatus.Error = false;
+            } else {
+                result = null;
+                pnStatus.Error = true;
+            }
+        }*/
+
+        internal static object DecodeMessage (PubnubCrypto aes, object element, IJsonLibrary jsonPluggableLibrary)
+        {
+            string decryptMessage = "";
+            try {
+                decryptMessage = aes.Decrypt (element.ToString ());
+            }
+            catch (Exception ex) {
+                decryptMessage = "**DECRYPT ERROR**";
+                throw ex;
+                //PubnubCallbacks.CallErrorCallback<object> (ex, channelEntities, PubnubErrorCode.None, PubnubErrorSeverity.Critical, errorLevel);
+            }
+            object decodeMessage = (decryptMessage == "**DECRYPT ERROR**") ? decryptMessage : jsonPluggableLibrary.DeserializeToObject (decryptMessage);
+            return decodeMessage;
+        }
+
+        /*internal static List<object> DecryptCipheredMessage (List<object> message, List<ChannelEntity> channelEntities, string cipherKey, IJsonPluggableLibrary jsonPluggableLibrary, PubnubErrorFilter.Level errorLevel)
+        {
+            List<object> returnMessage = new List<object> ();
+
+            PubnubCrypto aes = new PubnubCrypto (cipherKey);
+            var myObjectArray = (from item in message
+                select item as object).ToArray ();
+            IEnumerable enumerable = myObjectArray [0] as IEnumerable;
+
+            if (enumerable != null) {
+                List<object> receivedMsg = new List<object> ();
+                foreach (object element in enumerable) {
+                    receivedMsg.Add (DecodeMessage (aes, element, channelEntities, jsonPluggableLibrary, errorLevel));
+                }
+                returnMessage.Add (receivedMsg);
+            }
+            for (int index = 1; index < myObjectArray.Length; index++) {
+                returnMessage.Add (myObjectArray [index]);
+            }
+            return returnMessage;
+        }
+
+        internal static List<object> DecryptNonCipheredMessage (List<object> message)
+        {
+            List<object> returnMessage = new List<object> ();
+            var myObjectArray = (from item in message
+                select item as object).ToArray ();
+            IEnumerable enumerable = myObjectArray [0] as IEnumerable;
+            if (enumerable != null) {
+                List<object> receivedMessage = new List<object> ();
+                foreach (object element in enumerable) {
+                    receivedMessage.Add (element);
+                }
+                returnMessage.Add (receivedMessage);
+            }
+            for (int index = 1; index < myObjectArray.Length; index++) {
+                returnMessage.Add (myObjectArray [index]);
+            }
+            return returnMessage;
+        }
+
+        internal static List<object> DecodeDecryptLoop (List<object> message, List<ChannelEntity> channelEntities, string cipherKey, IJsonPluggableLibrary jsonPluggableLibrary, PubnubErrorFilter.Level errorLevel)
+        {
+            if (cipherKey.Length > 0) {
+                return DecryptCipheredMessage (message, channelEntities, cipherKey, jsonPluggableLibrary, errorLevel);
+            } else {
+                return DecryptNonCipheredMessage (message);
+            }
+        }  */  
+
         #endregion
     }
 }

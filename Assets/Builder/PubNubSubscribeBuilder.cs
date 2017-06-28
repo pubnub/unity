@@ -1,24 +1,19 @@
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace PubNubAPI
 {
-    public class PubNubBuilder<U>
+    public abstract class PubNubSubscribeBuilder<U>
     {
-        //private PNConfiguration PNConfig { get; set;}
-
-        /*public PubNubBuilder(PNConfiguration pnConfig){
-            PNConfig = pnConfig;    
-        }*/
         protected PubNubUnity PubNubInstance { get; set;}
-        protected PubNubBuilder(PubNubUnity pn){
+        protected PubNubSubscribeBuilder(PubNubUnity pn){
             PubNubInstance = pn;
         }
 
         protected RequestState<U> ReqState { get; set;}
 
-        public void Execute (PNOperationType pnOpType, PubNubBuilder<U> pnBuilder){
+        public void Execute (PNOperationType pnOpType, PubNubSubscribeBuilder<U> pnBuilder){
             //HandleSubscribe
             switch (pnOpType) {
             case PNOperationType.PNSubscribeOperation:
@@ -32,10 +27,5 @@ namespace PubNubAPI
                 break;
             }
         }
-
-        public void Async<T>(Action<T, PNStatus> callback, PNOperationType pnOpType, CurrentRequestType crt, PubNubBuilder<U> pnBuilder){
-            RequestQueue.Instance.Enqueue (callback, pnOpType, pnBuilder, this.PubNubInstance);
-        }
     }
 }
-

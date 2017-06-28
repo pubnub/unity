@@ -12,14 +12,5 @@ namespace PubNubAPI
         }
     }
 
-    public class PNWhereNowResult: PNResult
-    {
-        public List<String> Channels { get; set;}
-        public PNWhereNowResult ()
-        {
-
-        }
-    }
-
 }
 

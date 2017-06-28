@@ -62,6 +62,11 @@ namespace PubNubAPI
             return pnUnity.WhereNow();
         }
 
+        public HistoryBuilder History(){
+            Debug.Log ("HistoryBuilder");
+            return pnUnity.History();
+        }
+
         public void AddListener(Action<PNStatus> callback, Action<PNMessageResult> callback2, Action<PNPresenceEventResult> callback3)
         {
             pnUnity.AddListener(callback, callback2, callback3);

@@ -42,19 +42,19 @@ namespace PubNubExample
             pubnub.SusbcribeCallback += (sender, e) => { //; //+= (pnStatus, pnMessageResut, pnPresenceEventResult) => {
                 SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
 
-                Debug.Log ("SusbcribeCallback");
+                Debug.Log ("In Example, SusbcribeCallback");
                 if(mea.pnStatus != null){
                     //Debug.Log ("SusbcribeCallback in status" + String.Join(", ", mea.pnStatus.AffectedChannelGroups.ToArray()) + String.Join(", ", mea.pnStatus.AffectedChannels.ToArray()));
                 }
                 if(mea.pnmr != null){
-                    Debug.Log ("SusbcribeCallback in message" + mea.pnmr.Channel + mea.pnmr.Payload);
+                    Debug.Log ("In Example, SusbcribeCallback in message" + mea.pnmr.Channel + mea.pnmr.Payload);
                 }
                 if(mea.pnper != null){
-                    Debug.Log ("SusbcribeCallback in presence" + mea.pnper.Channel + mea.pnper.Occupancy + mea.pnper.Event);
+                    Debug.Log ("In Example, SusbcribeCallback in presence" + mea.pnper.Channel + mea.pnper.Occupancy + mea.pnper.Event);
                 }
                 pubnub.WhereNow ().Async ((result, status) => {
                     Debug.Log ("in WhereNow");
-                    Debug.Log (string.Format("DateTime {0}, Channels: {1}", DateTime.Now , string.Join(",",result.Channels.ToArray())));
+                    Debug.Log (string.Format("DateTime {0}, In Example, Channels: {1}", DateTime.Now , string.Join(",",result.Channels.ToArray())));
                     Debug.Log (status.Error);
 
                 });
@@ -77,9 +77,18 @@ namespace PubNubExample
             pubnub.Time ().Async ((result, status) => {
                 
                 if(status.Error){
-                    Debug.Log (string.Format("Time Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
+                    Debug.Log (string.Format("In Example, Time Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                 } else {
-                    Debug.Log (string.Format("DateTime {0}, result: {1}", DateTime.Now ,result.TimeToken));
+                    Debug.Log (string.Format("DateTime {0}, In Example, result: {1}", DateTime.Now ,result.TimeToken));
+                }
+            });
+
+            pubnub.History ().Channel("channel1").Start(14986550510296405).End(14985453001147606).IncludeTimetoken(true).Reverse(false).Async ((result, status) => {
+                
+                if(status.Error){
+                    Debug.Log (string.Format("In Example, History Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
+                } else {
+                    Debug.Log (string.Format("DateTime {0}, In Example, result: {1}", DateTime.Now ,result.EndTimetoken));
                 }
             });
             //pubnub.Time ().Async (new PNCallback<PNTimeResult>(){

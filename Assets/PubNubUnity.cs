@@ -97,6 +97,11 @@ namespace PubNubAPI
             Debug.Log ("WhereNowBuilder");
             return new WhereNowBuilder (this);
         }
+
+        public HistoryBuilder History(){
+            Debug.Log ("HistoryBuilder");
+            return new HistoryBuilder (this);
+        }
        /* #region "PubNub API Channel Methods"
 
         #region "Subscribe Methods"

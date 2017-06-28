@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace PubNubAPI
 {
-    public class SubscribeBuilder: PubNubBuilder<SubscribeBuilder>, IPubNubSubcribeBuilder<SubscribeBuilder>
+    public class SubscribeBuilder: PubNubSubscribeBuilder<SubscribeBuilder>, IPubNubSubcribeBuilder<SubscribeBuilder>
     {
         //private PubNubBuilder<SubscribeBuilder> pubNubBuilder;
         private bool Reconnect { get; set;}
@@ -41,7 +41,6 @@ namespace PubNubAPI
             //pubNubBuilder.SetChannelGroups(channelGroups);
             return this;
         }
-
         #endregion
     }
 }

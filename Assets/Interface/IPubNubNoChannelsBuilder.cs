@@ -2,9 +2,10 @@
 
 namespace PubNubAPI
 {
-    internal interface IPubNubNoChannelsBuilder<U, V>
+    internal interface IPubNubNonSubscribeBuilder<U, V>
     {
         void Async(Action<V, PNStatus> callback);
+
     }
 }
 
