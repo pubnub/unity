@@ -1,6 +1,7 @@
 using System;
-
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace PubNubAPI
@@ -102,47 +103,96 @@ namespace PubNubAPI
         }
 
         protected override void CreatePubNubResponse(object deSerializedResult){
-            //[[{"message":{"text":"hey"},"timetoken":14985452911089049}],14985452911089049,14985452911089049] 
-            //[[{"text":"hey"}],14985452911089049,14985452911089049]
+            PNHistoryResult pnHistoryResult = new PNHistoryResult();
+            pnHistoryResult.Messages = new List<PNHistoryItemResult>();
+
+            PNStatus pnStatus = new PNStatus();
             try{
-                PNHistoryResult pnHistoryResult = new PNHistoryResult();
-                var myObjectArray = deSerializedResult as object[];
-                if(myObjectArray != null){
-                    foreach (var it in myObjectArray){
-                        Debug.Log(it);
-                    }
-                    Dictionary<string, object>[] historyMessages = deSerializedResult as Dictionary<string, object>[];
-                    foreach(var historyMessage in historyMessages){
-                        if(this.PubNubInstance.PNConfig.CipherKey.Length > 0){
-                            PubnubCrypto aes = new PubnubCrypto (this.PubNubInstance.PNConfig.CipherKey);
-                            //Decrypt();
-                            //aes.Decrypt();
-                        } 
-                        //non encrypted, 
-                        if(Utility.IsDictionary(historyMessage)){
-                            //user: dictionary
-                            //pn: message -> user, timetoken
-                            
-                        } else {
-                                //user: string, long, array
-                            
-                        }
+                List<object> result = ((IEnumerable)deSerializedResult).Cast<object> ().ToList ();
+                if(result != null){
 
+                    var historyResponseArray = (from item in result
+                            select item as object).ToArray ();
+                    foreach(var h in historyResponseArray){
+                        Debug.Log(h.ToString());
                     }
 
-                    if(myObjectArray.Length>=1){
-                        pnHistoryResult.StartTimetoken = Utility.ValidateTimetoken(myObjectArray[1].ToString(), true);
+                    if(historyResponseArray.Length >= 1){
+                        //TODO add checks
+                        ExtractMessages(historyResponseArray, ref pnHistoryResult);
                     }
 
-                    if(myObjectArray.Length>=2){
-                        pnHistoryResult.EndTimetoken = Utility.ValidateTimetoken(myObjectArray[2].ToString(), true);
+                    if(historyResponseArray.Length > 1){
+                        pnHistoryResult.StartTimetoken = Utility.ValidateTimetoken(historyResponseArray[1].ToString(), true);
+                        Debug.Log(pnHistoryResult.StartTimetoken);
+                    }
+
+                    if(historyResponseArray.Length > 2){
+                        pnHistoryResult.EndTimetoken = Utility.ValidateTimetoken(historyResponseArray[2].ToString(), true);
+                        Debug.Log(pnHistoryResult.EndTimetoken);
                     }
                 }
             } catch (Exception ex) {
-                throw ex;
+                Debug.Log(ex.ToString());
+                //throw ex;
             }
-            /*result = DecodeDecryptLoop (result, pubnubRequestState.ChannelEntities, cipherKey, jsonPluggableLibrary, errorLevel);
-            result.Add (multiChannel);*/
+            Callback(pnHistoryResult, pnStatus);
+
+        }
+
+         private void ExtractMessageWithTimetokens( object element, string cipherKey, out PNHistoryItemResult pnHistoryItemResult){
+            //[[{"message":{"text":"hey"},"timetoken":14985452911089049}],14985452911089049,14985452911089049] 
+            //[[{"message":{"text":"hey"},"timetoken":14986549102032676},{"message":"E8VOcbfrYqLyHMtoVGv9UQ==","timetoken":14986619049105442},{"message":"E8VOcbfrYqLyHMtoVGv9UQ==","timetoken":14986619291068634}],14986549102032676,14986619291068634]
+            pnHistoryItemResult = new PNHistoryItemResult();
+            Dictionary<string, object> historyMessage = element as Dictionary<string, object>;
+            Debug.Log("historyMessage" + historyMessage.ToString());
+            object v;
+            historyMessage.TryGetValue("message", out v);
+            if(!string.IsNullOrEmpty(cipherKey) && (cipherKey.Length > 0)){
+                //TODO: handle exception
+                pnHistoryItemResult.Entry = Helpers.DecodeMessage(cipherKey, v, this.PubNubInstance.JsonLibrary);
+            } else {
+                pnHistoryItemResult.Entry = v;
+            }
+            Debug.Log(" v "+pnHistoryItemResult.Entry);
+
+            object t;
+            historyMessage.TryGetValue("timetoken", out t);
+            pnHistoryItemResult.Timetoken = Utility.ValidateTimetoken(t.ToString(), false);
+            Debug.Log(" t " + t.ToString());
+            
+        }
+
+        private void ExtractMessage( object element, string cipherKey, out PNHistoryItemResult pnHistoryItemResult){
+            //[[{"text":"hey"}],14985452911089049,14985452911089049]
+            //[[{"text":"hey"},"E8VOcbfrYqLyHMtoVGv9UQ==","E8VOcbfrYqLyHMtoVGv9UQ=="],14986549102032676,14986619291068634]
+            pnHistoryItemResult = new PNHistoryItemResult();
+            if(!string.IsNullOrEmpty(cipherKey) && (cipherKey.Length > 0)){
+                //TODO: handle exception
+                pnHistoryItemResult.Entry = Helpers.DecodeMessage(cipherKey, element, this.PubNubInstance.JsonLibrary);
+            } else {
+                pnHistoryItemResult.Entry = element;
+            }
+            Debug.Log(" v "+pnHistoryItemResult.Entry);
+        }
+
+        private void ExtractMessages(object[] historyResponseArray, ref PNHistoryResult pnHistoryResult){
+            IEnumerable enumerable = historyResponseArray [0] as IEnumerable;
+            if (enumerable != null) {
+                Debug.Log("enumerable" + enumerable.ToString());
+                foreach (object elem in enumerable) {
+                    var element = elem;
+                    Debug.Log("element:" + element.ToString());
+                    PNHistoryItemResult pnHistoryItemResult;
+
+                    if(this.IncludeTimetokenInHistory){
+                        ExtractMessageWithTimetokens(element, this.PubNubInstance.PNConfig.CipherKey, out pnHistoryItemResult);
+                    } else {
+                        ExtractMessage(element, this.PubNubInstance.PNConfig.CipherKey, out pnHistoryItemResult);
+                    }
+                    pnHistoryResult.Messages.Add(pnHistoryItemResult);
+                }
+            }
         }
         #endregion
     }

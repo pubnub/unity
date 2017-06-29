@@ -53,7 +53,7 @@ namespace PubNubAPI
                     object operationParams = qs.OperationParams;
                     switch(operationType){
                         case PNOperationType.PNTimeOperation:
-                            Action<PNTimeResult, PNStatus> timeCallback = qs.Callback as Action<PNTimeResult, PNStatus>;
+                            //Action<PNTimeResult, PNStatus> timeCallback = qs.Callback as Action<PNTimeResult, PNStatus>;
 
                             //NonSubscribeWorker<PNTimeResult> timeNonSubscribeWorker = new NonSubscribeWorker<PNTimeResult> (this);
                             //timeNonSubscribeWorker.RunTimeRequest (null, timeCallback);

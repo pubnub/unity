@@ -21,7 +21,7 @@ namespace PubNubAPI
         internal PNLoggingMethod PNLog {get; set;}
         public PNConfiguration PNConfig { get; set;}
         internal QueueManager QManager { get; set;}
-        internal IJsonLibrary jsonLibrary = null;
+        private IJsonLibrary jsonLibrary = null;
         public IJsonLibrary JsonLibrary {
             get {
                 if (jsonLibrary == null)

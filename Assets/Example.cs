@@ -15,6 +15,7 @@ namespace PubNubExample
             pnConfiguration.SubscribeKey = "demo";
             pnConfiguration.PublishKey = "demo";
             pnConfiguration.Secure = true;
+            pnConfiguration.CipherKey = "enigma";
             pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
 
             //TODO: remove
@@ -83,12 +84,12 @@ namespace PubNubExample
                 }
             });
 
-            pubnub.History ().Channel("channel1").Start(14986550510296405).End(14985453001147606).IncludeTimetoken(true).Reverse(false).Async ((result, status) => {
+            pubnub.History ().Channel("channel1").Start(14987439725282000).End(14985453001147606).IncludeTimetoken(false).Reverse(false).Async ((result, status) => {
                 
                 if(status.Error){
                     Debug.Log (string.Format("In Example, History Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                 } else {
-                    Debug.Log (string.Format("DateTime {0}, In Example, result: {1}", DateTime.Now ,result.EndTimetoken));
+                    Debug.Log (string.Format("DateTime {0}, In Example, result: {1}", DateTime.Now ,result.EndTimetoken, result.Messages[0].ToString()));
                 }
             });
             //pubnub.Time ().Async (new PNCallback<PNTimeResult>(){
