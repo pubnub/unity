@@ -59,6 +59,12 @@ namespace PubNubExample
                     Debug.Log (status.Error);
 
                 });
+                pubnub.Publish().Channel("channel1").Message("test message").Async((result, status) => {
+                    Debug.Log ("in Publish");
+                    Debug.Log (string.Format("DateTime {0}, In Publish Example, Timetoken: {1}", DateTime.Now , result.Timetoken));
+                    Debug.Log (status.Error);
+
+                });
             };
 
             Debug.Log ("PubNub");
@@ -84,7 +90,8 @@ namespace PubNubExample
                 }
             });
 
-            pubnub.History ().Channel("channel1").Start(14987439725282000).End(14985453001147606).IncludeTimetoken(false).Reverse(false).Async ((result, status) => {
+            //pubnub.History ().Channel("channel1").Start(14987439725282000).End(14985453001147606).IncludeTimetoken(false).Reverse(false).Async ((result, status) => {
+            pubnub.History ().Channel("channel1").Async ((result, status) => {
                 
                 if(status.Error){
                     Debug.Log (string.Format("In Example, History Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));

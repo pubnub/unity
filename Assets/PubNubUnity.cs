@@ -6,7 +6,7 @@ namespace PubNubAPI
 {
     public class PubNubUnity: PubNubUnityBase
     {
-
+        private Counter publishMessageCounter;
         //TODO INotifyPropertyChanged
         public string Test { get; set;}
         public event EventHandler<EventArgs> SusbcribeCallback; 
@@ -17,7 +17,7 @@ namespace PubNubAPI
         }
 
         public void CleanUp (){
-            //publishMessageCounter.Reset ();
+            publishMessageCounter.Reset ();
 
             #if (ENABLE_PUBNUB_LOGGING)
             base.PNLog.WriteToLog ("CleanUp: Destructing coroutine", PNLoggingMethod.LevelInfo);
@@ -52,7 +52,8 @@ namespace PubNubAPI
         //public GameObject GameObjectRef { get; set;}
         public PubNubUnity (PNConfiguration pnConfiguration, GameObject gameObjectRef, IJsonLibrary jsonLibrary): base(pnConfiguration, gameObjectRef, jsonLibrary)
         {
-            Test = "saddsads";
+            publishMessageCounter = new Counter ();
+
             base.PNLog.WriteToLog (string.Format("Init with UUID {0}", base.PNConfig.UUID), PNLoggingMethod.LevelInfo);
             SubscriptionInstance = new Subscription (this);
             SubWorker = new SubscriptionWorker<SubscribeBuilder>(this);
@@ -102,6 +103,12 @@ namespace PubNubAPI
             Debug.Log ("HistoryBuilder");
             return new HistoryBuilder (this);
         }
+
+        public PublishBuilder Publish(){
+            Debug.Log ("PublishBuilder");
+            return new PublishBuilder (this, publishMessageCounter.NextValue());
+        }
+
        /* #region "PubNub API Channel Methods"
 
         #region "Subscribe Methods"

@@ -6,58 +6,59 @@ using UnityEngine;
 
 namespace PubNubAPI
 {
-    public class HistoryBuilder: PubNubNonSubBuilder<HistoryBuilder>, IPubNubNonSubscribeBuilder<HistoryBuilder, PNHistoryResult>
+    public class HistoryRequestBuilder: PubNubNonSubBuilder<HistoryRequestBuilder, PNHistoryResult>, IPubNubNonSubscribeBuilder<HistoryRequestBuilder, PNHistoryResult>
     {
-        public string HistoryChannel { get; private set;}
-        public long StartTime { get; private set;}
-        public long EndTime { get; private set;}
-        private ushort count = 100;
+        private string HistoryChannel { get; set;}
+        private long StartTime { get; set;}
+        private long EndTime { get; set;}
+        
         private const ushort MaxCount = 100;
-        public ushort HistoryCount { 
+        private ushort count = MaxCount;
+        private ushort HistoryCount { 
             get {
                 return count;
             } 
-            private set {
-                if(value > 100 || value <= 0){ 
-                    count = 100; 
+            set {
+                if(value > MaxCount || value <= 0){ 
+                    count = MaxCount; 
                 } else {
                     count = value;
                 }
             }
         }
-        private Action<PNHistoryResult, PNStatus> Callback;
-        public bool ReverseHistory { get; private set;}
-        public bool IncludeTimetokenInHistory { get; private set;}
-        public HistoryBuilder(PubNubUnity pn): base(pn){
+        
+        private bool ReverseHistory { get; set;}
+        private bool IncludeTimetokenInHistory { get; set;}
+        public HistoryRequestBuilder(PubNubUnity pn): base(pn){
             Debug.Log ("HistoryBuilder Construct");
         }
 
-        public HistoryBuilder IncludeTimetoken(bool includeTimetoken){
+        public HistoryRequestBuilder IncludeTimetoken(bool includeTimetoken){
             IncludeTimetokenInHistory = includeTimetoken;
             return this;
         }
 
-        public HistoryBuilder Reverse(bool reverse){
+        public HistoryRequestBuilder Reverse(bool reverse){
             ReverseHistory = reverse;
             return this;
         }
 
-        public HistoryBuilder Start(long start){
+        public HistoryRequestBuilder Start(long start){
             StartTime = start;
             return this;
         }
 
-        public HistoryBuilder End(long end){
+        public HistoryRequestBuilder End(long end){
             EndTime = end;
             return this;
         }
 
-        public HistoryBuilder Channel(string channel){
+        public HistoryRequestBuilder Channel(string channel){
             HistoryChannel = channel;
             return this;
         }
 
-        public HistoryBuilder Count(ushort count){
+        public HistoryRequestBuilder Count(ushort count){
             HistoryCount = count;
             return this;
         }
@@ -67,9 +68,9 @@ namespace PubNubAPI
         public void Async(Action<PNHistoryResult, PNStatus> callback)
         {
             //TODO: Add history channel check
-            Callback = callback;
+            base.Callback = callback;
             Debug.Log ("PNHistoryBuilder Async");
-            base.Async<PNHistoryResult>(callback, PNOperationType.PNHistoryOperation, CurrentRequestType.NonSubscribe, this);
+            base.Async(callback, PNOperationType.PNHistoryOperation, CurrentRequestType.NonSubscribe, this);
         }
 
          protected override void RunWebRequest(QueueManager qm){
@@ -82,6 +83,7 @@ namespace PubNubAPI
             Debug.Log ("HistoryBuilder Channel: " + this.EndTime);
             Debug.Log ("HistoryBuilder Channel: " + this.HistoryCount);
 
+            //TODO: start=0&end=0
 
             Uri request = BuildRequests.BuildHistoryRequest(
                 this.HistoryChannel,
@@ -98,7 +100,7 @@ namespace PubNubAPI
                 this.PubNubInstance.Version
             );
             this.PubNubInstance.PNLog.WriteToLog(string.Format("RunHistoryRequest {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
-            base.RunWebRequest<PNHistoryResult>(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
+            base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
 
         }
 

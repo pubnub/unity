@@ -3,10 +3,10 @@ using System;
 
 namespace PubNubAPI
 {
-    public class NonSubscribeWorker<T, U>: IDisposable
+    public class NonSubscribeWorker<U, V>: IDisposable
     {
         private QueueManager queueManager;
-        private PubNubNonSubBuilder<U> PNBuilder;
+        private PubNubNonSubBuilder<U, V> PNBuilder;
         public static int InstanceCount;
         private static object syncRoot = new System.Object();
         #region IDisposable implementation
@@ -35,14 +35,14 @@ namespace PubNubAPI
             
         
 
-        public void Queue(PNConfiguration pnConfig, Action<T, PNStatus> callback){
+        public void Queue(PNConfiguration pnConfig, Action<V, PNStatus> callback){
             
 
         }
 
-        public void RunWebRequest(string url, RequestState<T> requestState, int timeout, int pause, PubNubNonSubBuilder<U> pnBuilder){
+        public void RunWebRequest(string url, RequestState<V> requestState, int timeout, int pause, PubNubNonSubBuilder<U, V> pnBuilder){
             PNBuilder = pnBuilder;
-            webRequest.Run<T>(url, requestState, this.queueManager.PubNubInstance.PNConfig.NonSubscribeTimeout, 0); 
+            webRequest.Run<V>(url, requestState, this.queueManager.PubNubInstance.PNConfig.NonSubscribeTimeout, 0); 
         }
             
         /*public void RunTimeRequest(PNConfiguration pnConfig, Action<T, PNStatus> callback){
@@ -91,17 +91,8 @@ namespace PubNubAPI
             webRequest.Run<T>(request.OriginalString, requestState, this.queueManager.PubNubInstance.PNConfig.NonSubscribeTimeout, 0); 
         }*/
 
-        public static V ConvertValue<V,W>(W value) where W : IConvertible
-        {
-            return (V)Convert.ChangeType(value, typeof(V));
-        }
 
-        public static V ConvertValue<V>(string value)
-        {
-            return (V)Convert.ChangeType(value, typeof(V));
-        }
-
-        private void NonSubscribeHandler (CustomEventArgs<T> cea){
+        private void NonSubscribeHandler (CustomEventArgs<V> cea){
             if (cea.IsTimeout || Utility.CheckRequestTimeoutMessageInError (cea)) {
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.queueManager.PubNubInstance.PNLog.WriteToLog (string.Format ("DateTime {0}, NonSubscribeHandler: NonSub timeout={1}", DateTime.Now.ToString (), cea.Message.ToString ()), PNLoggingMethod.LevelInfo);
@@ -123,7 +114,7 @@ namespace PubNubAPI
             }
         }
 
-        public void ProcessNonSubscribeResult (RequestState<T> pubnubRequestState, string jsonString)
+        public void ProcessNonSubscribeResult (RequestState<V> pubnubRequestState, string jsonString)
         {
             try {
                 
@@ -153,7 +144,7 @@ namespace PubNubAPI
 
         private void WebRequestCompleteHandler (object sender, EventArgs ea)
         {
-            CustomEventArgs<T> cea = ea as CustomEventArgs<T>;
+            CustomEventArgs<V> cea = ea as CustomEventArgs<V>;
             try {
                 if (cea != null) {
                     if (cea.PubnubRequestState != null) {

@@ -65,6 +65,18 @@ namespace PubNubAPI
             return string.Format ("channel(s) = {0} and channelGroups(s) = {1}", sbCh.ToString(), sbChGrp.ToString());
         }
 
+        internal static string JsonEncodePublishMsg (object originalMessage, string cipherKey, IJsonLibrary jsonPluggableLibrary)
+        {
+            string message = jsonPluggableLibrary.SerializeToJsonString (originalMessage);
+
+            if (cipherKey.Length > 0) {
+                PubnubCrypto aes = new PubnubCrypto (cipherKey);
+                string encryptMessage = aes.Encrypt (message);
+                message = jsonPluggableLibrary.SerializeToJsonString (encryptMessage);
+            }
+
+            return message;
+        }
         internal static string GetNamesFromChannelEntities (List<ChannelEntity> channelEntities, bool isChannelGroup){
 
             StringBuilder sb = new StringBuilder ();
@@ -413,6 +425,16 @@ namespace PubNubAPI
                 }
             }
             throw new ArgumentException(" ### -> public static KeyValuePair<object , object > CastFrom(Object obj) : Error : obj argument must be KeyValuePair<,>");
+        }*/
+
+        /*public static T ConvertValue<T,W>(W value) where W : IConvertible
+        {
+            return (T)Convert.ChangeType(value, typeof(T));
+        }
+
+        public static T ConvertValue<T>(string value)
+        {
+            return (T)Convert.ChangeType(value, typeof(T));
         }*/
         #endregion
     }

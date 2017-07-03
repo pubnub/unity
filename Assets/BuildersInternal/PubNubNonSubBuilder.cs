@@ -4,13 +4,9 @@ using UnityEngine;
 
 namespace PubNubAPI
 {
-    public abstract class PubNubNonSubBuilder<U>
+    public abstract class PubNubNonSubBuilder<U, V>
     {
-        //private PNConfiguration PNConfig { get; set;}
-
-        /*public PubNubBuilder(PNConfiguration pnConfig){
-            PNConfig = pnConfig;    
-        }*/
+        protected Action<V, PNStatus> Callback;
 
         protected delegate void RunRequestDelegate(QueueManager qm);
         protected event RunRequestDelegate RunRequest;
@@ -29,11 +25,11 @@ namespace PubNubAPI
             };
 
         }
-        protected internal void RaiseRunRequest(QueueManager qm){
+        internal void RaiseRunRequest(QueueManager qm){
             this.RunRequest(qm);
         }
-        protected internal void RaiseCreateResponse(object CreateResponse){
-            this.CreateResponse(CreateResponse);
+        internal void RaiseCreateResponse(object createResponse){
+            this.CreateResponse(createResponse);
         }
         protected RequestState<U> ReqState { get; set;}
 
@@ -41,7 +37,7 @@ namespace PubNubAPI
 
         protected abstract void RunWebRequest(QueueManager qm);
 
-        public void Async<T>(Action<T, PNStatus> callback, PNOperationType pnOpType, CurrentRequestType crt, PubNubNonSubBuilder<U> pnBuilder){
+        public void Async(Action<V, PNStatus> callback, PNOperationType pnOpType, CurrentRequestType crt, PubNubNonSubBuilder<U, V> pnBuilder){
             RequestQueue.Instance.Enqueue (callback, pnOpType, pnBuilder, this.PubNubInstance);
         }
 
@@ -49,8 +45,8 @@ namespace PubNubAPI
 
         }
 
-        protected void RunWebRequest<T>(QueueManager qm, Uri request, RequestState<T> requestState, int timeout, int pause, PubNubNonSubBuilder<U> pnBuilder){
-            NonSubscribeWorker<T, U> nonSubscribeWorker = new NonSubscribeWorker<T, U> (qm);
+        protected void RunWebRequest(QueueManager qm, Uri request, RequestState<V> requestState, int timeout, int pause, PubNubNonSubBuilder<U, V> pnBuilder){
+            NonSubscribeWorker<U, V> nonSubscribeWorker = new NonSubscribeWorker<U, V> (qm);
             nonSubscribeWorker.RunWebRequest(request.OriginalString, requestState, timeout, 0, pnBuilder); 
         }
     }

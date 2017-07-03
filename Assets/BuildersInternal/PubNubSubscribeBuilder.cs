@@ -18,12 +18,12 @@ namespace PubNubAPI
             switch (pnOpType) {
             case PNOperationType.PNSubscribeOperation:
             case PNOperationType.PNPresenceOperation:
-                Debug.Log ("pn" + this.PubNubInstance.Test);
+                //Debug.Log ("pn" + this.PubNubInstance.Test);
                 RequestState<SubscribeBuilder> reqStateSubscribeBuilder = ReqState as RequestState<SubscribeBuilder>;
                 this.PubNubInstance.SubWorker.Add (pnOpType, pnBuilder, reqStateSubscribeBuilder, this.PubNubInstance);
                 break;
             default:
-                Debug.Log ("pn" + this.PubNubInstance.Test);
+                //Debug.Log ("pn" + this.PubNubInstance.Test);
                 break;
             }
         }

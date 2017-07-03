@@ -42,48 +42,68 @@ namespace PubNubAPI
         }
 
         void Update(){
-            //Debug.Log(RunningRequests.ToString() + NoRunningRequests);
             if(PubNubInstance != null){
-                //Debug.Log(PubNubInstance.Test);
                 if ((RequestQueue.Instance.HasItems) && (NoRunningRequests)) {
                     UpdateRunningRequests(false);
                     QueueStorage qs =  RequestQueue.Instance.Dequeue ();
                     PNOperationType operationType = qs.OperationType;
-                    //OperationParams operationParams = qs.OperationParams;
                     object operationParams = qs.OperationParams;
                     switch(operationType){
                         case PNOperationType.PNTimeOperation:
-                            //Action<PNTimeResult, PNStatus> timeCallback = qs.Callback as Action<PNTimeResult, PNStatus>;
-
-                            //NonSubscribeWorker<PNTimeResult> timeNonSubscribeWorker = new NonSubscribeWorker<PNTimeResult> (this);
-                            //timeNonSubscribeWorker.RunTimeRequest (null, timeCallback);
-                            TimeBuilder timebuilder  = ((TimeBuilder)operationParams);
+                            TimeRequestBuilder timebuilder  = operationParams as TimeRequestBuilder;//((TimeBuilder)operationParams);
                             timebuilder.RaiseRunRequest(this);
                             break;
                         case PNOperationType.PNWhereNowOperation:
-                            //Action<PNWhereNowResult, PNStatus> whereNowCallback = qs.Callback as Action<PNWhereNowResult, PNStatus>;
-                            WhereNowBuilder whereNowBuilder  = ((WhereNowBuilder)operationParams);
+                            WhereNowRequestBuilder whereNowBuilder  = operationParams as WhereNowRequestBuilder;//((WhereNowBuilder)operationParams);
                             whereNowBuilder.RaiseRunRequest(this);
 
-                            //NonSubscribeWorker<PNWhereNowResult> whereNowNonSubscribeWorker = new NonSubscribeWorker<PNWhereNowResult> (this);
-                            //whereNowNonSubscribeWorker.RunWhereNowRequest (null, whereNowCallback, (WhereNowOperationParams)operationParams);
-
-                            //whereNowNonSubscribeWorker.RunWhereNowRequest (null, whereNowCallback, (WhereNowBuilder)operationParams);
                             break;
                         case PNOperationType.PNHistoryOperation:
-                            HistoryBuilder historyBuilder  = ((HistoryBuilder)operationParams);
+                            HistoryRequestBuilder historyBuilder  = operationParams as HistoryRequestBuilder;//((HistoryBuilder)operationParams);
                             historyBuilder.RaiseRunRequest(this);
+                            break;
+                        case PNOperationType.PNFireOperation:
+                            break;
+                        case PNOperationType.PNPublishOperation:
+                            PublishRequestBuilder publishBuilder  = operationParams as PublishRequestBuilder;//((HistoryBuilder)operationParams);
+                            publishBuilder.RaiseRunRequest(this);
 
-                            //Action<PNHistoryResult, PNStatus> historyCallback = qs.Callback as Action<PNHistoryResult, PNStatus>;
-
-                            //NonSubscribeWorker<PNHistoryResult> historyNonSubscribeWorker = new NonSubscribeWorker<PNHistoryResult> (this);
-
-                            //historyNonSubscribeWorker.RunHistoryRequest (null, historyCallback, (HistoryBuilder)operationParams);
+                            break;
+                        case PNOperationType.PNHereNowOperation:
+                        //Herenow,GlobalHerenow
+                            break;
+                        case PNOperationType.PNLeaveOperation:
+                            break;
+                            
+                        case PNOperationType.PNUnsubscribeOperation:
+                            break;
+                        case PNOperationType.PNPresenceUnsubscribeOperation:
+                            break;
+                        case PNOperationType.PNSetStateOperation:
+                            break;
+                        case PNOperationType.PNGetStateOperation:
+                            break;
+                        case PNOperationType.PNRemoveAllPushNotificationsOperation:
+                            break;
+                        case PNOperationType.PNAddPushNotificationsOnChannelsOperation:
+                            break;
+                        case PNOperationType.PNPushNotificationEnabledChannelsOperation:
+                            break;
+                        case PNOperationType.PNRemovePushNotificationsFromChannelsOperation:
+                            break;
+                        case PNOperationType.PNAddChannelsToGroupOperation:
+                            break;
+                        case PNOperationType.PNChannelGroupsOperation:
+                            break;
+                        case PNOperationType.PNChannelsForGroupOperation:
+                            break;
+                        case PNOperationType.PNFetchMessagesOperation:
+                            break;
+                        case PNOperationType.PNRemoveChannelsFromGroupOperation:
+                            break;
+                        case PNOperationType.PNRemoveGroupOperation:
                             break;
                     }
-                        
-                    //NonSubscribeWorker<T> nsw = new NonSubscribeWorker<T> ();
-                    //nsw.RunTimeRequest (PNConfig, callback);
                 }
             } else {
                 Debug.Log("PN instance null");

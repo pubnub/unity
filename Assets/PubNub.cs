@@ -15,7 +15,7 @@ namespace PubNubAPI
         }
 
         public event EventHandler<EventArgs> SusbcribeCallback; 
-        public void RaiseEvent(EventArgs ea){
+        private void RaiseEvent(EventArgs ea){
             if (SusbcribeCallback != null) {
                 SusbcribeCallback.Raise (typeof(PubNub), ea);
             }
@@ -65,6 +65,11 @@ namespace PubNubAPI
         public HistoryBuilder History(){
             Debug.Log ("HistoryBuilder");
             return pnUnity.History();
+        }
+
+        public PublishBuilder Publish(){
+            Debug.Log ("PubBuilder");
+            return pnUnity.Publish();
         }
 
         public void AddListener(Action<PNStatus> callback, Action<PNMessageResult> callback2, Action<PNPresenceEventResult> callback3)

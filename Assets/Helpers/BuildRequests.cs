@@ -162,13 +162,9 @@ namespace PubNubAPI
             url.Add("remove");
 
             return BuildRestApiRequest<Uri>(url, ResponseType.PushUnregister, uuid, ssl, origin, 0, authenticationKey, parameterBuilder.ToString());
-        }
+        }*/
 
-        internal static Uri BuildPublishRequest (string channel, string message, bool storeInHistory, string uuid, 
-            bool ssl, string origin, string authenticationKey, 
-            string publishKey, string subscribeKey, string cipherKey, string secretKey, 
-            string metadata, uint messageCounter, int ttl
-        )
+        internal static Uri BuildPublishRequest (string channel, string message, bool storeInHistory, string metadata, uint messageCounter, int ttl, string uuid, bool ssl, string origin, string authenticationKey, string publishKey, string subscribeKey, string cipherKey, string secretKey, string pnSdkVersion)
         {
             StringBuilder parameterBuilder = new StringBuilder ();
             parameterBuilder.AppendFormat ("&seqn={0}", messageCounter.ToString ());
@@ -178,12 +174,12 @@ namespace PubNubAPI
             }
 
             if (!string.IsNullOrEmpty (metadata) || metadata.Equals("\"\"")) {
-                parameterBuilder.AppendFormat ("&meta={0}", Utility.EncodeUricomponent (metadata, ResponseType.Publish, false, false));
+                parameterBuilder.AppendFormat ("&meta={0}", Utility.EncodeUricomponent (metadata, PNOperationType.PNPublishOperation, false, false));
             }
 
             // Generate String to Sign
             string signature = "0";
-            if (secretKey.Length > 0) {
+            if (!string.IsNullOrEmpty(secretKey) && (secretKey.Length > 0)) {
                 StringBuilder stringToSign = new StringBuilder ();
                 stringToSign
                     .Append (publishKey)
@@ -210,8 +206,8 @@ namespace PubNubAPI
             url.Add ("0");
             url.Add (message);
 
-            return BuildRestApiRequest<Uri> (url, ResponseType.Publish, uuid, ssl, origin, 0, authenticationKey, parameterBuilder.ToString ());
-        }*/
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNPublishOperation, uuid, ssl, origin, 0, authenticationKey, parameterBuilder.ToString (), pnSdkVersion);
+        }
 
         internal static Uri BuildHistoryRequest (string channel, long start, long end, uint count, bool reverse, bool includeToken, string uuid, bool ssl, string origin, string authenticationKey, string subscribeKey, string pnSdkVersion)
         {
@@ -907,9 +903,9 @@ namespace PubNubAPI
                 url = AppendUUIDToURL(url, uuid, true);
                 url = AppendAuthKeyToURL(url, authenticationKey, type);
                 url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
-                break;
+                break;*/
 
-            case ResponseType.Publish:
+            case PNOperationType.PNPublishOperation:
 
                 url = AppendUUIDToURL(url, uuid, true);
                 url.Append (parameters);
@@ -917,7 +913,7 @@ namespace PubNubAPI
                 url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
 
                 break;
-            case ResponseType.PushGet:
+            /*case ResponseType.PushGet:
             case ResponseType.PushRegister:
             case ResponseType.PushRemove:
             case ResponseType.PushUnregister:
