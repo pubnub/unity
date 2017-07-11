@@ -99,6 +99,11 @@ namespace PubNubAPI
             return new WhereNowBuilder (this);
         }
 
+        public HereNowBuilder HereNow(){
+            Debug.Log ("HereNowBuilder");
+            return new HereNowBuilder (this);
+        }
+
         public HistoryBuilder History(){
             Debug.Log ("HistoryBuilder");
             return new HistoryBuilder (this);

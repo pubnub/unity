@@ -54,23 +54,24 @@ namespace PubNubAPI
                             timebuilder.RaiseRunRequest(this);
                             break;
                         case PNOperationType.PNWhereNowOperation:
-                            WhereNowRequestBuilder whereNowBuilder  = operationParams as WhereNowRequestBuilder;//((WhereNowBuilder)operationParams);
+                            WhereNowRequestBuilder whereNowBuilder  = operationParams as WhereNowRequestBuilder;
                             whereNowBuilder.RaiseRunRequest(this);
 
                             break;
                         case PNOperationType.PNHistoryOperation:
-                            HistoryRequestBuilder historyBuilder  = operationParams as HistoryRequestBuilder;//((HistoryBuilder)operationParams);
+                            HistoryRequestBuilder historyBuilder  = operationParams as HistoryRequestBuilder;
                             historyBuilder.RaiseRunRequest(this);
                             break;
                         case PNOperationType.PNFireOperation:
                             break;
                         case PNOperationType.PNPublishOperation:
-                            PublishRequestBuilder publishBuilder  = operationParams as PublishRequestBuilder;//((HistoryBuilder)operationParams);
+                            PublishRequestBuilder publishBuilder  = operationParams as PublishRequestBuilder;
                             publishBuilder.RaiseRunRequest(this);
 
                             break;
                         case PNOperationType.PNHereNowOperation:
-                        //Herenow,GlobalHerenow
+                            HereNowRequestBuilder hereNowBuilder  = operationParams as HereNowRequestBuilder;
+                            hereNowBuilder.RaiseRunRequest(this);
                             break;
                         case PNOperationType.PNLeaveOperation:
                             break;
@@ -80,6 +81,7 @@ namespace PubNubAPI
                         case PNOperationType.PNPresenceUnsubscribeOperation:
                             break;
                         case PNOperationType.PNSetStateOperation:
+                            
                             break;
                         case PNOperationType.PNGetStateOperation:
                             break;

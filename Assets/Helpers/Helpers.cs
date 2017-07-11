@@ -118,6 +118,7 @@ namespace PubNubAPI
             Dictionary<string, object> timeTokenData = (Dictionary<string, object>)timeTokenDataObject;
             string log;
             long timetoken = Utility.CheckKeyAndParseLong(timeTokenData, whichTT, "t", out log);
+            //TODO use trygetvalue
             TimetokenMetadata timetokenMetadata = new TimetokenMetadata (timetoken, (timeTokenData.ContainsKey ("r")) ? timeTokenData["r"].ToString(): "");
 
             #if (ENABLE_PUBNUB_LOGGING)

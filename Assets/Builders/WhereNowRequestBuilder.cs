@@ -53,36 +53,53 @@ namespace PubNubAPI
         }
 
         protected override void CreatePubNubResponse(object deSerializedResult){
+            //{"status": 200, "message": "OK", "payload": {"channels": ["channel2", "channel1"]}, "service": "Presence"}
+            //TODO read other values.
+            
             PNWhereNowResult pnWhereNowResult = new PNWhereNowResult();
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
             PNStatus pnStatus = new PNStatus();
 
-            if (dictionary!=null && dictionary.ContainsKey("error") && dictionary["error"].Equals(true)){
-                pnWhereNowResult = null;
-                pnStatus.Error = true;
-                //TODO create error data
-            } else if(dictionary!=null && dictionary.ContainsKey("payload")){
-                Dictionary<string, object> payload = dictionary["payload"] as Dictionary<string, object>;
-                //TODO check channels null
-                if((payload!=null) && payload.ContainsKey("channels")){
-
-                    string[] ch = payload["channels"] as string[];
-                    List<string> channels = ch.ToList<string>();//new List<string> ();
-                    /*foreach(KeyValuePair<string, object> key in dictionary["payload"] as Dictionary<string, object>){
-                        Debug.Log(key.Key + key.Value);
-                        result1.Add (key.Value as string);
-                    }
-                    foreach(string key in channels){
-                        Debug.Log(key);
-                    }*/
-
-                    //result1.Add (multiChannel);
-                    //List<string> result1 = ((IEnumerable)deSerializedResult).Cast<string> ().ToList ();
-                    pnWhereNowResult.Channels = channels;
-                    pnStatus.Error = false;
-                } else {
+            if (dictionary!=null){
+                object objError, objPayload;
+                if (dictionary.TryGetValue("error", out objError) && (((bool)objError).Equals(true))){
+                    pnWhereNowResult = null;
                     pnStatus.Error = true;
+                    //TODO create error data
+                } else if (dictionary.TryGetValue("payload", out objPayload)){
+                    Dictionary<string, object> payload = objPayload as Dictionary<string, object>;
+                    
+                    if(payload!=null){ 
+                        object objChannels;
+                        payload.TryGetValue("channels", out objChannels);
+                        if(objChannels != null){
+                            string[] ch = objChannels as string[];
+                            //TODO check channels null
+                            if(ch != null){
+                                List<string> channels = ch.ToList<string>();//new List<string> ();
+                                /*foreach(KeyValuePair<string, object> key in dictionary["payload"] as Dictionary<string, object>){
+                                    Debug.Log(key.Key + key.Value);
+                                    result1.Add (key.Value as string);
+                                }
+                                foreach(string key in channels){
+                                    Debug.Log(key);
+                                }*/
+
+                                //result1.Add (multiChannel);
+                                //List<string> result1 = ((IEnumerable)deSerializedResult).Cast<string> ().ToList ();
+                                pnWhereNowResult.Channels = channels;
+                                pnStatus.Error = false;
+                            } else {
+                                pnStatus.Error = true;
+                            }
+                        } else {
+                            pnStatus.Error = true;
+                        }
+                    } else {
+                        pnStatus.Error = true;
+                    }
                 }
+                
             } else {
                 pnWhereNowResult = null;
                 pnStatus.Error = true;

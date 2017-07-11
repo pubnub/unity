@@ -245,8 +245,8 @@ namespace PubNubAPI
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNHistoryOperation, uuid, ssl, origin, 0, authenticationKey, parameterBuilder.ToString(), pnSdkVersion);
         }
 
-        /*internal static Uri BuildHereNowRequest (string channel, string channelGroups, bool showUUIDList, bool includeUserState, string uuid, 
-            bool ssl, string origin, string authenticationKey, string subscribeKey)
+        internal static Uri BuildHereNowRequest (string channel, string channelGroups, bool showUUIDList, bool includeUserState, string uuid, 
+            bool ssl, string origin, string authenticationKey, string subscribeKey, string pnSdkVersion)
         {
             int disableUUID = (showUUIDList) ? 0 : 1;
             int userState = (includeUserState) ? 1 : 0;
@@ -254,7 +254,7 @@ namespace PubNubAPI
             parameterBuilder.AppendFormat ("?disable_uuids={0}&state={1}", disableUUID, userState);
             if (!string.IsNullOrEmpty(channelGroups))
             {
-                parameterBuilder.AppendFormat("&channel-group={0}",  Utility.EncodeUricomponent(channelGroups, ResponseType.HereNow, true, false));
+                parameterBuilder.AppendFormat("&channel-group={0}",  Utility.EncodeUricomponent(channelGroups, PNOperationType.PNHereNowOperation, true, false));
             }
 
             List<string> url = new List<string> ();
@@ -263,13 +263,19 @@ namespace PubNubAPI
             url.Add ("presence");
             url.Add ("sub_key");
             url.Add (subscribeKey);
-            url.Add ("channel");
-            url.Add (string.IsNullOrEmpty(channel) ? "," : channel);
+            if(!string.IsNullOrEmpty(channel))
+            {
+                url.Add ("channel");
+                url.Add (channel);
+            } else if (string.IsNullOrEmpty(channel) && (!string.IsNullOrEmpty(channelGroups))){
+                url.Add ("channel");
+                url.Add (",");
+            }
 
-            return BuildRestApiRequest<Uri> (url, ResponseType.HereNow, uuid, ssl, origin, 0, authenticationKey, parameterBuilder.ToString());
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNHereNowOperation, uuid, ssl, origin, 0, authenticationKey, parameterBuilder.ToString(), pnSdkVersion);
         }
 
-        internal static Uri BuildGlobalHereNowRequest (bool showUUIDList, bool includeUserState, string uuid, 
+        /*internal static Uri BuildGlobalHereNowRequest (bool showUUIDList, bool includeUserState, string uuid, 
             bool ssl, string origin, string authenticationKey, string subscribeKey)
         {
             int disableUUID = (showUUIDList) ? 0 : 1;
@@ -888,9 +894,9 @@ namespace PubNubAPI
                 url = AppendUUIDToURL(url, uuid, false);
                 url = AppendAuthKeyToURL(url, authenticationKey, type);
                 url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
-                break;
+                break;*/
 
-            case ResponseType.GlobalHereNow:
+            case PNOperationType.PNHereNowOperation:
 
                 url.Append (parameters);
                 url = AppendUUIDToURL(url, uuid, false);
@@ -898,12 +904,12 @@ namespace PubNubAPI
                 url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
                 break;
 
-            case ResponseType.WhereNow:
+            case PNOperationType.PNWhereNowOperation:
 
                 url = AppendUUIDToURL(url, uuid, true);
                 url = AppendAuthKeyToURL(url, authenticationKey, type);
                 url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
-                break;*/
+                break;
 
             case PNOperationType.PNPublishOperation:
 

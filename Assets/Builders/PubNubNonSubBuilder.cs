@@ -15,7 +15,7 @@ namespace PubNubAPI
         protected event CreateResponseDelegate CreateResponse;
 
         protected PubNubUnity PubNubInstance { get; set;}
-        protected PubNubNonSubBuilder(PubNubUnity pn){
+        protected internal PubNubNonSubBuilder(PubNubUnity pn){
             PubNubInstance = pn;
             this.RunRequest += delegate(QueueManager qm) {
                 RunWebRequest(qm);

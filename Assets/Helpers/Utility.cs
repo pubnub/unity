@@ -41,17 +41,20 @@ namespace PubNubAPI
         }
 
         //TODO Handle exception
-        internal static int CheckKeyAndParseInt(IDictionary dict, string what, string key, out string log){
-            int sequenceNumber = 0; 
+        internal static bool CheckKeyAndParseInt(IDictionary dict, string what, string key, out string log, out int val){
+            val = 0;
             log = "";
             if (dict.Contains (key)) {
                 int seqNumber;
                 if (!int.TryParse (dict [key].ToString(), out seqNumber)) {
                     log = string.Format ("{1}, {2} conversion failed: {3}.", what, key, dict [key].ToString ());
+                    return false;
                 }
-                sequenceNumber = seqNumber;
+                val = seqNumber;
+                return true;
             }
-            return sequenceNumber;
+            log = string.Format ("{1}, {2} key not found.", what, key);
+            return false;
         }
 
         internal static bool IsDictionary(object o)

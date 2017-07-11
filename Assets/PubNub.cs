@@ -62,6 +62,11 @@ namespace PubNubAPI
             return pnUnity.WhereNow();
         }
 
+        public HereNowBuilder HereNow(){
+            Debug.Log ("HereNowBuilder");
+            return pnUnity.HereNow();
+        }
+
         public HistoryBuilder History(){
             Debug.Log ("HistoryBuilder");
             return pnUnity.History();
