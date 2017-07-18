@@ -731,7 +731,7 @@ namespace PubNubAPI
         public void ProcessResponse<T> (UnityWebRequest www, WebRequestParams<T> cp)
         {
             try {
-                Debug.Log("in process response");
+                Debug.Log("in process response -> " + cp.requestState.RespType);
                 RemoveEventHandler<T>(cp.crt, false);
 
                 #if (ENABLE_PUBNUB_LOGGING)

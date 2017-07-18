@@ -72,7 +72,7 @@ namespace PubNubExample
 
                 });*/
                 //herenow
-                pubnub.HereNow().Channels(listChannels).ChannelGroups(listChannelGroups).IncludeState(true).IncludeUUIDs(true).Async((result, status) => {
+                /*pubnub.HereNow().Channels(listChannels).ChannelGroups(listChannelGroups).IncludeState(true).IncludeUUIDs(true).Async((result, status) => {
                     Debug.Log ("in HereNow1");
                     Debug.Log (string.Format("DateTime {0}, In Example, Channels: {1} {2}", DateTime.Now , result.TotalChannels, result.TotalOccupancy));
                     DisplayHereNowResult(result);
@@ -112,16 +112,12 @@ namespace PubNubExample
                     DisplayHereNowResult(result);
                     Debug.Log (status.Error);
 
-                });
+                });*/
 
             };
-            
-  
-
-        
 
             Debug.Log ("PubNub");
-            pubnub.Subscribe ().SetChannelGroups (listChannelGroups).SetChannels(listChannels).Execute();
+            /*pubnub.Subscribe ().SetChannelGroups (listChannelGroups).SetChannels(listChannels).Execute();
 
             Debug.Log ("before Time");
             /*pubnub.Time ().Async (new PNTimeCallback<PNTimeResult>(
@@ -129,7 +125,7 @@ namespace PubNubExample
                     Debug.Log ("in Time");
                 }
             ));*/
-            pubnub.Time ().Async ((result, status) => {
+           /* pubnub.Time ().Async ((result, status) => {
                 
                 if(status.Error){
                     Debug.Log (string.Format("In Example, Time Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
@@ -145,6 +141,16 @@ namespace PubNubExample
                     Debug.Log (string.Format("In Example, History Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                 } else {
                     Debug.Log (string.Format("DateTime {0}, In Example, result: {1}", DateTime.Now ,result.EndTimetoken, result.Messages[0].ToString()));
+                }
+            });*/
+
+            pubnub.GetPresenceState().Channels(listChannels).ChannelGroups(listChannelGroups).UUID("pn-c5a12d424054a3688066572fb955b7a0").Async ((result, status) => {
+            //pubnub.GetPresenceState().Channels(listChannels).ChannelGroups(listChannelGroups).Async ((result, status) => {
+                
+                if(status.Error){
+                    Debug.Log (string.Format("In Example, GetPresenceState Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
+                } else {
+                    Debug.Log (string.Format("DateTime {0}, In Example GetPresenceState, result:", DateTime.Now));
                 }
             });
             //pubnub.Time ().Async (new PNCallback<PNTimeResult>(){

@@ -113,6 +113,11 @@ namespace PubNubAPI
             Debug.Log ("PublishBuilder");
             return new PublishBuilder (this, publishMessageCounter.NextValue());
         }
+        
+        public GetStateBuilder GetPresenceState(){
+            Debug.Log ("GetPresenceState");
+            return new GetStateBuilder(this);
+        }
 
        /* #region "PubNub API Channel Methods"
 

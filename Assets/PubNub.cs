@@ -76,6 +76,10 @@ namespace PubNubAPI
             Debug.Log ("PubBuilder");
             return pnUnity.Publish();
         }
+        public GetStateBuilder GetPresenceState(){
+            Debug.Log ("GetPresenceState");
+            return pnUnity.GetPresenceState();
+        }
 
         public void AddListener(Action<PNStatus> callback, Action<PNMessageResult> callback2, Action<PNPresenceEventResult> callback3)
         {

@@ -84,26 +84,54 @@ namespace PubNubAPI
                             
                             break;
                         case PNOperationType.PNGetStateOperation:
+                            GetStateRequestBuilder getStateBuilder = operationParams as GetStateRequestBuilder;
+                            getStateBuilder.RaiseRunRequest(this);
                             break;
                         case PNOperationType.PNRemoveAllPushNotificationsOperation:
+                            RemoveAllPushNotificationsRequestBuilder removeAllPushNotificationsRequestBuilder = operationParams as RemoveAllPushNotificationsRequestBuilder;
+                            removeAllPushNotificationsRequestBuilder.RaiseRunRequest(this);
                             break;
                         case PNOperationType.PNAddPushNotificationsOnChannelsOperation:
+                            AddPushNotificationsOnChannelsRequestBuilder addChannelsToGroupBuilder = operationParams as AddPushNotificationsOnChannelsRequestBuilder;
+                            addChannelsToGroupBuilder.RaiseRunRequest(this);
                             break;
                         case PNOperationType.PNPushNotificationEnabledChannelsOperation:
+                            PushNotificationEnabledChannelsRequestBuilder pushNotificationEnabledChannelsRequestBuilder = operationParams as PushNotificationEnabledChannelsRequestBuilder;
+                            pushNotificationEnabledChannelsRequestBuilder.RaiseRunRequest(this);
                             break;
                         case PNOperationType.PNRemovePushNotificationsFromChannelsOperation:
+                            PushNotificationsFromChannelsRequestBuilder pushNotificationsFromChannelsRequestBuilder = operationParams as PushNotificationsFromChannelsRequestBuilder;
+                            pushNotificationsFromChannelsRequestBuilder.RaiseRunRequest(this);
                             break;
                         case PNOperationType.PNAddChannelsToGroupOperation:
+                            AddChannelsToGroupRequestBuilder addChannelsToGroupRequestBuilder = operationParams as AddChannelsToGroupRequestBuilder;
+                            addChannelsToGroupRequestBuilder.RaiseRunRequest(this);
+
                             break;
                         case PNOperationType.PNChannelGroupsOperation:
+                            GetChannelGroupsRequestBuilder getChannelGroupsBuilder = operationParams as GetChannelGroupsRequestBuilder;
+                            getChannelGroupsBuilder.RaiseRunRequest(this);
+
                             break;
                         case PNOperationType.PNChannelsForGroupOperation:
+                            GetAllChannelsForGroupRequestBuilder getChannelsForGroupRequestBuilder = operationParams as GetAllChannelsForGroupRequestBuilder;
+                            getChannelsForGroupRequestBuilder.RaiseRunRequest(this);
+
                             break;
                         case PNOperationType.PNFetchMessagesOperation:
+                            FetchMessagesRequestBuilder fetchMessagesRequestBuilder = operationParams as FetchMessagesRequestBuilder;
+                            fetchMessagesRequestBuilder.RaiseRunRequest(this);
+
                             break;
                         case PNOperationType.PNRemoveChannelsFromGroupOperation:
+                            RemoveChannelsFromGroupRequestBuilder removeChannelsFromGroupRequestBuilder = operationParams as RemoveChannelsFromGroupRequestBuilder;
+                            removeChannelsFromGroupRequestBuilder.RaiseRunRequest(this);
+
                             break;
                         case PNOperationType.PNRemoveGroupOperation:
+                            DeleteChannelGroupRequestBuilder removeGroupRequestBuilder = operationParams as DeleteChannelGroupRequestBuilder;
+                            removeGroupRequestBuilder.RaiseRunRequest(this);
+
                             break;
                     }
                 }
@@ -113,4 +141,3 @@ namespace PubNubAPI
         }
     }
 }
-
