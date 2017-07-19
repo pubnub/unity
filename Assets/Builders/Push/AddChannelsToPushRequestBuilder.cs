@@ -5,25 +5,25 @@ using UnityEngine;
 
 namespace PubNubAPI
 {
-    public class RemoveChannelsFromGroupRequestBuilder: PubNubNonSubBuilder<RemoveChannelsFromGroupRequestBuilder, PNChannelGroupsRemoveChannelResult>, IPubNubNonSubscribeBuilder<RemoveChannelsFromGroupRequestBuilder, PNChannelGroupsRemoveChannelResult>
+    public class AddChannelsToPushRequestBuilder: PubNubNonSubBuilder<AddChannelsToPushRequestBuilder, PNPushAddChannelResult>, IPubNubNonSubscribeBuilder<AddChannelsToPushRequestBuilder, PNPushAddChannelResult>
     {      
-        public RemoveChannelsFromGroupRequestBuilder(PubNubUnity pn):base(pn){
+        public AddChannelsToPushRequestBuilder(PubNubUnity pn):base(pn){
 
         }
         
         #region IPubNubBuilder implementation
 
-        public void Async(Action<PNChannelGroupsRemoveChannelResult, PNStatus> callback)
+        public void Async(Action<PNPushAddChannelResult, PNStatus> callback)
         {
             this.Callback = callback;
-            Debug.Log ("RemoveChannelsFromGroupRequestBuilder Async");
-            base.Async(callback, PNOperationType.PNRemoveChannelsFromGroupOperation, CurrentRequestType.NonSubscribe, this);
+            Debug.Log ("AddChannelsToPushRequestBuilder Async");
+            base.Async(callback, PNOperationType.PNAddPushNotificationsOnChannelsOperation, CurrentRequestType.NonSubscribe, this);
         }
         #endregion
 
         protected override void RunWebRequest(QueueManager qm){
-            RequestState<PNChannelGroupsRemoveChannelResult> requestState = new RequestState<PNChannelGroupsRemoveChannelResult> ();
-            requestState.RespType = PNOperationType.PNRemoveChannelsFromGroupOperation;
+            RequestState<PNPushAddChannelResult> requestState = new RequestState<PNPushAddChannelResult> ();
+            requestState.RespType = PNOperationType.PNAddPushNotificationsOnChannelsOperation;
             
             /*Uri request = BuildRequests.BuildTimeRequest(
                 this.PubNubInstance.PNConfig.UUID,

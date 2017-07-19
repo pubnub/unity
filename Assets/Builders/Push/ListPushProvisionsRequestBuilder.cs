@@ -5,25 +5,25 @@ using UnityEngine;
 
 namespace PubNubAPI
 {
-    public class RemoveChannelsFromGroupRequestBuilder: PubNubNonSubBuilder<RemoveChannelsFromGroupRequestBuilder, PNChannelGroupsRemoveChannelResult>, IPubNubNonSubscribeBuilder<RemoveChannelsFromGroupRequestBuilder, PNChannelGroupsRemoveChannelResult>
+    public class ListPushProvisionsRequestBuilder: PubNubNonSubBuilder<ListPushProvisionsRequestBuilder, PNPushListProvisionsResult>, IPubNubNonSubscribeBuilder<ListPushProvisionsRequestBuilder, PNPushListProvisionsResult>
     {      
-        public RemoveChannelsFromGroupRequestBuilder(PubNubUnity pn):base(pn){
+        public ListPushProvisionsRequestBuilder(PubNubUnity pn):base(pn){
 
         }
         
         #region IPubNubBuilder implementation
 
-        public void Async(Action<PNChannelGroupsRemoveChannelResult, PNStatus> callback)
+        public void Async(Action<PNPushListProvisionsResult, PNStatus> callback)
         {
             this.Callback = callback;
-            Debug.Log ("RemoveChannelsFromGroupRequestBuilder Async");
-            base.Async(callback, PNOperationType.PNRemoveChannelsFromGroupOperation, CurrentRequestType.NonSubscribe, this);
+            Debug.Log ("ListPushProvisionsRequestBuilder Async");
+            base.Async(callback, PNOperationType.PNPushNotificationEnabledChannelsOperation, CurrentRequestType.NonSubscribe, this);
         }
         #endregion
 
         protected override void RunWebRequest(QueueManager qm){
-            RequestState<PNChannelGroupsRemoveChannelResult> requestState = new RequestState<PNChannelGroupsRemoveChannelResult> ();
-            requestState.RespType = PNOperationType.PNRemoveChannelsFromGroupOperation;
+            RequestState<PNPushListProvisionsResult> requestState = new RequestState<PNPushListProvisionsResult> ();
+            requestState.RespType = PNOperationType.PNPushNotificationEnabledChannelsOperation;
             
             /*Uri request = BuildRequests.BuildTimeRequest(
                 this.PubNubInstance.PNConfig.UUID,

@@ -75,13 +75,13 @@ namespace PubNubAPI
             
 
             Debug.Log ("PNChannelGroupsAddChannelResult Async");
-            base.Async(callback, PNOperationType.PNSetStateOperation, CurrentRequestType.NonSubscribe, this);
+            base.Async(callback, PNOperationType.PNAddChannelsToGroupOperation, CurrentRequestType.NonSubscribe, this);
         }
         #endregion
 
         protected override void RunWebRequest(QueueManager qm){
             RequestState<PNSetStateResult> requestState = new RequestState<PNSetStateResult> ();
-            requestState.RespType = PNOperationType.PNWhereNowOperation;
+            requestState.RespType = PNOperationType.PNAddChannelsToGroupOperation;
 
             string channels = "";
             if((ChannelsForState != null) && (ChannelsForState.Count>0)){

@@ -88,23 +88,23 @@ namespace PubNubAPI
                             getStateBuilder.RaiseRunRequest(this);
                             break;
                         case PNOperationType.PNRemoveAllPushNotificationsOperation:
-                            RemoveAllPushNotificationsRequestBuilder removeAllPushNotificationsRequestBuilder = operationParams as RemoveAllPushNotificationsRequestBuilder;
+                            RemoveAllPushChannelsForDeviceRequestBuilder removeAllPushNotificationsRequestBuilder = operationParams as RemoveAllPushChannelsForDeviceRequestBuilder;
                             removeAllPushNotificationsRequestBuilder.RaiseRunRequest(this);
                             break;
                         case PNOperationType.PNAddPushNotificationsOnChannelsOperation:
-                            AddPushNotificationsOnChannelsRequestBuilder addChannelsToGroupBuilder = operationParams as AddPushNotificationsOnChannelsRequestBuilder;
+                            AddChannelsToPushRequestBuilder addChannelsToGroupBuilder = operationParams as AddChannelsToPushRequestBuilder;
                             addChannelsToGroupBuilder.RaiseRunRequest(this);
                             break;
                         case PNOperationType.PNPushNotificationEnabledChannelsOperation:
-                            PushNotificationEnabledChannelsRequestBuilder pushNotificationEnabledChannelsRequestBuilder = operationParams as PushNotificationEnabledChannelsRequestBuilder;
+                            ListPushProvisionsRequestBuilder pushNotificationEnabledChannelsRequestBuilder = operationParams as ListPushProvisionsRequestBuilder;
                             pushNotificationEnabledChannelsRequestBuilder.RaiseRunRequest(this);
                             break;
                         case PNOperationType.PNRemovePushNotificationsFromChannelsOperation:
-                            PushNotificationsFromChannelsRequestBuilder pushNotificationsFromChannelsRequestBuilder = operationParams as PushNotificationsFromChannelsRequestBuilder;
+                            RemoveChannelsFromPushRequestBuilder pushNotificationsFromChannelsRequestBuilder = operationParams as RemoveChannelsFromPushRequestBuilder;
                             pushNotificationsFromChannelsRequestBuilder.RaiseRunRequest(this);
                             break;
                         case PNOperationType.PNAddChannelsToGroupOperation:
-                            AddChannelsToGroupRequestBuilder addChannelsToGroupRequestBuilder = operationParams as AddChannelsToGroupRequestBuilder;
+                            AddChannelsToChannelGroupRequestBuilder addChannelsToGroupRequestBuilder = operationParams as AddChannelsToChannelGroupRequestBuilder;
                             addChannelsToGroupRequestBuilder.RaiseRunRequest(this);
 
                             break;
