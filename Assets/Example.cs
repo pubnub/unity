@@ -12,8 +12,8 @@ namespace PubNubExample
     	void Start () {
             Debug.Log ("Starting");
             PNConfiguration pnConfiguration = new PNConfiguration ();
-            pnConfiguration.SubscribeKey = "demo-36";
-            pnConfiguration.PublishKey = "demo-36";
+            pnConfiguration.SubscribeKey = "sub-c-b05d4a0c-708d-11e7-96c9-0619f8945a4f";
+            pnConfiguration.PublishKey = "pub-c-94691e07-c8aa-42f9-a838-bea61ac6655e";
             pnConfiguration.Secure = true;
             pnConfiguration.CipherKey = "enigma";
             pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
@@ -39,11 +39,13 @@ namespace PubNubExample
                 }
 
             );
-            List<string> listChannelGroups = new List<string> (){"channelGroup1", "channelGroup2"};
-            listChannelGroups.Add ("channelGroup1");
-            listChannelGroups.Add ("channelGroup2");
-            List<string> listChannels = new List<string> (){"channel1", "channel2"};
-            listChannels.Add ("channel1");
+            string cg1 = "channelGroup1";
+            string cg2 = "channelGroup2";
+            string ch1 = "channel1";
+            string ch2 = "channel2";
+            List<string> listChannelGroups = new List<string> (){cg1, cg2};
+            List<string> listChannels = new List<string> (){ch1, ch2};
+            
 
 
             pubnub.SusbcribeCallback += (sender, e) => { //; //+= (pnStatus, pnMessageResut, pnPresenceEventResult) => {
@@ -144,7 +146,7 @@ namespace PubNubExample
                 }
             });*/
 
-            pubnub.GetPresenceState().Channels(listChannels).ChannelGroups(listChannelGroups).UUID("pn-c5a12d424054a3688066572fb955b7a0").Async ((result, status) => {
+            /*pubnub.GetPresenceState().Channels(listChannels).ChannelGroups(listChannelGroups).UUID("pn-c5a12d424054a3688066572fb955b7a0").Async ((result, status) => {
             //pubnub.GetPresenceState().Channels(listChannels).ChannelGroups(listChannelGroups).Async ((result, status) => {
                 
                 if(status.Error){
@@ -152,19 +154,118 @@ namespace PubNubExample
                 } else {
                     Debug.Log (string.Format("DateTime {0}, In Example GetPresenceState, result:", DateTime.Now));
                 }
-            });
+            });*/
             //pubnub.Time ().Async (new PNCallback<PNTimeResult>(){
 
                 //Debug.Log ("in Time")
             //});*/
 
+            pubnub.AddChannelsToChannelGroup().Channels(listChannels).ChannelGroup(cg1).Async((result, status) => {
+                Debug.Log ("in AddChannelsToChannelGroup");
+                if(status.Error){
+                    Debug.Log (string.Format("In Example, AddChannelsToChannelGroup Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
+                } else {
+                    Debug.Log (string.Format("DateTime {0}, In Example AddChannelsToChannelGroup, result: {1}", DateTime.Now, result.Message));
+                }
 
+                ListAllChannelsOfGroup(pubnub, cg1);
+
+                List<string> listChannelsRemove = new List<string> (){ch1};
+                RemoveChannelsFromCG(pubnub, cg1, listChannelsRemove);
+
+                
+                
+                
+                /*pubnub.DeleteChannelsFromChannelGroup().ChannelGroup(cg1).Async((result1, status1) => {
+                    if(status1.Error){
+                        Debug.Log (string.Format("In Example, DeleteChannelsFromChannelGroup Error: {0} {1} {2}", status1.StatusCode, status1.ErrorData, status1.Category));
+                    } else {
+                        Debug.Log (string.Format("DateTime {0}, In Example DeleteChannelsFromChannelGroup, result: {1}", DateTime.Now, result1.Message));
+                    }
+                
+                });*/
+                ListAllChannelsOfGroup(pubnub, cg1);
+            });
+
+            string deviceId = "aaa";
+            PNPushType pnPushType = PNPushType.GCM;
+
+            pubnub.AddPushNotificationsOnChannels().Channels(listChannels).DeviceIDForPush(deviceId).PushType(pnPushType).Async((result, status) => {
+                    Debug.Log ("in AddPushNotificationsOnChannels");
+                    if(status.Error){
+                        Debug.Log (string.Format("In Example, AddPushNotificationsOnChannels Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
+                    } else {
+                        Debug.Log (string.Format("DateTime {0}, In AddPushNotificationsOnChannels, result: {1}", DateTime.Now, result.Message));
+                    }
+                    AuditPushChannelProvisions(pubnub, deviceId, pnPushType);
+                    RemoveChannelsFromPush(listChannels, pubnub, deviceId, pnPushType);
+                });
             /*Debug.Log ("after Time");*/
             
             //pubnub.WhereNow ().Uuid ("test uuid").Async ((result, status) => {
             
             //pubnub.Subscribe ().Async<string> ();
     	}
+
+        void RemoveChannelsFromPush(List<string> listChannels, PubNub pubnub, string deviceId, PNPushType pnPushType){
+            pubnub.RemovePushNotificationsFromChannels().Channels(listChannels).DeviceIDForPush(deviceId).PushType(pnPushType).Async((result, status) => {
+                    Debug.Log ("in RemovePushNotificationsFromChannels");
+                    if(status.Error){
+                        Debug.Log (string.Format("In Example, RemovePushNotificationsFromChannels Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
+                    } else {
+                        Debug.Log (string.Format("DateTime {0}, In RemovePushNotificationsFromChannels, result: {1}", DateTime.Now, result.Message));
+                    }
+                });
+        }
+
+        void AuditPushChannelProvisions(PubNub pubnub, string deviceId, PNPushType pnPushType){
+            pubnub.AuditPushChannelProvisions().DeviceIDForPush(deviceId).PushType(pnPushType).Async((result, status) => {
+                    Debug.Log ("in AuditPushChannelProvisions");
+                    if(status.Error){
+                        Debug.Log (string.Format("In Example, AuditPushChannelProvisions Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
+                    } else {
+                        Debug.Log (string.Format("DateTime {0}, In AuditPushChannelProvisions, result: {1}", DateTime.Now, string.Join(",", result.Channels.ToArray())));
+                    }
+
+                });
+                
+                RemoveAllPushNotificationsFromChannels(pubnub, deviceId, pnPushType);
+        }
+
+        void RemoveAllPushNotificationsFromChannels(PubNub pubnub, string deviceId, PNPushType pnPushType){
+            pubnub.RemoveAllPushNotifications().DeviceIDForPush(deviceId).PushType(pnPushType).Async((result, status) => {
+                    Debug.Log ("in RemoveAllPushNotificationsFromChannels");
+                    if(status.Error){
+                        Debug.Log (string.Format("In Example, RemoveAllPushNotificationsFromChannels Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
+                    } else {
+                        Debug.Log (string.Format("DateTime {0}, In RemoveAllPushNotificationsFromChannels, result: {1}", DateTime.Now, result.Message));
+                    }
+
+                });
+        }
+
+        void RemoveChannelsFromCG(PubNub pubnub, string cg, List<string> listChannelsRemove){
+            pubnub.RemoveChannelsFromChannelGroup().Channels(listChannelsRemove).ChannelGroup(cg).Async((result, status) => {
+                    Debug.Log ("in RemoveChannelsFromCG");
+                    if(status.Error){
+                        Debug.Log (string.Format("In Example, RemoveChannelsFromCG Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
+                    } else {
+                        Debug.Log (string.Format("DateTime {0}, In RemoveChannelsFromCG, result: {1}", DateTime.Now, result.Message));
+                    }
+
+                });
+        }
+
+        void ListAllChannelsOfGroup(PubNub pubnub, string cg){
+            pubnub.ListChannelsForChannelGroup().ChannelGroup(cg).Async((result, status) => {
+                    if(status.Error){
+                        Debug.Log (string.Format("In Example, ListAllChannelsOfGroup Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
+                    } else {
+                        Debug.Log (string.Format("DateTime {0}, In Example ListAllChannelsOfGroup, result: {1}", DateTime.Now, string.Join(",", result.Channels.ToArray())));
+                    }
+                
+                });
+        }
 
         void DisplayHereNowResult(PNHereNowResult result){
             if(result.Channels!= null){

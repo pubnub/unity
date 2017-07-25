@@ -75,18 +75,17 @@ namespace PubNubAPI
 
             //TODO read all values.
             
-
-            /*PNHereNowResult pnHereNowResult = new PNHereNowResult();
+            PNGetStateResult pnGetStateResult = new PNGetStateResult();
+            //pnGetStateResult
             
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
             PNStatus pnStatus = new PNStatus();
 
             if (dictionary!=null && dictionary.ContainsKey("error") && dictionary["error"].Equals(true)){
-                pnHereNowResult = null;
+                pnGetStateResult = null;
                 pnStatus.Error = true;
                 //TODO create error data
             } else if(dictionary!=null) {
-                int totalChannels, total_occupancy;
                 string log = "";
                 object objPayload;
                 dictionary.TryGetValue("payload", out objPayload);
@@ -95,100 +94,26 @@ namespace PubNubAPI
                     Dictionary<string, object> payload = objPayload as Dictionary<string, object>;
                     object objChannelsDict;
                     payload.TryGetValue("channels", out objChannelsDict);
+                    //TODO NO CG
+                    //payload.TryGetValue("channelGroups", out objChannelsDict);
 
                     if(objChannelsDict!=null){
-                        Dictionary<string, PNHereNowChannelData> channelsResult;
-                        pnStatus.Error = CreateHereNowResult(objChannelsDict, out channelsResult);
-                        
-                        pnHereNowResult.Channels = channelsResult;
+                        Dictionary<string, object> channelsDict = objPayload as Dictionary<string, object>;
+                        foreach(KeyValuePair<string, object> kvp in channelsDict){
+                            Debug.Log("KVP:" + kvp.Key + kvp.Value);
+                        }
                     } 
-                } else if(Utility.CheckKeyAndParseInt(dictionary, "total_channels", "total_channels", out log, out totalChannels)){
-                        pnHereNowResult.TotalChannels = totalChannels;
-                        Debug.Log(log);
-                } else if(Utility.CheckKeyAndParseInt(dictionary, "total_occupancy", "total_occupancy", out log, out total_occupancy)){
-                        pnHereNowResult.TotalOccupancy = total_occupancy;
-                        Debug.Log(log);
+               
                 } else {
                     pnStatus.Error = true;
                 }
             } else {
-                pnHereNowResult = null;
+                pnGetStateResult = null;
                 pnStatus.Error = true;
             }
-            Callback(pnHereNowResult, pnStatus);*/
+            Callback(pnGetStateResult, pnStatus);
         }
 
-        public bool CreateHereNowResult(object objChannelsDict, out Dictionary<string, PNHereNowChannelData> channelsResult ){
-            Dictionary<string, object> channelsDict = objChannelsDict as Dictionary<string, object>;
-            channelsResult = new Dictionary<string, PNHereNowChannelData>();
-            //List<string> channels = ch.ToList<string>();//new List<string> ();
-            if(channelsDict!=null){
-                foreach(KeyValuePair<string, object> kvpair in channelsDict){
-                    string channelName = kvpair.Key;
-                    PNHereNowChannelData channelData = new PNHereNowChannelData();
-                    channelData.Occupants = new List<PNHereNowOccupantData>();
-                    channelData.ChannelName = channelName;
-                    Debug.Log("channelName:" + channelName);
-                    Dictionary<string, object> channelDetails = kvpair.Value as Dictionary<string, object>;
-                    if(channelDetails!=null){
-                        object objOccupancy;
-                        channelDetails.TryGetValue("occupancy", out objOccupancy);
-                        int occupancy;
-                        if(int.TryParse(objOccupancy.ToString(), out occupancy)){
-                            channelData.Occupancy = occupancy;
-                            Debug.Log("occupancy:" + occupancy.ToString());
-                        }
-
-                        object uuids;
-                        channelDetails.TryGetValue("uuids", out uuids);
-                        
-                        if(uuids!=null){
-                            //occupantData.UUID 
-                            string[] arrUuids = uuids as string[];
-                            
-                            if(arrUuids!=null){
-                                foreach (string uuid in arrUuids){
-                                    PNHereNowOccupantData occupantData = new PNHereNowOccupantData();
-                                    occupantData.UUID = uuid;
-                                    Debug.Log("uuid:" + uuid);
-                                    channelData.Occupants.Add(occupantData);
-                                }
-                            } else {
-                                Dictionary<string, object>[] dictUuidsState = uuids as Dictionary<string, object>[];
-                                foreach (Dictionary<string, object> objUuidsState in dictUuidsState){
-                                    PNHereNowOccupantData occupantData = new PNHereNowOccupantData();
-                                //if(objUuidsState!=null){
-                                    //Dictionary<string, object>[] objUuidsState = uuids as Dictionary<string, object>[];
-                                    
-                                    object objUuid;
-                                    bool bUuid = false;
-                                    if(objUuidsState.TryGetValue("uuid", out objUuid)){
-                                        bUuid= true;
-                                        occupantData.UUID = objUuid.ToString();
-                                    }
-                                    object objState;
-                                    bool bState = false;
-                                    if(objUuidsState.TryGetValue("state", out objState)){
-                                        bState = true;
-                                        occupantData.State = objState;
-                                    }
-                                    if(!bState && !bUuid){
-                                        occupantData.State = objUuidsState;
-                                    }
-                                    channelData.Occupants.Add(occupantData);
-                                }
-                            }
-                            
-
-                        }
-                        //Debug.Log("uuids:" + uuids.ToString());
-                    }
-                    channelsResult.Add(channelName, channelData);
-                }
-            }
-            return false; 
-        }
-       
     }
 }
 

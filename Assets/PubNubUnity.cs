@@ -119,6 +119,47 @@ namespace PubNubAPI
             return new GetStateBuilder(this);
         }
 
+        public AddChannelsToChannelGroupBuilder AddChannelsToChannelGroup(){
+            Debug.Log ("AddChannelsToChannelGroupBuilder");
+            return new AddChannelsToChannelGroupBuilder(this);
+        }
+
+        public DeleteChannelGroupBuilder DeleteChannelsFromChannelGroup(){
+            Debug.Log ("DeleteChannelGroupBuilder");
+            return new DeleteChannelGroupBuilder(this);
+        }
+
+        public RemoveChannelsFromGroupBuilder RemoveChannelsFromChannelGroup(){
+            Debug.Log ("RemoveChannelsFromGroupBuilder");
+            return new RemoveChannelsFromGroupBuilder(this);
+        }
+
+        public GetAllChannelsForGroupBuilder ListChannelsForChannelGroup(){
+            Debug.Log ("GetAllChannelsForGroupBuilder");
+            return new GetAllChannelsForGroupBuilder(this);
+        }
+
+        public AddChannelsToPushBuilder AddPushNotificationsOnChannels(){
+            Debug.Log ("AddPushNotificationsOnChannels");
+            return new AddChannelsToPushBuilder(this);
+        }
+
+        public ListPushProvisionsBuilder AuditPushChannelProvisions(){
+            Debug.Log ("AuditPushChannelProvisions");
+            return new ListPushProvisionsBuilder(this);
+        }
+
+        public RemoveAllPushChannelsForDeviceBuilder RemoveAllPushNotifications(){
+            Debug.Log ("RemoveAllPushNotifications");
+            return new RemoveAllPushChannelsForDeviceBuilder(this);
+        }
+
+        public RemoveChannelsFromPushBuilder RemovePushNotificationsFromChannels(){
+            Debug.Log ("RemovePushNotificationsFromChannels");
+            return new RemoveChannelsFromPushBuilder(this);
+        }
+
+
        /* #region "PubNub API Channel Methods"
 
         #region "Subscribe Methods"

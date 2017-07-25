@@ -5,8 +5,7 @@ namespace PubNubAPI
 {
     public class PNChannelGroupsAllChannelsResult: PNResult
     {
-
-        private List<string> Channels;
+        public List<string> Channels;
         public PNChannelGroupsAllChannelsResult ()
         {
 

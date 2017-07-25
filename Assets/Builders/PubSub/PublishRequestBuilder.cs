@@ -113,7 +113,7 @@ namespace PubNubAPI
                     statusCode = c[0].ToString();
                 }
                 if(c.Length > 1){
-                    status = c[0].ToString();
+                    status = c[1].ToString();
                 }
                 if(c.Length > 2){
                     pnPublishResult.Timetoken = Utility.ValidateTimetoken(c[2].ToString(), false);

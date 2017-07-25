@@ -74,16 +74,20 @@ namespace PubNubAPI
                             hereNowBuilder.RaiseRunRequest(this);
                             break;
                         case PNOperationType.PNLeaveOperation:
+                        //TODO
                             break;
                             
                         case PNOperationType.PNUnsubscribeOperation:
+                        //TODO
                             break;
                         case PNOperationType.PNPresenceUnsubscribeOperation:
+                        //TODO
                             break;
                         case PNOperationType.PNSetStateOperation:
-                            
+                            //TODO
                             break;
                         case PNOperationType.PNGetStateOperation:
+                            //TODO
                             GetStateRequestBuilder getStateBuilder = operationParams as GetStateRequestBuilder;
                             getStateBuilder.RaiseRunRequest(this);
                             break;
@@ -119,6 +123,7 @@ namespace PubNubAPI
 
                             break;
                         case PNOperationType.PNFetchMessagesOperation:
+                        //TODO  
                             FetchMessagesRequestBuilder fetchMessagesRequestBuilder = operationParams as FetchMessagesRequestBuilder;
                             fetchMessagesRequestBuilder.RaiseRunRequest(this);
 

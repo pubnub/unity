@@ -6,7 +6,7 @@ namespace PubNubAPI
 {
     public class PNPushListProvisionsResult: PNResult
     {
-        private List<string> Channels;
+        public List<string> Channels;
         public PNPushListProvisionsResult ()
         {
 

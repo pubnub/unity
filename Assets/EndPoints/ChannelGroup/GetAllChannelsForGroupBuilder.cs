@@ -9,6 +9,11 @@ namespace PubNubAPI
     {     
         private GetAllChannelsForGroupRequestBuilder pubBuilder;
         
+        public GetAllChannelsForGroupBuilder ChannelGroup(string channelGroup){
+            pubBuilder.ChannelGroup(channelGroup);
+            return this;
+        }
+        
         public GetAllChannelsForGroupBuilder(PubNubUnity pn){
             pubBuilder = new GetAllChannelsForGroupRequestBuilder(pn);
 

@@ -9,6 +9,16 @@ namespace PubNubAPI
     {     
         private ListPushProvisionsRequestBuilder pubBuilder;
         
+        public ListPushProvisionsBuilder DeviceIDForPush (string deviceId){ 
+            pubBuilder.DeviceId(deviceId);
+            return this;
+        }
+
+        public ListPushProvisionsBuilder PushType(PNPushType pushType) {
+            pubBuilder.PushType = pushType;
+            return this;
+        }
+
         public ListPushProvisionsBuilder(PubNubUnity pn){
             pubBuilder = new ListPushProvisionsRequestBuilder(pn);
 

@@ -5,9 +5,7 @@ namespace PubNubAPI
 {
     public class PNGetStateResult: PNResult
     {
-        public int TotalChannels  { get; set;}
-        public int TotalOccupancy  { get; set;}
-        //public Dictionary<string, PNHereNowChannelData> Channels { get; set;}
+        public Dictionary<string, object> StateByChannels  { get; set;}
         public PNGetStateResult ()
         {
 
