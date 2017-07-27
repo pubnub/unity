@@ -108,6 +108,10 @@ namespace PubNubAPI
             Debug.Log ("HistoryBuilder");
             return new HistoryBuilder (this);
         }
+        public FetchBuilder FetchMessages(){
+            Debug.Log ("FetchBuilder");
+            return new FetchBuilder  (this);
+        }
 
         public PublishBuilder Publish(){
             Debug.Log ("PublishBuilder");

@@ -160,6 +160,8 @@ namespace PubNubExample
                 //Debug.Log ("in Time")
             //});*/
 
+            FetchMessages(pubnub, listChannels);
+
             pubnub.AddChannelsToChannelGroup().Channels(listChannels).ChannelGroup(cg1).Async((result, status) => {
                 Debug.Log ("in AddChannelsToChannelGroup");
                 if(status.Error){
@@ -265,6 +267,25 @@ namespace PubNubExample
                     }
                 
                 });
+        }
+
+        void FetchMessages(PubNub pubnub, List<string> listChannels){
+            pubnub.FetchMessages().Channels(listChannels).Async ((result, status) => {
+                
+                if(status.Error){
+                    Debug.Log (string.Format("In Example, FetchMessages Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
+                } else {
+                    Debug.Log (string.Format("DateTime {0}, In FetchMessages, result: ", DateTime.Now ));//,result.EndTimetoken, result.Messages[0].ToString()));
+                    foreach(KeyValuePair<string, List<PNMessageResult>> kvp in result.Channels){
+                        Debug.Log("kvp channelname" + kvp.Key);
+                        foreach(PNMessageResult pnMessageResut in kvp.Value){
+                            Debug.Log("Channel: " + pnMessageResut.Channel);
+                            Debug.Log("payload: " + pnMessageResut.Payload.ToString());
+                            Debug.Log("timetoken: " + pnMessageResut.Timetoken.ToString());
+                        }
+                    }
+                }
+            });
         }
 
         void DisplayHereNowResult(PNHereNowResult result){

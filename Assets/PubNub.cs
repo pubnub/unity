@@ -72,6 +72,11 @@ namespace PubNubAPI
             return pnUnity.History();
         }
 
+        public FetchBuilder FetchMessages(){
+            Debug.Log ("FetchBuilder");
+            return pnUnity.FetchMessages();
+        }
+
         public PublishBuilder Publish(){
             Debug.Log ("PubBuilder");
             return pnUnity.Publish();

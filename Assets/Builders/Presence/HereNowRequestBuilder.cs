@@ -118,7 +118,7 @@ namespace PubNubAPI
             Callback(pnHereNowResult, pnStatus);
         }
 
-        public bool CreateHereNowResult(object objChannelsDict, out Dictionary<string, PNHereNowChannelData> channelsResult ){
+        protected bool CreateHereNowResult(object objChannelsDict, out Dictionary<string, PNHereNowChannelData> channelsResult ){
             Dictionary<string, object> channelsDict = objChannelsDict as Dictionary<string, object>;
             channelsResult = new Dictionary<string, PNHereNowChannelData>();
             //List<string> channels = ch.ToList<string>();//new List<string> ();

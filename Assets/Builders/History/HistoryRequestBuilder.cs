@@ -9,8 +9,8 @@ namespace PubNubAPI
     public class HistoryRequestBuilder: PubNubNonSubBuilder<HistoryRequestBuilder, PNHistoryResult>, IPubNubNonSubscribeBuilder<HistoryRequestBuilder, PNHistoryResult>
     {
         private string HistoryChannel { get; set;}
-        private long StartTime { get; set;}
-        private long EndTime { get; set;}
+        private long StartTime = -1;
+        private long EndTime = -1;
         
         private const ushort MaxCount = 100;
         private ushort count = MaxCount;
@@ -27,8 +27,8 @@ namespace PubNubAPI
             }
         }
         
-        private bool ReverseHistory { get; set;}
-        private bool IncludeTimetokenInHistory { get; set;}
+        private bool ReverseHistory = false;
+        private bool IncludeTimetokenInHistory = false;
         public HistoryRequestBuilder(PubNubUnity pn): base(pn){
             Debug.Log ("HistoryBuilder Construct");
         }
@@ -70,6 +70,13 @@ namespace PubNubAPI
             //TODO: Add history channel check
             base.Callback = callback;
             Debug.Log ("PNHistoryBuilder Async");
+
+            if(string.IsNullOrEmpty(this.HistoryChannel)){
+                Debug.Log("PNHistoryBuilder HistoryChannel is empty");
+
+                return;
+            }
+
             base.Async(callback, PNOperationType.PNHistoryOperation, CurrentRequestType.NonSubscribe, this);
         }
 
@@ -82,6 +89,7 @@ namespace PubNubAPI
             Debug.Log ("HistoryBuilder Channel: " + this.StartTime);
             Debug.Log ("HistoryBuilder Channel: " + this.EndTime);
             Debug.Log ("HistoryBuilder Channel: " + this.HistoryCount);
+            Debug.Log ("HistoryBuilder Channel: " + this.ReverseHistory);
 
             //TODO: start=0&end=0
 
@@ -105,6 +113,7 @@ namespace PubNubAPI
         }
 
         protected override void CreatePubNubResponse(object deSerializedResult){
+            //[[{"text":"hey"},{"text":"hey"},{"text":"hey"},{"text":"hey"}],15011678612673119,15011678623670911]
             PNHistoryResult pnHistoryResult = new PNHistoryResult();
             pnHistoryResult.Messages = new List<PNHistoryItemResult>();
 

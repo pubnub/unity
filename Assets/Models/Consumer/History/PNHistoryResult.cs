@@ -20,8 +20,4 @@ namespace PubNubAPI
         public object Entry { get; set;}
 
     }
-
-    public class PNFetchMessagesResult {
-        private Dictionary<string, List<PNMessageResult>> Channels { get; set;}
-    }
 }

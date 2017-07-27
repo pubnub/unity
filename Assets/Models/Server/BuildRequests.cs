@@ -223,6 +223,42 @@ namespace PubNubAPI
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNPublishOperation, uuid, ssl, origin, 0, authenticationKey, parameterBuilder.ToString (), pnSdkVersion);
         }
 
+        internal static Uri BuildFetchRequest (string[] channels, long start, long end, uint count, bool reverse, bool includeToken, string uuid, bool ssl, string origin, string authenticationKey, string subscribeKey, string pnSdkVersion)
+        {
+            StringBuilder parameterBuilder = new StringBuilder ();
+
+            parameterBuilder.AppendFormat ("?count={0}", count);
+            if (includeToken) {
+                parameterBuilder.AppendFormat ("&include_token={0}", includeToken.ToString ().ToLower ());
+            }
+            if (reverse) {
+                parameterBuilder.AppendFormat ("&reverse={0}", reverse.ToString ().ToLower ());
+            }
+            if (start != -1) {
+                parameterBuilder.AppendFormat ("&start={0}", start.ToString ().ToLower ());
+            }
+            if (end != -1) {
+                parameterBuilder.AppendFormat ("&end={0}", end.ToString ().ToLower ());
+            }
+            /*if (!string.IsNullOrEmpty (authenticationKey)) {
+                parameterBuilder.AppendFormat ("&auth={0}", Utility.EncodeUricomponent (authenticationKey, PNOperationType.PNHistoryOperation, false, false));
+            }*/
+
+            parameterBuilder.AppendFormat ("&uuid={0}", Utility.EncodeUricomponent (uuid, PNOperationType.PNFetchMessagesOperation, false, false));
+            //parameterBuilder.AppendFormat ("&pnsdk={0}", Utility.EncodeUricomponent (pnSdkVersion, PNOperationType.PNHistoryOperation, false, true));
+
+            List<string> url = new List<string> ();
+
+            url.Add ("v3");
+            url.Add ("history");
+            url.Add ("sub-key");
+            url.Add (subscribeKey);
+            url.Add ("channel");
+            url.Add (Utility.EncodeUricomponent(string.Join(",", channels), PNOperationType.PNFetchMessagesOperation, true, false));
+
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNFetchMessagesOperation, uuid, ssl, origin, 0, authenticationKey, parameterBuilder.ToString(), pnSdkVersion);
+        }
+
         internal static Uri BuildHistoryRequest (string channel, long start, long end, uint count, bool reverse, bool includeToken, string uuid, bool ssl, string origin, string authenticationKey, string subscribeKey, string pnSdkVersion)
         {
             StringBuilder parameterBuilder = new StringBuilder ();
@@ -947,6 +983,7 @@ namespace PubNubAPI
                 url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
                 break;
             case PNOperationType.PNHistoryOperation:
+            case PNOperationType.PNFetchMessagesOperation:
             /*case ResponseType.GrantAccess:
             case ResponseType.AuditAccess:
             case ResponseType.RevokeAccess:
