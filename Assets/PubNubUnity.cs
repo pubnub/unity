@@ -117,6 +117,20 @@ namespace PubNubAPI
             Debug.Log ("PublishBuilder");
             return new PublishBuilder (this, publishMessageCounter.NextValue());
         }
+        public FireBuilder Fire(){
+            Debug.Log ("FireBuilder");
+            return new FireBuilder (this, publishMessageCounter.NextValue());
+        }
+        
+        public UnsubscribeBuilder Unsubscribe(){
+            Debug.Log ("Unsubscribe");
+            return new UnsubscribeBuilder (this);
+        }
+        
+        public UnsubscribeAllBuilder UnsubscribeAll(){
+            Debug.Log ("UnsubscribeAll");
+            return new UnsubscribeAllBuilder (this);
+        }
         
         public GetStateBuilder GetPresenceState(){
             Debug.Log ("GetPresenceState");

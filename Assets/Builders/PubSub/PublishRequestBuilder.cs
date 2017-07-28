@@ -9,10 +9,10 @@ namespace PubNubAPI
     {        
         private object PublishMessage { get; set;}
         private string PublishChannel { get; set;}
-        private bool ShouldStoreInHistory { get; set;}
-        private bool UsePostMethod { get; set;}
+        private bool ShouldStoreInHistory = true;
+        private bool UsePostMethod = false;
         private Dictionary<string, string> Metadata { get; set;}
-        private bool ReplicateMessage { get; set;}
+        private bool ReplicateMessage = true;
         private int PublishTtl { get; set;}
 
         private bool publishAsIs = false;
@@ -73,6 +73,7 @@ namespace PubNubAPI
         }
 
         protected override void RunWebRequest(QueueManager qm){
+            //TODO USe POST
             RequestState<PNPublishResult> requestState = new RequestState<PNPublishResult> ();
             requestState.RespType = PNOperationType.PNPublishOperation;
             string jsonMessage = (publishAsIs) ? PublishMessage.ToString () : Helpers.JsonEncodePublishMsg (PublishMessage, this.PubNubInstance.PNConfig.CipherKey, this.PubNubInstance.JsonLibrary);

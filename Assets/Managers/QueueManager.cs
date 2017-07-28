@@ -63,6 +63,7 @@ namespace PubNubAPI
                             historyBuilder.RaiseRunRequest(this);
                             break;
                         case PNOperationType.PNFireOperation:
+                            //TODO
                             break;
                         case PNOperationType.PNPublishOperation:
                             PublishRequestBuilder publishBuilder  = operationParams as PublishRequestBuilder;
@@ -74,15 +75,12 @@ namespace PubNubAPI
                             hereNowBuilder.RaiseRunRequest(this);
                             break;
                         case PNOperationType.PNLeaveOperation:
-                            //TODO
-                            break;
-                        case PNOperationType.PNUnsubscribeOperation:
-                            //TODO
-                            break;
-                        case PNOperationType.PNPresenceUnsubscribeOperation:
-                            //TODO
+                            LeaveRequestBuilder leaveBuilder  = operationParams as LeaveRequestBuilder;
+                            leaveBuilder.RaiseRunRequest(this);
                             break;
                         case PNOperationType.PNSetStateOperation:
+                            SetStateRequestBuilder setStateBuilder  = operationParams as SetStateRequestBuilder;
+                            setStateBuilder.RaiseRunRequest(this);
                             //TODO
                             break;
                         case PNOperationType.PNGetStateOperation:

@@ -81,6 +81,22 @@ namespace PubNubAPI
             Debug.Log ("PubBuilder");
             return pnUnity.Publish();
         }
+
+        public FireBuilder Fire(){
+            Debug.Log ("Fire Builder");
+            return pnUnity.Fire();
+        }
+
+        public UnsubscribeBuilder Unsubscribe(){
+            Debug.Log ("UnsubscribeBuilder");
+            return pnUnity.Unsubscribe();
+        }
+
+        public UnsubscribeAllBuilder UnsubscribeAll(){
+            Debug.Log ("UnsubscribeAll");
+            return pnUnity.UnsubscribeAll();
+        }
+
         public GetStateBuilder GetPresenceState(){
             Debug.Log ("GetPresenceState");
             return pnUnity.GetPresenceState();
@@ -125,6 +141,8 @@ namespace PubNubAPI
             Debug.Log ("RemovePushNotificationsFromChannels");
             return pnUnity.RemovePushNotificationsFromChannels();
         }
+
+        //public Unsub
 
         public void AddListener(Action<PNStatus> callback, Action<PNMessageResult> callback2, Action<PNPresenceEventResult> callback3)
         {

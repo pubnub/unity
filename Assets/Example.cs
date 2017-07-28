@@ -61,6 +61,12 @@ namespace PubNubExample
                 if(mea.pnper != null){
                     Debug.Log ("In Example, SusbcribeCallback in presence" + mea.pnper.Channel + mea.pnper.Occupancy + mea.pnper.Event);
                 }
+                pubnub.Fire().Channel("channel1").Message("test fire essage").Async((result, status) => {
+                    Debug.Log ("in Fire");
+                    Debug.Log (string.Format("DateTime {0}, In Fire Example, Timetoken: {1}", DateTime.Now , result.Timetoken));
+                    Debug.Log (status.Error);
+
+                });
                 /*pubnub.WhereNow ().Async ((result, status) => {
                     Debug.Log ("in WhereNow");
                     Debug.Log (string.Format("DateTime {0}, In Example, Channels: {1}", DateTime.Now , string.Join(",",result.Channels.ToArray())));
@@ -119,9 +125,9 @@ namespace PubNubExample
             };
 
             Debug.Log ("PubNub");
-            /*pubnub.Subscribe ().SetChannelGroups (listChannelGroups).SetChannels(listChannels).Execute();
+            pubnub.Subscribe ().SetChannelGroups (listChannelGroups).SetChannels(listChannels).Execute();
 
-            Debug.Log ("before Time");
+            /*Debug.Log ("before Time");
             /*pubnub.Time ().Async (new PNTimeCallback<PNTimeResult>(
                 (r, s) => {
                     Debug.Log ("in Time");
@@ -191,6 +197,24 @@ namespace PubNubExample
 
             string deviceId = "aaa";
             PNPushType pnPushType = PNPushType.GCM;
+
+            pubnub.Unsubscribe().ChannelGroups(listChannelGroups).Channels(listChannels).Async((result, status) => {
+                Debug.Log ("in Unsubscribe");
+                if(status.Error){
+                    Debug.Log (string.Format("In Example, Unsubscribe Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
+                } else {
+                    Debug.Log (string.Format("DateTime {0}, In Unsubscribe, result: {1}", DateTime.Now, result.Message));
+                }
+            });
+
+            pubnub.UnsubscribeAll().Async((result, status) => {
+                Debug.Log ("in UnsubscribeAll");
+                if(status.Error){
+                    Debug.Log (string.Format("In Example, UnsubscribeAll Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
+                } else {
+                    Debug.Log (string.Format("DateTime {0}, In UnsubscribeAll, result: {1}", DateTime.Now, result.Message));
+                }
+            });
 
             pubnub.AddPushNotificationsOnChannels().Channels(listChannels).DeviceIDForPush(deviceId).PushType(pnPushType).Async((result, status) => {
                     Debug.Log ("in AddPushNotificationsOnChannels");
