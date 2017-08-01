@@ -42,7 +42,7 @@ namespace PubNubAPI
         }
         public GameObject GameObjectRef { get; set;}
         internal Subscription SubscriptionInstance { get; set;}
-        internal SubscriptionWorker<SubscribeBuilder> SubWorker { get; set;}
+        internal SubscriptionWorker<SubscribeRequestBuilder> SubWorker { get; set;}
         internal bool localGobj;
 
         public PubNubUnityBase(PNConfiguration pnConfiguration, GameObject gameObjectRef, IJsonLibrary jsonLibrary){

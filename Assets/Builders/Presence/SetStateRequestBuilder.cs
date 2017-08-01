@@ -7,11 +7,12 @@ namespace PubNubAPI
 {
     public class SetStateRequestBuilder: PubNubNonSubBuilder<SetStateRequestBuilder, PNSetStateResult>, IPubNubNonSubscribeBuilder<SetStateRequestBuilder, PNSetStateResult>
     {
+        List<ChannelEntity> ChannelEntities = null;
         private List<string> ChannelsForState { get; set;}
         private List<string> ChannelGroupsForState { get; set;}
 
         private string uuid { get; set;}
-        private Dictionary<string, object> state { get; set;}
+        private Dictionary<string, object> UserState { get; set;}
 
         public SetStateRequestBuilder(PubNubUnity pn): base(pn){
             Debug.Log ("PNSetStateResult Construct");
@@ -22,7 +23,7 @@ namespace PubNubAPI
         }
 
         public void State(Dictionary<string, object> state){
-            this.state = state;
+            this.UserState = state;
         }
 
         public void Channels(List<string> channels){
@@ -39,13 +40,31 @@ namespace PubNubAPI
             this.Callback = callback;
             //validate state here
             try{
-                if(state!=null){
-                    Type t = state.GetType();
+                if(UserState!=null){
+                    Type t = UserState.GetType();
                     bool isDict = t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Dictionary<,>);
                     if(!isDict){
                         throw new MissingMemberException ("State is not of type Dictionary<,>");
                     } else {
-                        //TODO process state
+                        //string userState = "";
+
+                        if (CheckAndAddExistingUserState (
+                            ChannelsForState, 
+                            ChannelGroupsForState,
+                            UserState, 
+                            false,
+                            uuid, 
+                            this.PubNubInstance.PNConfig.UUID,
+                            //out userState, 
+                            out ChannelEntities
+                        )) {
+                            Debug.Log ("PNSetStateResult Async");
+                            base.Async(callback, PNOperationType.PNSetStateOperation, CurrentRequestType.NonSubscribe, this);
+
+                            //SharedSetUserState(ChannelsForState, ChannelGroupsForState, channelEntities, uuid, UserState);
+                        } else {
+                            Debug.Log ("PNSetStateResult Else");
+                        }
                     }
 
                 }
@@ -74,8 +93,6 @@ namespace PubNubAPI
             }
             
 
-            Debug.Log ("PNSetStateResult Async");
-            base.Async(callback, PNOperationType.PNSetStateOperation, CurrentRequestType.NonSubscribe, this);
         }
         #endregion
 
@@ -97,10 +114,10 @@ namespace PubNubAPI
                 uuid = this.PubNubInstance.PNConfig.UUID;
             }
 
-            /*Uri request = BuildRequests.BuildSetStateRequest(
+            Uri request = BuildRequests.BuildSetStateRequest(
                 channels,
                 channelGroups,
-                jsonUserState,
+                Helpers.BuildJsonUserState(ChannelEntities),
                 uuid,
                 this.PubNubInstance.PNConfig.UUID,
                 this.PubNubInstance.PNConfig.Secure,
@@ -109,26 +126,80 @@ namespace PubNubAPI
                 this.PubNubInstance.PNConfig.SubscribeKey,
                 this.PubNubInstance.Version
             );
-            this.PubNubInstance.PNLog.WriteToLog(string.Format("RunHereNowRequest {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
-            base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); */
+            this.PubNubInstance.PNLog.WriteToLog(string.Format("Run PNSetStateResult {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
+            base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
+        }
+
+        internal bool UpdateOrAddUserStateOfEntity(string channel, bool isChannelGroup, Dictionary<string, object> userState, bool edit, bool isForOtherUUID, ref List<ChannelEntity> channelEntities)
+        {
+            ChannelEntity ce = Helpers.CreateChannelEntity (channel, false, isChannelGroup, userState);
+            bool stateChanged = false;
+
+            if (isForOtherUUID) {
+                ce.ChannelParams.UserState = userState;
+                channelEntities.Add (ce);
+                stateChanged = true;
+            } else {
+                stateChanged = this.PubNubInstance.SubscriptionInstance.UpdateOrAddUserStateOfEntity (ref ce, userState, edit);
+                if (!stateChanged) {
+                    string message = "No change in User State";
+
+                    //PubnubCallbacks.CallErrorCallback<T> (ce, message,
+                      //  PubnubErrorCode.UserStateUnchanged, PubnubErrorSeverity.Info, errorLevel);
+                } else {
+                    channelEntities.Add (ce);
+                }
+            }
+            return stateChanged;
+        }
+
+        internal bool CheckAndAddExistingUserState(List<string> channels, List<string> channelGroups, Dictionary<string, object> userState, bool edit, string uuid, string sessionUUID, out List<ChannelEntity> channelEntities)
+        {
+            bool stateChanged = false;
+            bool isForOtherUUID = false;
+            channelEntities = new List<ChannelEntity> ();
+            if (!string.IsNullOrEmpty (uuid) && !sessionUUID.Equals (uuid)) {
+                isForOtherUUID = true;
+            } 
+            foreach (string ch in channels) {
+                if (!string.IsNullOrEmpty (ch)) {
+                    bool changeState = UpdateOrAddUserStateOfEntity (ch, false, userState, edit, isForOtherUUID, ref channelEntities);
+                    if (changeState && !stateChanged) {
+                        stateChanged = true;
+                    }
+                }
+            }
+
+            foreach (string ch in channelGroups) {
+                if (!string.IsNullOrEmpty (ch)) {
+                    bool changeState = UpdateOrAddUserStateOfEntity (ch, true, userState, edit, isForOtherUUID, ref channelEntities);
+                    if (changeState && !stateChanged) {
+                        stateChanged = true;
+                    }
+                }
+            }
+
+            //returnUserState = Helpers.BuildJsonUserState(channelEntities);
+
+            return stateChanged;
         }
 
         protected override void CreatePubNubResponse(object deSerializedResult){
-            //{"status": 200, "message": "OK", "payload": {"channels": {"channel1": {"occupancy": 1, "uuids": ["a"]}, "channel2": {"occupancy": 1, "uuids": ["a"]}}, "total_channels": 2, "total_occupancy": 2}, "service": "Presence"} 
+            //{"status": 200, "message": "OK", "payload": {"channels": {"channel1": {"k": "v"}, "channel2": {}}}, "uuid": "pn-c5a12d424054a3688066572fb955b7a0", "service": "Presence"}
+
             //TODO read all values.
             
-
-            /*PNHereNowResult pnHereNowResult = new PNHereNowResult();
+            PNSetStateResult pnGetStateResult = new PNSetStateResult();
+            //pnGetStateResult
             
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
             PNStatus pnStatus = new PNStatus();
 
             if (dictionary!=null && dictionary.ContainsKey("error") && dictionary["error"].Equals(true)){
-                pnHereNowResult = null;
+                pnGetStateResult = null;
                 pnStatus.Error = true;
                 //TODO create error data
             } else if(dictionary!=null) {
-                int totalChannels, total_occupancy;
                 string log = "";
                 object objPayload;
                 dictionary.TryGetValue("payload", out objPayload);
@@ -137,98 +208,24 @@ namespace PubNubAPI
                     Dictionary<string, object> payload = objPayload as Dictionary<string, object>;
                     object objChannelsDict;
                     payload.TryGetValue("channels", out objChannelsDict);
+                    //TODO NO CG
+                    //payload.TryGetValue("channelGroups", out objChannelsDict);
 
                     if(objChannelsDict!=null){
-                        Dictionary<string, PNHereNowChannelData> channelsResult;
-                        pnStatus.Error = CreateHereNowResult(objChannelsDict, out channelsResult);
-                        
-                        pnHereNowResult.Channels = channelsResult;
+                        Dictionary<string, object> channelsDict = objPayload as Dictionary<string, object>;
+                        foreach(KeyValuePair<string, object> kvp in channelsDict){
+                            Debug.Log("KVP:" + kvp.Key + kvp.Value);
+                        }
                     } 
-                } else if(Utility.CheckKeyAndParseInt(dictionary, "total_channels", "total_channels", out log, out totalChannels)){
-                        pnHereNowResult.TotalChannels = totalChannels;
-                        Debug.Log(log);
-                } else if(Utility.CheckKeyAndParseInt(dictionary, "total_occupancy", "total_occupancy", out log, out total_occupancy)){
-                        pnHereNowResult.TotalOccupancy = total_occupancy;
-                        Debug.Log(log);
+               
                 } else {
                     pnStatus.Error = true;
                 }
             } else {
-                pnHereNowResult = null;
+                pnGetStateResult = null;
                 pnStatus.Error = true;
             }
-            Callback(pnHereNowResult, pnStatus);
-        }
-
-        public bool CreateHereNowResult(object objChannelsDict, out Dictionary<string, PNHereNowChannelData> channelsResult ){
-            Dictionary<string, object> channelsDict = objChannelsDict as Dictionary<string, object>;
-            channelsResult = new Dictionary<string, PNHereNowChannelData>();
-            //List<string> channels = ch.ToList<string>();//new List<string> ();
-            if(channelsDict!=null){
-                foreach(KeyValuePair<string, object> kvpair in channelsDict){
-                    string channelName = kvpair.Key;
-                    PNHereNowChannelData channelData = new PNHereNowChannelData();
-                    channelData.Occupants = new List<PNHereNowOccupantData>();
-                    channelData.ChannelName = channelName;
-                    Debug.Log("channelName:" + channelName);
-                    Dictionary<string, object> channelDetails = kvpair.Value as Dictionary<string, object>;
-                    if(channelDetails!=null){
-                        object objOccupancy;
-                        channelDetails.TryGetValue("occupancy", out objOccupancy);
-                        int occupancy;
-                        if(int.TryParse(objOccupancy.ToString(), out occupancy)){
-                            channelData.Occupancy = occupancy;
-                            Debug.Log("occupancy:" + occupancy.ToString());
-                        }
-
-                        object uuids;
-                        channelDetails.TryGetValue("uuids", out uuids);
-                        
-                        if(uuids!=null){
-                            //occupantData.UUID 
-                            string[] arrUuids = uuids as string[];
-                            
-                            if(arrUuids!=null){
-                                foreach (string uuid in arrUuids){
-                                    PNHereNowOccupantData occupantData = new PNHereNowOccupantData();
-                                    occupantData.UUID = uuid;
-                                    Debug.Log("uuid:" + uuid);
-                                    channelData.Occupants.Add(occupantData);
-                                }
-                            } else {
-                                Dictionary<string, object>[] dictUuidsState = uuids as Dictionary<string, object>[];
-                                foreach (Dictionary<string, object> objUuidsState in dictUuidsState){
-                                    PNHereNowOccupantData occupantData = new PNHereNowOccupantData();
-                                //if(objUuidsState!=null){
-                                    //Dictionary<string, object>[] objUuidsState = uuids as Dictionary<string, object>[];
-                                    
-                                    object objUuid;
-                                    bool bUuid = false;
-                                    if(objUuidsState.TryGetValue("uuid", out objUuid)){
-                                        bUuid= true;
-                                        occupantData.UUID = objUuid.ToString();
-                                    }
-                                    object objState;
-                                    bool bState = false;
-                                    if(objUuidsState.TryGetValue("state", out objState)){
-                                        bState = true;
-                                        occupantData.State = objState;
-                                    }
-                                    if(!bState && !bUuid){
-                                        occupantData.State = objUuidsState;
-                                    }
-                                    channelData.Occupants.Add(occupantData);
-                                }
-                            }
-                            
-
-                        }
-                        //Debug.Log("uuids:" + uuids.ToString());
-                    }
-                    channelsResult.Add(channelName, channelData);
-                }
-            }
-            return false; */
+            Callback(pnGetStateResult, pnStatus);
         }
        
     }

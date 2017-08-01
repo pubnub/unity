@@ -1,4 +1,4 @@
- using System;
+/*using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,7 +20,7 @@ namespace PubNubAPI
             case PNOperationType.PNPresenceOperation:
                 //Debug.Log ("pn" + this.PubNubInstance.Test);
                 RequestState<SubscribeBuilder> reqStateSubscribeBuilder = ReqState as RequestState<SubscribeBuilder>;
-                this.PubNubInstance.SubWorker.Add (pnOpType, pnBuilder, reqStateSubscribeBuilder, this.PubNubInstance);
+                //this.PubNubInstance.SubWorker.Add (pnOpType, pnBuilder, reqStateSubscribeBuilder, this.PubNubInstance);
                 break;
             default:
                 //Debug.Log ("pn" + this.PubNubInstance.Test);
@@ -28,4 +28,4 @@ namespace PubNubAPI
             }
         }
     }
-}
+}*/

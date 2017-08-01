@@ -7,8 +7,8 @@ namespace PubNubAPI
     {
         void Execute();
 
-        U SetChannels (List<string> channels);
-        U SetChannelGroups (List<string> channelGroups);
+        void SetChannels (List<string> channels);
+        void SetChannelGroups (List<string> channelGroups);
     }
 }
 

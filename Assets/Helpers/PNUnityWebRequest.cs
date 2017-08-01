@@ -769,7 +769,7 @@ namespace PubNubAPI
                      cp.requestState.RespType, cp.crt), LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
                     }
                     #endif
-
+                    Debug.Log("BEFORE FireEvent");
                     FireEvent (message, isError, false, cp.requestState, cp.crt);
                 } 
             } catch (Exception ex) {
@@ -830,6 +830,7 @@ namespace PubNubAPI
 
         public void FireEvent<T> (string message, bool isError, bool isTimeout, RequestState<T> pubnubRequestState, CurrentRequestType crt)
         {
+            Debug.Log(" FireEvent");
             CustomEventArgs<T> cea = new CustomEventArgs<T> ();
             cea.PubnubRequestState = pubnubRequestState;
             cea.Message = message;
@@ -845,12 +846,15 @@ namespace PubNubAPI
             } else if ((crt == CurrentRequestType.PresenceHeartbeat) && (presenceHeartbeatWebRequestComplete != null)) {
                 presenceHeartbeatWebRequestComplete.Raise (this, cea);
             } else if ((crt == CurrentRequestType.Subscribe) && (subWebRequestComplete != null)) {
+                Debug.Log("Subscribe FireEvent");
                 subWebRequestComplete.Raise (this, cea);
             } else if ((crt == CurrentRequestType.NonSubscribe) && (nonSubWebRequestComplete != null)) {
                 nonSubWebRequestComplete.Raise (this, cea);
             } 
+            
             #if (ENABLE_PUBNUB_LOGGING)
             else {
+                
             LoggingMethod.WriteToLog (string.Format ("FireEvent: Request Type not matched {1}",  crt.ToString ()), LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
             }
             #endif

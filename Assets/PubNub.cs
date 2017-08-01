@@ -102,6 +102,11 @@ namespace PubNubAPI
             return pnUnity.GetPresenceState();
         }
 
+        public SetStateBuilder SetPresenceState(){
+            Debug.Log ("SetPresenceState");
+            return pnUnity.SetPresenceState();
+        }
+
         public AddChannelsToChannelGroupBuilder AddChannelsToChannelGroup(){
             Debug.Log ("AddChannelsToChannelGroupBuilder");
             return pnUnity.AddChannelsToChannelGroup();

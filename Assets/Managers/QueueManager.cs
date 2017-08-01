@@ -81,10 +81,8 @@ namespace PubNubAPI
                         case PNOperationType.PNSetStateOperation:
                             SetStateRequestBuilder setStateBuilder  = operationParams as SetStateRequestBuilder;
                             setStateBuilder.RaiseRunRequest(this);
-                            //TODO
                             break;
                         case PNOperationType.PNGetStateOperation:
-                            //TODO
                             GetStateRequestBuilder getStateBuilder = operationParams as GetStateRequestBuilder;
                             getStateBuilder.RaiseRunRequest(this);
                             break;

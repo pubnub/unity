@@ -56,7 +56,7 @@ namespace PubNubAPI
 
             base.PNLog.WriteToLog (string.Format("Init with UUID {0}", base.PNConfig.UUID), PNLoggingMethod.LevelInfo);
             SubscriptionInstance = new Subscription (this);
-            SubWorker = new SubscriptionWorker<SubscribeBuilder>(this);
+            SubWorker = new SubscriptionWorker<SubscribeRequestBuilder>(this);
              
             base.QManager.PubNubInstance = this;
         }
@@ -135,6 +135,10 @@ namespace PubNubAPI
         public GetStateBuilder GetPresenceState(){
             Debug.Log ("GetPresenceState");
             return new GetStateBuilder(this);
+        }
+        public SetStateBuilder SetPresenceState(){
+            Debug.Log ("SetPresenceState");
+            return new SetStateBuilder(this);
         }
 
         public AddChannelsToChannelGroupBuilder AddChannelsToChannelGroup(){
