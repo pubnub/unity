@@ -1,5 +1,5 @@
-//Build Date: Mar 31, 2017
-//ver3.7.8/Unity5
+//Build Date: Aug 8, 2017
+//ver3.7.9/Unity5
 using System;
 using UnityEngine;
 using System.Collections;
@@ -51,8 +51,8 @@ namespace PubNubMessaging.Core
         private bool ssl = true;
         private static long lastSubscribeTimetoken = 0;
         private static long lastSubscribeTimetokenForNewMultiplex = 0;
-        private const string build = "3.7.8";
-        private static string pnsdkVersion = "PubNub-CSharp-Unity5/3.7.8";
+        private const string build = "3.7.9";
+        private static string pnsdkVersion = "PubNub-CSharp-Unity5/3.7.9";
 
         private int pubnubWebRequestCallbackIntervalInSeconds = 310;
         private int pubnubOperationTimeoutIntervalInSeconds = 15;
