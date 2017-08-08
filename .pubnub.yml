@@ -3,6 +3,13 @@ changelog:
   - 
     changes: 
       - 
+        text: “Unity UWP compatibility”
+        type: improvement
+    date: Aug 8, 17
+    version: v3.7.9
+  - 
+    changes: 
+      - 
         text: “Presence delta intervals”
         type: improvement
     date: Mar 31, 17
@@ -231,4 +238,4 @@ supported-platforms:
 name: unity
 schema: 1
 scm: github.com/pubnub/unity
-version: “3.7.8”
+version: “3.7.9”
