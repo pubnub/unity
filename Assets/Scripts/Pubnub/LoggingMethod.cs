@@ -11,7 +11,7 @@ using UnityEngine;
 namespace PubNubMessaging.Core
 {
     #region "Logging and error codes -- code split required"
-    #if (UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_IOS || UNITY_ANDROID || UNITY_5)
+    #if (UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_IOS || UNITY_ANDROID || UNITY_5 || UNITY_WSA_8_1 || UNITY_WSA_10_0 || UNITY_WSA || UNITY_WEBGL )
     public class LoggingMethod:MonoBehaviour
     #else
     internal class LoggingMethod
@@ -66,7 +66,7 @@ namespace PubNubMessaging.Core
             if (writeToLog) {
                 #if (SILVERLIGHT || WINDOWS_PHONE || MONOTOUCH || __IOS__ || MONODROID || __ANDROID__)
                 System.Diagnostics.Debug.WriteLine(logText);
-                #elif (UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_IOS || UNITY_ANDROID || UNITY_5 || UNITY_WEBGL)
+                #elif (UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_IOS || UNITY_ANDROID || UNITY_5 || UNITY_WEBGL || UNITY_WSA_8_1 || UNITY_WSA_10_0 || UNITY_WSA )
                 UnityEngine.Debug.Log (string.Format("\n** {0} \n", logText));
                 #else
                 try {
