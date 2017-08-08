@@ -235,6 +235,7 @@ supported-platforms:
       - Mac OS X 10.8+, with Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support.
     editors:
       - Unity 5.5.1
+      - Unity 2007.1.0
 name: unity
 schema: 1
 scm: github.com/pubnub/unity
