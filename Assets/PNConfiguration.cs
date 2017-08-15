@@ -4,6 +4,8 @@ namespace PubNubAPI
 {
     public class PNConfiguration
     {
+        public event EventHandler<EventArgs> UUIDChanged; 
+        public event EventHandler<EventArgs> FilterExpressionChanged; 
         public PNConfiguration ()
         {
             Secure = true;
@@ -34,9 +36,12 @@ namespace PubNubAPI
             }
             set{
                 uuid = value;
+                if(UUIDChanged!=null){
+                    UUIDChanged.Invoke(this, null);
+                }
             }
-            
         }
+
         public PNLogVerbosity LogVerbosity { get; set;}
         public string AuthKey { get; set;}
         public bool Secure { get; set;}
@@ -71,8 +76,17 @@ namespace PubNubAPI
             }
         }
         
-        public string FilterExpression { get; set;}
-        public PNHeartbeatNotificationOption HeartbeatNotificationOption { get; set;}
+        //public string FilterExpression { get; set;}
+        string filterExpr;
+        public string FilterExpression{
+            get { return filterExpr; }
+            set{
+                filterExpr = value;
+                FilterExpressionChanged.Invoke(this, null);
+            }
+        }
+
+        public PNHeartbeatNotificationOption HeartbeatNotificationOption = PNHeartbeatNotificationOption.Failures;
         private string origin = "ps.pndsn.com";
         public string Origin { 
             get{
@@ -82,9 +96,13 @@ namespace PubNubAPI
                 origin = value;
             }
         }
-        public PNReconnectionPolicy ReconnectionPolicy { get; set;}
+        //In seconds, how long the server will consider this client to be online before issuing a leave event.
+        public PNReconnectionPolicy ReconnectionPolicy = PNReconnectionPolicy.NONE;
         public int PresenceTimeout { get; set;}
+        //In seconds, How often the client should announce it's existence via heartbeating.
         public int PresenceInterval { get; set;}
+
+        public int HeartbeatInterval = 10;
         public int MaximumReconnectionRetries { get; set;}
     }
 }

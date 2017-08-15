@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Linq;
-using System.Collections;
 using System.Text;
 using UnityEngine;
+using System.Collections;
 
 namespace PubNubAPI
 {
@@ -105,16 +105,6 @@ namespace PubNubAPI
             return sb.ToString();
         }
 
-        internal static void LogChannelEntitiesDictionary(PubNubUnity pn){
-            StringBuilder sbLogs = new StringBuilder();
-            foreach (var ci in pn.SubscriptionInstance.ChannelEntitiesDictionary) {
-                sbLogs.AppendFormat("\nChannelEntitiesDictionary \nChannelOrChannelGroupName:{0} \nIsChannelGroup:{1} \nIsPresenceChannel:{2}\n", ci.Key.ChannelOrChannelGroupName, ci.Key.IsChannelGroup.ToString(), ci.Key.IsPresenceChannel.ToString());
-            }
-            #if (ENABLE_PUBNUB_LOGGING)
-            LoggingMethod.WriteToLog (string.Format ("LogChannelEntitiesDictionary: Count: {2} \n{1}", sbLogs.ToString(), pn.SubscriptionInstance.ChannelEntitiesDictionary.Count), LoggingMethod.LevelInfo, pn.PNConfig.LogVerbosity);
-            #endif
-        }
-
         internal static TimetokenMetadata CreateTimetokenMetadata (object timeTokenDataObject, string whichTT, PNLogVerbosity pnLogVerbosity)
         {
             Dictionary<string, object> timeTokenData = (Dictionary<string, object>)timeTokenDataObject;
@@ -141,113 +131,15 @@ namespace PubNubAPI
             return result;
         }
 
-        internal static void AddToSubscribeMessageList (object dictObject, ref List<SubscribeMessage> subscribeMessages, PNLogVerbosity pnLogVerbosity)
+        internal static IEnumerable<string> GetDuplicates(List<string> rawChannels)
         {
-            var dict = dictObject as IDictionary;      
-            if ((dict != null) && (dict.Count > 1)) {
-                string shard = (dict.Contains ("a")) ? dict ["a"].ToString () : "";
-                string subscriptionMatch = (dict.Contains ("b")) ? dict ["b"].ToString () : "";
-                string channel = (dict.Contains ("c")) ? dict ["c"].ToString () : "";
-                object payload = (dict.Contains ("d")) ? (object)dict ["d"] : null;
-                string flags = (dict.Contains ("f")) ? dict ["f"].ToString () : "";
-                string issuingClientId = (dict.Contains ("i")) ? dict ["i"].ToString () : "";
-                string subscribeKey = (dict.Contains ("k")) ? dict ["k"].ToString () : "";
-                string log; 
-                long sequenceNumber = Utility.CheckKeyAndParseLong (dict, "sequenceNumber", "s", out log);
-                
-                TimetokenMetadata originatingTimetoken = (dict.Contains ("o")) ? CreateTimetokenMetadata (dict ["o"], "Originating TT: ", pnLogVerbosity) : null;
-                TimetokenMetadata publishMetadata = (dict.Contains ("p")) ? CreateTimetokenMetadata (dict ["p"], "Publish TT: ", pnLogVerbosity) : null;
-                object userMetadata = (dict.Contains ("u")) ? (object)dict ["u"] : null;
-
-                SubscribeMessage subscribeMessage = new SubscribeMessage (
-                    shard,
-                    subscriptionMatch,
-                    channel,
-                    payload,
-                    flags,
-                    issuingClientId,
-                    subscribeKey,
-                    sequenceNumber,
-                    originatingTimetoken,
-                    publishMetadata,
-                    userMetadata
-                );
-                #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog (string.Format ("AddToSubscribeMessageList: \n" +
-                "shard : {1},\n" +
-                "subscriptionMatch: {2},\n" +
-                "channel: {3},\n" +
-                "payload: {4},\n" +
-                "flags: {5},\n" +
-                "issuingClientId: {6},\n" +
-                "subscribeKey: {7},\n" +
-                "sequenceNumber: {8},\n" +
-                "originatingTimetoken tt: {9},\n" +
-                "originatingTimetoken region: {10},\n" +
-                "publishMetadata tt: {11},\n" +
-                "publishMetadata region: {12},\n" +
-                "userMetadata {13} \n" +
-                "log {14} \n",
-                 
-                shard,
-                subscriptionMatch,
-                channel,
-                payload.ToString (),
-                flags,
-                issuingClientId,
-                subscribeKey,
-                sequenceNumber,
-                (originatingTimetoken != null) ? originatingTimetoken.Timetoken.ToString () : "",
-                (originatingTimetoken != null) ? originatingTimetoken.Region : "",
-                (publishMetadata != null) ? publishMetadata.Timetoken.ToString () : "",
-                (publishMetadata != null) ? publishMetadata.Region : "",
-                (userMetadata != null) ? userMetadata.ToString () : "null",
-                log), 
-                LoggingMethod.LevelInfo, pnLogVerbosity);
-                #endif
-
-                subscribeMessages.Add (subscribeMessage);
-            } 
-            #if (ENABLE_PUBNUB_LOGGING)
-            else {
-                LoggingMethod.WriteToLog (string.Format ("AddToSubscribeMessageList: CreateListOfSubscribeMessage create SubscribeMessage failed. dictObject type: {1}, dict type : {2}", dictObject.ToString (), dict.ToString ()), LoggingMethod.LevelInfo, pnLogVerbosity);
-            }
-            #endif
-        }
-
-        internal static List<SubscribeMessage> CreateListOfSubscribeMessage (object message, PNLogVerbosity pnLogVerbosity)
-        {
-            List<SubscribeMessage> subscribeMessages = new List<SubscribeMessage> ();
-            if (message != null) {
-                //JSONFx
-                object[] messages = message as object[];
-
-                if (messages != null) {
-                    var myObjectArray = (from item in messages
-                        select item as object).ToArray ();
-                    if ((myObjectArray!= null) && (myObjectArray.Length > 0)) {
-
-                        foreach (object dictObject in myObjectArray) {
-                            AddToSubscribeMessageList (dictObject, ref subscribeMessages, pnLogVerbosity);
-                        }
-                    }
-                } else {
-                    //MiniJSON
-                    List<object> messageList = message as List<object>;
-                    if ((messageList != null) && messageList.Count > 0) {
-                        foreach (object dictObject in messageList) {
-                            AddToSubscribeMessageList (dictObject, ref subscribeMessages, pnLogVerbosity);
-                        }
-                    }
-                }
-            }
-            #if (ENABLE_PUBNUB_LOGGING)
-            else {
-                LoggingMethod.WriteToLog (string.Format ("CreateListOfSubscribeMessage: no messages ", DateTime.Now.ToString ()), LoggingMethod.LevelInfo, pnLogVerbosity);
-            }
-            #endif
-
-            return subscribeMessages;
+            var results = from string a in rawChannels
+                group a by a into g
+                    where g.Count() > 1
+                select g;
+            foreach (var group in results)
+                foreach (var item in group)
+                    yield return item;
         }
 
         internal static void CreateHistoryResult(string cipherKey, object deSerializedResult, ref PNResult result, ref PNStatus pnStatus){
@@ -460,8 +352,7 @@ namespace PubNubAPI
             }
         }
 
-        internal static List<ChannelEntity> CreateChannelEntity(string[] channelOrChannelGroupNames, bool isAwaitingConnectCallback, bool isChannelGroup, Dictionary<string, object> userState
-        ){
+        internal static List<ChannelEntity> CreateChannelEntity(string[] channelOrChannelGroupNames, bool isAwaitingConnectCallback, bool isChannelGroup, Dictionary<string, object> userState){
             List<ChannelEntity> channelEntities = null;
             if (channelOrChannelGroupNames != null) {
                 channelEntities = new List<ChannelEntity> ();
@@ -483,74 +374,6 @@ namespace PubNubAPI
             }
 
             return channelEntities;
-        }
-
-        internal static bool CreateChannelEntityAndAddToSubscribe(PNOperationType type, List<string> rawChannels, bool isChannelGroup, bool unsubscribeCheck, ref List<ChannelEntity> channelEntities, PubNubUnity pn)
-        {
-            bool bReturn = false;    
-            for (int index = 0; index < rawChannels.Count; index++)
-            {
-                string channelName = rawChannels[index].Trim();
-
-                if (channelName.Length > 0) {
-                    if((type == PNOperationType.PNPresenceOperation) 
-                        || (type == PNOperationType.PNPresenceUnsubscribeOperation)) {
-                        channelName = string.Format ("{0}{1}", channelName, PresenceChannelSuffix);
-                    }
-
-                    #if (ENABLE_PUBNUB_LOGGING)
-                    Helpers.LogChannelEntitiesDictionary();
-                    LoggingMethod.WriteToLog (string.Format ("CreateChannelEntityAndAddToSubscribe: channel={1}",  channelName), LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
-                    #endif
-
-                    //create channelEntity
-                    ChannelEntity ce = CreateChannelEntity (channelName, true, isChannelGroup, null);
-
-                    bool channelIsSubscribed = false;
-                    if (pn.SubscriptionInstance.ChannelEntitiesDictionary.ContainsKey (ce.ChannelID)){
-                        channelIsSubscribed = pn.SubscriptionInstance.ChannelEntitiesDictionary [ce.ChannelID].IsSubscribed;
-                    }
-
-                    if (unsubscribeCheck) {
-                        if (!channelIsSubscribed) {
-                            /*string message = string.Format ("{0}Channel Not Subscribed", (ce.ChannelID.IsPresenceChannel) ? "Presence " : "");
-                            PubnubErrorCode errorType = (ce.ChannelID.IsPresenceChannel) ? PubnubErrorCode.NotPresenceSubscribed : PubnubErrorCode.NotSubscribed;
-                            #if (ENABLE_PUBNUB_LOGGING)
-                            LoggingMethod.WriteToLog (string.Format ("CreateChannelEntityAndAddToSubscribe: channel={1} response={2}",  channelName, message), LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
-                            #endif
-                            PubnubCallbacks.CallErrorCallback<T> (ce, message,
-                                errorType, PubnubErrorSeverity.Info, errorLevel);*/
-                        } else {
-                            channelEntities.Add (ce);
-                            bReturn = true;
-                        }
-                    } else {
-                        if (channelIsSubscribed) {
-                            /*string message = string.Format ("{0}Already subscribed", (ce.ChannelID.IsPresenceChannel) ? "Presence " : "");
-                            PubnubErrorCode errorType = (ce.ChannelID.IsPresenceChannel) ? PubnubErrorCode.AlreadyPresenceSubscribed : PubnubErrorCode.AlreadySubscribed;
-                            PubnubCallbacks.CallErrorCallback<T> (ce, message,
-                                errorType, PubnubErrorSeverity.Info, errorLevel);
-                            #if (ENABLE_PUBNUB_LOGGING)
-                            LoggingMethod.WriteToLog (string.Format ("CreateChannelEntityAndAddToSubscribe: channel={1} response={2}",  channelName, message), LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
-                            #endif*/
-                        } else {
-                            channelEntities.Add (ce);
-                            bReturn = true;
-                        }
-                    }
-                } else {
-                    #if (ENABLE_PUBNUB_LOGGING)
-                    string message = "Invalid Channel Name";
-                    if (isChannelGroup) {
-                    message = "Invalid Channel Group Name";
-                    }
-
-                    LoggingMethod.WriteToLog(string.Format("CreateChannelEntityAndAddToSubscribe: channel={1} response={2}", DateTime.Now.ToString(), channelName, message), 
-                    LoggingMethod.LevelInfo);
-                    #endif
-                }
-            }
-            return bReturn;
         }
 
         internal static string BuildJsonUserState (List<ChannelEntity> ce)
@@ -595,6 +418,114 @@ namespace PubNubAPI
             return decodeMessage;
         }
 
+        internal static void AddToSubscribeMessageList (object dictObject, ref List<SubscribeMessage> subscribeMessages, PNLogVerbosity pnLogVerbosity)
+        {
+            var dict = dictObject as IDictionary;      
+            if ((dict != null) && (dict.Count > 1)) {
+                string shard = (dict.Contains ("a")) ? dict ["a"].ToString () : "";
+                string subscriptionMatch = (dict.Contains ("b")) ? dict ["b"].ToString () : "";
+                string channel = (dict.Contains ("c")) ? dict ["c"].ToString () : "";
+                object payload = (dict.Contains ("d")) ? (object)dict ["d"] : null;
+                string flags = (dict.Contains ("f")) ? dict ["f"].ToString () : "";
+                string issuingClientId = (dict.Contains ("i")) ? dict ["i"].ToString () : "";
+                string subscribeKey = (dict.Contains ("k")) ? dict ["k"].ToString () : "";
+                string log; 
+                long sequenceNumber = Utility.CheckKeyAndParseLong (dict, "sequenceNumber", "s", out log);
+                
+                TimetokenMetadata originatingTimetoken = (dict.Contains ("o")) ? Helpers.CreateTimetokenMetadata (dict ["o"], "Originating TT: ", pnLogVerbosity) : null;
+                TimetokenMetadata publishMetadata = (dict.Contains ("p")) ? Helpers.CreateTimetokenMetadata (dict ["p"], "Publish TT: ", pnLogVerbosity) : null;
+                object userMetadata = (dict.Contains ("u")) ? (object)dict ["u"] : null;
+
+                SubscribeMessage subscribeMessage = new SubscribeMessage (
+                    shard,
+                    subscriptionMatch,
+                    channel,
+                    payload,
+                    flags,
+                    issuingClientId,
+                    subscribeKey,
+                    sequenceNumber,
+                    originatingTimetoken,
+                    publishMetadata,
+                    userMetadata
+                );
+                #if (ENABLE_PUBNUB_LOGGING)
+                LoggingMethod.WriteToLog (string.Format ("AddToSubscribeMessageList: \n" +
+                "shard : {1},\n" +
+                "subscriptionMatch: {2},\n" +
+                "channel: {3},\n" +
+                "payload: {4},\n" +
+                "flags: {5},\n" +
+                "issuingClientId: {6},\n" +
+                "subscribeKey: {7},\n" +
+                "sequenceNumber: {8},\n" +
+                "originatingTimetoken tt: {9},\n" +
+                "originatingTimetoken region: {10},\n" +
+                "publishMetadata tt: {11},\n" +
+                "publishMetadata region: {12},\n" +
+                "userMetadata {13} \n" +
+                "log {14} \n",
+                 
+                shard,
+                subscriptionMatch,
+                channel,
+                payload.ToString (),
+                flags,
+                issuingClientId,
+                subscribeKey,
+                sequenceNumber,
+                (originatingTimetoken != null) ? originatingTimetoken.Timetoken.ToString () : "",
+                (originatingTimetoken != null) ? originatingTimetoken.Region : "",
+                (publishMetadata != null) ? publishMetadata.Timetoken.ToString () : "",
+                (publishMetadata != null) ? publishMetadata.Region : "",
+                (userMetadata != null) ? userMetadata.ToString () : "null",
+                log), 
+                LoggingMethod.LevelInfo, pnLogVerbosity);
+                #endif
+
+                subscribeMessages.Add (subscribeMessage);
+            } 
+            #if (ENABLE_PUBNUB_LOGGING)
+            else {
+                LoggingMethod.WriteToLog (string.Format ("AddToSubscribeMessageList: CreateListOfSubscribeMessage create SubscribeMessage failed. dictObject type: {1}, dict type : {2}", dictObject.ToString (), dict.ToString ()), LoggingMethod.LevelInfo, pnLogVerbosity);
+            }
+            #endif
+        }
+
+        internal static List<SubscribeMessage> CreateListOfSubscribeMessage (object message, PNLogVerbosity pnLogVerbosity)
+        {
+            List<SubscribeMessage> subscribeMessages = new List<SubscribeMessage> ();
+            if (message != null) {
+                //JSONFx
+                object[] messages = message as object[];
+
+                if (messages != null) {
+                    var myObjectArray = (from item in messages
+                        select item as object).ToArray ();
+                    if ((myObjectArray!= null) && (myObjectArray.Length > 0)) {
+
+                        foreach (object dictObject in myObjectArray) {
+                            AddToSubscribeMessageList (dictObject, ref subscribeMessages, pnLogVerbosity);
+                        }
+                    }
+                } else {
+                    //MiniJSON
+                    List<object> messageList = message as List<object>;
+                    if ((messageList != null) && messageList.Count > 0) {
+                        foreach (object dictObject in messageList) {
+                            AddToSubscribeMessageList (dictObject, ref subscribeMessages, pnLogVerbosity);
+                        }
+                    }
+                }
+            }
+            #if (ENABLE_PUBNUB_LOGGING)
+            else {
+                LoggingMethod.WriteToLog (string.Format ("CreateListOfSubscribeMessage: no messages ", DateTime.Now.ToString ()), LoggingMethod.LevelInfo, pnLogVerbosity);
+            }
+            #endif
+
+            return subscribeMessages;
+        }
         /*internal static List<object> DecryptCipheredMessage (List<object> message, List<ChannelEntity> channelEntities, string cipherKey, IJsonPluggableLibrary jsonPluggableLibrary, PubnubErrorFilter.Level errorLevel)
         {
             List<object> returnMessage = new List<object> ();

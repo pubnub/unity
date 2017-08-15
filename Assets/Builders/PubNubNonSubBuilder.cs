@@ -41,9 +41,9 @@ namespace PubNubAPI
             RequestQueue.Instance.Enqueue (callback, pnOpType, pnBuilder, this.PubNubInstance);
         }
 
-        protected void CreatePubNubResponse<T>(object deSerializedResult){
+        /*protected void CreatePubNubResponse<T>(object deSerializedResult){
 
-        }
+        }*/
 
         protected void RunWebRequest(QueueManager qm, Uri request, RequestState<V> requestState, int timeout, int pause, PubNubNonSubBuilder<U, V> pnBuilder){
             NonSubscribeWorker<U, V> nonSubscribeWorker = new NonSubscribeWorker<U, V> (qm);

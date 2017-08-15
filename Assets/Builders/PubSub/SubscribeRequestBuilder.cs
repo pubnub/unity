@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace PubNubAPI
 {
@@ -13,7 +14,7 @@ namespace PubNubAPI
 
         protected PubNubUnity PubNubInstance { get; set;}
 
-        private RequestState<SubscribeRequestBuilder> ReqState;
+        //private RequestState<SubscribeRequestBuilder> ReqState;
 
         public SubscribeRequestBuilder(PubNubUnity pn) {//: base(pn){
             PubNubInstance = pn;
@@ -22,17 +23,32 @@ namespace PubNubAPI
         #region IPubNubBuilder implementation
 
         public void Execute(){
-            //base.ReqState = new RequestState<SubscribeRequestBuilder> ();
-            //base.ReqState.Reconnect = ReconnectSub;
+            List<ChannelEntity> subscribedChannels = this.PubNubInstance.SubscriptionInstance.AllSubscribedChannelsAndChannelGroups;
+            List<ChannelEntity> newChannelEntities;
+            List<string> rawChannels = this.Channels;
+            List<string> rawChannelGroups = this.ChannelGroups;
+            PNOperationType pnOpType = PNOperationType.PNSubscribeOperation;
+            long timetokenToUse = this.Timetoken;
+            
+            bool channelsOrChannelGroupsAdded = this.PubNubInstance.SubscriptionInstance.RemoveDuplicatesCheckAlreadySubscribedAndGetChannels (pnOpType, rawChannels, rawChannelGroups, false, out newChannelEntities);
+            if (channelsOrChannelGroupsAdded){
+                this.PubNubInstance.SubscriptionInstance.Add (newChannelEntities);
+                this.PubNubInstance.SubWorker.Add (pnOpType, timetokenToUse, subscribedChannels);
+            }
+            #if (ENABLE_PUBNUB_LOGGING)
+            else {
+                //TODO raise duplicate event
+                LoggingMethod.WriteToLog (string.Format ("MultiChannelSubscribeInit: channelsOrChannelGroupsAdded {1}", channelsOrChannelGroupsAdded.ToString ()), LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity, PubNubInstance.PNConfig.LogVerbosity);
+            }
+            #endif
 
-            //base.Execute (PNOperationType.PNSubscribeOperation, this);
-            ReqState = new RequestState<SubscribeRequestBuilder> ();
-            this.PubNubInstance.SubWorker.Add (PNOperationType.PNSubscribeOperation, this, ReqState, this.PubNubInstance);
-                
+            Debug.Log ("channelsOrChannelGroupsAdded" + channelsOrChannelGroupsAdded);
+            Debug.Log ("newChannelEntities" + newChannelEntities.Count);
         }
-        public void Reconnect(bool reconnect) {
+        
+        /*public void Reconnect(bool reconnect) {
             ReconnectSub = reconnect;
-        }
+        }*/
 
         public void SetChannels(List<string> channels){
             Channels = channels;

@@ -68,25 +68,6 @@ namespace PubNubAPI
                     }
 
                 }
-                /*if (!this.PubNubInstance.JsonLibrary.IsDictionaryCompatible (state)) {
-                    
-                } else {
-                    Dictionary<string, object> deserializeUserState = this.PubNubInstance.JsonLibrary.DeserializeToDictionaryOfObject (jsonUserState);
-                    if (deserializeUserState == null) {
-                        throw new MissingMemberException ("Missing JSON formatted user state");
-                    } else {
-                        string userState = "";
-                        List<ChannelEntity> channelEntities;
-                        if (Helpers.CheckAndAddExistingUserState<T> (channel, channelGroup,
-                            deserializeUserState, userCallback, errorCallback, errorLevel, false,
-                            uuid, this.SessionUUID,
-                            out userState, out channelEntities
-                        )) {
-                            SharedSetUserState<T> (channel, channelGroup,
-                                channelEntities, uuid, userState);
-                        }
-                    }
-                }*/
 
             } catch (Exception ex){
                 Debug.Log(ex.ToString());
@@ -113,7 +94,7 @@ namespace PubNubAPI
             if (string.IsNullOrEmpty (uuid)) {
                 uuid = this.PubNubInstance.PNConfig.UUID;
             }
-
+            //TODO add state to instance
             Uri request = BuildRequests.BuildSetStateRequest(
                 channels,
                 channelGroups,

@@ -62,9 +62,6 @@ namespace PubNubAPI
                             HistoryRequestBuilder historyBuilder  = operationParams as HistoryRequestBuilder;
                             historyBuilder.RaiseRunRequest(this);
                             break;
-                        case PNOperationType.PNFireOperation:
-                            //TODO
-                            break;
                         case PNOperationType.PNPublishOperation:
                             PublishRequestBuilder publishBuilder  = operationParams as PublishRequestBuilder;
                             publishBuilder.RaiseRunRequest(this);

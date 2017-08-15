@@ -20,10 +20,10 @@ namespace PubNubAPI
             pubBuilder.Execute();
         }
 
-        public SubscribeBuilder Reconnect(bool reconnect) {
+        /*public SubscribeBuilder Reconnect(bool reconnect) {
             pubBuilder.Reconnect(reconnect);
             return this;
-        }
+        }*/
 
         public SubscribeBuilder SetChannels(List<string> channels){
             pubBuilder.SetChannels (channels);

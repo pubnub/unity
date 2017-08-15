@@ -42,7 +42,7 @@ namespace PubNubAPI
 
         public void RunWebRequest(string url, RequestState<V> requestState, int timeout, int pause, PubNubNonSubBuilder<U, V> pnBuilder){
             PNBuilder = pnBuilder;
-            webRequest.Run<V>(url, requestState, this.queueManager.PubNubInstance.PNConfig.NonSubscribeTimeout, 0); 
+            webRequest.Run<V>(url, requestState, this.queueManager.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, false); 
         }
             
         /*public void RunTimeRequest(PNConfiguration pnConfig, Action<T, PNStatus> callback){
@@ -118,8 +118,8 @@ namespace PubNubAPI
         {
             try {
                 
-                string multiChannel = Helpers.GetNamesFromChannelEntities(pubnubRequestState.ChannelEntities, false); 
-                string multiChannelGroup = Helpers.GetNamesFromChannelEntities(pubnubRequestState.ChannelEntities, true);
+                //string multiChannel = Helpers.GetNamesFromChannelEntities(pubnubRequestState.ChannelEntities, false); 
+                //string multiChannelGroup = Helpers.GetNamesFromChannelEntities(pubnubRequestState.ChannelEntities, true);
                 if (!string.IsNullOrEmpty (jsonString)) {
                     #if (ENABLE_PUBNUB_LOGGING)
                     this.queueManager.PubNubInstance.PNLog.WriteToLog (string.Format ("DateTime {0}, ProcessNonSubscribeResult: jsonString = {1} {2}", DateTime.Now.ToString (), jsonString, pubnubRequestState.RespType), PNLoggingMethod.LevelInfo);

@@ -322,6 +322,145 @@ namespace PubNubAPI
             HasChannelsOrChannelGroups = false;
             HasPresenceChannels = false;
         }
+
+        internal void LogChannelEntitiesDictionary(){
+            StringBuilder sbLogs = new StringBuilder();
+            foreach (var ci in ChannelEntitiesDictionary) {
+                sbLogs.AppendFormat("\nChannelEntitiesDictionary \nChannelOrChannelGroupName:{0} \nIsChannelGroup:{1} \nIsPresenceChannel:{2}\n", ci.Key.ChannelOrChannelGroupName, ci.Key.IsChannelGroup.ToString(), ci.Key.IsPresenceChannel.ToString());
+            }
+            #if (ENABLE_PUBNUB_LOGGING)
+            LoggingMethod.WriteToLog (string.Format ("LogChannelEntitiesDictionary: Count: {2} \n{1}", sbLogs.ToString(), ChannelEntitiesDictionary.Count), LoggingMethod.LevelInfo, pn.PNConfig.LogVerbosity);
+            #endif
+        }
+
+        internal bool RemoveDuplicatesCheckAlreadySubscribedAndGetChannels(PNOperationType type, List<string> rawChannels, List<string> rawChannelGroups, bool unsubscribeCheck, out List<ChannelEntity> channelEntities)
+        {
+            bool bReturn = false;
+            bool channelAdded = false;
+            bool channelGroupAdded = false;
+            channelEntities = new List<ChannelEntity> ();
+            if (rawChannels != null && rawChannels.Count > 0) {
+                channelAdded = RemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCommon(type, rawChannels, false, unsubscribeCheck, ref channelEntities);
+            }
+
+            if (rawChannelGroups != null && rawChannelGroups.Count > 0) {
+                channelGroupAdded = RemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCommon(type, rawChannelGroups, true, unsubscribeCheck, ref channelEntities);
+            }
+
+            bReturn = channelAdded | channelGroupAdded;
+
+            return bReturn;
+        }
+
+        internal bool RemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCommon(PNOperationType type, List<string> channelsOrChannelGroups, bool isChannelGroup, bool unsubscribeCheck, ref List<ChannelEntity> channelEntities)
+        {
+            bool bReturn = false;
+            if (channelsOrChannelGroups.Count > 0) {
+
+                channelsOrChannelGroups = channelsOrChannelGroups.Where(x => !string.IsNullOrEmpty(x)).ToList();
+
+                if (channelsOrChannelGroups.Count != channelsOrChannelGroups.Distinct ().Count ()) {
+                    channelsOrChannelGroups = channelsOrChannelGroups.Distinct ().ToList ();
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    LoggingMethod.WriteToLog (string.Format ("RemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCommon: distinct channelsOrChannelGroups len={1}, channelsOrChannelGroups = {2}", 
+                         channelsOrChannelGroups.Count, string.Join(",", channelsOrChannelGroups.ToArray())), 
+                    LoggingMethod.LevelInfo);
+                    #endif
+
+                    string channel = string.Join (",", Helpers.GetDuplicates (channelsOrChannelGroups).Distinct<string> ().ToArray<string> ());
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    LoggingMethod.WriteToLog (string.Format ("RemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCommon: duplicates channelsOrChannelGroups {1}", 
+                     channel), 
+                    LoggingMethod.LevelInfo);
+                    #endif
+
+                    string message = string.Format ("Detected and removed duplicate channels {0}", channel); 
+
+                    //PubnubCallbacks.CallErrorCallback<T> (message, errorCallback, PubnubErrorCode.DuplicateChannel, 
+                      //  PubnubErrorSeverity.Info, errorLevel);
+                }
+                #if (ENABLE_PUBNUB_LOGGING)
+                LoggingMethod.WriteToLog (string.Format ("RemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCommon: channelsOrChannelGroups len={1}, channelsOrChannelGroups = {2}", 
+                     channelsOrChannelGroups.Count, string.Join(",", channelsOrChannelGroups.ToArray())), 
+                LoggingMethod.LevelInfo);
+                #endif
+                
+                bReturn = CreateChannelEntityAndAddToSubscribe (type, channelsOrChannelGroups, isChannelGroup, unsubscribeCheck, ref channelEntities, PubNubInstance);
+            } else {
+                #if (ENABLE_PUBNUB_LOGGING)
+                LoggingMethod.WriteToLog (string.Format ("RemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCommon: channelsOrChannelGroups len <=0", 
+                DateTime.Now.ToString ()), 
+                LoggingMethod.LevelInfo);
+                #endif
+            }
+            return bReturn;
+        }
+        internal bool CreateChannelEntityAndAddToSubscribe(PNOperationType type, List<string> rawChannels, bool isChannelGroup, bool unsubscribeCheck, ref List<ChannelEntity> channelEntities, PubNubUnity pn)
+        {
+            bool bReturn = false;    
+            for (int index = 0; index < rawChannels.Count; index++)
+            {
+                string channelName = rawChannels[index].Trim();
+
+                if (channelName.Length > 0) {
+                    if((type == PNOperationType.PNPresenceOperation) || (type == PNOperationType.PNPresenceUnsubscribeOperation)) {
+                        channelName = string.Format ("{0}{1}", channelName, Helpers.PresenceChannelSuffix);
+                    }
+
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    Helpers.LogChannelEntitiesDictionary();
+                    LoggingMethod.WriteToLog (string.Format ("CreateChannelEntityAndAddToSubscribe: channel={1}",  channelName), LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
+                    #endif
+
+                    //create channelEntity
+                    ChannelEntity ce = Helpers.CreateChannelEntity (channelName, true, isChannelGroup, null);
+
+                    bool channelIsSubscribed = false;
+                    if (ChannelEntitiesDictionary.ContainsKey (ce.ChannelID)){
+                        channelIsSubscribed = ChannelEntitiesDictionary [ce.ChannelID].IsSubscribed;
+                    }
+
+                    if (unsubscribeCheck) {
+                        if (!channelIsSubscribed) {
+                            /*string message = string.Format ("{0}Channel Not Subscribed", (ce.ChannelID.IsPresenceChannel) ? "Presence " : "");
+                            PubnubErrorCode errorType = (ce.ChannelID.IsPresenceChannel) ? PubnubErrorCode.NotPresenceSubscribed : PubnubErrorCode.NotSubscribed;
+                            #if (ENABLE_PUBNUB_LOGGING)
+                            LoggingMethod.WriteToLog (string.Format ("CreateChannelEntityAndAddToSubscribe: channel={1} response={2}",  channelName, message), LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
+                            #endif
+                            PubnubCallbacks.CallErrorCallback<T> (ce, message,
+                                errorType, PubnubErrorSeverity.Info, errorLevel);*/
+                        } else {
+                            channelEntities.Add (ce);
+                            bReturn = true;
+                        }
+                    } else {
+                        if (channelIsSubscribed) {
+                            /*string message = string.Format ("{0}Already subscribed", (ce.ChannelID.IsPresenceChannel) ? "Presence " : "");
+                            PubnubErrorCode errorType = (ce.ChannelID.IsPresenceChannel) ? PubnubErrorCode.AlreadyPresenceSubscribed : PubnubErrorCode.AlreadySubscribed;
+                            PubnubCallbacks.CallErrorCallback<T> (ce, message,
+                                errorType, PubnubErrorSeverity.Info, errorLevel);
+                            #if (ENABLE_PUBNUB_LOGGING)
+                            LoggingMethod.WriteToLog (string.Format ("CreateChannelEntityAndAddToSubscribe: channel={1} response={2}",  channelName, message), LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
+                            #endif*/
+                        } else {
+                            channelEntities.Add (ce);
+                            bReturn = true;
+                        }
+                    }
+                } else {
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    string message = "Invalid Channel Name";
+                    if (isChannelGroup) {
+                    message = "Invalid Channel Group Name";
+                    }
+
+                    LoggingMethod.WriteToLog(string.Format("CreateChannelEntityAndAddToSubscribe: channel={1} response={2}", DateTime.Now.ToString(), channelName, message), 
+                    LoggingMethod.LevelInfo);
+                    #endif
+                }
+            }
+            return bReturn;
+        }
     }
 }
 

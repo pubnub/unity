@@ -6,6 +6,7 @@ namespace PubNubAPI
 {
     public class PubNubUnityBase
     {
+        protected Counter publishMessageCounter;
         private const string build = "4.0";
         private string pnsdkVersion = string.Format ("PubNub-CSharp-Unity/{0}", build);
 
@@ -42,7 +43,7 @@ namespace PubNubAPI
         }
         public GameObject GameObjectRef { get; set;}
         internal Subscription SubscriptionInstance { get; set;}
-        internal SubscriptionWorker<SubscribeRequestBuilder> SubWorker { get; set;}
+        internal SubscriptionWorker<SubscribeEnvelope> SubWorker { get; set;}
         internal bool localGobj;
 
         public PubNubUnityBase(PNConfiguration pnConfiguration, GameObject gameObjectRef, IJsonLibrary jsonLibrary){
@@ -87,9 +88,27 @@ namespace PubNubAPI
                 #endif
                 localGobj = false;
             }
-
+            publishMessageCounter = new Counter ();
+            
             QManager = GameObjectRef.AddComponent<QueueManager> ();
             QManager.NoOfConcurrentRequests = PNConfig.ConcurrentNonSubscribeWorkers;
         }
+
+         public void CleanUp (){
+            publishMessageCounter.Reset ();
+            if (QManager != null) {
+                UnityEngine.Object.Destroy (QManager);
+            }
+            
+            #if (ENABLE_PUBNUB_LOGGING)
+            base.PNLog.WriteToLog ("CleanUp: Destructing GameObject", PNLoggingMethod.LevelInfo);
+            #endif
+            
+            if(localGobj && (GameObjectRef != null))
+            {
+                UnityEngine.Object.Destroy (GameObjectRef);
+            }
+
+         }
     }
 }

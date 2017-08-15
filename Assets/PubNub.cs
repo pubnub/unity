@@ -48,7 +48,22 @@ namespace PubNubAPI
             };
         }
 
-         public SubscribeBuilder Subscribe(){
+        public void CleanUp (){
+            pnUnity.CleanUp();
+        }
+
+        ~PubNub(){
+            #if (ENABLE_PUBNUB_LOGGING)
+            base.PNLog.WriteToLog ("Destructing PubNub", PNLoggingMethod.LevelInfo);
+            #endif
+            this.CleanUp ();
+        }
+
+        public void Reconnect(){
+            pnUnity.Reconnect();
+        }
+
+        public SubscribeBuilder Subscribe(){
             return pnUnity.Subscribe();
         }
 

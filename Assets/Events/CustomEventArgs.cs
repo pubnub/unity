@@ -6,7 +6,7 @@ namespace PubNubAPI
     {
         internal string Message;
         internal RequestState<T> PubnubRequestState;
-        internal Action<T, PNStatus> Callback;
+        //internal Action<T, PNStatus> Callback;
         internal bool IsError;
         internal bool IsTimeout;
         internal CurrentRequestType CurrRequestType;

@@ -7,7 +7,7 @@ using System;
 namespace PubNubExample
 {
     public class Example : MonoBehaviour {
-
+         PubNub pubnub;
     	// Use this for initialization
     	void Start () {
             Debug.Log ("Starting");
@@ -21,7 +21,7 @@ namespace PubNubExample
             //TODO: remove
             pnConfiguration.UUID = "a";
             Debug.Log ("PNConfiguration");  
-            PubNub pubnub = new PubNub (pnConfiguration);
+            pubnub = new PubNub (pnConfiguration);
 
             pubnub.AddListener (
                 (s) => {
@@ -63,11 +63,11 @@ namespace PubNubExample
                 if(mea.pnStatus != null){
                     //Debug.Log ("SusbcribeCallback in status" + String.Join(", ", mea.pnStatus.AffectedChannelGroups.ToArray()) + String.Join(", ", mea.pnStatus.AffectedChannels.ToArray()));
                 }
-                if(mea.pnmr != null){
-                    Debug.Log ("In Example, SusbcribeCallback in message" + mea.pnmr.Channel + mea.pnmr.Payload);
+                if(mea.pnMessageResult != null){
+                    Debug.Log ("In Example, SusbcribeCallback in message" + mea.pnMessageResult.Channel + mea.pnMessageResult.Payload);
                 }
-                if(mea.pnper != null){
-                    Debug.Log ("In Example, SusbcribeCallback in presence" + mea.pnper.Channel + mea.pnper.Occupancy + mea.pnper.Event);
+                if(mea.pnPresenceEventResult != null){
+                    Debug.Log ("In Example, SusbcribeCallback in presence" + mea.pnPresenceEventResult.Channel + mea.pnPresenceEventResult.Occupancy + mea.pnPresenceEventResult.Event);
                 }
                 pubnub.Fire().Channel("channel1").Message("test fire essage").Async((result, status) => {
                     Debug.Log ("in Fire");
@@ -133,7 +133,7 @@ namespace PubNubExample
 
             };
 
-            Debug.Log ("PubNub");
+            //Debug.Log ("PubNub");
             pubnub.Subscribe ().SetChannelGroups (listChannelGroups).SetChannels(listChannels).Execute();
 
             /*Debug.Log ("before Time");
@@ -161,7 +161,7 @@ namespace PubNubExample
                 }
             });*/
 
-            pubnub.GetPresenceState().Channels(listChannels).ChannelGroups(listChannelGroups).UUID("pn-c5a12d424054a3688066572fb955b7a0").Async ((result, status) => {
+            /*pubnub.GetPresenceState().Channels(listChannels).ChannelGroups(listChannelGroups).Async ((result, status) => {
             //pubnub.GetPresenceState().Channels(listChannels).ChannelGroups(listChannelGroups).Async ((result, status) => {
                 
                 if(status.Error){
@@ -169,7 +169,7 @@ namespace PubNubExample
                 } else {
                     Debug.Log (string.Format("DateTime {0}, In Example GetPresenceState, result:", DateTime.Now));
                 }
-            });
+            });*/
             //pubnub.Time ().Async (new PNCallback<PNTimeResult>(){
 
                 //Debug.Log ("in Time")
@@ -360,5 +360,9 @@ namespace PubNubExample
     	void Update () {
     	
     	}
-}
+
+        void OnApplicationQuit(){
+            pubnub.CleanUp();
+        }
+    }
 }

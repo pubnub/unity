@@ -6,7 +6,6 @@ namespace PubNubAPI
 {
     public class PubNubUnity: PubNubUnityBase
     {
-        private Counter publishMessageCounter;
         //TODO INotifyPropertyChanged
         public string Test { get; set;}
         public event EventHandler<EventArgs> SusbcribeCallback; 
@@ -16,22 +15,17 @@ namespace PubNubAPI
             }
         }
 
-        public void CleanUp (){
-            publishMessageCounter.Reset ();
-
+        public new void CleanUp (){
             #if (ENABLE_PUBNUB_LOGGING)
             base.PNLog.WriteToLog ("CleanUp: Destructing coroutine", PNLoggingMethod.LevelInfo);
             #endif
-            /*if (coroutine != null) {
-                UnityEngine.Object.Destroy (coroutine);
-            }*/
-            #if (ENABLE_PUBNUB_LOGGING)
-            base.PNLog.WriteToLog ("CleanUp: Destructing GameObject", PNLoggingMethod.LevelInfo);
-            #endif
-            /*if(localGobj && (gobj != null))
-            {
-                UnityEngine.Object.Destroy (gobj);
-            }*/
+
+            if (SubWorker != null) {
+                SubWorker.CleanUp();
+            }
+
+            base.CleanUp();
+            
             #if (ENABLE_PUBNUB_LOGGING)
             base.PNLog.WriteToLog (string.Format ("DateTime {0} Clean up complete.", DateTime.Now.ToString ()), PNLoggingMethod.LevelInfo);
             #endif
@@ -44,6 +38,12 @@ namespace PubNubAPI
             this.CleanUp ();
         }
 
+        public void Reconnect(){
+            if(SubWorker != null){
+                SubWorker.BounceRequest();
+            }
+        }
+
         /// <summary>
         /// Gets or sets the set game object.
         /// This method should be called before init
@@ -52,19 +52,28 @@ namespace PubNubAPI
         //public GameObject GameObjectRef { get; set;}
         public PubNubUnity (PNConfiguration pnConfiguration, GameObject gameObjectRef, IJsonLibrary jsonLibrary): base(pnConfiguration, gameObjectRef, jsonLibrary)
         {
-            publishMessageCounter = new Counter ();
-
             base.PNLog.WriteToLog (string.Format("Init with UUID {0}", base.PNConfig.UUID), PNLoggingMethod.LevelInfo);
             SubscriptionInstance = new Subscription (this);
-            SubWorker = new SubscriptionWorker<SubscribeRequestBuilder>(this);
-             
+            SubWorker = new SubscriptionWorker<SubscribeEnvelope>(this); 
             base.QManager.PubNubInstance = this;
+
+            //TODO test
+            PNConfig.UUIDChanged += (sender, e) =>{
+                if(SubWorker != null){
+                    SubWorker.UUIDChanged = true;
+                    SubWorker.BounceRequest();
+                }
+            };
+
+            PNConfig.FilterExpressionChanged += (sender, e) =>{
+                if(SubWorker != null){
+                    //TerminateCurrentSubscriberRequest ();
+                    SubWorker.BounceRequest();
+                }
+            };
+
         }
 
-        public void AddChannelsToWorker<T>(){
-        
-        }
-    
         public void AddListener(Action<PNStatus> callback, Action<PNMessageResult> callback2, Action<PNPresenceEventResult> callback3)
         {
             SusbcribeCallback += (object sender, EventArgs e) => {
@@ -75,11 +84,11 @@ namespace PubNubAPI
                     if(mea.pnStatus != null){
                         callback(mea.pnStatus);
                     }
-                    if(mea.pnmr != null){
-                        callback2(mea.pnmr);
+                    if(mea.pnMessageResult != null){
+                        callback2(mea.pnMessageResult);
                     }
-                    if(mea.pnper != null){
-                        callback3(mea.pnper);
+                    if(mea.pnPresenceEventResult != null){
+                        callback3(mea.pnPresenceEventResult);
                     }
                 }
             };

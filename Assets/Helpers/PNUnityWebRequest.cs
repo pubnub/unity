@@ -436,11 +436,13 @@ namespace PubNubAPI
         }
 
         private EventHandler<EventArgs> subWebRequestComplete;
-
+        //TODO remove single instance
         public event EventHandler<EventArgs> SubWebRequestComplete {
             add {
                 if (subWebRequestComplete == null || !subWebRequestComplete.GetInvocationList ().Contains (value)) {
                     subWebRequestComplete += value;
+                } else {
+                    Debug.Log("SubWebRequestComplete instantiating more than one instance");
                 }
             }
             remove {
@@ -449,7 +451,7 @@ namespace PubNubAPI
         }
 
         private EventHandler<EventArgs> nonSubWebRequestComplete;
-
+        //TODO remove single instance
         public event EventHandler<EventArgs> NonSubWebRequestComplete {
             add {
                 if (nonSubWebRequestComplete == null || !nonSubWebRequestComplete.GetInvocationList ().Contains (value)) {
@@ -462,7 +464,7 @@ namespace PubNubAPI
         }
 
         private EventHandler<EventArgs> presenceHeartbeatWebRequestComplete;
-
+        //TODO remove single instance
         public event EventHandler<EventArgs> PresenceHeartbeatWebRequestComplete {
             add {
                 if (presenceHeartbeatWebRequestComplete == null || !presenceHeartbeatWebRequestComplete.GetInvocationList ().Contains (value)) {
@@ -475,7 +477,7 @@ namespace PubNubAPI
         }
 
         private EventHandler<EventArgs> heartbeatWebRequestComplete;
-
+        //TODO remove single instance
         public event EventHandler<EventArgs> HeartbeatWebRequestComplete {
             add {
                 if (heartbeatWebRequestComplete == null || !heartbeatWebRequestComplete.GetInvocationList ().Contains (value)) {
@@ -511,8 +513,7 @@ namespace PubNubAPI
             }
         }
 
-
-        public void Run<T> (string url, RequestState<T> pubnubRequestState, int timeout, int pause)
+        public void Run<T> (string url, RequestState<T> pubnubRequestState, int timeout, int pause, bool reconnect)
         {
             //for heartbeat and presence heartbeat treat reconnect as pause
             CurrentRequestType crt;
@@ -523,7 +524,7 @@ namespace PubNubAPI
                 }
                 CheckComplete (crt);
 
-                if (pubnubRequestState.Reconnect) {
+                if (reconnect) {
                     DelayStartWebRequest<T>(url, pubnubRequestState, timeout, pause, crt);
                 } else {
                     StartWebRequestsByName<T> (url, pubnubRequestState, timeout, pause, crt);
@@ -779,7 +780,7 @@ namespace PubNubAPI
             }
         }
 
-        public void BounceRequest<T> (CurrentRequestType crt, RequestState<T> pubnubRequestState, bool fireEvent)
+        public void AbortRequest<T> (CurrentRequestType crt, RequestState<T> pubnubRequestState, bool fireEvent)
         {
             try {
                 CheckComplete (crt);
@@ -846,7 +847,7 @@ namespace PubNubAPI
             } else if ((crt == CurrentRequestType.PresenceHeartbeat) && (presenceHeartbeatWebRequestComplete != null)) {
                 presenceHeartbeatWebRequestComplete.Raise (this, cea);
             } else if ((crt == CurrentRequestType.Subscribe) && (subWebRequestComplete != null)) {
-                Debug.Log("Subscribe FireEvent");
+                Debug.Log("Subscribe FireEvent" + cea.Message + typeof(T));
                 subWebRequestComplete.Raise (this, cea);
             } else if ((crt == CurrentRequestType.NonSubscribe) && (nonSubWebRequestComplete != null)) {
                 nonSubWebRequestComplete.Raise (this, cea);
