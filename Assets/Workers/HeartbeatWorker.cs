@@ -1,3 +1,4 @@
+//#define ENABLE_PUBNUB_LOGGING
 using System;
 using UnityEngine;
 
@@ -22,6 +23,7 @@ namespace PubNubAPI
             PubNubInstance  = pn;
             webRequest = PubNubInstance.GameObjectRef.AddComponent<PNUnityWebRequest> ();
             webRequest.HeartbeatWebRequestComplete += WebRequestCompleteHandler;
+            Debug.Log("HeartbeatWorker HB");
         }
 
         ~HeartbeatWorker(){
@@ -29,6 +31,7 @@ namespace PubNubAPI
         }
 
         internal void CleanUp(){
+            Debug.Log("HeartbeatWorker Cleanup");
             if (webRequest != null) {
                 webRequest.HeartbeatWebRequestComplete -= WebRequestCompleteHandler;
                 UnityEngine.Object.Destroy (webRequest);
@@ -37,8 +40,9 @@ namespace PubNubAPI
 
         private void WebRequestCompleteHandler (object sender, EventArgs ea)
         {
+            Debug.Log("WebRequestCompleteHandler HB");
             CustomEventArgs<PNTimeResult> cea = ea as CustomEventArgs<PNTimeResult>;
-
+            
             try {
                 if (cea != null) {
                     //if (cea.PubnubRequestState != null) {
@@ -94,7 +98,7 @@ namespace PubNubAPI
 
                 coroutine.HeartbeatCoroutineComplete += CoroutineCompleteHandler<T>;*/
                 RequestState<PNTimeResult> requestState = new RequestState<PNTimeResult> ();
-                requestState.RespType = PNOperationType.PNTimeOperation;
+                requestState.RespType = PNOperationType.PNHeartbeatOperation;
             
                 Uri request = BuildRequests.BuildTimeRequest(
                     this.PubNubInstance.PNConfig.UUID,
@@ -103,6 +107,7 @@ namespace PubNubAPI
                     this.PubNubInstance.Version
                 );
 
+                Debug.Log(string.Format ("DateTime {0}, heartbeat: request.OriginalString {1} ", DateTime.Now.ToString (), request.OriginalString ));
                 webRequest.Run<PNTimeResult>(request.OriginalString, requestState, PubNubInstance.PNConfig.NonSubscribeTimeout, pauseTime, pause);
                 
                 //for heartbeat and presence heartbeat treat reconnect as pause
@@ -138,7 +143,7 @@ namespace PubNubAPI
             if (cea.IsTimeout || cea.IsError) {
                 RetryLoop ();
                 #if (ENABLE_PUBNUB_LOGGING)
-                LoggingMethod.WriteToLog (string.Format ("DateTime {0}, HeartbeatHandler: Heartbeat timeout={1}", DateTime.Now.ToString (), cea.Message.ToString ()), LoggingMethod.LevelError);
+                PubNubInstance.PNLog.WriteToLog (string.Format ("DateTime {0}, HeartbeatHandler: Heartbeat timeout={1}", DateTime.Now.ToString (), cea.Message.ToString ()), PNLoggingMethod.LevelError);
                 #endif
             } else {
                 InternetConnectionAvailableHandler (cea);
@@ -149,9 +154,11 @@ namespace PubNubAPI
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, HeartbeatHandler: Restarting Heartbeat {1}", DateTime.Now.ToString (), cea.PubnubRequestState.ID), LoggingMethod.LevelInfo);
                 #endif
                 if (internetStatus) {
+                    Debug.Log("HeartbeatHandler internetStatus");
                     RunHeartbeat (true, PubNubInstance.PNConfig.PresenceInterval);
                 }
                 else {
+                    Debug.Log("HeartbeatHandler !internetStatus");
                     RunHeartbeat (true, PubNubInstance.PNConfig.HeartbeatInterval);
                 }
             }

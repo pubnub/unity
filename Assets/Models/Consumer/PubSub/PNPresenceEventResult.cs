@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace PubNubAPI
 {
@@ -14,11 +15,11 @@ namespace PubNubAPI
         public object State { get; set;} 
         public object UserMetadata { get; set;} 
         public string IssuingClientId { get; set;} 
+        public List<string> Join { get; set;}
+        public List<string> Timeout { get; set;}
+        public List<string> Leave { get; set;}
 
-        public PNPresenceEventResult(string subscribedChannel, string actualchannel, string presenceEvent,
-            long timetoken, long timestamp, object userMetadata, object state, string uuid, int occupancy,
-            string issuingClientId
-        ){
+        public PNPresenceEventResult(string subscribedChannel, string actualchannel, string presenceEvent, long timetoken, long timestamp, object userMetadata, object state, string uuid, int occupancy, string issuingClientId, List<string> joins, List<string> leaves, List<string> timeouts){
             this.Subscription = subscribedChannel;// change to channel group
             this.Channel = actualchannel; // change to channel
             this.Event = presenceEvent;
@@ -29,6 +30,9 @@ namespace PubNubAPI
             this.State = state;
             this.UserMetadata = userMetadata;
             this.IssuingClientId = issuingClientId;
+            this.Join = joins;
+            this.Leave = leaves;
+            this.Timeout = timeouts;            
         }
     }
 }

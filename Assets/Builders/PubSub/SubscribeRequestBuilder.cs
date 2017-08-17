@@ -14,6 +14,8 @@ namespace PubNubAPI
 
         protected PubNubUnity PubNubInstance { get; set;}
 
+        public bool IncludePresenceChannel = false;
+
         //private RequestState<SubscribeRequestBuilder> ReqState;
 
         public SubscribeRequestBuilder(PubNubUnity pn) {//: base(pn){
@@ -21,6 +23,10 @@ namespace PubNubAPI
         }
 
         #region IPubNubBuilder implementation
+
+        public void WithPresence(){
+            IncludePresenceChannel = true;
+        }
 
         public void Execute(){
             List<ChannelEntity> subscribedChannels = this.PubNubInstance.SubscriptionInstance.AllSubscribedChannelsAndChannelGroups;

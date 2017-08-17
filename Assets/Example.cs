@@ -69,12 +69,12 @@ namespace PubNubExample
                 if(mea.pnPresenceEventResult != null){
                     Debug.Log ("In Example, SusbcribeCallback in presence" + mea.pnPresenceEventResult.Channel + mea.pnPresenceEventResult.Occupancy + mea.pnPresenceEventResult.Event);
                 }
-                pubnub.Fire().Channel("channel1").Message("test fire essage").Async((result, status) => {
+                /*pubnub.Fire().Channel("channel1").Message("test fire essage").Async((result, status) => {
                     Debug.Log ("in Fire");
                     Debug.Log (string.Format("DateTime {0}, In Fire Example, Timetoken: {1}", DateTime.Now , result.Timetoken));
                     Debug.Log (status.Error);
 
-                });
+                });*/
                 
                 /*pubnub.WhereNow ().Async ((result, status) => {
                     Debug.Log ("in WhereNow");
