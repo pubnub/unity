@@ -12,11 +12,13 @@ namespace PubNubExample
     	void Start () {
             Debug.Log ("Starting");
             PNConfiguration pnConfiguration = new PNConfiguration ();
-            pnConfiguration.SubscribeKey = "sub-c-b05d4a0c-708d-11e7-96c9-0619f8945a4f";
-            pnConfiguration.PublishKey = "pub-c-94691e07-c8aa-42f9-a838-bea61ac6655e";
+            pnConfiguration.SubscribeKey = "demo";
+            pnConfiguration.PublishKey = "demo";
             pnConfiguration.Secure = true;
             pnConfiguration.CipherKey = "enigma";
             pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
+            pnConfiguration.PresenceTimeout = 60;
+            pnConfiguration.PresenceInterval= 30;
 
             //TODO: remove
             pnConfiguration.UUID = "a";
@@ -134,7 +136,7 @@ namespace PubNubExample
             };
 
             //Debug.Log ("PubNub");
-            pubnub.Subscribe ().SetChannelGroups (listChannelGroups).SetChannels(listChannels).Execute();
+            pubnub.Subscribe ().SetChannelGroups (listChannelGroups).SetChannels(listChannels).WithPresence().Execute();
 
             /*Debug.Log ("before Time");
             /*pubnub.Time ().Async (new PNTimeCallback<PNTimeResult>(

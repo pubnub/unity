@@ -10,9 +10,10 @@ namespace PubNubAPI
 
         private PNUnityWebRequest webRequest;
         private PubNubUnity PubNubInstance { get; set;}
-        internal PresenceHeartbeatWorker(PubNubUnity pn){
+        internal PresenceHeartbeatWorker(PubNubUnity pn, PNUnityWebRequest webRequest){
             PubNubInstance  = pn;
-            webRequest = PubNubInstance.GameObjectRef.AddComponent<PNUnityWebRequest> ();
+            this.webRequest = webRequest;
+            //webRequest = PubNubInstance.GameObjectRef.AddComponent<PNUnityWebRequest> ();
             webRequest.PresenceHeartbeatWebRequestComplete += WebRequestCompleteHandler;
         }
 
@@ -23,16 +24,18 @@ namespace PubNubAPI
         internal void CleanUp(){
             if (webRequest != null) {
                 webRequest.PresenceHeartbeatWebRequestComplete -= WebRequestCompleteHandler;
-                UnityEngine.Object.Destroy (webRequest);
+                //UnityEngine.Object.Destroy (webRequest);
             }
         }
 
         private void WebRequestCompleteHandler (object sender, EventArgs ea)
         {
+            Debug.Log("WebRequestCompleteHandler PHB");
             CustomEventArgs<PNPresenceHeartbeatResult> cea = ea as CustomEventArgs<PNPresenceHeartbeatResult>;
 
             try {
                 if (cea != null) {
+                    Debug.Log(" PHB cea not null");
                     //if (cea.PubnubRequestState != null) {
                     PresenceHeartbeatHandler (cea);
                     /*}
@@ -48,6 +51,7 @@ namespace PubNubAPI
                 }
                 #endif
             } catch (Exception ex) {
+                Debug.Log(ex.ToString());
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, CoroutineCompleteHandler: Exception={1}", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
                 #endif
@@ -71,6 +75,7 @@ namespace PubNubAPI
         }
 
         private void PresenceHeartbeatHandler (CustomEventArgs<PNPresenceHeartbeatResult> cea){
+            Debug.Log(string.Format ("PresenceHeartbeatHandler keepPresenceHearbeatRunning={0} isPresenceHearbeatRunning={1}", keepPresenceHearbeatRunning, isPresenceHearbeatRunning));
             isPresenceHearbeatRunning = false;
 
             #if (ENABLE_PUBNUB_LOGGING)
@@ -110,6 +115,7 @@ namespace PubNubAPI
                         this.PubNubInstance.PNConfig.SubscribeKey,
                         this.PubNubInstance.Version
                     );
+                    Debug.Log(string.Format ("DateTime {0}, presenceheartbeat: request.OriginalString {1} ", DateTime.Now.ToString (), request.OriginalString ));
 
                     webRequest.Run<PNPresenceHeartbeatResult>(request.OriginalString, requestState, PubNubInstance.PNConfig.NonSubscribeTimeout, pauseTime, pause);
 
@@ -124,6 +130,7 @@ namespace PubNubAPI
                 }
             }
             catch (Exception ex) {
+                Debug.Log(ex.ToString());
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, StartPresenceHeartbeat: PresenceHeartbeat exception {1}", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
                 #endif
@@ -132,6 +139,7 @@ namespace PubNubAPI
         
         internal void RunPresenceHeartbeat (bool pause, int pauseTime)
         {
+            Debug.Log(string.Format ("RunPresenceHeartbeat keepPresenceHearbeatRunning={0} isPresenceHearbeatRunning={1}", keepPresenceHearbeatRunning, isPresenceHearbeatRunning));
             keepPresenceHearbeatRunning = true;
             if (!isPresenceHearbeatRunning) {
                 StartPresenceHeartbeat (pause, pauseTime);

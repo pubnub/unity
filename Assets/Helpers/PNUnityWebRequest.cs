@@ -353,6 +353,7 @@ namespace PubNubAPI
                         ProcessResponse<T> (subscribeWww, cp);
                         break;
                     case CurrentRequestType.Heartbeat:
+                        Debug.Log ("in Heartbeat switch");
                         ProcessResponse<T> (heartbeatWww, cp);
                         break;
                     case CurrentRequestType.PresenceHeartbeat:
@@ -517,7 +518,8 @@ namespace PubNubAPI
         {
             //for heartbeat and presence heartbeat treat reconnect as pause
             CurrentRequestType crt;
-            if ((pubnubRequestState.RespType == PNOperationType.PNHeartbeatOperation) || (pubnubRequestState.RespType == PNOperationType.PNHeartbeatOperation)) {
+            Debug.Log("pubnubRequestState:"+ pubnubRequestState.RespType);
+            if ((pubnubRequestState.RespType == PNOperationType.PNHeartbeatOperation) || (pubnubRequestState.RespType == PNOperationType.PNPresenceHeartbeatOperation)) {
                 crt = CurrentRequestType.PresenceHeartbeat;
                 if (pubnubRequestState.RespType == PNOperationType.PNHeartbeatOperation) {
                     crt = CurrentRequestType.Heartbeat;
@@ -587,9 +589,9 @@ namespace PubNubAPI
                 runNonSubscribeTimer = true;
                 NonsubCompleteOrTimeoutEvent += WebRequestClass_CompleteEvent<T>;
                 isNonSubscribeComplete = false;
-                Debug.Log ("Run StartWebRequestsByName");
+                Debug.Log ("Run NonSubscribe StartWebRequestsByName");
                 nonSubscribeWww = UnityWebRequest.Get (cp.url);
-                Debug.Log ("After StartWebRequestsByName");
+                Debug.Log ("After NonSubscribe StartWebRequestsByName");
                 AsyncOperation async = nonSubscribeWww.Send ();
 
                 #if (ENABLE_PUBNUB_LOGGING)
@@ -600,8 +602,9 @@ namespace PubNubAPI
                 runPresenceHeartbeatTimer = true;
                 PresenceHeartbeatCompleteOrTimeoutEvent += WebRequestClass_CompleteEvent<T>;
                 isPresenceHeartbeatComplete = false;
+                Debug.Log ("Run PresenceHeartbeat StartWebRequestsByName");
                 presenceHeartbeatWww = UnityWebRequest.Get  (cp.url);
-                AsyncOperation async = nonSubscribeWww.Send ();
+                AsyncOperation async = presenceHeartbeatWww.Send ();
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("StartWebRequestsByName: {1} running",  cp.crt.ToString ()), LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
                 #endif
@@ -612,8 +615,9 @@ namespace PubNubAPI
                 runHeartbeatTimer = true;
                 HeartbeatCompleteOrTimeoutEvent += WebRequestClass_CompleteEvent<T>;
                 isHearbeatComplete = false;
+                Debug.Log ("Run Heartbeat StartWebRequestsByName");
                 heartbeatWww = UnityWebRequest.Get (cp.url);
-                AsyncOperation async = nonSubscribeWww.Send ();
+                AsyncOperation async = heartbeatWww.Send ();
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("StartWebRequestsByName: {1} running",  cp.crt.ToString ()), LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
                 #endif
@@ -727,6 +731,7 @@ namespace PubNubAPI
                 }
 
             } catch (Exception ex) {
+                Debug.Log(ex.ToString());
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("CheckComplete: Exception: {1}",  ex.ToString ()), LoggingMethod.LevelError);
                 #endif
@@ -779,6 +784,7 @@ namespace PubNubAPI
                     FireEvent (message, isError, false, cp.requestState, cp.crt);
                 } 
             } catch (Exception ex) {
+                Debug.Log(ex.ToString());
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("ProcessResponse: RunWebRequestSub {1}, Exception: {2}",  cp.crt.ToString (), ex.ToString ()), LoggingMethod.LevelError);
                 #endif
@@ -798,6 +804,7 @@ namespace PubNubAPI
                     #endif
                 }
             } catch (Exception ex) {
+                Debug.Log(ex.ToString());
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("BounceRequest: Exception: {1}",  ex.ToString ()), LoggingMethod.LevelError);
                 #endif
@@ -817,17 +824,18 @@ namespace PubNubAPI
                 #endif
 
                 if (!CheckComplete (cp.crt)) {
-                    if ((cp.typeParameterType == typeof(string)) || (cp.typeParameterType == typeof(object))) {
+                    //if ((cp.typeParameterType == typeof(string)) || (cp.typeParameterType == typeof(object))) {
                         FireEvent ("Timed out", true, true, cp.requestState, cp.crt);
                         #if (ENABLE_PUBNUB_LOGGING)
                         LoggingMethod.WriteToLog (string.Format ("ProcessTimeout: WWW Error: {1} sec timeout",  cp.timeout.ToString ()), LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
                         #endif
-                    } else {
+                    /*} else {
                         throw new Exception ("'string' and 'object' are the only types supported in generic method calls");
-                    }
+                    }*/
                 }
 
             } catch (Exception ex) {
+                Debug.Log(ex.ToString());
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("ProcessTimeout: {1} {2}",  ex.ToString (), cp.crt.ToString ()), LoggingMethod.LevelError);
                 #endif

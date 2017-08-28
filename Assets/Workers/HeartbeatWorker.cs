@@ -19,9 +19,10 @@ namespace PubNubAPI
 
         private int retryCount = 0;
 
-        internal HeartbeatWorker(PubNubUnity pn){
+        internal HeartbeatWorker(PubNubUnity pn, PNUnityWebRequest webRequest){
             PubNubInstance  = pn;
-            webRequest = PubNubInstance.GameObjectRef.AddComponent<PNUnityWebRequest> ();
+            this.webRequest = webRequest;
+            //webRequest = PubNubInstance.GameObjectRef.AddComponent<PNUnityWebRequest> ();
             webRequest.HeartbeatWebRequestComplete += WebRequestCompleteHandler;
             Debug.Log("HeartbeatWorker HB");
         }
@@ -34,7 +35,7 @@ namespace PubNubAPI
             Debug.Log("HeartbeatWorker Cleanup");
             if (webRequest != null) {
                 webRequest.HeartbeatWebRequestComplete -= WebRequestCompleteHandler;
-                UnityEngine.Object.Destroy (webRequest);
+                //UnityEngine.Object.Destroy (webRequest);
             }
         }
 
@@ -70,11 +71,13 @@ namespace PubNubAPI
 
         internal void StopHeartbeat ()
         {
+            Debug.Log(string.Format ("StopHeartbeat keepHearbeatRunning={0} isHearbeatRunning={1}", keepHearbeatRunning, isHearbeatRunning));
             keepHearbeatRunning = false;
             if (isHearbeatRunning || webRequest.CheckIfRequestIsRunning(CurrentRequestType.Heartbeat)){
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, Stopping Heartbeat ", DateTime.Now.ToString ()), LoggingMethod.LevelInfo);
                 #endif
+                Debug.Log(string.Format ("Stopping Heartbeat keepHearbeatRunning={0} isHearbeatRunning={1}", keepHearbeatRunning, isHearbeatRunning));
                 
                 isHearbeatRunning = false;
                 //webRequest.HeartbeatCoroutineComplete -= CoroutineCompleteHandler<PNOperationType.PNHeartbeatOperation>;
@@ -120,6 +123,7 @@ namespace PubNubAPI
                 #endif
             }
             catch (Exception ex) {
+                Debug.Log(ex.ToString());
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, StartHeartbeat: Heartbeat exception {1}", DateTime.Now.ToString (), ex.ToString ()), LoggingMethod.LevelError);
                 #endif
@@ -128,6 +132,7 @@ namespace PubNubAPI
 
         internal void RunHeartbeat (bool pause, int pauseTime)
         {
+            Debug.Log(string.Format ("RunHeartbeat keepHearbeatRunning={0} isHearbeatRunning={1}", keepHearbeatRunning, isHearbeatRunning));
             keepHearbeatRunning = true;
             if (!isHearbeatRunning) {
                 StartHeartbeat (pause, pauseTime);
@@ -140,6 +145,7 @@ namespace PubNubAPI
         }
 
         private void HeartbeatHandler (CustomEventArgs<PNTimeResult> cea){
+            Debug.Log(string.Format ("HeartbeatHandler keepHearbeatRunning={0} isHearbeatRunning={1} cea.iserror {2}", keepHearbeatRunning, isHearbeatRunning, cea.IsError));
             if (cea.IsTimeout || cea.IsError) {
                 RetryLoop ();
                 #if (ENABLE_PUBNUB_LOGGING)
@@ -150,12 +156,13 @@ namespace PubNubAPI
             }
             isHearbeatRunning = false;
             if (keepHearbeatRunning) {
+
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format ("DateTime {0}, HeartbeatHandler: Restarting Heartbeat {1}", DateTime.Now.ToString (), cea.PubnubRequestState.ID), LoggingMethod.LevelInfo);
                 #endif
                 if (internetStatus) {
                     Debug.Log("HeartbeatHandler internetStatus");
-                    RunHeartbeat (true, PubNubInstance.PNConfig.PresenceInterval);
+                    RunHeartbeat (true, PubNubInstance.PNConfig.HeartbeatInterval);
                 }
                 else {
                     Debug.Log("HeartbeatHandler !internetStatus");
@@ -169,14 +176,15 @@ namespace PubNubAPI
             internetStatus = false;
             retryCount++;
             if (retryCount <= PubNubInstance.PNConfig.MaximumReconnectionRetries) {
+                InternetDisconnected.Raise(this, null);
                 string cbMessage = string.Format ("Internet Disconnected, retrying. Retry count {0} of {1}", retryCount.ToString (), PubNubInstance.PNConfig.MaximumReconnectionRetries);
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (string.Format("DateTime {0}, RetryLoop: {1}", DateTime.Now.ToString (), cbMessage), LoggingMethod.LevelError);
                 #endif
-                /*PubnubCallbacks.FireErrorCallbacksForAllChannels<T> (cbMessage, pubnubRequestState,
-                    PubnubErrorSeverity.Warn, PubnubErrorCode.NoInternetRetryConnect, PubnubErrorLevel);*/
+                
 
             } else {
+                RetriesExceeded.Raise(this, null);
                 retriesExceeded = true;
                 string cbMessage = string.Format ("Internet Disconnected. Retries exceeded {0}. Unsubscribing connected channels.", PubNubInstance.PNConfig.MaximumReconnectionRetries);
                 #if (ENABLE_PUBNUB_LOGGING)
@@ -187,30 +195,19 @@ namespace PubNubAPI
                 StopHeartbeat();
                 //reset internetStatus
                 ResetInternetCheckSettings();
-
-                //coroutine.BounceRequest<T> (CurrentRequestType.Subscribe, null, false);
-
-                /*PubnubCallbacks.FireErrorCallbacksForAllChannels<T> (cbMessage, pubnubRequestState,
-                    PubnubErrorSeverity.Warn, PubnubErrorCode.NoInternetRetryConnect, PubnubErrorLevel);*/
-
-
-                //MultiplexExceptionHandler<T> (ResponseType.SubscribeV2, true, false);
             }
         }        
 
         private void InternetConnectionAvailableHandler(CustomEventArgs<PNTimeResult> cea){
             internetStatus = true;
             retriesExceeded = false;
+            
             if (retryCount > 0) {
+                InternetAvailable.Raise(this, null);
                 string cbMessage = string.Format ("DateTime {0}, InternetConnectionAvailableHandler: Internet Connection Available.", DateTime.Now.ToString ());
                 #if (ENABLE_PUBNUB_LOGGING)
                 LoggingMethod.WriteToLog (cbMessage, LoggingMethod.LevelInfo);
                 #endif
-
-                /*PubnubCallbacks.FireErrorCallbacksForAllChannels<T> (cbMessage, cea.PubnubRequestState,
-                    PubnubErrorSeverity.Info, PubnubErrorCode.YesInternet, PubnubErrorLevel);*/
-
-               // MultiplexExceptionHandler (ResponseType.SubscribeV2, false, true);
             }
             retryCount = 0;
         }

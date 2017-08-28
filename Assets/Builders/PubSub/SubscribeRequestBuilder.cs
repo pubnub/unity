@@ -16,6 +16,8 @@ namespace PubNubAPI
 
         public bool IncludePresenceChannel = false;
 
+        public bool SubscribeToPresenceChannelOnly = false;
+
         //private RequestState<SubscribeRequestBuilder> ReqState;
 
         public SubscribeRequestBuilder(PubNubUnity pn) {//: base(pn){
@@ -28,11 +30,38 @@ namespace PubNubAPI
             IncludePresenceChannel = true;
         }
 
+        public void PresenceOnly(){
+            SubscribeToPresenceChannelOnly = true;
+        }
+
+        void CheckPresenceAndAddSuffix(ref List<string> rawChannels, bool includePresenceChannel, bool subscribeToPresenceChannelOnly){
+            if(includePresenceChannel || subscribeToPresenceChannelOnly){
+                List<string> newChannels = new List<string>();
+                foreach (string ch in rawChannels){
+                    string presenceChannel = string.Format("{0}{1}", ch, Utility.PresenceChannelSuffix);
+                    if(!ch.Contains(Utility.PresenceChannelSuffix)){
+                        if(!rawChannels.Contains(presenceChannel)){
+                            newChannels.Add(presenceChannel);
+                        }
+                    } else if (ch.Contains(Utility.PresenceChannelSuffix) && (subscribeToPresenceChannelOnly)){
+                       newChannels.Add(presenceChannel);     
+                    }
+                }
+                if(includePresenceChannel){
+                    rawChannels.AddRange(newChannels);
+                } else {
+                    rawChannels = newChannels;
+                }
+            }
+        }
+
         public void Execute(){
             List<ChannelEntity> subscribedChannels = this.PubNubInstance.SubscriptionInstance.AllSubscribedChannelsAndChannelGroups;
             List<ChannelEntity> newChannelEntities;
             List<string> rawChannels = this.Channels;
             List<string> rawChannelGroups = this.ChannelGroups;
+            CheckPresenceAndAddSuffix(ref rawChannels, IncludePresenceChannel, SubscribeToPresenceChannelOnly);
+            CheckPresenceAndAddSuffix(ref rawChannelGroups, IncludePresenceChannel, SubscribeToPresenceChannelOnly);
             PNOperationType pnOpType = PNOperationType.PNSubscribeOperation;
             long timetokenToUse = this.Timetoken;
             

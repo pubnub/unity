@@ -103,7 +103,7 @@ namespace PubNubAPI
         public int PresenceInterval { get; set;}
 
         public int HeartbeatInterval = 10;
-        public int MaximumReconnectionRetries { get; set;}
+        public int MaximumReconnectionRetries = 50;
     }
 }
 

@@ -20,8 +20,9 @@ namespace PubNubAPI
             pubBuilder.Execute();
         }
 
-        public void WithPresence(){
+        public SubscribeBuilder WithPresence(){
             pubBuilder.WithPresence();
+            return this;
         }
 
         /*public SubscribeBuilder Reconnect(bool reconnect) {

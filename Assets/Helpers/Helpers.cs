@@ -142,7 +142,7 @@ namespace PubNubAPI
                     yield return item;
         }
 
-        internal static void CreateHistoryResult(string cipherKey, object deSerializedResult, ref PNResult result, ref PNStatus pnStatus){
+        //internal static void CreateHistoryResult(string cipherKey, object deSerializedResult, ref PNResult result, ref PNStatus pnStatus){
             //[[{"message":{"text":"hey"},"timetoken":14985452911089049}],14985452911089049,14985452911089049] 
             //[[{"text":"hey"}],14985452911089049,14985452911089049]
             /*try{
@@ -184,7 +184,7 @@ namespace PubNubAPI
             }*/
             /*result = DecodeDecryptLoop (result, pubnubRequestState.ChannelEntities, cipherKey, jsonPluggableLibrary, errorLevel);
             result.Add (multiChannel);*/
-        }
+       // }
 
         /*internal static void CreateWhereNowResult(object deSerializedResult, ref PNResult result, ref PNStatus pnStatus){
             //TODO: handle {"message": "Not found: '/v2/presence/sub_key/demo/uuid'", "error": 1, "service": "Presence"}
