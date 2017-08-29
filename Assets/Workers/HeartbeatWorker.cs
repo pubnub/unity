@@ -111,7 +111,7 @@ namespace PubNubAPI
                     this.PubNubInstance.Version
                 );
 
-                Debug.Log(string.Format ("heartbeat: request.OriginalString {1} ", request.OriginalString ));
+                Debug.Log(string.Format ("heartbeat: request.OriginalString {0} ", request.OriginalString ));
                 webRequest.Run<PNTimeResult>(request.OriginalString, requestState, PubNubInstance.PNConfig.NonSubscribeTimeout, pauseTime, pause);
                 
                 //for heartbeat and presence heartbeat treat reconnect as pause

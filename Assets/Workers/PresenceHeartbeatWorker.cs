@@ -117,7 +117,7 @@ namespace PubNubAPI
                         this.PubNubInstance.PNConfig.SubscribeKey,
                         this.PubNubInstance.Version
                     );
-                    Debug.Log(string.Format ("presenceheartbeat: request.OriginalString {1} ", request.OriginalString ));
+                    Debug.Log(string.Format ("presenceheartbeat: request.OriginalString {0} ", request.OriginalString ));
 
                     webRequest.Run<PNPresenceHeartbeatResult>(request.OriginalString, requestState, PubNubInstance.PNConfig.NonSubscribeTimeout, pauseTime, pause);
 

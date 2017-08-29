@@ -255,9 +255,9 @@ namespace PubNubAPI
                 #endif
 
             } else {
-                #if (ENABLE_PUBNUB_LOGGING)
+                /*#if (ENABLE_PUBNUB_LOGGING)
                 this.PNLog.WriteToLog (string.Format ("CheckElapsedTime: timer {0}",  timer.ToString ()), PNLoggingMethod.LevelInfo);
-                #endif
+                #endif*/
             }
         }
 
