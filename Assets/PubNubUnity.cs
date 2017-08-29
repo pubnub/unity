@@ -27,7 +27,7 @@ namespace PubNubAPI
             base.CleanUp();
             
             #if (ENABLE_PUBNUB_LOGGING)
-            base.PNLog.WriteToLog (string.Format ("DateTime {0} Clean up complete.", DateTime.Now.ToString ()), PNLoggingMethod.LevelInfo);
+            base.PNLog.WriteToLog (string.Format ("Clean up complete."), PNLoggingMethod.LevelInfo);
             #endif
         }
 

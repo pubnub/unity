@@ -19,7 +19,7 @@ namespace PubNubAPI
             }
         }
         
-        internal PNLoggingMethod PNLog {get; set;}
+        internal PNLoggingMethod PNLog;
         public PNConfiguration PNConfig { get; set;}
         internal QueueManager QManager { get; set;}
         private IJsonLibrary jsonLibrary = null;
@@ -101,7 +101,7 @@ namespace PubNubAPI
             }
             
             #if (ENABLE_PUBNUB_LOGGING)
-            base.PNLog.WriteToLog ("CleanUp: Destructing GameObject", PNLoggingMethod.LevelInfo);
+            this.PNLog.WriteToLog ("CleanUp: Destructing GameObject", PNLoggingMethod.LevelInfo);
             #endif
             
             if(localGobj && (GameObjectRef != null))

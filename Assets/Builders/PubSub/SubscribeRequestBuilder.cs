@@ -73,7 +73,7 @@ namespace PubNubAPI
             #if (ENABLE_PUBNUB_LOGGING)
             else {
                 //TODO raise duplicate event
-                LoggingMethod.WriteToLog (string.Format ("MultiChannelSubscribeInit: channelsOrChannelGroupsAdded {1}", channelsOrChannelGroupsAdded.ToString ()), LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity, PubNubInstance.PNConfig.LogVerbosity);
+                this.PubNubInstance.PNLog.WriteToLog (string.Format ("MultiChannelSubscribeInit: channelsOrChannelGroupsAdded {1}", channelsOrChannelGroupsAdded.ToString ()), PNLoggingMethod.LevelInfo);
             }
             #endif
 

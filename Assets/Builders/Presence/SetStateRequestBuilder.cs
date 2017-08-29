@@ -113,7 +113,7 @@ namespace PubNubAPI
 
         internal bool UpdateOrAddUserStateOfEntity(string channel, bool isChannelGroup, Dictionary<string, object> userState, bool edit, bool isForOtherUUID, ref List<ChannelEntity> channelEntities)
         {
-            ChannelEntity ce = Helpers.CreateChannelEntity (channel, false, isChannelGroup, userState);
+            ChannelEntity ce = Helpers.CreateChannelEntity (channel, false, isChannelGroup, userState, ref this.PubNubInstance.PNLog);
             bool stateChanged = false;
 
             if (isForOtherUUID) {

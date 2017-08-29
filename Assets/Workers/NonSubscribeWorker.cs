@@ -31,6 +31,7 @@ namespace PubNubAPI
             this.queueManager = queueManager;
             webRequest = this.queueManager.PubNubInstance.GameObjectRef.AddComponent<PNUnityWebRequest> ();
             webRequest.NonSubWebRequestComplete += WebRequestCompleteHandler;
+            this.webRequest.PNLog = this.queueManager.PubNubInstance.PNLog;
         }
             
         
@@ -95,18 +96,18 @@ namespace PubNubAPI
         private void NonSubscribeHandler (CustomEventArgs<V> cea){
             if (cea.IsTimeout || Utility.CheckRequestTimeoutMessageInError (cea)) {
                 #if (ENABLE_PUBNUB_LOGGING)
-                this.queueManager.PubNubInstance.PNLog.WriteToLog (string.Format ("DateTime {0}, NonSubscribeHandler: NonSub timeout={1}", DateTime.Now.ToString (), cea.Message.ToString ()), PNLoggingMethod.LevelInfo);
+                this.queueManager.PubNubInstance.PNLog.WriteToLog (string.Format ("NonSubscribeHandler: NonSub timeout={0}", cea.Message.ToString ()), PNLoggingMethod.LevelInfo);
                 #endif
                 //ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (cea.Message.ToString (), cea.PubnubRequestState, true, false, PubnubErrorLevel);
             } else if (cea.IsError) {
                 #if (ENABLE_PUBNUB_LOGGING)
-                this.queueManager.PubNubInstance.PNLog.WriteToLog (string.Format ("DateTime {0}, NonSubscribeHandler: NonSub Error={1}", DateTime.Now.ToString (), cea.Message.ToString ()), PNLoggingMethod.LevelInfo);
+                this.queueManager.PubNubInstance.PNLog.WriteToLog (string.Format ("NonSubscribeHandler: NonSub Error={0}", cea.Message.ToString ()), PNLoggingMethod.LevelInfo);
                 #endif
                 //ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (cea.Message.ToString (), cea.PubnubRequestState, false, false, PubnubErrorLevel);
             } else {
                 ProcessNonSubscribeResult (cea.PubnubRequestState, cea.Message);
                 #if (ENABLE_PUBNUB_LOGGING)
-                this.queueManager.PubNubInstance.PNLog.WriteToLog (string.Format ("DateTime {0}, NonSubscribeHandler: result=", DateTime.Now.ToString ()), PNLoggingMethod.LevelInfo);
+                this.queueManager.PubNubInstance.PNLog.WriteToLog (string.Format ("NonSubscribeHandler: result="), PNLoggingMethod.LevelInfo);
                 #endif
 
                 this.queueManager.RaiseRunningRequestEnd(cea.PubnubRequestState.RespType);
@@ -122,7 +123,7 @@ namespace PubNubAPI
                 //string multiChannelGroup = Helpers.GetNamesFromChannelEntities(pubnubRequestState.ChannelEntities, true);
                 if (!string.IsNullOrEmpty (jsonString)) {
                     #if (ENABLE_PUBNUB_LOGGING)
-                    this.queueManager.PubNubInstance.PNLog.WriteToLog (string.Format ("DateTime {0}, ProcessNonSubscribeResult: jsonString = {1} {2}", DateTime.Now.ToString (), jsonString, pubnubRequestState.RespType), PNLoggingMethod.LevelInfo);
+                    this.queueManager.PubNubInstance.PNLog.WriteToLog (string.Format ("ProcessNonSubscribeResult: jsonString = {0} {1}", jsonString, pubnubRequestState.RespType), PNLoggingMethod.LevelInfo);
                     #endif
                     object deSerializedResult = queueManager.PubNubInstance.JsonLibrary.DeserializeToObject (jsonString);
                     if(deSerializedResult!= null){
@@ -131,12 +132,12 @@ namespace PubNubAPI
                 } 
                 #if (ENABLE_PUBNUB_LOGGING)
                 else {
-                    this.queueManager.PubNubInstance.PNLog.WriteToLog (string.Format ("DateTime {0}, ProcessNonSubscribeResult: json string null ", DateTime.Now.ToString ()), PNLoggingMethod.LevelInfo);
+                    this.queueManager.PubNubInstance.PNLog.WriteToLog (string.Format ("ProcessNonSubscribeResult: json string null "), PNLoggingMethod.LevelInfo);
                 }
                 #endif
             } catch (Exception ex) {
                 #if (ENABLE_PUBNUB_LOGGING)
-                this.queueManager.PubNubInstance.PNLog.WriteToLog (string.Format ("DateTime {0}, ProcessNonSubscribeResult: exception: {1} ", DateTime.Now.ToString (), ex.ToString ()), PNLoggingMethod.LevelInfo);
+                this.queueManager.PubNubInstance.PNLog.WriteToLog (string.Format ("ProcessNonSubscribeResult: exception: {0} ", ex.ToString ()), PNLoggingMethod.LevelInfo);
                 #endif
                 //ProcessWrapResultBasedOnResponseTypeException<T> (pubnubRequestState, errorLevel, ex);
             }
@@ -153,18 +154,18 @@ namespace PubNubAPI
                     }
                     #if (ENABLE_PUBNUB_LOGGING)
                     else {
-                        this.queueManager.PubNubInstance.PNLog.WriteToLog (string.Format ("DateTime {0}, WebRequestCompleteHandler: PubnubRequestState null", DateTime.Now.ToString ()), PNLoggingMethod.LevelInfo);
+                        this.queueManager.PubNubInstance.PNLog.WriteToLog (string.Format ("WebRequestCompleteHandler: PubnubRequestState null"), PNLoggingMethod.LevelInfo);
                     }
                     #endif
                 }
                 #if (ENABLE_PUBNUB_LOGGING)
                 else {
-                    this.queueManager.PubNubInstance.PNLog.WriteToLog (string.Format ("DateTime {0}, WebRequestCompleteHandler: cea null", DateTime.Now.ToString ()), PNLoggingMethod.LevelInfo);
+                    this.queueManager.PubNubInstance.PNLog.WriteToLog (string.Format ("WebRequestCompleteHandler: cea null"), PNLoggingMethod.LevelInfo);
                 }
                 #endif
             } catch (Exception ex) {
                 #if (ENABLE_PUBNUB_LOGGING)
-                this.queueManager.PubNubInstance.PNLog.WriteToLog(string.Format ("DateTime {0}, WebRequestCompleteHandler: Exception={1}", DateTime.Now.ToString (), ex.ToString ()), PNLoggingMethod.LevelInfo);
+                this.queueManager.PubNubInstance.PNLog.WriteToLog(string.Format ("WebRequestCompleteHandler: Exception={0}", ex.ToString ()), PNLoggingMethod.LevelInfo);
                 #endif
 
                 //ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (ex.Message, cea.PubnubRequestState, false, false, PubnubErrorLevel);
