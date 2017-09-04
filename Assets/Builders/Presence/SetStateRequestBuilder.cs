@@ -59,7 +59,7 @@ namespace PubNubAPI
                             out ChannelEntities
                         )) {
                             Debug.Log ("PNSetStateResult Async");
-                            base.Async(callback, PNOperationType.PNSetStateOperation, CurrentRequestType.NonSubscribe, this);
+                            base.Async(callback, PNOperationType.PNSetStateOperation, PNCurrentRequestType.NonSubscribe, this);
 
                             //SharedSetUserState(ChannelsForState, ChannelGroupsForState, channelEntities, uuid, UserState);
                         } else {
@@ -164,6 +164,10 @@ namespace PubNubAPI
 
             return stateChanged;
         }
+
+        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
+            
+        // }
 
         protected override void CreatePubNubResponse(object deSerializedResult){
             //{"status": 200, "message": "OK", "payload": {"channels": {"channel1": {"k": "v"}, "channel2": {}}}, "uuid": "pn-c5a12d424054a3688066572fb955b7a0", "service": "Presence"}

@@ -28,7 +28,7 @@ namespace PubNubAPI
         {
             this.Callback = callback;
             Debug.Log ("PublishBuilder Async");
-            base.Async(callback, PNOperationType.PNPublishOperation, CurrentRequestType.NonSubscribe, this);
+            base.Async(callback, PNOperationType.PNPublishOperation, PNCurrentRequestType.NonSubscribe, this);
         }
         #endregion
 
@@ -130,5 +130,10 @@ namespace PubNubAPI
             Callback(pnPublishResult, pnStatus);
 
         }
+
+        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
+            
+        // }
+        
     }
 }

@@ -49,7 +49,7 @@ namespace PubNubAPI
                 //TODO Send callback
                 return;
             }
-            base.Async(callback, PNOperationType.PNAddPushNotificationsOnChannelsOperation, CurrentRequestType.NonSubscribe, this);
+            base.Async(callback, PNOperationType.PNAddPushNotificationsOnChannelsOperation, PNCurrentRequestType.NonSubscribe, this);
         }
         #endregion
 
@@ -113,6 +113,10 @@ namespace PubNubAPI
             }
             Callback(pnPushAddChannelResult, pnStatus);
         }
+        
+        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
+            
+        // }
         
     }
 }

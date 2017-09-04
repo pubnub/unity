@@ -166,16 +166,16 @@ namespace PubNubAPI
             }
         }
 
-        internal CurrentRequestTypeEventArgs CreateCurrentRequestTypeEventArgs(CurrentRequestType crt, bool isTimeout){
+        internal CurrentRequestTypeEventArgs CreateCurrentRequestTypeEventArgs(PNCurrentRequestType crt, bool isTimeout){
             CurrentRequestTypeEventArgs crtEa = new CurrentRequestTypeEventArgs();
             crtEa.CurrRequestType = crt;
             crtEa.IsTimeout = isTimeout;
             return crtEa;
         }
 
-        SafeDictionary<CurrentRequestType, object> storedWebRequestParams = new SafeDictionary<CurrentRequestType, object> ();
+        SafeDictionary<PNCurrentRequestType, object> storedWebRequestParams = new SafeDictionary<PNCurrentRequestType, object> ();
 
-        internal object GetWebRequestParams<T> (CurrentRequestType aKey){
+        internal object GetWebRequestParams<T> (PNCurrentRequestType aKey){
             if (storedWebRequestParams.ContainsKey (aKey)) {
                 if (storedWebRequestParams.ContainsKey (aKey)) {
                     return storedWebRequestParams [aKey];
@@ -190,25 +190,25 @@ namespace PubNubAPI
             return null;
         }
 
-        internal void SetWebRequestParams<T> (CurrentRequestType key, WebRequestParams<T> cp){
+        internal void SetWebRequestParams<T> (PNCurrentRequestType key, WebRequestParams<T> cp){
             object storeCp = cp as object;
             storedWebRequestParams.AddOrUpdate (key, storeCp, (oldData, newData) => storeCp);
         }
 
-        internal void RaiseEvents(bool isTimeout, CurrentRequestType crt)
+        internal void RaiseEvents(bool isTimeout, PNCurrentRequestType crt)
         {
             StopTimeouts (crt);
             switch(crt){
-            case CurrentRequestType.Subscribe:
+            case PNCurrentRequestType.Subscribe:
                 subCompleteOrTimeoutEvent.Raise (this, CreateCurrentRequestTypeEventArgs(crt, isTimeout));
                 break;
-            case CurrentRequestType.Heartbeat:
+            case PNCurrentRequestType.Heartbeat:
                 heartbeatCompleteOrTimeoutEvent.Raise (this, CreateCurrentRequestTypeEventArgs(crt, isTimeout));
                 break;
-            case CurrentRequestType.PresenceHeartbeat:
+            case PNCurrentRequestType.PresenceHeartbeat:
                 presenceHeartbeatCompleteOrTimeoutEvent.Raise (this, CreateCurrentRequestTypeEventArgs(crt, isTimeout));
                 break;
-            case CurrentRequestType.NonSubscribe:
+            case PNCurrentRequestType.NonSubscribe:
                 nonsubCompleteOrTimeoutEvent.Raise (this, CreateCurrentRequestTypeEventArgs(crt, isTimeout));
                 break;
             default:
@@ -220,7 +220,7 @@ namespace PubNubAPI
             }
         }
 
-        internal void CheckElapsedTime(CurrentRequestType crt, float timer, UnityWebRequest www)
+        internal void CheckElapsedTime(PNCurrentRequestType crt, float timer, UnityWebRequest www)
         {
             if (timer <= 0) {
                 #if (ENABLE_PUBNUB_LOGGING)
@@ -261,22 +261,22 @@ namespace PubNubAPI
             }
         }
 
-        internal bool CheckIfRequestIsRunning(CurrentRequestType crt){
+        internal bool CheckIfRequestIsRunning(PNCurrentRequestType crt){
             switch (crt) {
-            case CurrentRequestType.Subscribe:
+            case PNCurrentRequestType.Subscribe:
                 return (!isSubscribeComplete)? true: false;
-            case CurrentRequestType.Heartbeat:
+            case PNCurrentRequestType.Heartbeat:
                 return (!isHearbeatComplete)? true: false;
-            case CurrentRequestType.PresenceHeartbeat:
+            case PNCurrentRequestType.PresenceHeartbeat:
                 return (!isPresenceHeartbeatComplete)? true: false;
-            case CurrentRequestType.NonSubscribe:
+            case PNCurrentRequestType.NonSubscribe:
                 return (!isNonSubscribeComplete)? true: false;
             default:
                 return false;
             }
         }
 
-        internal void CheckPauseTime(CurrentRequestType crt, float timer)
+        internal void CheckPauseTime(PNCurrentRequestType crt, float timer)
         {
             if (timer <= 0) {
                 #if (ENABLE_PUBNUB_LOGGING)
@@ -286,13 +286,13 @@ namespace PubNubAPI
                 StopTimeouts (crt);
 
                 switch (crt) {
-                case CurrentRequestType.Heartbeat:
+                case PNCurrentRequestType.Heartbeat:
                     heartbeatResumeEvent.Raise (this, CreateCurrentRequestTypeEventArgs(crt, false));
                     break;
-                case CurrentRequestType.PresenceHeartbeat:
+                case PNCurrentRequestType.PresenceHeartbeat:
                     presenceHeartbeatResumeEvent.Raise (this, CreateCurrentRequestTypeEventArgs(crt, false));
                     break;
-                case CurrentRequestType.Subscribe:
+                case PNCurrentRequestType.Subscribe:
                     subscribeResumeEvent.Raise (this, CreateCurrentRequestTypeEventArgs(crt, false));
                     break;
                 }
@@ -308,31 +308,31 @@ namespace PubNubAPI
         void Update() {
             if (runSubscribeTimer) {
                 subscribeTimer -= Time.deltaTime;
-                CheckElapsedTime (CurrentRequestType.Subscribe, subscribeTimer, subscribeWww);
+                CheckElapsedTime (PNCurrentRequestType.Subscribe, subscribeTimer, subscribeWww);
             }
             if (runHeartbeatTimer) {
                 heartbeatTimer -= Time.deltaTime;
-                CheckElapsedTime (CurrentRequestType.Heartbeat, heartbeatTimer, heartbeatWww);
+                CheckElapsedTime (PNCurrentRequestType.Heartbeat, heartbeatTimer, heartbeatWww);
             }
             if (runPresenceHeartbeatTimer) {
                 presenceHeartbeatTimer -= Time.deltaTime;
-                CheckElapsedTime (CurrentRequestType.PresenceHeartbeat, presenceHeartbeatTimer, presenceHeartbeatWww);
+                CheckElapsedTime (PNCurrentRequestType.PresenceHeartbeat, presenceHeartbeatTimer, presenceHeartbeatWww);
             }
             if (runNonSubscribeTimer) {
                 nonSubscribeTimer -= Time.deltaTime;
-                CheckElapsedTime (CurrentRequestType.NonSubscribe, nonSubscribeTimer, nonSubscribeWww);
+                CheckElapsedTime (PNCurrentRequestType.NonSubscribe, nonSubscribeTimer, nonSubscribeWww);
             }
             if (runPresenceHeartbeatPauseTimer) {
                 presenceHeartbeatPauseTimer -= Time.deltaTime;
-                CheckPauseTime (CurrentRequestType.PresenceHeartbeat, presenceHeartbeatPauseTimer);
+                CheckPauseTime (PNCurrentRequestType.PresenceHeartbeat, presenceHeartbeatPauseTimer);
             }
             if (runHeartbeatPauseTimer) {
                 heartbeatPauseTimer -= Time.deltaTime;
-                CheckPauseTime (CurrentRequestType.Heartbeat, heartbeatPauseTimer);
+                CheckPauseTime (PNCurrentRequestType.Heartbeat, heartbeatPauseTimer);
             }
             if (runSubscribePauseTimer) {
                 subscribePauseTimer -= Time.deltaTime;
-                CheckPauseTime (CurrentRequestType.Subscribe, subscribePauseTimer);
+                CheckPauseTime (PNCurrentRequestType.Subscribe, subscribePauseTimer);
             }
         }
 
@@ -347,18 +347,18 @@ namespace PubNubAPI
                     ProcessTimeout<T> (cp);
                 } else {
                     switch (crtEa.CurrRequestType) {
-                    case CurrentRequestType.Subscribe:
+                    case PNCurrentRequestType.Subscribe:
                         Debug.Log ("in WebRequestClass_CompleteEvent switch");
                         ProcessResponse<T> (subscribeWww, cp);
                         break;
-                    case CurrentRequestType.Heartbeat:
+                    case PNCurrentRequestType.Heartbeat:
                         Debug.Log ("in Heartbeat switch");
                         ProcessResponse<T> (heartbeatWww, cp);
                         break;
-                    case CurrentRequestType.PresenceHeartbeat:
+                    case PNCurrentRequestType.PresenceHeartbeat:
                         ProcessResponse<T> (presenceHeartbeatWww, cp);
                         break;
-                    case CurrentRequestType.NonSubscribe:
+                    case PNCurrentRequestType.NonSubscribe:
                         ProcessResponse<T> (nonSubscribeWww, cp);
                         break;
                     default:
@@ -379,25 +379,25 @@ namespace PubNubAPI
             StartWebRequestsByName<T> (cp.url, cp.requestState, cp.timeout, cp.pause, cp.crt);
         }
 
-        public void RemoveEventHandler<T>(CurrentRequestType crt, bool removeHeartbeats){
+        public void RemoveEventHandler<T>(PNCurrentRequestType crt, bool removeHeartbeats){
             switch (crt) {
-            case CurrentRequestType.Heartbeat:
+            case PNCurrentRequestType.Heartbeat:
                 if (removeHeartbeats) {
                     HeartbeatCompleteOrTimeoutEvent -= WebRequestClass_CompleteEvent<T>;
                     HeartbeatResumeEvent -= WebRequestClass_ResumeEvent<T>;
                 }
                 break;
-            case CurrentRequestType.PresenceHeartbeat:
+            case PNCurrentRequestType.PresenceHeartbeat:
                 if (removeHeartbeats) {
                     PresenceHeartbeatCompleteOrTimeoutEvent -= WebRequestClass_CompleteEvent<T>;
                     PresenceHeartbeatResumeEvent -= WebRequestClass_ResumeEvent<T>;
                 }
                 break;
-            case CurrentRequestType.Subscribe:
+            case PNCurrentRequestType.Subscribe:
                 SubCompleteOrTimeoutEvent -= WebRequestClass_CompleteEvent<T>;
                 SubscribeResumeEvent -= WebRequestClass_ResumeEvent<T>;
                 break;
-            case CurrentRequestType.NonSubscribe:
+            case PNCurrentRequestType.NonSubscribe:
                 NonsubCompleteOrTimeoutEvent -= WebRequestClass_CompleteEvent<T>;
                 break;
             default:
@@ -405,28 +405,28 @@ namespace PubNubAPI
             }            
         }
 
-        internal void StopTimeouts(CurrentRequestType crt){
+        internal void StopTimeouts(PNCurrentRequestType crt){
             switch (crt) {
-            case CurrentRequestType.Heartbeat:
+            case PNCurrentRequestType.Heartbeat:
                 runHeartbeatTimer = false;
                 heartbeatTimer = 0;
                 runHeartbeatPauseTimer = false;
                 heartbeatPauseTimer = 0;
                 break;
-            case CurrentRequestType.PresenceHeartbeat:
+            case PNCurrentRequestType.PresenceHeartbeat:
                 runPresenceHeartbeatTimer = false;
                 presenceHeartbeatTimer = 0;
                 runPresenceHeartbeatPauseTimer = false;
                 presenceHeartbeatPauseTimer = 0;
                 break;
-            case CurrentRequestType.Subscribe:
+            case PNCurrentRequestType.Subscribe:
                 runSubscribeTimer = false;
                 subscribeTimer = 0;
                 runSubscribePauseTimer = false;
                 subscribePauseTimer = 0;
 
                 break;
-            case CurrentRequestType.NonSubscribe:
+            case PNCurrentRequestType.NonSubscribe:
                 runNonSubscribeTimer = false;
                 nonSubscribeTimer = 0;
                 break;
@@ -489,7 +489,7 @@ namespace PubNubAPI
             }
         }
 
-        public void DelayStartWebRequest<T>(string url, RequestState<T> pubnubRequestState, int timeout, int pause, CurrentRequestType crt)
+        public void DelayStartWebRequest<T>(string url, RequestState<T> pubnubRequestState, int timeout, int pause, PNCurrentRequestType crt)
         {
             #if (ENABLE_PUBNUB_LOGGING)
             this.PNLog.WriteToLog (string.Format ("DelayStartWebRequest delay: {0} {1}",  pause.ToString(), crt.ToString()), PNLoggingMethod.LevelInfo);
@@ -516,14 +516,15 @@ namespace PubNubAPI
         public void Run<T> (string url, RequestState<T> pubnubRequestState, int timeout, int pause, bool reconnect)
         {
             //for heartbeat and presence heartbeat treat reconnect as pause
-            CurrentRequestType crt;
+            PNCurrentRequestType crt;
+            string wwwUrl;
             Debug.Log("pubnubRequestState:"+ pubnubRequestState.RespType);
             if ((pubnubRequestState.RespType == PNOperationType.PNHeartbeatOperation) || (pubnubRequestState.RespType == PNOperationType.PNPresenceHeartbeatOperation)) {
-                crt = CurrentRequestType.PresenceHeartbeat;
+                crt = PNCurrentRequestType.PresenceHeartbeat;
                 if (pubnubRequestState.RespType == PNOperationType.PNHeartbeatOperation) {
-                    crt = CurrentRequestType.Heartbeat;
+                    crt = PNCurrentRequestType.Heartbeat;
                 }
-                CheckComplete (crt);
+                CheckComplete (crt, out wwwUrl);
 
                 if (reconnect) {
                     DelayStartWebRequest<T>(url, pubnubRequestState, timeout, pause, crt);
@@ -533,9 +534,9 @@ namespace PubNubAPI
                 Debug.Log("crt:"+ crt);
             } else if (pubnubRequestState.RespType.Equals(PNOperationType.PNSubscribeOperation) || pubnubRequestState.RespType.Equals(PNOperationType.PNPresenceOperation)
             ) {
-                crt = CurrentRequestType.Subscribe;
+                crt = PNCurrentRequestType.Subscribe;
                 Debug.Log ("Run crt"+ crt);
-                CheckComplete (crt);
+                CheckComplete (crt, out wwwUrl);
 
                 #if (ENABLE_PUBNUB_LOGGING)
                 if ((subscribeWww != null) && (!subscribeWww.isDone)) {
@@ -551,15 +552,15 @@ namespace PubNubAPI
                     StartWebRequestsByName<T> (url, pubnubRequestState, timeout, pause, crt);
                 }
             } else {
-                crt = CurrentRequestType.NonSubscribe;
+                crt = PNCurrentRequestType.NonSubscribe;
                 Debug.Log ("Run crt");
-                CheckComplete (crt);
+                CheckComplete (crt, out wwwUrl);
 
                 StartWebRequestsByName<T> (url, pubnubRequestState, timeout, pause, crt);
             } 
         }
 
-        internal void StartWebRequestsByName<T> (string url, RequestState<T> pubnubRequestState, int timeout, int pause, CurrentRequestType crt)
+        internal void StartWebRequestsByName<T> (string url, RequestState<T> pubnubRequestState, int timeout, int pause, PNCurrentRequestType crt)
         {
             WebRequestParams<T> cp = new WebRequestParams<T> (url, timeout, pause, crt, typeof(T), pubnubRequestState);
 
@@ -570,7 +571,7 @@ namespace PubNubAPI
             this.PNLog.WriteToLog (string.Format ("StartWebRequestsByName: URL {1} {0}", cp.url.ToString (), crt.ToString()), PNLoggingMethod.LevelInfo);
             #endif
 
-            if (crt == CurrentRequestType.Subscribe) {
+            if (crt == PNCurrentRequestType.Subscribe) {
                 subscribeTimer = timeout;
                 runSubscribeTimer = true;
                 SubCompleteOrTimeoutEvent += WebRequestClass_CompleteEvent<T>;
@@ -582,7 +583,7 @@ namespace PubNubAPI
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PNLog.WriteToLog (string.Format ("StartWebRequestsByName: {0} running",  cp.crt.ToString ()), PNLoggingMethod.LevelInfo);
                 #endif
-            } else if (crt == CurrentRequestType.NonSubscribe) {
+            } else if (crt == PNCurrentRequestType.NonSubscribe) {
                 nonSubscribeTimer = timeout;
                 runNonSubscribeTimer = true;
                 NonsubCompleteOrTimeoutEvent += WebRequestClass_CompleteEvent<T>;
@@ -595,7 +596,7 @@ namespace PubNubAPI
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PNLog.WriteToLog (string.Format ("StartWebRequestsByName: {0} running",  cp.crt.ToString ()), PNLoggingMethod.LevelInfo);
                 #endif
-            } else if (crt == CurrentRequestType.PresenceHeartbeat) {
+            } else if (crt == PNCurrentRequestType.PresenceHeartbeat) {
                 presenceHeartbeatTimer = timeout;
                 runPresenceHeartbeatTimer = true;
                 PresenceHeartbeatCompleteOrTimeoutEvent += WebRequestClass_CompleteEvent<T>;
@@ -607,7 +608,7 @@ namespace PubNubAPI
                 this.PNLog.WriteToLog (string.Format ("StartWebRequestsByName: {0} running",  cp.crt.ToString ()), PNLoggingMethod.LevelInfo);
                 #endif
 
-            } else if (crt == CurrentRequestType.Heartbeat) {
+            } else if (crt == PNCurrentRequestType.Heartbeat) {
                 Debug.Log (" StartWebRequestsByName" + crt);
                 heartbeatTimer = timeout;
                 runHeartbeatTimer = true;
@@ -622,7 +623,7 @@ namespace PubNubAPI
             }
         }
 
-        public IEnumerator DelayRequest<T> (string url, RequestState<T> pubnubRequestState, int timeout, int pause, CurrentRequestType crt)
+        public IEnumerator DelayRequest<T> (string url, RequestState<T> pubnubRequestState, int timeout, int pause, PNCurrentRequestType crt)
         {
             yield return new WaitForSeconds (pause); 
             #if (ENABLE_PUBNUB_LOGGING)
@@ -632,7 +633,7 @@ namespace PubNubAPI
             StartWebRequestsByName<T> (url, pubnubRequestState, timeout, pause, crt);
         }
 
-        internal void SetComplete (CurrentRequestType crt)
+        internal void SetComplete (PNCurrentRequestType crt)
         {
             try {
                 #if (ENABLE_PUBNUB_LOGGING)
@@ -640,11 +641,11 @@ namespace PubNubAPI
                 #endif
 
                 StopTimeouts(crt);
-                if (crt == CurrentRequestType.Heartbeat) {
+                if (crt == PNCurrentRequestType.Heartbeat) {
                     isHearbeatComplete = true;
-                } else if (crt == CurrentRequestType.PresenceHeartbeat) {
+                } else if (crt == PNCurrentRequestType.PresenceHeartbeat) {
                     isPresenceHeartbeatComplete = true;
-                } else if (crt == CurrentRequestType.Subscribe) {
+                } else if (crt == PNCurrentRequestType.Subscribe) {
 
                     #if (ENABLE_PUBNUB_LOGGING)
                     this.PNLog.WriteToLog (string.Format ("SetComplete: {0}",  crt.ToString ()), PNLoggingMethod.LevelInfo);
@@ -665,7 +666,7 @@ namespace PubNubAPI
 
         }            
 
-        public bool CheckComplete (CurrentRequestType crt)
+        public bool CheckComplete (PNCurrentRequestType crt, out string wwwUrl)
         {
             try {
                 #if (ENABLE_PUBNUB_LOGGING)
@@ -675,8 +676,9 @@ namespace PubNubAPI
 
                 StopTimeouts(crt);
 
-                if (crt == CurrentRequestType.Heartbeat) {
+                if (crt == PNCurrentRequestType.Heartbeat) {
                     if ((!isHearbeatComplete) && ((heartbeatWww != null) && (!heartbeatWww.isDone))) { 
+                        wwwUrl = heartbeatWww.url;
                         heartbeatWww.Abort();
                         heartbeatWww.Dispose();
                         /*#if(!UNITY_ANDROID)
@@ -685,17 +687,20 @@ namespace PubNubAPI
                         heartbeatWww = null;
                         return false;
                     }
-                } else if (crt == CurrentRequestType.PresenceHeartbeat) {
+                } else if (crt == PNCurrentRequestType.PresenceHeartbeat) {
                     if ((!isPresenceHeartbeatComplete) && ((presenceHeartbeatWww != null) && (!presenceHeartbeatWww.isDone))) {
+                        wwwUrl = presenceHeartbeatWww.url;
                         #if(!UNITY_ANDROID)
                         presenceHeartbeatWww.Dispose();
                         #endif
+                        
                         presenceHeartbeatWww = null;
+                        
                         return false;
                     }
-                } else if (crt == CurrentRequestType.Subscribe) {
+                } else if (crt == PNCurrentRequestType.Subscribe) {
                     if ((!isSubscribeComplete) && ((subscribeWww != null) && (!subscribeWww.isDone))) {
-
+                        wwwUrl = subscribeWww.url;
                         #if (ENABLE_PUBNUB_LOGGING)
                         this.PNLog.WriteToLog (string.Format ("CheckComplete: DISPOSING WWW"), PNLoggingMethod.LevelError);
                         #endif
@@ -715,6 +720,7 @@ namespace PubNubAPI
                     }
                 } else {
                     if ((!isNonSubscribeComplete) && ((nonSubscribeWww != null) && (!nonSubscribeWww.isDone))) {
+                        wwwUrl = nonSubscribeWww.url;
                         Debug.Log("Aborting");
                         nonSubscribeWww.Abort();
                         #if(!UNITY_ANDROID)
@@ -732,6 +738,7 @@ namespace PubNubAPI
                 this.PNLog.WriteToLog (string.Format ("CheckComplete: Exception: {0}",  ex.ToString ()), PNLoggingMethod.LevelError);
                 #endif
             }
+            wwwUrl = "";
             return true;
         }
 
@@ -772,7 +779,7 @@ namespace PubNubAPI
                     }
                     #endif
                     Debug.Log("BEFORE FireEvent");
-                    FireEvent (message, isError, false, cp.requestState, cp.crt);
+                    FireEvent (message, isError, false, cp.requestState, cp.crt, www.responseCode, www.url);
                 } 
             } catch (Exception ex) {
                 Debug.Log(ex.ToString());
@@ -782,14 +789,16 @@ namespace PubNubAPI
             }
         }
 
-        public void AbortRequest<T> (CurrentRequestType crt, RequestState<T> pubnubRequestState, bool fireEvent)
+        public void AbortRequest<T> (PNCurrentRequestType crt, RequestState<T> pubnubRequestState, bool fireEvent)
         {
             try {
-                CheckComplete (crt);
-                SetComplete (crt);
+                string wwwUrl;
+                CheckComplete (crt, out wwwUrl);
+                SetComplete (crt);                
 
                 if ((pubnubRequestState != null) && fireEvent) {
-                    FireEvent ("Aborted", true, false, pubnubRequestState, crt);
+
+                    FireEvent ("Aborted", true, false, pubnubRequestState, crt, 0, wwwUrl);
                     #if (ENABLE_PUBNUB_LOGGING)
                     this.PNLog.WriteToLog (string.Format ("BounceRequest: event fired {0}",  crt.ToString ()), PNLoggingMethod.LevelInfo);
                     #endif
@@ -813,10 +822,11 @@ namespace PubNubAPI
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PNLog.WriteToLog (string.Format ("ProcessTimeout: {0}",  cp.crt.ToString ()), PNLoggingMethod.LevelInfo);
                 #endif
+                string wwwUrl;
 
-                if (!CheckComplete (cp.crt)) {
+                if (!CheckComplete (cp.crt, out wwwUrl)) {
                     //if ((cp.typeParameterType == typeof(string)) || (cp.typeParameterType == typeof(object))) {
-                        FireEvent ("Timed out", true, true, cp.requestState, cp.crt);
+                        FireEvent ("Timed out", true, true, cp.requestState, cp.crt, 0, wwwUrl);
                         #if (ENABLE_PUBNUB_LOGGING)
                         this.PNLog.WriteToLog (string.Format ("ProcessTimeout: WWW Error: {0} sec timeout",  cp.timeout.ToString ()), PNLoggingMethod.LevelInfo);
                         #endif
@@ -833,7 +843,7 @@ namespace PubNubAPI
             }
         }
 
-        public void FireEvent<T> (string message, bool isError, bool isTimeout, RequestState<T> pubnubRequestState, CurrentRequestType crt)
+        public void FireEvent<T> (string message, bool isError, bool isTimeout, RequestState<T> pubnubRequestState, PNCurrentRequestType crt, long responseCode, string url)
         {
             Debug.Log(" FireEvent" + crt);
             CustomEventArgs<T> cea = new CustomEventArgs<T> ();
@@ -842,19 +852,21 @@ namespace PubNubAPI
             cea.IsError = isError;
             cea.IsTimeout = isTimeout;
             cea.CurrRequestType = crt;
+            cea.ResponseCode = responseCode;
+            cea.URL = url;
             #if (ENABLE_PUBNUB_LOGGING)
             this.PNLog.WriteToLog (string.Format ("FireEvent: Raising Event of type : {0}",  crt.ToString ()), PNLoggingMethod.LevelInfo);
             #endif
 
-            if ((crt == CurrentRequestType.Heartbeat) && (heartbeatWebRequestComplete != null)) {
+            if ((crt == PNCurrentRequestType.Heartbeat) && (heartbeatWebRequestComplete != null)) {
                 Debug.Log("heartbeatWebRequestComplete FireEvent" + cea.Message + typeof(T));
                 heartbeatWebRequestComplete.Raise (this, cea);
-            } else if ((crt == CurrentRequestType.PresenceHeartbeat) && (presenceHeartbeatWebRequestComplete != null)) {
+            } else if ((crt == PNCurrentRequestType.PresenceHeartbeat) && (presenceHeartbeatWebRequestComplete != null)) {
                 presenceHeartbeatWebRequestComplete.Raise (this, cea);
-            } else if ((crt == CurrentRequestType.Subscribe) && (subWebRequestComplete != null)) {
+            } else if ((crt == PNCurrentRequestType.Subscribe) && (subWebRequestComplete != null)) {
                 Debug.Log("Subscribe FireEvent" + cea.Message + typeof(T));
                 subWebRequestComplete.Raise (this, cea);
-            } else if ((crt == CurrentRequestType.NonSubscribe) && (nonSubWebRequestComplete != null)) {
+            } else if ((crt == PNCurrentRequestType.NonSubscribe) && (nonSubWebRequestComplete != null)) {
                 nonSubWebRequestComplete.Raise (this, cea);
             } 
             
@@ -872,11 +884,11 @@ namespace PubNubAPI
         public string url;
         public int timeout;
         public int pause;
-        public CurrentRequestType crt;
+        public PNCurrentRequestType crt;
         public Type typeParameterType;
         public RequestState<T> requestState;
 
-        public WebRequestParams (string url, int timeout, int pause, CurrentRequestType crt, Type typeParameterType, RequestState<T> requestState)
+        public WebRequestParams (string url, int timeout, int pause, PNCurrentRequestType crt, Type typeParameterType, RequestState<T> requestState)
         {
             this.url = url;
             this.timeout = timeout;

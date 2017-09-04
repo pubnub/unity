@@ -29,7 +29,7 @@ namespace PubNubAPI
         {
             this.Callback = callback;
             Debug.Log ("RemoveChannelsFromPushRequestBuilder Async");
-            base.Async(callback, PNOperationType.PNRemovePushNotificationsFromChannelsOperation, CurrentRequestType.NonSubscribe, this);
+            base.Async(callback, PNOperationType.PNRemovePushNotificationsFromChannelsOperation, PNCurrentRequestType.NonSubscribe, this);
         }
         #endregion
 
@@ -88,6 +88,11 @@ namespace PubNubAPI
             }
             Callback(pnPushRemoveChannelResult, pnStatus);
         }
+
+        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
+            
+        // }
+        
         
     }
 }

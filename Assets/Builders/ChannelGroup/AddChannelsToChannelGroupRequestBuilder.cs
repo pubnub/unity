@@ -42,7 +42,7 @@ namespace PubNubAPI
             }
 
             Debug.Log ("PNChannelGroupsAddChannelResult Async");
-            base.Async(callback, PNOperationType.PNAddChannelsToGroupOperation, CurrentRequestType.NonSubscribe, this);
+            base.Async(callback, PNOperationType.PNAddChannelsToGroupOperation, PNCurrentRequestType.NonSubscribe, this);
         }
         #endregion
 
@@ -64,6 +64,10 @@ namespace PubNubAPI
             this.PubNubInstance.PNLog.WriteToLog(string.Format("RunPNChannelGroupsAddChannel {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }
+
+        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
+            
+        // }
 
         protected override void CreatePubNubResponse(object deSerializedResult){
             //{"service" : "channel-registry","status"  : 200,"error"   : false,"message" : "OK"}

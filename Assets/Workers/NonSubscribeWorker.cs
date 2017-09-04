@@ -3,7 +3,7 @@ using System;
 
 namespace PubNubAPI
 {
-    public class NonSubscribeWorker<U, V>: IDisposable
+    public class NonSubscribeWorker<U, V>: IDisposable where V : class
     {
         private QueueManager queueManager;
         private PubNubNonSubBuilder<U, V> PNBuilder;
@@ -167,7 +167,7 @@ namespace PubNubAPI
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.queueManager.PubNubInstance.PNLog.WriteToLog(string.Format ("WebRequestCompleteHandler: Exception={0}", ex.ToString ()), PNLoggingMethod.LevelInfo);
                 #endif
-
+                PNBuilder.RaiseError(ex, false, PNLoggingMethod.LevelInfo);
                 //ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (ex.Message, cea.PubnubRequestState, false, false, PubnubErrorLevel);
             }
 

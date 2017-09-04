@@ -9,6 +9,21 @@ namespace PubNubAPI
         {
         }
 
+        public PNStatus(PNStatusCategory category, PNErrorData errorData, bool error, int statusCode, PNOperationType operation, bool tlsEnabled, string uuid, string authKey, string origin, List<String> affectedChannels, List<String> affectedChannelGroups, object clientRequest){
+            this.Category = category;
+            this.ErrorData = errorData;
+            this.Error = error;
+            this.StatusCode = statusCode;
+            this.Operation = operation;
+            this.TlsEnabled = tlsEnabled;
+            this.UUID = uuid;
+            this.AuthKey = authKey;
+            this.Origin = origin;
+            this.ClientRequest = clientRequest;
+            this.AffectedChannelGroups = affectedChannelGroups;
+            this.AffectedChannels = affectedChannels;            
+        }
+
         public PNStatusCategory Category {get; set;}
         public PNErrorData ErrorData  {get; set;}
         public bool Error {get; set;}

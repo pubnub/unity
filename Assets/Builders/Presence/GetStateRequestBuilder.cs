@@ -33,7 +33,7 @@ namespace PubNubAPI
         {
             this.Callback = callback;
             Debug.Log ("PNGetStateResult Async");
-            base.Async(callback, PNOperationType.PNGetStateOperation, CurrentRequestType.NonSubscribe, this);
+            base.Async(callback, PNOperationType.PNGetStateOperation, PNCurrentRequestType.NonSubscribe, this);
         }
         #endregion
 
@@ -69,6 +69,10 @@ namespace PubNubAPI
             this.PubNubInstance.PNLog.WriteToLog(string.Format("RunGetStateRequest {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }
+
+        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
+            
+        // }
 
         protected override void CreatePubNubResponse(object deSerializedResult){
             //{"status": 200, "message": "OK", "payload": {"channels": {"channel1": {"k": "v"}, "channel2": {}}}, "uuid": "pn-c5a12d424054a3688066572fb955b7a0", "service": "Presence"}

@@ -26,7 +26,7 @@ namespace PubNubAPI
                 Debug.Log("ChannelGroup to list to empty");
                 return;
             }
-            base.Async(callback, PNOperationType.PNChannelsForGroupOperation, CurrentRequestType.NonSubscribe, this);
+            base.Async(callback, PNOperationType.PNChannelsForGroupOperation, PNCurrentRequestType.NonSubscribe, this);
         }
         #endregion
 
@@ -49,6 +49,10 @@ namespace PubNubAPI
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         
         }
+
+        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
+            
+        // }
 
         protected override void CreatePubNubResponse(object deSerializedResult){
             //{"status": 200, "payload": {"channels": ["channel1", "channel2"], "group": "channelGroup1"}, "service": "channel-registry", "error": false} 

@@ -64,14 +64,14 @@ namespace PubNubAPI
         internal void StopPresenceHeartbeat ()
         {
             keepPresenceHearbeatRunning = false;
-            if (isPresenceHearbeatRunning || webRequest.CheckIfRequestIsRunning(CurrentRequestType.PresenceHeartbeat))
+            if (isPresenceHearbeatRunning || webRequest.CheckIfRequestIsRunning(PNCurrentRequestType.PresenceHeartbeat))
             {
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PubNubInstance.PNLog.WriteToLog (string.Format ("Stopping PresenceHeartbeat "), PNLoggingMethod.LevelInfo);
                 #endif
                 
                 isPresenceHearbeatRunning = false;
-                webRequest.AbortRequest<PNPresenceHeartbeatResult> (CurrentRequestType.PresenceHeartbeat, null, false);
+                webRequest.AbortRequest<PNPresenceHeartbeatResult> (PNCurrentRequestType.PresenceHeartbeat, null, false);
             }
         }
 

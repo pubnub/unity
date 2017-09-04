@@ -23,7 +23,7 @@ namespace PubNubAPI
         {
             this.Callback = callback;
             Debug.Log ("PNWherNowResult Async");
-            base.Async(callback, PNOperationType.PNWhereNowOperation, CurrentRequestType.NonSubscribe, this);
+            base.Async(callback, PNOperationType.PNWhereNowOperation, PNCurrentRequestType.NonSubscribe, this);
         }
         #endregion
 
@@ -51,6 +51,10 @@ namespace PubNubAPI
             this.PubNubInstance.PNLog.WriteToLog(string.Format("RunWhereNowRequest {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }
+
+        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
+            
+        // }
 
         protected override void CreatePubNubResponse(object deSerializedResult){
             //{"status": 200, "message": "OK", "payload": {"channels": ["channel2", "channel1"]}, "service": "Presence"}

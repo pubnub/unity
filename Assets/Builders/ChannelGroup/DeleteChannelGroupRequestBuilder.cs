@@ -27,7 +27,7 @@ namespace PubNubAPI
                 Debug.Log("ChannelGroup to delete to empty");
                 return;
             }
-            base.Async(callback, PNOperationType.PNRemoveGroupOperation, CurrentRequestType.NonSubscribe, this);
+            base.Async(callback, PNOperationType.PNRemoveGroupOperation, PNCurrentRequestType.NonSubscribe, this);
         }
         #endregion
 
@@ -49,6 +49,10 @@ namespace PubNubAPI
             this.PubNubInstance.PNLog.WriteToLog(string.Format("RunPNChannelGroupsAddChannel {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }
+
+        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
+            
+        // }
 
         protected override void CreatePubNubResponse(object deSerializedResult){
             PNChannelGroupsDeleteGroupResult pnChannelGroupsDeleteGroupResult = new PNChannelGroupsDeleteGroupResult();

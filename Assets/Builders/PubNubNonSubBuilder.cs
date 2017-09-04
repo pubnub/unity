@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace PubNubAPI
 {
-    public abstract class PubNubNonSubBuilder<U, V>
+    public abstract class PubNubNonSubBuilder<U, V> where V : class 
     {
         protected Action<V, PNStatus> Callback;
 
@@ -31,13 +31,34 @@ namespace PubNubAPI
         internal void RaiseCreateResponse(object createResponse){
             this.CreateResponse(createResponse);
         }
+        internal void RaiseError(Exception exception, bool showInCallback, bool level){
+            this.CreateErrorResponse(exception, showInCallback, level);
+        }
         protected RequestState<U> ReqState { get; set;}
 
         protected abstract void CreatePubNubResponse(object deSerializedResult);
 
+        protected void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
+            PNStatus pnStatus = Helpers.CreatePNStatus(
+                PNStatusCategory.PNConnectedCategory,
+                "",
+                null,
+                false,
+                0,
+                PNOperationType.PNSubscribeOperation,
+                PubNubInstance.PNConfig.Secure,
+                PubNubInstance.PNConfig.UUID,
+                PubNubInstance.PNConfig.AuthKey,
+                PubNubInstance.PNConfig.Origin,
+                null,
+                null
+            );
+            Callback(null, pnStatus);
+        }
+
         protected abstract void RunWebRequest(QueueManager qm);
 
-        public void Async(Action<V, PNStatus> callback, PNOperationType pnOpType, CurrentRequestType crt, PubNubNonSubBuilder<U, V> pnBuilder){
+        public void Async(Action<V, PNStatus> callback, PNOperationType pnOpType, PNCurrentRequestType crt, PubNubNonSubBuilder<U, V> pnBuilder){
             RequestQueue.Instance.Enqueue (callback, pnOpType, pnBuilder, this.PubNubInstance);
         }
 

@@ -13,8 +13,8 @@ namespace PubNubAPI
         private List<string> ChannelGroupsToLeave { get; set;}
         private List<string> ChannelsToLeave { get; set;}
 
-        public void ChannelGroups(List<string> channelGroup){
-            ChannelGroupsToLeave = channelGroup;
+        public void ChannelGroups(List<string> channelGroups){
+            ChannelGroupsToLeave = channelGroups;
         }
         
         public void Channels(List<string> channels){
@@ -28,7 +28,7 @@ namespace PubNubAPI
             this.Callback = callback;
             Debug.Log ("LeaveRequestBuilder Async");
 
-            base.Async(callback, PNOperationType.PNLeaveOperation, CurrentRequestType.NonSubscribe, this);
+            base.Async(callback, PNOperationType.PNLeaveOperation, PNCurrentRequestType.NonSubscribe, this);
         }
         #endregion
 
@@ -139,6 +139,10 @@ namespace PubNubAPI
                 }
             }
         }
+
+        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
+            
+        // }
         
     }
 }

@@ -77,7 +77,7 @@ namespace PubNubAPI
                 return;
             }
 
-            base.Async(callback, PNOperationType.PNHistoryOperation, CurrentRequestType.NonSubscribe, this);
+            base.Async(callback, PNOperationType.PNHistoryOperation, PNCurrentRequestType.NonSubscribe, this);
         }
 
          protected override void RunWebRequest(QueueManager qm){
@@ -111,6 +111,10 @@ namespace PubNubAPI
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
 
         }
+ 
+        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
+            
+        // }
 
         protected override void CreatePubNubResponse(object deSerializedResult){
             //[[{"text":"hey"},{"text":"hey"},{"text":"hey"},{"text":"hey"}],15011678612673119,15011678623670911]

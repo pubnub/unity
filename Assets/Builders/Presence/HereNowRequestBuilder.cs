@@ -38,7 +38,7 @@ namespace PubNubAPI
         {
             this.Callback = callback;
             Debug.Log ("PNHereNowResult Async");
-            base.Async(callback, PNOperationType.PNHereNowOperation, CurrentRequestType.NonSubscribe, this);
+            base.Async(callback, PNOperationType.PNHereNowOperation, PNCurrentRequestType.NonSubscribe, this);
         }
         #endregion
 
@@ -117,6 +117,10 @@ namespace PubNubAPI
             }
             Callback(pnHereNowResult, pnStatus);
         }
+
+        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
+            
+        // }
 
         protected bool CreateHereNowResult(object objChannelsDict, out Dictionary<string, PNHereNowChannelData> channelsResult ){
             Dictionary<string, object> channelsDict = objChannelsDict as Dictionary<string, object>;

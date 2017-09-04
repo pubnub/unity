@@ -145,7 +145,7 @@ namespace PubNubAPI
             this.PubNubInstance.PNLog.WriteToLog(string.Format("AbortPreviousRequest: Aborting previous subscribe/presence requests having channel(s)={0} and ChannelGroup(s) = {1}", Helpers.GetNamesFromChannelEntities(existingChannels, false), Helpers.GetNamesFromChannelEntities(existingChannels, true)), PNLoggingMethod.LevelInfo);
             #endif
 
-            webRequest.AbortRequest<U>(CurrentRequestType.Subscribe, null, false);
+            webRequest.AbortRequest<U>(PNCurrentRequestType.Subscribe, null, false);
         }
 
         public void ContinueToSubscribeRestOfChannels()
@@ -603,19 +603,50 @@ namespace PubNubAPI
 
         internal void ProcessResponse (ref SubscribeEnvelope resultSubscribeEnvelope)
         {
-            
             if (resultSubscribeEnvelope != null) {
-                //Helpers.ResponseToConnectCallback<T> (asynchRequestState, jsonPluggableLibrary);
                 if (resultSubscribeEnvelope.Messages != null) {
                     ResponseToUserCallbackForSubscribe (resultSubscribeEnvelope.Messages);
-                }
-                #if (ENABLE_PUBNUB_LOGGING)
-                else {
+                } else {
+                    SendResponseToConnectCallback ();
+                    #if (ENABLE_PUBNUB_LOGGING)
                     this.PubNubInstance.PNLog.WriteToLog (string.Format ("ProcessResponseCallbacksV2: resultSubscribeEnvelope.Messages null"), PNLoggingMethod.LevelError);
+                    #endif
                 }
-                #endif
-
             } 
+        }
+
+        internal void SendResponseToConnectCallback ()
+        {
+            if(PubNubInstance.SubscriptionInstance.ChannelsAndChannelGroupsAwaitingConnectCallback.Count > 0){
+                bool updateIsAwaitingConnectCallback = false;
+                foreach(ChannelEntity ce in PubNubInstance.SubscriptionInstance.ChannelsAndChannelGroupsAwaitingConnectCallback){
+                    
+                    updateIsAwaitingConnectCallback = true;
+                    //if(ce.ChannelID.IsPresenceChannel){
+                        //Send presence channel conneted status
+                    Helpers.CreatePNStatus(
+                        PNStatusCategory.PNConnectedCategory,
+                        "",
+                        null,
+                        false,
+                        0,
+                        PNOperationType.PNSubscribeOperation,
+                        PubNubInstance.PNConfig.Secure,
+                        PubNubInstance.PNConfig.UUID,
+                        PubNubInstance.PNConfig.AuthKey,
+                        PubNubInstance.PNConfig.Origin,
+                        ce,
+                        null
+                    );
+                    //} else {
+                        //Send channel conneted status
+                    //}
+                }
+                if (updateIsAwaitingConnectCallback) {
+                    PubNubInstance.SubscriptionInstance.UpdateIsAwaitingConnectCallbacksOfEntity (PubNubInstance.SubscriptionInstance.ChannelsAndChannelGroupsAwaitingConnectCallback, false);
+                }
+            }
+            
         }
 
         internal void FindChannelEntityAndCallback (SubscribeMessage subscribeMessage, ChannelIdentity ci){

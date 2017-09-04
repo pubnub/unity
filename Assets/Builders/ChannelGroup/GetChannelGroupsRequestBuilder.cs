@@ -17,7 +17,7 @@ namespace PubNubAPI
         {
             this.Callback = callback;
             Debug.Log ("GetChannelGroupsRequestBuilder Async");
-            base.Async(callback, PNOperationType.PNTimeOperation, CurrentRequestType.NonSubscribe, this);
+            base.Async(callback, PNOperationType.PNTimeOperation, PNCurrentRequestType.NonSubscribe, this);
         }
         #endregion
 
@@ -35,6 +35,10 @@ namespace PubNubAPI
             this.PubNubInstance.PNLog.WriteToLog(string.Format("RunTimeRequest {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this);*/
         }
+
+        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
+            
+        // }
 
         protected override void CreatePubNubResponse(object deSerializedResult){
             /*Int64[] c = deSerializedResult as Int64[];

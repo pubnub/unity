@@ -39,6 +39,42 @@ namespace PubNubAPI
         internal const string PresenceChannelSuffix = "-pnpres";
 
         #region "Helpers"
+        internal static PNStatus CreatePNStatus(PNStatusCategory category, string errorString, Exception errorException, bool error, int statusCode, PNOperationType operation, bool tlsEnabled, string uuid, string authKey, string origin, ChannelEntity channelEntity, object clientRequest){
+            PNErrorData errorData = null;
+            if((!string.IsNullOrEmpty(errorString)) || (errorException != null)){
+                errorData = new PNErrorData();
+                errorData.Info = errorString;
+                errorData.Ex = errorException;
+            }
+            List<string> affectedChannels = null;
+            List<string> affectedChannelGroups = null;
+
+            if(channelEntity.ChannelID.IsChannelGroup){
+                affectedChannelGroups = new List<string>();
+                affectedChannelGroups.Add(channelEntity.ChannelID.ChannelOrChannelGroupName);
+            } else {
+                affectedChannels = new List<string>();
+                affectedChannels.Add(channelEntity.ChannelID.ChannelOrChannelGroupName);
+            }
+
+            PNStatus pnStatus = new PNStatus(
+                category,
+                errorData,
+                error,
+                statusCode,
+                operation,
+                tlsEnabled,
+                uuid,
+                authKey,
+                origin,
+                affectedChannels,
+                affectedChannelGroups,
+                clientRequest
+            );
+
+            return pnStatus;
+        }
+
         internal static string GetNamesFromChannelEntities (List<ChannelEntity> channelEntities){
             StringBuilder sbCh = new StringBuilder ();
             StringBuilder sbChGrp = new StringBuilder ();

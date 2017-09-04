@@ -9,13 +9,15 @@ namespace PubNubAPI
         //internal Action<T, PNStatus> Callback;
         internal bool IsError;
         internal bool IsTimeout;
-        internal CurrentRequestType CurrRequestType;
+        internal PNCurrentRequestType CurrRequestType;
+        internal long ResponseCode;
+        internal string URL;
     }
 
     internal class CurrentRequestTypeEventArgs : EventArgs
     {
         internal bool IsTimeout;
-        internal CurrentRequestType CurrRequestType;
+        internal PNCurrentRequestType CurrRequestType;
     }
 
 }

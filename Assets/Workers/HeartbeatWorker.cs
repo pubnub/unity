@@ -74,7 +74,7 @@ namespace PubNubAPI
         {
             Debug.Log(string.Format ("StopHeartbeat keepHearbeatRunning={0} isHearbeatRunning={1}", keepHearbeatRunning, isHearbeatRunning));
             keepHearbeatRunning = false;
-            if (isHearbeatRunning || webRequest.CheckIfRequestIsRunning(CurrentRequestType.Heartbeat)){
+            if (isHearbeatRunning || webRequest.CheckIfRequestIsRunning(PNCurrentRequestType.Heartbeat)){
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PubNubInstance.PNLog.WriteToLog (string.Format ("Stopping Heartbeat "), PNLoggingMethod.LevelInfo);
                 #endif
@@ -82,7 +82,7 @@ namespace PubNubAPI
                 
                 isHearbeatRunning = false;
                 //webRequest.HeartbeatCoroutineComplete -= CoroutineCompleteHandler<PNOperationType.PNHeartbeatOperation>;
-                webRequest.AbortRequest<PNTimeResult> (CurrentRequestType.Heartbeat, null, false);
+                webRequest.AbortRequest<PNTimeResult> (PNCurrentRequestType.Heartbeat, null, false);
             }
         }
 

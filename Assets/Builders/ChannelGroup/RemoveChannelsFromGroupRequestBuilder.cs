@@ -39,7 +39,7 @@ namespace PubNubAPI
                 //TODO Send callback
                 return;
             }
-            base.Async(callback, PNOperationType.PNRemoveChannelsFromGroupOperation, CurrentRequestType.NonSubscribe, this);
+            base.Async(callback, PNOperationType.PNRemoveChannelsFromGroupOperation, PNCurrentRequestType.NonSubscribe, this);
         }
         #endregion
 
@@ -61,6 +61,9 @@ namespace PubNubAPI
             this.PubNubInstance.PNLog.WriteToLog(string.Format("Run PNRemoveChannelsFromGroupOperation {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }
+        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
+            
+        // }
 
         protected override void CreatePubNubResponse(object deSerializedResult){
             PNChannelGroupsRemoveChannelResult pnChannelGroupsRemoveChannelResult = new PNChannelGroupsRemoveChannelResult();

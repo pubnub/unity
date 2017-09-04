@@ -2,7 +2,7 @@
 
 namespace PubNubAPI
 {
-    public enum CurrentRequestType
+    public enum PNCurrentRequestType
     {
         Heartbeat,
         PresenceHeartbeat,

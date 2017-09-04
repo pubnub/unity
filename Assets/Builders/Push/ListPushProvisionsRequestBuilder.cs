@@ -38,7 +38,7 @@ namespace PubNubAPI
                 //TODO Send callback
                 return;
             }
-            base.Async(callback, PNOperationType.PNPushNotificationEnabledChannelsOperation, CurrentRequestType.NonSubscribe, this);
+            base.Async(callback, PNOperationType.PNPushNotificationEnabledChannelsOperation, PNCurrentRequestType.NonSubscribe, this);
         }
         #endregion
 
@@ -85,6 +85,10 @@ namespace PubNubAPI
             }
             Callback(pnPushListProvisionsResult, pnStatus);
         }
+
+        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
+            
+        // }        
         
     }
 }

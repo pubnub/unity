@@ -76,7 +76,7 @@ namespace PubNubAPI
                 return;
             }
 
-            base.Async(callback, PNOperationType.PNFetchMessagesOperation, CurrentRequestType.NonSubscribe, this);
+            base.Async(callback, PNOperationType.PNFetchMessagesOperation, PNCurrentRequestType.NonSubscribe, this);
         }
         #endregion
 
@@ -110,6 +110,9 @@ namespace PubNubAPI
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
 
         }
+        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
+            
+        // }
 
         protected override void CreatePubNubResponse(object deSerializedResult){
             //{"status": 200, "error": false, "error_message": "", "channels": {"channel2":[{"message":{"text":"hey"},"timetoken":"15011678669001834"}],"channel1":[{"message":{"text":"hey"},"timetoken":"15011678623670911"}]}}

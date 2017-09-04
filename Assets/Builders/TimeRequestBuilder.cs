@@ -18,7 +18,7 @@ namespace PubNubAPI
         {
             this.Callback = callback;
             Debug.Log ("TimeBuilder Async");
-            base.Async(callback, PNOperationType.PNTimeOperation, CurrentRequestType.NonSubscribe, this);
+            base.Async(callback, PNOperationType.PNTimeOperation, PNCurrentRequestType.NonSubscribe, this);
         }
         #endregion
 
@@ -50,6 +50,10 @@ namespace PubNubAPI
             }
             Callback(pnTimeResult, pnStatus);
         }
+
+        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
+            
+        // }
         
     }
 }
