@@ -7,7 +7,7 @@ namespace PubNubAPI
 {
     public class AddChannelsToChannelGroupRequestBuilder: PubNubNonSubBuilder<AddChannelsToChannelGroupRequestBuilder, PNChannelGroupsAddChannelResult>, IPubNubNonSubscribeBuilder<AddChannelsToChannelGroupRequestBuilder, PNChannelGroupsAddChannelResult>
     {
-        private List<string> ChannelsToAdd { get; set;}
+        //private List<string> ChannelsToUse { get; set;}
         private string ChannelGroupToAdd { get; set;}
 
         public AddChannelsToChannelGroupRequestBuilder(PubNubUnity pn): base(pn){
@@ -15,11 +15,12 @@ namespace PubNubAPI
         }
 
         public void Channels(List<string> channels){
-            ChannelsToAdd = channels;
+            ChannelsToUse = channels;
         }
 
         public void ChannelGroup(string channelGroup){
             ChannelGroupToAdd = channelGroup;
+            ChannelGroupsToUse = new List<string>(){ChannelGroupToAdd};
         }
 
         #region IPubNubBuilder implementation
@@ -27,7 +28,7 @@ namespace PubNubAPI
         {
             this.Callback = callback;
 
-            if((ChannelsToAdd == null) || ((ChannelsToAdd != null) && (ChannelsToAdd.Count <= 0))){
+            if((ChannelsToUse == null) || ((ChannelsToUse != null) && (ChannelsToUse.Count <= 0))){
                 Debug.Log("ChannelsToAdd null or empty");
 
                 //TODO Send callback
@@ -47,11 +48,11 @@ namespace PubNubAPI
         #endregion
 
         protected override void RunWebRequest(QueueManager qm){
-            RequestState<PNChannelGroupsAddChannelResult> requestState = new RequestState<PNChannelGroupsAddChannelResult> ();
+            RequestState requestState = new RequestState ();
             requestState.RespType = PNOperationType.PNAddChannelsToGroupOperation;
 
             Uri request = BuildRequests.BuildAddChannelsToChannelGroupRequest(
-                ChannelsToAdd.ToArray(), 
+                ChannelsToUse.ToArray(), 
                 "", 
                 ChannelGroupToAdd,
                 this.PubNubInstance.PNConfig.UUID,
@@ -69,7 +70,7 @@ namespace PubNubAPI
             
         // }
 
-        protected override void CreatePubNubResponse(object deSerializedResult){
+        protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             //{"service" : "channel-registry","status"  : 200,"error"   : false,"message" : "OK"}
 
             //TODO read all values.

@@ -28,7 +28,7 @@ namespace PubNubAPI
         #endregion
 
         protected override void RunWebRequest(QueueManager qm){
-            RequestState<PNWhereNowResult> requestState = new RequestState<PNWhereNowResult> ();
+            RequestState requestState = new RequestState ();
             requestState.RespType = PNOperationType.PNWhereNowOperation;
 
             Debug.Log ("WhereNowBuilder UuidForWhereNow: " + this.UuidForWhereNow);
@@ -56,7 +56,7 @@ namespace PubNubAPI
             
         // }
 
-        protected override void CreatePubNubResponse(object deSerializedResult){
+        protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             //{"status": 200, "message": "OK", "payload": {"channels": ["channel2", "channel1"]}, "service": "Presence"}
             //TODO read other values.
             

@@ -22,7 +22,7 @@ namespace PubNubAPI
         #endregion
 
         protected override void RunWebRequest(QueueManager qm){
-            RequestState<PNChannelGroupsListAllResult> requestState = new RequestState<PNChannelGroupsListAllResult> ();
+            RequestState requestState = new RequestState ();
             requestState.RespType = PNOperationType.PNChannelsForGroupOperation;
             
             /*Uri request = BuildRequests.BuildTimeRequest(
@@ -40,7 +40,7 @@ namespace PubNubAPI
             
         // }
 
-        protected override void CreatePubNubResponse(object deSerializedResult){
+        protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             /*Int64[] c = deSerializedResult as Int64[];
             PNTimeResult pnTimeResult = new PNTimeResult();
             PNStatus pnStatus = new PNStatus();

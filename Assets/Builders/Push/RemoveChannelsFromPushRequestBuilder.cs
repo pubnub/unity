@@ -11,10 +11,10 @@ namespace PubNubAPI
 
         }
 
-        private List<string> ChannelsToRemove { get; set;}
+        //private List<string> ChannelsToUse { get; set;}
         private string DeviceIDForPush{ get; set;}
         public void Channels(List<string> channels){
-            ChannelsToRemove = channels;
+            ChannelsToUse = channels;
         }
 
         public void DeviceId(string deviceId){
@@ -34,11 +34,11 @@ namespace PubNubAPI
         #endregion
 
         protected override void RunWebRequest(QueueManager qm){
-            RequestState<PNPushRemoveChannelResult> requestState = new RequestState<PNPushRemoveChannelResult> ();
+            RequestState requestState = new RequestState ();
             requestState.RespType = PNOperationType.PNRemovePushNotificationsFromChannelsOperation;
             
             Uri request = BuildRequests.BuildRemoveChannelPushRequest(
-                string.Join(",", ChannelsToRemove.ToArray()), 
+                string.Join(",", ChannelsToUse.ToArray()), 
                 PushType, 
                 DeviceIDForPush,
                 this.PubNubInstance.PNConfig.UUID,
@@ -53,7 +53,7 @@ namespace PubNubAPI
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this);
         }
 
-        protected override void CreatePubNubResponse(object deSerializedResult){
+        protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             PNPushRemoveChannelResult pnPushRemoveChannelResult = new PNPushRemoveChannelResult();
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
             PNStatus pnStatus = new PNStatus();

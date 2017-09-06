@@ -489,7 +489,7 @@ namespace PubNubAPI
             }
         }
 
-        public void DelayStartWebRequest<T>(string url, RequestState<T> pubnubRequestState, int timeout, int pause, PNCurrentRequestType crt)
+        public void DelayStartWebRequest<T>(string url, RequestState pubnubRequestState, int timeout, int pause, PNCurrentRequestType crt)
         {
             #if (ENABLE_PUBNUB_LOGGING)
             this.PNLog.WriteToLog (string.Format ("DelayStartWebRequest delay: {0} {1}",  pause.ToString(), crt.ToString()), PNLoggingMethod.LevelInfo);
@@ -513,7 +513,7 @@ namespace PubNubAPI
             }
         }
 
-        public void Run<T> (string url, RequestState<T> pubnubRequestState, int timeout, int pause, bool reconnect)
+        public void Run<T> (string url, RequestState pubnubRequestState, int timeout, int pause, bool reconnect)
         {
             //for heartbeat and presence heartbeat treat reconnect as pause
             PNCurrentRequestType crt;
@@ -560,7 +560,7 @@ namespace PubNubAPI
             } 
         }
 
-        internal void StartWebRequestsByName<T> (string url, RequestState<T> pubnubRequestState, int timeout, int pause, PNCurrentRequestType crt)
+        internal void StartWebRequestsByName<T> (string url, RequestState pubnubRequestState, int timeout, int pause, PNCurrentRequestType crt)
         {
             WebRequestParams<T> cp = new WebRequestParams<T> (url, timeout, pause, crt, typeof(T), pubnubRequestState);
 
@@ -623,7 +623,7 @@ namespace PubNubAPI
             }
         }
 
-        public IEnumerator DelayRequest<T> (string url, RequestState<T> pubnubRequestState, int timeout, int pause, PNCurrentRequestType crt)
+        public IEnumerator DelayRequest<T> (string url, RequestState pubnubRequestState, int timeout, int pause, PNCurrentRequestType crt)
         {
             yield return new WaitForSeconds (pause); 
             #if (ENABLE_PUBNUB_LOGGING)
@@ -779,7 +779,9 @@ namespace PubNubAPI
                     }
                     #endif
                     Debug.Log("BEFORE FireEvent");
-                    FireEvent (message, isError, false, cp.requestState, cp.crt, www.responseCode, www.url);
+                    cp.requestState.ResponseCode = www.responseCode;
+                    cp.requestState.URL = www.url;                    
+                    FireEvent<T> (message, isError, false, cp.requestState, cp.crt);
                 } 
             } catch (Exception ex) {
                 Debug.Log(ex.ToString());
@@ -789,7 +791,7 @@ namespace PubNubAPI
             }
         }
 
-        public void AbortRequest<T> (PNCurrentRequestType crt, RequestState<T> pubnubRequestState, bool fireEvent)
+        public void AbortRequest<T> (PNCurrentRequestType crt, RequestState pubnubRequestState, bool fireEvent)
         {
             try {
                 string wwwUrl;
@@ -797,8 +799,9 @@ namespace PubNubAPI
                 SetComplete (crt);                
 
                 if ((pubnubRequestState != null) && fireEvent) {
-
-                    FireEvent ("Aborted", true, false, pubnubRequestState, crt, 0, wwwUrl);
+                    pubnubRequestState.ResponseCode = 0;
+                    pubnubRequestState.URL = wwwUrl;
+                    FireEvent<T> ("Aborted", true, false, pubnubRequestState, crt);
                     #if (ENABLE_PUBNUB_LOGGING)
                     this.PNLog.WriteToLog (string.Format ("BounceRequest: event fired {0}",  crt.ToString ()), PNLoggingMethod.LevelInfo);
                     #endif
@@ -826,7 +829,9 @@ namespace PubNubAPI
 
                 if (!CheckComplete (cp.crt, out wwwUrl)) {
                     //if ((cp.typeParameterType == typeof(string)) || (cp.typeParameterType == typeof(object))) {
-                        FireEvent ("Timed out", true, true, cp.requestState, cp.crt, 0, wwwUrl);
+                        cp.requestState.ResponseCode = 0;
+                        cp.requestState.URL = wwwUrl;
+                        FireEvent<T> ("Timed out", true, true, cp.requestState, cp.crt);
                         #if (ENABLE_PUBNUB_LOGGING)
                         this.PNLog.WriteToLog (string.Format ("ProcessTimeout: WWW Error: {0} sec timeout",  cp.timeout.ToString ()), PNLoggingMethod.LevelInfo);
                         #endif
@@ -843,17 +848,15 @@ namespace PubNubAPI
             }
         }
 
-        public void FireEvent<T> (string message, bool isError, bool isTimeout, RequestState<T> pubnubRequestState, PNCurrentRequestType crt, long responseCode, string url)
+        public void FireEvent<T> (string message, bool isError, bool isTimeout, RequestState pubnubRequestState, PNCurrentRequestType crt)
         {
             Debug.Log(" FireEvent" + crt);
             CustomEventArgs<T> cea = new CustomEventArgs<T> ();
-            cea.PubnubRequestState = pubnubRequestState;
+            cea.PubNubRequestState = pubnubRequestState;
             cea.Message = message;
             cea.IsError = isError;
             cea.IsTimeout = isTimeout;
             cea.CurrRequestType = crt;
-            cea.ResponseCode = responseCode;
-            cea.URL = url;
             #if (ENABLE_PUBNUB_LOGGING)
             this.PNLog.WriteToLog (string.Format ("FireEvent: Raising Event of type : {0}",  crt.ToString ()), PNLoggingMethod.LevelInfo);
             #endif
@@ -886,9 +889,9 @@ namespace PubNubAPI
         public int pause;
         public PNCurrentRequestType crt;
         public Type typeParameterType;
-        public RequestState<T> requestState;
+        public RequestState requestState;
 
-        public WebRequestParams (string url, int timeout, int pause, PNCurrentRequestType crt, Type typeParameterType, RequestState<T> requestState)
+        public WebRequestParams (string url, int timeout, int pause, PNCurrentRequestType crt, Type typeParameterType, RequestState requestState)
         {
             this.url = url;
             this.timeout = timeout;

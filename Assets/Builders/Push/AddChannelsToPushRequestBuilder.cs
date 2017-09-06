@@ -11,10 +11,10 @@ namespace PubNubAPI
             Debug.Log ("AddChannelsToPushRequestBuilder Construct");
 
         }
-        private List<string> ChannelsToAdd { get; set;}
+        //private List<string> ChannelsToUse { get; set;}
         private string DeviceIDForPush{ get; set;}
         public void Channels(List<string> channels){
-            ChannelsToAdd = channels;
+            ChannelsToUse = channels;
         }
 
         public void DeviceId(string deviceId){
@@ -29,7 +29,7 @@ namespace PubNubAPI
         {
             this.Callback = callback;
             Debug.Log ("AddChannelsToPushRequestBuilder Async");
-            if((ChannelsToAdd == null) || ((ChannelsToAdd != null) && (ChannelsToAdd.Count <= 0))){
+            if((ChannelsToUse == null) || ((ChannelsToUse != null) && (ChannelsToUse.Count <= 0))){
                 Debug.Log("ChannelsToAdd null or empty");
 
                 //TODO Send callback
@@ -54,11 +54,11 @@ namespace PubNubAPI
         #endregion
 
         protected override void RunWebRequest(QueueManager qm){
-            RequestState<PNPushAddChannelResult> requestState = new RequestState<PNPushAddChannelResult> ();
+            RequestState requestState = new RequestState ();
             requestState.RespType = PNOperationType.PNAddPushNotificationsOnChannelsOperation;
             
             Uri request = BuildRequests.BuildRegisterDevicePushRequest(
-                string.Join(",", ChannelsToAdd.ToArray()), 
+                string.Join(",", ChannelsToUse.ToArray()), 
                 PushType, 
                 DeviceIDForPush,
                 this.PubNubInstance.PNConfig.UUID,
@@ -73,7 +73,7 @@ namespace PubNubAPI
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this);
         }
 
-        protected override void CreatePubNubResponse(object deSerializedResult){
+        protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             //{"service" : "channel-registry","status"  : 200,"error"   : false,"message" : "OK"}
             //{"error": "Invalid device token"} 
             //[1, "Modified Channels"] 

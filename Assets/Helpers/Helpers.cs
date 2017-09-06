@@ -39,7 +39,152 @@ namespace PubNubAPI
         internal const string PresenceChannelSuffix = "-pnpres";
 
         #region "Helpers"
-        internal static PNStatus CreatePNStatus(PNStatusCategory category, string errorString, Exception errorException, bool error, int statusCode, PNOperationType operation, bool tlsEnabled, string uuid, string authKey, string origin, ChannelEntity channelEntity, object clientRequest){
+
+        internal static bool CheckRequestTimeoutMessageInError<T>(CustomEventArgs<T> cea){
+            if (cea.IsError && cea.Message.ToString().Contains ("The request timed out.")) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        internal static bool CheckErrorTypeAndCallback<T> (CustomEventArgs<T> cea, PubNubUnity pnUnity, out PNStatus pnStatus){
+            bool retBool = false;
+            PNStatusCategory pnStatusCat = PNStatusCategory.PNUnknownCategory;
+            if (cea.IsTimeout || CheckRequestTimeoutMessageInError(cea)){
+                pnStatusCat = PNStatusCategory.PNTimeoutCategory;
+                retBool = true;
+            } else if(cea.IsError){
+                if ((cea.Message.Contains ("NameResolutionFailure")
+                    || cea.Message.Contains ("ConnectFailure")
+                    || cea.Message.Contains ("ServerProtocolViolation")
+                    || cea.Message.Contains ("ProtocolError")
+                )) {
+                    pnStatusCat = PNStatusCategory.PNNetworkIssuesCategory;
+                } else if(cea.Message.Contains ("Aborted")){
+                    pnStatusCat = PNStatusCategory.PNCancelledCategory;
+                } else if ((cea.Message.Contains ("403")) 
+                    || (cea.Message.Contains ("java.io.FileNotFoundException")) 
+                    || ((pnUnity.Version.Contains("UnityWeb")) && (cea.Message.Contains ("Failed downloading")))) {
+                        pnStatusCat = PNStatusCategory.PNAccessDeniedCategory;
+                } else if (cea.PubNubRequestState != null){
+                    if(cea.PubNubRequestState.ResponseCode.Equals(403)){
+                        pnStatusCat = PNStatusCategory.PNAccessDeniedCategory;
+                    } else if (cea.PubNubRequestState.ResponseCode.Equals ("500")){
+                        pnStatusCat = PNStatusCategory.PNUnexpectedDisconnectCategory;
+                    } else if (cea.PubNubRequestState.ResponseCode.Equals ("502")){
+                        pnStatusCat = PNStatusCategory.PNUnexpectedDisconnectCategory;
+                    } else if (cea.PubNubRequestState.ResponseCode.Equals ("503")){
+                        pnStatusCat = PNStatusCategory.PNUnexpectedDisconnectCategory;  
+                    } else if (cea.PubNubRequestState.ResponseCode.Equals ("504")){
+                        pnStatusCat = PNStatusCategory.PNTimeoutCategory;  
+                    } else if (cea.PubNubRequestState.ResponseCode.Equals ("414")){
+                        pnStatusCat = PNStatusCategory.PNBadRequestCategory;  
+                    } else if (cea.PubNubRequestState.ResponseCode.Equals ("481")){
+                        pnStatusCat = PNStatusCategory.PNUnexpectedDisconnectCategory;
+                    } else if (cea.PubNubRequestState.ResponseCode.Equals ("451")){
+                        pnStatusCat = PNStatusCategory.PNUnexpectedDisconnectCategory;
+                    } else if (cea.PubNubRequestState.ResponseCode.Equals ("400")){
+                        pnStatusCat = PNStatusCategory.PNBadRequestCategory;  
+                    } 
+                } 
+                retBool = true;
+            } else {
+                retBool = false;
+            }
+
+            if(retBool){
+                pnStatus = CreatePNStatus(
+                        pnStatusCat,
+                        cea.Message,
+                        null,
+                        retBool,
+                        PNOperationType.PNSubscribeOperation,
+                        pnUnity.SubscriptionInstance.AllChannels,
+                        pnUnity.SubscriptionInstance.AllChannelGroups,
+                        cea.PubNubRequestState,
+                        pnUnity
+                    );
+            } else {
+                pnStatus = null;
+            }
+            return retBool;
+
+        }
+
+        #region "CreatePNStatus"
+        internal static PNStatus CreatePNStatus(PNStatusCategory category, PNErrorData errorData, bool error, PNOperationType operation, List<string> channels, List<string> channelGroups, RequestState pnRequestState, PubNubUnity pnUnity){
+            long statusCode = 0;
+            string url = "";
+            if(pnRequestState != null){
+                statusCode = pnRequestState.ResponseCode;
+                url = pnRequestState.URL;
+            }
+
+            PNStatus pnStatus = new PNStatus(
+                category,
+                errorData,
+                error,
+                statusCode,
+                operation,
+                pnUnity.PNConfig.Secure,
+                pnUnity.PNConfig.UUID,
+                pnUnity.PNConfig.AuthKey,
+                pnUnity.PNConfig.Origin,
+                channels,
+                channelGroups,
+                url
+            );
+
+            #if (ENABLE_PUBNUB_LOGGING)
+            pnUnity.PNLog.WriteToLog (string.Format ("CreatePNStatus: \n" + 
+                "category={0} \n" +
+                "errorData={1} \n" +
+                "error={2} \n" +
+                "statusCode={3} \n" +
+                "operation={4} \n" +
+                "tlsEnabled={5} \n" +
+                "uuid={6} \n" +
+                "authKey={7} \n" +
+                "origin={8} \n" +
+                "channels={9} \n" +
+                "channelGroups={10} \n" +
+                "clientRequest={11} \n" , 
+                category.ToString(), 
+                (errorData != null) ? errorData.Ex.ToString() : "null", 
+                error.ToString(),
+                statusCode.ToString(),
+                operation.ToString(),
+                pnUnity.PNConfig.Secure,
+                pnUnity.PNConfig.UUID,
+                pnUnity.PNConfig.AuthKey,
+                pnUnity.PNConfig.Origin,
+                (channels != null) ? string.Join(",", channels.ToArray()) : "null",
+                (channelGroups != null) ? string.Join(",", channelGroups.ToArray()) : "null",
+                //(clientRequest != null) ? clientRequest.ToString() : "null"
+                url
+                ), PNLoggingMethod.LevelInfo);
+            #endif
+
+            return pnStatus;
+        }
+
+        internal static PNStatus CreatePNStatus(PNStatusCategory category, string errorString, Exception errorException, bool error, PNOperationType operation, List<ChannelEntity> affectedChannels, List<ChannelEntity> affectedChannelGroups, RequestState pnRequestState, PubNubUnity pnUnity){
+            PNErrorData errorData = CreateErrorData(errorString, errorException);
+            
+            List<string> channels = CreateListOfStringFromListOfChannelEntity(affectedChannels);
+            List<string> channelGroups = CreateListOfStringFromListOfChannelEntity(affectedChannelGroups);
+
+            return CreatePNStatus(category, errorData, error, operation, channels, channelGroups, pnRequestState, pnUnity);
+        }
+
+        internal static PNStatus CreatePNStatus(PNStatusCategory category, string errorString, Exception errorException, bool error, PNOperationType operation, List<string> channels, List<string> channelGroups, RequestState pnRequestState, PubNubUnity pnUnity){
+            PNErrorData errorData = CreateErrorData(errorString, errorException);
+
+            return CreatePNStatus(category, errorData, error, operation, channels, channelGroups, pnRequestState, pnUnity);
+        }
+
+        internal static PNStatus CreatePNStatus(PNStatusCategory category, string errorString, Exception errorException, bool error, PNOperationType operation, ChannelEntity channelEntity, RequestState pnRequestState, PubNubUnity pnUnity){
             PNErrorData errorData = null;
             if((!string.IsNullOrEmpty(errorString)) || (errorException != null)){
                 errorData = new PNErrorData();
@@ -57,23 +202,32 @@ namespace PubNubAPI
                 affectedChannels.Add(channelEntity.ChannelID.ChannelOrChannelGroupName);
             }
 
-            PNStatus pnStatus = new PNStatus(
-                category,
-                errorData,
-                error,
-                statusCode,
-                operation,
-                tlsEnabled,
-                uuid,
-                authKey,
-                origin,
-                affectedChannels,
-                affectedChannelGroups,
-                clientRequest
-            );
+            return CreatePNStatus(category, errorData, error, operation, affectedChannels, affectedChannelGroups, pnRequestState, pnUnity);
 
-            return pnStatus;
         }
+
+        #endregion
+        
+        internal static List<string> CreateListOfStringFromListOfChannelEntity(List<ChannelEntity> channelEntities){
+            List<string> channelList = null;
+            if(channelEntities != null){
+                channelList = new List<string>();
+                foreach(ChannelEntity ce in channelEntities){
+                    channelList.Add(ce.ChannelID.ChannelOrChannelGroupName);
+                }
+            }
+            return channelList;
+        }
+
+        internal static PNErrorData CreateErrorData(string errorString, Exception errorException){
+            PNErrorData errorData = null;
+            if((!string.IsNullOrEmpty(errorString)) || (errorException != null)){
+                errorData = new PNErrorData();
+                errorData.Info = errorString;
+                errorData.Ex = errorException;
+            }
+            return errorData;
+        }        
 
         internal static string GetNamesFromChannelEntities (List<ChannelEntity> channelEntities){
             StringBuilder sbCh = new StringBuilder ();

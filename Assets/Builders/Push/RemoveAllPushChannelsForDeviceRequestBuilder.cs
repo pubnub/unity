@@ -42,7 +42,7 @@ namespace PubNubAPI
         #endregion
 
         protected override void RunWebRequest(QueueManager qm){
-            RequestState<PNPushRemoveAllChannelsResult> requestState = new RequestState<PNPushRemoveAllChannelsResult> ();
+            RequestState requestState = new RequestState ();
             requestState.RespType = PNOperationType.PNRemoveAllPushNotificationsOperation;
             
             Uri request = BuildRequests.BuildRemoveAllDevicePushRequest(
@@ -59,7 +59,7 @@ namespace PubNubAPI
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this);
         }
 
-        protected override void CreatePubNubResponse(object deSerializedResult){
+        protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             //[1, "Removed Device"] 
             PNPushRemoveAllChannelsResult pnPushRemoveAllChannelsResult = new PNPushRemoveAllChannelsResult();
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;

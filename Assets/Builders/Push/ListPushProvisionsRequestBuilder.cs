@@ -43,7 +43,7 @@ namespace PubNubAPI
         #endregion
 
         protected override void RunWebRequest(QueueManager qm){
-            RequestState<PNPushListProvisionsResult> requestState = new RequestState<PNPushListProvisionsResult> ();
+            RequestState requestState = new RequestState ();
             requestState.RespType = PNOperationType.PNPushNotificationEnabledChannelsOperation;
             
             Uri request = BuildRequests.BuildGetChannelsPushRequest(
@@ -61,7 +61,7 @@ namespace PubNubAPI
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this);
         }
 
-        protected override void CreatePubNubResponse(object deSerializedResult){
+        protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             //["channel1", "channel2"] 
             PNPushListProvisionsResult pnPushListProvisionsResult = new PNPushListProvisionsResult();
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;

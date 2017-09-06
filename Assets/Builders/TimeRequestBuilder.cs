@@ -23,7 +23,7 @@ namespace PubNubAPI
         #endregion
 
         protected override void RunWebRequest(QueueManager qm){
-            RequestState<PNTimeResult> requestState = new RequestState<PNTimeResult> ();
+            RequestState requestState = new RequestState ();
             requestState.RespType = PNOperationType.PNTimeOperation;
             
             Uri request = BuildRequests.BuildTimeRequest(
@@ -33,22 +33,26 @@ namespace PubNubAPI
                 this.PubNubInstance.Version
             );
 
+            #if (ENABLE_PUBNUB_LOGGING)
             this.PubNubInstance.PNLog.WriteToLog(string.Format("RunTimeRequest {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
+            #endif
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this);
         }
 
-        protected override void CreatePubNubResponse(object deSerializedResult){
+        protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             Int64[] c = deSerializedResult as Int64[];
             PNTimeResult pnTimeResult = new PNTimeResult();
-            PNStatus pnStatus = new PNStatus();
+            
             if ((c != null) && (c.Length > 0)) {
-                
                 pnTimeResult.TimeToken = c [0];
-                pnStatus.Error = false;
+                Callback(pnTimeResult, new PNStatus());
             } else {
-                pnStatus.Error = true;
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PubNubInstance.PNLog.WriteToLog(string.Format("CreatePubNubResponse (c == null) || (c.Length < 0) {0}", deSerializedResult.ToString()), PNLoggingMethod.LevelInfo);
+                #endif
+                CreateErrorResponse(PNStatusCategory.PNMalformedResponseCategory, null, true, PNLoggingMethod.LevelError, null);
             }
-            Callback(pnTimeResult, pnStatus);
+            
         }
 
         // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){

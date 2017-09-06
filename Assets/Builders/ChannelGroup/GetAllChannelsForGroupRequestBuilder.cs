@@ -14,6 +14,7 @@ namespace PubNubAPI
 
         public void ChannelGroup(string channelGroup){
             ChannelGroupToList = channelGroup;
+            ChannelGroupsToUse = new List<string>(){ChannelGroupToList};
         }
         
         #region IPubNubBuilder implementation
@@ -31,7 +32,7 @@ namespace PubNubAPI
         #endregion
 
         protected override void RunWebRequest(QueueManager qm){
-            RequestState<PNChannelGroupsAllChannelsResult> requestState = new RequestState<PNChannelGroupsAllChannelsResult> ();
+            RequestState requestState = new RequestState ();
             requestState.RespType = PNOperationType.PNChannelsForGroupOperation;
             
             Uri request = BuildRequests.BuildGetChannelsForChannelGroupRequest(
@@ -54,7 +55,7 @@ namespace PubNubAPI
             
         // }
 
-        protected override void CreatePubNubResponse(object deSerializedResult){
+        protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             //{"status": 200, "payload": {"channels": ["channel1", "channel2"], "group": "channelGroup1"}, "service": "channel-registry", "error": false} 
             PNChannelGroupsAllChannelsResult pnChannelGroupsAllChannelsResult = new PNChannelGroupsAllChannelsResult();
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
@@ -73,10 +74,12 @@ namespace PubNubAPI
                     payload.TryGetValue("channels", out objChannelsArray);
                     if(objChannelsArray != null){
                         string[] channelsArray = objChannelsArray as string[];
-                        pnChannelGroupsAllChannelsResult.Channels = new List<string>();
-                        foreach(string str in channelsArray){
-                            Debug.Log("strchannelsArray:" + str);
-                            pnChannelGroupsAllChannelsResult.Channels.Add(str);
+                        if(channelsArray != null){
+                            pnChannelGroupsAllChannelsResult.Channels = new List<string>();
+                            foreach(string str in channelsArray){
+                                Debug.Log("strchannelsArray:" + str);
+                                pnChannelGroupsAllChannelsResult.Channels.Add(str);
+                            }
                         }
                     } 
                 }

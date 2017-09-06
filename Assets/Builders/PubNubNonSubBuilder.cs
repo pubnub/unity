@@ -6,12 +6,14 @@ namespace PubNubAPI
 {
     public abstract class PubNubNonSubBuilder<U, V> where V : class 
     {
+        protected List<string> ChannelGroupsToUse { get; set;}
+        protected List<string> ChannelsToUse { get; set;}
         protected Action<V, PNStatus> Callback;
 
         protected delegate void RunRequestDelegate(QueueManager qm);
         protected event RunRequestDelegate RunRequest;
 
-        protected delegate void CreateResponseDelegate(object deSerializedResult);
+        protected delegate void CreateResponseDelegate(object deSerializedResult, RequestState pnRequestState);
         protected event CreateResponseDelegate CreateResponse;
 
         protected PubNubUnity PubNubInstance { get; set;}
@@ -20,40 +22,48 @@ namespace PubNubAPI
             this.RunRequest += delegate(QueueManager qm) {
                 RunWebRequest(qm);
             };
-            this.CreateResponse += delegate(object deSerializedResult) {
-                CreatePubNubResponse(deSerializedResult);
+            this.CreateResponse += delegate(object deSerializedResult, RequestState pnRequestState) {
+                CreatePubNubResponse(deSerializedResult, pnRequestState);
             };
 
         }
         internal void RaiseRunRequest(QueueManager qm){
             this.RunRequest(qm);
         }
-        internal void RaiseCreateResponse(object createResponse){
-            this.CreateResponse(createResponse);
+        internal void RaiseCreateResponse(object createResponse, RequestState pnRequestState){
+            this.CreateResponse(createResponse, pnRequestState);
         }
-        internal void RaiseError(Exception exception, bool showInCallback, bool level){
-            this.CreateErrorResponse(exception, showInCallback, level);
+        internal void RaiseError(PNStatusCategory pnStatusCategory, Exception exception, bool showInCallback, bool level, RequestState pnRequestState){
+            this.CreateErrorResponse(pnStatusCategory, exception, showInCallback, level, pnRequestState);
         }
-        protected RequestState<U> ReqState { get; set;}
-
-        protected abstract void CreatePubNubResponse(object deSerializedResult);
-
-        protected void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
-            PNStatus pnStatus = Helpers.CreatePNStatus(
-                PNStatusCategory.PNConnectedCategory,
-                "",
-                null,
-                false,
-                0,
-                PNOperationType.PNSubscribeOperation,
-                PubNubInstance.PNConfig.Secure,
-                PubNubInstance.PNConfig.UUID,
-                PubNubInstance.PNConfig.AuthKey,
-                PubNubInstance.PNConfig.Origin,
-                null,
-                null
-            );
+        internal void RaiseError(PNStatus pnStatus){    
+            //this.CreateErrorResponse(pnStatusCategory, exception, showInCallback, level, pnRequestState);
+            //if(showInCallback){
             Callback(null, pnStatus);
+            //}
+        }
+        //protected RequestState ReqState { get; set;}
+
+        protected abstract void CreatePubNubResponse(object deSerializedResult, RequestState pnRequestState);
+
+        protected void CreateErrorResponse(PNStatusCategory pnStatusCategory, Exception exception, bool showInCallback, bool level, RequestState pnRequestState){
+            //PNStatus pnStatus;
+            //if(Helpers.CheckErrorTypeAndCallback(cea, this.PubNubInstance, out pnStatus)){
+
+            PNStatus pnStatus = Helpers.CreatePNStatus(
+                pnStatusCategory,
+                exception.Message,
+                exception,
+                true,                
+                PNOperationType.PNSubscribeOperation,
+                ChannelsToUse,
+                ChannelGroupsToUse,
+                pnRequestState,
+                PubNubInstance
+            );
+            if(showInCallback){
+                Callback(null, pnStatus);
+            }
         }
 
         protected abstract void RunWebRequest(QueueManager qm);
@@ -66,7 +76,7 @@ namespace PubNubAPI
 
         }*/
 
-        protected void RunWebRequest(QueueManager qm, Uri request, RequestState<V> requestState, int timeout, int pause, PubNubNonSubBuilder<U, V> pnBuilder){
+        protected void RunWebRequest(QueueManager qm, Uri request, RequestState requestState, int timeout, int pause, PubNubNonSubBuilder<U, V> pnBuilder){
             NonSubscribeWorker<U, V> nonSubscribeWorker = new NonSubscribeWorker<U, V> (qm);
             nonSubscribeWorker.RunWebRequest(request.OriginalString, requestState, timeout, 0, pnBuilder); 
         }

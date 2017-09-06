@@ -7,8 +7,8 @@ namespace PubNubAPI
 {
     public class HereNowRequestBuilder: PubNubNonSubBuilder<HereNowRequestBuilder, PNHereNowResult>, IPubNubNonSubscribeBuilder<HereNowRequestBuilder, PNHereNowResult>
     {
-        private List<string> ChannelsForHereNow { get; set;}
-        private List<string> ChannelGroupsForHereNow { get; set;}
+        //private List<string> ChannelsToUse { get; set;}
+        //private List<string> ChannelGroupsToUse { get; set;}
 
         private bool IncludeStateInHereNow { get; set;}
         private bool IncludeUUIDsInHereNow { get; set;}
@@ -26,11 +26,11 @@ namespace PubNubAPI
         }
 
         public void Channels(List<string> channels){
-            ChannelsForHereNow = channels;
+            ChannelsToUse = channels;
         }
 
         public void ChannelGroups(List<string> channelGroups){
-            ChannelGroupsForHereNow = channelGroups;
+            ChannelGroupsToUse = channelGroups;
         }
 
         #region IPubNubBuilder implementation
@@ -43,17 +43,17 @@ namespace PubNubAPI
         #endregion
 
         protected override void RunWebRequest(QueueManager qm){
-            RequestState<PNHereNowResult> requestState = new RequestState<PNHereNowResult> ();
+            RequestState requestState = new RequestState ();
             requestState.RespType = PNOperationType.PNWhereNowOperation;
 
             string channels = "";
-            if((ChannelsForHereNow != null) && (ChannelsForHereNow.Count>0)){
-                channels = String.Join(",", ChannelsForHereNow.ToArray());
+            if((ChannelsToUse != null) && (ChannelsToUse.Count>0)){
+                channels = String.Join(",", ChannelsToUse.ToArray());
             }
 
             string channelGroups = "";
-            if((ChannelGroupsForHereNow != null) && (ChannelGroupsForHereNow.Count>0)){
-                channelGroups = String.Join(",", ChannelGroupsForHereNow.ToArray());
+            if((ChannelGroupsToUse != null) && (ChannelGroupsToUse.Count>0)){
+                channelGroups = String.Join(",", ChannelGroupsToUse.ToArray());
             }
             Uri request = BuildRequests.BuildHereNowRequest(
                 channels,
@@ -71,7 +71,7 @@ namespace PubNubAPI
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }
 
-        protected override void CreatePubNubResponse(object deSerializedResult){
+        protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             //{"status": 200, "message": "OK", "payload": {"channels": {"channel1": {"occupancy": 1, "uuids": ["a"]}, "channel2": {"occupancy": 1, "uuids": ["a"]}}, "total_channels": 2, "total_occupancy": 2}, "service": "Presence"} 
             //TODO read all values.
             

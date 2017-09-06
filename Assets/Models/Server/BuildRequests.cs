@@ -4,13 +4,15 @@ using System.Collections.Generic;
 
 namespace PubNubAPI
 {
-    public class RequestState<T>
+    public class RequestState
     {
         //public Action<T> SuccessCallback;
         //public Action<PubnubClientError> ErrorCallback;
         /*public PubnubWebRequest Request;
         public PubnubWebResponse Response;*/
         public PNOperationType RespType;
+        public long ResponseCode;
+        public string URL;
         /*public List<ChannelEntity> ChannelEntities;
         public bool Timeout;
         public bool Reconnect;

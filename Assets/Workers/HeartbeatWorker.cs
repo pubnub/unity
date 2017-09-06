@@ -101,7 +101,7 @@ namespace PubNubAPI
                     this.ssl, this.Origin);
 
                 coroutine.HeartbeatCoroutineComplete += CoroutineCompleteHandler<T>;*/
-                RequestState<PNTimeResult> requestState = new RequestState<PNTimeResult> ();
+                RequestState requestState = new RequestState ();
                 requestState.RespType = PNOperationType.PNHeartbeatOperation;
             
                 Uri request = BuildRequests.BuildTimeRequest(

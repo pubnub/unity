@@ -10,14 +10,15 @@ namespace PubNubAPI
         public RemoveChannelsFromGroupRequestBuilder(PubNubUnity pn):base(pn){
 
         }
-        private List<string> ChannelsToRemove { get; set;}
+        //private List<string> ChannelsToUse { get; set;}
         public void Channels(List<string> channels){
-            ChannelsToRemove = channels;
+            ChannelsToUse = channels;
         }
         private string ChannelGroupToDelete { get; set;}
 
         public void ChannelGroup(string channelGroup){
             ChannelGroupToDelete = channelGroup;
+            ChannelGroupsToUse = new List<string>(){ChannelGroupToDelete};
         }
         
         #region IPubNubBuilder implementation
@@ -26,7 +27,7 @@ namespace PubNubAPI
         {
             this.Callback = callback;
             Debug.Log ("RemoveChannelsFromGroupRequestBuilder Async");
-            if((ChannelsToRemove == null) || ((ChannelsToRemove != null) && (ChannelsToRemove.Count <= 0))){
+            if((ChannelsToUse == null) || ((ChannelsToUse != null) && (ChannelsToUse.Count <= 0))){
                 Debug.Log("ChannelsToRemove null or empty");
 
                 //TODO Send callback
@@ -44,11 +45,11 @@ namespace PubNubAPI
         #endregion
 
         protected override void RunWebRequest(QueueManager qm){
-            RequestState<PNChannelGroupsRemoveChannelResult> requestState = new RequestState<PNChannelGroupsRemoveChannelResult> ();
+            RequestState requestState = new RequestState();
             requestState.RespType = PNOperationType.PNRemoveChannelsFromGroupOperation;
             
             Uri request = BuildRequests.BuildRemoveChannelsFromChannelGroupRequest(
-                ChannelsToRemove.ToArray(), 
+                ChannelsToUse.ToArray(), 
                 "", 
                 ChannelGroupToDelete,
                 this.PubNubInstance.PNConfig.UUID,
@@ -65,7 +66,7 @@ namespace PubNubAPI
             
         // }
 
-        protected override void CreatePubNubResponse(object deSerializedResult){
+        protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             PNChannelGroupsRemoveChannelResult pnChannelGroupsRemoveChannelResult = new PNChannelGroupsRemoveChannelResult();
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
             PNStatus pnStatus = new PNStatus();

@@ -103,7 +103,7 @@ namespace PubNubAPI
                     isPresenceHearbeatRunning = true;
                     string channelsJsonState = PubNubInstance.SubscriptionInstance.CompiledUserState;
 
-                    RequestState<PNPresenceHeartbeatResult> requestState = new RequestState<PNPresenceHeartbeatResult> ();
+                    RequestState requestState = new RequestState ();
                     requestState.RespType = PNOperationType.PNPresenceHeartbeatOperation;
                     
                     Uri request = BuildRequests.BuildPresenceHeartbeatRequest(

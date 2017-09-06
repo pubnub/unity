@@ -55,6 +55,7 @@ namespace PubNubAPI
 
         public HistoryRequestBuilder Channel(string channel){
             HistoryChannel = channel;
+            ChannelsToUse = new List<string>(){HistoryChannel};
             return this;
         }
 
@@ -82,7 +83,7 @@ namespace PubNubAPI
 
          protected override void RunWebRequest(QueueManager qm){
 
-            RequestState<PNHistoryResult> requestState = new RequestState<PNHistoryResult> ();
+            RequestState requestState = new RequestState ();
             requestState.RespType = PNOperationType.PNHistoryOperation;
 
             Debug.Log ("HistoryBuilder Channel: " + this.HistoryChannel);
@@ -116,7 +117,7 @@ namespace PubNubAPI
             
         // }
 
-        protected override void CreatePubNubResponse(object deSerializedResult){
+        protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             //[[{"text":"hey"},{"text":"hey"},{"text":"hey"},{"text":"hey"}],15011678612673119,15011678623670911]
             PNHistoryResult pnHistoryResult = new PNHistoryResult();
             pnHistoryResult.Messages = new List<PNHistoryItemResult>();

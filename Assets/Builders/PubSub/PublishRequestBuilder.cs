@@ -74,7 +74,7 @@ namespace PubNubAPI
 
         protected override void RunWebRequest(QueueManager qm){
             //TODO USe POST
-            RequestState<PNPublishResult> requestState = new RequestState<PNPublishResult> ();
+            RequestState requestState = new RequestState ();
             requestState.RespType = PNOperationType.PNPublishOperation;
             string jsonMessage = (publishAsIs) ? PublishMessage.ToString () : Helpers.JsonEncodePublishMsg (PublishMessage, this.PubNubInstance.PNConfig.CipherKey, this.PubNubInstance.JsonLibrary, this.PubNubInstance.PNLog);
             string jsonMetadata = string.Empty;
@@ -103,7 +103,7 @@ namespace PubNubAPI
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }
 
-        protected override void CreatePubNubResponse(object deSerializedResult){
+        protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             object[] c = deSerializedResult as object[];
             PNPublishResult pnPublishResult = new PNPublishResult();
             PNStatus pnStatus = new PNStatus();

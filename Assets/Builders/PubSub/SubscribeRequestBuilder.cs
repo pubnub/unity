@@ -68,12 +68,26 @@ namespace PubNubAPI
             bool channelsOrChannelGroupsAdded = this.PubNubInstance.SubscriptionInstance.RemoveDuplicatesCheckAlreadySubscribedAndGetChannels (pnOpType, rawChannels, rawChannelGroups, false, out newChannelEntities);
             if (channelsOrChannelGroupsAdded){
                 this.PubNubInstance.SubscriptionInstance.Add (newChannelEntities);
-                this.PubNubInstance.SubWorker.Add (pnOpType, timetokenToUse, subscribedChannels);
+                this.PubNubInstance.SubWorker.Add (timetokenToUse, subscribedChannels);
             }
             #if (ENABLE_PUBNUB_LOGGING)
             else {
                 //TODO raise duplicate event
                 this.PubNubInstance.PNLog.WriteToLog (string.Format ("MultiChannelSubscribeInit: channelsOrChannelGroupsAdded {1}", channelsOrChannelGroupsAdded.ToString ()), PNLoggingMethod.LevelInfo);
+
+                PNStatus pnStatus = Helpers.CreatePNStatus(
+                    PNStatusCategory.PNUnknownCategory,
+                    CommonText.DuplicateChannelsOrChannelGroups,
+                    null,
+                    true,                
+                    PNOperationType.PNSubscribeOperation,
+                    rawChannels,
+                    rawChannelGroups,
+                    null,
+                    PubNubInstance
+                );
+
+                PubNubInstance.SubWorker.CreateEventArgsAndRaiseEvent(pnStatus);
             }
             #endif
 

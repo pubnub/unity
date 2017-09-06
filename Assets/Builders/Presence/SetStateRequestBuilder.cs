@@ -8,8 +8,8 @@ namespace PubNubAPI
     public class SetStateRequestBuilder: PubNubNonSubBuilder<SetStateRequestBuilder, PNSetStateResult>, IPubNubNonSubscribeBuilder<SetStateRequestBuilder, PNSetStateResult>
     {
         List<ChannelEntity> ChannelEntities = null;
-        private List<string> ChannelsForState { get; set;}
-        private List<string> ChannelGroupsForState { get; set;}
+        //private List<string> ChannelsToUse { get; set;}
+        //private List<string> ChannelGroupsToUse { get; set;}
 
         private string uuid { get; set;}
         private Dictionary<string, object> UserState { get; set;}
@@ -27,11 +27,11 @@ namespace PubNubAPI
         }
 
         public void Channels(List<string> channels){
-            ChannelsForState = channels;
+            ChannelsToUse = channels;
         }
 
         public void ChannelGroups(List<string> channelGroups){
-            ChannelGroupsForState = channelGroups;
+            ChannelGroupsToUse = channelGroups;
         }
 
         #region IPubNubBuilder implementation
@@ -49,8 +49,8 @@ namespace PubNubAPI
                         //string userState = "";
 
                         if (CheckAndAddExistingUserState (
-                            ChannelsForState, 
-                            ChannelGroupsForState,
+                            ChannelsToUse, 
+                            ChannelGroupsToUse,
                             UserState, 
                             false,
                             uuid, 
@@ -78,17 +78,17 @@ namespace PubNubAPI
         #endregion
 
         protected override void RunWebRequest(QueueManager qm){
-            RequestState<PNSetStateResult> requestState = new RequestState<PNSetStateResult> ();
+            RequestState requestState = new RequestState ();
             requestState.RespType = PNOperationType.PNWhereNowOperation;
 
             string channels = "";
-            if((ChannelsForState != null) && (ChannelsForState.Count>0)){
-                channels = String.Join(",", ChannelsForState.ToArray());
+            if((ChannelsToUse != null) && (ChannelsToUse.Count>0)){
+                channels = String.Join(",", ChannelsToUse.ToArray());
             }
 
             string channelGroups = "";
-            if((ChannelGroupsForState != null) && (ChannelGroupsForState.Count>0)){
-                channelGroups = String.Join(",", ChannelGroupsForState.ToArray());
+            if((ChannelGroupsToUse != null) && (ChannelGroupsToUse.Count>0)){
+                channelGroups = String.Join(",", ChannelGroupsToUse.ToArray());
             }
 
             if (string.IsNullOrEmpty (uuid)) {
@@ -169,7 +169,7 @@ namespace PubNubAPI
             
         // }
 
-        protected override void CreatePubNubResponse(object deSerializedResult){
+        protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             //{"status": 200, "message": "OK", "payload": {"channels": {"channel1": {"k": "v"}, "channel2": {}}}, "uuid": "pn-c5a12d424054a3688066572fb955b7a0", "service": "Presence"}
 
             //TODO read all values.

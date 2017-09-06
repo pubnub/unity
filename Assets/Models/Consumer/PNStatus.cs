@@ -7,9 +7,10 @@ namespace PubNubAPI
     {
         public PNStatus ()
         {
+            Error = false;
         }
 
-        public PNStatus(PNStatusCategory category, PNErrorData errorData, bool error, int statusCode, PNOperationType operation, bool tlsEnabled, string uuid, string authKey, string origin, List<String> affectedChannels, List<String> affectedChannelGroups, object clientRequest){
+        public PNStatus(PNStatusCategory category, PNErrorData errorData, bool error, long statusCode, PNOperationType operation, bool tlsEnabled, string uuid, string authKey, string origin, List<String> affectedChannels, List<String> affectedChannelGroups, object clientRequest){
             this.Category = category;
             this.ErrorData = errorData;
             this.Error = error;
@@ -30,7 +31,7 @@ namespace PubNubAPI
 
         // boolean automaticallyRetry;
 
-        public int StatusCode {get; set;}
+        public long StatusCode {get; set;}
         public PNOperationType Operation {get; set;}
 
         public bool TlsEnabled {get; set;}

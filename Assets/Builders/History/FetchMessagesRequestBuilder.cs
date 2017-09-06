@@ -12,7 +12,7 @@ namespace PubNubAPI
 
         }
 
-        private List<string> HistoryChannel { get; set;}
+        //private List<string> ChannelsToUse { get; set;}
         private long StartTime = -1;
         private long EndTime = -1;
         
@@ -54,7 +54,7 @@ namespace PubNubAPI
         }
 
         public FetchMessagesRequestBuilder Channel(List<string> channel){
-            HistoryChannel = channel;
+            ChannelsToUse = channel;
             return this;
         }
 
@@ -69,7 +69,7 @@ namespace PubNubAPI
         {
             this.Callback = callback;
             Debug.Log ("FetchMessagesRequestBuilder Async");
-            if((this.HistoryChannel == null) || ((this.HistoryChannel != null) && (this.HistoryChannel.Count <= 0))){
+            if((this.ChannelsToUse == null) || ((this.ChannelsToUse != null) && (this.ChannelsToUse.Count <= 0))){
                 Debug.Log("FetchMessagesRequestBuilder HistoryChannel is null or empty");
 
                 //TODO Send callback
@@ -81,10 +81,10 @@ namespace PubNubAPI
         #endregion
 
         protected override void RunWebRequest(QueueManager qm){
-            RequestState<PNFetchMessagesResult> requestState = new RequestState<PNFetchMessagesResult> ();
+            RequestState requestState = new RequestState ();
             requestState.RespType = PNOperationType.PNFetchMessagesOperation;
             
-            Debug.Log ("FetchMessagesRequestBuilder Channel: " + this.HistoryChannel);
+            Debug.Log ("FetchMessagesRequestBuilder Channel: " + this.ChannelsToUse);
             Debug.Log ("FetchMessagesRequestBuilder Channel: " + this.StartTime);
             Debug.Log ("FetchMessagesRequestBuilder Channel: " + this.EndTime);
             Debug.Log ("FetchMessagesRequestBuilder Channel: " + this.HistoryCount);
@@ -93,7 +93,7 @@ namespace PubNubAPI
             //TODO: start=0&end=0
 
             Uri request = BuildRequests.BuildFetchRequest(
-                HistoryChannel.ToArray(),
+                ChannelsToUse.ToArray(),
                 this.StartTime,
                 this.EndTime,
                 this.HistoryCount,
@@ -114,7 +114,7 @@ namespace PubNubAPI
             
         // }
 
-        protected override void CreatePubNubResponse(object deSerializedResult){
+        protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             //{"status": 200, "error": false, "error_message": "", "channels": {"channel2":[{"message":{"text":"hey"},"timetoken":"15011678669001834"}],"channel1":[{"message":{"text":"hey"},"timetoken":"15011678623670911"}]}}
             PNFetchMessagesResult pnFetchMessagesResult = new PNFetchMessagesResult();
             try{

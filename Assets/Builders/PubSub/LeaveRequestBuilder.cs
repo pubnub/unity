@@ -10,15 +10,13 @@ namespace PubNubAPI
         public LeaveRequestBuilder(PubNubUnity pn):base(pn){
 
         }
-        private List<string> ChannelGroupsToLeave { get; set;}
-        private List<string> ChannelsToLeave { get; set;}
 
         public void ChannelGroups(List<string> channelGroups){
-            ChannelGroupsToLeave = channelGroups;
+            ChannelGroupsToUse = channelGroups;
         }
         
         public void Channels(List<string> channels){
-            ChannelsToLeave = channels;
+            ChannelsToUse = channels;
         }
         
         #region IPubNubBuilder implementation
@@ -33,16 +31,16 @@ namespace PubNubAPI
         #endregion
 
         protected override void RunWebRequest(QueueManager qm){
-            RequestState<PNLeaveRequestResult> requestState = new RequestState<PNLeaveRequestResult> ();
+            RequestState requestState = new RequestState ();
             requestState.RespType = PNOperationType.PNLeaveOperation;
 
             string channels = "";
-            if(ChannelsToLeave!= null){
-                channels = string.Join(",", ChannelsToLeave.ToArray());
+            if(ChannelsToUse!= null){
+                channels = string.Join(",", ChannelsToUse.ToArray());
             }
             string channelGroups = "";
-            if(ChannelGroupsToLeave!= null){
-                channelGroups = string.Join(",", ChannelGroupsToLeave.ToArray());
+            if(ChannelGroupsToUse!= null){
+                channelGroups = string.Join(",", ChannelGroupsToUse.ToArray());
             }
 
             if(string.IsNullOrEmpty(channels) && (string.IsNullOrEmpty(channelGroups) )){
@@ -56,8 +54,8 @@ namespace PubNubAPI
             List<ChannelEntity> newChannelEntities;
             bool channelsOrChannelGroupsAdded = this.PubNubInstance.SubscriptionInstance.RemoveDuplicatesCheckAlreadySubscribedAndGetChannels(
                 requestState.RespType,
-                ChannelsToLeave,
-                ChannelGroupsToLeave,
+                ChannelsToUse,
+                ChannelGroupsToUse,
                 true,
                 out 
                 newChannelEntities
@@ -94,7 +92,7 @@ namespace PubNubAPI
             
         }
 
-        protected override void CreatePubNubResponse(object deSerializedResult){
+        protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             //{"status": 200, "message": "OK", "action": "leave", "service": "Presence"}
             PNLeaveRequestResult pnLeaveRequestResult = new PNLeaveRequestResult();
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
