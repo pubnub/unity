@@ -9,13 +9,14 @@ namespace PubNubAPI
         private bool isPresenceHearbeatRunning = false;
 
         private PNUnityWebRequest webRequest;
+        private string webRequestId = "";
         private PubNubUnity PubNubInstance { get; set;}
         internal PresenceHeartbeatWorker(PubNubUnity pn, PNUnityWebRequest webRequest){
             PubNubInstance  = pn;
             this.webRequest = webRequest;
             this.webRequest.PNLog = this.PubNubInstance.PNLog;
             //webRequest = PubNubInstance.GameObjectRef.AddComponent<PNUnityWebRequest> ();
-            webRequest.PresenceHeartbeatWebRequestComplete += WebRequestCompleteHandler;
+            webRequest.WebRequestComplete += WebRequestCompleteHandler;
         }
 
         ~PresenceHeartbeatWorker(){
@@ -24,7 +25,7 @@ namespace PubNubAPI
 
         internal void CleanUp(){
             if (webRequest != null) {
-                webRequest.PresenceHeartbeatWebRequestComplete -= WebRequestCompleteHandler;
+                webRequest.WebRequestComplete -= WebRequestCompleteHandler;
                 //UnityEngine.Object.Destroy (webRequest);
             }
         }
@@ -32,10 +33,11 @@ namespace PubNubAPI
         private void WebRequestCompleteHandler (object sender, EventArgs ea)
         {
             Debug.Log("WebRequestCompleteHandler PHB");
-            CustomEventArgs<PNPresenceHeartbeatResult> cea = ea as CustomEventArgs<PNPresenceHeartbeatResult>;
+            //CustomEventArgs<PNPresenceHeartbeatResult> cea = ea as CustomEventArgs<PNPresenceHeartbeatResult>;
+            CustomEventArgs cea = ea as CustomEventArgs;
 
             try {
-                if (cea != null) {
+                if ((cea != null) && (cea.CurrRequestType.Equals(PNCurrentRequestType.PresenceHeartbeat))) {
                     Debug.Log(" PHB cea not null");
                     //if (cea.PubnubRequestState != null) {
                     PresenceHeartbeatHandler (cea);
@@ -46,15 +48,15 @@ namespace PubNubAPI
                     }
                     #endif*/
                 }
-                #if (ENABLE_PUBNUB_LOGGING)
+                /*#if (ENABLE_PUBNUB_LOGGING)
                 else {
                     this.PubNubInstance.PNLog.WriteToLog (string.Format ("CoroutineCompleteHandler: cea null"), PNLoggingMethod.LevelError);
                 }
-                #endif
+                #endif*/
             } catch (Exception ex) {
                 Debug.Log(ex.ToString());
                 #if (ENABLE_PUBNUB_LOGGING)
-                this.PubNubInstance.PNLog.WriteToLog (string.Format ("CoroutineCompleteHandler: Exception={0}", ex.ToString ()), PNLoggingMethod.LevelError);
+                this.PubNubInstance.PNLog.WriteToLog (string.Format ("WebRequestCompleteHandler: Exception={0}", ex.ToString ()), PNLoggingMethod.LevelError);
                 #endif
 
                 //ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (ex.Message, cea.PubnubRequestState, false, false, PubnubErrorLevel);
@@ -64,18 +66,21 @@ namespace PubNubAPI
         internal void StopPresenceHeartbeat ()
         {
             keepPresenceHearbeatRunning = false;
-            if (isPresenceHearbeatRunning || webRequest.CheckIfRequestIsRunning(PNCurrentRequestType.PresenceHeartbeat))
+            //if (isPresenceHearbeatRunning || webRequest.CheckIfRequestIsRunning(PNCurrentRequestType.PresenceHeartbeat))
+            if (isPresenceHearbeatRunning)
             {
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PubNubInstance.PNLog.WriteToLog (string.Format ("Stopping PresenceHeartbeat "), PNLoggingMethod.LevelInfo);
                 #endif
                 
                 isPresenceHearbeatRunning = false;
-                webRequest.AbortRequest<PNPresenceHeartbeatResult> (PNCurrentRequestType.PresenceHeartbeat, null, false);
+                //webRequest.AbortRequest<PNPresenceHeartbeatResult> (PNCurrentRequestType.PresenceHeartbeat, null, false);
+                webRequest.AbortRequest (webRequestId);
             }
         }
 
-        private void PresenceHeartbeatHandler (CustomEventArgs<PNPresenceHeartbeatResult> cea){
+        //private void PresenceHeartbeatHandler (CustomEventArgs<PNPresenceHeartbeatResult> cea){
+        private void PresenceHeartbeatHandler (CustomEventArgs cea){
             Debug.Log(string.Format ("PresenceHeartbeatHandler keepPresenceHearbeatRunning={0} isPresenceHearbeatRunning={1}", keepPresenceHearbeatRunning, isPresenceHearbeatRunning));
             isPresenceHearbeatRunning = false;
 
@@ -119,7 +124,7 @@ namespace PubNubAPI
                     );
                     Debug.Log(string.Format ("presenceheartbeat: request.OriginalString {0} ", request.OriginalString ));
 
-                    webRequest.Run<PNPresenceHeartbeatResult>(request.OriginalString, requestState, PubNubInstance.PNConfig.NonSubscribeTimeout, pauseTime, pause);
+                    webRequestId = webRequest.Run(request.OriginalString, requestState, PubNubInstance.PNConfig.NonSubscribeTimeout, pauseTime, pause, false, "");
 
                     //for heartbeat and presence heartbeat treat reconnect as pause
                     /*RequestState<T> requestState = BuildRequests.BuildRequestState<T> (pubnubRequestState.ChannelEntities, ResponseType.PresenceHeartbeat,

@@ -66,10 +66,11 @@ namespace PubNubAPI
         }
 
         //writeToLog is kept for future improvements in logging, can be used to add levels to logging
-		public void WriteToLog (string logText, bool writeToLog)
+		//public void WriteToLog (string logText, Level writeToLog)
+        public void WriteToLog (string logText, bool writeToLog)
         {
             if (PNLogVerb.Equals(PNLogVerbosity.BODY)) {
-                UnityEngine.Debug.Log (string.Format("\n{0} {1} \n", DateTime.Now.ToString (), logText));
+                UnityEngine.Debug.Log (string.Format("\n{0} {1} \n", DateTime.UtcNow.ToString (), logText));
             }
         }
     }

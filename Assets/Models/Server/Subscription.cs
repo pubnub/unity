@@ -8,7 +8,7 @@ namespace PubNubAPI
     public sealed class Subscription
     {
         //private static volatile Subscription instance;
-        private static object syncRoot = new Object();
+        //private static object syncRoot = new Object();
 
         private PubNubUnity PubNubInstance;
 
@@ -444,7 +444,7 @@ namespace PubNubAPI
                     message = "Invalid Channel Group Name";
                     }
 
-                    this.PubNubInstance.PNLog.WriteToLog(string.Format("CreateChannelEntityAndAddToSubscribe: channel={0} response={1}", DateTime.Now.ToString(), channelName, message), PNLoggingMethod.LevelInfo);
+                    this.PubNubInstance.PNLog.WriteToLog(string.Format("CreateChannelEntityAndAddToSubscribe: channel={0} response={1}", channelName, message), PNLoggingMethod.LevelInfo);
                     #endif
                 }
             }

@@ -7,7 +7,7 @@ namespace PubNubAPI
     public class PubNubUnity: PubNubUnityBase
     {
         //TODO INotifyPropertyChanged
-        public string Test { get; set;}
+        //public string Test { get; set;}
         public event EventHandler<EventArgs> SusbcribeCallback; 
         public void RaiseEvent(EventArgs ea){
             if (SusbcribeCallback != null) {
@@ -17,7 +17,7 @@ namespace PubNubAPI
 
         public new void CleanUp (){
             #if (ENABLE_PUBNUB_LOGGING)
-            base.PNLog.WriteToLog ("CleanUp: Destructing coroutine", PNLoggingMethod.LevelInfo);
+            base.PNLog.WriteToLog ("CleanUp: Destructing ", PNLoggingMethod.LevelInfo);
             #endif
 
             if (SubWorker != null) {

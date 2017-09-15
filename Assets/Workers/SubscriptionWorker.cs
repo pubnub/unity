@@ -20,6 +20,7 @@ namespace PubNubAPI
 
         private HeartbeatWorker hbWorker;
         private PresenceHeartbeatWorker phbWorker;
+        private string webRequestId = ""; 
 
         private bool reconnect = false;
         private bool internetStatus = true;
@@ -32,7 +33,7 @@ namespace PubNubAPI
         { 
             PubNubInstance = pn;
             webRequest = PubNubInstance.GameObjectRef.AddComponent<PNUnityWebRequest> ();
-            webRequest.SubWebRequestComplete += WebRequestCompleteHandler;
+            webRequest.WebRequestComplete += WebRequestCompleteHandler;
             this.webRequest.PNLog = this.PubNubInstance.PNLog;
             hbWorker = new HeartbeatWorker(pn, webRequest);
             hbWorker.InternetAvailable += InternetAvailableHandler;
@@ -53,7 +54,7 @@ namespace PubNubAPI
 
             if(
                 PubNubInstance.PNConfig.HeartbeatNotificationOption.Equals(PNHeartbeatNotificationOption.All)
-                || PubNubInstance.PNConfig.HeartbeatNotificationOption.Equals(PNHeartbeatNotificationOption.Failures)
+                //|| PubNubInstance.PNConfig.HeartbeatNotificationOption.Equals(PNHeartbeatNotificationOption.Failures)
             ){
                 PNStatus pnStatus = Helpers.CreatePNStatus(
                         PNStatusCategory.PNReconnectedCategory,
@@ -121,7 +122,7 @@ namespace PubNubAPI
                 if(status.Error){
                     Debug.Log (string.Format("In Example, UnsubscribeAll Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                 } else {
-                    Debug.Log (string.Format("DateTime {0}, In UnsubscribeAll, result: {1}", DateTime.Now, result.Message));
+                    Debug.Log (string.Format("In UnsubscribeAll, result: {0}", result.Message));
                 }
             });
 
@@ -154,7 +155,7 @@ namespace PubNubAPI
 
         public void CleanUp(){
             if (webRequest != null) {
-                webRequest.SubWebRequestComplete -= WebRequestCompleteHandler;
+                webRequest.WebRequestComplete -= WebRequestCompleteHandler;
                 UnityEngine.Object.Destroy (webRequest);
             }
             if(hbWorker != null){
@@ -223,7 +224,8 @@ namespace PubNubAPI
             this.PubNubInstance.PNLog.WriteToLog(string.Format("AbortPreviousRequest: Aborting previous subscribe/presence requests having channel(s)={0} and ChannelGroup(s) = {1}", Helpers.GetNamesFromChannelEntities(existingChannels, false), Helpers.GetNamesFromChannelEntities(existingChannels, true)), PNLoggingMethod.LevelInfo);
             #endif
 
-            webRequest.AbortRequest<U>(PNCurrentRequestType.Subscribe, null, false);
+            //webRequest.AbortRequest<U>(PNCurrentRequestType.Subscribe, null, false);
+            webRequest.AbortRequest(webRequestId);
         }
 
         public void ContinueToSubscribeRestOfChannels()
@@ -439,7 +441,7 @@ namespace PubNubAPI
             try {
                 long lastTimetoken = SaveLastTimetoken(timetoken);
 
-                hbWorker.RunHeartbeat (false, PubNubInstance.PNConfig.HeartbeatInterval);
+                hbWorker.RunHeartbeat (false, hbWorker.HeartbeatInterval);
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PubNubInstance.PNLog.WriteToLog (string.Format ("RunRequests: Heartbeat started"), PNLoggingMethod.LevelInfo);
                 #endif
@@ -487,7 +489,7 @@ namespace PubNubAPI
                 //ExceptionHandlers.MultiplexException += HandleMultiplexException<T>;
 
                 //UrlProcessRequest<T> (requestUrl, pubnubRequestState);
-                Debug.Log ("RunSubscribeRequest coroutine" + requestUrl.OriginalString);
+                Debug.Log ("RunSubscribeRequest " + requestUrl.OriginalString);
 
                 //RequestState<SubscribeEnvelope> requestState = new RequestState<SubscribeEnvelope> ();
                 RequestState requestState = new RequestState ();
@@ -497,7 +499,7 @@ namespace PubNubAPI
 
                 //PNCallback<T> timeCallback = new PNTimeCallback<T> (callback);
                 //http://ps.pndsn.com/v2/presence/sub-key/sub-c-5c4fdcc6-c040-11e5-a316-0619f8945a4f/uuid/UUID_WhereNow?pnsdk=PubNub-Go%2F3.14.0&uuid=UUID_WhereNow
-                webRequest.Run<SubscribeEnvelope>(requestUrl.OriginalString, requestState, PubNubInstance.PNConfig.SubscribeTimeout, 0, reconnect);
+                webRequestId = webRequest.Run(requestUrl.OriginalString, requestState, PubNubInstance.PNConfig.SubscribeTimeout, 0, reconnect, false, "");
 
             } catch (Exception ex) {
                 Debug.Log("in  MultiChannelSubscribeRequest" + ex.ToString());
@@ -568,13 +570,14 @@ namespace PubNubAPI
             }*/
         }
 
-        private void  SubscribePresenceHanlder (CustomEventArgs<U> cea)
+        //private void  SubscribePresenceHanlder (CustomEventArgs<U> cea)
+        private void  SubscribePresenceHanlder (CustomEventArgs cea)
         {
-            Debug.Log("in WebRequestCompleteHandler " + typeof(U));
+            //Debug.Log("in WebRequestCompleteHandler " + typeof(U));
 
             //try {
                 
-                if (cea != null) {
+                //if ((cea != null) && (cea.CurrRequestType.Equals(PNCurrentRequestType.Subscribe))) {
                     Debug.Log("WebRequestCompleteHandler FireEvent");
                     SubscribeEnvelope resultSubscribeEnvelope = null;
                     string jsonString = cea.Message;
@@ -663,12 +666,12 @@ namespace PubNubAPI
                     this.PubNubInstance.PNLog.WriteToLog (string.Format ("CoroutineCompleteHandler: PubnubRequestState null", DateTime.Now.ToString ()), PNLoggingMethod.LevelError);
                     }
                     #endif*/
-                }
+                //}
                 //#if (ENABLE_PUBNUB_LOGGING)
-                else {
+                /*else {
                     //this.PubNubInstance.PNLog.WriteToLog 
                     Debug.Log(string.Format ("CoroutineCompleteHandler: cea null"));//, PNLoggingMethod.LevelError);
-                }
+                }*/
                 //#endif
             /*} catch (Exception ex) {
                 Debug.Log (ex.ToString());
@@ -971,8 +974,23 @@ namespace PubNubAPI
             
             if (!internetStatus) {
                 #if (ENABLE_PUBNUB_LOGGING)
-                this.PubNubInstance.PNLog.WriteToLog (string.Format ("MultiplexExceptionHandler: Subscribe channels = {0} and channelgroups = {1} - No internet connection. ", channels, channelGroups), PNLoggingMethod.LevelInfo);
+                this.PubNubInstance.PNLog.WriteToLog (string.Format ("ExceptionHandler: Subscribe channels = {0} and channelgroups = {1} - No internet connection. ", channels, channelGroups), PNLoggingMethod.LevelInfo);
                 #endif
+                if(this.PubNubInstance.PNConfig.ReconnectionPolicy.Equals(PNReconnectionPolicy.NONE)){
+                    PNStatus pnStatus = Helpers.CreatePNStatus(
+                            PNStatusCategory.PNDisconnectedCategory,
+                            "",
+                            null,
+                            true,
+                            PNOperationType.PNSubscribeOperation,
+                            PubNubInstance.SubscriptionInstance.AllChannels,
+                            PubNubInstance.SubscriptionInstance.AllChannelGroups,
+                            null,
+                            this.PubNubInstance
+                        );
+
+                    CreateEventArgsAndRaiseEvent(pnStatus);
+                }
                 return;
             }
 
@@ -980,13 +998,13 @@ namespace PubNubAPI
             if (!enableResumeOnReconnect && reconnect) {
                 tt =0; //send 0 time token to enable presence event
                 #if (ENABLE_PUBNUB_LOGGING)
-                this.PubNubInstance.PNLog.WriteToLog (string.Format ("MultiplexExceptionHandler: Reconnect true and EnableResumeOnReconnect false sending tt = 0. "), PNLoggingMethod.LevelInfo);
+                this.PubNubInstance.PNLog.WriteToLog (string.Format ("ExceptionHandler: Reconnect true and EnableResumeOnReconnect false sending tt = 0. "), PNLoggingMethod.LevelInfo);
                 #endif
 
             }
             #if (ENABLE_PUBNUB_LOGGING)
             else {
-                this.PubNubInstance.PNLog.WriteToLog (string.Format ("MultiplexExceptionHandler: sending tt = {0}. ", tt.ToString()), PNLoggingMethod.LevelInfo);
+                this.PubNubInstance.PNLog.WriteToLog (string.Format ("ExceptionHandler: sending tt = {0}. ", tt.ToString()), PNLoggingMethod.LevelInfo);
             }
             #endif
 
@@ -1031,10 +1049,11 @@ namespace PubNubAPI
 
         private void WebRequestCompleteHandler (object sender, EventArgs ea)
         {
-            CustomEventArgs<U> cea = ea as CustomEventArgs<U>;
+            //CustomEventArgs<U> cea = ea as CustomEventArgs<U>;
+            CustomEventArgs cea = ea as CustomEventArgs;
 
             try {
-                if (cea != null) {
+                if ((cea != null) && (cea.CurrRequestType.Equals(PNCurrentRequestType.Subscribe))) {
                     PNStatus pnStatus;
                     if(Helpers.CheckErrorTypeAndCallback<U>(cea, this.PubNubInstance, out pnStatus)){
                         Debug.Log("Is Error true");
@@ -1051,15 +1070,15 @@ namespace PubNubAPI
                     }
                     #endif*/
                 }
-                else {
+                /*else {
                     #if (ENABLE_PUBNUB_LOGGING)
                     this.PubNubInstance.PNLog.WriteToLog (string.Format ("WebRequestCompleteHandler: cea null"), PNLoggingMethod.LevelError);                    
                     #endif
                     ExceptionHandler(cea.PubNubRequestState);
-                }
+                }*/
             } catch (Exception ex) {
                 #if (ENABLE_PUBNUB_LOGGING)
-                this.PubNubInstance.PNLog.WriteToLog (string.Format ("CoroutineCompleteHandler: Exception={0}", ex.ToString ()), PNLoggingMethod.LevelError);
+                this.PubNubInstance.PNLog.WriteToLog (string.Format ("WebRequestCompleteHandler: Exception={0}", ex.ToString ()), PNLoggingMethod.LevelError);
                 #endif
                 ExceptionHandler(cea.PubNubRequestState);
                 //ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (ex.Message, cea.PubnubRequestState, false, false, PubnubErrorLevel);

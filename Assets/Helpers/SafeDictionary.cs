@@ -63,7 +63,10 @@ namespace PubNubAPI
         }
 
         public bool Remove(TKey key){
-            throw new NotImplementedException ();
+            lock (syncRoot)
+            {
+                return d.Remove(key);
+            }
         }
 
         public bool Remove(TKey key, out TValue value)

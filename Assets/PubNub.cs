@@ -59,6 +59,12 @@ namespace PubNubAPI
             this.CleanUp ();
         }
 
+        public IJsonLibrary JsonLibrary{
+            get{
+                return pnUnity.JsonLibrary;
+            }
+        }
+
         public void Reconnect(){
             pnUnity.Reconnect();
         }

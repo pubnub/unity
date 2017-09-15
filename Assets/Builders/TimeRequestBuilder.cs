@@ -45,7 +45,9 @@ namespace PubNubAPI
             
             if ((c != null) && (c.Length > 0)) {
                 pnTimeResult.TimeToken = c [0];
+
                 Callback(pnTimeResult, new PNStatus());
+                
             } else {
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PubNubInstance.PNLog.WriteToLog(string.Format("CreatePubNubResponse (c == null) || (c.Length < 0) {0}", deSerializedResult.ToString()), PNLoggingMethod.LevelInfo);

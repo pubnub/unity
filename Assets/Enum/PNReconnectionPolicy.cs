@@ -4,7 +4,7 @@ namespace PubNubAPI
 {
     public enum PNReconnectionPolicy
     {
-        NONE,
+        NONE, // Set Max reconnects to 0
         LINEAR,
         EXPONENTIAL
     }

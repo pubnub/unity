@@ -45,10 +45,12 @@ namespace PubNubAPI
         internal Subscription SubscriptionInstance { get; set;}
         internal SubscriptionWorker<SubscribeEnvelope> SubWorker { get; set;}
         internal bool localGobj;
+        public PNLatency Latency;
 
         public PubNubUnityBase(PNConfiguration pnConfiguration, GameObject gameObjectRef, IJsonLibrary jsonLibrary){
             PNConfig = pnConfiguration;
             PNLog = new PNLoggingMethod(PNConfig.LogVerbosity);
+            Latency = new PNLatency();
             /*if (PNConfig.LogVerbosity.Equals (PNLogVerbosity.BODY)) {
 				//Debug.logger.logEnabled = true;
 			} else {

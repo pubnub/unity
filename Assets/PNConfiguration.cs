@@ -102,7 +102,6 @@ namespace PubNubAPI
         //In seconds, How often the client should announce it's existence via heartbeating.
         public int PresenceInterval { get; set;}
 
-        public int HeartbeatInterval = 10;
         public int MaximumReconnectionRetries = 50;
     }
 }

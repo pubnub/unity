@@ -1,5 +1,6 @@
 ﻿#define ENABLE_PUBNUB_LOGGING
 using System;
+using UnityEngine.Networking;
 
 namespace PubNubAPI
 {
@@ -10,6 +11,7 @@ namespace PubNubAPI
         public static int InstanceCount;
         private long ResponseCode = 0;
         private string URL = "";
+        private string webRequestId = "";
 
         private static object syncRoot = new System.Object();
         #region IDisposable implementation
@@ -17,7 +19,8 @@ namespace PubNubAPI
         public void Dispose ()
         {
             queueManager.PubNubInstance.PNLog.WriteToLog("Disposing NonSubscribeWorker", PNLoggingMethod.LevelInfo);
-            webRequest.NonSubWebRequestComplete -= WebRequestCompleteHandler;
+            webRequest.WebRequestComplete -= WebRequestCompleteHandler;
+            webRequest.AbortRequest(webRequestId);
             lock (syncRoot) {
                 InstanceCount--;
             }
@@ -35,7 +38,7 @@ namespace PubNubAPI
             URL = "";
             this.queueManager = queueManager;
             webRequest = this.queueManager.PubNubInstance.GameObjectRef.AddComponent<PNUnityWebRequest> ();
-            webRequest.NonSubWebRequestComplete += WebRequestCompleteHandler;
+            webRequest.WebRequestComplete += WebRequestCompleteHandler;
             this.webRequest.PNLog = this.queueManager.PubNubInstance.PNLog;
         }
             
@@ -48,7 +51,9 @@ namespace PubNubAPI
 
         public void RunWebRequest(string url, RequestState requestState, int timeout, int pause, PubNubNonSubBuilder<U, V> pnBuilder){
             PNBuilder = pnBuilder;
-            webRequest.Run<V>(url, requestState, this.queueManager.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, false); 
+
+            //webRequest.Run<V>(url, requestState, this.queueManager.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, false); 
+            webRequestId = webRequest.Run(url, requestState, this.queueManager.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, false, false, ""); 
         }
             
         /*public void RunTimeRequest(PNConfiguration pnConfig, Action<T, PNStatus> callback){
@@ -135,7 +140,8 @@ namespace PubNubAPI
                     object deSerializedResult = queueManager.PubNubInstance.JsonLibrary.DeserializeToObject (jsonString);
                     if(deSerializedResult!= null){
                         PNBuilder.RaiseCreateResponse(deSerializedResult, pubnubRequestState);
-                    }               
+                    }  
+                    this.queueManager.PubNubInstance.Latency.StoreLatency(pubnubRequestState.StartRequestTicks, pubnubRequestState.EndRequestTicks, pubnubRequestState.RespType);             
                 } 
                 #if (ENABLE_PUBNUB_LOGGING)
                 else {
@@ -151,11 +157,11 @@ namespace PubNubAPI
         }
 
         private void WebRequestCompleteHandler (object sender, EventArgs ea)
-        {
-            CustomEventArgs<V> cea = ea as CustomEventArgs<V>;
-
+        { 
+            CustomEventArgs cea = ea as CustomEventArgs;
             try {
-                if (cea != null) {
+               
+                if ((cea != null) && (cea.CurrRequestType.Equals(PNCurrentRequestType.NonSubscribe))) {
                     PNStatus pnStatus;
                     if(Helpers.CheckErrorTypeAndCallback<V>(cea, this.queueManager.PubNubInstance, out pnStatus)){
                         #if (ENABLE_PUBNUB_LOGGING)
@@ -178,11 +184,11 @@ namespace PubNubAPI
                     }
                     #endif*/
                 }
-                #if (ENABLE_PUBNUB_LOGGING)
+                /*#if (ENABLE_PUBNUB_LOGGING)
                 else {
                     this.queueManager.PubNubInstance.PNLog.WriteToLog (string.Format ("WebRequestCompleteHandler: cea null"), PNLoggingMethod.LevelInfo);
                 }
-                #endif
+                #endif*/
             } catch (Exception ex) {
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.queueManager.PubNubInstance.PNLog.WriteToLog(string.Format ("WebRequestCompleteHandler: Exception={0}", ex.ToString ()), PNLoggingMethod.LevelInfo);

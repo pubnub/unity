@@ -2,7 +2,7 @@
 
 namespace PubNubAPI
 {
-    internal class CustomEventArgs<T> : EventArgs
+    internal class CustomEventArgs : EventArgs
     {
         internal string Message;
         internal RequestState PubNubRequestState;
@@ -16,8 +16,9 @@ namespace PubNubAPI
 
     internal class CurrentRequestTypeEventArgs : EventArgs
     {
+        internal UnityWebRequestWrapper WebRequestWrapper;
         internal bool IsTimeout;
-        internal PNCurrentRequestType CurrRequestType;
+        /* internal PNCurrentRequestType CurrRequestType;*/
     }
 
 }

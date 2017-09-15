@@ -40,7 +40,7 @@ namespace PubNubAPI
 
         #region "Helpers"
 
-        internal static bool CheckRequestTimeoutMessageInError<T>(CustomEventArgs<T> cea){
+        internal static bool CheckRequestTimeoutMessageInError(CustomEventArgs cea){
             if (cea.IsError && cea.Message.ToString().Contains ("The request timed out.")) {
                 return true;
             } else {
@@ -48,7 +48,7 @@ namespace PubNubAPI
             }
         }
 
-        internal static bool CheckErrorTypeAndCallback<T> (CustomEventArgs<T> cea, PubNubUnity pnUnity, out PNStatus pnStatus){
+        internal static bool CheckErrorTypeAndCallback<T> (CustomEventArgs cea, PubNubUnity pnUnity, out PNStatus pnStatus){
             bool retBool = false;
             PNStatusCategory pnStatusCat = PNStatusCategory.PNUnknownCategory;
             if (cea.IsTimeout || CheckRequestTimeoutMessageInError(cea)){
@@ -151,7 +151,7 @@ namespace PubNubAPI
                 "channelGroups={10} \n" +
                 "clientRequest={11} \n" , 
                 category.ToString(), 
-                (errorData != null) ? errorData.Ex.ToString() : "null", 
+                ((errorData != null) && (errorData.Ex != null)) ? errorData.Ex.ToString() : "null", 
                 error.ToString(),
                 statusCode.ToString(),
                 operation.ToString(),

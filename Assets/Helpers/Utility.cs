@@ -195,12 +195,12 @@ namespace PubNubAPI
             {
                 throw new MissingMemberException("Invalid secret key");
             }
-        }
+        }*/
 
         internal static Guid GenerateGuid ()
         {
             return Guid.NewGuid ();
-        }*/
+        }
 
         internal static bool IsPresenceChannel (string channel)
         {

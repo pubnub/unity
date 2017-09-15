@@ -12,8 +12,8 @@ namespace PubNubExample
     	void Start () {
             Debug.Log ("Starting");
             PNConfiguration pnConfiguration = new PNConfiguration ();
-            pnConfiguration.SubscribeKey = "demo";
-            pnConfiguration.PublishKey = "demo";
+            pnConfiguration.SubscribeKey = "sub-c-b05d4a0c-708d-11e7-96c9-0619f8945a4f";//"demo-36";
+            pnConfiguration.PublishKey = "pub-c-94691e07-c8aa-42f9-a838-bea61ac6655e";//"demo-36";
             pnConfiguration.Secure = true;
             pnConfiguration.CipherKey = "enigma";
             pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
@@ -54,7 +54,7 @@ namespace PubNubExample
                 if(status.Error){
                     Debug.Log (string.Format("In Example, SetPresenceState Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                 } else {
-                    Debug.Log (string.Format("DateTime {0}, In Example SetPresenceState, result:", DateTime.Now));
+                    Debug.Log (string.Format("DateTime {0}, In Example SetPresenceState, result:", DateTime.UtcNow));
                 }
             });*/
 
@@ -68,33 +68,34 @@ namespace PubNubExample
                 }
                 if(mea.pnMessageResult != null){
                     Debug.Log ("In Example, SusbcribeCallback in message" + mea.pnMessageResult.Channel + mea.pnMessageResult.Payload);
+                    Display(string.Format("SusbcribeCallback Result: {0}", pubnub.JsonLibrary.SerializeToJsonString(mea.pnMessageResult.Payload)));
                 }
                 if(mea.pnPresenceEventResult != null){
                     Debug.Log ("In Example, SusbcribeCallback in presence" + mea.pnPresenceEventResult.Channel + mea.pnPresenceEventResult.Occupancy + mea.pnPresenceEventResult.Event);
                 }
-                pubnub.Fire().Channel("channel1").Message("test fire essage").Async((result, status) => {
+                /*pubnub.Fire().Channel("channel1").Message("test fire essage").Async((result, status) => {
                     Debug.Log ("in Fire");
-                    Debug.Log (string.Format("DateTime {0}, In Fire Example, Timetoken: {1}", DateTime.Now , result.Timetoken));
+                    Debug.Log (string.Format("DateTime {0}, In Fire Example, Timetoken: {1}", DateTime.UtcNow , result.Timetoken));
                     Debug.Log (status.Error);
 
                 });
                 
                 pubnub.WhereNow ().Async ((result, status) => {
                     Debug.Log ("in WhereNow");
-                    Debug.Log (string.Format("DateTime {0}, In Example, Channels: {1}", DateTime.Now , (result.Channels!=null)?string.Join(",",result.Channels.ToArray()):""));
+                    Debug.Log (string.Format("DateTime {0}, In Example, Channels: {1}", DateTime.UtcNow , (result.Channels!=null)?string.Join(",",result.Channels.ToArray()):""));
                     Debug.Log (status.Error);
 
                 });
                 pubnub.Publish().Channel("channel1").Message("test message").Async((result, status) => {
                     Debug.Log ("in Publish");
-                    Debug.Log (string.Format("DateTime {0}, In Publish Example, Timetoken: {1}", DateTime.Now , result.Timetoken));
+                    Debug.Log (string.Format("DateTime {0}, In Publish Example, Timetoken: {1}", DateTime.UtcNow , result.Timetoken));
                     Debug.Log (status.Error);
 
                 });
                 //herenow
                 pubnub.HereNow().Channels(listChannels).ChannelGroups(listChannelGroups).IncludeState(true).IncludeUUIDs(true).Async((result, status) => {
                     Debug.Log ("in HereNow1");
-                    Debug.Log (string.Format("DateTime {0}, In Example, Channels: {1} {2}", DateTime.Now , result.TotalChannels, result.TotalOccupancy));
+                    Debug.Log (string.Format("DateTime {0}, In Example, Channels: {1} {2}", DateTime.UtcNow , result.TotalChannels, result.TotalOccupancy));
                     DisplayHereNowResult(result);
                     
                     Debug.Log (status.Error);
@@ -104,7 +105,7 @@ namespace PubNubExample
                 pubnub.HereNow().IncludeState(true).IncludeUUIDs(true).Async((result, status) => {
                     Debug.Log ("in HereNow2");
                     
-                    Debug.Log (string.Format("DateTime {0}, In Example, Channels: {1} {2}", DateTime.Now , result.TotalChannels, result.TotalOccupancy));
+                    Debug.Log (string.Format("DateTime {0}, In Example, Channels: {1} {2}", DateTime.UtcNow , result.TotalChannels, result.TotalOccupancy));
                     DisplayHereNowResult(result);
                     Debug.Log (status.Error);
 
@@ -112,7 +113,7 @@ namespace PubNubExample
 
                 pubnub.HereNow().IncludeState(false).IncludeUUIDs(true).Async((result, status) => {
                     Debug.Log ("in HereNow3");
-                    Debug.Log (string.Format("DateTime {0}, In Example, Channels: {1} {2}", DateTime.Now , result.TotalChannels, result.TotalOccupancy));
+                    Debug.Log (string.Format("DateTime {0}, In Example, Channels: {1} {2}", DateTime.UtcNow , result.TotalChannels, result.TotalOccupancy));
                     DisplayHereNowResult(result);
                     Debug.Log (status.Error);
 
@@ -120,7 +121,7 @@ namespace PubNubExample
 
                 pubnub.HereNow().IncludeState(false).IncludeUUIDs(false).Async((result, status) => {
                     Debug.Log ("in HereNow4");
-                    Debug.Log (string.Format("DateTime {0}, In Example, Channels: {1} {2}", DateTime.Now , result.TotalChannels, result.TotalOccupancy));
+                    Debug.Log (string.Format("DateTime {0}, In Example, Channels: {1} {2}", DateTime.UtcNow , result.TotalChannels, result.TotalOccupancy));
                     DisplayHereNowResult(result);
                     Debug.Log (status.Error);
 
@@ -128,11 +129,11 @@ namespace PubNubExample
 
                 pubnub.HereNow().IncludeState(true).IncludeUUIDs(false).Async((result, status) => {
                     Debug.Log ("in HereNow5");
-                    Debug.Log (string.Format("DateTime {0}, In Example, Channels: {1} {2}", DateTime.Now , result.TotalChannels, result.TotalOccupancy));
+                    Debug.Log (string.Format("DateTime {0}, In Example, Channels: {1} {2}", DateTime.UtcNow , result.TotalChannels, result.TotalOccupancy));
                     DisplayHereNowResult(result);
                     Debug.Log (status.Error);
 
-                });
+                });*/
 
             };
 
@@ -151,17 +152,18 @@ namespace PubNubExample
                     PrintStatus(status);
                     Debug.Log (string.Format("In Example, Time Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                 } else {
-                    Debug.Log (string.Format("DateTime {0}, In Example, result: {1}", DateTime.Now ,result.TimeToken));
+                    Debug.Log (string.Format("DateTime {0}, In Example, result: {1}", DateTime.UtcNow ,result.TimeToken));
+                    Display(string.Format("Time Result: {0}", result.TimeToken.ToString()));
                 }
             });
 
             //pubnub.History ().Channel("channel1").Start(14987439725282000).End(14985453001147606).IncludeTimetoken(false).Reverse(false).Async ((result, status) => {
-            pubnub.History ().Channel("channel1").Async ((result, status) => {
+            /*pubnub.History ().Channel("channel1").Async ((result, status) => {
                 
                 if(status.Error){
                     Debug.Log (string.Format("In Example, History Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                 } else {
-                    Debug.Log (string.Format("DateTime {0}, In Example, result: {1}", DateTime.Now ,result.EndTimetoken, (result.Messages.Count>0)?result.Messages[0].ToString():""));
+                    Debug.Log (string.Format("DateTime {0}, In Example, result: {1}", DateTime.UtcNow ,result.EndTimetoken, (result.Messages.Count>0)?result.Messages[0].ToString():""));
                 }
             });
 
@@ -171,7 +173,7 @@ namespace PubNubExample
                 if(status.Error){
                     Debug.Log (string.Format("In Example, GetPresenceState Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                 } else {
-                    Debug.Log (string.Format("DateTime {0}, In Example GetPresenceState, result:", DateTime.Now));
+                    Debug.Log (string.Format("DateTime {0}, In Example GetPresenceState, result:", DateTime.UtcNow));
                 }
             });
             //pubnub.Time ().Async (new PNCallback<PNTimeResult>(){
@@ -179,14 +181,14 @@ namespace PubNubExample
                 //Debug.Log ("in Time")
             //});*/
 
-            FetchMessages(pubnub, listChannels);
+            /*FetchMessages(pubnub, listChannels);
 
             pubnub.AddChannelsToChannelGroup().Channels(listChannels).ChannelGroup(cg1).Async((result, status) => {
                 Debug.Log ("in AddChannelsToChannelGroup");
                 if(status.Error){
                     Debug.Log (string.Format("In Example, AddChannelsToChannelGroup Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                 } else {
-                    Debug.Log (string.Format("DateTime {0}, In Example AddChannelsToChannelGroup, result: {1}", DateTime.Now, result.Message));
+                    Debug.Log (string.Format("DateTime {0}, In Example AddChannelsToChannelGroup, result: {1}", DateTime.UtcNow, result.Message));
                 }
 
                 ListAllChannelsOfGroup(pubnub, cg1);
@@ -201,7 +203,7 @@ namespace PubNubExample
                     if(status1.Error){
                         Debug.Log (string.Format("In Example, DeleteChannelsFromChannelGroup Error: {0} {1} {2}", status1.StatusCode, status1.ErrorData, status1.Category));
                     } else {
-                        Debug.Log (string.Format("DateTime {0}, In Example DeleteChannelsFromChannelGroup, result: {1}", DateTime.Now, result1.Message));
+                        Debug.Log (string.Format("DateTime {0}, In Example DeleteChannelsFromChannelGroup, result: {1}", DateTime.UtcNow, result1.Message));
                     }
                 
                 });
@@ -215,7 +217,7 @@ namespace PubNubExample
                 if(status.Error){
                     Debug.Log (string.Format("In Example, Unsubscribe Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                 } else {
-                    Debug.Log (string.Format("DateTime {0}, In Unsubscribe, result: {1}", DateTime.Now, result.Message));
+                    Debug.Log (string.Format("DateTime {0}, In Unsubscribe, result: {1}", DateTime.UtcNow, result.Message));
                 }
             });
 
@@ -224,17 +226,17 @@ namespace PubNubExample
                 if(status.Error){
                     Debug.Log (string.Format("In Example, UnsubscribeAll Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                 } else {
-                    Debug.Log (string.Format("DateTime {0}, In UnsubscribeAll, result: {1}", DateTime.Now, result.Message));
+                    Debug.Log (string.Format("DateTime {0}, In UnsubscribeAll, result: {1}", DateTime.UtcNow, result.Message));
                 }
             });
             */
 
-            pubnub.AddPushNotificationsOnChannels().Channels(listChannels).DeviceIDForPush(deviceId).PushType(pnPushType).Async((result, status) => {
+            /*pubnub.AddPushNotificationsOnChannels().Channels(listChannels).DeviceIDForPush(deviceId).PushType(pnPushType).Async((result, status) => {
                     Debug.Log ("in AddPushNotificationsOnChannels");
                     if(status.Error){
                         Debug.Log (string.Format("In Example, AddPushNotificationsOnChannels Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                     } else {
-                        Debug.Log (string.Format("DateTime {0}, In AddPushNotificationsOnChannels, result: {1}", DateTime.Now, result.Message));
+                        Debug.Log (string.Format("DateTime {0}, In AddPushNotificationsOnChannels, result: {1}", DateTime.UtcNow, result.Message));
                     }
                     AuditPushChannelProvisions(pubnub, deviceId, pnPushType);
                     RemoveChannelsFromPush(listChannels, pubnub, deviceId, pnPushType);
@@ -252,7 +254,7 @@ namespace PubNubExample
                     if(status.Error){
                         Debug.Log (string.Format("In Example, RemovePushNotificationsFromChannels Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                     } else {
-                        Debug.Log (string.Format("DateTime {0}, In RemovePushNotificationsFromChannels, result: {1}", DateTime.Now, result.Message));
+                        Debug.Log (string.Format("DateTime {0}, In RemovePushNotificationsFromChannels, result: {1}", DateTime.UtcNow, result.Message));
                     }
                 });
         }
@@ -263,7 +265,7 @@ namespace PubNubExample
                     if(status.Error){
                         Debug.Log (string.Format("In Example, AuditPushChannelProvisions Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                     } else {
-                        Debug.Log (string.Format("DateTime {0}, In AuditPushChannelProvisions, result: {1}", DateTime.Now, string.Join(",", result.Channels.ToArray())));
+                        Debug.Log (string.Format("DateTime {0}, In AuditPushChannelProvisions, result: {1}", DateTime.UtcNow, string.Join(",", result.Channels.ToArray())));
                     }
 
                 });
@@ -277,7 +279,7 @@ namespace PubNubExample
                     if(status.Error){
                         Debug.Log (string.Format("In Example, RemoveAllPushNotificationsFromChannels Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                     } else {
-                        Debug.Log (string.Format("DateTime {0}, In RemoveAllPushNotificationsFromChannels, result: {1}", DateTime.Now, result.Message));
+                        Debug.Log (string.Format("DateTime {0}, In RemoveAllPushNotificationsFromChannels, result: {1}", DateTime.UtcNow, result.Message));
                     }
 
                 });
@@ -289,7 +291,7 @@ namespace PubNubExample
                     if(status.Error){
                         Debug.Log (string.Format("In Example, RemoveChannelsFromCG Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                     } else {
-                        Debug.Log (string.Format("DateTime {0}, In RemoveChannelsFromCG, result: {1}", DateTime.Now, result.Message));
+                        Debug.Log (string.Format("DateTime {0}, In RemoveChannelsFromCG, result: {1}", DateTime.UtcNow, result.Message));
                     }
 
                 });
@@ -300,7 +302,7 @@ namespace PubNubExample
                     if(status.Error){
                         Debug.Log (string.Format("In Example, ListAllChannelsOfGroup Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                     } else {
-                        Debug.Log (string.Format("DateTime {0}, In Example ListAllChannelsOfGroup, result: {1}", DateTime.Now, (result.Channels!=null)?string.Join(",", result.Channels.ToArray()):""));
+                        Debug.Log (string.Format("In Example ListAllChannelsOfGroup, result: {0}", (result.Channels!=null)?string.Join(",", result.Channels.ToArray()):""));
                     }
                 
                 });
@@ -312,7 +314,7 @@ namespace PubNubExample
                 if(status.Error){
                     Debug.Log (string.Format("In Example, FetchMessages Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                 } else {
-                    Debug.Log (string.Format("DateTime {0}, In FetchMessages, result: ", DateTime.Now ));//,result.EndTimetoken, result.Messages[0].ToString()));
+                    Debug.Log (string.Format("In FetchMessages, result: "));//,result.EndTimetoken, result.Messages[0].ToString()));
                     foreach(KeyValuePair<string, List<PNMessageResult>> kvp in result.Channels){
                         Debug.Log("kvp channelname" + kvp.Key);
                         foreach(PNMessageResult pnMessageResut in kvp.Value){
@@ -375,7 +377,7 @@ namespace PubNubExample
                     "channelGroups={10} \n" +
                     "clientRequest={11} \n" , 
                     s.Category.ToString(), 
-                    (s.ErrorData != null) ? s.ErrorData.Info : "null", 
+                    ((s.ErrorData != null) && (s.ErrorData.Ex != null)) ? s.ErrorData.Info : "null", 
                     s.Error.ToString(),
                     s.StatusCode.ToString(),
                     s.Operation.ToString(),
@@ -388,6 +390,17 @@ namespace PubNubExample
                     (s.ClientRequest != null) ? s.ClientRequest.ToString() : "null"
                     ));
             }
+        }
+
+        void Display(string textToDisplay){
+            stringToEdit = string.Format("{0}\n{1}", stringToEdit, textToDisplay);
+            //TextScroll 
+            //Canvas.
+        }
+
+        public string stringToEdit = "Hello World";
+        void OnGUI() {
+            stringToEdit = GUI.TextField(new Rect(10, 10, 600, 600), stringToEdit, 600);
         }
 
     	// Update is called once per frame
