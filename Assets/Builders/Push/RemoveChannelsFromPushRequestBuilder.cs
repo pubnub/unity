@@ -37,7 +37,7 @@ namespace PubNubAPI
             RequestState requestState = new RequestState ();
             requestState.RespType = PNOperationType.PNRemovePushNotificationsFromChannelsOperation;
             
-            Uri request = BuildRequests.BuildRemoveChannelPushRequest(
+            /* Uri request = BuildRequests.BuildRemoveChannelPushRequest(
                 string.Join(",", ChannelsToUse.ToArray()), 
                 PushType, 
                 DeviceIDForPush,
@@ -47,6 +47,13 @@ namespace PubNubAPI
                 this.PubNubInstance.PNConfig.AuthKey,
                 this.PubNubInstance.PNConfig.SubscribeKey,
                 this.PubNubInstance.Version
+            ); */
+
+            Uri request = BuildRequests.BuildRemoveChannelPushRequest(
+                string.Join(",", ChannelsToUse.ToArray()), 
+                PushType, 
+                DeviceIDForPush,
+                ref this.PubNubInstance
             );
 
             this.PubNubInstance.PNLog.WriteToLog(string.Format("Run PNPushRemoveChannelResult {0}", request.OriginalString), PNLoggingMethod.LevelInfo);

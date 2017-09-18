@@ -36,7 +36,7 @@ namespace PubNubAPI
             RequestState requestState = new RequestState ();
             requestState.RespType = PNOperationType.PNRemoveGroupOperation;
 
-            Uri request = BuildRequests.BuildRemoveChannelsFromChannelGroupRequest(
+            /* Uri request = BuildRequests.BuildRemoveChannelsFromChannelGroupRequest(
                 null, 
                 "", 
                 ChannelGroupToDelete,
@@ -46,6 +46,12 @@ namespace PubNubAPI
                 this.PubNubInstance.PNConfig.AuthKey,
                 this.PubNubInstance.PNConfig.SubscribeKey,
                 this.PubNubInstance.Version
+            ); */
+            Uri request = BuildRequests.BuildRemoveChannelsFromChannelGroupRequest(
+                null, 
+                "", 
+                ChannelGroupToDelete,
+                ref this.PubNubInstance
             );
             this.PubNubInstance.PNLog.WriteToLog(string.Format("RunPNChannelGroupsAddChannel {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 

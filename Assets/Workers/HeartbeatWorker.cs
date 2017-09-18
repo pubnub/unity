@@ -10,7 +10,7 @@ namespace PubNubAPI
         public event EventHandler<EventArgs> InternetAvailable;
         public event EventHandler<EventArgs> RetriesExceeded;
         private PNUnityWebRequest webRequest;
-        private PubNubUnity PubNubInstance { get; set;}
+        private PubNubUnity PubNubInstance;
         private bool keepHearbeatRunning = false;
         private bool isHearbeatRunning = false;
 
@@ -123,11 +123,14 @@ namespace PubNubAPI
                     RequestState requestState = new RequestState ();
                     requestState.RespType = PNOperationType.PNHeartbeatOperation;
                 
-                    Uri request = BuildRequests.BuildTimeRequest(
+                    /* Uri request = BuildRequests.BuildTimeRequest(
                         this.PubNubInstance.PNConfig.UUID,
                         this.PubNubInstance.PNConfig.Secure,
                         this.PubNubInstance.PNConfig.Origin,
                         this.PubNubInstance.Version
+                    ); */
+                    Uri request = BuildRequests.BuildTimeRequest(
+                        ref this.PubNubInstance
                     );
 
                     Debug.Log(string.Format ("heartbeat: request.OriginalString {0} ", request.OriginalString ));

@@ -16,7 +16,7 @@ namespace PubNubAPI
     public class SubscriptionWorker<U>
     {
         private PNUnityWebRequest webRequest;
-        private PubNubUnity PubNubInstance { get; set;}
+        private PubNubUnity PubNubInstance;
 
         private HeartbeatWorker hbWorker;
         private PresenceHeartbeatWorker phbWorker;
@@ -467,6 +467,15 @@ namespace PubNubAPI
                     channelGroups, 
                     lastTimetoken.ToString(), 
                     channelsJsonState,
+                    region,
+                    filterExpr,
+                    ref this.PubNubInstance
+                );
+                /*Uri requestUrl = BuildRequests.BuildSubscribeRequest (
+                    channels,
+                    channelGroups, 
+                    lastTimetoken.ToString(), 
+                    channelsJsonState,
                     this.PubNubInstance.PNConfig.UUID, 
                     region,
                     filterExpr, 
@@ -476,7 +485,7 @@ namespace PubNubAPI
                     PubNubInstance.PNConfig.SubscribeKey, 
                     this.PubNubInstance.PNConfig.PresenceTimeout,
                     PubNubInstance.Version
-                );
+                );*/
                 
                 /*Uri requestUrl = BuildRequests.BuildMultiChannelSubscribeRequest (channels,
                     channelGroups, lastTimetoken.ToString(), channelsJsonState, this.SessionUUID, this.Region,

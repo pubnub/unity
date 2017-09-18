@@ -45,7 +45,7 @@ namespace PubNubAPI
             RequestState requestState = new RequestState ();
             requestState.RespType = PNOperationType.PNRemoveAllPushNotificationsOperation;
             
-            Uri request = BuildRequests.BuildRemoveAllDevicePushRequest(
+            /* Uri request = BuildRequests.BuildRemoveAllDevicePushRequest(
                 PushType, 
                 DeviceIDForPush,
                 this.PubNubInstance.PNConfig.UUID,
@@ -54,7 +54,13 @@ namespace PubNubAPI
                 this.PubNubInstance.PNConfig.AuthKey,
                 this.PubNubInstance.PNConfig.SubscribeKey,
                 this.PubNubInstance.Version
+            ); */
+            Uri request = BuildRequests.BuildRemoveAllDevicePushRequest(
+                PushType, 
+                DeviceIDForPush,
+                ref this.PubNubInstance
             );
+
             this.PubNubInstance.PNLog.WriteToLog(string.Format("Run PNPushRemoveAllChannelsResult {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this);
         }

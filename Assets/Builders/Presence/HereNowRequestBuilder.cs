@@ -55,7 +55,7 @@ namespace PubNubAPI
             if((ChannelGroupsToUse != null) && (ChannelGroupsToUse.Count>0)){
                 channelGroups = String.Join(",", ChannelGroupsToUse.ToArray());
             }
-            Uri request = BuildRequests.BuildHereNowRequest(
+            /* Uri request = BuildRequests.BuildHereNowRequest(
                 channels,
                 channelGroups,
                 IncludeUUIDsInHereNow,
@@ -66,6 +66,13 @@ namespace PubNubAPI
                 this.PubNubInstance.PNConfig.AuthKey,
                 this.PubNubInstance.PNConfig.SubscribeKey,
                 this.PubNubInstance.Version
+            ); */
+            Uri request = BuildRequests.BuildHereNowRequest(
+                channels,
+                channelGroups,
+                IncludeUUIDsInHereNow,
+                IncludeStateInHereNow,
+                ref this.PubNubInstance
             );
             this.PubNubInstance.PNLog.WriteToLog(string.Format("RunHereNowRequest {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 

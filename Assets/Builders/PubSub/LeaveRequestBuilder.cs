@@ -65,7 +65,7 @@ namespace PubNubAPI
                 //Retrieve the current channels already subscribed previously and terminate them
                 this.PubNubInstance.SubWorker.AbortPreviousRequest(subscribedChannels);
 
-                Uri request = BuildRequests.BuildLeaveRequest(
+                /* Uri request = BuildRequests.BuildLeaveRequest(
                     channels,
                     channelGroups,
                     this.PubNubInstance.SubscriptionInstance.CompiledUserState,
@@ -74,7 +74,13 @@ namespace PubNubAPI
                     this.PubNubInstance.PNConfig.Origin,
                     this.PubNubInstance.PNConfig.AuthKey,
                     this.PubNubInstance.PNConfig.SubscribeKey,
-                    this.PubNubInstance.Version
+                    this.PubNubInstance.Version,
+                    this.PubNubInstance.Latency
+                ); */
+                Uri request = BuildRequests.BuildLeaveRequest(
+                    channels,
+                    channelGroups,
+                    ref this.PubNubInstance
                 );
                 this.PubNubInstance.PNLog.WriteToLog(string.Format("Run PNLeaveRequestResult {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
                 base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 

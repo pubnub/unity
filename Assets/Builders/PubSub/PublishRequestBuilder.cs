@@ -76,13 +76,14 @@ namespace PubNubAPI
             //TODO USe POST
             RequestState requestState = new RequestState ();
             requestState.RespType = PNOperationType.PNPublishOperation;
+            requestState.UsePost = UsePostMethod;
             string jsonMessage = (publishAsIs) ? PublishMessage.ToString () : Helpers.JsonEncodePublishMsg (PublishMessage, this.PubNubInstance.PNConfig.CipherKey, this.PubNubInstance.JsonLibrary, this.PubNubInstance.PNLog);
             string jsonMetadata = string.Empty;
             if (this.Metadata!=null) {
                 jsonMetadata = Helpers.JsonEncodePublishMsg (this.Metadata, "", this.PubNubInstance.JsonLibrary, this.PubNubInstance.PNLog);
             }
 
-            Uri request = BuildRequests.BuildPublishRequest(
+            /* Uri request = BuildRequests.BuildPublishRequest(
                 this.PublishChannel,
                 jsonMessage,
                 this.ShouldStoreInHistory,
@@ -98,6 +99,17 @@ namespace PubNubAPI
                 this.PubNubInstance.PNConfig.CipherKey,
                 this.PubNubInstance.PNConfig.SecretKey,
                 this.PubNubInstance.Version
+            ); */
+
+            Uri request = BuildRequests.BuildPublishRequest(
+                this.PublishChannel,
+                jsonMessage,
+                this.ShouldStoreInHistory,
+                jsonMetadata,
+                publishCounter,
+                this.PublishTtl,
+                UsePostMethod,
+                ref this.PubNubInstance
             );
             this.PubNubInstance.PNLog.WriteToLog(string.Format("RunWhereNowRequest {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 

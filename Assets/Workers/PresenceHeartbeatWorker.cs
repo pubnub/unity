@@ -10,7 +10,7 @@ namespace PubNubAPI
 
         private PNUnityWebRequest webRequest;
         private string webRequestId = "";
-        private PubNubUnity PubNubInstance { get; set;}
+        private PubNubUnity PubNubInstance;
         internal PresenceHeartbeatWorker(PubNubUnity pn, PNUnityWebRequest webRequest){
             PubNubInstance  = pn;
             this.webRequest = webRequest;
@@ -111,7 +111,7 @@ namespace PubNubAPI
                     RequestState requestState = new RequestState ();
                     requestState.RespType = PNOperationType.PNPresenceHeartbeatOperation;
                     
-                    Uri request = BuildRequests.BuildPresenceHeartbeatRequest(
+                    /* Uri request = BuildRequests.BuildPresenceHeartbeatRequest(
                         Helpers.GetNamesFromChannelEntities(PubNubInstance.SubscriptionInstance.AllNonPresenceChannelsOrChannelGroups, false),
                         Helpers.GetNamesFromChannelEntities(PubNubInstance.SubscriptionInstance.AllNonPresenceChannelsOrChannelGroups, true),
                         channelsJsonState,
@@ -121,6 +121,13 @@ namespace PubNubAPI
                         this.PubNubInstance.PNConfig.AuthKey,
                         this.PubNubInstance.PNConfig.SubscribeKey,
                         this.PubNubInstance.Version
+                    ); */
+
+                    Uri request = BuildRequests.BuildPresenceHeartbeatRequest(
+                        Helpers.GetNamesFromChannelEntities(PubNubInstance.SubscriptionInstance.AllNonPresenceChannelsOrChannelGroups, false),
+                        Helpers.GetNamesFromChannelEntities(PubNubInstance.SubscriptionInstance.AllNonPresenceChannelsOrChannelGroups, true),
+                        channelsJsonState,
+                        ref this.PubNubInstance
                     );
                     Debug.Log(string.Format ("presenceheartbeat: request.OriginalString {0} ", request.OriginalString ));
 

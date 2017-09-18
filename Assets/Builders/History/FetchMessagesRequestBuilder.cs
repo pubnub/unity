@@ -92,7 +92,7 @@ namespace PubNubAPI
 
             //TODO: start=0&end=0
 
-            Uri request = BuildRequests.BuildFetchRequest(
+            /* Uri request = BuildRequests.BuildFetchRequest(
                 ChannelsToUse.ToArray(),
                 this.StartTime,
                 this.EndTime,
@@ -105,6 +105,16 @@ namespace PubNubAPI
                 this.PubNubInstance.PNConfig.AuthKey,
                 this.PubNubInstance.PNConfig.SubscribeKey,
                 this.PubNubInstance.Version
+            ); */
+
+            Uri request = BuildRequests.BuildFetchRequest(
+                ChannelsToUse.ToArray(),
+                this.StartTime,
+                this.EndTime,
+                this.HistoryCount,
+                this.ReverseHistory,
+                this.IncludeTimetokenInHistory,
+                ref this.PubNubInstance
             );
             this.PubNubInstance.PNLog.WriteToLog(string.Format("Run PNFetchMessagesResult {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 

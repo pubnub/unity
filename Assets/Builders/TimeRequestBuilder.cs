@@ -27,10 +27,7 @@ namespace PubNubAPI
             requestState.RespType = PNOperationType.PNTimeOperation;
             
             Uri request = BuildRequests.BuildTimeRequest(
-                this.PubNubInstance.PNConfig.UUID,
-                this.PubNubInstance.PNConfig.Secure,
-                this.PubNubInstance.PNConfig.Origin,
-                this.PubNubInstance.Version
+                ref this.PubNubInstance
             );
 
             #if (ENABLE_PUBNUB_LOGGING)

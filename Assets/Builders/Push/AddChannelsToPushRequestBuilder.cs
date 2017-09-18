@@ -57,7 +57,7 @@ namespace PubNubAPI
             RequestState requestState = new RequestState ();
             requestState.RespType = PNOperationType.PNAddPushNotificationsOnChannelsOperation;
             
-            Uri request = BuildRequests.BuildRegisterDevicePushRequest(
+            /* Uri request = BuildRequests.BuildRegisterDevicePushRequest(
                 string.Join(",", ChannelsToUse.ToArray()), 
                 PushType, 
                 DeviceIDForPush,
@@ -67,6 +67,13 @@ namespace PubNubAPI
                 this.PubNubInstance.PNConfig.AuthKey,
                 this.PubNubInstance.PNConfig.SubscribeKey,
                 this.PubNubInstance.Version
+            ); */
+
+            Uri request = BuildRequests.BuildRegisterDevicePushRequest(
+                string.Join(",", ChannelsToUse.ToArray()), 
+                PushType, 
+                DeviceIDForPush,
+                ref this.PubNubInstance
             );
 
             this.PubNubInstance.PNLog.WriteToLog(string.Format("Run PNAddPushNotificationsOnChannelsOperation {0}", request.OriginalString), PNLoggingMethod.LevelInfo);

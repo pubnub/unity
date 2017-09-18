@@ -50,7 +50,7 @@ namespace PubNubAPI
         public PubNubUnityBase(PNConfiguration pnConfiguration, GameObject gameObjectRef, IJsonLibrary jsonLibrary){
             PNConfig = pnConfiguration;
             PNLog = new PNLoggingMethod(PNConfig.LogVerbosity);
-            Latency = new PNLatency();
+            //new PNLatency();
             /*if (PNConfig.LogVerbosity.Equals (PNLogVerbosity.BODY)) {
 				//Debug.logger.logEnabled = true;
 			} else {
@@ -93,6 +93,7 @@ namespace PubNubAPI
             publishMessageCounter = new Counter ();
             
             QManager = GameObjectRef.AddComponent<QueueManager> ();
+            Latency = GameObjectRef.AddComponent<PNLatency> ();
             QManager.NoOfConcurrentRequests = PNConfig.ConcurrentNonSubscribeWorkers;
         }
 
@@ -100,6 +101,10 @@ namespace PubNubAPI
             publishMessageCounter.Reset ();
             if (QManager != null) {
                 UnityEngine.Object.Destroy (QManager);
+            }
+            if (Latency != null) {
+                Latency.CleanUp();
+                UnityEngine.Object.Destroy (Latency);
             }
             
             #if (ENABLE_PUBNUB_LOGGING)

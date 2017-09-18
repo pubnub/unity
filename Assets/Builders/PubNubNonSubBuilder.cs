@@ -16,7 +16,7 @@ namespace PubNubAPI
         protected delegate void CreateResponseDelegate(object deSerializedResult, RequestState pnRequestState);
         protected event CreateResponseDelegate CreateResponse;
 
-        protected PubNubUnity PubNubInstance { get; set;}
+        protected PubNubUnity PubNubInstance;
         protected internal PubNubNonSubBuilder(PubNubUnity pn){
             PubNubInstance = pn;
             this.RunRequest += delegate(QueueManager qm) {

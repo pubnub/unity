@@ -39,7 +39,7 @@ namespace PubNubAPI
                 uuidForWhereNow = this.UuidForWhereNow;
             }
 
-            Uri request = BuildRequests.BuildWhereNowRequest(
+            /* Uri request = BuildRequests.BuildWhereNowRequest(
                 uuidForWhereNow,
                 this.PubNubInstance.PNConfig.UUID,
                 this.PubNubInstance.PNConfig.Secure,
@@ -47,6 +47,10 @@ namespace PubNubAPI
                 this.PubNubInstance.PNConfig.AuthKey,
                 this.PubNubInstance.PNConfig.SubscribeKey,
                 this.PubNubInstance.Version
+            ); */
+            Uri request = BuildRequests.BuildWhereNowRequest(
+                uuidForWhereNow,
+                ref this.PubNubInstance
             );
             this.PubNubInstance.PNLog.WriteToLog(string.Format("RunWhereNowRequest {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 

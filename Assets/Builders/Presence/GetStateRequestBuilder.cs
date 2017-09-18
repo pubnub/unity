@@ -55,7 +55,7 @@ namespace PubNubAPI
                 channelGroups = String.Join(",", ChannelGroupsToUse.ToArray());
             }
 
-            Uri request = BuildRequests.BuildGetStateRequest(
+            /* Uri request = BuildRequests.BuildGetStateRequest(
                 channels,
                 channelGroups,
                 uuid,
@@ -65,6 +65,12 @@ namespace PubNubAPI
                 this.PubNubInstance.PNConfig.AuthKey,
                 this.PubNubInstance.PNConfig.SubscribeKey,
                 this.PubNubInstance.Version
+            ); */
+            Uri request = BuildRequests.BuildGetStateRequest(
+                channels,
+                channelGroups,
+                uuid,
+                ref this.PubNubInstance
             );
             this.PubNubInstance.PNLog.WriteToLog(string.Format("RunGetStateRequest {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 

@@ -95,7 +95,7 @@ namespace PubNubAPI
                 uuid = this.PubNubInstance.PNConfig.UUID;
             }
             //TODO add state to instance
-            Uri request = BuildRequests.BuildSetStateRequest(
+            /* Uri request = BuildRequests.BuildSetStateRequest(
                 channels,
                 channelGroups,
                 Helpers.BuildJsonUserState(ChannelEntities),
@@ -106,6 +106,13 @@ namespace PubNubAPI
                 this.PubNubInstance.PNConfig.AuthKey,
                 this.PubNubInstance.PNConfig.SubscribeKey,
                 this.PubNubInstance.Version
+            ); */
+            Uri request = BuildRequests.BuildSetStateRequest(
+                channels,
+                channelGroups,
+                Helpers.BuildJsonUserState(ChannelEntities),
+                uuid,
+                ref this.PubNubInstance
             );
             this.PubNubInstance.PNLog.WriteToLog(string.Format("Run PNSetStateResult {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 

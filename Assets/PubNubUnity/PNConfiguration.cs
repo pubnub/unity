@@ -97,7 +97,7 @@ namespace PubNubAPI
             }
         }
         //In seconds, how long the server will consider this client to be online before issuing a leave event.
-        public PNReconnectionPolicy ReconnectionPolicy = PNReconnectionPolicy.NONE;
+        public PNReconnectionPolicy ReconnectionPolicy = PNReconnectionPolicy.LINEAR;//PNReconnectionPolicy.NONE;
         public int PresenceTimeout { get; set;}
         //In seconds, How often the client should announce it's existence via heartbeating.
         public int PresenceInterval { get; set;}

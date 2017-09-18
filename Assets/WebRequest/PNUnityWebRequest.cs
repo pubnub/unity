@@ -47,6 +47,9 @@ namespace PubNubAPI
         public float presenceHeartbeatPauseTimer = 10;
         public float subscribePauseTimer = 10;
 
+        public const float timerConst = 0; 
+        public float timer = timerConst; 
+
         internal bool isHearbeatComplete = false;
         internal bool isPresenceHeartbeatComplete = false;
         internal bool isSubscribeComplete = false;
@@ -324,20 +327,24 @@ namespace PubNubAPI
         }
 
         void Update() {
-            List<string> keys = new List<string>(currentWebRequests.Keys);
-            foreach(string key in keys){
-                UnityWebRequestWrapper unityWebRequestWrapper = currentWebRequests[key];
-                if(unityWebRequestWrapper.RunTimer){
-                    unityWebRequestWrapper.Timer -= Time.deltaTime;
-                    currentWebRequests[key] = unityWebRequestWrapper;
-                    CheckElapsedTime (unityWebRequestWrapper, key);
-                }
-                if(unityWebRequestWrapper.RunPauseTimer){
-                    unityWebRequestWrapper.PauseTimer -= Time.deltaTime;
-                    currentWebRequests[key] = unityWebRequestWrapper;
-                    CheckPauseTime (unityWebRequestWrapper, key);
-                }
+            timer -= Time.deltaTime;
+            if(timer <= 0){
+                List<string> keys = new List<string>(currentWebRequests.Keys);
+                foreach(string key in keys){
+                    UnityWebRequestWrapper unityWebRequestWrapper = currentWebRequests[key];
+                    if(unityWebRequestWrapper.RunTimer){
+                        unityWebRequestWrapper.Timer -= Time.deltaTime;
+                        currentWebRequests[key] = unityWebRequestWrapper;
+                        CheckElapsedTime (unityWebRequestWrapper, key);
+                    }
+                    if(unityWebRequestWrapper.RunPauseTimer){
+                        unityWebRequestWrapper.PauseTimer -= Time.deltaTime;
+                        currentWebRequests[key] = unityWebRequestWrapper;
+                        CheckPauseTime (unityWebRequestWrapper, key);
+                    }
 
+                }
+                timer = timerConst;
             }
             /*if (runSubscribeTimer) {
                 subscribeTimer -= Time.deltaTime;

@@ -20,6 +20,7 @@ namespace PubNubAPI
 
         //public string WebRequestId;
         public string WebRequestId;
+        public bool UsePost;
         /*public List<ChannelEntity> ChannelEntities;
         public bool Timeout;
         public bool Reconnect;
@@ -33,6 +34,7 @@ namespace PubNubAPI
             StartRequestTicks = 0;
             EndRequestTicks = 0;
             URL = "";
+            UsePost = false;
             /*SuccessCallback = null;
             Request = null;
             Response = null;

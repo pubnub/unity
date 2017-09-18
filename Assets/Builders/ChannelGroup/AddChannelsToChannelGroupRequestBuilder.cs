@@ -51,7 +51,7 @@ namespace PubNubAPI
             RequestState requestState = new RequestState ();
             requestState.RespType = PNOperationType.PNAddChannelsToGroupOperation;
 
-            Uri request = BuildRequests.BuildAddChannelsToChannelGroupRequest(
+            /* Uri request = BuildRequests.BuildAddChannelsToChannelGroupRequest(
                 ChannelsToUse.ToArray(), 
                 "", 
                 ChannelGroupToAdd,
@@ -61,6 +61,12 @@ namespace PubNubAPI
                 this.PubNubInstance.PNConfig.AuthKey,
                 this.PubNubInstance.PNConfig.SubscribeKey,
                 this.PubNubInstance.Version
+            ); */
+            Uri request = BuildRequests.BuildAddChannelsToChannelGroupRequest(
+                ChannelsToUse.ToArray(), 
+                "", 
+                ChannelGroupToAdd,
+                ref this.PubNubInstance
             );
             this.PubNubInstance.PNLog.WriteToLog(string.Format("RunPNChannelGroupsAddChannel {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 

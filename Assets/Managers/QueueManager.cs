@@ -131,7 +131,7 @@ namespace PubNubAPI
                             break;
                     }
                 }
-                this.PubNubInstance.Latency.Update();
+                //this.PubNubInstance.Latency.Update();
             } else {
                 Debug.Log("PN instance null");
             }

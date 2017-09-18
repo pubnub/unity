@@ -53,7 +53,7 @@ namespace PubNubAPI
             PNBuilder = pnBuilder;
 
             //webRequest.Run<V>(url, requestState, this.queueManager.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, false); 
-            webRequestId = webRequest.Run(url, requestState, this.queueManager.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, false, false, ""); 
+            webRequestId = webRequest.Run(url, requestState, this.queueManager.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, false, requestState.UsePost, ""); 
         }
             
         /*public void RunTimeRequest(PNConfiguration pnConfig, Action<T, PNStatus> callback){

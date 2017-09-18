@@ -35,7 +35,7 @@ namespace PubNubAPI
             RequestState requestState = new RequestState ();
             requestState.RespType = PNOperationType.PNChannelsForGroupOperation;
             
-            Uri request = BuildRequests.BuildGetChannelsForChannelGroupRequest(
+            /* Uri request = BuildRequests.BuildGetChannelsForChannelGroupRequest(
                 "",
                 ChannelGroupToList,
                 false,
@@ -45,7 +45,14 @@ namespace PubNubAPI
                 this.PubNubInstance.PNConfig.AuthKey,
                 this.PubNubInstance.PNConfig.SubscribeKey,
                 this.PubNubInstance.Version
+            ); */
+            Uri request = BuildRequests.BuildGetChannelsForChannelGroupRequest(
+                "",
+                ChannelGroupToList,
+                false,
+                ref this.PubNubInstance
             );
+            
             this.PubNubInstance.PNLog.WriteToLog(string.Format("Run BuildGetChannelsForChannelGroupRequest {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         
