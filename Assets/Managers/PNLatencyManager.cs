@@ -80,12 +80,12 @@ namespace PubNubAPI
             UpdateLatency(ref MobilePushLatency, t, ref MobilePush, "MobilePush");
             UpdateLatency(ref HistoryLatency, t, ref History, "History");
             UpdateLatency(ref ChannelGroupsLatency, t, ref ChannelGroups, "ChannelGroups");
-            Debug.Log("Latency " + Time);
+            /*Debug.Log("Latency " + Time);
             Debug.Log("Latency " + Publish);
             Debug.Log("Latency " + Presence);
             Debug.Log("Latency " + MobilePush);
             Debug.Log("Latency " + History);
-            Debug.Log("Latency " + ChannelGroups);
+            Debug.Log("Latency " + ChannelGroups);*/
                 //yield return new WaitForSeconds(1);
             //}
         }

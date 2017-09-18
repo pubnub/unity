@@ -21,7 +21,7 @@ namespace PubNubExample
             pnConfiguration.PresenceInterval= 30;
 
             //TODO: remove
-            pnConfiguration.UUID = "a";
+            pnConfiguration.UUID = "PubNubUnityExample";
             Debug.Log ("PNConfiguration");  
             pubnub = new PubNub (pnConfiguration);
 

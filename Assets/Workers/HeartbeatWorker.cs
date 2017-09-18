@@ -120,9 +120,7 @@ namespace PubNubAPI
                         this.ssl, this.Origin);
 
                     coroutine.HeartbeatCoroutineComplete += CoroutineCompleteHandler<T>;*/
-                    RequestState requestState = new RequestState ();
-                    requestState.RespType = PNOperationType.PNHeartbeatOperation;
-                
+                               
                     /* Uri request = BuildRequests.BuildTimeRequest(
                         this.PubNubInstance.PNConfig.UUID,
                         this.PubNubInstance.PNConfig.Secure,
@@ -133,8 +131,15 @@ namespace PubNubAPI
                         ref this.PubNubInstance
                     );
 
+                    RequestState requestState = new RequestState ();
+                    requestState.RespType = PNOperationType.PNHeartbeatOperation;
+                    requestState.URL = request.OriginalString; 
+                    requestState.Timeout = PubNubInstance.PNConfig.NonSubscribeTimeout;
+                    requestState.Pause = pauseTime;
+                    requestState.Reconnect = pause;     
+
                     Debug.Log(string.Format ("heartbeat: request.OriginalString {0} ", request.OriginalString ));
-                    webRequestId = webRequest.Run(request.OriginalString, requestState, PubNubInstance.PNConfig.NonSubscribeTimeout, pauseTime, pause, false, "");
+                    webRequestId = webRequest.Run(requestState);
                     
                     //for heartbeat and presence heartbeat treat reconnect as pause
                     /* RequestState<T> requestState = BuildRequests.BuildRequestState<T> (pubnubRequestState.ChannelEntities,

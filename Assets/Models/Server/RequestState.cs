@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using System.Collections.Generic;
+using UnityEngine.Networking;
 
 namespace PubNubAPI
 {
@@ -20,7 +21,13 @@ namespace PubNubAPI
 
         //public string WebRequestId;
         public string WebRequestId;
-        public bool UsePost;
+        public HTTPMethod Method;
+
+        public string POSTData = "";
+
+        public int Timeout;
+        public int Pause;
+        public bool Reconnect;
         /*public List<ChannelEntity> ChannelEntities;
         public bool Timeout;
         public bool Reconnect;
@@ -34,7 +41,11 @@ namespace PubNubAPI
             StartRequestTicks = 0;
             EndRequestTicks = 0;
             URL = "";
-            UsePost = false;
+            Method = HTTPMethod.Get;
+            POSTData = "";
+            Timeout = 0;
+            Pause = 0;
+            Reconnect = false;
             /*SuccessCallback = null;
             Request = null;
             Response = null;

@@ -49,11 +49,12 @@ namespace PubNubAPI
 
         }
 
-        public void RunWebRequest(string url, RequestState requestState, int timeout, int pause, PubNubNonSubBuilder<U, V> pnBuilder){
+        //public void RunWebRequest(string url, RequestState requestState, int timeout, int pause, PubNubNonSubBuilder<U, V> pnBuilder){
+        public void RunWebRequest(RequestState requestState, PubNubNonSubBuilder<U, V> pnBuilder){
             PNBuilder = pnBuilder;
 
             //webRequest.Run<V>(url, requestState, this.queueManager.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, false); 
-            webRequestId = webRequest.Run(url, requestState, this.queueManager.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, false, requestState.UsePost, ""); 
+            webRequestId = webRequest.Run(requestState); 
         }
             
         /*public void RunTimeRequest(PNConfiguration pnConfig, Action<T, PNStatus> callback){

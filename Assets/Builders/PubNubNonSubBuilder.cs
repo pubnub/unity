@@ -78,7 +78,12 @@ namespace PubNubAPI
 
         protected void RunWebRequest(QueueManager qm, Uri request, RequestState requestState, int timeout, int pause, PubNubNonSubBuilder<U, V> pnBuilder){
             NonSubscribeWorker<U, V> nonSubscribeWorker = new NonSubscribeWorker<U, V> (qm);
-            nonSubscribeWorker.RunWebRequest(request.OriginalString, requestState, timeout, 0, pnBuilder); 
+            requestState.URL = request.OriginalString; 
+            requestState.Timeout = timeout;
+            requestState.Pause = 0;
+            requestState.Reconnect = false;
+
+            nonSubscribeWorker.RunWebRequest(requestState, pnBuilder); 
         }
     }
 }

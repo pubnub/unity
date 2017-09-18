@@ -108,9 +108,6 @@ namespace PubNubAPI
                     isPresenceHearbeatRunning = true;
                     string channelsJsonState = PubNubInstance.SubscriptionInstance.CompiledUserState;
 
-                    RequestState requestState = new RequestState ();
-                    requestState.RespType = PNOperationType.PNPresenceHeartbeatOperation;
-                    
                     /* Uri request = BuildRequests.BuildPresenceHeartbeatRequest(
                         Helpers.GetNamesFromChannelEntities(PubNubInstance.SubscriptionInstance.AllNonPresenceChannelsOrChannelGroups, false),
                         Helpers.GetNamesFromChannelEntities(PubNubInstance.SubscriptionInstance.AllNonPresenceChannelsOrChannelGroups, true),
@@ -129,9 +126,17 @@ namespace PubNubAPI
                         channelsJsonState,
                         ref this.PubNubInstance
                     );
+
+                    RequestState requestState = new RequestState ();
+                    requestState.RespType = PNOperationType.PNPresenceHeartbeatOperation;
+                    requestState.URL = request.OriginalString; 
+                    requestState.Timeout = PubNubInstance.PNConfig.NonSubscribeTimeout;
+                    requestState.Pause = pauseTime;
+                    requestState.Reconnect = pause;
+
                     Debug.Log(string.Format ("presenceheartbeat: request.OriginalString {0} ", request.OriginalString ));
 
-                    webRequestId = webRequest.Run(request.OriginalString, requestState, PubNubInstance.PNConfig.NonSubscribeTimeout, pauseTime, pause, false, "");
+                    webRequestId = webRequest.Run(requestState);
 
                     //for heartbeat and presence heartbeat treat reconnect as pause
                     /*RequestState<T> requestState = BuildRequests.BuildRequestState<T> (pubnubRequestState.ChannelEntities, ResponseType.PresenceHeartbeat,

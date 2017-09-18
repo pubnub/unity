@@ -504,11 +504,15 @@ namespace PubNubAPI
                 RequestState requestState = new RequestState ();
                 //requestState.ChannelEntities = channelEntities;
                 requestState.RespType = PNOperationType.PNSubscribeOperation;
+                requestState.URL = requestUrl.OriginalString; 
+                requestState.Timeout = PubNubInstance.PNConfig.SubscribeTimeout;
+                requestState.Pause = 0;
+                requestState.Reconnect = reconnect;
                 //requestState.ChannelEntities = channelEntities;
 
                 //PNCallback<T> timeCallback = new PNTimeCallback<T> (callback);
                 //http://ps.pndsn.com/v2/presence/sub-key/sub-c-5c4fdcc6-c040-11e5-a316-0619f8945a4f/uuid/UUID_WhereNow?pnsdk=PubNub-Go%2F3.14.0&uuid=UUID_WhereNow
-                webRequestId = webRequest.Run(requestUrl.OriginalString, requestState, PubNubInstance.PNConfig.SubscribeTimeout, 0, reconnect, false, "");
+                webRequestId = webRequest.Run(requestState);
 
             } catch (Exception ex) {
                 Debug.Log("in  MultiChannelSubscribeRequest" + ex.ToString());
@@ -840,6 +844,13 @@ namespace PubNubAPI
             #if (ENABLE_PUBNUB_LOGGING)
             this.PubNubInstance.PNLog.WriteToLog(string.Format("In ResponseToUserCallbackForSubscribeV2"), PNLoggingMethod.LevelInfo);
             #endif
+            if (subscribeMessages.Count >= this.PubNubInstance.PNConfig.MessageQueueOverflowCount)
+            {
+                //TODO
+                /*StatusBuilder statusBuilder = new StatusBuilder(pubnubConfig, jsonLib);
+                PNStatus status = statusBuilder.CreateStatusResponse(type, PNStatusCategory.PNRequestMessageCountExceededCategory, asyncRequestState, (int)HttpStatusCode.OK, null);
+                Announce(status);*/
+            }
              
             foreach (SubscribeMessage subscribeMessage in subscribeMessages){
                 #if (ENABLE_PUBNUB_LOGGING)

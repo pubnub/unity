@@ -18,20 +18,21 @@ namespace PubNubAPI
         internal float Timer = 0;
         internal bool RunPauseTimer = false;
         internal float PauseTimer = 0;
-        internal bool UsePost = false;
-        internal string PostData = "";
+        //internal bool UsePost = false;
+        //internal string PostData = "";
 
-        internal UnityWebRequestWrapper(string url, int timeout, int pause, PNCurrentRequestType crt, RequestState requestState, bool usePost, string postData){
+        //internal UnityWebRequestWrapper(string url, int timeout, int pause, PNCurrentRequestType crt, RequestState requestState, bool usePost, string postData){
+        internal UnityWebRequestWrapper(PNCurrentRequestType crt, RequestState requestState){
             this.CurrentUnityWebRequest = null;
-            this.URL = url;
-            this.Timeout = timeout;
-            this.Pause = pause;
+            this.URL = requestState.URL;
+            this.Timeout = requestState.Timeout;
+            this.Pause = requestState.Pause;
             this.CurrentRequestType = crt;
             this.CurrentRequestState = requestState;
             this.IsComplete = false;
-            this.UsePost = usePost;
-            this.Timer = timeout;
-            this.PostData = postData;
+            //this.UsePost = usePost;
+            this.Timer = requestState.Timeout;
+            //this.PostData = postData;
 
             //CurrentUnityWebRequest.timeout = timeout;
         }

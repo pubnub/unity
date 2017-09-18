@@ -610,7 +610,8 @@ namespace PubNubAPI
             }
         }
 
-        public string Run (string url, RequestState pubnubRequestState, int timeout, int pause, bool reconnect, bool usePost, string postData)
+        //public string Run (string url, RequestState pubnubRequestState, int timeout, int pause, bool reconnect)
+        public string Run (RequestState pubnubRequestState)
         {
             if(!string.IsNullOrEmpty(pubnubRequestState.WebRequestId)){
                 AbortRequest (pubnubRequestState.WebRequestId);
@@ -622,15 +623,15 @@ namespace PubNubAPI
             switch (pubnubRequestState.RespType){
                 case PNOperationType.PNHeartbeatOperation:
                 crt = PNCurrentRequestType.Heartbeat;
-                delayStart = reconnect;
+                delayStart = pubnubRequestState.Reconnect;
                 break;
                 case PNOperationType.PNPresenceHeartbeatOperation:
                 crt = PNCurrentRequestType.PresenceHeartbeat;
-                delayStart = reconnect;
+                delayStart = pubnubRequestState.Reconnect;
                 break;
                 case PNOperationType.PNSubscribeOperation:
                 crt = PNCurrentRequestType.Subscribe;
-                if (pause > 0) {
+                if (pubnubRequestState.Pause > 0) {
                     delayStart = true;
                 }
                 break;
@@ -642,7 +643,7 @@ namespace PubNubAPI
             //string wwwUrl;
             Debug.Log("pubnubRequestState:"+ pubnubRequestState.RespType);
             string webRequestId = "";
-            UnityWebRequestWrapper webRequestWrapper = new UnityWebRequestWrapper(url, timeout, pause, crt, pubnubRequestState, usePost, postData);
+            UnityWebRequestWrapper webRequestWrapper = new UnityWebRequestWrapper(crt, pubnubRequestState);
             
             lock(syncRoot){
                 webRequestId = GenerateAndValidateWebRequestId();
@@ -652,7 +653,7 @@ namespace PubNubAPI
             //CheckComplete (crt, out wwwUrl);
             Debug.Log ("Run crt"+ crt);
             if (delayStart) {
-                webRequestWrapper.PauseTimer = pause;
+                webRequestWrapper.PauseTimer = pubnubRequestState.Pause;
                 webRequestWrapper.RunPauseTimer = true;
                 //ResumeEvent += WebRequestClass_ResumeEvent<T>;
                 //DelayStartWebRequest<T>(webRequestWrapper);
@@ -701,12 +702,14 @@ namespace PubNubAPI
             } */
         }
 
-        internal void GetOrPost(ref UnityWebRequestWrapper unityWebRequestWrapper){
-            if(unityWebRequestWrapper.UsePost){
-                unityWebRequestWrapper.CurrentUnityWebRequest = UnityWebRequest.Post (unityWebRequestWrapper.URL, unityWebRequestWrapper.PostData);
+        internal void GetOrPostOrDelete(ref UnityWebRequestWrapper unityWebRequestWrapper){
+            if(unityWebRequestWrapper.CurrentRequestState.Method.Equals(HTTPMethod.Post)){
+                unityWebRequestWrapper.CurrentUnityWebRequest = UnityWebRequest.Post (unityWebRequestWrapper.URL, unityWebRequestWrapper.CurrentRequestState.POSTData);
+            } else if(unityWebRequestWrapper.CurrentRequestState.Method.Equals(HTTPMethod.Delete)) {
+                unityWebRequestWrapper.CurrentUnityWebRequest = UnityWebRequest.Delete (unityWebRequestWrapper.URL);
             } else {
                 unityWebRequestWrapper.CurrentUnityWebRequest = UnityWebRequest.Get (unityWebRequestWrapper.URL);
-            }
+            } 
         }
 
         internal void StartWebRequests(UnityWebRequestWrapper unityWebRequestWrapper, string key)
@@ -727,7 +730,7 @@ namespace PubNubAPI
             unityWebRequestWrapper.RunTimer = true;
             //CompleteOrTimeoutEvent += WebRequestClass_CompleteEvent<T>;
             unityWebRequestWrapper.IsComplete = false;
-            GetOrPost(ref unityWebRequestWrapper);
+            GetOrPostOrDelete(ref unityWebRequestWrapper);
 
             AsyncOperation async = unityWebRequestWrapper.CurrentUnityWebRequest.Send ();
             currentWebRequests[key] = unityWebRequestWrapper;

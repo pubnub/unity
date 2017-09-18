@@ -46,6 +46,8 @@ namespace PubNubAPI
         public string AuthKey { get; set;}
         public bool Secure { get; set;}
 
+        public int MessageQueueOverflowCount =100;
+
         private int subscribeTimeout = 310;
         public int SubscribeTimeout { 
             get {

@@ -76,7 +76,10 @@ namespace PubNubAPI
             //TODO USe POST
             RequestState requestState = new RequestState ();
             requestState.RespType = PNOperationType.PNPublishOperation;
-            requestState.UsePost = UsePostMethod;
+            if(UsePostMethod){
+                requestState.Method = HTTPMethod.Post;
+            }
+            
             string jsonMessage = (publishAsIs) ? PublishMessage.ToString () : Helpers.JsonEncodePublishMsg (PublishMessage, this.PubNubInstance.PNConfig.CipherKey, this.PubNubInstance.JsonLibrary, this.PubNubInstance.PNLog);
             string jsonMetadata = string.Empty;
             if (this.Metadata!=null) {
