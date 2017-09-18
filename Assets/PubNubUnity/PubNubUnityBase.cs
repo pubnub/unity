@@ -45,7 +45,7 @@ namespace PubNubAPI
         internal Subscription SubscriptionInstance { get; set;}
         internal SubscriptionWorker<SubscribeEnvelope> SubWorker { get; set;}
         internal bool localGobj;
-        public PNLatency Latency;
+        public PNLatencyManager Latency;
 
         public PubNubUnityBase(PNConfiguration pnConfiguration, GameObject gameObjectRef, IJsonLibrary jsonLibrary){
             PNConfig = pnConfiguration;
@@ -93,7 +93,7 @@ namespace PubNubAPI
             publishMessageCounter = new Counter ();
             
             QManager = GameObjectRef.AddComponent<QueueManager> ();
-            Latency = GameObjectRef.AddComponent<PNLatency> ();
+            Latency = GameObjectRef.AddComponent<PNLatencyManager> ();
             QManager.NoOfConcurrentRequests = PNConfig.ConcurrentNonSubscribeWorkers;
         }
 

@@ -593,7 +593,7 @@ namespace PubNubAPI
             return url;
         }
 
-        private static StringBuilder AppendLatencyToURL(StringBuilder url, PNOperationType operationType, ref PNLatency latency){
+        private static StringBuilder AppendLatencyToURL(StringBuilder url, PNOperationType operationType, ref PNLatencyManager latency){
             //TODO Add delete history 
             switch(operationType){
                 case PNOperationType.PNTimeOperation:

@@ -8,7 +8,7 @@ using System.Collections;
 
 namespace PubNubAPI
 {
-    public sealed class PNLatency: MonoBehaviour {
+    public sealed class PNLatencyManager: MonoBehaviour {
         public float Time; //l_time
         public float Publish; //l_pub
         public float Presence; //l_pres
