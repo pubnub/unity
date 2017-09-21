@@ -11,7 +11,9 @@ namespace PubNubAPI
         private string ChannelGroupToAdd { get; set;}
 
         public AddChannelsToChannelGroupRequestBuilder(PubNubUnity pn): base(pn){
-            Debug.Log ("AddChannelsToGroupRequestBuilder Construct");
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PubNubInstance.PNLog.WriteToLog ("AddChannelsToGroupRequestBuilder Construct", PNLoggingMethod.LevelInfo);
+            #endif
         }
 
         public void Channels(List<string> channels){
@@ -29,7 +31,9 @@ namespace PubNubAPI
             this.Callback = callback;
 
             if((ChannelsToUse == null) || ((ChannelsToUse != null) && (ChannelsToUse.Count <= 0))){
-                Debug.Log("ChannelsToAdd null or empty");
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PubNubInstance.PNLog.WriteToLog ("ChannelsToAdd null or empty", PNLoggingMethod.LevelInfo);
+                #endif
 
                 //TODO Send callback
                 return;

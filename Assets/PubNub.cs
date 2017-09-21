@@ -98,6 +98,11 @@ namespace PubNubAPI
             return pnUnity.FetchMessages();
         }
 
+        public DeleteMessagesBuilder DeleteMessages(){
+            Debug.Log ("DeleteBuilder");
+            return pnUnity.DeleteMessages();
+        }
+
         public PublishBuilder Publish(){
             Debug.Log ("PubBuilder");
             return pnUnity.Publish();

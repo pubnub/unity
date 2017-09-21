@@ -4,21 +4,32 @@ using PubNubAPI;
 using System.Collections.Generic;
 using System;
 
+//delete
+//using UnityEngine.Networking;
+
 namespace PubNubExample
 {
     public class Example : MonoBehaviour {
          PubNub pubnub;
     	// Use this for initialization
     	void Start () {
+            /*UnityWebRequest wr = UnityWebRequest.Post ("http://localhost:8082?s=a", "sss");
+            wr.Send();*/
+
             Debug.Log ("Starting");
             PNConfiguration pnConfiguration = new PNConfiguration ();
-            pnConfiguration.SubscribeKey = "sub-c-b05d4a0c-708d-11e7-96c9-0619f8945a4f";//"demo-36";
-            pnConfiguration.PublishKey = "pub-c-94691e07-c8aa-42f9-a838-bea61ac6655e";//"demo-36";
+            pnConfiguration.SubscribeKey = "sub-c-b05d4a0c-708d-11e7-96c9-0619f8945a4f";
+            pnConfiguration.PublishKey = "pub-c-94691e07-c8aa-42f9-a838-bea61ac6655e";
+            pnConfiguration.SecretKey = "sec-c-ZmIyZjFjMjQtZTNmZC00MmIwLWFhNzUtNDUyNmIwYWU1YzRl";
+            /*pnConfiguration.SubscribeKey = "demo-36";
+            pnConfiguration.PublishKey = "demo-36";
+            pnConfiguration.SecretKey = "demo-36";*/
             pnConfiguration.Secure = true;
             pnConfiguration.CipherKey = "enigma";
             pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
             pnConfiguration.PresenceTimeout = 60;
             pnConfiguration.PresenceInterval= 30;
+            //pnConfiguration.Origin = "localhost:8082";
 
             //TODO: remove
             pnConfiguration.UUID = "PubNubUnityExample";
@@ -57,14 +68,47 @@ namespace PubNubExample
                     Debug.Log (string.Format("DateTime {0}, In Example SetPresenceState, result:", DateTime.UtcNow));
                 }
             });*/
+            pubnub.Publish().Channel("channel1").Message("test message").UsePost(true).Async((result, status) => {
+                    Debug.Log ("in Publish");
+                    if(!status.Error){
+                        Debug.Log (string.Format("DateTime {0}, In Publish Example, Timetoken: {1}", DateTime.UtcNow , result.Timetoken));
+                    } else {
+                        Debug.Log (status.Error);
+                        Debug.Log (status.ErrorData.Info);
+                    }
 
-            pubnub.SusbcribeCallback += (sender, e) => { //; //+= (pnStatus, pnMessageResut, pnPresenceEventResult) => {
+                });
+
+            pubnub.DeleteMessages().Channel("channel1").Start(15059180223219815).End(15059180231056976).Async((result, status) => {
+                Debug.Log ("in DeleteMessages");
+                if(!status.Error){
+                    Debug.Log (string.Format("DateTime {0}, In DeleteMessages Example, Timetoken: {1}", DateTime.UtcNow , result.Message));
+                } else {
+                    Debug.Log (status.Error);
+                    Debug.Log (status.ErrorData.Info);
+                }
+
+            });
+
+            /*pubnub.SusbcribeCallback += (sender, e) => { //; //+= (pnStatus, pnMessageResut, pnPresenceEventResult) => {
                 SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
 
                 Debug.Log ("In Example, SusbcribeCallback");
                 if(mea.pnStatus != null){
                     //Debug.Log ("SusbcribeCallback in status" + String.Join(", ", mea.pnStatus.AffectedChannelGroups.ToArray()) + String.Join(", ", mea.pnStatus.AffectedChannels.ToArray()));
                     PrintStatus(mea.pnStatus);
+                    if(mea.pnStatus.Category.Equals(PNStatusCategory.PNConnectedCategory)){
+                        pubnub.Publish().Channel("channel1").Message("test message").UsePost(true).Async((result, status) => {
+                            Debug.Log ("in Publish");
+                            if(!status.Error){
+                                Debug.Log (string.Format("DateTime {0}, In Publish Example, Timetoken: {1}", DateTime.UtcNow , result.Timetoken));
+                            } else {
+                                Debug.Log (status.Error);
+                                Debug.Log (status.ErrorData.Info);
+                            }
+
+                        });
+                    }
                 }
                 if(mea.pnMessageResult != null){
                     Debug.Log ("In Example, SusbcribeCallback in message" + mea.pnMessageResult.Channel + mea.pnMessageResult.Payload);
@@ -85,15 +129,10 @@ namespace PubNubExample
                     Debug.Log (string.Format("DateTime {0}, In Example, Channels: {1}", DateTime.UtcNow , (result.Channels!=null)?string.Join(",",result.Channels.ToArray()):""));
                     Debug.Log (status.Error);
 
-                });
-                pubnub.Publish().Channel("channel1").Message("test message").Async((result, status) => {
-                    Debug.Log ("in Publish");
-                    Debug.Log (string.Format("DateTime {0}, In Publish Example, Timetoken: {1}", DateTime.UtcNow , result.Timetoken));
-                    Debug.Log (status.Error);
-
-                });
+                });*/
+                
                 //herenow
-                pubnub.HereNow().Channels(listChannels).ChannelGroups(listChannelGroups).IncludeState(true).IncludeUUIDs(true).Async((result, status) => {
+                /*pubnub.HereNow().Channels(listChannels).ChannelGroups(listChannelGroups).IncludeState(true).IncludeUUIDs(true).Async((result, status) => {
                     Debug.Log ("in HereNow1");
                     Debug.Log (string.Format("DateTime {0}, In Example, Channels: {1} {2}", DateTime.UtcNow , result.TotalChannels, result.TotalOccupancy));
                     DisplayHereNowResult(result);
@@ -135,10 +174,10 @@ namespace PubNubExample
 
                 });*/
 
-            };
+            //};
 
             //Debug.Log ("PubNub");
-            pubnub.Subscribe ().SetChannelGroups (listChannelGroups).SetChannels(listChannels).WithPresence().Execute();
+            //pubnub.Subscribe ().SetChannelGroups (listChannelGroups).SetChannels(listChannels).WithPresence().Execute();
 
             Debug.Log ("before Time");
             /*pubnub.Time ().Async (new PNTimeCallback<PNTimeResult>(

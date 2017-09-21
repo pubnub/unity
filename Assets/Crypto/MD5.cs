@@ -679,22 +679,22 @@ namespace PubNubAPI
         #if UNITY_WSA || UNITY_WSA_8_1 || UNITY_WSA_10_0
         public string PubnubAccessManagerSign(string key, string data)
         {
-        string secret = key;
-        string message = data;
+            string secret = key;
+            string message = data;
 
-        var encoding = new System.Text.UTF8Encoding();
-        byte[] keyByte = encoding.GetBytes(secret);
-        byte[] messageBytes = encoding.GetBytes(message);
+            var encoding = new System.Text.UTF8Encoding();
+            byte[] keyByte = encoding.GetBytes(secret);
+            byte[] messageBytes = encoding.GetBytes(message);
 
-        //http://mycsharp.de/wbb2/thread.php?postid=3550104
-        KeyParameter paramKey = new KeyParameter(keyByte);
-        IMac mac = MacUtilities.GetMac("HMac-SHA256");
-        mac.Init(paramKey);
-        mac.Reset();
-        mac.BlockUpdate(messageBytes, 0, messageBytes.Length);
-        byte[] hashmessage = new byte[mac.GetMacSize()];
-        mac.DoFinal(hashmessage, 0);
-        return Convert.ToBase64String(hashmessage).Replace('+', '-').Replace('/', '_');
+            //http://mycsharp.de/wbb2/thread.php?postid=3550104
+            KeyParameter paramKey = new KeyParameter(keyByte);
+            IMac mac = MacUtilities.GetMac("HMac-SHA256");
+            mac.Init(paramKey);
+            mac.Reset();
+            mac.BlockUpdate(messageBytes, 0, messageBytes.Length);
+            byte[] hashmessage = new byte[mac.GetMacSize()];
+            mac.DoFinal(hashmessage, 0);
+            return Convert.ToBase64String(hashmessage).Replace('+', '-').Replace('/', '_');
         }
         #else
         public string PubnubAccessManagerSign (string key, string data)
@@ -709,7 +709,6 @@ namespace PubNubAPI
             using (var hmacsha256 = new HMACSHA256 (keyByte)) {
                 byte[] hashmessage = hmacsha256.ComputeHash (messageBytes);
                 return Convert.ToBase64String (hashmessage).Replace ('+', '-').Replace ('/', '_');
-                ;
             }
         }
         #endif

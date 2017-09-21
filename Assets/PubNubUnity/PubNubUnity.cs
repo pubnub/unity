@@ -122,6 +122,10 @@ namespace PubNubAPI
             return new FetchBuilder  (this);
         }
 
+        public DeleteMessagesBuilder DeleteMessages(){
+            return new DeleteMessagesBuilder (this);
+        }
+
         public PublishBuilder Publish(){
             Debug.Log ("PublishBuilder");
             return new PublishBuilder (this, publishMessageCounter.NextValue());

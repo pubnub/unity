@@ -21,7 +21,7 @@ namespace PubNubAPI
 
         //public string WebRequestId;
         public string WebRequestId;
-        public HTTPMethod Method;
+        public HTTPMethod httpMethod;
 
         public string POSTData = "";
 
@@ -41,7 +41,7 @@ namespace PubNubAPI
             StartRequestTicks = 0;
             EndRequestTicks = 0;
             URL = "";
-            Method = HTTPMethod.Get;
+            httpMethod = HTTPMethod.Get;
             POSTData = "";
             Timeout = 0;
             Pause = 0;

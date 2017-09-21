@@ -119,6 +119,11 @@ namespace PubNubAPI
                             fetchMessagesRequestBuilder.RaiseRunRequest(this);
 
                             break;
+                        case PNOperationType.PNDeleteMessagesOperation:
+                            DeleteMessagesRequestBuilder deleteMessagesRequestBuilder = operationParams as DeleteMessagesRequestBuilder;
+                            deleteMessagesRequestBuilder.RaiseRunRequest(this);
+
+                            break;
                         case PNOperationType.PNRemoveChannelsFromGroupOperation:
                             RemoveChannelsFromGroupRequestBuilder removeChannelsFromGroupRequestBuilder = operationParams as RemoveChannelsFromGroupRequestBuilder;
                             removeChannelsFromGroupRequestBuilder.RaiseRunRequest(this);

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace PubNubAPI
@@ -140,6 +142,74 @@ namespace PubNubAPI
         }
 
         //internal static Uri BuildPublishRequest (string channel, string message, bool storeInHistory, string metadata, uint messageCounter, int ttl, string uuid, bool ssl, string origin, string authenticationKey, string publishKey, string subscribeKey, string cipherKey, string secretKey, string pnSdkVersion)
+
+        /*internal static Uri BuildPublishRequestUsingPOST (string channel, string message, bool storeInHistory, string metadata, uint messageCounter, int ttl, bool usePost, ref PubNubUnity pnInstance, out string postData){
+            string uuid = pnInstance.PNConfig.UUID;
+            bool ssl = pnInstance.PNConfig.Secure;
+            string origin = pnInstance.PNConfig.Origin;
+            int pubnubPresenceHeartbeatInSeconds = pnInstance.PNConfig.PresenceTimeout;
+            string authenticationKey = pnInstance.PNConfig.AuthKey;
+            string pnsdkVersion = pnInstance.Version;
+            PNOperationType type = PNOperationType.PNPublishOperation;
+
+            StringBuilder postBuilder = new StringBuilder ();
+            postBuilder.AppendFormat ("seqn={0}", messageCounter.ToString ());
+            uuid = Utility.EncodeUricomponent (uuid, type, false, false);
+            postBuilder = AppendUUIDToURL(postBuilder, uuid, false);
+            
+            postBuilder.Append ((storeInHistory) ? "" : "&store=0");
+            if (ttl >= 0) {
+                postBuilder.AppendFormat ("&ttl={0}", ttl.ToString());
+            }
+
+            if (!string.IsNullOrEmpty (metadata) || metadata.Equals("\"\"")) {
+                postBuilder.AppendFormat ("&meta={0}", Utility.EncodeUricomponent (metadata, type, false, false));
+            }
+            postBuilder.AppendFormat("&message={0}", message);
+            postBuilder = AppendLatencyToURL(postBuilder, type, ref pnInstance.Latency);
+            postBuilder = AppendAuthKeyToURL(postBuilder, authenticationKey, type);
+            postBuilder = AppendPNSDKVersionToURL(postBuilder, pnsdkVersion, type);
+            
+            string signature = "0";
+            if (!string.IsNullOrEmpty(pnInstance.PNConfig.SecretKey) && (pnInstance.PNConfig.SecretKey.Length > 0)) {
+                StringBuilder stringToSign = new StringBuilder ();
+                stringToSign
+                    .Append (pnInstance.PNConfig.PublishKey)
+                    .Append ('/')
+                    .Append (pnInstance.PNConfig.SubscribeKey)
+                    .Append ('/')
+                    .Append (pnInstance.PNConfig.SecretKey)
+                    .Append ('/')
+                    .Append (channel)
+                    .Append ('/');
+
+                    //.Append (message); // 1
+
+                // Sign Message
+                signature = Utility.Md5 (stringToSign.ToString ());
+            }
+            List<string> postURL = new List<string> ();
+            postURL.Add ("publish");
+            postURL.Add (pnInstance.PNConfig.PublishKey);
+            postURL.Add (pnInstance.PNConfig.SubscribeKey);
+            postURL.Add (signature);
+            postURL.Add (channel);
+            postURL.Add ("0");
+            //postURL.Add (message);
+
+            StringBuilder sbUrl = new StringBuilder();
+            sbUrl = AddSSLAndEncodeURL<Uri>(postURL, type, ssl, origin, sbUrl);
+
+            Uri requestUri = new Uri (sbUrl.ToString ());
+            postData = postBuilder.ToString();
+
+            return requestUri;
+            Uri uri = BuildPublishRequest(channel, message, storeInHistory, metadata, messageCounter, ttl, true, ref pnInstance);
+            postData = message;
+
+            return uri;
+        }*/
+
         internal static Uri BuildPublishRequest (string channel, string message, bool storeInHistory, string metadata, uint messageCounter, int ttl, bool usePost, ref PubNubUnity pnInstance)
         {
             StringBuilder parameterBuilder = new StringBuilder ();
@@ -164,9 +234,11 @@ namespace PubNubAPI
                     .Append ('/')
                     .Append (pnInstance.PNConfig.SecretKey)
                     .Append ('/')
-                    .Append (channel)
-                    .Append ('/')
-                    .Append (message); // 1
+                    .Append (channel);
+                    if(!usePost){
+                        stringToSign.Append ('/');
+                        stringToSign.Append (message); // 1
+                    }
 
                 // Sign Message
                 signature = Utility.Md5 (stringToSign.ToString ());
@@ -180,9 +252,34 @@ namespace PubNubAPI
             url.Add (signature);
             url.Add (channel);
             url.Add ("0");
-            url.Add (message);
+            if(!usePost){
+                url.Add (message);
+            }
 
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNPublishOperation, parameterBuilder.ToString (), ref pnInstance);
+        }
+
+        internal static Uri BuildDeleteMessagesRequest (string channel, long start, long end, ref PubNubUnity pnInstance){
+            StringBuilder parameterBuilder = new StringBuilder ();
+            if (start != -1) {
+                parameterBuilder.AppendFormat ("&start={0}", start.ToString ().ToLower ());
+            }
+            if (end != -1) {
+                parameterBuilder.AppendFormat ("&end={0}", end.ToString ().ToLower ());
+            }
+            long timeStamp = Utility.TranslateDateTimeToSeconds (DateTime.UtcNow);
+            parameterBuilder.AppendFormat ("&timeStamp={0}", timeStamp.ToString());
+
+            List<string> url = new List<string> ();
+
+            url.Add ("v3");
+            url.Add ("history");
+            url.Add ("sub-key");
+            url.Add (pnInstance.PNConfig.SubscribeKey);
+            url.Add ("channel");
+            url.Add (channel);
+
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNDeleteMessagesOperation, parameterBuilder.ToString(), ref pnInstance);
         }
 
         internal static Uri BuildFetchRequest (string[] channels, long start, long end, uint count, bool reverse, bool includeToken, ref PubNubUnity pnInstance)
@@ -533,35 +630,6 @@ namespace PubNubAPI
             return BuildRestApiRequest<Uri>(url, PNOperationType.PNChannelsForGroupOperation, "", ref pnInstance);
         }
 
-        static StringBuilder AddSSLAndEncodeURL<T>(List<string> urlComponents, PNOperationType type, bool ssl, string origin, StringBuilder url)
-        {
-            // Add http or https based on SSL flag
-            if (ssl)
-            {
-                url.Append("https://");
-            }
-            else
-            {
-                url.Append("http://");
-            }
-            // Add Origin To The Request
-            url.Append(origin);
-            // Generate URL with UTF-8 Encoding
-            for (int componentIndex = 0; componentIndex < urlComponents.Count; componentIndex++)
-            {
-                url.Append("/");
-                if (type == PNOperationType.PNPublishOperation && componentIndex == urlComponents.Count - 1)
-                {
-                    url.Append(Utility.EncodeUricomponent(urlComponents[componentIndex].ToString(), type, false, false));
-                }
-                else
-                {
-                    url.Append(Utility.EncodeUricomponent(urlComponents[componentIndex].ToString(), type, true, false));
-                }
-            }
-            return url;
-        }
-
         private static StringBuilder AppendAuthKeyToURL(StringBuilder url, string authenticationKey, PNOperationType type){
             if (!string.IsNullOrEmpty (authenticationKey)) {
                 url.AppendFormat ("&auth={0}", Utility.EncodeUricomponent (authenticationKey, type, false, false));
@@ -637,6 +705,103 @@ namespace PubNubAPI
             }
             return url;
         }
+
+        static StringBuilder EncodeURL (List<string> urlComponents, PNOperationType type){
+            StringBuilder url = new StringBuilder();
+             // Generate URL with UTF-8 Encoding
+            for (int componentIndex = 0; componentIndex < urlComponents.Count; componentIndex++)
+            {
+                url.Append("/");
+                if (type == PNOperationType.PNPublishOperation && componentIndex == urlComponents.Count - 1)
+                {
+                    url.Append(Utility.EncodeUricomponent(urlComponents[componentIndex].ToString(), type, false, false));
+                }
+                else
+                {
+                    url.Append(Utility.EncodeUricomponent(urlComponents[componentIndex].ToString(), type, true, false));
+                }
+            }
+            return url;
+        }
+
+        static StringBuilder AddSSLAndOrigin(bool ssl, string origin, StringBuilder url)
+        {
+            // Add http or https based on SSL flag
+            if (ssl)
+            {
+                url.Append("https://");
+            }
+            else
+            {
+                url.Append("http://");
+            }
+            // Add Origin To The Request
+            url.Append(origin);
+           
+            return url;
+        }
+
+        static string SetParametersInOrder(Uri uri){
+            string query = uri.Query;
+            if(query.Contains("?"))
+            {
+                query = query.Substring(query.IndexOf('?') + 1);
+            }
+            //Dictionary<string, string> dictQuery = new Dictionary<string, string>();
+            List<string> lstQuery = new List<string>();
+            foreach (string qp in Regex.Split(query, "&")){
+                lstQuery.Add(qp);
+                UnityEngine.Debug.Log("qp: "+qp);
+            }
+            lstQuery.Sort();
+
+            
+            /*foreach (string vp in Regex.Split(query, "&"))
+            {
+                string[] pair = Regex.Split(vp, "=");
+                if (pair.Length == 2)
+                {
+                    dictQuery.Add(pair[0], pair[1]);
+                }
+                else
+                {
+                    dictQuery.Add(pair[0], string.Empty);
+                }
+            }
+            var list = dictQuery.Keys.ToList();
+            list.Sort();
+
+            foreach (var key in list)
+            {
+                Console.WriteLine("{0}: {1}", key, dictQuery[key]);
+            }*/
+            return string.Join("&", lstQuery.ToArray());
+        }
+
+        static string GenerateSignatureAndAddToURL(ref PubNubUnity pnInstance, Uri uri, string url){
+            if (!string.IsNullOrEmpty(pnInstance.PNConfig.SecretKey) && (pnInstance.PNConfig.SecretKey.Length > 0)) {
+                string signature = "";
+                string parameters = SetParametersInOrder(uri);
+                UnityEngine.Debug.Log("ordered parameters: "+parameters);
+
+                StringBuilder stringToSign = new StringBuilder ();
+                stringToSign
+                    .Append (pnInstance.PNConfig.SubscribeKey)
+                    .Append ('\n')
+                    .Append (pnInstance.PNConfig.PublishKey)
+                    .Append ('\n')
+                    .Append (url)
+                    .Append ('\n')
+                    .Append (parameters);
+
+                // Sign Message
+                signature = Utility.Md5 (stringToSign.ToString ());
+                PubnubCrypto pubnubCrypto = new PubnubCrypto (pnInstance.PNConfig.CipherKey, pnInstance.PNLog);
+                signature = pubnubCrypto.PubnubAccessManagerSign (pnInstance.PNConfig.SecretKey, stringToSign.ToString ());
+                return string.Format("&signature={0}", signature);
+            }
+            return "";
+        }
         
         //private static Uri BuildRestApiRequest<T> (List<string> urlComponents, PNOperationType type, string uuid, bool ssl, string origin, int pubnubPresenceHeartbeatInSeconds, string authenticationKey, string parameters, string pnsdkVersion, ref PNLatency latency)
         private static Uri BuildRestApiRequest<T> (List<string> urlComponents, PNOperationType type, string parameters, ref PubNubUnity pnInstance)
@@ -651,7 +816,11 @@ namespace PubNubAPI
             StringBuilder url = new StringBuilder ();
             uuid = Utility.EncodeUricomponent (uuid, type, false, false);
 
-            url = AddSSLAndEncodeURL<T>(urlComponents, type, ssl, origin, url);
+            url = AddSSLAndOrigin(ssl, origin, url);
+
+            string urlComponentsEncoded = EncodeURL(urlComponents, type).ToString();
+
+            url.Append(urlComponentsEncoded);
 
             switch (type) {
             case PNOperationType.PNLeaveOperation:
@@ -731,6 +900,13 @@ namespace PubNubAPI
                 url = AppendUUIDToURL(url, uuid, true);
                 url = AppendAuthKeyToURL(url, authenticationKey, type);
                 url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
+                break;
+            case PNOperationType.PNDeleteMessagesOperation:
+                url = AppendUUIDToURL (url, uuid, true);
+                url.Append (parameters);
+                url = AppendAuthKeyToURL(url, authenticationKey, type);
+                url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
+                url = url.Append(GenerateSignatureAndAddToURL(ref pnInstance, new Uri (url.ToString ()), urlComponentsEncoded));
                 break;
             case PNOperationType.PNHistoryOperation:
             case PNOperationType.PNFetchMessagesOperation:

@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine.Networking;
+using System.Text;
 
 namespace PubNubAPI
 {
@@ -703,10 +704,24 @@ namespace PubNubAPI
         }
 
         internal void GetOrPostOrDelete(ref UnityWebRequestWrapper unityWebRequestWrapper){
-            if(unityWebRequestWrapper.CurrentRequestState.Method.Equals(HTTPMethod.Post)){
-                unityWebRequestWrapper.CurrentUnityWebRequest = UnityWebRequest.Post (unityWebRequestWrapper.URL, unityWebRequestWrapper.CurrentRequestState.POSTData);
-            } else if(unityWebRequestWrapper.CurrentRequestState.Method.Equals(HTTPMethod.Delete)) {
+            if(unityWebRequestWrapper.CurrentRequestState.httpMethod.Equals(HTTPMethod.Post)){
+                unityWebRequestWrapper.CurrentUnityWebRequest = new UnityWebRequest(unityWebRequestWrapper.URL);
+                unityWebRequestWrapper.CurrentUnityWebRequest.uploadHandler   = new UploadHandlerRaw(Encoding.UTF8.GetBytes(unityWebRequestWrapper.CurrentRequestState.POSTData));
+                //unityWebRequestWrapper.CurrentUnityWebRequest.uploadHandler   = new UploadHandlerRaw(Encoding.UTF8.GetBytes("\"text message\""));
+                unityWebRequestWrapper.CurrentUnityWebRequest.downloadHandler = new DownloadHandlerBuffer();
+                //UnityWebRequest.Post (unityWebRequestWrapper.URL, unityWebRequestWrapper.CurrentRequestState.POSTData);
+                unityWebRequestWrapper.CurrentUnityWebRequest.method = UnityWebRequest.kHttpVerbPOST;
+                unityWebRequestWrapper.CurrentUnityWebRequest.SetRequestHeader("Content-Type","application/json"); //x-www-form-urlencoded");///application/json");
+                
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PNLog.WriteToLog (string.Format ("POST Data : {1} \nURL:{0}", unityWebRequestWrapper.URL, unityWebRequestWrapper.CurrentRequestState.POSTData), PNLoggingMethod.LevelInfo);
+                #endif
+                
+            } else if(unityWebRequestWrapper.CurrentRequestState.httpMethod.Equals(HTTPMethod.Delete)) {
                 unityWebRequestWrapper.CurrentUnityWebRequest = UnityWebRequest.Delete (unityWebRequestWrapper.URL);
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PNLog.WriteToLog (string.Format ("Delete \nURL:{0}", unityWebRequestWrapper.URL), PNLoggingMethod.LevelInfo);
+                #endif
             } else {
                 unityWebRequestWrapper.CurrentUnityWebRequest = UnityWebRequest.Get (unityWebRequestWrapper.URL);
             } 
@@ -737,6 +752,7 @@ namespace PubNubAPI
 
             #if (ENABLE_PUBNUB_LOGGING)
             this.PNLog.WriteToLog (string.Format ("StartWebRequestsByName: {0} running",  unityWebRequestWrapper.CurrentRequestType.ToString ()), PNLoggingMethod.LevelInfo);
+            this.PNLog.WriteToLog (string.Format ("StartWebRequests POST Data : {1} \nURL : {0}", unityWebRequestWrapper.URL, unityWebRequestWrapper.CurrentRequestState.POSTData), PNLoggingMethod.LevelInfo);
             #endif
             
 
@@ -928,21 +944,26 @@ namespace PubNubAPI
                     //SetComplete (cp.crt);
                     string message = "";
                     bool isError = false;
+                    if(unityWebRequestWrapper.CurrentUnityWebRequest.downloadHandler != null){
+                        message = unityWebRequestWrapper.CurrentUnityWebRequest.downloadHandler.text;
+                    }
 
-                    if(!unityWebRequestWrapper.CurrentUnityWebRequest.isError) {
+                    if((!unityWebRequestWrapper.CurrentUnityWebRequest.isNetworkError) 
+                        && (!unityWebRequestWrapper.CurrentUnityWebRequest.isHttpError))
+                    {
                         #if (ENABLE_PUBNUB_LOGGING)
                         this.PNLog.WriteToLog (string.Format ("ProcessResponse: WWW Sub {0}\n Message: {1}\n URL: {2}", unityWebRequestWrapper.CurrentRequestType.ToString (), unityWebRequestWrapper.CurrentUnityWebRequest.error, unityWebRequestWrapper.URL), PNLoggingMethod.LevelInfo);
                         #endif
                         isError = false;
-                        message = unityWebRequestWrapper.CurrentUnityWebRequest.downloadHandler.text;
+                        
                     } else {
                         #if (ENABLE_PUBNUB_LOGGING)
-                        this.PNLog.WriteToLog (string.Format ("ProcessResponse: WWW Sub {0}\n Error: {1}\n, text: {2}\n URL: {3}", unityWebRequestWrapper.CurrentRequestType.ToString (), unityWebRequestWrapper.CurrentUnityWebRequest.error, unityWebRequestWrapper.CurrentUnityWebRequest.downloadHandler.text, unityWebRequestWrapper.URL), PNLoggingMethod.LevelInfo);
+                        this.PNLog.WriteToLog (string.Format ("ProcessResponse: WWW Sub {0}\n Error: {1},\n text: {2}\n URL: {3}", unityWebRequestWrapper.CurrentRequestType.ToString (), unityWebRequestWrapper.CurrentUnityWebRequest.error, message, unityWebRequestWrapper.URL), PNLoggingMethod.LevelInfo);
                         #endif
-                        message = string.Format ("{0}\"Error\": \"{1}\", \"Description\": {2}{3}", "{", unityWebRequestWrapper.CurrentUnityWebRequest.error, unityWebRequestWrapper.CurrentUnityWebRequest.downloadHandler.text, "}");
+                        message = string.Format ("{0}\"Error\": \"{1}\", \"Description\": {2}{3}", "{", unityWebRequestWrapper.CurrentUnityWebRequest.error, message, "}");
                         isError = true;
                     } 
-                    Debug.Log(message);
+                    Debug.Log("message:" + message);
                     
                     if (unityWebRequestWrapper.CurrentRequestState != null) {
                         unityWebRequestWrapper.CurrentRequestState.EndRequestTicks = DateTime.UtcNow.Ticks;
@@ -950,7 +971,7 @@ namespace PubNubAPI
                         unityWebRequestWrapper.CurrentRequestState.URL = unityWebRequestWrapper.CurrentUnityWebRequest.url;                    
 
                         #if (ENABLE_PUBNUB_LOGGING)
-                        this.PNLog.WriteToLog (string.Format ("ProcessResponse: WWW Sub request2 {0} {1}", unityWebRequestWrapper.CurrentRequestState.RespType, unityWebRequestWrapper.CurrentRequestType), PNLoggingMethod.LevelInfo);
+                        this.PNLog.WriteToLog (string.Format ("ProcessResponse: WWW Sub request2 {0} \n{1} \nresponseCode: {2}", unityWebRequestWrapper.CurrentRequestState.RespType, unityWebRequestWrapper.CurrentRequestType, unityWebRequestWrapper.CurrentRequestState.ResponseCode), PNLoggingMethod.LevelInfo);
                         #endif
                     } 
                     #if (ENABLE_PUBNUB_LOGGING)

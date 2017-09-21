@@ -21,10 +21,10 @@ namespace PubNubAPI
             }
         }
 
-        public string SubscribeKey { get; set;}
-        public string PublishKey { get; set;}
-        public string SecretKey { get; set;}
-        public string CipherKey { get; set;}
+        public string SubscribeKey = "";
+        public string PublishKey = "";
+        public string SecretKey = "";
+        public string CipherKey = "";
         private string uuid;
         public string UUID { 
             get{
