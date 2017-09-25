@@ -24,31 +24,28 @@ namespace PubNubAPI
             this.HistoryChannel = channel;
         }
 
-        public DeleteMessagesRequestBuilder(PubNubUnity pn): base(pn){
-            Debug.Log ("DeleteRequestBuilder Construct");
+        public DeleteMessagesRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNDeleteMessagesOperation){
         }
 
         #region IPubNubBuilder implementation
 
         public void Async(Action<PNDeleteMessagesResult, PNStatus> callback)
         {
-            //TODO: Add history channel check
             base.Callback = callback;
-            Debug.Log ("DeleteRequestBuilder Async");
-
             if(string.IsNullOrEmpty(this.HistoryChannel)){
-                Debug.Log("DeleteRequestBuilder HistoryChannel is empty");
+                PNStatus pnStatus = base.CreateErrorResponseFromMessage("DeleteHistory Channel is empty", null, PNStatusCategory.PNBadRequestCategory);
+                Callback(null, pnStatus);                
 
                 return;
             }
 
-            base.Async(callback, PNOperationType.PNDeleteMessagesOperation, PNCurrentRequestType.NonSubscribe, this);
+            base.Async(this);
         }
 
          protected override void RunWebRequest(QueueManager qm){
 
             RequestState requestState = new RequestState ();
-            requestState.RespType = PNOperationType.PNDeleteMessagesOperation;
+            requestState.OperationType = base.OperationType;
             requestState.httpMethod = HTTPMethod.Delete;
 
             Debug.Log ("DeleteRequestBuilder Channel: " + this.HistoryChannel);
@@ -61,7 +58,6 @@ namespace PubNubAPI
                 this.EndTime,
                 ref this.PubNubInstance
             );
-            this.PubNubInstance.PNLog.WriteToLog(string.Format("RunDeleteRequestBuilder {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
 
         }
@@ -75,35 +71,41 @@ namespace PubNubAPI
             PNDeleteMessagesResult pnDeleteMessagesResult = new PNDeleteMessagesResult();
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
             PNStatus pnStatus = new PNStatus();
-            if (dictionary!=null && dictionary.ContainsKey("error") && dictionary["error"].Equals(true)){
-                pnDeleteMessagesResult = null;
-                pnStatus.Error = true;
-                //TODO create error data
-            } else if(dictionary==null) {
-                object[] c = deSerializedResult as object[];
-                
-                if (c != null) {
-                    string status = "";
-                    string statusCode = "0";
-                    if(c.Length > 0){
-                        statusCode = c[0].ToString();
-                    }
-                    if(c.Length > 1){
-                        status = c[1].ToString();
-                    }
-                    if(statusCode.Equals("0")){
-                        pnStatus.Error = true;
-                    } else {
-                        pnStatus.Error = false;
-                        pnDeleteMessagesResult.Message = status;
-                    }
+            if(dictionary != null) {
+                string message = Utility.ReadMessageFromResponseDictionary(dictionary, "message");
+                if(Utility.CheckDictionaryForError(dictionary, "error")){
+                    pnDeleteMessagesResult = null;
+                    pnStatus = base.CreateErrorResponseFromMessage(message, requestState, PNStatusCategory.PNUnknownCategory);
                 } else {
-                    pnStatus.Error = true;
+                    object[] c = deSerializedResult as object[];
+                
+                    if (c != null) {
+                        string status = "";
+                        string statusCode = "0";
+                        if(c.Length > 0){
+                            statusCode = c[0].ToString();
+                        }
+                        if(c.Length > 1){
+                            status = c[1].ToString();
+                        }
+                        if(statusCode.Equals("0")){
+                            pnDeleteMessagesResult = null;
+                            pnStatus = base.CreateErrorResponseFromMessage(message, requestState, PNStatusCategory.PNUnknownCategory);                            
+                        } else {
+                            pnStatus.Error = false;
+                            pnDeleteMessagesResult.Message = status;
+                        }
+                    } else {
+                        pnDeleteMessagesResult = null;
+                        pnStatus = base.CreateErrorResponseFromMessage(message, requestState, PNStatusCategory.PNUnknownCategory);                            
+                    }
                 }
             } else {
                 pnDeleteMessagesResult = null;
-                pnStatus.Error = true;
+                pnStatus = base.CreateErrorResponseFromMessage("Response dictionary is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
+
             }
+            
             Callback(pnDeleteMessagesResult, pnStatus);
 
         }

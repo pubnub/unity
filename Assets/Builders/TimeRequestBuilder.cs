@@ -8,8 +8,7 @@ namespace PubNubAPI
     public class TimeRequestBuilder: PubNubNonSubBuilder<TimeRequestBuilder, PNTimeResult>, IPubNubNonSubscribeBuilder<TimeRequestBuilder, PNTimeResult>
     {      
         //protected Action<PNTimeResult, PNStatus> Callback;  
-        public TimeRequestBuilder(PubNubUnity pn):base(pn){
-
+        public TimeRequestBuilder(PubNubUnity pn):base(pn, PNOperationType.PNTimeOperation){
         }
         
         #region IPubNubBuilder implementation
@@ -18,13 +17,13 @@ namespace PubNubAPI
         {
             this.Callback = callback;
             Debug.Log ("TimeBuilder Async");
-            base.Async(callback, PNOperationType.PNTimeOperation, PNCurrentRequestType.NonSubscribe, this);
+            base.Async(this);
         }
         #endregion
 
         protected override void RunWebRequest(QueueManager qm){
             RequestState requestState = new RequestState ();
-            requestState.RespType = PNOperationType.PNTimeOperation;
+            requestState.OperationType = OperationType;
             
             Uri request = BuildRequests.BuildTimeRequest(
                 ref this.PubNubInstance
@@ -39,17 +38,20 @@ namespace PubNubAPI
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             Int64[] c = deSerializedResult as Int64[];
             PNTimeResult pnTimeResult = new PNTimeResult();
-            
+            PNStatus pnStatus = new PNStatus();
             if ((c != null) && (c.Length > 0)) {
                 pnTimeResult.TimeToken = c [0];
 
-                Callback(pnTimeResult, new PNStatus());
+                Callback(pnTimeResult, pnStatus);
                 
             } else {
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PubNubInstance.PNLog.WriteToLog(string.Format("CreatePubNubResponse (c == null) || (c.Length < 0) {0}", deSerializedResult.ToString()), PNLoggingMethod.LevelInfo);
                 #endif
-                CreateErrorResponse(PNStatusCategory.PNMalformedResponseCategory, null, true, PNLoggingMethod.LevelError, null);
+                pnTimeResult = null;
+                pnStatus.Error = true;
+                pnStatus = base.CreateErrorResponseFromMessage("Response is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
+
             }
             
         }

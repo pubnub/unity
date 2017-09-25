@@ -8,7 +8,7 @@ namespace PubNubAPI
 {
     public class FetchMessagesRequestBuilder: PubNubNonSubBuilder<FetchMessagesRequestBuilder, PNFetchMessagesResult>, IPubNubNonSubscribeBuilder<FetchMessagesRequestBuilder, PNFetchMessagesResult>
     {      
-        public FetchMessagesRequestBuilder(PubNubUnity pn):base(pn){
+        public FetchMessagesRequestBuilder(PubNubUnity pn):base(pn, PNOperationType.PNFetchMessagesOperation){
 
         }
 
@@ -68,21 +68,20 @@ namespace PubNubAPI
         public void Async(Action<PNFetchMessagesResult, PNStatus> callback)
         {
             this.Callback = callback;
-            Debug.Log ("FetchMessagesRequestBuilder Async");
             if((this.ChannelsToUse == null) || ((this.ChannelsToUse != null) && (this.ChannelsToUse.Count <= 0))){
-                Debug.Log("FetchMessagesRequestBuilder HistoryChannel is null or empty");
+                PNStatus pnStatus = base.CreateErrorResponseFromMessage("HistoryChannel is null or empty", null, PNStatusCategory.PNBadRequestCategory);
+                Callback(null, pnStatus);
 
-                //TODO Send callback
                 return;
             }
 
-            base.Async(callback, PNOperationType.PNFetchMessagesOperation, PNCurrentRequestType.NonSubscribe, this);
+            base.Async(this);
         }
         #endregion
 
         protected override void RunWebRequest(QueueManager qm){
             RequestState requestState = new RequestState ();
-            requestState.RespType = PNOperationType.PNFetchMessagesOperation;
+            requestState.OperationType = base.OperationType;
             
             Debug.Log ("FetchMessagesRequestBuilder Channel: " + this.ChannelsToUse);
             Debug.Log ("FetchMessagesRequestBuilder Channel: " + this.StartTime);
@@ -116,7 +115,6 @@ namespace PubNubAPI
                 this.IncludeTimetokenInHistory,
                 ref this.PubNubInstance
             );
-            this.PubNubInstance.PNLog.WriteToLog(string.Format("Run PNFetchMessagesResult {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
 
         }
@@ -127,33 +125,37 @@ namespace PubNubAPI
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             //{"status": 200, "error": false, "error_message": "", "channels": {"channel2":[{"message":{"text":"hey"},"timetoken":"15011678669001834"}],"channel1":[{"message":{"text":"hey"},"timetoken":"15011678623670911"}]}}
             PNFetchMessagesResult pnFetchMessagesResult = new PNFetchMessagesResult();
+            PNStatus pnStatus = new PNStatus();
             try{
                 Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
-                PNStatus pnStatus = new PNStatus();
-                if (dictionary!=null && dictionary.ContainsKey("error") && dictionary["error"].Equals(true)){
-                    pnFetchMessagesResult = null;
-                    pnStatus.Error = true;
-                    object objErrorMessage;
-                    dictionary.TryGetValue("error_message", out objErrorMessage);
-                    //TODO create error data
-                } else if(dictionary!=null) {
-                    object objChannelsDict;
-                    dictionary.TryGetValue("channels", out objChannelsDict);
-                    if(objChannelsDict!=null){
-                        Dictionary<string, List<PNMessageResult>> channelsResult;
-                        pnStatus.Error = CreateFetchMessagesResult(objChannelsDict, out channelsResult);
-                        
-                        pnFetchMessagesResult.Channels = channelsResult;
+                
+                if(dictionary != null) {
+                    string message = Utility.ReadMessageFromResponseDictionary(dictionary, "error_message");
+                    if(Utility.CheckDictionaryForError(dictionary, "error")){
+                        pnFetchMessagesResult = null;
+                        pnStatus = base.CreateErrorResponseFromMessage(message, requestState, PNStatusCategory.PNUnknownCategory);
+                    } else {
+                        object objChannelsDict;
+                        dictionary.TryGetValue("channels", out objChannelsDict);
+                        if(objChannelsDict != null){
+                            Dictionary<string, List<PNMessageResult>> channelsResult;
+                            if(!CreateFetchMessagesResult(objChannelsDict, out channelsResult)){
+                                pnFetchMessagesResult = null;
+                                pnStatus = base.CreateErrorResponseFromMessage("channelsResult dictionary is null", requestState, PNStatusCategory.PNUnknownCategory);
+                            } else {
+                                pnFetchMessagesResult.Channels = channelsResult;
+                            }
+                        }
                     }
                 } else {
                     pnFetchMessagesResult = null;
-                    pnStatus.Error = true;
+                    pnStatus = base.CreateErrorResponseFromMessage("Response dictionary is null", requestState, PNStatusCategory.PNUnknownCategory);
                 }
-                Callback(pnFetchMessagesResult, pnStatus);
             } catch (Exception ex) {
-                Debug.Log(ex.ToString());
-                //throw ex;
+                pnFetchMessagesResult = null;
+                pnStatus = base.CreateErrorResponseFromException(ex, requestState, PNStatusCategory.PNUnknownCategory);
             }
+            Callback(pnFetchMessagesResult, pnStatus);
         }
         
         protected bool CreateFetchMessagesResult(object objChannelsDict, out Dictionary<string, List<PNMessageResult>> channelsResult ){
@@ -198,9 +200,9 @@ namespace PubNubAPI
                     }
                     channelsResult.Add(channelName, lstMessageResult);
                 }
-                return false;
+                return true;
             }
-            return true; 
+            return false; 
         }
     }
 }

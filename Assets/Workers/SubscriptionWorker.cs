@@ -503,7 +503,7 @@ namespace PubNubAPI
                 //RequestState<SubscribeEnvelope> requestState = new RequestState<SubscribeEnvelope> ();
                 RequestState requestState = new RequestState ();
                 //requestState.ChannelEntities = channelEntities;
-                requestState.RespType = PNOperationType.PNSubscribeOperation;
+                requestState.OperationType = PNOperationType.PNSubscribeOperation;
                 requestState.URL = requestUrl.OriginalString; 
                 requestState.Timeout = PubNubInstance.PNConfig.SubscribeTimeout;
                 requestState.Pause = 0;
@@ -598,7 +598,7 @@ namespace PubNubAPI
                         resultSubscribeEnvelope = ParseReceiedJSONV2 (jsonString);
                     
                     //resultSubscribeEnvelope.Messages
-                        switch (cea.PubNubRequestState.RespType) {
+                        switch (cea.PubNubRequestState.OperationType) {
                         case PNOperationType.PNSubscribeOperation:
                         case PNOperationType.PNPresenceOperation:
                             ProcessResponse (ref resultSubscribeEnvelope, cea.PubNubRequestState);

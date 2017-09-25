@@ -128,7 +128,7 @@ namespace PubNubAPI
                     );
 
                     RequestState requestState = new RequestState ();
-                    requestState.RespType = PNOperationType.PNPresenceHeartbeatOperation;
+                    requestState.OperationType = PNOperationType.PNPresenceHeartbeatOperation;
                     requestState.URL = request.OriginalString; 
                     requestState.Timeout = PubNubInstance.PNConfig.NonSubscribeTimeout;
                     requestState.Pause = pauseTime;

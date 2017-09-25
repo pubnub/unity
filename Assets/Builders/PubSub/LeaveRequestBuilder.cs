@@ -7,7 +7,7 @@ namespace PubNubAPI
 {
     public class LeaveRequestBuilder: PubNubNonSubBuilder<LeaveRequestBuilder, PNLeaveRequestResult>, IPubNubNonSubscribeBuilder<LeaveRequestBuilder, PNLeaveRequestResult>
     {      
-        public LeaveRequestBuilder(PubNubUnity pn):base(pn){
+        public LeaveRequestBuilder(PubNubUnity pn):base(pn, PNOperationType.PNLeaveOperation){
 
         }
 
@@ -24,15 +24,13 @@ namespace PubNubAPI
         public void Async(Action<PNLeaveRequestResult, PNStatus> callback)
         {
             this.Callback = callback;
-            Debug.Log ("LeaveRequestBuilder Async");
-
-            base.Async(callback, PNOperationType.PNLeaveOperation, PNCurrentRequestType.NonSubscribe, this);
+            base.Async(this);
         }
         #endregion
 
         protected override void RunWebRequest(QueueManager qm){
             RequestState requestState = new RequestState ();
-            requestState.RespType = PNOperationType.PNLeaveOperation;
+            requestState.OperationType = OperationType;
 
             string channels = "";
             if(ChannelsToUse!= null){
@@ -53,7 +51,7 @@ namespace PubNubAPI
 
             List<ChannelEntity> newChannelEntities;
             bool channelsOrChannelGroupsAdded = this.PubNubInstance.SubscriptionInstance.RemoveDuplicatesCheckAlreadySubscribedAndGetChannels(
-                requestState.RespType,
+                OperationType,
                 ChannelsToUse,
                 ChannelGroupsToUse,
                 true,
@@ -82,7 +80,6 @@ namespace PubNubAPI
                     channelGroups,
                     ref this.PubNubInstance
                 );
-                this.PubNubInstance.PNLog.WriteToLog(string.Format("Run PNLeaveRequestResult {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
                 base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
 
                 //Remove the valid channels from subscribe list for unsubscribe
@@ -103,20 +100,20 @@ namespace PubNubAPI
             PNLeaveRequestResult pnLeaveRequestResult = new PNLeaveRequestResult();
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
             PNStatus pnStatus = new PNStatus();
-            if (dictionary!=null && dictionary.ContainsKey("error") && dictionary["error"].Equals(true)){
-                pnLeaveRequestResult = null;
-                pnStatus.Error = true;
-                //TODO create error data
-            } else if(dictionary!=null) {
-                object objMessage;
-                dictionary.TryGetValue("message", out objMessage);
-                if(objMessage!=null){
-                    pnLeaveRequestResult.Message = objMessage.ToString();
+            if(dictionary != null) {
+                string message = Utility.ReadMessageFromResponseDictionary(dictionary, "message");
+                if(Utility.CheckDictionaryForError(dictionary, "error")){
+                    pnLeaveRequestResult = null;
+                    pnStatus = base.CreateErrorResponseFromMessage(message, requestState, PNStatusCategory.PNUnknownCategory);
+                } else {
+                    pnLeaveRequestResult.Message = message;
                 }
             } else {
                 pnLeaveRequestResult = null;
-                pnStatus.Error = true;
-            }
+                pnStatus = base.CreateErrorResponseFromMessage("Response dictionary is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
+
+            }            
+            
             Callback(pnLeaveRequestResult, pnStatus);
         }
         
@@ -127,11 +124,14 @@ namespace PubNubAPI
                 string channelToBeRemoved = ce.ChannelID.ChannelOrChannelGroupName;
                 //PubnubChannelCallback<T> channelCallback = ce.ChannelParams.Callbacks as PubnubChannelCallback<T>;
                 if (this.PubNubInstance.SubscriptionInstance.Delete (ce)) {
-                    string jsonString = string.Format ("{0} Unsubscribed from {1}", (ce.ChannelID.IsPresenceChannel) ? "Presence" : "", channelToBeRemoved.Replace (Utility.PresenceChannelSuffix, ""));
+                    string message = string.Format ("{0} Unsubscribed from {1}", (ce.ChannelID.IsPresenceChannel) ? "Presence" : "", channelToBeRemoved.Replace (Utility.PresenceChannelSuffix, ""));
                     //List<object> result = Helpers.CreateJsonResponse (jsonString, channelToBeRemoved.Replace (Utility.PresenceChannelSuffix, ""), JsonPluggableLibrary);
                     #if (ENABLE_PUBNUB_LOGGING)
-                    this.PubNubInstance.PNLog.WriteToLog (string.Format ("RemoveUnsubscribedChannelsAndDeleteUserState: JSON response={0}", jsonString), PNLoggingMethod.LevelInfo);
+                    this.PubNubInstance.PNLog.WriteToLog (string.Format ("RemoveUnsubscribedChannelsAndDeleteUserState: JSON response={0}", message), PNLoggingMethod.LevelInfo);
                     #endif
+                    PNStatus pnStatus = base.CreateErrorResponseFromMessage(message, null, PNStatusCategory.PNDisconnectedCategory);
+                    Callback(null, pnStatus);
+
                     /* PubnubCallbacks.GoToCallback<T> (result, channelCallback.DisconnectCallback, JsonPluggableLibrary);*/
                 } else {
                     string message = string.Format("Unsubscribe Error. Please retry the unsubscribe operation. channel{0}", channelToBeRemoved);
@@ -140,6 +140,8 @@ namespace PubNubAPI
                     this.PubNubInstance.PNLog.WriteToLog(string.Format("RemoveUnsubscribedChannelsAndDeleteUserState: channel={0} unsubscribe error", channelToBeRemoved), PNLoggingMethod.LevelInfo);
                     #endif
                     /*PubnubCallbacks.CallErrorCallback<T>(message, channelCallback.ErrorCallback,errorType, PubnubErrorSeverity.Critical, PubnubErrorLevel);*/
+                    PNStatus pnStatus = base.CreateErrorResponseFromMessage(message, null, PNStatusCategory.PNUnknownCategory);
+                    Callback(null, pnStatus);
                 }
             }
         }

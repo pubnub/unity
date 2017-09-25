@@ -5,8 +5,7 @@ namespace PubNubAPI
 {
     public class PNSetStateResult: PNResult
     {
-        public int TotalChannels  { get; set;}
-        public int TotalOccupancy  { get; set;}
+        public Dictionary<string, object> StateByChannels  { get; set;}
         //public Dictionary<string, PNHereNowChannelData> Channels { get; set;}
         public PNSetStateResult ()
         {

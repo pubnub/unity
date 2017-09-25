@@ -56,6 +56,23 @@ namespace PubNubAPI
         }
 
         public void Execute(){
+
+            if((this.Channels.Count <= 0) && (this.ChannelGroups.Count <= 0)){
+                PNStatus pnStatus = Helpers.CreatePNStatus(
+                    PNStatusCategory.PNUnknownCategory,
+                    "Both Channels and ChannelGroups cannot be empty",
+                    null,
+                    true,                
+                    PNOperationType.PNSubscribeOperation,
+                    this.Channels,
+                    this.ChannelGroups,
+                    null,
+                    PubNubInstance
+                );
+
+                PubNubInstance.SubWorker.CreateEventArgsAndRaiseEvent(pnStatus);
+            }
+
             List<ChannelEntity> subscribedChannels = this.PubNubInstance.SubscriptionInstance.AllSubscribedChannelsAndChannelGroups;
             List<ChannelEntity> newChannelEntities;
             List<string> rawChannels = this.Channels;
@@ -73,7 +90,9 @@ namespace PubNubAPI
             #if (ENABLE_PUBNUB_LOGGING)
             else {
                 //TODO raise duplicate event
+                #if (ENABLE_PUBNUB_LOGGING)
                 this.PubNubInstance.PNLog.WriteToLog (string.Format ("MultiChannelSubscribeInit: channelsOrChannelGroupsAdded {1}", channelsOrChannelGroupsAdded.ToString ()), PNLoggingMethod.LevelInfo);
+                #endif
 
                 PNStatus pnStatus = Helpers.CreatePNStatus(
                     PNStatusCategory.PNUnknownCategory,

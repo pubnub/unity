@@ -37,7 +37,9 @@ namespace PubNubAPI
                     jsonLibrary = value;
                 } else {
                     jsonLibrary = JSONSerializer.JsonLibrary(this);
+                    #if (ENABLE_PUBNUB_LOGGING)
                     this.PNLog.WriteToLog ("Missing or Incorrect JsonLibrary value, using default", PNLoggingMethod.LevelWarning);
+                    #endif
                 }
             }
         }

@@ -14,8 +14,7 @@ namespace PubNubAPI
         private string uuid { get; set;}
         private Dictionary<string, object> UserState { get; set;}
 
-        public SetStateRequestBuilder(PubNubUnity pn): base(pn){
-            Debug.Log ("PNSetStateResult Construct");
+        public SetStateRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNSetStateOperation){
         }
 
         public void UUID(string uuid){
@@ -38,13 +37,14 @@ namespace PubNubAPI
         public void Async(Action<PNSetStateResult, PNStatus> callback)
         {
             this.Callback = callback;
-            //validate state here
+            //TODO validate state here
             try{
                 if(UserState!=null){
                     Type t = UserState.GetType();
                     bool isDict = t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Dictionary<,>);
                     if(!isDict){
-                        throw new MissingMemberException ("State is not of type Dictionary<,>");
+                        PNStatus pnStatus = base.CreateErrorResponseFromMessage("State is not of type Dictionary<,>", null, PNStatusCategory.PNBadRequestCategory);
+                        Callback(null, pnStatus);
                     } else {
                         //string userState = "";
 
@@ -58,28 +58,25 @@ namespace PubNubAPI
                             //out userState, 
                             out ChannelEntities
                         )) {
-                            Debug.Log ("PNSetStateResult Async");
-                            base.Async(callback, PNOperationType.PNSetStateOperation, PNCurrentRequestType.NonSubscribe, this);
+                            base.Async(this);
 
                             //SharedSetUserState(ChannelsForState, ChannelGroupsForState, channelEntities, uuid, UserState);
                         } else {
-                            Debug.Log ("PNSetStateResult Else");
+                            PNStatus pnStatus = base.CreateErrorResponseFromMessage("State not changed", null, PNStatusCategory.PNUnknownCategory);
+                            Callback(null, pnStatus);
                         }
                     }
-
                 }
-
             } catch (Exception ex){
-                Debug.Log(ex.ToString());
+                PNStatus pnStatus = base.CreateErrorResponseFromException(ex, null, PNStatusCategory.PNUnknownCategory);
+                Callback(null, pnStatus);
             }
-            
-
         }
         #endregion
 
         protected override void RunWebRequest(QueueManager qm){
             RequestState requestState = new RequestState ();
-            requestState.RespType = PNOperationType.PNWhereNowOperation;
+            requestState.OperationType = PNOperationType.PNWhereNowOperation;
 
             string channels = "";
             if((ChannelsToUse != null) && (ChannelsToUse.Count>0)){
@@ -114,7 +111,6 @@ namespace PubNubAPI
                 uuid,
                 ref this.PubNubInstance
             );
-            this.PubNubInstance.PNLog.WriteToLog(string.Format("Run PNSetStateResult {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }
 
@@ -130,10 +126,8 @@ namespace PubNubAPI
             } else {
                 stateChanged = this.PubNubInstance.SubscriptionInstance.UpdateOrAddUserStateOfEntity (ref ce, userState, edit);
                 if (!stateChanged) {
-                    string message = "No change in User State";
-
-                    //PubnubCallbacks.CallErrorCallback<T> (ce, message,
-                      //  PubnubErrorCode.UserStateUnchanged, PubnubErrorSeverity.Info, errorLevel);
+                    PNStatus pnStatus = base.CreateErrorResponseFromMessage("No change in User State", null, PNStatusCategory.PNUnknownCategory);
+                    Callback(null, pnStatus);
                 } else {
                     channelEntities.Add (ce);
                 }
@@ -181,43 +175,48 @@ namespace PubNubAPI
 
             //TODO read all values.
             
-            PNSetStateResult pnGetStateResult = new PNSetStateResult();
+            PNSetStateResult pnSetStateResult = new PNSetStateResult();
             //pnGetStateResult
             
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
             PNStatus pnStatus = new PNStatus();
-
-            if (dictionary!=null && dictionary.ContainsKey("error") && dictionary["error"].Equals(true)){
-                pnGetStateResult = null;
-                pnStatus.Error = true;
-                //TODO create error data
-            } else if(dictionary!=null) {
-                string log = "";
-                object objPayload;
-                dictionary.TryGetValue("payload", out objPayload);
-
-                if(objPayload!=null){
-                    Dictionary<string, object> payload = objPayload as Dictionary<string, object>;
-                    object objChannelsDict;
-                    payload.TryGetValue("channels", out objChannelsDict);
-                    //TODO NO CG
-                    //payload.TryGetValue("channelGroups", out objChannelsDict);
-
-                    if(objChannelsDict!=null){
-                        Dictionary<string, object> channelsDict = objPayload as Dictionary<string, object>;
-                        foreach(KeyValuePair<string, object> kvp in channelsDict){
-                            Debug.Log("KVP:" + kvp.Key + kvp.Value);
-                        }
-                    } 
-               
+            if(dictionary != null) {
+                string message = Utility.ReadMessageFromResponseDictionary(dictionary, "message");
+                if(Utility.CheckDictionaryForError(dictionary, "error")){
+                    pnSetStateResult = null;
+                    pnStatus = base.CreateErrorResponseFromMessage(message, requestState, PNStatusCategory.PNUnknownCategory);
                 } else {
-                    pnStatus.Error = true;
+                    object objPayload;
+                    dictionary.TryGetValue("payload", out objPayload);
+
+                    if(objPayload!=null){
+                        Dictionary<string, object> payload = objPayload as Dictionary<string, object>;
+                        object objChannelsDict;
+                        payload.TryGetValue("channels", out objChannelsDict);
+                        //TODO NO CG
+                        //payload.TryGetValue("channelGroups", out objChannelsDict);
+
+                        if(objChannelsDict!=null){
+                            Dictionary<string, object> channelsDict = objPayload as Dictionary<string, object>;
+                            foreach(KeyValuePair<string, object> kvp in channelsDict){
+                                Debug.Log("KVP:" + kvp.Key + kvp.Value);
+                            }
+                            pnSetStateResult.StateByChannels = channelsDict;
+                        } else {
+                            pnSetStateResult = null;
+                            pnStatus = base.CreateErrorResponseFromMessage("channelsDict dictionary is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
+                        }
+                
+                    } else {
+                        pnSetStateResult = null;
+                        pnStatus = base.CreateErrorResponseFromMessage("Payload dictionary is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
+                    }
                 }
             } else {
-                pnGetStateResult = null;
-                pnStatus.Error = true;
+                pnSetStateResult = null;
+                pnStatus = base.CreateErrorResponseFromMessage("Response dictionary is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
             }
-            Callback(pnGetStateResult, pnStatus);
+            Callback(pnSetStateResult, pnStatus);
         }
        
     }

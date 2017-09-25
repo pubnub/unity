@@ -7,8 +7,7 @@ namespace PubNubAPI
 {
     public class GetAllChannelsForGroupRequestBuilder: PubNubNonSubBuilder<GetAllChannelsForGroupRequestBuilder, PNChannelGroupsAllChannelsResult>, IPubNubNonSubscribeBuilder<GetAllChannelsForGroupRequestBuilder, PNChannelGroupsAllChannelsResult>
     {      
-        public GetAllChannelsForGroupRequestBuilder(PubNubUnity pn):base(pn){
-
+        public GetAllChannelsForGroupRequestBuilder(PubNubUnity pn):base(pn, PNOperationType.PNAddChannelsToGroupOperation){
         }
         private string ChannelGroupToList { get; set;}
 
@@ -22,18 +21,18 @@ namespace PubNubAPI
         public void Async(Action<PNChannelGroupsAllChannelsResult, PNStatus> callback)
         {
             this.Callback = callback;
-            Debug.Log ("GetAllChannelsForGroupRequestBuilder Async");
             if (string.IsNullOrEmpty (ChannelGroupToList)) {
-                Debug.Log("ChannelGroup to list to empty");
+                PNStatus pnStatus = base.CreateErrorResponseFromMessage("ChannelGroup to list to empty", null, PNStatusCategory.PNBadRequestCategory);
+                Callback(null, pnStatus);
                 return;
             }
-            base.Async(callback, PNOperationType.PNChannelsForGroupOperation, PNCurrentRequestType.NonSubscribe, this);
+            base.Async(this);
         }
         #endregion
 
         protected override void RunWebRequest(QueueManager qm){
             RequestState requestState = new RequestState ();
-            requestState.RespType = PNOperationType.PNChannelsForGroupOperation;
+            requestState.OperationType = base.OperationType;
             
             /* Uri request = BuildRequests.BuildGetChannelsForChannelGroupRequest(
                 "",
@@ -52,8 +51,6 @@ namespace PubNubAPI
                 false,
                 ref this.PubNubInstance
             );
-            
-            this.PubNubInstance.PNLog.WriteToLog(string.Format("Run BuildGetChannelsForChannelGroupRequest {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         
         }
@@ -67,32 +64,35 @@ namespace PubNubAPI
             PNChannelGroupsAllChannelsResult pnChannelGroupsAllChannelsResult = new PNChannelGroupsAllChannelsResult();
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
             PNStatus pnStatus = new PNStatus();
-            if (dictionary!=null && dictionary.ContainsKey("error") && dictionary["error"].Equals(true)){
-                pnChannelGroupsAllChannelsResult = null;
-                pnStatus.Error = true;
-                //TODO create error data
-            } else if(dictionary!=null) {
-                object objPayload;
-                dictionary.TryGetValue("payload", out objPayload);
-                if(objPayload!=null){
-                    
-                    Dictionary<string, object> payload = objPayload as Dictionary<string, object>;
-                    object objChannelsArray;
-                    payload.TryGetValue("channels", out objChannelsArray);
-                    if(objChannelsArray != null){
-                        string[] channelsArray = objChannelsArray as string[];
-                        if(channelsArray != null){
-                            pnChannelGroupsAllChannelsResult.Channels = new List<string>();
-                            foreach(string str in channelsArray){
-                                Debug.Log("strchannelsArray:" + str);
-                                pnChannelGroupsAllChannelsResult.Channels.Add(str);
+            if (dictionary != null){
+                string message = Utility.ReadMessageFromResponseDictionary(dictionary, "message");
+                if(Utility.CheckDictionaryForError(dictionary, "error")){
+                    pnChannelGroupsAllChannelsResult = null;
+                    pnStatus = base.CreateErrorResponseFromMessage(message, requestState, PNStatusCategory.PNUnknownCategory);
+                } else {
+                    object objPayload;
+                    dictionary.TryGetValue("payload", out objPayload);
+                    if(objPayload!=null){
+                        
+                        Dictionary<string, object> payload = objPayload as Dictionary<string, object>;
+                        object objChannelsArray;
+                        payload.TryGetValue("channels", out objChannelsArray);
+                        if(objChannelsArray != null){
+                            string[] channelsArray = objChannelsArray as string[];
+                            if(channelsArray != null){
+                                pnChannelGroupsAllChannelsResult.Channels = new List<string>();
+                                foreach(string str in channelsArray){
+                                    Debug.Log("strchannelsArray:" + str);
+                                    pnChannelGroupsAllChannelsResult.Channels.Add(str);
+                                }
                             }
-                        }
-                    } 
-                }
+                        } 
+                    }
+                } 
             } else {
                 pnChannelGroupsAllChannelsResult = null;
-                pnStatus.Error = true;
+                pnStatus = base.CreateErrorResponseFromMessage("Response dictionary is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
+
             }
             Callback(pnChannelGroupsAllChannelsResult, pnStatus);
         }

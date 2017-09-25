@@ -7,7 +7,7 @@ namespace PubNubAPI
 {
     public class GetChannelGroupsRequestBuilder: PubNubNonSubBuilder<GetChannelGroupsRequestBuilder, PNChannelGroupsListAllResult>, IPubNubNonSubscribeBuilder<GetChannelGroupsRequestBuilder, PNChannelGroupsListAllResult>
     {      
-        public GetChannelGroupsRequestBuilder(PubNubUnity pn):base(pn){
+        public GetChannelGroupsRequestBuilder(PubNubUnity pn):base(pn, PNOperationType.PNChannelsForGroupOperation){
 
         }
         
@@ -17,13 +17,13 @@ namespace PubNubAPI
         {
             this.Callback = callback;
             Debug.Log ("GetChannelGroupsRequestBuilder Async");
-            base.Async(callback, PNOperationType.PNTimeOperation, PNCurrentRequestType.NonSubscribe, this);
+            base.Async(this);
         }
         #endregion
 
         protected override void RunWebRequest(QueueManager qm){
             RequestState requestState = new RequestState ();
-            requestState.RespType = PNOperationType.PNChannelsForGroupOperation;
+            requestState.OperationType = OperationType;
             
             /*Uri request = BuildRequests.BuildTimeRequest(
                 this.PubNubInstance.PNConfig.UUID,

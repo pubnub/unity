@@ -45,7 +45,9 @@ namespace PubNubAPI
         //public void Enqueue<T>(Action<T, PNStatus> callback, PNOperationType operationType, OperationParams operationParams){
         //public void Enqueue<T, U>(Action<T, PNStatus> callback, PNOperationType operationType, PubNubBuilder<U> operationParams){
         public void Enqueue(object callback, PNOperationType operationType, object operationParams, PubNubUnity pn){
+            #if (ENABLE_PUBNUB_LOGGING)
             pn.PNLog.WriteToLog(string.Format("Queuing {0}", operationType), PNLoggingMethod.LevelInfo);
+            #endif
             //queuedRequests.AddOrUpdate (operationType, callback, (oldData, newData) => callback);
             //this.PNConfig = pnConfig;
             QueueStorage qs = new QueueStorage(callback, operationType, (object)operationParams, pn);

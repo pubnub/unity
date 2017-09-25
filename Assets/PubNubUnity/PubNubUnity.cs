@@ -52,7 +52,9 @@ namespace PubNubAPI
         //public GameObject GameObjectRef { get; set;}
         public PubNubUnity (PNConfiguration pnConfiguration, GameObject gameObjectRef, IJsonLibrary jsonLibrary): base(pnConfiguration, gameObjectRef, jsonLibrary)
         {
+            #if (ENABLE_PUBNUB_LOGGING)
             base.PNLog.WriteToLog (string.Format("Init with UUID {0}", base.PNConfig.UUID), PNLoggingMethod.LevelInfo);
+            #endif
             SubscriptionInstance = new Subscription (this);
             SubWorker = new SubscriptionWorker<SubscribeEnvelope>(this); 
             base.QManager.PubNubInstance = this;

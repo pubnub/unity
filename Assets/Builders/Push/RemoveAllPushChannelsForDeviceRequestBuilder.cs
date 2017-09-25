@@ -7,9 +7,9 @@ namespace PubNubAPI
 {
     public class RemoveAllPushChannelsForDeviceRequestBuilder: PubNubNonSubBuilder<RemoveAllPushChannelsForDeviceRequestBuilder, PNPushRemoveAllChannelsResult>, IPubNubNonSubscribeBuilder<RemoveAllPushChannelsForDeviceRequestBuilder, PNPushRemoveAllChannelsResult>
     {      
-        public RemoveAllPushChannelsForDeviceRequestBuilder(PubNubUnity pn):base(pn){
-
+        public RemoveAllPushChannelsForDeviceRequestBuilder(PubNubUnity pn):base(pn, PNOperationType.PNRemoveAllPushNotificationsOperation){
         }
+
         private string DeviceIDForPush{ get; set;}
 
         public void DeviceId(string deviceId){
@@ -23,27 +23,24 @@ namespace PubNubAPI
         public void Async(Action<PNPushRemoveAllChannelsResult, PNStatus> callback)
         {
             this.Callback = callback;
-            Debug.Log ("RemoveAllPushChannelsForDeviceRequestBuilder Async");
-             if (string.IsNullOrEmpty (DeviceIDForPush)) {
-                Debug.Log("DeviceId is empty");
+            if (string.IsNullOrEmpty (DeviceIDForPush)) {
+                PNStatus pnStatus = base.CreateErrorResponseFromMessage("DeviceId is empty", null, PNStatusCategory.PNBadRequestCategory);
+                Callback(null, pnStatus);
 
-                //TODO Send callback
                 return;
             }
 
             if (PushType.Equals(PNPushType.None)) {
-                Debug.Log("PNPushType not selected, using GCM");
+                Debug.Log("PNPushType not selected, using GCM");                
                 PushType = PNPushType.GCM;
-                //TODO Send callback
-                return;
             }
-            base.Async(callback, PNOperationType.PNRemoveAllPushNotificationsOperation, PNCurrentRequestType.NonSubscribe, this);
+            base.Async(this);
         }
         #endregion
 
         protected override void RunWebRequest(QueueManager qm){
             RequestState requestState = new RequestState ();
-            requestState.RespType = PNOperationType.PNRemoveAllPushNotificationsOperation;
+            requestState.OperationType = OperationType;
             
             /* Uri request = BuildRequests.BuildRemoveAllDevicePushRequest(
                 PushType, 
@@ -61,7 +58,6 @@ namespace PubNubAPI
                 ref this.PubNubInstance
             );
 
-            this.PubNubInstance.PNLog.WriteToLog(string.Format("Run PNPushRemoveAllChannelsResult {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this);
         }
 
@@ -70,10 +66,12 @@ namespace PubNubAPI
             PNPushRemoveAllChannelsResult pnPushRemoveAllChannelsResult = new PNPushRemoveAllChannelsResult();
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
             PNStatus pnStatus = new PNStatus();
-            if (dictionary!=null && dictionary.ContainsKey("error") && dictionary["error"].Equals(true)){
-                pnPushRemoveAllChannelsResult = null;
-                pnStatus.Error = true;
-                //TODO create error data
+            if(dictionary != null) {
+                string message = Utility.ReadMessageFromResponseDictionary(dictionary, "message");
+                if(Utility.CheckDictionaryForError(dictionary, "error")){
+                    pnPushRemoveAllChannelsResult = null;
+                    pnStatus = base.CreateErrorResponseFromMessage(message, requestState, PNStatusCategory.PNUnknownCategory);
+                }
             } else if(dictionary==null) {
                 object[] c = deSerializedResult as object[];
                 
@@ -87,18 +85,20 @@ namespace PubNubAPI
                         status = c[1].ToString();
                     }
                     if(statusCode.Equals("0") || (!status.ToLower().Equals("removed device"))){
-                        pnStatus.Error = true;
+                        pnPushRemoveAllChannelsResult = null;
+                        pnStatus = base.CreateErrorResponseFromMessage(status, requestState, PNStatusCategory.PNUnknownCategory);
                     } else {
-                        pnStatus.Error = false;
                         pnPushRemoveAllChannelsResult.Message = status;
                     }
                 } else {
-                    pnStatus.Error = true;
+                    pnPushRemoveAllChannelsResult = null;
+                    pnStatus = base.CreateErrorResponseFromMessage("deSerializedResult object is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
                 }
             } else {
                 pnPushRemoveAllChannelsResult = null;
-                pnStatus.Error = true;
+                pnStatus = base.CreateErrorResponseFromMessage("Response dictionary is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
             }
+
             Callback(pnPushRemoveAllChannelsResult, pnStatus);
         }
 

@@ -24,7 +24,35 @@ namespace PubNubAPI
         return value;
         }
         }
-        #endif    
+        #endif  
+    
+        internal static bool CheckDictionaryForError(Dictionary<string, object> dictionary, string keyName){
+            /*object objMessage;
+            dictionary.TryGetValue(keyName, out objMessage);
+            
+            if(objMessage != null){
+                bool bMessage = (bool)objMessage;
+                return bMessage;
+            } else {
+                return false;
+            }*/
+            if(dictionary.ContainsKey(keyName) && dictionary[keyName].Equals(true)){
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        internal static string ReadMessageFromResponseDictionary(Dictionary<string, object> dictionary, string keyName){
+            object objMessage;
+            dictionary.TryGetValue(keyName, out objMessage);
+            
+            if(objMessage != null){
+                return objMessage.ToString();
+            } else {
+                return "";
+            }
+        }
 
         //TODO Handle exception
         internal static long CheckKeyAndParseLong(IDictionary dict, string what, string key, out string log){

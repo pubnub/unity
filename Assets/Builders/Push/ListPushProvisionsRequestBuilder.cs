@@ -7,8 +7,7 @@ namespace PubNubAPI
 {
     public class ListPushProvisionsRequestBuilder: PubNubNonSubBuilder<ListPushProvisionsRequestBuilder, PNPushListProvisionsResult>, IPubNubNonSubscribeBuilder<ListPushProvisionsRequestBuilder, PNPushListProvisionsResult>
     {      
-        public ListPushProvisionsRequestBuilder(PubNubUnity pn):base(pn){
-
+        public ListPushProvisionsRequestBuilder(PubNubUnity pn):base(pn, PNOperationType.PNPushNotificationEnabledChannelsOperation){
         }
 
         private string DeviceIDForPush{ get; set;}
@@ -24,27 +23,24 @@ namespace PubNubAPI
         public void Async(Action<PNPushListProvisionsResult, PNStatus> callback)
         {
             this.Callback = callback;
-            Debug.Log ("ListPushProvisionsRequestBuilder Async");
             if (string.IsNullOrEmpty (DeviceIDForPush)) {
-                Debug.Log("DeviceId is empty");
+                PNStatus pnStatus = base.CreateErrorResponseFromMessage("DeviceId is empty", null, PNStatusCategory.PNBadRequestCategory);
+                Callback(null, pnStatus);
 
-                //TODO Send callback
                 return;
             }
 
             if (PushType.Equals(PNPushType.None)) {
-                Debug.Log("PNPushType not selected, using GCM");
+                Debug.Log("PNPushType not selected, using GCM");                
                 PushType = PNPushType.GCM;
-                //TODO Send callback
-                return;
             }
-            base.Async(callback, PNOperationType.PNPushNotificationEnabledChannelsOperation, PNCurrentRequestType.NonSubscribe, this);
+            base.Async(this);
         }
         #endregion
 
         protected override void RunWebRequest(QueueManager qm){
             RequestState requestState = new RequestState ();
-            requestState.RespType = PNOperationType.PNPushNotificationEnabledChannelsOperation;
+            requestState.OperationType = OperationType;
             
            /*  Uri request = BuildRequests.BuildGetChannelsPushRequest(
                 PushType,
@@ -63,7 +59,6 @@ namespace PubNubAPI
                 ref this.PubNubInstance
             );
 
-            this.PubNubInstance.PNLog.WriteToLog(string.Format("Run PNPushListProvisionsResult {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this);
         }
 
@@ -72,10 +67,12 @@ namespace PubNubAPI
             PNPushListProvisionsResult pnPushListProvisionsResult = new PNPushListProvisionsResult();
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
             PNStatus pnStatus = new PNStatus();
-            if (dictionary!=null && dictionary.ContainsKey("error") && dictionary["error"].Equals(true)){
-                pnPushListProvisionsResult = null;
-                pnStatus.Error = true;
-                //TODO create error data
+            if(dictionary != null) {
+                string message = Utility.ReadMessageFromResponseDictionary(dictionary, "message");
+                if(Utility.CheckDictionaryForError(dictionary, "error")){
+                    pnPushListProvisionsResult = null;
+                    pnStatus = base.CreateErrorResponseFromMessage(message, requestState, PNStatusCategory.PNUnknownCategory);
+                }
             } else if(dictionary==null) {
                 object[] c = deSerializedResult as object[];
                 
@@ -87,8 +84,9 @@ namespace PubNubAPI
                 }   
             } else {
                 pnPushListProvisionsResult = null;
-                pnStatus.Error = true;
+                pnStatus = base.CreateErrorResponseFromMessage("Response dictionary is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
             }
+
             Callback(pnPushListProvisionsResult, pnStatus);
         }
 

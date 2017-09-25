@@ -7,7 +7,7 @@ namespace PubNubAPI
 {
     public class RemoveChannelsFromGroupRequestBuilder: PubNubNonSubBuilder<RemoveChannelsFromGroupRequestBuilder, PNChannelGroupsRemoveChannelResult>, IPubNubNonSubscribeBuilder<RemoveChannelsFromGroupRequestBuilder, PNChannelGroupsRemoveChannelResult>
     {      
-        public RemoveChannelsFromGroupRequestBuilder(PubNubUnity pn):base(pn){
+        public RemoveChannelsFromGroupRequestBuilder(PubNubUnity pn):base(pn, PNOperationType.PNRemoveChannelsFromGroupOperation){
 
         }
         //private List<string> ChannelsToUse { get; set;}
@@ -26,27 +26,25 @@ namespace PubNubAPI
         public void Async(Action<PNChannelGroupsRemoveChannelResult, PNStatus> callback)
         {
             this.Callback = callback;
-            Debug.Log ("RemoveChannelsFromGroupRequestBuilder Async");
             if((ChannelsToUse == null) || ((ChannelsToUse != null) && (ChannelsToUse.Count <= 0))){
-                Debug.Log("ChannelsToRemove null or empty");
-
-                //TODO Send callback
+                PNStatus pnStatus = base.CreateErrorResponseFromMessage("ChannelsToRemove null or empty", null, PNStatusCategory.PNBadRequestCategory);
+                Callback(null, pnStatus);
                 return;
             }
 
             if (string.IsNullOrEmpty (ChannelGroupToDelete)) {
-                Debug.Log("ChannelGroup to delete from is empty");
+                PNStatus pnStatus = base.CreateErrorResponseFromMessage("ChannelGroup to delete from is empty", null, PNStatusCategory.PNBadRequestCategory);
+                Callback(null, pnStatus);
 
-                //TODO Send callback
                 return;
             }
-            base.Async(callback, PNOperationType.PNRemoveChannelsFromGroupOperation, PNCurrentRequestType.NonSubscribe, this);
+            base.Async(this);
         }
         #endregion
 
         protected override void RunWebRequest(QueueManager qm){
             RequestState requestState = new RequestState();
-            requestState.RespType = PNOperationType.PNRemoveChannelsFromGroupOperation;
+            requestState.OperationType = base.OperationType;
             
             /* Uri request = BuildRequests.BuildRemoveChannelsFromChannelGroupRequest(
                 ChannelsToUse.ToArray(), 
@@ -65,7 +63,6 @@ namespace PubNubAPI
                 ChannelGroupToDelete,
                 ref this.PubNubInstance
             );
-            this.PubNubInstance.PNLog.WriteToLog(string.Format("Run PNRemoveChannelsFromGroupOperation {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }
         // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
@@ -76,20 +73,20 @@ namespace PubNubAPI
             PNChannelGroupsRemoveChannelResult pnChannelGroupsRemoveChannelResult = new PNChannelGroupsRemoveChannelResult();
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
             PNStatus pnStatus = new PNStatus();
-            if (dictionary!=null && dictionary.ContainsKey("error") && dictionary["error"].Equals(true)){
-                pnChannelGroupsRemoveChannelResult = null;
-                pnStatus.Error = true;
-                //TODO create error data
-            } else if(dictionary!=null) {
-                object objMessage;
-                dictionary.TryGetValue("message", out objMessage);
-                if(objMessage!=null){
-                    pnChannelGroupsRemoveChannelResult.Message = objMessage.ToString();
+            if (dictionary != null){
+                string message = Utility.ReadMessageFromResponseDictionary(dictionary, "message");
+                if(Utility.CheckDictionaryForError(dictionary, "error")){
+                    pnChannelGroupsRemoveChannelResult = null;
+                    pnStatus = base.CreateErrorResponseFromMessage(message, requestState, PNStatusCategory.PNUnknownCategory);
+                } else {
+                    pnChannelGroupsRemoveChannelResult.Message = message;
                 }
+                
             } else {
                 pnChannelGroupsRemoveChannelResult = null;
-                pnStatus.Error = true;
+                pnStatus = base.CreateErrorResponseFromMessage("Response dictionary is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
             }
+            
             Callback(pnChannelGroupsRemoveChannelResult, pnStatus);
         }
         

@@ -11,7 +11,7 @@ namespace PubNubAPI
         //public Action<PubnubClientError> ErrorCallback;
         /*public PubnubWebRequest Request;
         public PubnubWebResponse Response;*/
-        public PNOperationType RespType;
+        public PNOperationType OperationType;
 
         internal long StartRequestTicks;
         internal long EndRequestTicks;

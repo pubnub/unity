@@ -29,8 +29,7 @@ namespace PubNubAPI
         
         private bool ReverseHistory = false;
         private bool IncludeTimetokenInHistory = false;
-        public HistoryRequestBuilder(PubNubUnity pn): base(pn){
-            Debug.Log ("HistoryBuilder Construct");
+        public HistoryRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNHistoryOperation){
         }
 
         public HistoryRequestBuilder IncludeTimetoken(bool includeTimetoken){
@@ -68,23 +67,21 @@ namespace PubNubAPI
 
         public void Async(Action<PNHistoryResult, PNStatus> callback)
         {
-            //TODO: Add history channel check
             base.Callback = callback;
-            Debug.Log ("PNHistoryBuilder Async");
 
             if(string.IsNullOrEmpty(this.HistoryChannel)){
-                Debug.Log("PNHistoryBuilder HistoryChannel is empty");
-
+                PNStatus pnStatus = base.CreateErrorResponseFromMessage("HistoryChannel is empty", null, PNStatusCategory.PNBadRequestCategory);
+                Callback(null, pnStatus);
                 return;
             }
 
-            base.Async(callback, PNOperationType.PNHistoryOperation, PNCurrentRequestType.NonSubscribe, this);
+            base.Async(this);
         }
 
          protected override void RunWebRequest(QueueManager qm){
 
             RequestState requestState = new RequestState ();
-            requestState.RespType = PNOperationType.PNHistoryOperation;
+            requestState.OperationType = OperationType;
 
             Debug.Log ("HistoryBuilder Channel: " + this.HistoryChannel);
             Debug.Log ("HistoryBuilder Channel: " + this.StartTime);
@@ -117,9 +114,7 @@ namespace PubNubAPI
                 this.IncludeTimetokenInHistory,
                 ref this.PubNubInstance
             );
-            this.PubNubInstance.PNLog.WriteToLog(string.Format("RunHistoryRequest {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
-
         }
  
         // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
@@ -144,7 +139,10 @@ namespace PubNubAPI
 
                     if(historyResponseArray.Length >= 1){
                         //TODO add checks
-                        ExtractMessages(historyResponseArray, ref pnHistoryResult);
+                        if(!ExtractMessages(historyResponseArray, ref pnHistoryResult)){
+                            pnHistoryResult = null;
+                            pnStatus = base.CreateErrorResponseFromMessage("ExtractMessages failed", requestState, PNStatusCategory.PNMalformedResponseCategory);
+                        } 
                     }
 
                     if(historyResponseArray.Length > 1){
@@ -158,8 +156,8 @@ namespace PubNubAPI
                     }
                 }
             } catch (Exception ex) {
-                Debug.Log(ex.ToString());
-                //throw ex;
+                pnHistoryResult = null;
+                pnStatus = base.CreateErrorResponseFromException(ex, requestState, PNStatusCategory.PNUnknownCategory);
             }
             Callback(pnHistoryResult, pnStatus);
 
@@ -201,7 +199,7 @@ namespace PubNubAPI
             Debug.Log(" v "+pnHistoryItemResult.Entry);
         }
 
-        private void ExtractMessages(object[] historyResponseArray, ref PNHistoryResult pnHistoryResult){
+        private bool ExtractMessages(object[] historyResponseArray, ref PNHistoryResult pnHistoryResult){
             IEnumerable enumerable = historyResponseArray [0] as IEnumerable;
             if (enumerable != null) {
                 Debug.Log("enumerable" + enumerable.ToString());
@@ -217,7 +215,9 @@ namespace PubNubAPI
                     }
                     pnHistoryResult.Messages.Add(pnHistoryItemResult);
                 }
+                return true;
             }
+            return false;
         }
         #endregion
     }

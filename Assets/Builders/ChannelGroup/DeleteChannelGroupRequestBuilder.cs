@@ -7,8 +7,7 @@ namespace PubNubAPI
 {
     public class DeleteChannelGroupRequestBuilder: PubNubNonSubBuilder<DeleteChannelGroupRequestBuilder, PNChannelGroupsDeleteGroupResult>, IPubNubNonSubscribeBuilder<DeleteChannelGroupRequestBuilder, PNChannelGroupsDeleteGroupResult>
     {      
-        public DeleteChannelGroupRequestBuilder(PubNubUnity pn):base(pn){
-
+        public DeleteChannelGroupRequestBuilder(PubNubUnity pn):base(pn, PNOperationType.PNRemoveGroupOperation){
         }
         private string ChannelGroupToDelete { get; set;}
 
@@ -22,19 +21,20 @@ namespace PubNubAPI
         public void Async(Action<PNChannelGroupsDeleteGroupResult, PNStatus> callback)
         {
             this.Callback = callback;
-            Debug.Log ("DeleteChannelGroupRequestBuilder Async");
 
             if (string.IsNullOrEmpty (ChannelGroupToDelete)) {
-                Debug.Log("ChannelGroup to delete to empty");
+                PNStatus pnStatus = base.CreateErrorResponseFromMessage("ChannelGroup to delete to empty", null, PNStatusCategory.PNBadRequestCategory);
+                Callback(null, pnStatus);
+
                 return;
             }
-            base.Async(callback, PNOperationType.PNRemoveGroupOperation, PNCurrentRequestType.NonSubscribe, this);
+            base.Async(this);
         }
         #endregion
 
         protected override void RunWebRequest(QueueManager qm){
             RequestState requestState = new RequestState ();
-            requestState.RespType = PNOperationType.PNRemoveGroupOperation;
+            requestState.OperationType = base.OperationType;
 
             /* Uri request = BuildRequests.BuildRemoveChannelsFromChannelGroupRequest(
                 null, 
@@ -53,7 +53,6 @@ namespace PubNubAPI
                 ChannelGroupToDelete,
                 ref this.PubNubInstance
             );
-            this.PubNubInstance.PNLog.WriteToLog(string.Format("RunPNChannelGroupsAddChannel {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }
 
@@ -65,19 +64,18 @@ namespace PubNubAPI
             PNChannelGroupsDeleteGroupResult pnChannelGroupsDeleteGroupResult = new PNChannelGroupsDeleteGroupResult();
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
             PNStatus pnStatus = new PNStatus();
-            if (dictionary!=null && dictionary.ContainsKey("error") && dictionary["error"].Equals(true)){
-                pnChannelGroupsDeleteGroupResult = null;
-                pnStatus.Error = true;
-                //TODO create error data
-            } else if(dictionary!=null) {
-                object objMessage;
-                dictionary.TryGetValue("message", out objMessage);
-                if(objMessage!=null){
-                    pnChannelGroupsDeleteGroupResult.Message = objMessage.ToString();
+            if(dictionary != null) {
+                string message = Utility.ReadMessageFromResponseDictionary(dictionary, "message");
+                if(Utility.CheckDictionaryForError(dictionary, "error")){
+                    pnChannelGroupsDeleteGroupResult = null;
+                    pnStatus = base.CreateErrorResponseFromMessage(message, requestState, PNStatusCategory.PNUnknownCategory);
+                } else {
+                    pnChannelGroupsDeleteGroupResult.Message = message;
                 }
             } else {
                 pnChannelGroupsDeleteGroupResult = null;
-                pnStatus.Error = true;
+                pnStatus = base.CreateErrorResponseFromMessage("Response dictionary is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
+
             }
             Callback(pnChannelGroupsDeleteGroupResult, pnStatus);
         }

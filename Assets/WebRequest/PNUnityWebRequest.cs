@@ -621,7 +621,7 @@ namespace PubNubAPI
             bool delayStart = false;
             //for heartbeat and presence heartbeat treat reconnect as pause
             PNCurrentRequestType crt;
-            switch (pubnubRequestState.RespType){
+            switch (pubnubRequestState.OperationType){
                 case PNOperationType.PNHeartbeatOperation:
                 crt = PNCurrentRequestType.Heartbeat;
                 delayStart = pubnubRequestState.Reconnect;
@@ -642,7 +642,7 @@ namespace PubNubAPI
             }
            
             //string wwwUrl;
-            Debug.Log("pubnubRequestState:"+ pubnubRequestState.RespType);
+            Debug.Log("pubnubRequestState:"+ pubnubRequestState.OperationType);
             string webRequestId = "";
             UnityWebRequestWrapper webRequestWrapper = new UnityWebRequestWrapper(crt, pubnubRequestState);
             
@@ -718,7 +718,10 @@ namespace PubNubAPI
                 #endif
                 
             } else if(unityWebRequestWrapper.CurrentRequestState.httpMethod.Equals(HTTPMethod.Delete)) {
-                unityWebRequestWrapper.CurrentUnityWebRequest = UnityWebRequest.Delete (unityWebRequestWrapper.URL);
+                unityWebRequestWrapper.CurrentUnityWebRequest = new UnityWebRequest(unityWebRequestWrapper.URL);
+                unityWebRequestWrapper.CurrentUnityWebRequest.downloadHandler = new DownloadHandlerBuffer();
+                unityWebRequestWrapper.CurrentUnityWebRequest.method = UnityWebRequest.kHttpVerbDELETE;
+                //unityWebRequestWrapper.CurrentUnityWebRequest = UnityWebRequest.Delete (unityWebRequestWrapper.URL);
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PNLog.WriteToLog (string.Format ("Delete \nURL:{0}", unityWebRequestWrapper.URL), PNLoggingMethod.LevelInfo);
                 #endif
@@ -933,7 +936,7 @@ namespace PubNubAPI
         {
             try {
                 
-                Debug.Log("in process response -> " + unityWebRequestWrapper.CurrentRequestState.RespType);
+                Debug.Log("in process response -> " + unityWebRequestWrapper.CurrentRequestState.OperationType);
                 //RemoveEventHandler(cp.crt, false);
 
                 #if (ENABLE_PUBNUB_LOGGING)
@@ -971,7 +974,7 @@ namespace PubNubAPI
                         unityWebRequestWrapper.CurrentRequestState.URL = unityWebRequestWrapper.CurrentUnityWebRequest.url;                    
 
                         #if (ENABLE_PUBNUB_LOGGING)
-                        this.PNLog.WriteToLog (string.Format ("ProcessResponse: WWW Sub request2 {0} \n{1} \nresponseCode: {2}", unityWebRequestWrapper.CurrentRequestState.RespType, unityWebRequestWrapper.CurrentRequestType, unityWebRequestWrapper.CurrentRequestState.ResponseCode), PNLoggingMethod.LevelInfo);
+                        this.PNLog.WriteToLog (string.Format ("ProcessResponse: WWW Sub request2 {0} \n{1} \nresponseCode: {2}", unityWebRequestWrapper.CurrentRequestState.OperationType, unityWebRequestWrapper.CurrentRequestType, unityWebRequestWrapper.CurrentRequestState.ResponseCode), PNLoggingMethod.LevelInfo);
                         #endif
                     } 
                     #if (ENABLE_PUBNUB_LOGGING)

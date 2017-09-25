@@ -9,8 +9,7 @@ namespace PubNubAPI
     {
         private string UuidForWhereNow { get; set;}
 
-        public WhereNowRequestBuilder(PubNubUnity pn): base(pn){
-            Debug.Log ("WhereNowBuilder Construct");
+        public WhereNowRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNWhereNowOperation){
         }
 
         public WhereNowRequestBuilder Uuid(string uuid){
@@ -22,14 +21,13 @@ namespace PubNubAPI
         public void Async(Action<PNWhereNowResult, PNStatus> callback)
         {
             this.Callback = callback;
-            Debug.Log ("PNWherNowResult Async");
-            base.Async(callback, PNOperationType.PNWhereNowOperation, PNCurrentRequestType.NonSubscribe, this);
+            base.Async(this);
         }
         #endregion
 
         protected override void RunWebRequest(QueueManager qm){
             RequestState requestState = new RequestState ();
-            requestState.RespType = PNOperationType.PNWhereNowOperation;
+            requestState.OperationType = OperationType;
 
             Debug.Log ("WhereNowBuilder UuidForWhereNow: " + this.UuidForWhereNow);
 
@@ -52,7 +50,6 @@ namespace PubNubAPI
                 uuidForWhereNow,
                 ref this.PubNubInstance
             );
-            this.PubNubInstance.PNLog.WriteToLog(string.Format("RunWhereNowRequest {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }
 
@@ -67,14 +64,14 @@ namespace PubNubAPI
             PNWhereNowResult pnWhereNowResult = new PNWhereNowResult();
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
             PNStatus pnStatus = new PNStatus();
-
-            if (dictionary!=null){
-                object objError, objPayload;
-                if (dictionary.TryGetValue("error", out objError) && (((bool)objError).Equals(true))){
+            if(dictionary != null) {
+                string message = Utility.ReadMessageFromResponseDictionary(dictionary, "message");
+                if(Utility.CheckDictionaryForError(dictionary, "error")){
                     pnWhereNowResult = null;
-                    pnStatus.Error = true;
-                    //TODO create error data
-                } else if (dictionary.TryGetValue("payload", out objPayload)){
+                    pnStatus = base.CreateErrorResponseFromMessage(message, requestState, PNStatusCategory.PNUnknownCategory);
+                } else {
+                    object objPayload;
+                    dictionary.TryGetValue("payload", out objPayload);
                     Dictionary<string, object> payload = objPayload as Dictionary<string, object>;
                     
                     if(payload!=null){ 
@@ -96,22 +93,24 @@ namespace PubNubAPI
                                 //result1.Add (multiChannel);
                                 //List<string> result1 = ((IEnumerable)deSerializedResult).Cast<string> ().ToList ();
                                 pnWhereNowResult.Channels = channels;
-                                pnStatus.Error = false;
                             } else {
-                                pnStatus.Error = true;
+                                pnWhereNowResult = null;
+                                pnStatus = base.CreateErrorResponseFromMessage("channels are null", requestState, PNStatusCategory.PNMalformedResponseCategory);
                             }
                         } else {
-                            pnStatus.Error = true;
+                            pnWhereNowResult = null;
+                            pnStatus = base.CreateErrorResponseFromMessage("channels object is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
                         }
                     } else {
-                        pnStatus.Error = true;
+                        pnWhereNowResult = null;
+                        pnStatus = base.CreateErrorResponseFromMessage("payload is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
                     }
                 }
-                
             } else {
                 pnWhereNowResult = null;
-                pnStatus.Error = true;
+                pnStatus = base.CreateErrorResponseFromMessage("Response dictionary is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
             }
+
             Callback(pnWhereNowResult, pnStatus);
         }
        

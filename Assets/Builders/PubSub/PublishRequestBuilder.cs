@@ -18,17 +18,26 @@ namespace PubNubAPI
         private bool publishAsIs = false;
         
         private uint publishCounter;
-        public PublishRequestBuilder(PubNubUnity pn, uint counter): base(pn){
+        public PublishRequestBuilder(PubNubUnity pn, uint counter): base(pn, PNOperationType.PNPublishOperation){
             this.publishCounter = counter;
-            Debug.Log ("PublishBuilder Construct");
         }
 
         #region IPubNubBuilder implementation
         public void Async(Action<PNPublishResult, PNStatus> callback)
         {
             this.Callback = callback;
-            Debug.Log ("PublishBuilder Async");
-            base.Async(callback, PNOperationType.PNPublishOperation, PNCurrentRequestType.NonSubscribe, this);
+            if(string.IsNullOrEmpty(this.PublishChannel)){
+                PNStatus pnStatus = base.CreateErrorResponseFromMessage("Channel is empty", null, PNStatusCategory.PNBadRequestCategory);
+                Callback(null, pnStatus);
+                return;
+            }
+            if(this.PublishMessage == null){
+                PNStatus pnStatus = base.CreateErrorResponseFromMessage("Message is empty", null, PNStatusCategory.PNBadRequestCategory);
+                Callback(null, pnStatus);
+                return;
+            }
+            
+            base.Async(this);
         }
         #endregion
 
@@ -75,7 +84,7 @@ namespace PubNubAPI
         protected override void RunWebRequest(QueueManager qm){
             //TODO USe POST
             RequestState requestState = new RequestState ();
-            requestState.RespType = PNOperationType.PNPublishOperation;
+            requestState.OperationType = OperationType;
 
             //TODO publishAsIs with cipher
             string jsonMessage = (publishAsIs) ? PublishMessage.ToString () : Helpers.JsonEncodePublishMsg (PublishMessage, this.PubNubInstance.PNConfig.CipherKey, this.PubNubInstance.JsonLibrary, this.PubNubInstance.PNLog);
@@ -142,7 +151,6 @@ namespace PubNubAPI
                     UsePostMethod,
                     ref this.PubNubInstance
                 );
-            this.PubNubInstance.PNLog.WriteToLog(string.Format("RunPublishRequest {0}", request.OriginalString), PNLoggingMethod.LevelInfo);
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }
 
@@ -159,16 +167,21 @@ namespace PubNubAPI
                 if(c.Length > 1){
                     status = c[1].ToString();
                 }
-                if(c.Length > 2){
-                    pnPublishResult.Timetoken = Utility.ValidateTimetoken(c[2].ToString(), false);
-                }
                 if(statusCode.Equals("0") || (!status.ToLower().Equals("sent"))){
-                    pnStatus.Error = true;
+                    pnPublishResult = null;
+                    string message = "";
+                    if(c.Length > 2){
+                        message = c[2].ToString();
+                    }
+                    pnStatus = base.CreateErrorResponseFromMessage(string.Format("Publish Failure: {0}", message), requestState, PNStatusCategory.PNBadRequestCategory);
                 } else {
-                    pnStatus.Error = false;
+                    if(c.Length > 2){
+                        pnPublishResult.Timetoken = Utility.ValidateTimetoken(c[2].ToString(), false);
+                    }
                 }
             } else {
-                pnStatus.Error = true;
+                pnPublishResult = null;
+                pnStatus = base.CreateErrorResponseFromMessage("Response is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
             }
             Callback(pnPublishResult, pnStatus);
 

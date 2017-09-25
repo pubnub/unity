@@ -85,6 +85,7 @@ namespace PubNubExample
                     Debug.Log (string.Format("DateTime {0}, In DeleteMessages Example, Timetoken: {1}", DateTime.UtcNow , result.Message));
                 } else {
                     Debug.Log (status.Error);
+                    Debug.Log (status.StatusCode);
                     Debug.Log (status.ErrorData.Info);
                 }
 
