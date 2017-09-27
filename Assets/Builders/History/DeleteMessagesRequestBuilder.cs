@@ -48,9 +48,9 @@ namespace PubNubAPI
             requestState.OperationType = base.OperationType;
             requestState.httpMethod = HTTPMethod.Delete;
 
-            Debug.Log ("DeleteRequestBuilder Channel: " + this.HistoryChannel);
-            Debug.Log ("DeleteRequestBuilder StartTime: " + this.StartTime);
-            Debug.Log ("DeleteRequestBuilder EndTime: " + this.EndTime);
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PubNubInstance.PNLog.WriteToLog(string.Format ("DeleteRequestBuilder: \nChannel {0} \nStartTime: {1} \nthis.EndTime:{2}", this.HistoryChannel, this.StartTime, this.EndTime), PNLoggingMethod.LevelInfo);
+            #endif
 
             Uri request = BuildRequests.BuildDeleteMessagesRequest(
                 this.HistoryChannel,

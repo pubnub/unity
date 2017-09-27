@@ -20,12 +20,13 @@ namespace PubNubAPI
 
         protected PubNubUnity PubNubInstance;
         protected internal PubNubNonSubBuilder(PubNubUnity pn, PNOperationType pnOperationType){
+            PubNubInstance = pn;
+            this.OperationType = pnOperationType;
+            
             #if (ENABLE_PUBNUB_LOGGING)
             this.PubNubInstance.PNLog.WriteToLog(string.Format("{0} constructor", pnOperationType.ToString()), PNLoggingMethod.LevelInfo);
             #endif
 
-            PubNubInstance = pn;
-            this.OperationType = pnOperationType;
             this.RunRequest += delegate(QueueManager qm) {
                 RunWebRequest(qm);
             };

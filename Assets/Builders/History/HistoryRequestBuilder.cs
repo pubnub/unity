@@ -82,13 +82,10 @@ namespace PubNubAPI
 
             RequestState requestState = new RequestState ();
             requestState.OperationType = OperationType;
-
-            Debug.Log ("HistoryBuilder Channel: " + this.HistoryChannel);
-            Debug.Log ("HistoryBuilder Channel: " + this.StartTime);
-            Debug.Log ("HistoryBuilder Channel: " + this.EndTime);
-            Debug.Log ("HistoryBuilder Channel: " + this.HistoryCount);
-            Debug.Log ("HistoryBuilder Channel: " + this.ReverseHistory);
-
+            
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PubNubInstance.PNLog.WriteToLog(string.Format ("HistoryRequestBuilder: \nChannel {0} \nStartTime: {1} \nthis.EndTime:{2} \nthis.HistoryCount:{3} \nthis.ReverseHistory:{4}", string.Join(",", this.ChannelsToUse.ToArray()), this.StartTime, this.EndTime, this.HistoryCount, this.ReverseHistory), PNLoggingMethod.LevelInfo);
+            #endif
             //TODO: start=0&end=0
 
             /* Uri request = BuildRequests.BuildHistoryRequest(

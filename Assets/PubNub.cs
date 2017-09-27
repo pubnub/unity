@@ -173,8 +173,6 @@ namespace PubNubAPI
             return pnUnity.RemovePushNotificationsFromChannels();
         }
 
-        //public Unsub
-
         public void AddListener(Action<PNStatus> callback, Action<PNMessageResult> callback2, Action<PNPresenceEventResult> callback3)
         {
             pnUnity.AddListener(callback, callback2, callback3);

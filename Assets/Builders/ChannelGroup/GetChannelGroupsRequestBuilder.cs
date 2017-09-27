@@ -16,7 +16,6 @@ namespace PubNubAPI
         public void Async(Action<PNChannelGroupsListAllResult, PNStatus> callback)
         {
             this.Callback = callback;
-            Debug.Log ("GetChannelGroupsRequestBuilder Async");
             base.Async(this);
         }
         #endregion

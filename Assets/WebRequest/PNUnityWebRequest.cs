@@ -592,9 +592,11 @@ namespace PubNubAPI
                     if(unityWebRequestWrapper!=null){
                         StopTimeoutsAndComplete(unityWebRequestWrapper, webRequestId);
 
-                        unityWebRequestWrapper.CurrentUnityWebRequest.Abort();
-                        unityWebRequestWrapper.CurrentUnityWebRequest.Dispose();
-                        currentWebRequests[webRequestId] = unityWebRequestWrapper;
+                        if((unityWebRequestWrapper.CurrentUnityWebRequest != null) && (!unityWebRequestWrapper.CurrentUnityWebRequest.isDone)){
+                            unityWebRequestWrapper.CurrentUnityWebRequest.Abort();
+                            unityWebRequestWrapper.CurrentUnityWebRequest.Dispose();
+                        }
+                        currentWebRequests.Remove(webRequestId);// = unityWebRequestWrapper;
                         unityWebRequestWrapper.CurrentRequestState.ResponseCode = 0;
                         unityWebRequestWrapper.CurrentRequestState.URL =  unityWebRequestWrapper.URL;
                         FireEvent ("Aborted", true, false, unityWebRequestWrapper.CurrentRequestState,  unityWebRequestWrapper.CurrentRequestType, webRequestId);

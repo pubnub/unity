@@ -82,13 +82,11 @@ namespace PubNubAPI
         protected override void RunWebRequest(QueueManager qm){
             RequestState requestState = new RequestState ();
             requestState.OperationType = base.OperationType;
-            
-            Debug.Log ("FetchMessagesRequestBuilder Channel: " + this.ChannelsToUse);
-            Debug.Log ("FetchMessagesRequestBuilder Channel: " + this.StartTime);
-            Debug.Log ("FetchMessagesRequestBuilder Channel: " + this.EndTime);
-            Debug.Log ("FetchMessagesRequestBuilder Channel: " + this.HistoryCount);
-            Debug.Log ("FetchMessagesRequestBuilder Channel: " + this.ReverseHistory);
 
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PubNubInstance.PNLog.WriteToLog(string.Format ("FetchMessagesRequestBuilder: \nChannel {0} \nStartTime: {1} \nthis.EndTime:{2} \nthis.HistoryCount:{3} \nthis.ReverseHistory:{4}", string.Join(",", this.ChannelsToUse.ToArray()), this.StartTime, this.EndTime, this.HistoryCount, this.ReverseHistory), PNLoggingMethod.LevelInfo);
+            #endif
+            
             //TODO: start=0&end=0
 
             /* Uri request = BuildRequests.BuildFetchRequest(
@@ -165,9 +163,14 @@ namespace PubNubAPI
             if(channelsDict!=null){
                 foreach(KeyValuePair<string, object> kvpair in channelsDict){
                     string channelName = kvpair.Key;
-                    Debug.Log("channelName:" + channelName);
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    this.PubNubInstance.PNLog.WriteToLog(string.Format ("CreateFetchMessagesResult: \nChannel {0}", channelName), PNLoggingMethod.LevelInfo);
+                    #endif
+                    
                     if(channelsResult.ContainsKey(channelName)){
-                        Debug.Log("Channel name exists in dict, continuing :"+ channelName);
+                        #if (ENABLE_PUBNUB_LOGGING)
+                        this.PubNubInstance.PNLog.WriteToLog(string.Format ("CreateFetchMessagesResult: Channel name {0} exists in dict, continuing.", channelName), PNLoggingMethod.LevelInfo);
+                        #endif
                         continue;
                     }
                     object[] channelDetails = kvpair.Value as object[];
@@ -183,7 +186,9 @@ namespace PubNubAPI
                             messageDataDict.TryGetValue("timetoken", out objTimetoken);
                             long timetoken;
                             if(long.TryParse(objTimetoken.ToString(), out timetoken)){
-                                Debug.Log("timetoken:" + timetoken.ToString());
+                                #if (ENABLE_PUBNUB_LOGGING)
+                                this.PubNubInstance.PNLog.WriteToLog(string.Format ("CreateFetchMessagesResult: timetoken {0}.", timetoken.ToString()), PNLoggingMethod.LevelInfo);
+                                #endif
                             }
                             
                             PNMessageResult pnMessageResult = new PNMessageResult(

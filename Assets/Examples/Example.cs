@@ -10,9 +10,185 @@ using System;
 namespace PubNubExample
 {
     public class Example : MonoBehaviour {
-         PubNub pubnub;
+        PubNub pubnub;
+        List<string> listChannelGroups;
+        List<string> listChannels;
+        UnityEngine.UI.Text TextContent;
+        UnityEngine.UI.Button ButtonClear;
+        UnityEngine.UI.Button ButtonReset;
+        UnityEngine.UI.Button ButtonSubscribe;
+        UnityEngine.UI.Button ButtonPublishPost;
+        UnityEngine.UI.Button ButtonPublish;
+        UnityEngine.UI.Button ButtonFire;
+        UnityEngine.UI.Button ButtonWhereNow;
+        UnityEngine.UI.Button ButtonHereNow;
+        UnityEngine.UI.Button ButtonTime;
+        UnityEngine.UI.Button ButtonHistory;
+        UnityEngine.UI.Button ButtonGetPresenceState;
+        UnityEngine.UI.Button ButtonSetPresenceState;
+        UnityEngine.UI.Button ButtonUnsubscribe;
+        UnityEngine.UI.Button ButtonFetch;
+        UnityEngine.UI.Button ButtonDeleteHistory;
+        UnityEngine.UI.Button ButtonUnsubscribeAll;
+        UnityEngine.UI.Button ButtonCleanUp;
+        UnityEngine.UI.Button ButtonReconnect;
+        UnityEngine.UI.Button ButtonAddChannelsToChannelGroup;
+        UnityEngine.UI.Button ButtonDeleteChannelGroup;
+        UnityEngine.UI.Button ButtonListChannelsForChannelGroup;
+        UnityEngine.UI.Button ButtonRemoveChannelsFromChannelGroup;
+        UnityEngine.UI.Button ButtonAddPushNotificationsOnChannels;
+        UnityEngine.UI.Button ButtonAuditPushChannelProvisions;
+        UnityEngine.UI.Button ButtonRemoveAllPushNotifications;
+        UnityEngine.UI.Button ButtonRemovePushNotificationsFromChannels;
+
+        void Awake(){
+            
+        }
+
+        void ButtonClearHandler(){
+            TextContent.text = "";
+        }
+
+        void ResetHandler(){
+
+        }
+        void ButtonAddChannelsToChannelGroupHandler(){
+
+        }
+        void ButtonReconnectHandler(){
+
+        }
+        void ButtonCleanUpHandler(){
+
+        }
+        void ButtonUnsubscribeAllHandler(){
+
+        }
+        void ButtonDeleteHistoryHandler(){
+
+        }
+        void ButtonFetchHandler(){
+
+        }
+        void ButtonUnsubscribeHandler(){
+
+        }
+        void ButtonSetPresenceStateHandler(){
+
+        }
+        void ButtonGetPresenceStateHandler(){
+
+        }
+        void ButtonHistoryHandler(){
+
+        }
+        void ButtonTimeHandler(){
+
+        }
+        void ButtonHereNowHandler(){
+
+        }
+        void ButtonWhereNowHandler(){
+
+        }
+        void ButtonFireHandler(){
+
+        }
+        void ButtonPublishHandler(){
+
+        }
+        void ButtonPublishPostHandler(){
+
+        }
+
+        void ButtonDeleteChannelGroupHandler(){
+            
+        }
+        void ButtonRemoveChannelsFromChannelGroupHandler(){
+            
+        }
+        void ButtonListChannelsForChannelGroupHandler(){
+            
+        }
+        void ButtonAddPushNotificationsOnChannelsHandler(){
+            
+        }
+        void ButtonAuditPushChannelProvisionsHandler(){
+            
+        }
+
+        void ButtonRemoveAllPushNotificationsHandler(){
+
+        }
+
+        void ButtonRemovePushNotificationsFromChannelsHandler(){
+
+        }
+
+        void SubscribeHandler(){
+            pubnub.Subscribe ().SetChannelGroups (listChannelGroups).SetChannels(listChannels).WithPresence().Execute();
+        }
+
+        void AddComponents(){
+            TextContent = GameObject.Find("TextContent").GetComponent<UnityEngine.UI.Text>();
+            ButtonClear = GameObject.Find("ButtonClear").GetComponent<UnityEngine.UI.Button>();
+            ButtonClear.onClick.AddListener(ButtonClearHandler);
+            ButtonReset = GameObject.Find("ButtonReset").GetComponent<UnityEngine.UI.Button>();
+            ButtonReset.onClick.AddListener(ResetHandler);
+            ButtonSubscribe = GameObject.Find("ButtonSubscribe").GetComponent<UnityEngine.UI.Button>();
+            ButtonSubscribe.onClick.AddListener(SubscribeHandler);
+            ButtonPublishPost = GameObject.Find("ButtonPublishPost").GetComponent<UnityEngine.UI.Button>();
+            ButtonPublishPost.onClick.AddListener(ButtonPublishPostHandler);
+            ButtonPublish = GameObject.Find("ButtonPublish").GetComponent<UnityEngine.UI.Button>();
+            ButtonPublish.onClick.AddListener(ButtonPublishHandler);
+
+            ButtonFire = GameObject.Find("ButtonFire").GetComponent<UnityEngine.UI.Button>();
+            ButtonFire.onClick.AddListener(ButtonFireHandler);
+            ButtonWhereNow = GameObject.Find("ButtonWhereNow").GetComponent<UnityEngine.UI.Button>();
+            ButtonWhereNow.onClick.AddListener(ButtonWhereNowHandler);
+            ButtonHereNow = GameObject.Find("ButtonHereNow").GetComponent<UnityEngine.UI.Button>();
+            ButtonHereNow.onClick.AddListener(ButtonHereNowHandler);
+            ButtonTime = GameObject.Find("ButtonTime").GetComponent<UnityEngine.UI.Button>();
+            ButtonTime.onClick.AddListener(ButtonTimeHandler);
+            ButtonHistory = GameObject.Find("ButtonHistory").GetComponent<UnityEngine.UI.Button>();
+            ButtonHistory.onClick.AddListener(ButtonHistoryHandler);
+            ButtonGetPresenceState = GameObject.Find("ButtonGetPresenceState").GetComponent<UnityEngine.UI.Button>();
+            ButtonGetPresenceState.onClick.AddListener(ButtonGetPresenceStateHandler);
+            ButtonSetPresenceState = GameObject.Find("ButtonSetPresenceState").GetComponent<UnityEngine.UI.Button>();
+            ButtonSetPresenceState.onClick.AddListener(ButtonSetPresenceStateHandler);
+            ButtonUnsubscribe = GameObject.Find("ButtonUnsubscribe").GetComponent<UnityEngine.UI.Button>();
+            ButtonUnsubscribe.onClick.AddListener(ButtonUnsubscribeHandler);
+            ButtonFetch = GameObject.Find("ButtonFetch").GetComponent<UnityEngine.UI.Button>();
+            ButtonFetch.onClick.AddListener(ButtonFetchHandler);
+            ButtonDeleteHistory = GameObject.Find("ButtonDeleteHistory").GetComponent<UnityEngine.UI.Button>();
+            ButtonDeleteHistory.onClick.AddListener(ButtonDeleteHistoryHandler);
+            ButtonUnsubscribeAll = GameObject.Find("ButtonUnsubscribeAll").GetComponent<UnityEngine.UI.Button>();
+            ButtonUnsubscribeAll.onClick.AddListener(ButtonUnsubscribeAllHandler);
+            ButtonCleanUp = GameObject.Find("ButtonCleanUp").GetComponent<UnityEngine.UI.Button>();
+            ButtonCleanUp.onClick.AddListener(ButtonCleanUpHandler);
+            ButtonReconnect = GameObject.Find("ButtonReconnect").GetComponent<UnityEngine.UI.Button>();
+            ButtonReconnect.onClick.AddListener(ButtonReconnectHandler);
+            ButtonAddChannelsToChannelGroup = GameObject.Find("ButtonAddChannelsToChannelGroup").GetComponent<UnityEngine.UI.Button>();
+            ButtonAddChannelsToChannelGroup.onClick.AddListener(ButtonAddChannelsToChannelGroupHandler);
+            ButtonDeleteChannelGroup = GameObject.Find("ButtonDeleteChannelGroup").GetComponent<UnityEngine.UI.Button>();
+            ButtonDeleteChannelGroup.onClick.AddListener(ButtonDeleteChannelGroupHandler);
+            ButtonRemoveChannelsFromChannelGroup = GameObject.Find("ButtonRemoveChannelsFromChannelGroup").GetComponent<UnityEngine.UI.Button>();
+            ButtonRemoveChannelsFromChannelGroup.onClick.AddListener(ButtonRemoveChannelsFromChannelGroupHandler);
+            ButtonListChannelsForChannelGroup = GameObject.Find("ButtonListChannelsForChannelGroup").GetComponent<UnityEngine.UI.Button>();
+            ButtonListChannelsForChannelGroup.onClick.AddListener(ButtonListChannelsForChannelGroupHandler);
+            ButtonAddPushNotificationsOnChannels = GameObject.Find("ButtonAddPushNotificationsOnChannels").GetComponent<UnityEngine.UI.Button>();
+            ButtonAddPushNotificationsOnChannels.onClick.AddListener(ButtonAddPushNotificationsOnChannelsHandler);
+            ButtonAuditPushChannelProvisions = GameObject.Find("ButtonAuditPushChannelProvisions").GetComponent<UnityEngine.UI.Button>();
+            ButtonAuditPushChannelProvisions.onClick.AddListener(ButtonAuditPushChannelProvisionsHandler);
+            ButtonRemoveAllPushNotifications = GameObject.Find("ButtonRemoveAllPushNotifications").GetComponent<UnityEngine.UI.Button>();
+            ButtonRemoveAllPushNotifications.onClick.AddListener(ButtonRemoveAllPushNotificationsHandler);
+            ButtonRemovePushNotificationsFromChannels = GameObject.Find("ButtonRemovePushNotificationsFromChannels").GetComponent<UnityEngine.UI.Button>();
+            ButtonRemovePushNotificationsFromChannels.onClick.AddListener(ButtonRemovePushNotificationsFromChannelsHandler);
+        }
+
     	// Use this for initialization
     	void Start () {
+            AddComponents();
             /*UnityWebRequest wr = UnityWebRequest.Post ("http://localhost:8082?s=a", "sss");
             wr.Send();*/
 
@@ -27,7 +203,7 @@ namespace PubNubExample
             pnConfiguration.Secure = true;
             pnConfiguration.CipherKey = "enigma";
             pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
-            pnConfiguration.PresenceTimeout = 60;
+            pnConfiguration.PresenceTimeout = 60;    
             pnConfiguration.PresenceInterval= 30;
             //pnConfiguration.Origin = "localhost:8082";
 
@@ -56,8 +232,8 @@ namespace PubNubExample
             string cg2 = "channelGroup2";
             string ch1 = "channel1";
             string ch2 = "channel2";
-            List<string> listChannelGroups = new List<string> (){cg1, cg2};
-            List<string> listChannels = new List<string> (){ch1, ch2};
+            listChannelGroups = new List<string> (){cg1, cg2};
+            listChannels = new List<string> (){ch1, ch2};
             
             /*Dictionary<string, object> state = new Dictionary<string, object>();
             state.Add  ("k1", "v1");
@@ -91,7 +267,7 @@ namespace PubNubExample
 
             });
 
-            /*pubnub.SusbcribeCallback += (sender, e) => { //; //+= (pnStatus, pnMessageResut, pnPresenceEventResult) => {
+            pubnub.SusbcribeCallback += (sender, e) => { //; //+= (pnStatus, pnMessageResut, pnPresenceEventResult) => {
                 SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
 
                 Debug.Log ("In Example, SusbcribeCallback");
@@ -175,10 +351,10 @@ namespace PubNubExample
 
                 });*/
 
-            //};
+            };
 
             //Debug.Log ("PubNub");
-            //pubnub.Subscribe ().SetChannelGroups (listChannelGroups).SetChannels(listChannels).WithPresence().Execute();
+            
 
             Debug.Log ("before Time");
             /*pubnub.Time ().Async (new PNTimeCallback<PNTimeResult>(
@@ -434,13 +610,18 @@ namespace PubNubExample
 
         void Display(string textToDisplay){
             stringToEdit = string.Format("{0}\n{1}", stringToEdit, textToDisplay);
+            //UnityEngine.UI.Text txtRef = (UnityEngine.UI.Text)GameObject.Find("CountText").GetComponent<Text>;
+            TextContent.text += "\n" + stringToEdit;
+            //Debug.Log("TextContent.text 2:" + TextContent.text);
             //TextScroll 
             //Canvas.
+            //Debug.Log("transform:" + transform.Find("TextContent").name);
         }
 
         public string stringToEdit = "Hello World";
         void OnGUI() {
-            stringToEdit = GUI.TextField(new Rect(10, 10, 600, 600), stringToEdit, 600);
+            //stringToEdit = GUI.TextField(new Rect(10, 10, 600, 600), stringToEdit, 600);
+            
         }
 
     	// Update is called once per frame

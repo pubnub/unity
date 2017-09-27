@@ -82,7 +82,10 @@ namespace PubNubAPI
                             if(channelsArray != null){
                                 pnChannelGroupsAllChannelsResult.Channels = new List<string>();
                                 foreach(string str in channelsArray){
-                                    Debug.Log("strchannelsArray:" + str);
+                                    #if (ENABLE_PUBNUB_LOGGING)
+                                    this.PubNubInstance.PNLog.WriteToLog(string.Format ("strchannelsArray: {0}", str), PNLoggingMethod.LevelInfo);
+                                    #endif
+
                                     pnChannelGroupsAllChannelsResult.Channels.Add(str);
                                 }
                             }
