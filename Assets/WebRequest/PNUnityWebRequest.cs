@@ -205,7 +205,7 @@ namespace PubNubAPI
 
         internal void RaiseEvents(bool isTimeout, UnityWebRequestWrapper unityWebRequestWrapper, string key)
         {
-            StopTimeoutsAndComplete (unityWebRequestWrapper, key);
+            StopTimeoutsAndComplete (unityWebRequestWrapper, key, false);
             
             if (isTimeout) {
                 ProcessTimeout (unityWebRequestWrapper, key, unityWebRequestWrapper.IsComplete);
@@ -296,10 +296,10 @@ namespace PubNubAPI
         {
             if (unityWebRequestWrapper.PauseTimer <= 0) {
                 #if (ENABLE_PUBNUB_LOGGING)
-                this.PNLog.WriteToLog (string.Format ("pause timeout {0}",  unityWebRequestWrapper.CurrentRequestType.ToString()), PNLoggingMethod.LevelInfo);
+                this.PNLog.WriteToLog (string.Format ("pause timeout {0} {1}",  unityWebRequestWrapper.CurrentRequestType.ToString(), unityWebRequestWrapper.PauseTimer.ToString()), PNLoggingMethod.LevelInfo);
                 #endif
 
-                StopTimeoutsAndComplete (unityWebRequestWrapper, key);
+                StopTimeoutsAndComplete (unityWebRequestWrapper, key, true);
                 
                 //ResumeEvent.Raise(this, CreateCurrentRequestTypeEventArgs(unityWebRequestWrapper, false));
                 StartWebRequests(unityWebRequestWrapper, key);
@@ -449,13 +449,16 @@ namespace PubNubAPI
             }           
         }*/
 
-        internal void StopTimeoutsAndComplete(UnityWebRequestWrapper unityWebRequestWrapper, string key){
-
+        internal void StopTimeoutsAndComplete(UnityWebRequestWrapper unityWebRequestWrapper, string key, bool pauseOnly)
+        {
             unityWebRequestWrapper.PauseTimer = 0;
             unityWebRequestWrapper.RunPauseTimer = false;
-            unityWebRequestWrapper.RunTimer = false;
-            unityWebRequestWrapper.Timer = 0;
-            unityWebRequestWrapper.IsComplete = true;
+
+            if(!pauseOnly){
+                unityWebRequestWrapper.RunTimer = false;
+                unityWebRequestWrapper.Timer = 0;
+                unityWebRequestWrapper.IsComplete = true;
+            }
             
             currentWebRequests[key] = unityWebRequestWrapper;
             /*switch (crt) {
@@ -590,7 +593,7 @@ namespace PubNubAPI
                 UnityWebRequestWrapper unityWebRequestWrapper;
                 if(currentWebRequests.TryGetValue(webRequestId, out unityWebRequestWrapper)){
                     if(unityWebRequestWrapper!=null){
-                        StopTimeoutsAndComplete(unityWebRequestWrapper, webRequestId);
+                        StopTimeoutsAndComplete(unityWebRequestWrapper, webRequestId, false);
 
                         if((unityWebRequestWrapper.CurrentUnityWebRequest != null) && (!unityWebRequestWrapper.CurrentUnityWebRequest.isDone)){
                             unityWebRequestWrapper.CurrentUnityWebRequest.Abort();

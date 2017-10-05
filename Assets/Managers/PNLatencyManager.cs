@@ -60,14 +60,14 @@ namespace PubNubAPI
 
         void UpdateLatency(){
             //while(RunUpdateLatencyLoop){
-            Debug.Log("In Latency Updator");
+            //Debug.Log("In Latency Updator");
             TimeSpan ts = TimeSpan.FromTicks(DateTime.UtcNow.Ticks);
             //double minutesFromTs = ts.TotalMinutes;
-            Debug.Log("FromUnixTime now:" + FromUnixTime2(DateTime.UtcNow.Ticks));
+            //Debug.Log("FromUnixTime now:" + FromUnixTime2(DateTime.UtcNow.Ticks));
             long t = DateTime.UtcNow.Ticks - 60 * 10000000;
             
             //TimeSpan ts2 = TimeSpan.FromTicks(t);
-            Debug.Log("FromUnixTime now - 10:" + FromUnixTime2(t));
+            //Debug.Log("FromUnixTime now - 10:" + FromUnixTime2(t));
 
             /*TimeSpan ts2 = TimeSpan.FromTicks(t);
             double minutesFromTs2 = ts2.TotalMinutes;
@@ -96,8 +96,8 @@ namespace PubNubAPI
             foreach(long key in keys){
                 if(key < t){
                     dict.Remove(key);
-                    Debug.Log(name + "Latency " + key + " removed");
-                    Debug.Log(name + "FromUnixTime removed:" + FromUnixTime2(key));
+                    //Debug.Log(name + "Latency " + key + " removed");
+                    //Debug.Log(name + "FromUnixTime removed:" + FromUnixTime2(key));
                 } else {
                     timeAvg += dict[key];
                 }
@@ -107,7 +107,7 @@ namespace PubNubAPI
                 timeAvg /= count;
             }
             f = timeAvg;
-            Debug.Log(name + "Latency " + f);
+            //Debug.Log(name + "Latency " + f);
         }
 
         public void StoreLatency(long startTime, long endTime, PNOperationType operationType){

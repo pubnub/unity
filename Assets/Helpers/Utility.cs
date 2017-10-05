@@ -14,15 +14,15 @@ namespace PubNubAPI
 
         #if(UNITY_IOS)
         internal static int CheckTimeoutValue(int value){
-        if (value > iOSRequestTimeout) {
-        #if (ENABLE_PUBNUB_LOGGING)
-        LoggingMethod.WriteToLog (string.Format("Forcing timeout value to {0} as iOS force closes the www request after {0} secs", iOSRequestTimeout), LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
-        #endif
+            if (value > iOSRequestTimeout) {
+                //#if (ENABLE_PUBNUB_LOGGING)
+                //LoggingMethod.WriteToLog (string.Format("Forcing timeout value to {0} as iOS force closes the www request after {0} secs", iOSRequestTimeout), LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
+                //#endif*/
 
-        return iOSRequestTimeout;
-        } else {
-        return value;
-        }
+                return iOSRequestTimeout;
+            } else {
+                return value;
+            }
         }
         #endif  
     

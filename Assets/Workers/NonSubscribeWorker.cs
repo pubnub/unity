@@ -166,6 +166,7 @@ namespace PubNubAPI
         private void WebRequestCompleteHandler (object sender, EventArgs ea)
         { 
             CustomEventArgs cea = ea as CustomEventArgs;
+            this.queueManager.RaiseRunningRequestEnd(cea.PubNubRequestState.OperationType);
             try {
                
                 if ((cea != null) && (cea.CurrRequestType.Equals(PNCurrentRequestType.NonSubscribe))) {
@@ -182,8 +183,9 @@ namespace PubNubAPI
                         this.queueManager.PubNubInstance.PNLog.WriteToLog (string.Format ("NonSubscribeHandler: result="), PNLoggingMethod.LevelInfo);
                         #endif
 
-                        this.queueManager.RaiseRunningRequestEnd(cea.PubNubRequestState.OperationType);
+                        
                     }
+                    
                     /*}
                     #if (ENABLE_PUBNUB_LOGGING)
                     else {

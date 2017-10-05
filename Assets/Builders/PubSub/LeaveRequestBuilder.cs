@@ -59,7 +59,7 @@ namespace PubNubAPI
                 newChannelEntities
             );
 
-            if (newChannelEntities.Count > 0) {
+            //if (newChannelEntities.Count > 0) {
                 //Retrieve the current channels already subscribed previously and terminate them
                 this.PubNubInstance.SubWorker.AbortPreviousRequest(subscribedChannels);
 
@@ -89,7 +89,9 @@ namespace PubNubAPI
                 //Get all the channels
                 //this.PubNubInstance.SubWorker.ContinueToSubscribeRestOfChannels(requestState.RespType);
                 this.PubNubInstance.SubWorker.ContinueToSubscribeRestOfChannels();
-            }
+            //} else {
+
+            //}
             //this.PubNubInstance.SubscriptionInstance.Delete()
 
             

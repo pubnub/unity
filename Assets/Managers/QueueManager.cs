@@ -9,7 +9,7 @@ namespace PubNubAPI
 
         public delegate void RunningRequestEndDelegate(PNOperationType operationType);
         public event RunningRequestEndDelegate RunningRequestEnd;
-        private bool NoRunningRequests = true;
+        private bool RunRequest = true;
         internal ushort NoOfConcurrentRequests = 1;
         public PubNubUnity PubNubInstance { get; set;}
         private ushort RunningRequests = 0;
@@ -28,12 +28,18 @@ namespace PubNubAPI
                 } else {
                     RunningRequests++;
                 }
-                //Debug.Log(RunningRequests.ToString() + RequestComplete.ToString());
+                Debug.Log("RunningRequests+RequestComplete:" + RunningRequests.ToString() + RequestComplete.ToString());
                 if (RunningRequests <= NoOfConcurrentRequests) {
-                    NoRunningRequests = true;
+                    RunRequest = true;
                 } else {
-                    NoRunningRequests = false;
+                    RunRequest = false;
                 }
+            }
+        }
+
+        bool GetRunningRequests(){
+            lock(lockObj){
+                return RunRequest;
             }
         }
 
@@ -43,7 +49,8 @@ namespace PubNubAPI
 
         void Update(){
             if(PubNubInstance != null){
-                if ((RequestQueue.Instance.HasItems) && (NoRunningRequests)) {
+                bool runRequests = GetRunningRequests();
+                if ((RequestQueue.Instance.HasItems) && (runRequests)) {
                     UpdateRunningRequests(false);
                     QueueStorage qs =  RequestQueue.Instance.Dequeue ();
                     PNOperationType operationType = qs.OperationType;
@@ -135,6 +142,8 @@ namespace PubNubAPI
 
                             break;
                     }
+                } else {
+                    Debug.Log(RequestQueue.Instance.HasItems.ToString() + runRequests.ToString());    
                 }
                 //this.PubNubInstance.Latency.Update();
             } else {
