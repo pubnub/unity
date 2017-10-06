@@ -332,18 +332,19 @@ namespace PubNubAPI
             if(timer <= 0){
                 List<string> keys = new List<string>(currentWebRequests.Keys);
                 foreach(string key in keys){
-                    UnityWebRequestWrapper unityWebRequestWrapper = currentWebRequests[key];
-                    if(unityWebRequestWrapper.RunTimer){
-                        unityWebRequestWrapper.Timer -= Time.deltaTime;
-                        currentWebRequests[key] = unityWebRequestWrapper;
-                        CheckElapsedTime (unityWebRequestWrapper, key);
+                    UnityWebRequestWrapper unityWebRequestWrapper;
+                    if(currentWebRequests.TryGetValue(key, out unityWebRequestWrapper)){
+                        if(unityWebRequestWrapper.RunTimer){
+                            unityWebRequestWrapper.Timer -= Time.deltaTime;
+                            currentWebRequests[key] = unityWebRequestWrapper;
+                            CheckElapsedTime (unityWebRequestWrapper, key);
+                        }
+                        if(unityWebRequestWrapper.RunPauseTimer){
+                            unityWebRequestWrapper.PauseTimer -= Time.deltaTime;
+                            currentWebRequests[key] = unityWebRequestWrapper;
+                            CheckPauseTime (unityWebRequestWrapper, key);
+                        }
                     }
-                    if(unityWebRequestWrapper.RunPauseTimer){
-                        unityWebRequestWrapper.PauseTimer -= Time.deltaTime;
-                        currentWebRequests[key] = unityWebRequestWrapper;
-                        CheckPauseTime (unityWebRequestWrapper, key);
-                    }
-
                 }
                 timer = timerConst;
             }

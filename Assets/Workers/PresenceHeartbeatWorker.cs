@@ -26,6 +26,7 @@ namespace PubNubAPI
         internal void CleanUp(){
             if (webRequest != null) {
                 webRequest.WebRequestComplete -= WebRequestCompleteHandler;
+                webRequest.AbortRequest(webRequestId);
                 //UnityEngine.Object.Destroy (webRequest);
             }
         }

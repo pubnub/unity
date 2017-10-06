@@ -79,6 +79,7 @@ namespace PubNubAPI
             /*PubnubCallbacks.FireErrorCallbacksForAllChannels<T> (cbMessage, pubnubRequestState,
                     PubnubErrorSeverity.Warn, PubnubErrorCode.NoInternetRetryConnect, PubnubErrorLevel);*/
             Debug.Log("Internet disconnected");
+            AbortPreviousRequest(null);
             internetStatus = false;
             if(
                 PubNubInstance.PNConfig.HeartbeatNotificationOption.Equals(PNHeartbeatNotificationOption.All)

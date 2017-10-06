@@ -670,6 +670,8 @@ namespace PubNubExample
                     (s.AffectedChannelGroups != null) ? string.Join(",", s.AffectedChannelGroups.ToArray()) : "null",
                     (s.ClientRequest != null) ? s.ClientRequest.ToString() : "null"
                     ));
+
+                    //Display (s.Category.ToString());
             }
         }
 
