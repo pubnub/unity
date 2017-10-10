@@ -91,7 +91,7 @@ namespace PubNubAPI
             else {
                 //TODO raise duplicate event
                 #if (ENABLE_PUBNUB_LOGGING)
-                this.PubNubInstance.PNLog.WriteToLog (string.Format ("MultiChannelSubscribeInit: channelsOrChannelGroupsAdded {1}", channelsOrChannelGroupsAdded.ToString ()), PNLoggingMethod.LevelInfo);
+                this.PubNubInstance.PNLog.WriteToLog (string.Format ("MultiChannelSubscribeInit: channelsOrChannelGroupsAdded {0}", channelsOrChannelGroupsAdded.ToString ()), PNLoggingMethod.LevelInfo);
                 #endif
 
                 PNStatus pnStatus = Helpers.CreatePNStatus(

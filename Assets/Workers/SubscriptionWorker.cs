@@ -800,6 +800,9 @@ namespace PubNubAPI
                     PNMessageResult subMessageResult; 
                     CreatePNMessageResult(subscribeMessage, out subMessageResult);
                     Debug.Log("Raising message event ");
+                    if(!string.IsNullOrEmpty(this.PubNubInstance.PNConfig.CipherKey) && (this.PubNubInstance.PNConfig.CipherKey.Length > 0)){
+                        subMessageResult.Payload = Helpers.DecodeMessage(PubNubInstance.PNConfig.CipherKey, subMessageResult.Payload, this.PubNubInstance.JsonLibrary, this.PubNubInstance.PNLog);
+                    } 
                     mea.pnMessageResult = subMessageResult;
                     PubNubInstance.RaiseEvent (mea);
                     /*if(channelCallbacks!=null){
