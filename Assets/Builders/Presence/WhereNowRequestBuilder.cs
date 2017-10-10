@@ -94,8 +94,8 @@ namespace PubNubAPI
                                 //List<string> result1 = ((IEnumerable)deSerializedResult).Cast<string> ().ToList ();
                                 pnWhereNowResult.Channels = channels;
                             } else {
-                                pnWhereNowResult = null;
-                                pnStatus = base.CreateErrorResponseFromMessage("channels are null", requestState, PNStatusCategory.PNMalformedResponseCategory);
+                                pnWhereNowResult.Channels = null;
+                                //pnStatus = base.CreateErrorResponseFromMessage("channels are null", requestState, PNStatusCategory.PNMalformedResponseCategory);
                             }
                         } else {
                             pnWhereNowResult = null;

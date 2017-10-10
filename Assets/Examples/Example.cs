@@ -153,11 +153,14 @@ namespace PubNubExample
         
         void ButtonWhereNowHandler(){
             pubnub.WhereNow ().Async ((result, status) => {
-                    Debug.Log ("in WhereNow");
+                Debug.Log ("in WhereNow");
+                if(status.Error){
+                    PrintStatus(status);
+                } else {
                     Debug.Log (string.Format("DateTime {0}, In Example, Channels: {1}", DateTime.UtcNow , (result.Channels!=null)?string.Join(",",result.Channels.ToArray()):""));
-                    Debug.Log (status.Error);
-
-                });
+                    Display(string.Format("WhereNow: {0}", (result.Channels!=null)?string.Join(",",result.Channels.ToArray()):""));
+                }
+             });
         }
         void ButtonFireHandler(){
             pubnub.Fire().Channel("channel1").Message("test fire essage").Async((result, status) => {
