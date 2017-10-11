@@ -138,9 +138,9 @@ namespace PubNubAPI
             return pnUnity.AddChannelsToChannelGroup();
         }
 
-        public DeleteChannelGroupBuilder DeleteChannelsFromChannelGroup(){
+        public DeleteChannelGroupBuilder DeleteChannelGroup(){
             Debug.Log ("DeleteChannelGroupBuilder");
-            return pnUnity.DeleteChannelsFromChannelGroup();
+            return pnUnity.DeleteChannelGroup();
         }
 
         public RemoveChannelsFromGroupBuilder RemoveChannelsFromChannelGroup(){

@@ -108,6 +108,14 @@ namespace PubNubAPI
             this.PubNubInstance.PNLog.WriteToLog(string.Format("base Async {0}", OperationType.ToString()), PNLoggingMethod.LevelInfo);
             #endif
 
+            if(Callback == null){
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PubNubInstance.PNLog.WriteToLog(string.Format("Callback is null. Stopping request.{0}", OperationType.ToString()), PNLoggingMethod.LevelWarning);
+                #endif
+                
+                return;
+            }
+
             RequestQueue.Instance.Enqueue (Callback, OperationType, pnBuilder, this.PubNubInstance);
         }
 

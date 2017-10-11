@@ -7,7 +7,7 @@ namespace PubNubAPI
 {
     public class GetAllChannelsForGroupRequestBuilder: PubNubNonSubBuilder<GetAllChannelsForGroupRequestBuilder, PNChannelGroupsAllChannelsResult>, IPubNubNonSubscribeBuilder<GetAllChannelsForGroupRequestBuilder, PNChannelGroupsAllChannelsResult>
     {      
-        public GetAllChannelsForGroupRequestBuilder(PubNubUnity pn):base(pn, PNOperationType.PNAddChannelsToGroupOperation){
+        public GetAllChannelsForGroupRequestBuilder(PubNubUnity pn):base(pn, PNOperationType.PNChannelsForGroupOperation){
         }
         private string ChannelGroupToList { get; set;}
 

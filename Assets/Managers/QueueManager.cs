@@ -54,6 +54,7 @@ namespace PubNubAPI
                     UpdateRunningRequests(false);
                     QueueStorage qs =  RequestQueue.Instance.Dequeue ();
                     PNOperationType operationType = qs.OperationType;
+                    Debug.Log(operationType.ToString());
                     object operationParams = qs.OperationParams;
                     switch(operationType){
                         case PNOperationType.PNTimeOperation:
@@ -107,11 +108,13 @@ namespace PubNubAPI
                             pushNotificationsFromChannelsRequestBuilder.RaiseRunRequest(this);
                             break;
                         case PNOperationType.PNAddChannelsToGroupOperation:
+                            
                             AddChannelsToChannelGroupRequestBuilder addChannelsToGroupRequestBuilder = operationParams as AddChannelsToChannelGroupRequestBuilder;
                             addChannelsToGroupRequestBuilder.RaiseRunRequest(this);
 
                             break;
                         case PNOperationType.PNChannelGroupsOperation:
+                            Debug.Log((operationParams == null)? "operationParams null" : "operationParams not null");
                             GetChannelGroupsRequestBuilder getChannelGroupsBuilder = operationParams as GetChannelGroupsRequestBuilder;
                             getChannelGroupsBuilder.RaiseRunRequest(this);
 

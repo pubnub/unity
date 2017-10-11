@@ -161,7 +161,7 @@ namespace PubNubAPI
             return new AddChannelsToChannelGroupBuilder(this);
         }
 
-        public DeleteChannelGroupBuilder DeleteChannelsFromChannelGroup(){
+        public DeleteChannelGroupBuilder DeleteChannelGroup(){
             Debug.Log ("DeleteChannelGroupBuilder");
             return new DeleteChannelGroupBuilder(this);
         }
