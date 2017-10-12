@@ -111,31 +111,45 @@ namespace PubNubExample
             });
 
         }
+
+        void ShowStateResult(Dictionary<string, object> dict){
+            if(dict!= null){
+                foreach (KeyValuePair<string, object> key in dict){
+                    Display(string.Format("Channel:{0}, State:{1}", key.Key, pubnub.JsonLibrary.SerializeToJsonString(key.Value)));
+                }
+            }
+        }
         void ButtonSetPresenceStateHandler(){
             Dictionary<string, object> state = new Dictionary<string, object>();
             state.Add  ("k1", "v1");
-            pubnub.SetPresenceState().ChannelGroups(listChannelGroups).Channels(listChannels).State(state).Async ((result, status) => {
+            pubnub.SetPresenceState().Channels(listChannels).ChannelGroups(listChannelGroups).State(state).Async ((result, status) => {
+            //pubnub.SetPresenceState().Channels(new List<string> (){ch1}).State(state).Async ((result, status) => {    
                 if(status.Error){
                     Debug.Log (string.Format("In Example, SetPresenceState Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                 } else {
                     Debug.Log (string.Format("DateTime {0}, In Example SetPresenceState, result:", DateTime.UtcNow));
-                    
+                    if(result != null){
+                        ShowStateResult(result.StateByChannels);
+                    }
                 }
             });
         }
         void ButtonGetPresenceStateHandler(){
+            //pubnub.GetPresenceState().Channels(new List<string> (){ch1}).Async ((result, status) => {
             pubnub.GetPresenceState().Channels(listChannels).ChannelGroups(listChannelGroups).Async ((result, status) => {
-            //pubnub.GetPresenceState().Channels(listChannels).ChannelGroups(listChannelGroups).Async ((result, status) => {
                 
                 if(status.Error){
                     Debug.Log (string.Format("In Example, GetPresenceState Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                 } else {
                     Debug.Log (string.Format("DateTime {0}, In Example GetPresenceState, result:", DateTime.UtcNow));
+                    if(result != null){
+                        ShowStateResult(result.StateByChannels);
+                    }
                 }
             });
         }
         void ButtonHistoryHandler(){
-            pubnub.History ().Channel("channel1").Async ((result, status) => {
+            pubnub.History ().Channel("channel1").IncludeTimetoken(true).Async ((result, status) => {
                 
                 if(status.Error){
                     Debug.Log (string.Format("In Example, History Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
@@ -143,7 +157,7 @@ namespace PubNubExample
                     //Debug.Log (string.Format("DateTime {0}, In Example, result: {1}", DateTime.UtcNow ,result.EndTimetoken, (result.Messages.Count>0)?result.Messages[0].ToString():""));
                     foreach (PNHistoryItemResult histItem in result.Messages){
                         Debug.Log(string.Format("histItem: {0}, {1}", histItem.Entry.ToString(), histItem.Timetoken.ToString()));
-                        Display(histItem.Entry.ToString());
+                        Display(string.Format("histItem: {0}, {1}", histItem.Entry.ToString(), histItem.Timetoken.ToString()));
                     }
                 }
             });
@@ -280,7 +294,8 @@ namespace PubNubExample
         }
 
         void SubscribeHandler(){
-            pubnub.Subscribe ().SetChannelGroups (listChannelGroups).SetChannels(listChannels).WithPresence().Execute();
+            //pubnub.Subscribe ().SetChannelGroups (listChannelGroups).SetChannels(listChannels).WithPresence().Execute();
+            pubnub.Subscribe ().SetChannels(new List<string> (){ch1}).WithPresence().Execute();
         }
 
         void AddComponents(){
@@ -654,8 +669,8 @@ namespace PubNubExample
         }
 
         void FetchMessages(PubNub pubnub, List<string> listChannels){
-            pubnub.FetchMessages().Channels(listChannels).Async ((result, status) => {
-                
+            //pubnub.FetchMessages().Channels(listChannels).Async ((result, status) => {
+            pubnub.FetchMessages().Channels(new List<string>{"channel2"}).Async ((result, status) => {    
                 if(status.Error){
                     Debug.Log (string.Format("In Example, FetchMessages Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                 } else {
@@ -666,6 +681,7 @@ namespace PubNubExample
                             Debug.Log("Channel: " + pnMessageResut.Channel);
                             Debug.Log("payload: " + pnMessageResut.Payload.ToString());
                             Debug.Log("timetoken: " + pnMessageResut.Timetoken.ToString());
+                            Display(string.Format("Channel {0}, payload {1}, timetoken {2}", pnMessageResut.Channel, pnMessageResut.Payload.ToString(), pnMessageResut.Timetoken.ToString()));
                         }
                     }
                 }

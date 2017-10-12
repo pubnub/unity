@@ -190,6 +190,10 @@ namespace PubNubAPI
                                 this.PubNubInstance.PNLog.WriteToLog(string.Format ("CreateFetchMessagesResult: timetoken {0}.", timetoken.ToString()), PNLoggingMethod.LevelInfo);
                                 #endif
                             }
+                            if(!string.IsNullOrEmpty(this.PubNubInstance.PNConfig.CipherKey) && (this.PubNubInstance.PNConfig.CipherKey.Length > 0)){
+                                //TODO: handle exception
+                                objPayload = Helpers.DecodeMessage(this.PubNubInstance.PNConfig.CipherKey, objPayload, this.PubNubInstance.JsonLibrary, this.PubNubInstance.PNLog);
+                            } 
                             
                             PNMessageResult pnMessageResult = new PNMessageResult(
                                 channelName, 

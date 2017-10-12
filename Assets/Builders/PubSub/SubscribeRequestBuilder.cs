@@ -37,20 +37,22 @@ namespace PubNubAPI
         void CheckPresenceAndAddSuffix(ref List<string> rawChannels, bool includePresenceChannel, bool subscribeToPresenceChannelOnly){
             if(includePresenceChannel || subscribeToPresenceChannelOnly){
                 List<string> newChannels = new List<string>();
-                foreach (string ch in rawChannels){
-                    string presenceChannel = string.Format("{0}{1}", ch, Utility.PresenceChannelSuffix);
-                    if(!ch.Contains(Utility.PresenceChannelSuffix)){
-                        if(!rawChannels.Contains(presenceChannel)){
-                            newChannels.Add(presenceChannel);
+                if(rawChannels != null){
+                    foreach (string ch in rawChannels){
+                        string presenceChannel = string.Format("{0}{1}", ch, Utility.PresenceChannelSuffix);
+                        if(!ch.Contains(Utility.PresenceChannelSuffix)){
+                            if(!rawChannels.Contains(presenceChannel)){
+                                newChannels.Add(presenceChannel);
+                            }
+                        } else if (ch.Contains(Utility.PresenceChannelSuffix) && (subscribeToPresenceChannelOnly)){
+                        newChannels.Add(presenceChannel);     
                         }
-                    } else if (ch.Contains(Utility.PresenceChannelSuffix) && (subscribeToPresenceChannelOnly)){
-                       newChannels.Add(presenceChannel);     
                     }
-                }
-                if(includePresenceChannel){
-                    rawChannels.AddRange(newChannels);
-                } else {
-                    rawChannels = newChannels;
+                    if(includePresenceChannel){
+                        rawChannels.AddRange(newChannels);
+                    } else {
+                        rawChannels = newChannels;
+                    }
                 }
             }
         }

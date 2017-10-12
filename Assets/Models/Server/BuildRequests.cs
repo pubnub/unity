@@ -782,7 +782,7 @@ namespace PubNubAPI
             if (!string.IsNullOrEmpty(pnInstance.PNConfig.SecretKey) && (pnInstance.PNConfig.SecretKey.Length > 0)) {
                 string signature = "";
                 string parameters = SetParametersInOrder(uri);
-                UnityEngine.Debug.Log("ordered parameters: "+parameters);
+                UnityEngine.Debug.Log("ordered parameters: " + parameters);
 
                 StringBuilder stringToSign = new StringBuilder ();
                 stringToSign
@@ -906,7 +906,9 @@ namespace PubNubAPI
                 url.Append (parameters);
                 url = AppendAuthKeyToURL(url, authenticationKey, type);
                 url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
-                url = url.Append(GenerateSignatureAndAddToURL(ref pnInstance, new Uri (url.ToString ()), urlComponentsEncoded));
+                string urlPath = string.Format("/{0}", string.Join( "/", urlComponents.ToArray()));
+                UnityEngine.Debug.Log(string.Format("urlComponentsString {0}", urlPath));
+                url = url.Append(GenerateSignatureAndAddToURL(ref pnInstance, new Uri (urlPath.ToString ()), urlComponentsEncoded));
                 break;
             case PNOperationType.PNHistoryOperation:
             case PNOperationType.PNFetchMessagesOperation:

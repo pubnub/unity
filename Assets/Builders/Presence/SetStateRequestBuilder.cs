@@ -135,6 +135,20 @@ namespace PubNubAPI
             return stateChanged;
         }
 
+        internal bool UpdateOrAddUserStateOfEntities(List<string> channelsOrChannelGroups, bool isChannelGroup, Dictionary<string, object> userState, bool edit, bool isForOtherUUID, ref List<ChannelEntity> channelEntities, ref bool stateChanged){
+            if(channelsOrChannelGroups != null){
+                foreach (string ch in channelsOrChannelGroups) {
+                    if (!string.IsNullOrEmpty (ch)) {
+                        bool changeState = UpdateOrAddUserStateOfEntity (ch, false, userState, edit, isForOtherUUID, ref channelEntities);
+                        if (changeState && !stateChanged) {
+                            stateChanged = true;
+                        }
+                    }
+                }
+            }
+            return stateChanged;
+        }
+
         internal bool CheckAndAddExistingUserState(List<string> channels, List<string> channelGroups, Dictionary<string, object> userState, bool edit, string uuid, string sessionUUID, out List<ChannelEntity> channelEntities)
         {
             bool stateChanged = false;
@@ -143,23 +157,8 @@ namespace PubNubAPI
             if (!string.IsNullOrEmpty (uuid) && !sessionUUID.Equals (uuid)) {
                 isForOtherUUID = true;
             } 
-            foreach (string ch in channels) {
-                if (!string.IsNullOrEmpty (ch)) {
-                    bool changeState = UpdateOrAddUserStateOfEntity (ch, false, userState, edit, isForOtherUUID, ref channelEntities);
-                    if (changeState && !stateChanged) {
-                        stateChanged = true;
-                    }
-                }
-            }
-
-            foreach (string ch in channelGroups) {
-                if (!string.IsNullOrEmpty (ch)) {
-                    bool changeState = UpdateOrAddUserStateOfEntity (ch, true, userState, edit, isForOtherUUID, ref channelEntities);
-                    if (changeState && !stateChanged) {
-                        stateChanged = true;
-                    }
-                }
-            }
+            UpdateOrAddUserStateOfEntities(channels, false, userState, edit, isForOtherUUID, ref channelEntities, ref stateChanged);
+            UpdateOrAddUserStateOfEntities(channelGroups, true, userState, edit, isForOtherUUID, ref channelEntities, ref stateChanged);
 
             //returnUserState = Helpers.BuildJsonUserState(channelEntities);
 
@@ -203,8 +202,7 @@ namespace PubNubAPI
                             }
                             pnSetStateResult.StateByChannels = channelsDict;
                         } else {
-                            pnSetStateResult = null;
-                            pnStatus = base.CreateErrorResponseFromMessage("channelsDict dictionary is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
+                            pnSetStateResult.StateByChannels = payload;
                         }
                 
                     } else {

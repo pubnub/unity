@@ -111,8 +111,7 @@ namespace PubNubAPI
                             #endif
                             pnGetStateResult.StateByChannels = channelsDict;
                         } else {
-                            pnGetStateResult = null;
-                            pnStatus = base.CreateErrorResponseFromMessage("channelsDict dictionary is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
+                            pnGetStateResult.StateByChannels = payload;
                         }
                 
                     } else {
