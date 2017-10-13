@@ -206,7 +206,11 @@ namespace PubNubAPI
             if(HasChannels || HasChannelGroups){
                 HasChannelsOrChannelGroups = true;
             }
+            this.PubNubInstance.PNLog.WriteToLog(string.Format("PrevCompiledUserState: {0}", CompiledUserState), PNLoggingMethod.LevelInfo);
             CompiledUserState = Helpers.BuildJsonUserState (AllSubscribedChannelsAndChannelGroups);
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PubNubInstance.PNLog.WriteToLog(string.Format("CompiledUserState: {0}", CompiledUserState), PNLoggingMethod.LevelInfo);
+            #endif
         }
 
         public Dictionary<string, object> EditUserState(Dictionary<string, object> newUserState, 
