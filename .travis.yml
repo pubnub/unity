@@ -4,7 +4,7 @@ language: generic
 # use a Mac OSX image
 os: osx
 
-# only run builds on pushes to the master branch
+# only run builds on pushes to the branch
 branches:
   only:
   - CE-2968-UnityV4
