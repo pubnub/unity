@@ -268,7 +268,7 @@ namespace PubNubAPI
                 parameterBuilder.AppendFormat ("&end={0}", end.ToString ().ToLower ());
             }
             long timeStamp = Utility.TranslateDateTimeToSeconds (DateTime.UtcNow);
-            parameterBuilder.AppendFormat ("&timeStamp={0}", timeStamp.ToString());
+            parameterBuilder.AppendFormat ("&timestamp={0}", timeStamp.ToString());
 
             List<string> url = new List<string> ();
 
@@ -286,7 +286,7 @@ namespace PubNubAPI
         {
             StringBuilder parameterBuilder = new StringBuilder ();
 
-            parameterBuilder.AppendFormat ("?count={0}", count);
+            parameterBuilder.AppendFormat ("?max={0}", count);
             if (includeToken) {
                 parameterBuilder.AppendFormat ("&include_token={0}", includeToken.ToString ().ToLower ());
             }

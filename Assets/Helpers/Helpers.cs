@@ -419,14 +419,14 @@ namespace PubNubAPI
             return channelEntities;
         }
 
-        internal static string BuildJsonUserState (List<ChannelEntity> ce)
+        internal static string BuildJsonUserState (List<ChannelEntity> listChannelEntities)
         {
             string retJsonUserState = "";
 
             StringBuilder jsonStateBuilder = new StringBuilder ();
 
-            if (ce != null) {
-                foreach (ChannelEntity c in ce) {
+            if (listChannelEntities != null) {
+                foreach (ChannelEntity c in listChannelEntities) {
                     string currentJsonState = BuildJsonUserState (c.ChannelParams.UserState);
                     if (!string.IsNullOrEmpty (currentJsonState)) {
                         currentJsonState = string.Format ("\"{0}\":{{{1}}}",c.ChannelID.ChannelOrChannelGroupName, currentJsonState);

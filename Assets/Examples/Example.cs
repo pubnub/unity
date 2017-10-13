@@ -85,14 +85,18 @@ namespace PubNubExample
             });
         }
         void ButtonDeleteHistoryHandler(){
-            pubnub.DeleteMessages().Channel("channel1").Start(15059180223219815).End(15059180231056976).Async((result, status) => {
+            pubnub.DeleteMessages().Channel("channel1").Start(15078932998876451).End(15078933628583256).Async((result, status) => {
+            //pubnub.DeleteMessages().Channel("channel1").Async((result, status) => {                
                 Debug.Log ("in DeleteMessages");
                 if(!status.Error){
                     Debug.Log (string.Format("DateTime {0}, In DeleteMessages Example, Timetoken: {1}", DateTime.UtcNow , result.Message));
+                    Display(string.Format("result.Message: ", result.Message));
+                    Display(string.Format("deleted"));
                 } else {
                     Debug.Log (status.Error);
                     Debug.Log (status.StatusCode);
                     Debug.Log (status.ErrorData.Info);
+                    
                 }
 
             });
@@ -669,8 +673,8 @@ namespace PubNubExample
         }
 
         void FetchMessages(PubNub pubnub, List<string> listChannels){
-            //pubnub.FetchMessages().Channels(listChannels).Async ((result, status) => {
-            pubnub.FetchMessages().Channels(new List<string>{"channel2"}).Async ((result, status) => {    
+            pubnub.FetchMessages().Channels(listChannels).Async ((result, status) => {
+            //pubnub.FetchMessages().Channels(new List<string>{"channel2"}).Async ((result, status) => {    
                 if(status.Error){
                     Debug.Log (string.Format("In Example, FetchMessages Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                 } else {

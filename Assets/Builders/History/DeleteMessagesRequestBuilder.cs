@@ -67,7 +67,8 @@ namespace PubNubAPI
         // }
 
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
-            //[[{"text":"hey"},{"text":"hey"},{"text":"hey"},{"text":"hey"}],15011678612673119,15011678623670911]
+            //{"status": 200, "error": false, "error_message": ""} 
+            //{"status": 403, "error": true, "error_message": "Use of the history API requires the Storage & Playback which is not enabled for this subscribe key. Login to your PubNub Dashboard Account and enable Storage & Playback. Contact support@pubnub.com if you require further assistance.", "channels": {}}
             PNDeleteMessagesResult pnDeleteMessagesResult = new PNDeleteMessagesResult();
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
             PNStatus pnStatus = new PNStatus();
@@ -77,28 +78,7 @@ namespace PubNubAPI
                     pnDeleteMessagesResult = null;
                     pnStatus = base.CreateErrorResponseFromMessage(message, requestState, PNStatusCategory.PNUnknownCategory);
                 } else {
-                    object[] c = deSerializedResult as object[];
-                
-                    if (c != null) {
-                        string status = "";
-                        string statusCode = "0";
-                        if(c.Length > 0){
-                            statusCode = c[0].ToString();
-                        }
-                        if(c.Length > 1){
-                            status = c[1].ToString();
-                        }
-                        if(statusCode.Equals("0")){
-                            pnDeleteMessagesResult = null;
-                            pnStatus = base.CreateErrorResponseFromMessage(message, requestState, PNStatusCategory.PNUnknownCategory);                            
-                        } else {
-                            pnStatus.Error = false;
-                            pnDeleteMessagesResult.Message = status;
-                        }
-                    } else {
-                        pnDeleteMessagesResult = null;
-                        pnStatus = base.CreateErrorResponseFromMessage(message, requestState, PNStatusCategory.PNUnknownCategory);                            
-                    }
+                    pnDeleteMessagesResult.Message = message;
                 }
             } else {
                 pnDeleteMessagesResult = null;

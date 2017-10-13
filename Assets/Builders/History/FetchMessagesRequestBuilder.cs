@@ -16,7 +16,7 @@ namespace PubNubAPI
         private long StartTime = -1;
         private long EndTime = -1;
         
-        private const ushort MaxCount = 100;
+        private const ushort MaxCount = 25;
         private ushort count = MaxCount;
         private ushort HistoryCount { 
             get {
@@ -150,6 +150,7 @@ namespace PubNubAPI
                     pnStatus = base.CreateErrorResponseFromMessage("Response dictionary is null", requestState, PNStatusCategory.PNUnknownCategory);
                 }
             } catch (Exception ex) {
+                Debug.Log(ex.ToString());
                 pnFetchMessagesResult = null;
                 pnStatus = base.CreateErrorResponseFromException(ex, requestState, PNStatusCategory.PNUnknownCategory);
             }
