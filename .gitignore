@@ -1,18 +1,21 @@
 # =============== #
 # Unity generated #
 # =============== #
-[Tt]emp/
-[Oo]bj/
-UnityGenerated/
-[Bb]uild/
-[Ll]ibrary/
-[Pp]roject[Ss]ettings/
-UWP/
+*/Assets/AssetStoreTools*
+*/[Tt]emp/
+*/[Oo]bj/
+*/UnityGenerated/
+*/[Bb]uild/
+*/[Bb]uilds/
+*/[Ll]ibrary/
+*/[Pp]roject[Ss]ettings/
+*/UWP/
 
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
 # ===================================== #
 ExportedObj/
+.consulo/
 *.svd
 *.userprefs
 *.csproj
@@ -24,10 +27,18 @@ ExportedObj/
 *.unityproj
 *.tmp
 *.booproj
+*/.vs/
+*.pdb
 
+# Unity3D generated meta files
+*.pidb.meta
 
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
+
+# Builds
+*.apk
+*.unitypackage
 
  
 # ============ #
