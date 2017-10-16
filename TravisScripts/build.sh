@@ -32,8 +32,11 @@ echo "Attempting build of ${UNITYCI_PROJECT_NAME} for Windows"
 	-silent-crashes \
 	-logFile $(pwd)/unity.log \
 	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
-	-buildWindowsPlayer "$(pwd)/Build/windows/${UNITYCI_PROJECT_NAME}.exe" \
+	-executeMethod "AutoBuilder.PerformStandaloneWindows64" \
 	-quit
+	
+	#-buildWindowsPlayer "$(pwd)/Build/windows/${UNITYCI_PROJECT_NAME}.exe" \
+	
 
 rc1=$?
 echo "Build logs (Windows)"
@@ -46,9 +49,11 @@ echo "Attempting build of ${UNITYCI_PROJECT_NAME} for OSX"
 	-silent-crashes \
 	-logFile $(pwd)/unity.log \
 	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
-	-buildOSXUniversalPlayer "$(pwd)/Build/osx/${UNITYCI_PROJECT_NAME}.app" \
+	-executeMethod "AutoBuilder.PerformStandaloneOSXUniversal" \
 	-quit
-
+	
+	#-buildOSXUniversalPlayer "$(pwd)/Build/osx/${UNITYCI_PROJECT_NAME}.app" \
+	
 rc2=$?
 echo "Build logs (OSX)"
 cat $(pwd)/unity.log
