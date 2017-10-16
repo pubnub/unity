@@ -21,20 +21,20 @@ echo 'Downloading Windows build support:'
 curl --retry 5 -o Unity_Win.pkg https://beta.unity3d.com/download/46dda1414e51/MacEditorTargetInstaller/UnitySetup-Windows-Support-for-Editor-2017.2.0f3.pkg
 if [ $? -ne 0 ]; then { echo "Download failed"; exit $?; } fi
 
-echo 'Downloading Linux build support:'
-curl --retry 5 -o Unity_Linux.pkg https://beta.unity3d.com/download/46dda1414e51/MacEditorTargetInstaller/UnitySetup-Linux-Support-for-Editor-2017.2.0f3.pkg
-if [ $? -ne 0 ]; then { echo "Download failed"; exit $?; } fi
+#echo 'Downloading Linux build support:'
+#curl --retry 5 -o Unity_Linux.pkg https://beta.unity3d.com/download/46dda1414e51/MacEditorTargetInstaller/UnitySetup-Linux-Support-for-Editor-2017.2.0f3.pkg
+#if [ $? -ne 0 ]; then { echo "Download failed"; exit $?; } fi
 
 # Install
 echo 'Installing Unity.pkg'
 sudo installer -dumplog -package Unity.pkg -target /
-echo 'Installing Unity_win.pkg'
+echo 'Installing Unity_iOS.pkg'
 sudo installer -dumplog -package Unity_iOS.pkg -target /
-echo 'Installing Unity_win.pkg'
+echo 'Installing Unity_Android.pkg'
 sudo installer -dumplog -package Unity_Android.pkg -target /
-echo 'Installing Unity_win.pkg'
+echo 'Installing Unity_WebGL.pkg'
 sudo installer -dumplog -package Unity_WebGL.pkg -target /
 echo 'Installing Unity_win.pkg'
 sudo installer -dumplog -package Unity_Win.pkg -target /
-echo 'Installing Unity_win.pkg'
-sudo installer -dumplog -package Unity_Linux.pkg -target /
+#echo 'Installing Unity_Linux.pkg'
+#sudo installer -dumplog -package Unity_Linux.pkg -target /

@@ -54,7 +54,9 @@ namespace PubNubAPI
 
         ~PubNub(){
             #if (ENABLE_PUBNUB_LOGGING)
-            pnUnity.PNLog.WriteToLog ("Destructing PubNub", PNLoggingMethod.LevelInfo);
+            if((pnUnity!=null) && (pnUnity.PNLog!=null)){
+                pnUnity.PNLog.WriteToLog ("Destructing PubNub", PNLoggingMethod.LevelInfo);
+            }
             #endif
             this.CleanUp ();
         }
