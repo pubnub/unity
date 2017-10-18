@@ -16,6 +16,8 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME}"
 	-testPlatform editmode 
 
 rc0=$?
+echo "Unity Logs:"
+cat $(pwd)/unity.log
 echo "Unit test logs"
 cat $(pwd)/test.xml
 # exit if tests failed

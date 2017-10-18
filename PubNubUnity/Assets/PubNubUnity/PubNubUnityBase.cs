@@ -113,11 +113,16 @@ namespace PubNubAPI
             this.PNLog.WriteToLog ("CleanUp: Destructing GameObject", PNLoggingMethod.LevelInfo);
             #endif
             
-            if(localGobj && (GameObjectRef != null))
-            {
-                UnityEngine.Object.Destroy (GameObjectRef);
+            try{
+                if(localGobj && (GameObjectRef != null))
+                {
+                    UnityEngine.Object.Destroy (GameObjectRef);
+                } 
+            }catch (Exception ex){
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PNLog.WriteToLog (string.Format("CleanUp: Destructing GameObject exception {0}", ex.ToString()), PNLoggingMethod.LevelInfo);
+                #endif
             }
-
          }
     }
 }
