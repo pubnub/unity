@@ -180,6 +180,15 @@ namespace PubNubAPI
             pnUnity.AddListener(callback, callback2, callback3);
         }
 
+        public static long TranslateDateTimeToPubnubUnixNanoSeconds (DateTime dotNetUTCDateTime)
+        {
+            return Utility.TranslateDateTimeToPubnubUnixNanoSeconds (dotNetUTCDateTime);
+        }
+
+        public static DateTime TranslatePubnubUnixNanoSecondsToDateTime (long unixNanoSecondTime)
+        {
+            return Utility.TranslatePubnubUnixNanoSecondsToDateTime (unixNanoSecondTime);
+        }
 
     }
 }

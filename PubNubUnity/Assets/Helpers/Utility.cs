@@ -7,13 +7,13 @@ using System.Linq;
 
 namespace PubNubAPI
 {
-    internal static class Utility
+    public static class Utility
     {
-        internal const string PresenceChannelSuffix = "-pnpres";
-        internal const int iOSRequestTimeout = 59;
+        public const string PresenceChannelSuffix = "-pnpres";
+        public const int iOSRequestTimeout = 59;
 
         #if(UNITY_IOS)
-        internal static int CheckTimeoutValue(int value){
+        public static int CheckTimeoutValue(int value){
             if (value > iOSRequestTimeout) {
                 //#if (ENABLE_PUBNUB_LOGGING)
                 //LoggingMethod.WriteToLog (string.Format("Forcing timeout value to {0} as iOS force closes the www request after {0} secs", iOSRequestTimeout), LoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
@@ -26,7 +26,7 @@ namespace PubNubAPI
         }
         #endif  
     
-        internal static bool CheckDictionaryForError(Dictionary<string, object> dictionary, string keyName){
+        public static bool CheckDictionaryForError(Dictionary<string, object> dictionary, string keyName){
             /*object objMessage;
             dictionary.TryGetValue(keyName, out objMessage);
             
@@ -43,7 +43,7 @@ namespace PubNubAPI
             }
         }
 
-        internal static string ReadMessageFromResponseDictionary(Dictionary<string, object> dictionary, string keyName){
+        public static string ReadMessageFromResponseDictionary(Dictionary<string, object> dictionary, string keyName){
             object objMessage;
             dictionary.TryGetValue(keyName, out objMessage);
             
@@ -55,7 +55,7 @@ namespace PubNubAPI
         }
 
         //TODO Handle exception
-        internal static long CheckKeyAndParseLong(IDictionary dict, string what, string key, out string log){
+        public static long CheckKeyAndParseLong(IDictionary dict, string what, string key, out string log){
             long sequenceNumber = 0;
             log = ""; 
             if (dict.Contains (key)) {
@@ -69,7 +69,7 @@ namespace PubNubAPI
         }
 
         //TODO Handle exception
-        internal static bool CheckKeyAndParseInt(IDictionary dict, string what, string key, out string log, out int val){
+        public static bool CheckKeyAndParseInt(IDictionary dict, string what, string key, out string log, out int val){
             val = 0;
             log = "";
             if (dict.Contains (key)) {
@@ -85,7 +85,7 @@ namespace PubNubAPI
             return false;
         }
 
-        internal static bool IsDictionary(object o)
+        public static bool IsDictionary(object o)
         {
             if(o == null) return false;
             return o is IDictionary &&
@@ -93,7 +93,7 @@ namespace PubNubAPI
                 o.GetType().GetGenericTypeDefinition().IsAssignableFrom(typeof(Dictionary<,>));
         }
 
-        internal static long ValidateTimetoken(string timetoken, bool raiseError){
+        public static long ValidateTimetoken(string timetoken, bool raiseError){
             if(!string.IsNullOrEmpty(timetoken)){
                 long r;
                 if (long.TryParse (timetoken, out r)) {
@@ -108,7 +108,7 @@ namespace PubNubAPI
             }
         }
 
-        internal static string CheckChannelGroup(string channelGroup, bool convertToPresence){
+        public static string CheckChannelGroup(string channelGroup, bool convertToPresence){
             string[] multiChannelGroups = channelGroup.Split(',');
             if (multiChannelGroups.Length > 0) {
                 for (int index = 0; index < multiChannelGroups.Length; index++) {
@@ -126,7 +126,7 @@ namespace PubNubAPI
             return string.Join(",", multiChannelGroups);
         }
 
-        internal static List<string> CheckAndAddNameSpace(string nameSpace){
+        public static List<string> CheckAndAddNameSpace(string nameSpace){
             List<string> url = new List<string>();
             if (!string.IsNullOrEmpty(nameSpace) && nameSpace.Trim().Length > 0)
             {
@@ -137,7 +137,7 @@ namespace PubNubAPI
             return null;
         }
 
-        /*internal static void CheckPushType(PushTypeService pushType)
+        /*public static void CheckPushType(PushTypeService pushType)
         {
             if (pushType == PushTypeService.None)
             {
@@ -145,7 +145,7 @@ namespace PubNubAPI
             }
         }*/
 
-        internal static void CheckChannelOrChannelGroup(string channel, string channelGroup){
+        public static void CheckChannelOrChannelGroup(string channel, string channelGroup){
             if ((string.IsNullOrEmpty(channel) || string.IsNullOrEmpty(channel.Trim())) 
                 && (string.IsNullOrEmpty(channelGroup) || string.IsNullOrEmpty(channelGroup.Trim())))
             {
@@ -153,7 +153,7 @@ namespace PubNubAPI
             }
         }
 
-        internal static void CheckChannels(string[] channels)
+        public static void CheckChannels(string[] channels)
         {
             if (channels == null || channels.Length == 0)
             {
@@ -161,7 +161,7 @@ namespace PubNubAPI
             }
         }
 
-        internal static void CheckChannel(string channel)
+        public static void CheckChannel(string channel)
         {
             if (string.IsNullOrEmpty(channel) || string.IsNullOrEmpty(channel.Trim()))
             {
@@ -169,7 +169,7 @@ namespace PubNubAPI
             }
         }
 
-        internal static void CheckMessage(object message)
+        public static void CheckMessage(object message)
         {
             if (message == null)
             {
@@ -177,7 +177,7 @@ namespace PubNubAPI
             }
         }
 
-        internal static void CheckString(string message, string what)
+        public static void CheckString(string message, string what)
         {
             if (message == null)
             {
@@ -185,7 +185,7 @@ namespace PubNubAPI
             }
         }
 
-        internal static void CheckPublishKey(string publishKey)
+        public static void CheckPublishKey(string publishKey)
         {
             if (string.IsNullOrEmpty(publishKey) || string.IsNullOrEmpty(publishKey.Trim()) || publishKey.Length <= 0)
             {
@@ -193,7 +193,7 @@ namespace PubNubAPI
             }
         }
 
-        /*internal static void CheckCallback<T>(Action<T> callback, CallbackType callbackType)
+        /*public static void CheckCallback<T>(Action<T> callback, CallbackType callbackType)
         {
             if (callback == null)
             {
@@ -201,7 +201,7 @@ namespace PubNubAPI
             }
         }
 
-        internal static void CheckJSONPluggableLibrary()
+        public static void CheckJSONPluggableLibrary()
         {
             if (PubnubUnity.JsonPluggableLibrary == null)
             {
@@ -209,7 +209,7 @@ namespace PubNubAPI
             }
         }*/
 
-        /*internal static void CheckUserState(string jsonUserState)
+        /*public static void CheckUserState(string jsonUserState)
         {
             if (string.IsNullOrEmpty(jsonUserState) || string.IsNullOrEmpty(jsonUserState.Trim()))
             {
@@ -217,7 +217,7 @@ namespace PubNubAPI
             }
         }
 
-        internal static void CheckSecretKey(string secretKey)
+        public static void CheckSecretKey(string secretKey)
         {
             if (string.IsNullOrEmpty(secretKey) || string.IsNullOrEmpty(secretKey.Trim()) || secretKey.Length <= 0)
             {
@@ -225,12 +225,12 @@ namespace PubNubAPI
             }
         }*/
 
-        internal static Guid GenerateGuid ()
+        public static Guid GenerateGuid ()
         {
             return Guid.NewGuid ();
         }
 
-        internal static bool IsPresenceChannel (string channel)
+        public static bool IsPresenceChannel (string channel)
         {
             if (channel.LastIndexOf (PresenceChannelSuffix) > 0) {
                 return true;
@@ -239,7 +239,7 @@ namespace PubNubAPI
             }
         }
 
-        internal static bool IsUnsafe (char ch, bool ignoreComma)
+        public static bool IsUnsafe (char ch, bool ignoreComma)
         {
             if (ignoreComma) {
                 return " ~`!@#$%^&*()+=[]\\{}|;':\"/<>?".IndexOf (ch) >= 0;
@@ -327,7 +327,7 @@ namespace PubNubAPI
             return dateTime;
         }
 
-        internal static List<string> CheckKeyAndConvertObjToStringArr(object obj){
+        public static List<string> CheckKeyAndConvertObjToStringArr(object obj){
             if (obj == null) {
                 return null;
             }
