@@ -33,8 +33,6 @@ using PubNubAPI;
 
 namespace PubNubAPI.Tests
 {
-	public class ActionMaster:MonoBehaviour{
-	}
     public class EditorCommon
     {
         public static string Origin = "ps.pndsn.com";
@@ -193,7 +191,7 @@ namespace PubNubAPI.Tests
             dictU.Add("region", "north");
             dictSM.Add("u", dictU);
             return dictSM;
-        }
+        }*/
 
         public static void LogAndCompare(string expected, string received)
         {
@@ -202,7 +200,7 @@ namespace PubNubAPI.Tests
             Assert.IsTrue (expected.Equals (received), expNRec);
         }
 
-        /// <summary>
+        /*/// <summary>
         /// Blocks the current thread unit the response is received
         /// or timeout occurs
         /// </summary>

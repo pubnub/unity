@@ -314,7 +314,7 @@ namespace PubNubAPI
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNFetchMessagesOperation, parameterBuilder.ToString(), ref pnInstance);
         }
 
-        internal static Uri BuildHistoryRequest (string channel, long start, long end, uint count, bool reverse, bool includeToken, ref PubNubUnity pnInstance)
+        public static Uri BuildHistoryRequest (string channel, long start, long end, uint count, bool reverse, bool includeToken, ref PubNubUnity pnInstance)
         {
             StringBuilder parameterBuilder = new StringBuilder ();
 
