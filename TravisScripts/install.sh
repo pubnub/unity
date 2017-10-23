@@ -29,6 +29,9 @@ if [ $? -ne 0 ]; then { echo "Unity Download failed"; exit $?; } fi
 echo 'Installing Unity.pkg'
 sudo installer -dumplog -package Unity.pkg -target /
 
+echo "Verify firewall"
+/usr/libexec/ApplicationFirewall/socketfilterfw --getappblocked /Applications/Unity/Unity.app/Contents/MacOS/Unity
+
 echo "Create Certificate Folder"
 mkdir ~/Library/Unity
 mkdir ~/Library/Unity/Certificates
