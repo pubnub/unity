@@ -13,8 +13,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME}"
 	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
 	-runTests \
 	-testResults $(pwd)/test.xml \
-	-testPlatform editmode \
-	-force-free
+	-testPlatform editmode 
 
 rc0=$?
 echo "Unity Logs:"
@@ -33,7 +32,6 @@ echo "Attempting build of ${UNITYCI_PROJECT_NAME} for Windows"
 	-logFile $(pwd)/unity.log \
 	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
 	-executeMethod "AutoBuilder.PerformStandaloneWindows64" \
-	-force-free \
 	-quit
 	
 	#-buildWindowsPlayer "$(pwd)/Build/windows/${UNITYCI_PROJECT_NAME}.exe" \
@@ -51,7 +49,6 @@ echo "Attempting build of ${UNITYCI_PROJECT_NAME} for OSX"
 	-logFile $(pwd)/unity.log \
 	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
 	-executeMethod "AutoBuilder.PerformStandaloneOSXUniversal" \
-	-force-free \
 	-quit
 	
 	#-buildOSXUniversalPlayer "$(pwd)/Build/osx/${UNITYCI_PROJECT_NAME}.app" \

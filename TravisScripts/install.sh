@@ -28,6 +28,24 @@ if [ $? -ne 0 ]; then { echo "Download failed"; exit $?; } fi
 # Install
 echo 'Installing Unity.pkg'
 sudo installer -dumplog -package Unity.pkg -target /
+
+echo "Create Certificate Folder"
+mkdir ~/Library/Unity
+mkdir ~/Library/Unity/Certificates
+
+cp CACerts.pem ~/Library/Unity/Certificates/
+
+echo "activate license"
+/Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -username ${UNITYCI_USER_NAME} -password $${UNITYCI_PASS} -logfile
+
+cat ~/Library/Logs/Unity/Editor.log
+
+echo "return license"
+
+/Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense -logfile
+
+echo === Done ===
+
 echo 'Installing Unity_iOS.pkg'
 sudo installer -dumplog -package Unity_iOS.pkg -target /
 echo 'Installing Unity_Android.pkg'

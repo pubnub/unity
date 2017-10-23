@@ -1,29 +1,18 @@
-# do not install anything extra onto the image
 language: generic
-
-# use a Mac OSX image
 os: osx
-
-# only run builds on pushes to the branch
 branches:
   only:
   - CE-2968-UnityV4
-
-# send email notifications when the build changes from succeeding to broken
 notifications:
   email:
     on_success: never
     on_failure: change
-
-# run the script to download and install Unity editor
 install:
 - sudo -E sh ./TravisScripts/install.sh
-
-# run the script for unit tests and builds
 script:
 - sudo -E sh ./TravisScripts/build.sh
-
-# environment variables used in bash scripts
 env:
   global:
   - UNITYCI_PROJECT_NAME="PubNubUnity"
+  - secure: Uem1kFle3VPAmD7R2ccHkUwjmAhiN1+LnjO/TbvcI2JSZ+Q1QuMO2QU9168Ef6uAYAOgk2jxaC3q4JMPD1xFsrfs2ODOtYnCFJtHZFp5F9A5ZOwmO/7TyZdfi3rJPOi85LGdjsLLHhMp3+soBi2itRKyeujpbiY64wmMGEYuDks=
+  - secure: QKQF4OPNlKC61cLmEQ1wPFnW8ZCb3my42/6MuT3ztV0Qq7ngodmUL+oJ3kuEZeoDuLHhPWHuW863XrTkrFWyQ6/CdzIsMWLOLxcV3rrAaeAEKD+qFjPHQ8Ix8mYLqj6de5H6z45P6+Jb9Vgxmf8Dc/wPTWuklOSQyFza41g38V0=
