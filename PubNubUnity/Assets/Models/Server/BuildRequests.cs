@@ -534,7 +534,7 @@ namespace PubNubAPI
             );
         }
 
-        internal static Uri BuildAddChannelsToChannelGroupRequest(string[] channels, string nameSpace, string groupName, ref PubNubUnity pnInstance)
+        public static Uri BuildAddChannelsToChannelGroupRequest(string[] channels, string nameSpace, string groupName, ref PubNubUnity pnInstance)
         {
             string parameters = string.Format("?add={0}", Utility.EncodeUricomponent(string.Join(",", channels), PNOperationType.PNAddChannelsToGroupOperation, true, false));
 
@@ -555,7 +555,7 @@ namespace PubNubAPI
             return BuildRestApiRequest<Uri>(url, PNOperationType.PNAddChannelsToGroupOperation, parameters, ref pnInstance);
         }
 
-        internal static Uri BuildRemoveChannelsFromChannelGroupRequest(string[] channels, string nameSpace, string groupName, ref PubNubUnity pnInstance)
+        public static Uri BuildRemoveChannelsFromChannelGroupRequest(string[] channels, string nameSpace, string groupName, ref PubNubUnity pnInstance)
         {
             bool channelsAvailable = false;
             string parameters = "";
@@ -586,7 +586,7 @@ namespace PubNubAPI
             return BuildRestApiRequest<Uri> (url, respType, parameters, ref pnInstance);
         }
 
-        internal static Uri BuildGetChannelsForChannelGroupRequest(string nameSpace, string groupName, bool limitToChannelGroupScopeOnly, ref PubNubUnity pnInstance)
+        public static Uri BuildGetChannelsForChannelGroupRequest(string nameSpace, string groupName, bool limitToChannelGroupScopeOnly, ref PubNubUnity pnInstance)
         {
             bool groupNameAvailable = false;
             bool nameSpaceAvailable = false;
