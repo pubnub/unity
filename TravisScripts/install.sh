@@ -36,7 +36,7 @@ echo "Create Certificate Folder"
 mkdir ~/Library/Unity
 mkdir ~/Library/Unity/Certificates
 
-cp CACerts.pem ~/Library/Unity/Certificates/
+cp "$(pwd)/CACerts.pem" ~/Library/Unity/Certificates/
 
 echo "activate license"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -serial ${UNITYCI_SERIAL} -username ${UNITYCI_USER_NAME} -password ${UNITYCI_PASS} -logfile
