@@ -14,13 +14,14 @@ echo "Test ${UNITYCI_TEST}"
 	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
 	-runTests \
 	-testResults $(pwd)/test.xml \
-	-testPlatform editmode \
-	-username ${UNITYCI_USER_NAME} \
-	-password ${UNITYCI_PASS}
-	-serial ${UNITYCI_SERIAL} 
+	-testPlatform editmode
+	#-username ${UNITYCI_USER_NAME} \
+	#-password ${UNITYCI_PASS}
+	#-serial ${UNITYCI_SERIAL} 
 
 rc0=$?
 echo "Unity Logs:"
+cat ~/Library/Logs/Unity/Editor.log
 cat $(pwd)/unity.log
 echo "Unit test logs"
 cat $(pwd)/test.xml

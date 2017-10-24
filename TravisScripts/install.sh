@@ -40,13 +40,13 @@ cp "./TravisScripts/CACerts.pem" ~/Library/Unity/Certificates/
 
 echo "activate license"
 #/Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -serial ${UNITYCI_SERIAL} -username ${UNITYCI_USER_NAME} -password ${UNITYCI_PASS} -logfile
-/Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -username ${UNITYCI_USER_NAME} -password ${UNITYCI_PASS} -logfile
+#/Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -username ${UNITYCI_USER_NAME} -password ${UNITYCI_PASS} -logfile
 
 cat ~/Library/Logs/Unity/Editor.log
 
 echo "return license"
 
-/Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense -logfile
+#/Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense -logfile
 
 echo === Done ===
 
