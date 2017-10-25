@@ -16,8 +16,8 @@ echo "Test ${UNITYCI_TEST}"
 	-testResults $(pwd)/test.xml \
 	-testPlatform editmode \
 	-username ${UNITYCI_USER_NAME} \
-	-password ${UNITYCI_PASS}
-	#-serial ${UNITYCI_SERIAL} 
+	-password ${UNITYCI_PASS} \
+	-serial ${UNITYCI_SERIAL} 
 
 rc0=$?
 echo "Unity Logs:"
