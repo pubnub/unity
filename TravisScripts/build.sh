@@ -20,9 +20,9 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME}"
 	-serial ${UNITYCI_SERIAL} 
 
 rc0=$?
-#echo "Unity Logs:"
+echo "Unity Logs:"
 #cat ~/Library/Logs/Unity/Editor.log
-#cat $(pwd)/unity.log
+cat $(pwd)/unity.log
 echo "Unit test logs"
 cat $(pwd)/test.xml
 # exit if tests failed
