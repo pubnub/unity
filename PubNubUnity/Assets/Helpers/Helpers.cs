@@ -34,7 +34,7 @@ namespace PubNubAPI
         }
     }
 
-    internal static class Helpers
+    public static class Helpers
     {
         internal const string PresenceChannelSuffix = "-pnpres";
 
@@ -257,7 +257,7 @@ namespace PubNubAPI
             return string.Format ("channel(s) = {0} and channelGroups(s) = {1}", sbCh.ToString(), sbChGrp.ToString());
         }
 
-        internal static string JsonEncodePublishMsg (object originalMessage, string cipherKey, IJsonLibrary jsonPluggableLibrary, PNLoggingMethod pnLog)
+        public static string JsonEncodePublishMsg (object originalMessage, string cipherKey, IJsonLibrary jsonPluggableLibrary, PNLoggingMethod pnLog)
         {
             string message = jsonPluggableLibrary.SerializeToJsonString (originalMessage);
 
