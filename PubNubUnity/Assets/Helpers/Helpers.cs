@@ -48,7 +48,7 @@ namespace PubNubAPI
             }
         }
 
-        internal static bool CheckErrorTypeAndCallback<T> (CustomEventArgs cea, PubNubUnity pnUnity, out PNStatus pnStatus){
+        public static bool CheckErrorTypeAndCallback<T> (CustomEventArgs cea, PubNubUnity pnUnity, out PNStatus pnStatus){
             bool retBool = false;
             PNStatusCategory pnStatusCat = PNStatusCategory.PNUnknownCategory;
             if (cea.IsTimeout || CheckRequestTimeoutMessageInError(cea)){

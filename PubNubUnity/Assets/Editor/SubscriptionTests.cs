@@ -10,7 +10,240 @@ namespace PubNubAPI.Tests
     [TestFixture]
     public class SubscriptionTests
     {
-        /*#if DEBUG
+        #if DEBUG
+        /*[Test]
+        public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsPresRemove (){ 
+            string[] multiChannel = {"testChannel", "testChannel2"}; 
+            string channel = "testChannel";
+            ExceptionCode = 112;
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, true, true, ResponseType.PresenceV2);
+        }
+
+        [Test]
+        public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsPresAlreadySubscribed (){ 
+            string[] multiChannel = {"testChannel", "testChannel2"}; 
+            string channel = "testChannel";
+            ExceptionCode = 112;
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, true, true, ResponseType.PresenceV2);
+        }
+
+        [Test]
+        public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsPresNew (){ 
+            string[] multiChannel = {"testChannel", "testChannel2"}; 
+            string channel = "testChannel3";
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, false, true, ResponseType.PresenceV2);
+        }
+
+        [Test]
+        public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsPresRemoveObj (){ 
+            string[] multiChannel = {"testChannel", "testChannel2"}; 
+            string channel = "testChannel";
+            ExceptionCode = 112;
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, true, true, ResponseType.PresenceV2);
+        }
+
+        [Test]
+        public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsPresAlreadySubscribedObj (){ 
+            string[] multiChannel = {"testChannel", "testChannel2"}; 
+            string channel = "testChannel";
+            ExceptionCode = 112;
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, true, true, ResponseType.PresenceV2);
+        }
+
+        [Test]
+        public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsPresNewObj (){ 
+            string[] multiChannel = {"testChannel", "testChannel2"}; 
+            string channel = "testChannel3";
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, false, true, ResponseType.PresenceV2);
+        }
+
+        [Test]
+        public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsPresNoNetRemove (){ 
+            string[] multiChannel = {"testChannel", "testChannel2"}; 
+            string channel = "testChannel";
+            ExceptionCode = 112;
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, true, false, ResponseType.PresenceV2);
+        }
+
+        [Test]
+        public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsPresNoNetAlreadySubscribed (){ 
+            string[] multiChannel = {"testChannel", "testChannel2"}; 
+            string channel = "testChannel";
+            ExceptionCode = 112;
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, true, false, ResponseType.PresenceV2);
+        }
+
+        [Test]
+        public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsPresNoNetNew (){ 
+            string[] multiChannel = {"testChannel", "testChannel2"}; 
+            string channel = "testChannel3";
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, false, false, ResponseType.PresenceV2);
+        }
+
+        [Test]
+        public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsPresNoNetRemoveObj (){ 
+            string[] multiChannel = {"testChannel", "testChannel2"}; 
+            string channel = "testChannel";
+            ExceptionCode = 112;
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, true, false, ResponseType.PresenceV2);
+        }
+
+        [Test]
+        public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsPresNoNetAlreadySubscribedObj (){ 
+            string[] multiChannel = {"testChannel", "testChannel2"}; 
+            string channel = "testChannel";
+            ExceptionCode = 112;
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, true, false, ResponseType.PresenceV2);
+        }
+
+        [Test]
+        public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsPresNoNetNewObj (){ 
+            string[] multiChannel = {"testChannel", "testChannel2"}; 
+            string channel = "testChannel3";
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, false, false, ResponseType.PresenceV2);
+        }
+            
+        [Test]
+        public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsRemove (){ 
+            string[] multiChannel = {"testChannel", "testChannel2"}; 
+            string channel = "testChannel";
+            ExceptionCode = 112;
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, true, true, ResponseType.SubscribeV2);
+        }
+
+        [Test]
+        public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsAlreadySubscribed (){ 
+            string[] multiChannel = {"testChannel", "testChannel2"}; 
+            string channel = "testChannel";
+            ExceptionCode = 112;
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, true, true, ResponseType.SubscribeV2);
+        }
+
+        [Test]
+        public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsNew (){ 
+            string[] multiChannel = {"testChannel", "testChannel2"}; 
+            string channel = "testChannel3";
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, false, true, ResponseType.SubscribeV2);
+        }
+
+        [Test]
+        public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsRemoveObj (){ 
+            string[] multiChannel = {"testChannel", "testChannel2"}; 
+            string channel = "testChannel";
+            ExceptionCode = 112;
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, true, true, ResponseType.SubscribeV2);
+        }
+
+        [Test]
+        public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsAlreadySubscribedObj (){ 
+            string[] multiChannel = {"testChannel", "testChannel2"}; 
+            string channel = "testChannel";
+            ExceptionCode = 112;
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, true, true, ResponseType.SubscribeV2);
+        }
+
+        [Test]
+        public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsNewObj (){ 
+            string[] multiChannel = {"testChannel", "testChannel2"}; 
+            string channel = "testChannel3";
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, false, true, ResponseType.SubscribeV2);
+        }
+
+        [Test]
+        public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsNoNetRemove (){ 
+            string[] multiChannel = {"testChannel", "testChannel2"}; 
+            string channel = "testChannel";
+            ExceptionCode = 112;
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, true, false, ResponseType.SubscribeV2);
+        }
+
+        [Test]
+        public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsNoNetAlreadySubscribed (){ 
+            string[] multiChannel = {"testChannel", "testChannel2"}; 
+            string channel = "testChannel";
+            ExceptionCode = 112;
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, true, false, ResponseType.SubscribeV2);
+        }
+
+        [Test]
+        public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsNoNetNew (){ 
+            string[] multiChannel = {"testChannel", "testChannel2"}; 
+            string channel = "testChannel3";
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, false, false, ResponseType.SubscribeV2);
+        }
+
+        [Test]
+        public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsNoNetRemoveObj (){ 
+            string[] multiChannel = {"testChannel", "testChannel2"}; 
+            string channel = "testChannel";
+            ExceptionCode = 112;
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, true, false, ResponseType.SubscribeV2);
+        }
+
+        [Test]
+        public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsNoNetAlreadySubscribedObj (){ 
+            string[] multiChannel = {"testChannel", "testChannel2"}; 
+            string channel = "testChannel";
+            ExceptionCode = 112;
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, true, false, ResponseType.SubscribeV2);
+        }
+
+        [Test]
+        public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsNoNetNewObj (){ 
+            string[] multiChannel = {"testChannel", "testChannel2"}; 
+            string channel = "testChannel3";
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, false, false, ResponseType.SubscribeV2);
+        }
+
+        public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<T> (string channel,
+            string[] multiChannel, bool fireCallback, bool networkConnection, ResponseType responseType
+        ){ 
+
+            //Remove duplicate channels
+            //Already subscribed
+            //New channel
+            readCallback = fireCallback;
+            List<string> validChannels = new List<string> ();
+            validChannels.Add (channel);
+
+            PubnubErrorFilter.Level errorLevel = PubnubErrorFilter.Level.Info;
+
+            Action<PubnubClientError> errorcb = ErrorCallbackCommonExceptionHandler;
+            if (!readCallback) {
+                errorcb = null;
+            }
+            List<ChannelEntity> channelEntities;
+
+            Helpers.RemoveDuplicatesCheckAlreadySubscribedAndGetChannels<T> (responseType, null, null, 
+                errorcb, null, null, multiChannel, null, errorLevel, false, out channelEntities
+            );
+
+            List<ChannelEntity> channelEntities2;
+
+            Helpers.RemoveDuplicatesCheckAlreadySubscribedAndGetChannels<T> (responseType, null, null, 
+                errorcb, null, null, new string[] {channel}, null, errorLevel, false, out channelEntities2
+            );
+
+            if (!readCallback) {
+                string channels2 = Helpers.GetNamesFromChannelEntities(channelEntities2, false);
+
+                bool channelMatch = false;
+                if (channelEntities != null) {
+                    foreach (ChannelEntity c in channelEntities2) {
+                        string ch2= c.ChannelID.ChannelOrChannelGroupName;
+                        if(c.ChannelID.IsPresenceChannel){
+                            channel = channel + Utility.PresenceChannelSuffix;
+                        }
+                        channelMatch = channel.Equals(ch2);
+                        if(channelMatch)
+                            break;
+                    }
+                }
+                UnityEngine.Debug.Log ("not fireCallback:" +channelMatch + channels2 + channel);
+                Assert.IsTrue (channelMatch);
+
+            }
+        }
         [Test]
         public void TestSubscription(){
             TestSubscriptionCommon<string>(Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
@@ -216,10 +449,10 @@ namespace PubNubAPI.Tests
                 }
             }
             return ceFound;
-        }
+        }*/
 
 
-        #endif*/
+        #endif
     }
 }
 

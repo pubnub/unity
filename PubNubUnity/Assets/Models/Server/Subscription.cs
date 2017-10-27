@@ -335,7 +335,7 @@ namespace PubNubAPI
         }
         #endif
 
-        internal bool RemoveDuplicatesCheckAlreadySubscribedAndGetChannels(PNOperationType type, List<string> rawChannels, List<string> rawChannelGroups, bool unsubscribeCheck, out List<ChannelEntity> channelEntities)
+        public bool RemoveDuplicatesCheckAlreadySubscribedAndGetChannels(PNOperationType type, List<string> rawChannels, List<string> rawChannelGroups, bool unsubscribeCheck, out List<ChannelEntity> channelEntities)
         {
             bool bReturn = false;
             bool channelAdded = false;

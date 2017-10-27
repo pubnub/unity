@@ -2,7 +2,7 @@
 
 namespace PubNubAPI
 {
-    internal class CustomEventArgs : EventArgs
+    public class CustomEventArgs : EventArgs
     {
         internal string Message;
         internal RequestState PubNubRequestState;
