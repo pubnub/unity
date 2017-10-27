@@ -11,12 +11,26 @@ namespace PubNubAPI.Tests
     public class SubscriptionTests
     {
         #if DEBUG
-        /*[Test]
+        int ExceptionCode =0;
+        bool readCallback = false;
+
+        List<object> resultList = new List<object>();
+        string ExpectedConnectResponse = "";
+        string ExpectedRegularResponse = "";
+        bool ExpectedCallback = false;
+        bool ExpectedConnect = false;
+
+        string MessageToCheck = "";
+        bool CheckMessage = false;
+        bool CheckMultiple = false;
+        int MessageCount =0;
+        int MessageReceivedCount =0;
+        [Test]
         public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsPresRemove (){ 
             string[] multiChannel = {"testChannel", "testChannel2"}; 
             string channel = "testChannel";
             ExceptionCode = 112;
-            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, true, true, ResponseType.PresenceV2);
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, true, true, PNOperationType.PNPresenceOperation);
         }
 
         [Test]
@@ -24,14 +38,14 @@ namespace PubNubAPI.Tests
             string[] multiChannel = {"testChannel", "testChannel2"}; 
             string channel = "testChannel";
             ExceptionCode = 112;
-            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, true, true, ResponseType.PresenceV2);
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, true, true, PNOperationType.PNPresenceOperation);
         }
 
         [Test]
         public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsPresNew (){ 
             string[] multiChannel = {"testChannel", "testChannel2"}; 
             string channel = "testChannel3";
-            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, false, true, ResponseType.PresenceV2);
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, false, true, PNOperationType.PNPresenceOperation);
         }
 
         [Test]
@@ -39,7 +53,7 @@ namespace PubNubAPI.Tests
             string[] multiChannel = {"testChannel", "testChannel2"}; 
             string channel = "testChannel";
             ExceptionCode = 112;
-            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, true, true, ResponseType.PresenceV2);
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, true, true, PNOperationType.PNPresenceOperation);
         }
 
         [Test]
@@ -47,14 +61,14 @@ namespace PubNubAPI.Tests
             string[] multiChannel = {"testChannel", "testChannel2"}; 
             string channel = "testChannel";
             ExceptionCode = 112;
-            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, true, true, ResponseType.PresenceV2);
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, true, true, PNOperationType.PNPresenceOperation);
         }
 
         [Test]
         public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsPresNewObj (){ 
             string[] multiChannel = {"testChannel", "testChannel2"}; 
             string channel = "testChannel3";
-            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, false, true, ResponseType.PresenceV2);
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, false, true, PNOperationType.PNPresenceOperation);
         }
 
         [Test]
@@ -62,7 +76,7 @@ namespace PubNubAPI.Tests
             string[] multiChannel = {"testChannel", "testChannel2"}; 
             string channel = "testChannel";
             ExceptionCode = 112;
-            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, true, false, ResponseType.PresenceV2);
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, true, false, PNOperationType.PNPresenceOperation);
         }
 
         [Test]
@@ -70,14 +84,14 @@ namespace PubNubAPI.Tests
             string[] multiChannel = {"testChannel", "testChannel2"}; 
             string channel = "testChannel";
             ExceptionCode = 112;
-            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, true, false, ResponseType.PresenceV2);
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, true, false, PNOperationType.PNPresenceOperation);
         }
 
         [Test]
         public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsPresNoNetNew (){ 
             string[] multiChannel = {"testChannel", "testChannel2"}; 
             string channel = "testChannel3";
-            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, false, false, ResponseType.PresenceV2);
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, false, false, PNOperationType.PNPresenceOperation);
         }
 
         [Test]
@@ -85,7 +99,7 @@ namespace PubNubAPI.Tests
             string[] multiChannel = {"testChannel", "testChannel2"}; 
             string channel = "testChannel";
             ExceptionCode = 112;
-            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, true, false, ResponseType.PresenceV2);
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, true, false, PNOperationType.PNPresenceOperation);
         }
 
         [Test]
@@ -93,14 +107,14 @@ namespace PubNubAPI.Tests
             string[] multiChannel = {"testChannel", "testChannel2"}; 
             string channel = "testChannel";
             ExceptionCode = 112;
-            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, true, false, ResponseType.PresenceV2);
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, true, false, PNOperationType.PNPresenceOperation);
         }
 
         [Test]
         public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsPresNoNetNewObj (){ 
             string[] multiChannel = {"testChannel", "testChannel2"}; 
             string channel = "testChannel3";
-            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, false, false, ResponseType.PresenceV2);
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, false, false, PNOperationType.PNPresenceOperation);
         }
             
         [Test]
@@ -108,7 +122,7 @@ namespace PubNubAPI.Tests
             string[] multiChannel = {"testChannel", "testChannel2"}; 
             string channel = "testChannel";
             ExceptionCode = 112;
-            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, true, true, ResponseType.SubscribeV2);
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, true, true, PNOperationType.PNSubscribeOperation);
         }
 
         [Test]
@@ -116,14 +130,14 @@ namespace PubNubAPI.Tests
             string[] multiChannel = {"testChannel", "testChannel2"}; 
             string channel = "testChannel";
             ExceptionCode = 112;
-            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, true, true, ResponseType.SubscribeV2);
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, true, true, PNOperationType.PNSubscribeOperation);
         }
 
         [Test]
         public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsNew (){ 
             string[] multiChannel = {"testChannel", "testChannel2"}; 
             string channel = "testChannel3";
-            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, false, true, ResponseType.SubscribeV2);
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, false, true, PNOperationType.PNSubscribeOperation);
         }
 
         [Test]
@@ -131,7 +145,7 @@ namespace PubNubAPI.Tests
             string[] multiChannel = {"testChannel", "testChannel2"}; 
             string channel = "testChannel";
             ExceptionCode = 112;
-            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, true, true, ResponseType.SubscribeV2);
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, true, true, PNOperationType.PNSubscribeOperation);
         }
 
         [Test]
@@ -139,14 +153,14 @@ namespace PubNubAPI.Tests
             string[] multiChannel = {"testChannel", "testChannel2"}; 
             string channel = "testChannel";
             ExceptionCode = 112;
-            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, true, true, ResponseType.SubscribeV2);
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, true, true, PNOperationType.PNSubscribeOperation);
         }
 
         [Test]
         public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsNewObj (){ 
             string[] multiChannel = {"testChannel", "testChannel2"}; 
             string channel = "testChannel3";
-            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, false, true, ResponseType.SubscribeV2);
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, false, true, PNOperationType.PNSubscribeOperation);
         }
 
         [Test]
@@ -154,7 +168,7 @@ namespace PubNubAPI.Tests
             string[] multiChannel = {"testChannel", "testChannel2"}; 
             string channel = "testChannel";
             ExceptionCode = 112;
-            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, true, false, ResponseType.SubscribeV2);
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, true, false, PNOperationType.PNSubscribeOperation);
         }
 
         [Test]
@@ -162,14 +176,14 @@ namespace PubNubAPI.Tests
             string[] multiChannel = {"testChannel", "testChannel2"}; 
             string channel = "testChannel";
             ExceptionCode = 112;
-            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, true, false, ResponseType.SubscribeV2);
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, true, false, PNOperationType.PNSubscribeOperation);
         }
 
         [Test]
         public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsNoNetNew (){ 
             string[] multiChannel = {"testChannel", "testChannel2"}; 
             string channel = "testChannel3";
-            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, false, false, ResponseType.SubscribeV2);
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<string> (channel, multiChannel, false, false, PNOperationType.PNSubscribeOperation);
         }
 
         [Test]
@@ -177,7 +191,7 @@ namespace PubNubAPI.Tests
             string[] multiChannel = {"testChannel", "testChannel2"}; 
             string channel = "testChannel";
             ExceptionCode = 112;
-            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, true, false, ResponseType.SubscribeV2);
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, true, false, PNOperationType.PNSubscribeOperation);
         }
 
         [Test]
@@ -185,19 +199,32 @@ namespace PubNubAPI.Tests
             string[] multiChannel = {"testChannel", "testChannel2"}; 
             string channel = "testChannel";
             ExceptionCode = 112;
-            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, true, false, ResponseType.SubscribeV2);
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, true, false, PNOperationType.PNSubscribeOperation);
         }
 
         [Test]
         public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsNoNetNewObj (){ 
             string[] multiChannel = {"testChannel", "testChannel2"}; 
             string channel = "testChannel3";
-            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, false, false, ResponseType.SubscribeV2);
+            TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<object> (channel, multiChannel, false, false, PNOperationType.PNSubscribeOperation);
         }
 
-        public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<T> (string channel,
-            string[] multiChannel, bool fireCallback, bool networkConnection, ResponseType responseType
-        ){ 
+        public void TestRemoveDuplicateChannelsAndCheckForAlreadySubscribedChannelsCommon<T> (string channel, string[] multiChannel, bool fireCallback, bool networkConnection, PNOperationType responseType){ 
+            PNConfiguration pnConfiguration = new PNConfiguration ();
+            pnConfiguration.Origin = EditorCommon.Origin;
+            pnConfiguration.SubscribeKey = EditorCommon.SubscribeKey;
+            pnConfiguration.PublishKey = EditorCommon.PublishKey;
+            pnConfiguration.CipherKey = "enigma";
+            pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
+            pnConfiguration.PresenceTimeout = 60;
+            pnConfiguration.PresenceInterval= 30;
+            //pnConfiguration.UUID = uuid;
+            //pnConfiguration.AuthKey = authKey;
+
+            //PubNub pn = new PubNub(pnConfiguration);
+            PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
+
+            pnUnity.SubscriptionInstance.CleanUp();
 
             //Remove duplicate channels
             //Already subscribed
@@ -206,25 +233,17 @@ namespace PubNubAPI.Tests
             List<string> validChannels = new List<string> ();
             validChannels.Add (channel);
 
-            PubnubErrorFilter.Level errorLevel = PubnubErrorFilter.Level.Info;
+            List<string> multiChannels = new List<string>(multiChannel);
 
-            Action<PubnubClientError> errorcb = ErrorCallbackCommonExceptionHandler;
-            if (!readCallback) {
-                errorcb = null;
-            }
             List<ChannelEntity> channelEntities;
 
-            Helpers.RemoveDuplicatesCheckAlreadySubscribedAndGetChannels<T> (responseType, null, null, 
-                errorcb, null, null, multiChannel, null, errorLevel, false, out channelEntities
-            );
+            pnUnity.SubscriptionInstance.RemoveDuplicatesCheckAlreadySubscribedAndGetChannels(responseType, multiChannels, null, false, out channelEntities);
 
             List<ChannelEntity> channelEntities2;
 
-            Helpers.RemoveDuplicatesCheckAlreadySubscribedAndGetChannels<T> (responseType, null, null, 
-                errorcb, null, null, new string[] {channel}, null, errorLevel, false, out channelEntities2
-            );
+            pnUnity.SubscriptionInstance.RemoveDuplicatesCheckAlreadySubscribedAndGetChannels(responseType, validChannels, null, false, out channelEntities2);
 
-            if (!readCallback) {
+            //if (!readCallback) {
                 string channels2 = Helpers.GetNamesFromChannelEntities(channelEntities2, false);
 
                 bool channelMatch = false;
@@ -242,31 +261,33 @@ namespace PubNubAPI.Tests
                 UnityEngine.Debug.Log ("not fireCallback:" +channelMatch + channels2 + channel);
                 Assert.IsTrue (channelMatch);
 
-            }
+            //}
         }
+
         [Test]
         public void TestSubscription(){
-            TestSubscriptionCommon<string>(Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
-        }
+            PNConfiguration pnConfiguration = new PNConfiguration ();
+            pnConfiguration.Origin = EditorCommon.Origin;
+            pnConfiguration.SubscribeKey = EditorCommon.SubscribeKey;
+            pnConfiguration.PublishKey = EditorCommon.PublishKey;
+            pnConfiguration.CipherKey = "enigma";
+            pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
+            pnConfiguration.PresenceTimeout = 60;
+            pnConfiguration.PresenceInterval= 30;
+            //pnConfiguration.UUID = uuid;
+            //pnConfiguration.AuthKey = authKey;
 
-        [Test]
-        public void TestSubscriptionObj(){
-            TestSubscriptionCommon<object>(Common.UserCallback, Common.ConnectCallback, Common.WildcardPresenceCallback, Common.DisconnectCallback);
-        }
+            //PubNub pn = new PubNub(pnConfiguration);
+            PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
 
-        public void TestSubscriptionCommon<T>(Action<T> userCallback, Action<T> connectCallback,
-            Action<T> wildcardPresenceCallback, Action<T> disconnectCallback){
-            Subscription.Instance.CleanUp();
+            pnUnity.SubscriptionInstance.CleanUp();
+            PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
             //Add CE with ch cg, ch-pres, cgpres, 2 awaiting connect callback with userstate
-            List<ChannelEntity> channelEntities = Common.CreateListOfChannelEntities<T>(true, true, true, true,
-                userCallback, connectCallback, 
-                wildcardPresenceCallback,
-                disconnectCallback
-                );
-            Subscription.Instance.Add(channelEntities);
+            List<ChannelEntity> channelEntities = EditorCommon.CreateListOfChannelEntities(true, true, true, true, ref pnLog);
+            pnUnity.SubscriptionInstance.Add(channelEntities);
 
             // Test All
-            RunAssertions("{\"ch1\":{\"k\":\"v\",\"k2\":\"v2\"},\"ch2\":{\"k3\":\"v3\",\"k4\":\"v4\"},\"ch2-pnpres\":{\"k7\":\"v7\",\"k8\":\"v8\"},\"ch7\":{\"k7\":\"v7\",\"k8\":\"v8\"},\"cg1\":{\"k5\":\"v5\",\"k6\":\"v6\"},\"cg2\":{\"k7\":\"v7\",\"k8\":\"v8\"},\"cg2-pnpres\":{\"k7\":\"v7\",\"k8\":\"v8\"},\"cg8\":{\"k7\":\"v7\",\"k8\":\"v8\"}}",
+            RunAssertions(pnUnity, "{\"ch1\":{\"k\":\"v\",\"k2\":\"v2\"},\"ch2\":{\"k3\":\"v3\",\"k4\":\"v4\"},\"ch2-pnpres\":{\"k7\":\"v7\",\"k8\":\"v8\"},\"ch7\":{\"k7\":\"v7\",\"k8\":\"v8\"},\"cg1\":{\"k5\":\"v5\",\"k6\":\"v6\"},\"cg2\":{\"k7\":\"v7\",\"k8\":\"v8\"},\"cg2-pnpres\":{\"k7\":\"v7\",\"k8\":\"v8\"},\"cg8\":{\"k7\":\"v7\",\"k8\":\"v8\"}}",
                 false, true, true, true, true, 4, 4,
                 new string[] {"cg1", "cg2", "cg2-pnpres", "cg8" },
                 new string[] {"ch1", "ch2", "ch2-pnpres", "ch7" },
@@ -277,17 +298,13 @@ namespace PubNubAPI.Tests
 
 
             // Delete 2
-            ChannelEntity ce = Helpers.CreateChannelEntity("ch2", false, false, null, userCallback,
-                connectCallback, Common.ErrorCallback, disconnectCallback, wildcardPresenceCallback
-            );
-            Subscription.Instance.Delete(ce);
-            ChannelEntity ce2 = Helpers.CreateChannelEntity("cg2", false, true, null, userCallback,
-                connectCallback, Common.ErrorCallback, disconnectCallback, wildcardPresenceCallback
-            );
-            Subscription.Instance.Delete(ce2);
+            ChannelEntity ce = Helpers.CreateChannelEntity("ch2", false, false, null, ref pnLog);
+            pnUnity.SubscriptionInstance.Delete(ce);
+            ChannelEntity ce2 = Helpers.CreateChannelEntity("cg2", false, true, null, ref pnLog);
+            pnUnity.SubscriptionInstance.Delete(ce2);
 
             // Test All
-            RunAssertions("{\"ch1\":{\"k\":\"v\",\"k2\":\"v2\"},\"ch2-pnpres\":{\"k7\":\"v7\",\"k8\":\"v8\"},\"ch7\":{\"k7\":\"v7\",\"k8\":\"v8\"},\"cg1\":{\"k5\":\"v5\",\"k6\":\"v6\"},\"cg2-pnpres\":{\"k7\":\"v7\",\"k8\":\"v8\"},\"cg8\":{\"k7\":\"v7\",\"k8\":\"v8\"}}",
+            RunAssertions(pnUnity, "{\"ch1\":{\"k\":\"v\",\"k2\":\"v2\"},\"ch2-pnpres\":{\"k7\":\"v7\",\"k8\":\"v8\"},\"ch7\":{\"k7\":\"v7\",\"k8\":\"v8\"},\"cg1\":{\"k5\":\"v5\",\"k6\":\"v6\"},\"cg2-pnpres\":{\"k7\":\"v7\",\"k8\":\"v8\"},\"cg8\":{\"k7\":\"v7\",\"k8\":\"v8\"}}",
                 false, true, true, true, true, 3, 3,
                 new string[] {"cg1", "cg2-pnpres", "cg8" },
                 new string[] {"ch1", "ch2-pnpres", "ch7" },
@@ -298,16 +315,14 @@ namespace PubNubAPI.Tests
             
 
             // UpdateOrAddUserStateOfEntity
-            ChannelEntity ce3 = Helpers.CreateChannelEntity("ch1", false, false, null, userCallback,
-                connectCallback, Common.ErrorCallback, disconnectCallback, wildcardPresenceCallback
-            );
+            ChannelEntity ce3 = Helpers.CreateChannelEntity("ch1", false, false, null, ref pnLog);
             var dictSMN = new Dictionary<string, object>();
             dictSMN.Add("k","v9");
 
-            Subscription.Instance.UpdateOrAddUserStateOfEntity(ref ce3, dictSMN, true);
+            pnUnity.SubscriptionInstance.UpdateOrAddUserStateOfEntity(ref ce3, dictSMN, true);
 
             // Test All
-            RunAssertions("{\"ch1\":{\"k\":\"v9\",\"k2\":\"v2\"},\"ch2-pnpres\":{\"k7\":\"v7\",\"k8\":\"v8\"},\"ch7\":{\"k7\":\"v7\",\"k8\":\"v8\"},\"cg1\":{\"k5\":\"v5\",\"k6\":\"v6\"},\"cg2-pnpres\":{\"k7\":\"v7\",\"k8\":\"v8\"},\"cg8\":{\"k7\":\"v7\",\"k8\":\"v8\"}}",
+            RunAssertions(pnUnity, "{\"ch1\":{\"k\":\"v9\",\"k2\":\"v2\"},\"ch2-pnpres\":{\"k7\":\"v7\",\"k8\":\"v8\"},\"ch7\":{\"k7\":\"v7\",\"k8\":\"v8\"},\"cg1\":{\"k5\":\"v5\",\"k6\":\"v6\"},\"cg2-pnpres\":{\"k7\":\"v7\",\"k8\":\"v8\"},\"cg8\":{\"k7\":\"v7\",\"k8\":\"v8\"}}",
                 false, true, true, true, true, 3, 3,
                 new string[] {"cg1", "cg2-pnpres", "cg8" },
                 new string[] {"ch1", "ch2-pnpres", "ch7" },
@@ -317,21 +332,17 @@ namespace PubNubAPI.Tests
                 new string[] {"ch1", "ch2-pnpres", "ch7", "cg1", "cg2-pnpres", "cg8" });
 
             // UpdateIsAwaitingConnectCallbacksOfEntity
-            ChannelEntity ce4 = Helpers.CreateChannelEntity("ch7", false, false, null, userCallback,
-                connectCallback, Common.ErrorCallback, disconnectCallback, wildcardPresenceCallback
-            );
-            ChannelEntity ce5 = Helpers.CreateChannelEntity("cg8", false, true, null, userCallback,
-                connectCallback, Common.ErrorCallback, disconnectCallback, wildcardPresenceCallback
-            );
+            ChannelEntity ce4 = Helpers.CreateChannelEntity("ch7", false, false, null, ref pnLog);
+            ChannelEntity ce5 = Helpers.CreateChannelEntity("cg8", false, true, null, ref pnLog);
 
             List<ChannelEntity> lstCE = new List<ChannelEntity>();
             lstCE.Add(ce4);
             lstCE.Add(ce5);
 
-            Subscription.Instance.UpdateIsAwaitingConnectCallbacksOfEntity(lstCE, false);
+            pnUnity.SubscriptionInstance.UpdateIsAwaitingConnectCallbacksOfEntity(lstCE, false);
 
             // Test All
-            RunAssertions("{\"ch1\":{\"k\":\"v9\",\"k2\":\"v2\"},\"ch2-pnpres\":{\"k7\":\"v7\",\"k8\":\"v8\"},\"ch7\":{\"k7\":\"v7\",\"k8\":\"v8\"},\"cg1\":{\"k5\":\"v5\",\"k6\":\"v6\"},\"cg2-pnpres\":{\"k7\":\"v7\",\"k8\":\"v8\"},\"cg8\":{\"k7\":\"v7\",\"k8\":\"v8\"}}",
+            RunAssertions(pnUnity, "{\"ch1\":{\"k\":\"v9\",\"k2\":\"v2\"},\"ch2-pnpres\":{\"k7\":\"v7\",\"k8\":\"v8\"},\"ch7\":{\"k7\":\"v7\",\"k8\":\"v8\"},\"cg1\":{\"k5\":\"v5\",\"k6\":\"v6\"},\"cg2-pnpres\":{\"k7\":\"v7\",\"k8\":\"v8\"},\"cg8\":{\"k7\":\"v7\",\"k8\":\"v8\"}}",
                 true, true, true, true, true, 3, 3,
                 new string[] {"cg1", "cg2-pnpres", "cg8" },
                 new string[] {"ch1", "ch2-pnpres", "ch7" },
@@ -341,11 +352,11 @@ namespace PubNubAPI.Tests
                 new string[] {"ch1", "ch2-pnpres", "ch7", "cg1", "cg2-pnpres", "cg8" });
 
             // CleanUp
-            Subscription.Instance.CleanUp();
+            pnUnity.SubscriptionInstance.CleanUp();
 
             // Test All
 
-            RunAssertions(String.Empty,
+            RunAssertions(pnUnity, String.Empty,
                 false, false, false, false, false, 0, 0,
                 new string[] {},
                 new string[] {},
@@ -356,7 +367,8 @@ namespace PubNubAPI.Tests
 
         }
 
-        public void RunAssertions(string compiledUserStateA,
+        public void RunAssertions(PubNubUnity pnUnity,
+            string compiledUserStateA,
             bool connectCallbackSentA, bool hasChannelGroupsA, bool hasChannelA,
             bool hasChannelsOrChannelGroupsA, bool hasPresenceChannelsA, int currentSubscribedChannelGroupsCountA,
             int currentSubscribedChannelsCountA, string[] allChannelGroupsA, string[] allChannelsA, 
@@ -364,20 +376,20 @@ namespace PubNubAPI.Tests
             string[] channelsAndChannelGroupsAwaitingConnectCallbackA, string[] allSubscribedChannelsAndChannelGroupsA
 
         ){
-            List<ChannelEntity> allChannelGroups = Subscription.Instance.AllChannelGroups;
-            List<ChannelEntity> allChannels = Subscription.Instance.AllChannels;
-            List<ChannelEntity> allNonPresenceChannelsOrChannelGroups = Subscription.Instance.AllNonPresenceChannelsOrChannelGroups;
-            List<ChannelEntity> allPresenceChannelsOrChannelGroups = Subscription.Instance.AllPresenceChannelsOrChannelGroups;
-            List<ChannelEntity> allSubscribedChannelsAndChannelGroups = Subscription.Instance.AllSubscribedChannelsAndChannelGroups;
-            List<ChannelEntity> channelsAndChannelGroupsAwaitingConnectCallback = Subscription.Instance.ChannelsAndChannelGroupsAwaitingConnectCallback;
-            string compiledUserState = Subscription.Instance.CompiledUserState;
-            bool connectCallbackSent = Subscription.Instance.ConnectCallbackSent;
-            int currentSubscribedChannelGroupsCount = Subscription.Instance.CurrentSubscribedChannelGroupsCount;
-            int currentSubscribedChannelsCount = Subscription.Instance.CurrentSubscribedChannelsCount;
-            bool hasChannelGroups = Subscription.Instance.HasChannelGroups;
-            bool hasChannel = Subscription.Instance.HasChannels;
-            bool hasChannelsOrChannelGroups = Subscription.Instance.HasChannelsOrChannelGroups;
-            bool hasPresenceChannels = Subscription.Instance.HasPresenceChannels;
+            List<ChannelEntity> allChannelGroups = pnUnity.SubscriptionInstance.AllChannelGroups;
+            List<ChannelEntity> allChannels = pnUnity.SubscriptionInstance.AllChannels;
+            List<ChannelEntity> allNonPresenceChannelsOrChannelGroups = pnUnity.SubscriptionInstance.AllNonPresenceChannelsOrChannelGroups;
+            List<ChannelEntity> allPresenceChannelsOrChannelGroups = pnUnity.SubscriptionInstance.AllPresenceChannelsOrChannelGroups;
+            List<ChannelEntity> allSubscribedChannelsAndChannelGroups = pnUnity.SubscriptionInstance.AllSubscribedChannelsAndChannelGroups;
+            List<ChannelEntity> channelsAndChannelGroupsAwaitingConnectCallback = pnUnity.SubscriptionInstance.ChannelsAndChannelGroupsAwaitingConnectCallback;
+            string compiledUserState = pnUnity.SubscriptionInstance.CompiledUserState;
+            bool connectCallbackSent = pnUnity.SubscriptionInstance.ConnectCallbackSent;
+            int currentSubscribedChannelGroupsCount = pnUnity.SubscriptionInstance.CurrentSubscribedChannelGroupsCount;
+            int currentSubscribedChannelsCount = pnUnity.SubscriptionInstance.CurrentSubscribedChannelsCount;
+            bool hasChannelGroups = pnUnity.SubscriptionInstance.HasChannelGroups;
+            bool hasChannel = pnUnity.SubscriptionInstance.HasChannels;
+            bool hasChannelsOrChannelGroups = pnUnity.SubscriptionInstance.HasChannelsOrChannelGroups;
+            bool hasPresenceChannels = pnUnity.SubscriptionInstance.HasPresenceChannels;
 
             Assert.True(compiledUserState.Equals(compiledUserStateA), compiledUserState);
             Assert.True(connectCallbackSent.Equals(connectCallbackSentA), connectCallbackSent.ToString());
@@ -449,7 +461,7 @@ namespace PubNubAPI.Tests
                 }
             }
             return ceFound;
-        }*/
+        }
 
 
         #endif

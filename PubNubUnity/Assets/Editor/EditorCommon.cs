@@ -58,85 +58,55 @@ namespace PubNubAPI.Tests
             return "UnityUnitTests_" + r.Next (100);
         }
 
-        /*public static List<ChannelEntity> CreateListOfChannelEntities<T>(bool channelGroup, bool channel, 
-            bool presence, bool awaitingConnectCallback,
-            Action<T> userCallback, Action<T> connectCallback,
-            Action<T> wildcardPresenceCallback, Action<T> disconnectCallback
-            ){
+        public static List<ChannelEntity> CreateListOfChannelEntities(bool channelGroup, bool channel, bool presence, bool awaitingConnectCallback, ref PNLoggingMethod pnLog){
             var dictSM = new Dictionary<string, object>();
             dictSM.Add("k","v");
             dictSM.Add("k2","v2");
 
 
-            ChannelEntity ce1 = Helpers.CreateChannelEntity<T>("ch1", false, false, dictSM, 
-            userCallback, connectCallback,
-            Common.ErrorCallback, disconnectCallback, 
-            wildcardPresenceCallback);
+            ChannelEntity ce1 = Helpers.CreateChannelEntity("ch1", false, false, dictSM, ref pnLog);
 
             var dictSM2 = new Dictionary<string, object>();
             dictSM2.Add("k3","v3");
             dictSM2.Add("k4","v4");
 
-            ChannelEntity ce2 = Helpers.CreateChannelEntity<T>("ch2", false, false, dictSM2, 
-            userCallback, connectCallback,
-            Common.ErrorCallback, disconnectCallback, 
-            wildcardPresenceCallback);
+            ChannelEntity ce2 = Helpers.CreateChannelEntity("ch2", false, false, dictSM2, ref pnLog);
 
             var dictSM3 = new Dictionary<string, object>();
             dictSM3.Add("k5","v5");
             dictSM3.Add("k6","v6");
 
-            ChannelEntity ce3 = Helpers.CreateChannelEntity<T>("cg1", false, true, dictSM3, 
-            userCallback, connectCallback,
-            Common.ErrorCallback, disconnectCallback, 
-            wildcardPresenceCallback);
+            ChannelEntity ce3 = Helpers.CreateChannelEntity("cg1", false, true, dictSM3, ref pnLog);
 
             var dictSM4 = new Dictionary<string, object>();
             dictSM4.Add("k7","v7");
             dictSM4.Add("k8","v8");
 
-            ChannelEntity ce4 = Helpers.CreateChannelEntity<T>("cg2", false, true, dictSM4, 
-            userCallback, connectCallback,
-            Common.ErrorCallback, disconnectCallback, 
-            wildcardPresenceCallback);
+            ChannelEntity ce4 = Helpers.CreateChannelEntity("cg2", false, true, dictSM4, ref pnLog);
 
             var dictSM5 = new Dictionary<string, object>();
             dictSM5.Add("k7","v7");
             dictSM5.Add("k8","v8");
 
-            ChannelEntity ce5 = Helpers.CreateChannelEntity<T>("cg2-pnpres", false, true, dictSM5, 
-            userCallback, connectCallback,
-            Common.ErrorCallback, disconnectCallback, 
-            wildcardPresenceCallback);
-
+            ChannelEntity ce5 = Helpers.CreateChannelEntity("cg2-pnpres", false, true, dictSM5, ref pnLog); 
 
             var dictSM6 = new Dictionary<string, object>();
             dictSM6.Add("k7","v7");
             dictSM6.Add("k8","v8");
 
-            ChannelEntity ce6 = Helpers.CreateChannelEntity<T>("ch2-pnpres", false, false, dictSM6, 
-            userCallback, connectCallback,
-            Common.ErrorCallback, disconnectCallback, 
-            wildcardPresenceCallback);
-
-
+            ChannelEntity ce6 = Helpers.CreateChannelEntity("ch2-pnpres", false, false, dictSM6, ref pnLog);
+            
             var dictSM7 = new Dictionary<string, object>();
             dictSM7.Add("k7","v7");
             dictSM7.Add("k8","v8");
 
-            ChannelEntity ce7 = Helpers.CreateChannelEntity<T>("ch7", true, false, dictSM7, 
-            userCallback, connectCallback,
-            Common.ErrorCallback, disconnectCallback, 
-            wildcardPresenceCallback);
+            ChannelEntity ce7 = Helpers.CreateChannelEntity("ch7", true, false, dictSM7, ref pnLog);
 
             var dictSM8 = new Dictionary<string, object>();
             dictSM8.Add("k7","v7");
             dictSM8.Add("k8","v8");
 
-            ChannelEntity ce8 = Helpers.CreateChannelEntity<T>("cg8", true, true, dictSM8, 
-            userCallback, connectCallback,
-            Common.ErrorCallback, disconnectCallback, 
-            wildcardPresenceCallback);
+            ChannelEntity ce8 = Helpers.CreateChannelEntity("cg8", true, true, dictSM8, ref pnLog);
 
             List<ChannelEntity> lstCE = new List<ChannelEntity>();
             if(channel){
@@ -165,6 +135,7 @@ namespace PubNubAPI.Tests
             }
             return lstCE;
         }
+        /* 
 
         public static Dictionary<string, object> CreateSubscribeDictionary(){
             var dictSM = new Dictionary<string, object>();

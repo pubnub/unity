@@ -44,7 +44,7 @@ namespace PubNubAPI
             }
         }
         public GameObject GameObjectRef { get; set;}
-        internal Subscription SubscriptionInstance { get; set;}
+        public Subscription SubscriptionInstance { get; set;}
         internal SubscriptionWorker<SubscribeEnvelope> SubWorker { get; set;}
         internal bool localGobj;
         public PNLatencyManager Latency;

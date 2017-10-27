@@ -229,7 +229,7 @@ namespace PubNubAPI
             return errorData;
         }        
 
-        internal static string GetNamesFromChannelEntities (List<ChannelEntity> channelEntities){
+        public static string GetNamesFromChannelEntities (List<ChannelEntity> channelEntities){
             StringBuilder sbCh = new StringBuilder ();
             StringBuilder sbChGrp = new StringBuilder ();
             if (channelEntities != null) {
@@ -269,7 +269,7 @@ namespace PubNubAPI
 
             return message;
         }
-        internal static string GetNamesFromChannelEntities (List<ChannelEntity> channelEntities, bool isChannelGroup){
+        public static string GetNamesFromChannelEntities (List<ChannelEntity> channelEntities, bool isChannelGroup){
 
             StringBuilder sb = new StringBuilder ();
             if (channelEntities != null) {
@@ -365,7 +365,7 @@ namespace PubNubAPI
             }
         }
 
-        internal static ChannelEntity CreateChannelEntity(string channelOrChannelGroupName2, bool isAwaitingConnectCallback, bool isChannelGroup, Dictionary<string, object> userState, ref PNLoggingMethod pnLog){
+        public static ChannelEntity CreateChannelEntity(string channelOrChannelGroupName2, bool isAwaitingConnectCallback, bool isChannelGroup, Dictionary<string, object> userState, ref PNLoggingMethod pnLog){
             string channelOrChannelGroupName = channelOrChannelGroupName2.Trim ();
             #if (ENABLE_PUBNUB_LOGGING)
             pnLog.WriteToLog(string.Format("CreateChannelEntity: channelOrChannelGroupName {0}, {1}", channelOrChannelGroupName.ToString(), channelOrChannelGroupName2.ToString()), PNLoggingMethod.LevelInfo);
