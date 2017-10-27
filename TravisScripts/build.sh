@@ -26,7 +26,7 @@ cat $(pwd)/unity.log
 echo "Unit test logs"
 cat $(pwd)/test.xml
 # exit if tests failed
-if [ $rc0 -ne 0 ]; then { echo "Failed unit tests"; exit $rc0; } fi
+if [ $rc0 -ne 0 ]; then { echo "Failed unit tests"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc0; } fi
 
 ## Make the builds
 echo "Attempting build of ${UNITYCI_PROJECT_NAME} for Windows"
@@ -61,5 +61,9 @@ echo "Attempting build of ${UNITYCI_PROJECT_NAME} for OSX"
 rc2=$?
 echo "Build logs (OSX)"
 #cat $(pwd)/unity.log
+
+# returning license
+echo "returning license"
+/Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense
 
 exit $(($rc1|$rc2))

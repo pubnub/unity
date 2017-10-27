@@ -1,13 +1,13 @@
 # Please direct all Support Questions and Concerns to Support@PubNub.com
 
-## PubNub 3.7.8 Web Data Push Cloud-Hosted API for Unity 5
+[![Build Status](https://travis-ci.org/pubnub/unity.svg?branch=CE-2968-UnityV4)](https://travis-ci.org/pubnub/unity)
+
+## PubNub 4.0 Web Data Push Cloud-Hosted API for Unity 5+
 ### Supports PC, Mac, Linux, iOS, Android, WebPlayer, Windows Store Universal 10 and WebGL
 
-### View this First!
-We've made a [screencast](https://vimeo.com/69591819) that will walk you through the general setup. 
-After checking out the general setup video, [For iOS targets](https://vimeo.com/71549964) be sure to view this walkthrough next. Check it out!
-
 ### Important changes from previous version
+* 4.0
+  * All new PubNub Unity SDK
 * 3.7.8
   * Presence delta intervals
 * 3.7.7
