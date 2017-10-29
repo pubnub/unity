@@ -19,6 +19,15 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} StandaloneOSXIntel64
 	-password ${UNITYCI_PASS} \
 	-serial ${UNITYCI_SERIAL} 
 
+rc0=$?
+echo "Unity Logs:"
+cat ~/Library/Logs/Unity/Editor.log
+cat $(pwd)/unity.log
+echo "Unit test logs"
+cat $(pwd)/test.xml
+# exit if tests failed
+if [ $rc0 -ne 0 ]; then { echo "Failed unit tests"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc0; } fi	
+
 ## Run the editor unit tests
 echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} StandaloneWindows64"
 #echo "Test ${UNITYCI_TEST}"
