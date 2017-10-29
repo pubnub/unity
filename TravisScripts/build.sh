@@ -5,28 +5,7 @@
 #  the project folder is "UnityProject". If this is not true then adjust the 
 #  -projectPath argument to point to the right location.
 
-## Run the editor unit tests
-echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} StandaloneOSXIntel64"
-#echo "Test ${UNITYCI_TEST}"
-/Applications/Unity/Unity.app/Contents/MacOS/Unity \
-	-batchmode \
-	-logFile $(pwd)/unity.log \
-	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
-	-runTests \
-	-testResults $(pwd)/test.xml \
-	-testPlatform StandaloneOSXIntel64 \
-	-username ${UNITYCI_USER_NAME} \
-	-password ${UNITYCI_PASS} \
-	-serial ${UNITYCI_SERIAL} 
 
-rc0=$?
-echo "Unity Logs:"
-cat ~/Library/Logs/Unity/Editor.log
-cat $(pwd)/unity.log
-echo "Unit test logs"
-cat $(pwd)/test.xml
-# exit if tests failed
-if [ $rc0 -ne 0 ]; then { echo "Failed unit tests"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc0; } fi	
 
 ## Run the editor unit tests
 echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} StandaloneWindows64"
