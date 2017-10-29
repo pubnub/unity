@@ -6,7 +6,7 @@
 #  -projectPath argument to point to the right location.
 
 ## Run the editor unit tests
-echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME}"
+echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} StandaloneOSXIntel64"
 #echo "Test ${UNITYCI_TEST}"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
 	-batchmode \
@@ -15,6 +15,20 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME}"
 	-runTests \
 	-testResults $(pwd)/test.xml \
 	-testPlatform StandaloneOSXIntel64 \
+	-username ${UNITYCI_USER_NAME} \
+	-password ${UNITYCI_PASS} \
+	-serial ${UNITYCI_SERIAL} 
+
+## Run the editor unit tests
+echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} StandaloneWindows64"
+#echo "Test ${UNITYCI_TEST}"
+/Applications/Unity/Unity.app/Contents/MacOS/Unity \
+	-batchmode \
+	-logFile $(pwd)/unity.log \
+	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
+	-runTests \
+	-testResults $(pwd)/test.xml \
+	-testPlatform StandaloneWindows64 \
 	-username ${UNITYCI_USER_NAME} \
 	-password ${UNITYCI_PASS} \
 	-serial ${UNITYCI_SERIAL} 
