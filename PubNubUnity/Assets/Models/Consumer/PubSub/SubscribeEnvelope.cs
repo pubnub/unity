@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace PubNubAPI
 {
-    internal class SubscribeEnvelope
+    public class SubscribeEnvelope
     {
         private List<SubscribeMessage> m { get; set;} //messages;
         private TimetokenMetadata t { get; set;} //subscribeMetadata;

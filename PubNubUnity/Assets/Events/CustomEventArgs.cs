@@ -4,12 +4,12 @@ namespace PubNubAPI
 {
     public class CustomEventArgs : EventArgs
     {
-        internal string Message;
-        internal RequestState PubNubRequestState;
+        public string Message;
+        public RequestState PubNubRequestState;
         //internal Action<T, PNStatus> Callback;
-        internal bool IsError;
-        internal bool IsTimeout;
-        internal PNCurrentRequestType CurrRequestType;
+        public bool IsError;
+        public bool IsTimeout;
+        public PNCurrentRequestType CurrRequestType;
         //internal long ResponseCode;
         //internal string URL;
     }

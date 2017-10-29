@@ -397,7 +397,7 @@ namespace PubNubAPI
             }
         }
 
-        internal static List<ChannelEntity> CreateChannelEntity(string[] channelOrChannelGroupNames, bool isAwaitingConnectCallback, bool isChannelGroup, Dictionary<string, object> userState, ref PNLoggingMethod pnLog){
+        public static List<ChannelEntity> CreateChannelEntity(string[] channelOrChannelGroupNames, bool isAwaitingConnectCallback, bool isChannelGroup, Dictionary<string, object> userState, ref PNLoggingMethod pnLog){
             List<ChannelEntity> channelEntities = null;
             if (channelOrChannelGroupNames != null) {
                 channelEntities = new List<ChannelEntity> ();

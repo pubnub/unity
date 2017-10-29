@@ -2,7 +2,7 @@
 
 namespace PubNubAPI
 {
-    internal class SubscribeMessage
+    public class SubscribeMessage
     {
         private string a { get; set;} //shard;
         private string b { get; set;} //subscriptionMatch

@@ -2,7 +2,7 @@
 
 namespace PubNubAPI
 {
-    internal class TimetokenMetadata
+    public class TimetokenMetadata
     {
         private long t { get; set;} //timetoken;
         private string r { get; set;} //region;
