@@ -14,7 +14,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME}"
 	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
 	-runTests \
 	-testResults $(pwd)/test.xml \
-	-testPlatform editmode \
+	-testPlatform StandaloneOSXIntel64 \
 	-username ${UNITYCI_USER_NAME} \
 	-password ${UNITYCI_PASS} \
 	-serial ${UNITYCI_SERIAL} 
