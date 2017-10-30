@@ -15,7 +15,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} Android"
 	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
 	-runTests \
 	-testResults $(pwd)/test.xml \
-	-testPlatform Android \
+	-testPlatform iOS \
 	-username ${UNITYCI_USER_NAME} \
 	-password ${UNITYCI_PASS} \
 	-serial ${UNITYCI_SERIAL} 
