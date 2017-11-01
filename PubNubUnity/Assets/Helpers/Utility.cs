@@ -334,7 +334,7 @@ namespace PubNubAPI
             List<string> lstArr = ((IEnumerable)obj).Cast<string> ().ToList ();
             #if (ENABLE_PUBNUB_LOGGING)
             foreach (string lst in lstArr){
-            UnityEngine.Debug.Log ("clientlist:" + lst);
+                UnityEngine.Debug.Log ("clientlist:" + lst);
             }
             #endif
             return lstArr;

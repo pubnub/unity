@@ -10,8 +10,17 @@ namespace PubNubAPI
 
         public GameObject GameObjectRef {
             get {
-                return pnUnity.GameObjectRef;
+                if(pnUnity !=null){
+                    return pnUnity.GameObjectRef;
+                } else {
+                    HandlePNUnintializedError();
+                    return null;
+                }
             }
+        }
+
+        void HandlePNUnintializedError(){
+           Debug.Log("PubNub.Cleanup called, reintialize PubNub.");
         }
 
         public event EventHandler<EventArgs> SusbcribeCallback; 
@@ -23,7 +32,12 @@ namespace PubNubAPI
 
         public string Version {
             get {
-                return pnUnity.Version;
+                if(pnUnity !=null){
+                    return pnUnity.Version;
+                } else{
+                    HandlePNUnintializedError();
+                    return null;
+                }
             }
         }
         
@@ -49,7 +63,10 @@ namespace PubNubAPI
         }
 
         public void CleanUp (){
-            pnUnity.CleanUp();
+            if(pnUnity !=null){
+                pnUnity.CleanUp();
+                pnUnity = null;
+            }
         }
 
         ~PubNub(){
@@ -75,9 +92,14 @@ namespace PubNubAPI
             return pnUnity.Subscribe();
         }
 
-        public TimeBuilder Time(){
+        public TimeBuilder Time(){            
             Debug.Log ("TimeBuilder");
-            return pnUnity.Time();
+            if(pnUnity !=null){
+                return pnUnity.Time();
+            } else {
+                HandlePNUnintializedError();
+                return null;
+            }
         }
 
         public WhereNowBuilder WhereNow(){

@@ -52,6 +52,25 @@ namespace PubNubAPI.Tests
             return new PubNub(pnConfig);
         }
 
+        public static bool MatchChannelsEntities(List<ChannelEntity> ceList, List<string> channelOrChannelGroupList){
+            foreach(ChannelEntity ce in ceList){
+                bool bFound = false;
+                foreach(string chOrCg in channelOrChannelGroupList){
+                    Debug.Log("MatchChannelsEntities: " + ce.ChannelID.ChannelOrChannelGroupName + "   " + chOrCg);
+                    if(ce.ChannelID.ChannelOrChannelGroupName.Equals(chOrCg)){
+                        Debug.Log("MatchChannelsEntities found: " + ce.ChannelID.ChannelOrChannelGroupName);
+                        bFound = true;
+                        break;
+                    }
+                }
+                if(!bFound){
+                    Debug.Log("MatchChannelsEntities Not found: " + ce.ChannelID.ChannelOrChannelGroupName + channelOrChannelGroupList.Count);
+                    return false;
+                }
+            }
+            return true;
+        }
+
         public static string GetRandomChannelName()
         {
             System.Random r = new System.Random ();
