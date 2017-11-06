@@ -23,20 +23,19 @@ namespace PubNubAPI
             if (SubWorker != null) {
                 SubWorker.CleanUp();
             }
-
-            base.CleanUp();
             
             #if (ENABLE_PUBNUB_LOGGING)
             base.PNLog.WriteToLog (string.Format ("Clean up complete."), PNLoggingMethod.LevelInfo);
             #endif
+            base.CleanUp();
         }
 
-        ~PubNubUnity(){
+        /*~PubNubUnity(){
             #if (ENABLE_PUBNUB_LOGGING)
             base.PNLog.WriteToLog ("Destructing PubnubUnity", PNLoggingMethod.LevelInfo);
             #endif
             this.CleanUp ();
-        }
+        }*/
 
         public void Reconnect(){
             if(SubWorker != null){

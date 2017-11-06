@@ -206,7 +206,7 @@ namespace PubNubExample
              });
         }
         void ButtonFireHandler(){
-            pubnub.Fire().Channel("channel1").Message("test fire essage").Async((result, status) => {
+            pubnub.Fire().Channel("channel1").Message("test fire message" + DateTime.Now.Ticks.ToString()).Async((result, status) => {
                     Debug.Log ("in Fire");
                     if(status.Error){
                         PrintStatus(status);
@@ -217,7 +217,7 @@ namespace PubNubExample
                 });
         }
         void ButtonPublishHandler(){
-            pubnub.Publish().Channel("channel1").Message("test message").Async((result, status) => {
+            pubnub.Publish().Channel("channel1").Message("test message" + DateTime.Now.Ticks.ToString()).Async((result, status) => {
                     Debug.Log ("in Publish");
                     if(!status.Error){
                         Debug.Log (string.Format("DateTime {0}, In Publish Example, Timetoken: {1}", DateTime.UtcNow , result.Timetoken));

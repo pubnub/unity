@@ -33,7 +33,7 @@ namespace PubNubAPI
             }
 
             set {
-                if (value is IJsonLibrary) {
+                if ((value != null) && (value is IJsonLibrary)) {
                     jsonLibrary = value;
                 } else {
                     jsonLibrary = JSONSerializer.JsonLibrary(this);

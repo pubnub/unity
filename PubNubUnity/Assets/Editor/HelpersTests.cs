@@ -54,6 +54,17 @@ namespace PubNubAPI.Tests
             ExceptionStatusCode = 414;
             TestResponseCallbackErrorOrTimeoutHandler<SubscribeEnvelope> (channelGroups, "414 response", channels, false, PNOperationType.PNSubscribeOperation, PNCurrentRequestType.Subscribe, false, false, 0, false, ExceptionStatusCode);
         }*/
+        [Test]
+        public void CheckRequestTimeoutMessageInError ()
+        {
+            CustomEventArgs cea = new CustomEventArgs ();
+            cea.CurrRequestType = PNCurrentRequestType.Subscribe;
+            cea.IsError = true;
+            cea.IsTimeout = false;
+            cea.Message = "The request timed out.";
+            cea.PubNubRequestState = null;
+            Assert.IsTrue(Helpers.CheckRequestTimeoutMessageInError(cea));
+        }
 
         [Test] 
         public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribe400CGnCH()

@@ -5,9 +5,8 @@
 #  the project folder is "UnityProject". If this is not true then adjust the 
 #  -projectPath argument to point to the right location.
 
-
 ## Run the editor unit tests
-echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} WebGL"
+echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} StandaloneOSXUniversal"
 #echo "Test ${UNITYCI_TEST}"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
 	-batchmode \
@@ -15,7 +14,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} WebGL"
 	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
 	-runTests \
 	-testResults $(pwd)/test.xml \
-	-testPlatform WebGL \
+	-testPlatform StandaloneOSXUniversal \
 	-username ${UNITYCI_USER_NAME} \
 	-password ${UNITYCI_PASS} \
 	-serial ${UNITYCI_SERIAL} 
@@ -27,7 +26,9 @@ cat $(pwd)/unity.log
 echo "Unit test logs"
 cat $(pwd)/test.xml
 # exit if tests failed
-if [ $rc0 -ne 0 ]; then { echo "Failed unit tests"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc0; } fi
+if [ $rc0 -ne 0 ]; then { echo "Failed unit tests"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc0; } fi	
+
+
 
 ## Make the builds
 echo "Attempting build of ${UNITYCI_PROJECT_NAME} for Windows"
