@@ -9,6 +9,7 @@ namespace PubNubAPI.Tests
     public class UtilityUnitTests
     {
         #if DEBUG  
+
         #if(UNITY_IOS)
         [Test]
         public void TestCheckTimeoutValue(){
@@ -23,6 +24,114 @@ namespace PubNubAPI.Tests
         }
         #endif
 
+        [Test]
+        public void TestCheckDictionaryForErrorTrue(){
+            Assert.IsTrue(TestCheckDictionaryForErrorCommon("error", true));
+        }
+        
+        [Test]
+        public void TestCheckDictionaryForErrorFalse(){
+            Assert.IsFalse(TestCheckDictionaryForErrorCommon("error", false));
+        }
+
+        [Test]
+        public void TestCheckDictionaryForEFalse(){
+            Assert.IsFalse(TestCheckDictionaryForErrorCommon("e", false));
+        }
+
+        [Test]
+        public void TestCheckDictionaryForETrue(){
+            Assert.IsTrue(TestCheckDictionaryForErrorCommon("e", true));
+        }
+
+        public bool TestCheckDictionaryForErrorCommon(string name, bool bCheck){
+            Dictionary<string, object> dict = new Dictionary<string, object>();
+            dict.Add(name, bCheck);
+            return Utility.CheckDictionaryForError(dict, name);
+        }
+
+        [Test]
+        public void TestReadMessageFromResponseDictionaryTestTrue(){
+            object test = "test";
+            Assert.IsTrue(test.ToString().Equals(TestReadMessageFromResponseDictionaryCommon("e", test)));
+        }
+
+        [Test]
+        public void TestReadMessageFromResponseDictionaryTestFalse(){
+            object test = null;
+            Assert.IsTrue("".Equals(TestReadMessageFromResponseDictionaryCommon("e", test)));
+        }
+
+
+        public string TestReadMessageFromResponseDictionaryCommon(string name, object obj){
+            Dictionary<string, object> dict = new Dictionary<string, object>();
+            dict.Add(name, obj);
+            return Utility.ReadMessageFromResponseDictionary(dict, name);
+        }
+
+        [Test]
+        public void TestCheckKeyAndParseLong (){
+            var dict = new Dictionary<string, object>(); 
+            dict.Add("s", 2);
+            string log;
+            long o = Utility.CheckKeyAndParseLong(dict, "seq", "s", out log);
+            Assert.True(o.Equals(2));
+        }
+
+        [Test]
+        public void TestCheckKeyAndParseLongFalse (){
+            var dict = new Dictionary<string, object>(); 
+            dict.Add("s", "l");
+            string log;
+            long o = Utility.CheckKeyAndParseLong(dict, "seq", "s", out log);
+            Assert.True(o.Equals(0));
+            UnityEngine.Debug.Log(log);
+            Assert.True(log.Contains("seq, s conversion failed: "));
+        }
+
+        [Test]
+        public void TestCheckKeyAndParseLongWrongKey (){
+            var dict = new Dictionary<string, object>(); 
+            dict.Add("s", "l");
+            string log;
+            long o = Utility.CheckKeyAndParseLong(dict, "seq", "sa", out log);
+            Assert.True(o.Equals(0));
+        }
+
+        [Test]
+        public void TestCheckKeyAndParseInt (){
+            var dict = new Dictionary<string, object>(); 
+            dict.Add("s", 2);
+            string log;
+            int val;
+            Assert.True(Utility.CheckKeyAndParseInt(dict, "seq", "s", out log, out val));
+            Assert.True(val.Equals(2));
+        }
+
+        [Test]
+        public void TestCheckKeyAndParseIntFalse (){
+            var dict = new Dictionary<string, object>(); 
+            dict.Add("s", "l");
+            string log;
+            int val;
+            Assert.False(Utility.CheckKeyAndParseInt(dict, "seq", "s", out log, out val));
+            Assert.True(val.Equals(0));
+            UnityEngine.Debug.Log(log);
+            Assert.True(log.Contains("seq, s conversion failed: "));
+        }
+
+        [Test]
+        public void TestCheckKeyAndParseIntWrongKey (){
+            var dict = new Dictionary<string, object>(); 
+            dict.Add("s", "l");
+            string log;
+            int val;
+            Assert.False(Utility.CheckKeyAndParseInt(dict, "seq", "sa", out log, out val));
+            Assert.True(val.Equals(0));
+            UnityEngine.Debug.Log(log);
+            Assert.True(log.Contains("seq, sa key not found."));
+        }
+        
         /*[Test]
         //[ExpectedException (typeof(ArgumentException))]
         public void TestCheckPushTypeNone(){
@@ -134,22 +243,6 @@ namespace PubNubAPI.Tests
             Utility.CheckChannelOrChannelGroup("ch", "cg");
             Assert.True(true);
         }
-
-        /*[Test]
-        public void TestCheckKeyAndParseLong (){
-            var dict = new Dictionary<string, object>(); 
-            dict.Add("s", 2);
-            long o = Utility.CheckKeyAndParseLong(dict, "seq", "s");
-            Assert.True(o.Equals(2));
-        }
-
-        [Test]
-        public void TestCheckKeyAndParseLongFalse (){
-            var dict = new Dictionary<string, object>(); 
-            dict.Add("s", "l");
-            long o = Utility.CheckKeyAndParseLong(dict, "seq", "s");
-            Assert.True(o.Equals(0));
-        }*/
 
         [Test]
         public void TestValidateTimetoken (){

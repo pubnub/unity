@@ -61,7 +61,7 @@ namespace PubNubAPI
             if (dict.Contains (key)) {
                 long seqNumber;
                 if (!Int64.TryParse (dict [key].ToString(), out seqNumber)) {
-                    log = string.Format ("{1}, {2} conversion failed: {3}.", what, key, dict [key].ToString ());
+                    log = string.Format ("{0}, {1} conversion failed: {2}.", what, key, dict [key].ToString ());
                 }
                 sequenceNumber = seqNumber;
             }
@@ -75,13 +75,13 @@ namespace PubNubAPI
             if (dict.Contains (key)) {
                 int seqNumber;
                 if (!int.TryParse (dict [key].ToString(), out seqNumber)) {
-                    log = string.Format ("{1}, {2} conversion failed: {3}.", what, key, dict [key].ToString ());
+                    log = string.Format ("{0}, {1} conversion failed: {2}.", what, key, dict [key].ToString ());
                     return false;
                 }
                 val = seqNumber;
                 return true;
             }
-            log = string.Format ("{1}, {2} key not found.", what, key);
+            log = string.Format ("{0}, {1} key not found.", what, key);
             return false;
         }
 

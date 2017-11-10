@@ -10,6 +10,21 @@ namespace PubNubAPI.Tests
     public class HelpersTests
     {
         #if DEBUG  
+        //CreatePNStatus
+        //CreateListOfStringFromListOfChannelEntity
+        //CreateErrorData
+        //GetNamesFromChannelEntities
+        //GetNamesFromChannelEntities II
+        //JsonEncodePublishMsg
+        //CreateTimetokenMetadata
+        //DeserializeAndAddToResult
+        //GetDuplicates
+        //BuildJsonUserState
+        //IsPresenceChannel
+        //BuildJsonUserState
+        //DecodeMessage
+        //AddToSubscribeMessageList
+        //CreateListOfSubscribeMessage
 
         [Test]
         public void TestCounterClassNextValue(){
