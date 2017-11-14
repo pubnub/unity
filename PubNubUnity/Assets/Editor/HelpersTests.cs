@@ -13,13 +13,95 @@ namespace PubNubAPI.Tests
         //CreatePNStatus
         //CreateListOfStringFromListOfChannelEntity
         //CreateErrorData
-        //JsonEncodePublishMsg
         //CreateTimetokenMetadata
-        //DeserializeAndAddToResult
-        //GetDuplicates
-        //DecodeMessage
         //AddToSubscribeMessageList
         //CreateListOfSubscribeMessage
+
+        [Test]
+        public void TestDecodeMessage(){ 
+            string str = "UXgV6VPqJ7WI04csguMrqw==";
+            TestDecodeMessageCommon (str, "test message");
+        }
+
+        [Test]
+        public void TestDecodeMessageError(){ 
+            string str = "UXgV6VPqJ7WI04csguMrqw=";
+            TestDecodeMessageCommon (str, "**DECRYPT ERROR**");
+        }
+
+        void TestDecodeMessageCommon(object inputMessage, string resultExpected){
+            string[] multiChannel = {"testChannel3"};
+            string cipherKey = "enigma";
+            PNConfiguration pnConfiguration = new PNConfiguration ();
+            pnConfiguration.Origin = EditorCommon.Origin;
+            pnConfiguration.SubscribeKey = EditorCommon.SubscribeKey;
+            pnConfiguration.PublishKey = EditorCommon.PublishKey;
+            pnConfiguration.CipherKey = "enigma";
+            pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
+            pnConfiguration.PresenceTimeout = 60;
+            pnConfiguration.PresenceInterval= 30;
+            PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
+            PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
+            List<ChannelEntity> channelEntities = Helpers.CreateChannelEntity(multiChannel, false, false, null, ref pnLog);
+
+            object resp= Helpers.DecodeMessage(cipherKey, inputMessage, PNOperationType.PNSubscribeOperation, ref pnUnity);
+
+            UnityEngine.Debug.Log ("ser2:" + resultExpected.ToString());
+            UnityEngine.Debug.Log ("ser1:" + resp.ToString());
+            Assert.IsTrue (resp.Equals(resultExpected));
+        }
+
+        [Test]
+        public void TestDeserializeAndAddToResult(){
+            string str = "{\"status\":200,\"message\":\"OK\",\"service\":\"Presence\",\"occupancy\":0}";
+            TestDeserializeAndAddToResultCommon (false, str, "status");
+        }
+
+        [Test]
+        public void TestDeserializeAndAddToResultAddChannel(){
+            string str = "{\"status\":200,\"message\":\"OK\",\"service\":\"Presence\",\"occupancy\":0}";
+            TestDeserializeAndAddToResultCommon (true, str, "status");
+        }
+
+        public void TestDeserializeAndAddToResultCommon(bool addChannel, string str, string expectedResult){ 
+            string channel = "testChannel3";
+
+            PNConfiguration pnConfiguration = new PNConfiguration ();
+            pnConfiguration.Origin = EditorCommon.Origin;
+            pnConfiguration.SubscribeKey = EditorCommon.SubscribeKey;
+            pnConfiguration.PublishKey = EditorCommon.PublishKey;
+            pnConfiguration.CipherKey = "enigma";
+            pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
+            pnConfiguration.PresenceTimeout = 60;
+            pnConfiguration.PresenceInterval= 30;
+            PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
+            PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
+
+            List<object> lstObj = Helpers.DeserializeAndAddToResult (str, channel, pnUnity.JsonLibrary, addChannel);
+
+            bool bRes = false;
+            foreach (object obj in lstObj) {
+                if (obj.GetType ().IsGenericType) {
+                    UnityEngine.Debug.Log ("generic:" + obj.ToString ());
+                    Dictionary<string, object> dictionary = (Dictionary<string, object>)obj;
+                    bRes = dictionary.ContainsKey(expectedResult);
+                    break;
+                }
+            }
+
+            UnityEngine.Debug.Log ("ser1:" + bRes );
+            Assert.IsTrue(bRes);
+            if (addChannel) {
+                bRes = lstObj.Contains (channel);
+                UnityEngine.Debug.Log ("ser2:" + bRes);
+                Assert.IsTrue (bRes);
+
+            } else {
+                bRes = lstObj.Contains (channel);
+                UnityEngine.Debug.Log ("ser2:" + bRes);
+                Assert.IsFalse (bRes);
+            }
+        }
 
         [Test]
         public void TestUpdateOrAddUserStateOfEntityErrorCallback(){

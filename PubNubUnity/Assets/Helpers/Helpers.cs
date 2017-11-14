@@ -308,7 +308,7 @@ namespace PubNubAPI
             return timetokenMetadata;
         }
 
-        internal static List<object> DeserializeAndAddToResult (string jsonString, string multiChannel, IJsonLibrary jsonPluggableLibrary, bool addChannel)
+        public static List<object> DeserializeAndAddToResult (string jsonString, string multiChannel, IJsonLibrary jsonPluggableLibrary, bool addChannel)
         {
             Dictionary<string, object> dictionary = jsonPluggableLibrary.DeserializeToDictionaryOfObject (jsonString);
             List<object> result = new List<object> ();
@@ -434,19 +434,30 @@ namespace PubNubAPI
             return retJsonUserState;
         }
 
-        internal static object DecodeMessage (string cipherKey, object element, IJsonLibrary jsonPluggableLibrary, PNLoggingMethod pnLog)
+        public static object DecodeMessage (string cipherKey, object element, PNOperationType pnOperationType, ref PubNubUnity pnUnity)
         {
-            PubnubCrypto aes = new PubnubCrypto (cipherKey, pnLog);
+            PubnubCrypto aes = new PubnubCrypto (cipherKey, pnUnity.PNLog);
             string decryptMessage = "";
             try {
                 decryptMessage = aes.Decrypt (element.ToString ());
             }
             catch (Exception ex) {
                 decryptMessage = "**DECRYPT ERROR**";
-                throw ex;
+                PNStatus pnStatus = CreatePNStatus(
+                        PNStatusCategory.PNDecryptionErrorCategory,
+                        string.Format("{0}, {1}", decryptMessage, element.ToString()), 
+                        ex,
+                        true,
+                        PNOperationType.PNSubscribeOperation,
+                        pnUnity.SubscriptionInstance.AllChannels,
+                        pnUnity.SubscriptionInstance.AllChannelGroups,
+                        null,
+                        pnUnity
+                    );
+                //throw ex;
                 //PubnubCallbacks.CallErrorCallback<object> (ex, channelEntities, PubnubErrorCode.None, PubnubErrorSeverity.Critical, errorLevel);
             }
-            object decodeMessage = (decryptMessage == "**DECRYPT ERROR**") ? decryptMessage : jsonPluggableLibrary.DeserializeToObject (decryptMessage);
+            object decodeMessage = (decryptMessage == "**DECRYPT ERROR**") ? decryptMessage : pnUnity.JsonLibrary.DeserializeToObject (decryptMessage);
             return decodeMessage;
         }
 

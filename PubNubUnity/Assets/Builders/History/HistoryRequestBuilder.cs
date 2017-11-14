@@ -170,7 +170,7 @@ namespace PubNubAPI
             historyMessage.TryGetValue("message", out v);
             if(!string.IsNullOrEmpty(cipherKey) && (cipherKey.Length > 0)){
                 //TODO: handle exception
-                pnHistoryItemResult.Entry = Helpers.DecodeMessage(cipherKey, v, this.PubNubInstance.JsonLibrary, this.PubNubInstance.PNLog);
+                pnHistoryItemResult.Entry = Helpers.DecodeMessage(cipherKey, v, OperationType, ref this.PubNubInstance);
             } else {
                 pnHistoryItemResult.Entry = v;
             }
@@ -189,7 +189,7 @@ namespace PubNubAPI
             pnHistoryItemResult = new PNHistoryItemResult();
             if(!string.IsNullOrEmpty(cipherKey) && (cipherKey.Length > 0)){
                 //TODO: handle exception
-                pnHistoryItemResult.Entry = Helpers.DecodeMessage(cipherKey, element, this.PubNubInstance.JsonLibrary, this.PubNubInstance.PNLog);
+                pnHistoryItemResult.Entry = Helpers.DecodeMessage(cipherKey, element, OperationType, ref this.PubNubInstance);
             } else {
                 pnHistoryItemResult.Entry = element;
             }
