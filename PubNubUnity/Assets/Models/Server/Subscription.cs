@@ -398,7 +398,7 @@ namespace PubNubAPI
 
                 if (channelName.Length > 0) {
                     if((type == PNOperationType.PNPresenceOperation) || (type == PNOperationType.PNPresenceUnsubscribeOperation)) {
-                        channelName = string.Format ("{0}{1}", channelName, Helpers.PresenceChannelSuffix);
+                        channelName = string.Format ("{0}{1}", channelName, Utility.PresenceChannelSuffix);
                     }
 
                     #if (ENABLE_PUBNUB_LOGGING)

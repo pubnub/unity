@@ -36,8 +36,6 @@ namespace PubNubAPI
 
     public static class Helpers
     {
-        internal const string PresenceChannelSuffix = "-pnpres";
-
         #region "Helpers"
 
         public static bool CheckRequestTimeoutMessageInError(CustomEventArgs cea){
@@ -332,7 +330,7 @@ namespace PubNubAPI
                     yield return item;
         }
 
-        internal static string BuildJsonUserState (Dictionary<string, object> userStateDictionary)
+        public static string BuildJsonUserState (Dictionary<string, object> userStateDictionary)
         {
             StringBuilder jsonStateBuilder = new StringBuilder ();
 
@@ -356,15 +354,6 @@ namespace PubNubAPI
             return jsonStateBuilder.ToString ();
         }
 
-        internal static bool IsPresenceChannel (string channel)
-        {
-            if (channel.LastIndexOf (PresenceChannelSuffix) > 0) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
         public static ChannelEntity CreateChannelEntity(string channelOrChannelGroupName2, bool isAwaitingConnectCallback, bool isChannelGroup, Dictionary<string, object> userState, ref PNLoggingMethod pnLog){
             string channelOrChannelGroupName = channelOrChannelGroupName2.Trim ();
             #if (ENABLE_PUBNUB_LOGGING)
@@ -374,7 +363,7 @@ namespace PubNubAPI
             if (!string.IsNullOrEmpty(channelOrChannelGroupName)) {
                 ChannelIdentity ci = new ChannelIdentity ();
                 ci.ChannelOrChannelGroupName = channelOrChannelGroupName;
-                ci.IsPresenceChannel = IsPresenceChannel (channelOrChannelGroupName);
+                ci.IsPresenceChannel = Utility.IsPresenceChannel (channelOrChannelGroupName);
                 ci.IsChannelGroup = isChannelGroup;
 
                 ChannelParameters cp = new ChannelParameters ();
@@ -419,7 +408,7 @@ namespace PubNubAPI
             return channelEntities;
         }
 
-        internal static string BuildJsonUserState (List<ChannelEntity> listChannelEntities)
+        public static string BuildJsonUserState (List<ChannelEntity> listChannelEntities)
         {
             string retJsonUserState = "";
 

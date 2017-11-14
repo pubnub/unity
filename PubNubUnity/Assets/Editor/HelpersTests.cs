@@ -13,18 +13,252 @@ namespace PubNubAPI.Tests
         //CreatePNStatus
         //CreateListOfStringFromListOfChannelEntity
         //CreateErrorData
-        //GetNamesFromChannelEntities
-        //GetNamesFromChannelEntities II
         //JsonEncodePublishMsg
         //CreateTimetokenMetadata
         //DeserializeAndAddToResult
         //GetDuplicates
-        //BuildJsonUserState
-        //IsPresenceChannel
-        //BuildJsonUserState
         //DecodeMessage
         //AddToSubscribeMessageList
         //CreateListOfSubscribeMessage
+
+        [Test]
+        public void TestUpdateOrAddUserStateOfEntityErrorCallback(){
+            TestUpdateOrAddUserStateOfEntityCommon(true, false, true, false,
+                 false);
+        }
+
+        [Test]
+        public void TestUpdateOrAddUserStateOfEntity(){
+            TestUpdateOrAddUserStateOfEntityCommon(false, false, false, false,
+                 false);
+        }
+
+        [Test]
+        public void TestUpdateOrAddUserStateOfEntityErrorCallbackEdit(){
+            TestUpdateOrAddUserStateOfEntityCommon(true, true, false, false,
+                 false);
+        }
+
+        [Test]
+        public void TestUpdateOrAddUserStateOfEntityEdit(){
+            TestUpdateOrAddUserStateOfEntityCommon(false, true, false, false,
+                 false);
+        }
+
+        [Test]
+        public void TestUpdateOrAddUserStateOfEntityErrorCallbackOther(){
+            TestUpdateOrAddUserStateOfEntityCommon(true, false, true, false,
+                 true);
+        }
+
+        [Test]
+        public void TestUpdateOrAddUserStateOfEntityOther(){
+            TestUpdateOrAddUserStateOfEntityCommon(false, false, false, false,
+                 true);
+        }
+
+        [Test]
+        public void TestUpdateOrAddUserStateOfEntityErrorCallbackEditOther(){
+            TestUpdateOrAddUserStateOfEntityCommon(true, true, false, false,
+                 true);
+        }
+
+        [Test]
+        public void TestUpdateOrAddUserStateOfEntityEditOther(){
+            TestUpdateOrAddUserStateOfEntityCommon(false, true, false, false,
+                 true);
+        }
+
+        public void TestUpdateOrAddUserStateOfEntityCommon(bool isChannelGroup, bool edit, 
+            bool checkErrorCallback, bool ssl, bool isForOtherUUID){
+
+            var dictSM = new Dictionary<string, object>();
+            dictSM.Add("k2","v2");
+            dictSM.Add("k","v");
+
+            PNConfiguration pnConfiguration = new PNConfiguration ();
+            pnConfiguration.Origin = EditorCommon.Origin;
+            pnConfiguration.SubscribeKey = EditorCommon.SubscribeKey;
+            pnConfiguration.PublishKey = EditorCommon.PublishKey;
+            pnConfiguration.CipherKey = "enigma";
+            pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
+            pnConfiguration.PresenceTimeout = 60;
+            pnConfiguration.PresenceInterval= 30;
+            PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
+            PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
+            pnUnity.SubscriptionInstance.CleanUp();
+
+            string state = pnUnity.JsonLibrary.SerializeToJsonString(dictSM);
+            ChannelEntity ce1 = Helpers.CreateChannelEntity("ch1", false, isChannelGroup, dictSM, ref pnLog);
+
+            List<ChannelEntity> lstCe = new List<ChannelEntity>();
+            lstCe.Add(ce1);
+            string channelName = "ch1";
+
+            if(checkErrorCallback || edit){
+                var dictSM2 = new Dictionary<string, object>();
+                dictSM2.Add("k2","v3");
+
+                List<ChannelEntity> lstCe2 = new List<ChannelEntity>();
+                lstCe2.Add(ce1);
+                ChannelEntity ce3 = Helpers.CreateChannelEntity("ch1", false, false, null, ref pnLog);
+
+                pnUnity.SubscriptionInstance.UpdateOrAddUserStateOfEntity(ref ce3, dictSM2, edit);
+
+                //pnUnity.SubscriptionInstance.UpdateOrAddUserStateOfEntity(channelName, isChannelGroup, dictSM2, edit, isForOtherUUID, ref lstCe2);
+                string ustate = pnUnity.JsonLibrary.SerializeToJsonString(lstCe2[0].ChannelParams.UserState);
+                string state2 = pnUnity.JsonLibrary.SerializeToJsonString(dictSM2);
+                UnityEngine.Debug.Log(string.Format("{0}\n{1}", state2, ustate));
+            }
+
+            if(pnUnity.SubscriptionInstance.UpdateOrAddUserStateOfEntity(ref ce1, dictSM, edit)){
+                string ustate = pnUnity.JsonLibrary.SerializeToJsonString(lstCe[0].ChannelParams.UserState);
+                UnityEngine.Debug.Log(string.Format("{0}\n{1}", state, ustate));
+                Assert.AreEqual(ustate, state, string.Format ("{0}\n{1}", ustate, state));
+            } else {
+                UnityEngine.Debug.Log(state);
+                if(!checkErrorCallback){
+                    Assert.True(false, "UpdateOrAddUserStateOfEntity returned false");
+                }
+            }
+        }
+
+        [Test]
+        public void TestGetNamesFromChannelEntities(){
+            TestGetNamesFromChannelEntitiesCommon(true, true);
+        }
+
+        [Test]
+        public void TestGetNamesFromChannelEntitiesCG(){
+            TestGetNamesFromChannelEntitiesCommon(true, false);
+        }
+
+        [Test]
+        public void TestGetNamesFromChannelEntitiesCN(){
+            TestGetNamesFromChannelEntitiesCommon(false, true);
+        }
+
+        public void TestGetNamesFromChannelEntitiesCommon(bool channelGroup, bool channel){
+            PNConfiguration pnConfiguration = new PNConfiguration ();
+            pnConfiguration.Origin = EditorCommon.Origin;
+            pnConfiguration.SubscribeKey = EditorCommon.SubscribeKey;
+            pnConfiguration.PublishKey = EditorCommon.PublishKey;
+            pnConfiguration.CipherKey = "enigma";
+            pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
+            pnConfiguration.PresenceTimeout = 60;
+            pnConfiguration.PresenceInterval= 30;
+            PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
+            PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
+            pnUnity.SubscriptionInstance.CleanUp();            
+            List<ChannelEntity> lstCE= EditorCommon.CreateListOfChannelEntities(channelGroup, channel, false, false, ref pnLog);  
+            string ces = Helpers.GetNamesFromChannelEntities(lstCE);
+
+            bool ceFound = true;
+            foreach(ChannelEntity ch in lstCE){
+                if(!ces.Contains(ch.ChannelID.ChannelOrChannelGroupName)){
+                    ceFound = false;
+                }
+            }
+            UnityEngine.Debug.Log(ces);
+            Assert.True(ceFound, ces);
+        }
+
+        [Test]
+        public void TestGetNamesFromChannelEntitiesCG2(){
+            TestGetNamesFromChannelEntitiesCommon2(true, false);
+        }
+
+        [Test]
+        public void TestGetNamesFromChannelEntitiesCN2(){
+            TestGetNamesFromChannelEntitiesCommon2(false, true);
+        }
+
+        public void TestGetNamesFromChannelEntitiesCommon2(bool channelGroup, bool channel){
+            PNConfiguration pnConfiguration = new PNConfiguration ();
+            pnConfiguration.Origin = EditorCommon.Origin;
+            pnConfiguration.SubscribeKey = EditorCommon.SubscribeKey;
+            pnConfiguration.PublishKey = EditorCommon.PublishKey;
+            pnConfiguration.CipherKey = "enigma";
+            pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
+            pnConfiguration.PresenceTimeout = 60;
+            pnConfiguration.PresenceInterval= 30;
+            PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
+            PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
+            pnUnity.SubscriptionInstance.CleanUp();            
+            List<ChannelEntity> lstCE= EditorCommon.CreateListOfChannelEntities(channelGroup, channel, false, false, ref pnLog);  
+             
+            string ces = Helpers.GetNamesFromChannelEntities(lstCE, channelGroup);
+
+            bool ceFound = true;
+            foreach(ChannelEntity ch in lstCE){
+                if(channelGroup){
+                    if(!ces.Contains(ch.ChannelID.ChannelOrChannelGroupName)
+                        && ch.ChannelID.IsChannelGroup)
+                    {
+                        ceFound = false;
+                    }
+                } else {
+                    if(!ces.Contains(ch.ChannelID.ChannelOrChannelGroupName)
+                        && !ch.ChannelID.IsChannelGroup)
+                    {
+                        ceFound = false;
+                    }
+                }
+            }
+            UnityEngine.Debug.Log(ces);
+            Assert.True(ceFound, ces);
+        }
+
+        [Test]
+        public void TestBuildJsonUserState(){
+            var dictSM = new Dictionary<string, object>();
+            dictSM.Add("k","v");
+            dictSM.Add("k2","v2");
+            string ret = Helpers.BuildJsonUserState(dictSM);
+            Assert.AreEqual(ret, "\"k\":\"v\",\"k2\":\"v2\"", ret);
+        }
+
+        [Test]
+        public void TestBuildJsonUserStateCE(){
+            TestBuildJsonUserStateCommon(false, true);
+        }
+
+        [Test]
+        public void TestBuildJsonUserStateCECG(){
+            TestBuildJsonUserStateCommon(true, false);
+        }
+
+        [Test]
+        public void TestBuildJsonUserStateCECGnCH(){
+            TestBuildJsonUserStateCommon(true, true);
+        }
+
+        public void TestBuildJsonUserStateCommon(bool channelGroup, bool channel){
+            PNConfiguration pnConfiguration = new PNConfiguration ();
+            pnConfiguration.Origin = EditorCommon.Origin;
+            pnConfiguration.SubscribeKey = EditorCommon.SubscribeKey;
+            pnConfiguration.PublishKey = EditorCommon.PublishKey;
+            pnConfiguration.CipherKey = "enigma";
+            pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
+            pnConfiguration.PresenceTimeout = 60;
+            pnConfiguration.PresenceInterval= 30;
+            PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
+            PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
+            pnUnity.SubscriptionInstance.CleanUp();
+            List<ChannelEntity> lstCE= EditorCommon.CreateListOfChannelEntities(channelGroup, channel, false, false, ref pnLog);
+            string ret = Helpers.BuildJsonUserState(lstCE);
+            UnityEngine.Debug.Log("ret:" + ret);
+            if(channel && channelGroup){
+                UnityEngine.Debug.Log("expected:" + "{\"ch1\":{\"k\":\"v\",\"k2\":\"v2\"},\"ch2\":{\"k3\":\"v3\",\"k4\":\"v4\"},\"cg1\":{\"k5\":\"v5\",\"k6\":\"v6\"},\"cg2\":{\"k7\":\"v7\",\"k8\":\"v8\"}}");
+                Assert.AreEqual(ret, "{\"ch1\":{\"k\":\"v\",\"k2\":\"v2\"},\"ch2\":{\"k3\":\"v3\",\"k4\":\"v4\"},\"cg1\":{\"k5\":\"v5\",\"k6\":\"v6\"},\"cg2\":{\"k7\":\"v7\",\"k8\":\"v8\"}}", ret);
+            } else if (channelGroup){
+                UnityEngine.Debug.Log("expected:" + "{\"cg1\":{\"k5\":\"v5\",\"k6\":\"v6\"},\"cg2\":{\"k7\":\"v7\",\"k8\":\"v8\"}}");
+                Assert.AreEqual(ret, "{\"cg1\":{\"k5\":\"v5\",\"k6\":\"v6\"},\"cg2\":{\"k7\":\"v7\",\"k8\":\"v8\"}}", ret);
+            } else {
+                UnityEngine.Debug.Log("expected:" + "{\"ch1\":{\"k\":\"v\",\"k2\":\"v2\"},\"ch2\":{\"k3\":\"v3\",\"k4\":\"v4\"}}");
+                Assert.AreEqual(ret, "{\"ch1\":{\"k\":\"v\",\"k2\":\"v2\"},\"ch2\":{\"k3\":\"v3\",\"k4\":\"v4\"}}", ret);
+            }
+        }
 
         [Test]
         public void TestCounterClassNextValue(){
@@ -200,7 +434,7 @@ namespace PubNubAPI.Tests
             string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
             ExceptionStatusCode = 400;
 
-            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "timedout", channels, false,
+            TestResponseCallbackErrorOrTimeoutHandler (channelGroups, "timedout", channels, false,
                 ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 true, true, 0, false, PubnubErrorFilter.Level.Warning
@@ -445,7 +679,7 @@ namespace PubNubAPI.Tests
             string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
             ExceptionStatusCode = 400;
 
-            TestResponseCallbackErrorOrTimeoutHandler<string> (channelGroups, "timedout", null, false,
+            TestResponseCallbackErrorOrTimeoutHandler (channelGroups, "timedout", null, false,
                 ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 true, true, 0, false, PubnubErrorFilter.Level.Warning
@@ -691,7 +925,7 @@ namespace PubNubAPI.Tests
             string[] channels = {"testSubscribe","test2Subscribe"}; 
             ExceptionStatusCode = 400;
 
-            TestResponseCallbackErrorOrTimeoutHandler<string> ("timedout", channels, false,
+            TestResponseCallbackErrorOrTimeoutHandler ("timedout", channels, false,
                 ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
                 ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
                 true, true, 0, false, PubnubErrorFilter.Level.Warning
