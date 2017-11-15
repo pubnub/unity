@@ -293,7 +293,7 @@ namespace PubNubAPI
             return sb.ToString();
         }
 
-        internal static TimetokenMetadata CreateTimetokenMetadata (object timeTokenDataObject, string whichTT, ref PNLoggingMethod pnLog)
+        public static TimetokenMetadata CreateTimetokenMetadata (object timeTokenDataObject, string whichTT, ref PNLoggingMethod pnLog)
         {
             Dictionary<string, object> timeTokenData = (Dictionary<string, object>)timeTokenDataObject;
             string log;
@@ -461,7 +461,7 @@ namespace PubNubAPI
             return decodeMessage;
         }
 
-        internal static void AddToSubscribeMessageList (object dictObject, ref List<SubscribeMessage> subscribeMessages, ref PNLoggingMethod pnLog)
+        public static void AddToSubscribeMessageList (object dictObject, ref List<SubscribeMessage> subscribeMessages, ref PNLoggingMethod pnLog)
         {
             var dict = dictObject as IDictionary;      
             if ((dict != null) && (dict.Count > 1)) {
@@ -535,7 +535,7 @@ namespace PubNubAPI
             #endif
         }
 
-        internal static List<SubscribeMessage> CreateListOfSubscribeMessage (object message, ref PNLoggingMethod pnLog)
+        public static List<SubscribeMessage> CreateListOfSubscribeMessage (object message, ref PNLoggingMethod pnLog)
         {
             List<SubscribeMessage> subscribeMessages = new List<SubscribeMessage> ();
             if (message != null) {

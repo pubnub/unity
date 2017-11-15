@@ -154,8 +154,7 @@ namespace PubNubAPI.Tests
             }
             return lstCE;
         }
-        /* 
-
+        
         public static Dictionary<string, object> CreateSubscribeDictionary(){
             var dictSM = new Dictionary<string, object>();
             dictSM.Add("a", "1");
@@ -181,7 +180,7 @@ namespace PubNubAPI.Tests
             dictU.Add("region", "north");
             dictSM.Add("u", dictU);
             return dictSM;
-        }*/
+        }
 
         public static void LogAndCompare(string expected, string received)
         {

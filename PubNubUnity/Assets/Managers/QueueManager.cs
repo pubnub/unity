@@ -29,7 +29,7 @@ namespace PubNubAPI
                     RunningRequests++;
                 }
                 Debug.Log("RunningRequests+RequestComplete:" + RunningRequests.ToString() + RequestComplete.ToString());
-                if (RunningRequests <= NoOfConcurrentRequests) {
+                if ((NoOfConcurrentRequests.Equals(0)) || (RunningRequests <= NoOfConcurrentRequests)) {
                     RunRequest = true;
                 } else {
                     RunRequest = false;
