@@ -13,6 +13,411 @@ namespace PubNubAPI.Tests
         //CreatePNStatus
 
         [Test]
+        public void TestCreatePNStatusWithCGAndCh(){
+            PNConfiguration pnConfiguration = EditorCommon.CreatePNConfig();
+            PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
+            PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
+            List<ChannelEntity> channelEntities1 = EditorCommon.CreateListOfChannelEntities(true, false, false, false, ref pnLog);
+            List<ChannelEntity> channelEntities2 = EditorCommon.CreateListOfChannelEntities(false, true, false, false, ref pnLog);
+            pnUnity.SubscriptionInstance.Add(channelEntities1);
+            pnUnity.SubscriptionInstance.Add(channelEntities2);
+
+            PNStatus pnStatus = Helpers.CreatePNStatus(
+                        PNStatusCategory.PNReconnectedCategory,
+                        "",
+                        null,
+                        false,
+                        PNOperationType.PNSubscribeOperation,
+                        pnUnity.SubscriptionInstance.AllChannels,
+                        pnUnity.SubscriptionInstance.AllChannelGroups,
+                        null,
+                        pnUnity
+                    );
+
+            Assert.True(pnStatus.Category.Equals(PNStatusCategory.PNReconnectedCategory));
+            Assert.True(pnStatus.Error.Equals(false));
+            Assert.True(pnStatus.ErrorData==null);
+            Assert.True((pnStatus.AuthKey!=null)?pnStatus.AuthKey.Equals(pnConfiguration.AuthKey):true);
+            Assert.True(pnStatus.Operation.Equals(PNOperationType.PNSubscribeOperation));
+            Assert.True(pnStatus.Origin.Equals(pnConfiguration.Origin));
+            Assert.True(pnStatus.StatusCode.Equals(0));
+            Assert.True(pnStatus.TlsEnabled.Equals(pnConfiguration.Secure));
+            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UUID));
+            Assert.True(EditorCommon.MatchChannelsEntities(channelEntities1, pnStatus.AffectedChannelGroups));
+            Assert.True(EditorCommon.MatchChannelsEntities(channelEntities2, pnStatus.AffectedChannels));
+        }
+
+        [Test]
+        public void TestCreatePNStatusWithoutCGAndCh(){
+            PNConfiguration pnConfiguration = EditorCommon.CreatePNConfig();
+            PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
+            PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
+
+            PNStatus pnStatus = Helpers.CreatePNStatus(
+                        PNStatusCategory.PNReconnectedCategory,
+                        "",
+                        null,
+                        false,
+                        PNOperationType.PNSubscribeOperation,
+                        pnUnity.SubscriptionInstance.AllChannels,
+                        pnUnity.SubscriptionInstance.AllChannelGroups,
+                        null,
+                        pnUnity
+                    );
+
+            Assert.True(pnStatus.Category.Equals(PNStatusCategory.PNReconnectedCategory));
+            Assert.True(pnStatus.Error.Equals(false));
+            Assert.True(pnStatus.ErrorData==null);
+            Assert.True((pnStatus.AuthKey!=null)?pnStatus.AuthKey.Equals(pnConfiguration.AuthKey):true);
+            Assert.True(pnStatus.Operation.Equals(PNOperationType.PNSubscribeOperation));
+            Assert.True(pnStatus.Origin.Equals(pnConfiguration.Origin));
+            Assert.True(pnStatus.StatusCode.Equals(0));
+            Assert.True(pnStatus.TlsEnabled.Equals(pnConfiguration.Secure));
+            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UUID));
+            Assert.True(pnStatus.AffectedChannelGroups.Count.Equals(0));
+            Assert.True(pnStatus.AffectedChannels.Count.Equals(0));
+        }
+
+        [Test]
+        public void TestCreatePNStatusExceptionWithoutCHAndCG(){
+            PNConfiguration pnConfiguration = EditorCommon.CreatePNConfig();
+            PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
+            PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
+                    
+            string message = "Both Channels and ChannelGroups cannot be empty";
+            PNStatus pnStatus = Helpers.CreatePNStatus(
+                        PNStatusCategory.PNReconnectedCategory,
+                        message,
+                        new Exception(message),
+                        true,
+                        PNOperationType.PNSubscribeOperation,
+                        pnUnity.SubscriptionInstance.AllChannels,
+                        pnUnity.SubscriptionInstance.AllChannelGroups,
+                        null,
+                        pnUnity
+                    );
+
+            Assert.True(pnStatus.Category.Equals(PNStatusCategory.PNReconnectedCategory));
+            Assert.True(pnStatus.Error.Equals(true));
+            Assert.True(pnStatus.ErrorData.Info.Equals(message));
+            Assert.True(pnStatus.ErrorData.Ex.Message.Equals(message));
+            Assert.True((pnStatus.AuthKey!=null)?pnStatus.AuthKey.Equals(pnConfiguration.AuthKey):true);
+            Assert.True(pnStatus.Operation.Equals(PNOperationType.PNSubscribeOperation));
+            Assert.True(pnStatus.Origin.Equals(pnConfiguration.Origin));
+            Assert.True(pnStatus.StatusCode.Equals(0));
+            Assert.True(pnStatus.TlsEnabled.Equals(pnConfiguration.Secure));
+            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UUID));
+            Assert.True(pnStatus.AffectedChannelGroups.Count.Equals(0));
+            Assert.True(pnStatus.AffectedChannels.Count.Equals(0));
+
+        }
+
+        [Test]
+        public void TestCreatePNStatusExceptionWithCHAndCG(){
+            PNConfiguration pnConfiguration = EditorCommon.CreatePNConfig();
+            PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
+            PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
+            List<ChannelEntity> channelEntities1 = EditorCommon.CreateListOfChannelEntities(true, false, false, false, ref pnLog);
+            List<ChannelEntity> channelEntities2 = EditorCommon.CreateListOfChannelEntities(false, true, false, false, ref pnLog);
+            pnUnity.SubscriptionInstance.Add(channelEntities1);
+            pnUnity.SubscriptionInstance.Add(channelEntities2);
+
+                    
+            string message = "Both Channels and ChannelGroups cannot be empty";
+            PNStatus pnStatus = Helpers.CreatePNStatus(
+                        PNStatusCategory.PNReconnectedCategory,
+                        message,
+                        new Exception(message),
+                        true,
+                        PNOperationType.PNSubscribeOperation,
+                        pnUnity.SubscriptionInstance.AllChannels,
+                        pnUnity.SubscriptionInstance.AllChannelGroups,
+                        null,
+                        pnUnity
+                    );
+
+            Assert.True(pnStatus.Category.Equals(PNStatusCategory.PNReconnectedCategory));
+            Assert.True(pnStatus.Error.Equals(true));
+            Assert.True(pnStatus.ErrorData.Info.Equals(message));
+            Assert.True(pnStatus.ErrorData.Ex.Message.Equals(message));
+            Assert.True((pnStatus.AuthKey!=null)?pnStatus.AuthKey.Equals(pnConfiguration.AuthKey):true);
+            Assert.True(pnStatus.Operation.Equals(PNOperationType.PNSubscribeOperation));
+            Assert.True(pnStatus.Origin.Equals(pnConfiguration.Origin));
+            Assert.True(pnStatus.StatusCode.Equals(0));
+            Assert.True(pnStatus.TlsEnabled.Equals(pnConfiguration.Secure));
+            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UUID));
+            Assert.True(EditorCommon.MatchChannelsEntities(channelEntities1, pnStatus.AffectedChannelGroups));
+            Assert.True(EditorCommon.MatchChannelsEntities(channelEntities2, pnStatus.AffectedChannels));
+
+        }
+
+        [Test]
+        public void TestCreatePNStatusExceptionWithCH(){
+            PNConfiguration pnConfiguration = EditorCommon.CreatePNConfig();
+            PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
+            PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
+            List<ChannelEntity> channelEntities1 = EditorCommon.CreateListOfChannelEntities(true, false, false, false, ref pnLog);
+            
+            RequestState pnRequestState = new RequestState();
+            pnRequestState.URL = "https://testurl";
+
+            string message = "Both Channels and ChannelGroups cannot be empty";
+            PNStatus pnStatus = Helpers.CreatePNStatus(
+                        PNStatusCategory.PNConnectedCategory,
+                        message,
+                        new Exception(message),
+                        true,
+                        PNOperationType.PNSubscribeOperation,
+                        channelEntities1[0], //channel entity
+                        pnRequestState,
+                        pnUnity
+                    );
+
+            Assert.True(pnStatus.Category.Equals(PNStatusCategory.PNConnectedCategory));
+            Assert.True(pnStatus.Error.Equals(true));
+            Assert.True(pnStatus.ErrorData.Info.Equals(message));
+            Assert.True(pnStatus.ErrorData.Ex.Message.Equals(message));
+            Assert.True((pnStatus.AuthKey!=null)?pnStatus.AuthKey.Equals(pnConfiguration.AuthKey):true);
+            Assert.True(pnStatus.Operation.Equals(PNOperationType.PNSubscribeOperation));
+            Assert.True(pnStatus.Origin.Equals(pnConfiguration.Origin));
+            Assert.True(pnStatus.StatusCode.Equals(0));
+            Assert.True(pnStatus.TlsEnabled.Equals(pnConfiguration.Secure));
+            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UUID));
+            Assert.True(channelEntities1[0].ChannelID.ChannelOrChannelGroupName.Equals(pnStatus.AffectedChannelGroups[0]));
+            //Assert.True(pnStatus.AffectedChannels.Count.Equals(0));
+            Assert.True(pnStatus.ClientRequest.Equals(pnRequestState.URL));
+        }
+
+        [Test]
+        public void TestCreatePNStatusWithCH(){
+            PNConfiguration pnConfiguration = EditorCommon.CreatePNConfig();
+            PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
+            PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
+            List<ChannelEntity> channelEntities1 = EditorCommon.CreateListOfChannelEntities(true, false, false, false, ref pnLog);
+            
+            RequestState pnRequestState = new RequestState();
+            pnRequestState.URL = "https://testurl";
+
+            
+            PNStatus pnStatus = Helpers.CreatePNStatus(
+                        PNStatusCategory.PNConnectedCategory,
+                        "",
+                        null,
+                        true,
+                        PNOperationType.PNSubscribeOperation,
+                        channelEntities1[0], //channel entity
+                        pnRequestState,
+                        pnUnity
+                    );
+
+            Assert.True(pnStatus.Category.Equals(PNStatusCategory.PNConnectedCategory));
+            Assert.True(pnStatus.Error.Equals(true));
+            Assert.True((pnStatus.AuthKey!=null)?pnStatus.AuthKey.Equals(pnConfiguration.AuthKey):true);
+            Assert.True(pnStatus.Operation.Equals(PNOperationType.PNSubscribeOperation));
+            Assert.True(pnStatus.Origin.Equals(pnConfiguration.Origin));
+            Assert.True(pnStatus.StatusCode.Equals(0));
+            Assert.True(pnStatus.TlsEnabled.Equals(pnConfiguration.Secure));
+            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UUID));
+            Assert.True(channelEntities1[0].ChannelID.ChannelOrChannelGroupName.Equals(pnStatus.AffectedChannelGroups[0]));
+            //Assert.True(pnStatus.AffectedChannels.Count.Equals(0));
+            Assert.True(pnStatus.ClientRequest.Equals(pnRequestState.URL));
+        }
+
+        [Test]
+        public void TestCreatePNStatusExceptionWithCG(){
+            PNConfiguration pnConfiguration = EditorCommon.CreatePNConfig();
+            PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
+            PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
+            List<ChannelEntity> channelEntities1 = EditorCommon.CreateListOfChannelEntities(false, true, false, false, ref pnLog);
+            
+            RequestState pnRequestState = new RequestState();
+            pnRequestState.URL = "https://testurl";
+
+            string message = "Both Channels and ChannelGroups cannot be empty";
+            PNStatus pnStatus = Helpers.CreatePNStatus(
+                        PNStatusCategory.PNConnectedCategory,
+                        message,
+                        new Exception(message),
+                        true,
+                        PNOperationType.PNSubscribeOperation,
+                        channelEntities1[0], //channel entity
+                        pnRequestState,
+                        pnUnity
+                    );
+
+            Assert.True(pnStatus.Category.Equals(PNStatusCategory.PNConnectedCategory));
+            Assert.True(pnStatus.Error.Equals(true));
+            Assert.True(pnStatus.ErrorData.Info.Equals(message));
+            Assert.True(pnStatus.ErrorData.Ex.Message.Equals(message));
+            Assert.True((pnStatus.AuthKey!=null)?pnStatus.AuthKey.Equals(pnConfiguration.AuthKey):true);
+            Assert.True(pnStatus.Operation.Equals(PNOperationType.PNSubscribeOperation));
+            Assert.True(pnStatus.Origin.Equals(pnConfiguration.Origin));
+            Assert.True(pnStatus.StatusCode.Equals(0));
+            Assert.True(pnStatus.TlsEnabled.Equals(pnConfiguration.Secure));
+            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UUID));
+            Assert.True(channelEntities1[0].ChannelID.ChannelOrChannelGroupName.Equals(pnStatus.AffectedChannels[0]));
+            //Assert.True(pnStatus.AffectedChannels.Count.Equals(0));
+            Assert.True(pnStatus.ClientRequest.Equals(pnRequestState.URL));
+        }
+
+        [Test]
+        public void TestCreatePNStatusWithCG(){
+            PNConfiguration pnConfiguration = EditorCommon.CreatePNConfig();
+            PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
+            PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
+            List<ChannelEntity> channelEntities1 = EditorCommon.CreateListOfChannelEntities(false, true, false, false, ref pnLog);
+            
+            RequestState pnRequestState = new RequestState();
+            pnRequestState.URL = "https://testurl";
+
+            
+            PNStatus pnStatus = Helpers.CreatePNStatus(
+                        PNStatusCategory.PNConnectedCategory,
+                        "",
+                        null,
+                        true,
+                        PNOperationType.PNSubscribeOperation,
+                        channelEntities1[0], //channel entity
+                        pnRequestState,
+                        pnUnity
+                    );
+
+            Assert.True(pnStatus.Category.Equals(PNStatusCategory.PNConnectedCategory));
+            Assert.True(pnStatus.Error.Equals(true));
+            Assert.True((pnStatus.AuthKey!=null)?pnStatus.AuthKey.Equals(pnConfiguration.AuthKey):true);
+            Assert.True(pnStatus.Operation.Equals(PNOperationType.PNSubscribeOperation));
+            Assert.True(pnStatus.Origin.Equals(pnConfiguration.Origin));
+            Assert.True(pnStatus.StatusCode.Equals(0));
+            Assert.True(pnStatus.TlsEnabled.Equals(pnConfiguration.Secure));
+            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UUID));
+            Assert.True(channelEntities1[0].ChannelID.ChannelOrChannelGroupName.Equals(pnStatus.AffectedChannels[0]));
+            //Assert.True(pnStatus.AffectedChannels.Count.Equals(0));
+            Assert.True(pnStatus.ClientRequest.Equals(pnRequestState.URL));
+        }
+
+        public void TestCreatePNStatus3(){
+            PNConfiguration pnConfiguration = EditorCommon.CreatePNConfig();
+            PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
+            PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
+            RequestState pnRequestState = new RequestState();
+            pnRequestState.URL = "https://testurl";
+            List<string> ch = new List<string>();
+            ch.Add("ch");
+            List<string> cg = new List<string>();
+            cg.Add("cg");
+            
+            string message = "Duplicate Channels or Channel Groups";
+            PNStatus pnStatus = Helpers.CreatePNStatus(
+                    PNStatusCategory.PNUnknownCategory,
+                    message,
+                    null,
+                    false,                
+                    PNOperationType.PNSubscribeOperation,
+                    ch,
+                    cg,
+                    pnRequestState,
+                    pnUnity
+                );
+
+            Assert.True(pnStatus.Category.Equals(PNStatusCategory.PNUnknownCategory));
+            Assert.True(pnStatus.Error.Equals(false));
+           Assert.True((pnStatus.AuthKey!=null)?pnStatus.AuthKey.Equals(pnConfiguration.AuthKey):true);
+            Assert.True(pnStatus.Operation.Equals(PNOperationType.PNSubscribeOperation));
+            Assert.True(pnStatus.Origin.Equals(pnConfiguration.Origin));
+            Assert.True(pnStatus.StatusCode.Equals(0));
+            Assert.True(pnStatus.TlsEnabled.Equals(pnConfiguration.Secure));
+            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UUID));
+            Assert.True(ch[0].Equals(pnStatus.AffectedChannels[0]));
+            Assert.True(cg[0].Equals(pnStatus.AffectedChannelGroups[0]));
+            Assert.True(pnStatus.ClientRequest.Equals(pnRequestState.URL));
+
+            
+        }
+
+        [Test]
+        public void TestCreatePNStatus3ErrorNoException(){
+            PNConfiguration pnConfiguration = EditorCommon.CreatePNConfig();
+            PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
+            PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
+            RequestState pnRequestState = new RequestState();
+            pnRequestState.URL = "https://testurl";
+            List<string> ch = new List<string>();
+            ch.Add("ch");
+            List<string> cg = new List<string>();
+            cg.Add("cg");
+            
+            string message = "Duplicate Channels or Channel Groups";
+            PNStatus pnStatus = Helpers.CreatePNStatus(
+                    PNStatusCategory.PNUnknownCategory,
+                    message,
+                    null,
+                    true,                
+                    PNOperationType.PNSubscribeOperation,
+                    ch,
+                    cg,
+                    pnRequestState,
+                    pnUnity
+                );
+
+            Assert.True(pnStatus.Category.Equals(PNStatusCategory.PNUnknownCategory));
+            Assert.True(pnStatus.Error.Equals(true));
+            Assert.True(pnStatus.ErrorData.Info.Equals(message));
+            Assert.True((pnStatus.AuthKey!=null)?pnStatus.AuthKey.Equals(pnConfiguration.AuthKey):true);
+            Assert.True(pnStatus.Operation.Equals(PNOperationType.PNSubscribeOperation));
+            Assert.True(pnStatus.Origin.Equals(pnConfiguration.Origin));
+            Assert.True(pnStatus.StatusCode.Equals(0));
+            Assert.True(pnStatus.TlsEnabled.Equals(pnConfiguration.Secure));
+            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UUID));
+            Assert.True(ch[0].Equals(pnStatus.AffectedChannels[0]));
+            Assert.True(cg[0].Equals(pnStatus.AffectedChannelGroups[0]));
+            Assert.True(pnStatus.ClientRequest.Equals(pnRequestState.URL));
+
+            
+        }
+
+        [Test]
+        public void TestCreatePNStatus3Exception(){
+            PNConfiguration pnConfiguration = EditorCommon.CreatePNConfig();
+            PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
+            PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
+            RequestState pnRequestState = new RequestState();
+            pnRequestState.URL = "https://testurl";
+            List<string> ch = new List<string>();
+            ch.Add("ch");
+            List<string> cg = new List<string>();
+            cg.Add("cg");
+            
+            string message = "Duplicate Channels or Channel Groups";
+            PNStatus pnStatus = Helpers.CreatePNStatus(
+                    PNStatusCategory.PNUnknownCategory,
+                    message,
+                    new Exception(message),
+                    true,                
+                    PNOperationType.PNSubscribeOperation,
+                    ch,
+                    cg,
+                    pnRequestState,
+                    pnUnity
+                );
+
+            Assert.True(pnStatus.Category.Equals(PNStatusCategory.PNUnknownCategory));
+            Assert.True(pnStatus.Error.Equals(true));
+            Assert.True(pnStatus.ErrorData.Info.Equals(message));
+            Assert.True(pnStatus.ErrorData.Ex.Message.Equals(message));
+            Assert.True((pnStatus.AuthKey!=null)?pnStatus.AuthKey.Equals(pnConfiguration.AuthKey):true);
+            Assert.True(pnStatus.Operation.Equals(PNOperationType.PNSubscribeOperation));
+            Assert.True(pnStatus.Origin.Equals(pnConfiguration.Origin));
+            Assert.True(pnStatus.StatusCode.Equals(0));
+            Assert.True(pnStatus.TlsEnabled.Equals(pnConfiguration.Secure));
+            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UUID));
+            Assert.True(ch[0].Equals(pnStatus.AffectedChannels[0]));
+            Assert.True(cg[0].Equals(pnStatus.AffectedChannelGroups[0]));
+            Assert.True(pnStatus.ClientRequest.Equals(pnRequestState.URL));
+
+            
+        }
+
+        [Test]
         public void TestCreateListOfSubscribeMessage(){
             object[] obj = {EditorCommon.CreateSubscribeDictionary()}; 
             PNConfiguration pnConfiguration = new PNConfiguration ();

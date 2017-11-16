@@ -167,7 +167,7 @@ namespace PubNubAPI
             return pnStatus;
         }
 
-        internal static PNStatus CreatePNStatus(PNStatusCategory category, string errorString, Exception errorException, bool error, PNOperationType operation, List<ChannelEntity> affectedChannels, List<ChannelEntity> affectedChannelGroups, RequestState pnRequestState, PubNubUnity pnUnity){
+        public static PNStatus CreatePNStatus(PNStatusCategory category, string errorString, Exception errorException, bool error, PNOperationType operation, List<ChannelEntity> affectedChannels, List<ChannelEntity> affectedChannelGroups, RequestState pnRequestState, PubNubUnity pnUnity){
             PNErrorData errorData = CreateErrorData(errorString, errorException);
             
             List<string> channels = CreateListOfStringFromListOfChannelEntity(affectedChannels);
@@ -176,13 +176,13 @@ namespace PubNubAPI
             return CreatePNStatus(category, errorData, error, operation, channels, channelGroups, pnRequestState, pnUnity);
         }
 
-        internal static PNStatus CreatePNStatus(PNStatusCategory category, string errorString, Exception errorException, bool error, PNOperationType operation, List<string> channels, List<string> channelGroups, RequestState pnRequestState, PubNubUnity pnUnity){
+        public static PNStatus CreatePNStatus(PNStatusCategory category, string errorString, Exception errorException, bool error, PNOperationType operation, List<string> channels, List<string> channelGroups, RequestState pnRequestState, PubNubUnity pnUnity){
             PNErrorData errorData = CreateErrorData(errorString, errorException);
 
             return CreatePNStatus(category, errorData, error, operation, channels, channelGroups, pnRequestState, pnUnity);
         }
 
-        internal static PNStatus CreatePNStatus(PNStatusCategory category, string errorString, Exception errorException, bool error, PNOperationType operation, ChannelEntity channelEntity, RequestState pnRequestState, PubNubUnity pnUnity){
+        public static PNStatus CreatePNStatus(PNStatusCategory category, string errorString, Exception errorException, bool error, PNOperationType operation, ChannelEntity channelEntity, RequestState pnRequestState, PubNubUnity pnUnity){
             PNErrorData errorData = null;
             if((!string.IsNullOrEmpty(errorString)) || (errorException != null)){
                 errorData = new PNErrorData();

@@ -52,6 +52,18 @@ namespace PubNubAPI.Tests
             return new PubNub(pnConfig);
         }
 
+        public static PNConfiguration CreatePNConfig(){
+            PNConfiguration pnConfiguration = new PNConfiguration ();
+            pnConfiguration.Origin = Origin;
+            pnConfiguration.SubscribeKey = SubscribeKey;
+            pnConfiguration.PublishKey = PublishKey;
+            pnConfiguration.CipherKey = "enigma";
+            pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
+            pnConfiguration.PresenceTimeout = 60;
+            pnConfiguration.PresenceInterval= 30;
+            return pnConfiguration;
+        }
+
         public static bool MatchChannelsEntities(List<ChannelEntity> ceList, List<string> channelOrChannelGroupList){
             foreach(ChannelEntity ce in ceList){
                 bool bFound = false;
