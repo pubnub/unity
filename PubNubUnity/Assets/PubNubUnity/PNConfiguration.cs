@@ -105,6 +105,8 @@ namespace PubNubAPI
         public int PresenceInterval { get; set;}
 
         public int MaximumReconnectionRetries = 50;
+
+        public bool SuppressLeaveEvents = false;
     }
 }
 

@@ -77,12 +77,15 @@ namespace PubNubAPI
                     this.PubNubInstance.Version,
                     this.PubNubInstance.Latency
                 ); */
-                Uri request = BuildRequests.BuildLeaveRequest(
-                    channels,
-                    channelGroups,
-                    ref this.PubNubInstance
-                );
-                base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
+
+                if(!this.PubNubInstance.PNConfig.SuppressLeaveEvents){
+                    Uri request = BuildRequests.BuildLeaveRequest(
+                        channels,
+                        channelGroups,
+                        ref this.PubNubInstance
+                    );
+                    base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
+                }
 
                 //Remove the valid channels from subscribe list for unsubscribe
                 RemoveUnsubscribedChannelsAndDeleteUserState(newChannelEntities);

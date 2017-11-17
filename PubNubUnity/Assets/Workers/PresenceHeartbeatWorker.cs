@@ -26,7 +26,7 @@ namespace PubNubAPI
         internal void CleanUp(){
             if (webRequest != null) {
                 webRequest.WebRequestComplete -= WebRequestCompleteHandler;
-                webRequest.AbortRequest(webRequestId);
+                webRequest.AbortRequest(webRequestId, false);
                 //UnityEngine.Object.Destroy (webRequest);
             }
         }
@@ -76,7 +76,7 @@ namespace PubNubAPI
                 
                 isPresenceHearbeatRunning = false;
                 //webRequest.AbortRequest<PNPresenceHeartbeatResult> (PNCurrentRequestType.PresenceHeartbeat, null, false);
-                webRequest.AbortRequest (webRequestId);
+                webRequest.AbortRequest (webRequestId, false);
             }
         }
 

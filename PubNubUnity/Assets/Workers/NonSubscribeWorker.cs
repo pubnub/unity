@@ -22,7 +22,7 @@ namespace PubNubAPI
             queueManager.PubNubInstance.PNLog.WriteToLog("Disposing NonSubscribeWorker", PNLoggingMethod.LevelInfo);
             #endif
             webRequest.WebRequestComplete -= WebRequestCompleteHandler;
-            webRequest.AbortRequest(webRequestId);
+            webRequest.AbortRequest(webRequestId, false);
             lock (syncRoot) {
                 InstanceCount--;
             }

@@ -226,7 +226,7 @@ namespace PubNubAPI
             #endif
 
             //webRequest.AbortRequest<U>(PNCurrentRequestType.Subscribe, null, false);
-            webRequest.AbortRequest(webRequestId);
+            webRequest.AbortRequest(webRequestId, false);
         }
 
         public void ContinueToSubscribeRestOfChannels()
@@ -236,6 +236,7 @@ namespace PubNubAPI
             if (subscribedChannels != null && subscribedChannels.Count > 0)
             {
                 //TODO
+                Debug.Log("ContinueToSubscribeRestOfChannels: " + subscribedChannels.Count());
                 hbWorker.ResetInternetCheckSettings();
                 RunSubscribeRequest (0, false);
 
@@ -1069,8 +1070,6 @@ namespace PubNubAPI
             }
         }*/
 
-        
-
         private void WebRequestCompleteHandler (object sender, EventArgs ea)
         {
             //CustomEventArgs<U> cea = ea as CustomEventArgs<U>;
@@ -1079,7 +1078,7 @@ namespace PubNubAPI
             try {
                 if ((cea != null) && (cea.CurrRequestType.Equals(PNCurrentRequestType.Subscribe))) {
                     PNStatus pnStatus;
-                    if(Helpers.CheckErrorTypeAndCallback<U>(cea, this.PubNubInstance, out pnStatus)){
+                    if (Helpers.CheckErrorTypeAndCallback<U>(cea, this.PubNubInstance, out pnStatus)){
                         Debug.Log("Is Error true");
                         ExceptionHandler(cea.PubNubRequestState);
                         

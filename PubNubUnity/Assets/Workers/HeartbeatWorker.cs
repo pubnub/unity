@@ -50,7 +50,7 @@ namespace PubNubAPI
             Debug.Log("HeartbeatWorker Cleanup");
             if (webRequest != null) {
                 webRequest.WebRequestComplete -= WebRequestCompleteHandler;
-                webRequest.AbortRequest(webRequestId);
+                webRequest.AbortRequest(webRequestId, false);
                 //UnityEngine.Object.Destroy (webRequest);
             }
         }
@@ -100,7 +100,7 @@ namespace PubNubAPI
                 isHearbeatRunning = false;
                 //webRequest.HeartbeatCoroutineComplete -= CoroutineCompleteHandler<PNOperationType.PNHeartbeatOperation>;
                 //webRequest.AbortRequest<PNTimeResult> (PNCurrentRequestType.Heartbeat, null, false);
-                webRequest.AbortRequest (webRequestId);
+                webRequest.AbortRequest (webRequestId, false);
             }
         }
 

@@ -589,7 +589,7 @@ namespace PubNubAPI
             //TODO Abort All
         }
 
-        public void AbortRequest(string webRequestId){
+        public void AbortRequest(string webRequestId, bool fireEvent){
             try {
                 UnityWebRequestWrapper unityWebRequestWrapper;
                 if(currentWebRequests.TryGetValue(webRequestId, out unityWebRequestWrapper)){
@@ -603,9 +603,16 @@ namespace PubNubAPI
                         currentWebRequests.Remove(webRequestId);// = unityWebRequestWrapper;
                         unityWebRequestWrapper.CurrentRequestState.ResponseCode = 0;
                         unityWebRequestWrapper.CurrentRequestState.URL =  unityWebRequestWrapper.URL;
-                        FireEvent ("Aborted", true, false, unityWebRequestWrapper.CurrentRequestState,  unityWebRequestWrapper.CurrentRequestType, webRequestId);
-                        #if (ENABLE_PUBNUB_LOGGING)
-                        this.PNLog.WriteToLog (string.Format ("BounceRequest: event fired {0}",  unityWebRequestWrapper.CurrentRequestState.ToString ()), PNLoggingMethod.LevelInfo);
+                        if(fireEvent){
+                            FireEvent ("Aborted", true, false, unityWebRequestWrapper.CurrentRequestState,  unityWebRequestWrapper.CurrentRequestType, webRequestId);
+                            #if (ENABLE_PUBNUB_LOGGING)
+                            this.PNLog.WriteToLog (string.Format ("BounceRequest: event fired {0}",  unityWebRequestWrapper.CurrentRequestState.ToString ()), PNLoggingMethod.LevelInfo);
+                            #endif
+                        }
+                        #if (ENABLE_PUBNUB_LOGGING) 
+                        else {
+                            this.PNLog.WriteToLog (string.Format ("BounceRequest: event NOT fired {0}",  unityWebRequestWrapper.CurrentRequestState.ToString ()), PNLoggingMethod.LevelInfo);
+                        }
                         #endif
                     }
                 }
@@ -621,7 +628,7 @@ namespace PubNubAPI
         public string Run (RequestState pubnubRequestState)
         {
             if(!string.IsNullOrEmpty(pubnubRequestState.WebRequestId)){
-                AbortRequest (pubnubRequestState.WebRequestId);
+                AbortRequest (pubnubRequestState.WebRequestId, false);
             }
 
             bool delayStart = false;
@@ -1037,7 +1044,7 @@ namespace PubNubAPI
                 //if (!CheckComplete (cp.crt, out wwwUrl)) {
                     //if ((cp.typeParameterType == typeof(string)) || (cp.typeParameterType == typeof(object))) {
                     if(!isComplete){
-                        AbortRequest(key);
+                        AbortRequest(key, false);
                     }
                     unityWebRequestWrapper.CurrentRequestState.ResponseCode = 0;
                     unityWebRequestWrapper.CurrentRequestState.URL = unityWebRequestWrapper.URL;

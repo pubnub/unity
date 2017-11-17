@@ -217,7 +217,9 @@ namespace PubNubExample
                 });
         }
         void ButtonPublishHandler(){
-            pubnub.Publish().Channel("channel1").Message("test message" + DateTime.Now.Ticks.ToString()).Async((result, status) => {
+            //for(int i =0; i<1000; i++){
+            //pubnub.Publish().Channel("channel1").Message("test message" +i+ " " + DateTime.Now.Ticks.ToString()).Async((result, status) => {
+            pubnub.Publish().Channel("channel1").Message("test message" + DateTime.Now.Ticks.ToString()).Async((result, status) => {    
                     Debug.Log ("in Publish");
                     if(!status.Error){
                         Debug.Log (string.Format("DateTime {0}, In Publish Example, Timetoken: {1}", DateTime.UtcNow , result.Timetoken));
@@ -228,6 +230,7 @@ namespace PubNubExample
                     }
 
                 });
+            //}
         }
         void ButtonPublishPostHandler(){
             pubnub.Publish().Channel("channel1").Message("test message").UsePost(true).Async((result, status) => {
