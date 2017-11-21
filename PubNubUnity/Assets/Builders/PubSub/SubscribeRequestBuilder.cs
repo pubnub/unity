@@ -59,7 +59,7 @@ namespace PubNubAPI
 
         public void Execute(){
 
-            if((this.Channels.Count <= 0) && (this.ChannelGroups.Count <= 0)){
+            if(((this.Channels == null) || (this.Channels.Count <= 0)) && ((this.ChannelGroups == null) || (this.ChannelGroups.Count <= 0))){
                 PNStatus pnStatus = Helpers.CreatePNStatus(
                     PNStatusCategory.PNUnknownCategory,
                     "Both Channels and ChannelGroups cannot be empty",

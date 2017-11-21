@@ -75,8 +75,10 @@ namespace PubNubAPI
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }
 
+        //TODO refactor
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             //{"status": 200, "message": "OK", "payload": {"channels": {"channel1": {"occupancy": 1, "uuids": ["a"]}, "channel2": {"occupancy": 1, "uuids": ["a"]}}, "total_channels": 2, "total_occupancy": 2}, "service": "Presence"} 
+             //{"status": 200, "message": "OK", "occupancy": 1, "uuids": [{"uuid": "UnityTestHereNowUUID"}], "service": "Presence"} 
             //TODO read all values.
             PNHereNowResult pnHereNowResult = new PNHereNowResult();
             
@@ -92,6 +94,7 @@ namespace PubNubAPI
                     int totalChannels, total_occupancy;
                     string log = "";
                     object objPayload;
+                    
                     dictionary.TryGetValue("payload", out objPayload);
 
                     if(objPayload!=null){
@@ -111,9 +114,95 @@ namespace PubNubAPI
                     } else if(Utility.CheckKeyAndParseInt(dictionary, "total_occupancy", "total_occupancy", out log, out total_occupancy)){
                             pnHereNowResult.TotalOccupancy = total_occupancy;
                             Debug.Log(log);
+                    } else if((ChannelsToUse.Count.Equals(1) && (ChannelGroupsToUse==null)) && dictionary.TryGetValue("uuids", out objPayload)){
+                        Dictionary<string, object> objChannelsDict = new Dictionary<string, object>();
+                        Dictionary<string, PNHereNowChannelData> channelsResult;
+                        object[] uuidsArray = objPayload as object[];
+                        Dictionary<string, object> channelsResultDict = new Dictionary<string, object>();
+                        channelsResultDict.Add("uuids", uuidsArray);
+                        objChannelsDict.Add(ChannelsToUse[0], channelsResultDict);
+                        /*foreach(object objUUID in  uuidsArray){
+                            Debug.Log(objUUID.GetType());
+                            Dictionary<string, object> uuidDict = objUUID as Dictionary<string, object>;
+                            object uuid;
+                            if(uuidDict.TryGetValue("uuid", out uuid)){
+                                objChannelsDict.Add(ChannelsToUse[0], uuid);
+                            }
+                        }*/
+                        pnStatus.Error = CreateHereNowResult(objChannelsDict, out channelsResult);
+
+                        pnHereNowResult.Channels = channelsResult;
+                        Debug.Log(pnStatus.Error+ channelsResult.Count().ToString()+ChannelsToUse[0]);
+                        foreach(KeyValuePair<string,PNHereNowChannelData> kvp in channelsResult){
+                            Debug.Log("kvp.Key:" + kvp.Key);
+                            PNHereNowChannelData pnHereNowChannelData = kvp.Value;
+                            List<PNHereNowOccupantData> pnHereNowOccupantDataList = pnHereNowChannelData.Occupants;
+                            foreach(PNHereNowOccupantData pnHereNowOccupantData in pnHereNowOccupantDataList){
+                                Debug.Log(pnHereNowOccupantData.UUID);
+                            }
+                        }
+
+                        /*if(objChannelsDict!=null){
+                            Dictionary<string, PNHereNowChannelData> channelsResult;
+                            pnStatus.Error = CreateHereNowResult(objChannelsDict, out channelsResult);
+                            
+                            pnHereNowResult.Channels = channelsResult;
+                        } 
+                        Type valueType = objPayload.GetType ();
+                        var expectedType = typeof(string[]);
+                        var expectedType2 = typeof(object[]);
+                        object[] objUuid = null;
+                        #if !(UNITY_WSA || UNITY_WSA_8_1 || UNITY_WSA_10_0)
+
+                                    if (expectedType.IsAssignableFrom (valueType)) {
+                                        objUuid = objPayload as string[];
+                                    } else if (expectedType2.IsAssignableFrom (valueType)) {
+                                        objUuid = objPayload as object[];
+                                    } else if (objPayload is IList && objPayload.GetType ().IsGenericType) {
+                                        objUuid = ((IEnumerable)objPayload).Cast<object> ().ToArray ();
+                                    } else {
+                                        objUuid = CommonIntergrationTests.Deserialize<object[]> (objPayload.ToString ());
+                                    }
+                                    foreach (object obj in objUuid) {
+                                        UnityEngine.Debug.Log ("session:" + obj.ToString ()); 
+                                        if (obj.Equals (matchUUID)) {
+                                            return true;
+                                        }
+                                    }
+                        #else
+
+                                    if (expectedType==valueType)
+                                    {
+                                        objUuid = uuids as string[];
+                                    }
+                                    else if (expectedType2==valueType)
+                                    {
+                                        objUuid = uuids as object[];
+                                    }
+                                    else if (uuids is IList && uuids.GetType()==Type.GetType("Generic"))
+                                    {
+                                        objUuid = ((IEnumerable)uuids).Cast<object>().ToArray();
+                                    }
+                                    else
+                                    {
+                                        objUuid = CommonIntergrationTests.Deserialize<object[]>(uuids.ToString());
+                                    }
+                                    foreach (object obj in objUuid)
+                                    {
+                                        UnityEngine.Debug.Log("session:" + obj.ToString());
+                                        if (obj.Equals(matchUUID))
+                                        {
+                                            return true;
+                                        }
+                                    }
+                        #endif*/
                     } else {
-                        pnHereNowResult = null;
-                        pnStatus = base.CreateErrorResponseFromMessage("Payload dictionary is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
+                        if(objPayload!=null){
+                            Dictionary<string, object>[] payload = objPayload as Dictionary<string, object>[];
+                        } else {
+                            pnHereNowResult = null;
+                            pnStatus = base.CreateErrorResponseFromMessage("Payload dictionary is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
+                        }
                     }
                 }
             } else {
@@ -129,6 +218,7 @@ namespace PubNubAPI
             
         // }
 
+        //TODO refactor
         protected bool CreateHereNowResult(object objChannelsDict, out Dictionary<string, PNHereNowChannelData> channelsResult ){
             Dictionary<string, object> channelsDict = objChannelsDict as Dictionary<string, object>;
             channelsResult = new Dictionary<string, PNHereNowChannelData>();
@@ -140,20 +230,25 @@ namespace PubNubAPI
                     channelData.Occupants = new List<PNHereNowOccupantData>();
                     channelData.ChannelName = channelName;
                     Debug.Log("channelName:" + channelName);
+                    Debug.Log(kvpair.Value.GetType().ToString() + kvpair.Value );
                     Dictionary<string, object> channelDetails = kvpair.Value as Dictionary<string, object>;
                     if(channelDetails!=null){
+                        Debug.Log("channelDetails ! null:" + channelName);
                         object objOccupancy;
                         channelDetails.TryGetValue("occupancy", out objOccupancy);
                         int occupancy;
-                        if(int.TryParse(objOccupancy.ToString(), out occupancy)){
-                            channelData.Occupancy = occupancy;
-                            Debug.Log("occupancy:" + occupancy.ToString());
+                        if(objOccupancy!=null){
+                            if(int.TryParse(objOccupancy.ToString(), out occupancy)){
+                                channelData.Occupancy = occupancy;
+                                Debug.Log("occupancy:" + occupancy.ToString());
+                            }
                         }
 
                         object uuids;
                         channelDetails.TryGetValue("uuids", out uuids);
                         
                         if(uuids!=null){
+                            Debug.Log("uuids ! null:" + channelName);
                             //occupantData.UUID 
                             string[] arrUuids = uuids as string[];
                             
