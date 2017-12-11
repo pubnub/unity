@@ -8,9 +8,9 @@ namespace PubNubAPI
 {
     internal class SusbcribeEventEventArgs : EventArgs
     {
-        public PNStatus pnStatus;
-        public PNPresenceEventResult pnPresenceEventResult;
-        public PNMessageResult pnMessageResult;
+        public PNStatus Status;
+        public PNPresenceEventResult PresenceEventResult;
+        public PNMessageResult MessageResult;
     }
 
     public class SubscriptionWorker<U>
@@ -722,10 +722,12 @@ namespace PubNubAPI
         internal void SendResponseToConnectCallback (RequestState pnRequestState)
         {
             Debug.Log("SendResponseToConnectCallback");
-            if(PubNubInstance.SubscriptionInstance.ChannelsAndChannelGroupsAwaitingConnectCallback.Count > 0){
+            int count = PubNubInstance.SubscriptionInstance.ChannelsAndChannelGroupsAwaitingConnectCallback.Count;
+            if(count > 0){
                 bool updateIsAwaitingConnectCallback = false;
-                foreach(ChannelEntity ce in PubNubInstance.SubscriptionInstance.ChannelsAndChannelGroupsAwaitingConnectCallback){
-                    
+                for (int i=0; i<count; i++){
+                //foreach(ChannelEntity ce in PubNubInstance.SubscriptionInstance.ChannelsAndChannelGroupsAwaitingConnectCallback){
+                    ChannelEntity ce = PubNubInstance.SubscriptionInstance.ChannelsAndChannelGroupsAwaitingConnectCallback[i];
                     updateIsAwaitingConnectCallback = true;
                     //if(ce.ChannelID.IsPresenceChannel){
                         //Send presence channel conneted status
@@ -781,7 +783,7 @@ namespace PubNubAPI
                 PNStatus pns = new PNStatus ();
                 pns.Error = false;
                 SusbcribeEventEventArgs mea = new SusbcribeEventEventArgs();
-                mea.pnStatus = pns;
+                mea.Status = pns;
 
                 if (((subscribeMessage.SubscriptionMatch.Contains (".*")) && isPresenceChannel) || (isPresenceChannel)){
                     /*#if (ENABLE_PUBNUB_LOGGING)
@@ -790,7 +792,7 @@ namespace PubNubAPI
                     Debug.Log("Raising presence message event ");
                     PNPresenceEventResult subMessageResult; 
                     CreatePNPresenceEventResult(subscribeMessage, out subMessageResult);
-                    mea.pnPresenceEventResult = subMessageResult;
+                    mea.PresenceEventResult = subMessageResult;
                     PubNubInstance.RaiseEvent (mea);
                     /*#if (PUBNUB_PS_V2_RESPONSE)
                     PubnubCallbacks.GoToCallback<T>(messageResult, channelCallbacks.WildcardPresenceCallback, jsonPluggableLibrary);
@@ -804,7 +806,7 @@ namespace PubNubAPI
                     if(!string.IsNullOrEmpty(this.PubNubInstance.PNConfig.CipherKey) && (this.PubNubInstance.PNConfig.CipherKey.Length > 0)){
                         subMessageResult.Payload = Helpers.DecodeMessage(PubNubInstance.PNConfig.CipherKey, subMessageResult.Payload, PNOperationType.PNSubscribeOperation, ref this.PubNubInstance);
                     } 
-                    mea.pnMessageResult = subMessageResult;
+                    mea.MessageResult = subMessageResult;
                     PubNubInstance.RaiseEvent (mea);
                     /*if(channelCallbacks!=null){
                         #if (PUBNUB_PS_V2_RESPONSE)
@@ -981,7 +983,7 @@ namespace PubNubAPI
 
         public void CreateEventArgsAndRaiseEvent(PNStatus pnStatus){
             SusbcribeEventEventArgs mea = new SusbcribeEventEventArgs();
-            mea.pnStatus = pnStatus;
+            mea.Status = pnStatus;
 
             PubNubInstance.RaiseEvent (mea);
         }

@@ -82,14 +82,14 @@ namespace PubNubAPI
 
                 Debug.Log ("AddListener SusbcribeCallback");
                 if(mea!=null){
-                    if(mea.pnStatus != null){
-                        callback(mea.pnStatus);
+                    if(mea.Status != null){
+                        callback(mea.Status);
                     }
-                    if(mea.pnMessageResult != null){
-                        callback2(mea.pnMessageResult);
+                    if(mea.MessageResult != null){
+                        callback2(mea.MessageResult);
                     }
-                    if(mea.pnPresenceEventResult != null){
-                        callback3(mea.pnPresenceEventResult);
+                    if(mea.PresenceEventResult != null){
+                        callback3(mea.PresenceEventResult);
                     }
                 }
             };

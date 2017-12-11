@@ -426,10 +426,10 @@ namespace PubNubExample
                 SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
 
                 Debug.Log ("In Example, SusbcribeCallback");
-                if(mea.pnStatus != null){
+                if(mea.Status != null){
                     //Debug.Log ("SusbcribeCallback in status" + String.Join(", ", mea.pnStatus.AffectedChannelGroups.ToArray()) + String.Join(", ", mea.pnStatus.AffectedChannels.ToArray()));
-                    PrintStatus(mea.pnStatus);
-                    if(mea.pnStatus.Category.Equals(PNStatusCategory.PNConnectedCategory)){
+                    PrintStatus(mea.Status);
+                    if(mea.Status.Category.Equals(PNStatusCategory.PNConnectedCategory)){
                         pubnub.Publish().Channel("channel1").Message("test message").UsePost(true).Async((result, status) => {
                             Debug.Log ("in Publish");
                             if(!status.Error){
@@ -442,12 +442,12 @@ namespace PubNubExample
                         });
                     }
                 }
-                if(mea.pnMessageResult != null){
-                    Debug.Log ("In Example, SusbcribeCallback in message" + mea.pnMessageResult.Channel + mea.pnMessageResult.Payload);
-                    Display(string.Format("SusbcribeCallback Result: {0}", pubnub.JsonLibrary.SerializeToJsonString(mea.pnMessageResult.Payload)));
+                if(mea.MessageResult != null){
+                    Debug.Log ("In Example, SusbcribeCallback in message" + mea.MessageResult.Channel + mea.MessageResult.Payload);
+                    Display(string.Format("SusbcribeCallback Result: {0}", pubnub.JsonLibrary.SerializeToJsonString(mea.MessageResult.Payload)));
                 }
-                if(mea.pnPresenceEventResult != null){
-                    Debug.Log ("In Example, SusbcribeCallback in presence" + mea.pnPresenceEventResult.Channel + mea.pnPresenceEventResult.Occupancy + mea.pnPresenceEventResult.Event);
+                if(mea.PresenceEventResult != null){
+                    Debug.Log ("In Example, SusbcribeCallback in presence" + mea.PresenceEventResult.Channel + mea.PresenceEventResult.Occupancy + mea.PresenceEventResult.Event);
                 }
                 /*pubnub.Fire().Channel("channel1").Message("test fire essage").Async((result, status) => {
                     Debug.Log ("in Fire");
