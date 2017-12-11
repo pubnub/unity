@@ -93,7 +93,8 @@ namespace PubNubAPI.Tests
 
         public static int WaitTimeForAsyncResponse = 2;       
         public static int WaitTimeBetweenCalls = 2;   
-        public static int WaitTimeBetweenCalls2 = 3;       
+        public static int WaitTimeBetweenCalls2 = 3;  
+        public static int WaitTimeBetweenCalls3 = 4;       
 
 
         public static PNConfiguration SetPNConfig(bool useCipher){

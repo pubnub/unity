@@ -1,9 +1,16 @@
 --- 
 changelog: 
+  -
+    changes: 
+      - 
+        text: "All new PubNub Unity SDK"
+        type: improvement
+    date: Dec 11, 17
+    version: v4.0-beta1
   - 
     changes: 
       - 
-        text: “Presence delta intervals”
+        text: "Presence delta intervals"
         type: improvement
     date: Mar 31, 17
     version: v3.7.8

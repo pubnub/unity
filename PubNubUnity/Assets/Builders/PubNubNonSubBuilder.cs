@@ -87,6 +87,21 @@ namespace PubNubAPI
                     PubNubInstance
                 );
         }
+
+        protected PNStatus CreateStatusResponseFromMessage(bool isError, string message, RequestState pnRequestState, PNStatusCategory pnStatusCategory){
+            return Helpers.CreatePNStatus(
+                    pnStatusCategory,
+                    message,
+                    (isError)?new Exception(message):null,
+                    isError,                
+                    OperationType,
+                    ChannelsToUse,
+                    ChannelGroupsToUse,
+                    pnRequestState,
+                    PubNubInstance
+                );
+        }
+
         protected PNStatus CreateErrorResponseFromException(Exception ex, RequestState pnRequestState, PNStatusCategory pnStatusCategory){
             return Helpers.CreatePNStatus(
                     pnStatusCategory,

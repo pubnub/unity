@@ -136,7 +136,7 @@ namespace PubNubAPI
                     #if (ENABLE_PUBNUB_LOGGING)
                     this.PubNubInstance.PNLog.WriteToLog (string.Format ("RemoveUnsubscribedChannelsAndDeleteUserState: JSON response={0}", message), PNLoggingMethod.LevelInfo);
                     #endif
-                    PNStatus pnStatus = base.CreateErrorResponseFromMessage(message, null, PNStatusCategory.PNDisconnectedCategory);
+                    PNStatus pnStatus = base.CreateStatusResponseFromMessage(false, message, null, PNStatusCategory.PNConnectedCategory);
                     Callback(null, pnStatus);
 
                     /* PubnubCallbacks.GoToCallback<T> (result, channelCallback.DisconnectCallback, JsonPluggableLibrary);*/
