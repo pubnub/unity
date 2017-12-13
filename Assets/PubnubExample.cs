@@ -599,7 +599,7 @@ public class PubnubExample : MonoBehaviour
                     AddToPubnubResultContainer ("Running Subscribe");
 
                     #if PUBNUB_PS_V2_RESPONSE
-                    pubnub.Subscribe<string> (currentChannel, channelGroup, 
+                    pubnub.Subscribe<string> (currentChannel, channelGroup, "15131747232923852",
                         (string returnMessage) => {
                             object obj = pubnub.JsonPluggableLibrary.DeserializeToObject(returnMessage);
                             Dictionary<string, object> dict = obj as Dictionary<string, object>;
@@ -677,7 +677,7 @@ public class PubnubExample : MonoBehaviour
 
                         });*/
                       #else
-                      pubnub.Subscribe<string> (currentChannel, channelGroup, DisplayReturnMessage, DisplayConnectStatusMessage, 
+                      pubnub.Subscribe<string> (currentChannel, channelGroup, "15131747232923852", DisplayReturnMessage, DisplayConnectStatusMessage, 
                         DisplayWildcardReturnMessage, DisplayErrorMessage);
                       #endif
                 } else if (state.Equals(PubnubState.Presence)){
