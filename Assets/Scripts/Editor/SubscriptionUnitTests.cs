@@ -23,6 +23,7 @@ namespace PubNubMessaging.Tests
 
         public void TestSubscriptionCommon<T>(Action<T> userCallback, Action<T> connectCallback,
             Action<T> wildcardPresenceCallback, Action<T> disconnectCallback){
+            //UnityEngine.TestTools.LogAssert.Expect(UnityEngine.LogType.Error, "Destroy can only be called from the main thread");
             Subscription.Instance.CleanUp();
             //Add CE with ch cg, ch-pres, cgpres, 2 awaiting connect callback with userstate
             List<ChannelEntity> channelEntities = Common.CreateListOfChannelEntities<T>(true, true, true, true,

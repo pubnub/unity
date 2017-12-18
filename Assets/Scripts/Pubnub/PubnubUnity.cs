@@ -1,4 +1,4 @@
-//Build Date: Dec 13, 2017
+//Build Date: Dec 18, 2017
 //ver3.7.10/Unity5
 using System;
 using UnityEngine;
@@ -43,7 +43,7 @@ namespace PubNubMessaging.Core
 
         private CoroutineClass coroutine;
 
-        private string origin = "beta-2017q3.pubnub.com";//"ps.pndsn.com";
+        private string origin = "ps.pndsn.com";//"beta-2017q3.pubnub.com";//;
         private string publishKey = "";
         private string subscribeKey = "";
         private string secretKey = "";
