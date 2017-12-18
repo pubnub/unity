@@ -3,14 +3,24 @@ changelog:
   - 
     changes: 
       - 
-        text: “Unity UWP compatibility”
+        text: "Subscribe with timetoken fix"
+        type: bug
+      -
+        text: "Unit and integration tests compatibility with UnityEditor 2017.*"
+        type: improvement
+    date: Dec 18, 17
+    version: v3.7.10
+  - 
+    changes: 
+      - 
+        text: "Unity UWP compatibility"
         type: improvement
     date: Aug 8, 17
     version: v3.7.9
   - 
     changes: 
       - 
-        text: “Presence delta intervals”
+        text: "Presence delta intervals"
         type: improvement
     date: Mar 31, 17
     version: v3.7.8
@@ -239,4 +249,4 @@ supported-platforms:
 name: unity
 schema: 1
 scm: github.com/pubnub/unity
-version: “3.7.9”
+version: "3.7.10"

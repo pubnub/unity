@@ -43,7 +43,7 @@ namespace PubNubMessaging.Core
 
         private CoroutineClass coroutine;
 
-        private string origin = "ps.pndsn.com";//"beta-2017q3.pubnub.com";//;
+        private string origin = "ps.pndsn.com";
         private string publishKey = "";
         private string subscribeKey = "";
         private string secretKey = "";
