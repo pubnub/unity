@@ -325,9 +325,11 @@ namespace PubNubAPI
                 group a by a into g
                     where g.Count() > 1
                 select g;
-            foreach (var group in results)
-                foreach (var item in group)
+            foreach (var group in results){
+                foreach (var item in group){
                     yield return item;
+                }
+            }
         }
 
         public static string BuildJsonUserState (Dictionary<string, object> userStateDictionary)

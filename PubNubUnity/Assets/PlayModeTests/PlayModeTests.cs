@@ -540,6 +540,38 @@ namespace PubNubAPI.Tests
 
 		}
 
+		[UnityTest]
+		public IEnumerator TestAlreadySubscribed() {
+			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
+			System.Random r = new System.Random ();
+			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next (100);
+			string channel = "UnityTestConnectedChannel";
+
+			PubNub pubnub = new PubNub(pnConfiguration);
+			List<string> channelList2 = new List<string>();
+			channelList2.Add(channel);
+			bool tresult = false;
+
+			pubnub.SusbcribeCallback += (sender, e) => { 
+				SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
+				if(mea.Status.Category.Equals(PNStatusCategory.PNUnknownCategory)){
+					Assert.True(mea.Status.Error);
+					if(mea.Status.ErrorData!=null){
+						Debug.Log(mea.Status.ErrorData.Info);
+						Assert.True(mea.Status.ErrorData.Info.Contains("Duplicate Channels or Channel Groups"));
+					}
+					
+					tresult = true;
+				} 
+			};
+			pubnub.Subscribe ().SetChannels(channelList2).Execute();
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			pubnub.Subscribe ().SetChannels(channelList2).Execute();
+			Assert.True(tresult, "test didn't return");
+			pubnub.CleanUp();
+
+		}
+
 		public IEnumerator DoJoinLeaveTestProcsssing(string channel) {
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			pnConfiguration.UUID = "UnityTestJoinUUID";

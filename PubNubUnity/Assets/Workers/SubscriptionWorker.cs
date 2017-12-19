@@ -393,7 +393,7 @@ namespace PubNubAPI
                 //override lastTimetoken when lastSubscribeTimetokenForNewMultiplex is set.
                 //this is done to use the timetoken prior to the latest response from the server
                 //and is true in case new channels are added to the subscribe list.
-                if (!sentTimetoken.Equals(0) && !lastSubscribeTimetokenForNewMultiplex.Equals(0) && !lastSubscribeTimetoken.Equals(lastSubscribeTimetokenForNewMultiplex))
+                if (!sentTimetoken.Equals(0) && !lastSubscribeTimetokenForNewMultiplex.Equals(0))
                 {
                     lastTimetoken = lastSubscribeTimetokenForNewMultiplex;
                     lastSubscribeTimetokenForNewMultiplex = 0;
@@ -401,24 +401,11 @@ namespace PubNubAPI
                     sbLogger.AppendFormat("SaveLastTimetoken: Using lastSubscribeTimetokenForNewMultiplex={0}\n", lastTimetoken);
                     #endif
                 }
-                else
-                    if (sentTimetoken.Equals(0))
-                    {
-                        lastTimetoken = sentTimetoken;
-                        #if (ENABLE_PUBNUB_LOGGING)
-                        sbLogger.AppendFormat("SaveLastTimetoken: Using sentTimetoken={0}\n", sentTimetoken);
-                        #endif
-                    }
-                    else
-                    {
-                        lastTimetoken = sentTimetoken;
-                        #if (ENABLE_PUBNUB_LOGGING)
-                        sbLogger.AppendFormat("SaveLastTimetoken: Using sentTimetoken={0}\n", sentTimetoken);
-                        #endif
-                    }
-                if (lastSubscribeTimetoken.Equals(lastSubscribeTimetokenForNewMultiplex))
-                {
-                    lastSubscribeTimetokenForNewMultiplex = 0;
+                else {
+                    lastTimetoken = sentTimetoken;
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    sbLogger.AppendFormat("SaveLastTimetoken2: Using sentTimetoken={0}\n", sentTimetoken);
+                    #endif
                 }
             }
             #if (ENABLE_PUBNUB_LOGGING)
