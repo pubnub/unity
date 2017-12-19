@@ -599,7 +599,7 @@ public class PubnubExample : MonoBehaviour
                     AddToPubnubResultContainer ("Running Subscribe");
 
                     #if PUBNUB_PS_V2_RESPONSE
-                    pubnub.Subscribe<string> (currentChannel, channelGroup, 
+                    pubnub.Subscribe<string> (currentChannel, channelGroup,
                         (string returnMessage) => {
                             object obj = pubnub.JsonPluggableLibrary.DeserializeToObject(returnMessage);
                             Dictionary<string, object> dict = obj as Dictionary<string, object>;

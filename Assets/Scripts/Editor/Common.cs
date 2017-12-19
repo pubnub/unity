@@ -37,9 +37,9 @@ namespace PubNubMessaging.Tests
     public class Common
     {
         public static string Origin = "ps.pndsn.com";
-        public static string PublishKey = "demo-36";
-        public static string SubscribeKey = "demo-36";
-        public static string SecretKey = "demo-36";
+        public static string PublishKey = "demo";
+        public static string SubscribeKey = "demo";
+        public static string SecretKey = "demo";
         public static float WaitTimeBetweenCalls = 5;
         public static float WaitTimeToReadResponse = 15;
 

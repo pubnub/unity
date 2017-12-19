@@ -1,0 +1,29 @@
+﻿using System;
+using UnityEngine.TestTools;
+using UnityEngine;
+using Pathfinding.Serialization.JsonFx;
+using PubNubMessaging.Core;
+using System.Collections;
+using System.Collections.Generic;
+
+namespace PubNubMessaging.Tests
+{
+    public class TestSubscribeEmptyDict
+    {
+        string name = "TestSubscribeEmptyDict";
+        public bool SslOn = false;
+        public bool CipherOn = false;
+        public bool AsObject = false;
+        [UnityTest]
+        public IEnumerator Start ()
+        {
+            Dictionary<string, int> Message = new Dictionary<string, int>();
+
+            CommonIntergrationTests common = new CommonIntergrationTests ();
+            yield return common.DoSubscribeThenPublishAndParse(SslOn, this.name, AsObject, CipherOn, Message, "{}", true);
+            UnityEngine.Debug.Log (string.Format("{0}: After StartCoroutine", this.name));
+            yield return new WaitForSeconds (CommonIntergrationTests.WaitTimeBetweenCalls);
+        }
+    }
+}
+

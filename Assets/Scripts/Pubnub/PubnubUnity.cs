@@ -1,5 +1,5 @@
-//Build Date: Aug 8, 2017
-//ver3.7.9/Unity5
+//Build Date: Dec 18, 2017
+//ver3.7.10/Unity5
 using System;
 using UnityEngine;
 using System.Collections;
@@ -51,8 +51,8 @@ namespace PubNubMessaging.Core
         private bool ssl = true;
         private static long lastSubscribeTimetoken = 0;
         private static long lastSubscribeTimetokenForNewMultiplex = 0;
-        private const string build = "3.7.9";
-        private static string pnsdkVersion = "PubNub-CSharp-Unity5/3.7.9";
+        private const string build = "3.7.10";
+        private static string pnsdkVersion = "PubNub-CSharp-Unity5/3.7.10";
 
         private int pubnubWebRequestCallbackIntervalInSeconds = 310;
         private int pubnubOperationTimeoutIntervalInSeconds = 15;
@@ -1873,7 +1873,8 @@ namespace PubNubMessaging.Core
                 //override lastTimetoken when lastSubscribeTimetokenForNewMultiplex is set.
                 //this is done to use the timetoken prior to the latest response from the server
                 //and is true in case new channels are added to the subscribe list.
-                if (!sentTimetoken.Equals(0) && !lastSubscribeTimetokenForNewMultiplex.Equals(0) && !lastSubscribeTimetoken.Equals(lastSubscribeTimetokenForNewMultiplex))
+                //if (!sentTimetoken.Equals(0) && !lastSubscribeTimetokenForNewMultiplex.Equals(0) && !lastSubscribeTimetoken.Equals(lastSubscribeTimetokenForNewMultiplex))
+                if (!sentTimetoken.Equals(0) && !lastSubscribeTimetokenForNewMultiplex.Equals(0))
                 {
                     lastTimetoken = lastSubscribeTimetokenForNewMultiplex;
                     lastSubscribeTimetokenForNewMultiplex = 0;
@@ -1881,25 +1882,34 @@ namespace PubNubMessaging.Core
                     sbLogger.AppendFormat("SaveLastTimetoken: Using lastSubscribeTimetokenForNewMultiplex={0}\n", lastTimetoken);
                     #endif
                 }
+                else {
+                    lastTimetoken = sentTimetoken;
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    sbLogger.AppendFormat("SaveLastTimetoken2: Using sentTimetoken={0}\n", sentTimetoken);
+                    #endif
+                }
+                /*if (sentTimetoken.Equals(0))
+                {
+                    lastTimetoken = sentTimetoken;
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    sbLogger.AppendFormat("SaveLastTimetoken1: Using sentTimetoken={0}\n", sentTimetoken);
+                    #endif
+                }
                 else
-                    if (sentTimetoken.Equals(0))
-                    {
-                        lastTimetoken = sentTimetoken;
-                        #if (ENABLE_PUBNUB_LOGGING)
-                        sbLogger.AppendFormat("SaveLastTimetoken: Using sentTimetoken={0}\n", sentTimetoken);
-                        #endif
-                    }
-                    else
-                    {
-                        lastTimetoken = sentTimetoken;
-                        #if (ENABLE_PUBNUB_LOGGING)
-                        sbLogger.AppendFormat("SaveLastTimetoken: Using sentTimetoken={0}\n", sentTimetoken);
-                        #endif
-                    }
-                if (lastSubscribeTimetoken.Equals(lastSubscribeTimetokenForNewMultiplex))
+                {
+                    lastTimetoken = sentTimetoken;
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    sbLogger.AppendFormat("SaveLastTimetoken2: Using sentTimetoken={0}\n", sentTimetoken);
+                    #endif
+                }*/
+                
+                /*if (lastSubscribeTimetoken.Equals(lastSubscribeTimetokenForNewMultiplex) && !sentTimetoken.Equals(0))
                 {
                     lastSubscribeTimetokenForNewMultiplex = 0;
-                }
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    sbLogger.AppendFormat("SaveLastTimetoken3: Reset lastSubscribeTimetokenForNewMultiplex to 0 from {0}\n", sentTimetoken);
+                    #endif
+                }*/
             }
             #if (ENABLE_PUBNUB_LOGGING)
             LoggingMethod.WriteToLog (string.Format ("DateTime {0}, {1} ", DateTime.Now.ToString (),

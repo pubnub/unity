@@ -90,7 +90,7 @@ namespace PubNubMessaging.Tests
 
             string ch = string.Join(",", channels);
 
-            //http://ps.pndsn.com/v1/channel-registration/sub-key/demo-36/channel-group/channelGroup?add=addChannel1,%20addChannel2&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityOSX%2F3.7
+            //http://ps.pndsn.com/v1/channel-registration/sub-key/demo/channel-group/channelGroup?add=addChannel1,%20addChannel2&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityOSX%2F3.7
             string expected = string.Format ("http{0}://{1}/v1/channel-registration/sub-key/{2}/channel-group/{3}?add={4}&uuid={5}{6}&pnsdk={7}",
                 ssl?"s":"", pubnub.Origin, Common.SubscribeKey, channelGroup, 
                 Utility.EncodeUricomponent(ch, ResponseType.ChannelGroupAdd, true, true),
@@ -203,7 +203,7 @@ namespace PubNubMessaging.Tests
                 chStr2 = "";
             }
 
-            //http://ps.pndsn.com/v1/channel-registration/sub-key/demo-36/channel-group/channelGroup?add=addChannel1,%20addChannel2&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityOSX%2F3.7
+            //http://ps.pndsn.com/v1/channel-registration/sub-key/demo/channel-group/channelGroup?add=addChannel1,%20addChannel2&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityOSX%2F3.7
             string expected = string.Format ("http{0}://{1}/v1/channel-registration/sub-key/{2}/channel-group/{3}{8}?{4}uuid={5}{6}&pnsdk={7}",
                 ssl?"s":"", pubnub.Origin, Common.SubscribeKey, channelGroup, 
                 chStr, uuid, authKeyString, 
@@ -293,7 +293,7 @@ namespace PubNubMessaging.Tests
                 uuid, ssl, pubnub.Origin, pubnub.AuthenticationKey, Common.SubscribeKey
             );
 
-            //http://ps.pndsn.com/v1/channel-registration/sub-key/demo-36/channel-group/channelGroup?add=addChannel1,%20addChannel2&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityOSX%2F3.7
+            //http://ps.pndsn.com/v1/channel-registration/sub-key/demo/channel-group/channelGroup?add=addChannel1,%20addChannel2&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityOSX%2F3.7
             string expected = string.Format ("http{0}://{1}/v1/channel-registration/sub-key/{2}/{8}{3}?uuid={5}{6}&pnsdk={7}",
                 ssl?"s":"", pubnub.Origin, Common.SubscribeKey, channelGroup, 
                 "",
@@ -433,7 +433,7 @@ namespace PubNubMessaging.Tests
                 Common.SubscribeKey, cipher, Common.SecretKey
             );
 
-            //http://ps.pndsn.com/v1/auth/audit/sub-key/demo-36?
+            //http://ps.pndsn.com/v1/auth/audit/sub-key/demo?
             //signature=5WXdNx4N-ahcZg1ouczRy0_8iww0o3cS1hBIgdd3BR8
             //=&channel-group=channelGroup&pnsdk=PubNub-CSharp-UnityOSX%2F3.7
             //&timestamp=1468320915&uuid=customuuid
@@ -1279,7 +1279,7 @@ namespace PubNubMessaging.Tests
             );
 
 
-            //http://ps.pndsn.com/v1/auth/grant/sub-key/demo-36?signature=EW8fnNVSpUYDEKKC_iPGyc7Bjq4zOyjKMAkCcQ3islM=
+            //http://ps.pndsn.com/v1/auth/grant/sub-key/demo?signature=EW8fnNVSpUYDEKKC_iPGyc7Bjq4zOyjKMAkCcQ3islM=
             //&auth=authKey&m=1&pnsdk=PubNub-CSharp-UnityOSX%2F3.7&r=1&timestamp=1468324416&ttl=0&uuid=customuuid
             string expected1 = string.Format ("http{0}://{1}/v1/auth/grant/sub-key/{2}?signature=",
                 ssl ? "s" : "", pubnub.Origin, Common.SubscribeKey);

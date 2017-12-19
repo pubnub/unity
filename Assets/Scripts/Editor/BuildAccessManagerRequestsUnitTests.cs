@@ -792,7 +792,7 @@ namespace PubNubMessaging.Tests
                 authKey, Common.PublishKey, Common.SubscribeKey, cipherKey, Common.SecretKey
             );
 
-            //https://ps.pndsn.com/v1/auth/grant/sub-key/demo-36?signature=RlJ5QMGPMxNj9C2J6emNaXUymQ8pbsUM3y8_Wz25Zdg=&channel=access_manager_channel&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0&r=1&timestamp=1450074813&ttl=10&uuid=customuuid&w=1
+            //https://ps.pndsn.com/v1/auth/grant/sub-key/demo?signature=RlJ5QMGPMxNj9C2J6emNaXUymQ8pbsUM3y8_Wz25Zdg=&channel=access_manager_channel&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0&r=1&timestamp=1450074813&ttl=10&uuid=customuuid&w=1
             string expected1 = string.Format ("http{0}://{1}/v1/auth/grant/sub-key/{2}?signature=",
                                   ssl ? "s" : "", pubnub.Origin, Common.SubscribeKey);
 
@@ -949,7 +949,7 @@ namespace PubNubMessaging.Tests
                 authKey, Common.PublishKey, Common.SubscribeKey, cipherKey, Common.SecretKey
             );
 
-            //http://ps.pndsn.com/v1/auth/audit/sub-key/demo-36?signature=z3fwOXFHyyaSfEbt8QwAvVzCviLgxxefRmPMDv7Ipns=&channel=access_manager_channel&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0&timestamp=1450102082&uuid=customuuid
+            //http://ps.pndsn.com/v1/auth/audit/sub-key/demo?signature=z3fwOXFHyyaSfEbt8QwAvVzCviLgxxefRmPMDv7Ipns=&channel=access_manager_channel&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0&timestamp=1450102082&uuid=customuuid
             string expected1 = string.Format ("http{0}://{1}/v1/auth/audit/sub-key/{2}?signature=",
                 ssl ? "s" : "", pubnub.Origin, Common.SubscribeKey);
 
