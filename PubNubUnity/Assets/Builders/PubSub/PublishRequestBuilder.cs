@@ -26,6 +26,11 @@ namespace PubNubAPI
         public void Async(Action<PNPublishResult, PNStatus> callback)
         {
             this.Callback = callback;
+            if(string.IsNullOrEmpty(this.PubNubInstance.PNConfig.PublishKey)){
+                PNStatus pnStatus = base.CreateErrorResponseFromMessage("Publish Key is empty", null, PNStatusCategory.PNBadRequestCategory);
+                Callback(null, pnStatus);
+                return;
+            }
             if(string.IsNullOrEmpty(this.PublishChannel)){
                 PNStatus pnStatus = base.CreateErrorResponseFromMessage("Channel is empty", null, PNStatusCategory.PNBadRequestCategory);
                 Callback(null, pnStatus);

@@ -84,7 +84,9 @@ namespace PubNubAPI
             get { return filterExpr; }
             set{
                 filterExpr = value;
-                FilterExpressionChanged.Invoke(this, null);
+                if(FilterExpressionChanged!=null){
+                    FilterExpressionChanged.Invoke(this, null);
+                }
             }
         }
 

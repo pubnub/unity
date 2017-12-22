@@ -85,6 +85,7 @@ namespace PubNubAPI
                 string message = Utility.ReadMessageFromResponseDictionary(dictionary, "message");
                 if(Utility.CheckDictionaryForError(dictionary, "error")){
                     pnChannelGroupsAddChannelResult = null;
+                    Debug.Log("in error");
                     pnStatus = base.CreateErrorResponseFromMessage(message, requestState, PNStatusCategory.PNUnknownCategory);
                 } else {
                     pnChannelGroupsAddChannelResult.Message = message;
