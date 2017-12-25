@@ -17,9 +17,11 @@ namespace PubNubAPI.Tests
 			PubNub pubnub = new PubNub(pnConfiguration);
 			bool testReturn = false;
 			pubnub.Time ().Async ((result, status) => {
-                Assert.True(!status.Error);
-				Assert.True(!result.TimeToken.Equals(0));
-				testReturn = true;
+				bool statusError = status.Error;
+				Debug.Log(statusError);
+				bool resultTimeToken = result.TimeToken.Equals(0);
+				Debug.Log(resultTimeToken);
+				testReturn =  !statusError && !resultTimeToken;
             });
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeForAsyncResponse);
 			Assert.True(testReturn, "test didn't return");
@@ -36,13 +38,15 @@ namespace PubNubAPI.Tests
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			bool testReturn = false;
 			pubnub.WhereNow ().Async ((result, status) => {
-				Assert.True(!status.Error);
+				bool statusError = status.Error;
+				Debug.Log("statusError:" + statusError);
+
 				if(result.Channels!=null){
-					Assert.True(result.Channels.Contains(whereNowChannel));
+					Debug.Log(result.Channels.Contains(whereNowChannel));
+					testReturn = !statusError && result.Channels.Contains(whereNowChannel);
 				} else {
 					Assert.Fail("result.Channels null");
 				}
-				testReturn = true;
              });
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeForAsyncResponse);
 			Assert.True(testReturn, "test didn't return");
@@ -72,10 +76,8 @@ namespace PubNubAPI.Tests
 
 			pubnub.HereNow().Channels(channelList).IncludeState(true).IncludeUUIDs(true).Async((result, status) => {
 					Debug.Log("status.Error:" + status.Error);
-                    Assert.True(!status.Error);
-					//Assert.True(result.TotalOccupancy.Equals(1));
-					MatchHereNowresult(result, channelList, pnConfiguration.UUID, false, false, 0, false, null);
-                    testReturn = true;
+					bool matchResult = MatchHereNowresult(result, channelList, pnConfiguration.UUID, false, false, 0, false, null);
+					testReturn = !status.Error && matchResult;
                 });
 
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeForAsyncResponse);
@@ -100,9 +102,8 @@ namespace PubNubAPI.Tests
 			pubnub.HereNow().Channels(channelList).IncludeState(true).IncludeUUIDs(true).Async((result, status) => {
 					Debug.Log("status.Error:" + status.Error);
                     Assert.True(!status.Error);
-					//Assert.True(result.TotalOccupancy.Equals(1));
-					MatchHereNowresult(result, channelList, pnConfiguration.UUID, false, false, 0, false, null);
-                    testReturn = true;
+					bool matchResult = MatchHereNowresult(result, channelList, pnConfiguration.UUID, false, false, 0, false, null);
+                    testReturn = !status.Error && matchResult;
                 });
 
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeForAsyncResponse);
@@ -142,8 +143,8 @@ namespace PubNubAPI.Tests
 					Debug.Log("status.Error:" + status.Error);
                     Assert.True(!status.Error);
 					//Assert.True(result.TotalOccupancy.Equals(1));
-					MatchHereNowresult(result, channelList, pnConfiguration.UUID, false, false, 0, false, null);
-                    testReturn = true;
+					bool matchResult = MatchHereNowresult(result, channelList, pnConfiguration.UUID, false, false, 0, false, null);
+					testReturn = !status.Error && matchResult;
                 });
 
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeForAsyncResponse);
@@ -176,8 +177,8 @@ namespace PubNubAPI.Tests
 					Debug.Log("status.Error:" + status.Error);
                     Assert.True(!status.Error);
 					//Assert.True(result.TotalOccupancy.Equals(1));
-					MatchHereNowresult(result, channelList, pnConfiguration.UUID, false, false, 0, false, null);
-                    testReturn = true;
+					bool matchResult = MatchHereNowresult(result, channelList, pnConfiguration.UUID, false, false, 0, false, null);
+                    testReturn = !status.Error && matchResult;
                 });
 
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeForAsyncResponse);
@@ -214,8 +215,8 @@ namespace PubNubAPI.Tests
                     Assert.True(!status.Error);
 					//Assert.True(result.TotalOccupancy.Equals(1));
 					channelList.AddRange(channelList2);
-					MatchHereNowresult(result, channelList, pnConfiguration.UUID, false, false, 0, false, null);
-                    testReturn = true;
+					bool matchResult = MatchHereNowresult(result, channelList, pnConfiguration.UUID, false, false, 0, false, null);
+                    testReturn = !status.Error && matchResult;
                 });
 
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeForAsyncResponse);
@@ -252,8 +253,8 @@ namespace PubNubAPI.Tests
                     Assert.True(!status.Error);
 					//Assert.True(result.TotalOccupancy.Equals(1));
 					channelList.AddRange(channelList2);
-					MatchHereNowresult(result, channelList, pnConfiguration.UUID, false, false, 0, false, null);
-                    testReturn = true;
+					bool matchResult = MatchHereNowresult(result, channelList, pnConfiguration.UUID, false, false, 0, false, null);
+                    testReturn = !status.Error && matchResult;
                 });
 
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeForAsyncResponse);
@@ -290,8 +291,8 @@ namespace PubNubAPI.Tests
                     Assert.True(!status.Error);
 					//Assert.True(resultTotalOccupancy.Equals(1));
 					channelList.AddRange(channelList2);
-					MatchHereNowresult(result, channelList, pnConfiguration.UUID, false, true, 1, false, null);
-                    testReturn = true;
+					bool matchResult = MatchHereNowresult(result, channelList, pnConfiguration.UUID, false, true, 1, false, null);
+                    testReturn = !status.Error && matchResult;
                 });
 
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeForAsyncResponse);
@@ -334,8 +335,8 @@ namespace PubNubAPI.Tests
                     Assert.True(!status.Error);
 					//Assert.True(resultTotalOccupancy.Equals(1));
 					channelList.AddRange(channelList2);
-					MatchHereNowresult(result, channelList, pnConfiguration.UUID, false, true, 1, true, state);
-                    testReturn = true;
+					bool matchResult = MatchHereNowresult(result, channelList, pnConfiguration.UUID, false, true, 1, true, state);
+					testReturn = !status.Error && matchResult;
                 });
 
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeForAsyncResponse);
@@ -378,8 +379,8 @@ namespace PubNubAPI.Tests
                     Assert.True(!status.Error);
 					//Assert.True(resultTotalOccupancy.Equals(1));
 					channelList.AddRange(channelList2);
-					MatchHereNowresult(result, channelList, pnConfiguration.UUID, false, true, 1, true, state);
-                    testReturn = true;
+					bool matchResult = MatchHereNowresult(result, channelList, pnConfiguration.UUID, false, true, 1, true, state);
+                    testReturn = !status.Error && matchResult;
                 });
 
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeForAsyncResponse);
@@ -387,20 +388,24 @@ namespace PubNubAPI.Tests
 			pubnub.CleanUp();
 		}
 
-		public void MatchHereNowresult(PNHereNowResult result, List<string> channelList, string uuid, bool checkOccupancy, bool checkOccupancyOnly, int occupancy, bool checkState, Dictionary<string, object> state){
+		public bool MatchHereNowresult(PNHereNowResult result, List<string> channelList, string uuid, bool checkOccupancy, bool checkOccupancyOnly, int occupancy, bool checkState, Dictionary<string, object> state){
+			bool matchResult = false;
 			if(result.Channels!=null){
 				Dictionary<string, PNHereNowChannelData> dict = result.Channels;
 				PNHereNowChannelData pnHereNowChannelData;
+				
 				foreach(string hereNowChannel in channelList){
 					if(dict.TryGetValue(hereNowChannel, out pnHereNowChannelData)){
 						if(checkOccupancy || checkOccupancyOnly){
-							Assert.True(pnHereNowChannelData.Occupancy.Equals(occupancy));
+							matchResult = pnHereNowChannelData.Occupancy.Equals(occupancy);
 						} else if (!checkOccupancyOnly){
 							bool found = false;
+							bool checkStateResult = false;
 							foreach(PNHereNowOccupantData pnHereNowOccupantData in pnHereNowChannelData.Occupants){
 								Debug.Log("finding:" + pnHereNowOccupantData.UUID);
+								
 								if(checkState){
-									Assert.True(pnHereNowOccupantData.State.Equals(state));
+									checkStateResult = pnHereNowOccupantData.State.Equals(state);
 								}
 								
 								if(pnHereNowOccupantData.UUID.Equals(uuid)){
@@ -409,7 +414,7 @@ namespace PubNubAPI.Tests
 									break;
 								} 
 							}
-							Assert.True(found);
+							matchResult = checkStateResult && found;
 						}
 					}else {
 						Assert.Fail("channel not found" + hereNowChannel);
@@ -419,6 +424,7 @@ namespace PubNubAPI.Tests
 			} else {
 				Assert.Fail("Channels null");
 			}
+			return matchResult;
 		}
 		#endregion
 
@@ -529,8 +535,8 @@ namespace PubNubAPI.Tests
 			pubnub.SusbcribeCallback += (sender, e) => { 
 				SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
 				if(mea.Status.Category.Equals(PNStatusCategory.PNConnectedCategory)){
-					Assert.True(mea.Status.UUID.Contains(pnConfiguration.UUID));
-					tresult = true;
+					tresult = mea.Status.UUID.Contains(pnConfiguration.UUID);
+					Assert.True(tresult);
 				} 
 			};
 			pubnub.Subscribe ().SetChannels(channelList2).Execute();
@@ -589,12 +595,14 @@ namespace PubNubAPI.Tests
 				SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
 				if(mea.Status.Category.Equals(PNStatusCategory.PNUnknownCategory)){
 					Assert.True(mea.Status.Error);
+					bool errorData = true;
 					if(mea.Status.ErrorData!=null){
 						Debug.Log(mea.Status.ErrorData.Info);
-						Assert.True(mea.Status.ErrorData.Info.Contains("Duplicate Channels or Channel Groups"));
+						errorData = mea.Status.ErrorData.Info.Contains("Duplicate Channels or Channel Groups");
+						Assert.True(errorData);
 					}
 					
-					tresult = true;
+					tresult = errorData && mea.Status.Error;
 				} 
 			};
 			pubnub.Subscribe ().SetChannels(channelList2).Execute();
@@ -625,20 +633,27 @@ namespace PubNubAPI.Tests
 				SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
 				if(!mea.Status.Category.Equals(PNStatusCategory.PNConnectedCategory)){
 					if(mea.PresenceEventResult.Event.Equals("join")){
-						Assert.True(mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UUID));
-						Assert.True(mea.PresenceEventResult.Occupancy > 0);
-						Assert.True(mea.PresenceEventResult.Timestamp > 0);
-						Debug.Log(mea.PresenceEventResult.UUID.Contains(pnConfiguration.UUID));
-						tJoinResult = true;
+						bool containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UUID);
+						Assert.True(containsUUID);
+						bool containsOccupancy = mea.PresenceEventResult.Occupancy > 0;
+						Assert.True(containsOccupancy);
+						bool containsTimestamp = mea.PresenceEventResult.Timestamp > 0;
+						Assert.True(containsTimestamp);
+						Debug.Log(containsUUID);
+						tJoinResult = containsTimestamp && containsOccupancy && containsUUID;
 						pubnub2.Unsubscribe().Channels(channelList2).Async((result, status) => {
 							Debug.Log("status.Error:" + status.Error);
 							Assert.True(!status.Error);
 						});
 						
 					} else if (mea.PresenceEventResult.Event.Equals("leave")){
-						Assert.True(mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UUID));
-						Assert.True(mea.PresenceEventResult.Timestamp > 0);
-						Debug.Log(mea.PresenceEventResult.UUID.Contains(pnConfiguration.UUID));
+						bool containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UUID);
+						Assert.True(containsUUID);
+						bool containsTimestamp = mea.PresenceEventResult.Timestamp > 0;
+						Assert.True(containsTimestamp);
+						tLeaveResult = containsTimestamp && containsUUID;
+						
+						Debug.Log(containsUUID);
 						tLeaveResult = true;
 					}					
 				} 
@@ -723,7 +738,9 @@ namespace PubNubAPI.Tests
 						if(Int64.TryParse(payload.ToString(), out expected)){
 							long response;
 							if(Int64.TryParse(mea.MessageResult.Payload.ToString(), out response)){
-								Assert.True(expected.Equals(response));
+								bool expectedAndResponseMatch = expected.Equals(response);
+								Assert.IsTrue(expectedAndResponseMatch);
+								testReturn = expectedAndResponseMatch;
 							} else {
 								Assert.Fail("response long conversion failed");	
 							}
@@ -745,6 +762,8 @@ namespace PubNubAPI.Tests
 							}
 							if(!found){
 								Assert.Fail("response not found");	
+							} else {																
+								testReturn = found;
 							}
 						}
 					} else if(payload.GetType().Equals(typeof(double[]))){
@@ -764,6 +783,8 @@ namespace PubNubAPI.Tests
 							}
 							if(!found){
 								Assert.Fail("response not found");	
+							} else {																
+								testReturn = found;
 							}
 						}	
 					}else if(payload.GetType().Equals(typeof(string[]))){
@@ -779,13 +800,17 @@ namespace PubNubAPI.Tests
 							}
 							if(!found){
 								Assert.Fail("response not found");	
+							} else {																
+								testReturn = found;
 							}
 						}	
 					} else if(payload.GetType().Equals(typeof(System.Object[]))){
 						System.Object[] expected = (System.Object[])payload;
 						System.Object[] response = (System.Object[])mea.MessageResult.Payload;
 						// + payload.GetType().Equals(typeof(System.Object[])) + expected[0].Equals(response[0]));
-						Assert.True(expected.Length.Equals(response.Length) && expected.Length.Equals(0));
+						bool expectedAndResponseMatch = expected.Length.Equals(response.Length) && expected.Length.Equals(0);
+						Assert.IsTrue(expectedAndResponseMatch);
+						testReturn = expectedAndResponseMatch;
 					} else if(payload.GetType().Equals(typeof(Dictionary<string, string>))){
 						Dictionary<string, string> expected = (Dictionary<string, string>)payload;
 						IDictionary response = mea.MessageResult.Payload as IDictionary;
@@ -795,7 +820,10 @@ namespace PubNubAPI.Tests
 						Dictionary<string, int> expected = (Dictionary<string, int>)payload;
 						IDictionary response = mea.MessageResult.Payload as IDictionary;
 						Debug.Log("PAYLOAD2:" + payload.ToString() + payload.GetType());
-						Assert.True( response == null || response.Count < 1 );
+						bool expectedAndResponseMatch =  (response == null || response.Count < 1);
+						Assert.IsTrue(expectedAndResponseMatch);
+						testReturn = expectedAndResponseMatch;
+
 						//Assert.True(expected.Count.Equals(response.Count) && expected.Count.Equals(0));
 
 					} else if(payload.GetType().Equals(typeof(Int32[]))){
@@ -811,6 +839,8 @@ namespace PubNubAPI.Tests
 							}
 							if(!found){
 								Assert.Fail("response not found");	
+							} else {																
+								testReturn = found;
 							}
 						}
 					} else if(payload.GetType().ToString().Contains(typeof(PubnubDemoObject).ToString())){	
@@ -861,17 +891,19 @@ namespace PubNubAPI.Tests
 						//PubnubDemoObject response = mea.MessageResult.Payload;
 						Debug.Log("expected.VersionID:" + expected.VersionID);	
 						Debug.Log("response.VersionID:" + response.VersionID);
-						
-						Assert.True(response.VersionID.Equals(expected.VersionID));
-						Assert.True(response.Timetoken.Equals(expected.Timetoken));
-						Assert.True(response.OperationName.Equals(expected.OperationName));
-						Assert.True(response.DemoMessage.DefaultMessage.Equals(expected.DemoMessage.DefaultMessage));
-						Assert.True(response.CustomMessage.DefaultMessage.Equals(expected.CustomMessage.DefaultMessage));
+
+						bool versionIdMatch = response.VersionID.Equals(expected.VersionID);
+						bool timetokenMatch = response.Timetoken.Equals(expected.Timetoken);
+						bool operationNameMatch = response.OperationName.Equals(expected.OperationName);
+						bool demoMessageMatch = response.DemoMessage.DefaultMessage.Equals(expected.DemoMessage.DefaultMessage);
+						bool customMessageMatch = response.CustomMessage.DefaultMessage.Equals(expected.CustomMessage.DefaultMessage);
+
+						testReturn = versionIdMatch && timetokenMatch && operationNameMatch && demoMessageMatch && customMessageMatch;
 					} else {
 						Debug.Log("PAYLOAD2:" + payload.ToString() + payload.GetType());
-						Assert.True(mea.MessageResult.Payload.Equals(payload));
+						testReturn = mea.MessageResult.Payload.Equals(payload);
 					}
-					testReturn = true;
+					//testReturn = true;
 				}
 			};
 			pubnub.Subscribe ().SetChannels(channelList2).Execute();
@@ -916,10 +948,7 @@ namespace PubNubAPI.Tests
 			pubnub.SusbcribeCallback += (sender, e) => { 
 				SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
 				if(!mea.Status.Category.Equals(PNStatusCategory.PNConnectedCategory)){
-					Assert.True(mea.MessageResult.Channel.Equals(channel));
-					Assert.True(mea.MessageResult.Payload.ToString().Equals(payload));
-
-					tresult = true;
+					tresult = mea.MessageResult.Channel.Equals(channel) && mea.MessageResult.Payload.ToString().Equals(payload);
 				} 
 			};
 			pubnub.Subscribe ().SetChannels(channelList2).SetTimeToken(timetoken).Execute();
@@ -953,11 +982,10 @@ namespace PubNubAPI.Tests
 					Debug.Log ("in AddChannelsToChannelGroup " + status.Error);
 					if(!status.Error){
 						Debug.Log(result.Message);
-						Assert.IsTrue(result.Message.Contains("OK"));
+						tresult = result.Message.Contains("OK");
 					} else {
 						Assert.Fail("AddChannelsToChannelGroup failed");
 					}
-					tresult = true;
 				});
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
 			Assert.True(tresult, "test didn't return1");
@@ -966,15 +994,18 @@ namespace PubNubAPI.Tests
 			pubnub.ListChannelsForChannelGroup().ChannelGroup(channelGroup).Async((result, status) => {
 					if(!status.Error){
 						if(result.Channels!=null){
-							Assert.IsTrue(result.Channels.Contains(channel));
-							Assert.IsTrue(result.Channels.Contains(channel2));
+							bool matchChannel1 = result.Channels.Contains(channel);
+							bool matchChannel2 = result.Channels.Contains(channel2);
+							Assert.IsTrue(matchChannel1);
+							Assert.IsTrue(matchChannel2);
+							tresult = matchChannel1 && matchChannel2;
 						} else {
 							Assert.Fail("result.Channels empty");
 						}
 					} else {
 						Assert.Fail("AddChannelsToChannelGroup failed");
 					}
-					tresult = true;
+					
 				});
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
 			Assert.True(tresult, "test didn't return2");
@@ -992,10 +1023,13 @@ namespace PubNubAPI.Tests
 						Debug.Log("SusbcribeCallback" + mea.MessageResult.Channel);
 						Debug.Log("SusbcribeCallback" + mea.MessageResult.Payload);
 						Debug.Log("SusbcribeCallback" + mea.MessageResult.Timetoken);
-						Assert.True(mea.MessageResult.Channel.Equals(channel));
-						Assert.True(mea.MessageResult.Subscription.Equals(channelGroup));
-						Assert.True(mea.MessageResult.Payload.ToString().Equals(payload));
-						tresult = true;
+						bool matchChannel = mea.MessageResult.Channel.Equals(channel);
+						Assert.True(matchChannel);
+						bool matchSubscription = mea.MessageResult.Subscription.Equals(channelGroup);
+						Assert.True(matchSubscription);
+						bool matchPayload = mea.MessageResult.Payload.ToString().Equals(payload);
+						Assert.True(matchPayload);
+						tresult = matchPayload && matchSubscription && matchChannel;
 					}
 				}
 				
@@ -1026,8 +1060,9 @@ namespace PubNubAPI.Tests
 								Debug.Log("key.Key" + key.Key);
 								if(key.Key.Equals(channelGroup)){
 									Debug.Log("pubnub.JsonLibrary.SerializeToJsonString(key.Value)" + pubnub.JsonLibrary.SerializeToJsonString(key.Value));
-									Assert.IsTrue(pubnub.JsonLibrary.SerializeToJsonString(key.Value).Equals("{\"k1\":\"v1\"}"));
-									tresult = true;
+									bool stateMatch = pubnub.JsonLibrary.SerializeToJsonString(key.Value).Equals("{\"k1\":\"v1\"}");
+									Assert.IsTrue(stateMatch);
+									tresult = stateMatch;
 									break;
 								}
 							}
@@ -1053,20 +1088,22 @@ namespace PubNubAPI.Tests
 								foreach (KeyValuePair<string, object> keyInStateDict in stateDict){
 									Debug.Log("keyInStateDict.Key" + keyInStateDict.Key);
 									if(keyInStateDict.Key.Equals(channel)){
+										bool stateMatch = pubnub.JsonLibrary.SerializeToJsonString(keyInStateDict.Value).Equals("{\"cg\":{\"k1\":\"v1\"}}");
 										Debug.Log("pubnub.JsonLibrary.SerializeToJsonString(keyInStateDict.Value)" + pubnub.JsonLibrary.SerializeToJsonString(keyInStateDict.Value));
-										Assert.IsTrue(pubnub.JsonLibrary.SerializeToJsonString(keyInStateDict.Value).Equals("{\"cg\":{\"k1\":\"v1\"}}"));
-										found1 = true;
+										Assert.IsTrue(stateMatch);
+										found1 = stateMatch;
 									}
 									if(keyInStateDict.Key.Equals(channel2)){
+										bool stateMatch = pubnub.JsonLibrary.SerializeToJsonString(keyInStateDict.Value).Equals("{\"cg\":{\"k1\":\"v1\"}}");
 										Debug.Log("pubnub.JsonLibrary.SerializeToJsonString(keyInStateDict.Value)" + pubnub.JsonLibrary.SerializeToJsonString(keyInStateDict.Value));
-										Assert.IsTrue(pubnub.JsonLibrary.SerializeToJsonString(keyInStateDict.Value).Equals("{\"cg\":{\"k1\":\"v1\"}}"));
-										found2 = true;
+										Assert.IsTrue(stateMatch);
+										found2 = stateMatch;
 									}
 								}
 							}
 							Assert.IsTrue(found1);
 							Assert.IsTrue(found2);
-							tresult = true;
+							tresult = found1 && found2 ;
 						}
                     }
                 }
@@ -1089,13 +1126,14 @@ namespace PubNubAPI.Tests
 							foreach (KeyValuePair<string, object> key in result.StateByChannels){
 								Debug.Log("key.Key" + key.Key);
 								if(key.Key.Equals(channelGroup)){
+									bool stateMatch = pubnub.JsonLibrary.SerializeToJsonString(key.Value).Equals("{\"k1\":\"v1\"}");
 									Debug.Log("pubnub.JsonLibrary.SerializeToJsonString(key.Value)" + pubnub.JsonLibrary.SerializeToJsonString(key.Value));
-									found = pubnub.JsonLibrary.SerializeToJsonString(key.Value).Equals("{\"k1\":\"v1\"}");
+									found = stateMatch;
 									break;
 								}
 							}
 							Assert.IsFalse(found);
-							tresult = true;
+							tresult = found;
 						}
                     }
                 }
@@ -1120,20 +1158,22 @@ namespace PubNubAPI.Tests
 								foreach (KeyValuePair<string, object> keyInStateDict in stateDict){
 									Debug.Log("keyInStateDict.Key" + keyInStateDict.Key);
 									if(keyInStateDict.Key.Equals(channel)){
+										bool stateMatch = pubnub.JsonLibrary.SerializeToJsonString(keyInStateDict.Value).Equals("{\"cg\":{\"k1\":\"v1\"}}");
 										Debug.Log("pubnub.JsonLibrary.SerializeToJsonString(keyInStateDict.Value)" + pubnub.JsonLibrary.SerializeToJsonString(keyInStateDict.Value));
-										Assert.IsFalse(pubnub.JsonLibrary.SerializeToJsonString(keyInStateDict.Value).Equals("{\"cg\":{\"k1\":\"v1\"}}"));
-										found1 = true;
+										Assert.IsFalse(stateMatch);
+										found1 = stateMatch;
 									}
 									if(keyInStateDict.Key.Equals(channel2)){
+										bool stateMatch = pubnub.JsonLibrary.SerializeToJsonString(keyInStateDict.Value).Equals("{\"cg\":{\"k1\":\"v1\"}}");
 										Debug.Log("pubnub.JsonLibrary.SerializeToJsonString(keyInStateDict.Value)" + pubnub.JsonLibrary.SerializeToJsonString(keyInStateDict.Value));
-										Assert.IsFalse(pubnub.JsonLibrary.SerializeToJsonString(keyInStateDict.Value).Equals("{\"cg\":{\"k1\":\"v1\"}}"));
-										found2 = true;
+										Assert.IsFalse(stateMatch);
+										found2 = stateMatch;
 									}
 								}
 							}
 							Assert.IsTrue(found1);
 							Assert.IsTrue(found2);
-							tresult = true;
+							tresult = !found1 && !found2;
 						}
                     }
                 }
@@ -1167,11 +1207,10 @@ namespace PubNubAPI.Tests
 					Debug.Log ("in AddChannelsToChannelGroup " + status.Error);
 					if(!status.Error){
 						Debug.Log(result.Message);
-						Assert.IsTrue(result.Message.Contains("OK"));
+						tresult = result.Message.Contains("OK");
 					} else {
 						Assert.Fail("AddChannelsToChannelGroup failed");
 					}
-					tresult = true;
 				});
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
 			Assert.True(tresult, "test didn't return1");
@@ -1180,15 +1219,17 @@ namespace PubNubAPI.Tests
 			pubnub.ListChannelsForChannelGroup().ChannelGroup(channelGroup).Async((result, status) => {
 					if(!status.Error){
 						if(result.Channels!=null){
-							Assert.IsTrue(result.Channels.Contains(channel));
-							Assert.IsTrue(result.Channels.Contains(channel2));
+							bool matchChannel1 = result.Channels.Contains(channel);
+							bool matchChannel2 = result.Channels.Contains(channel2);
+							Assert.IsTrue(matchChannel1);
+							Assert.IsTrue(matchChannel2);
+							tresult = matchChannel1 && matchChannel2;
 						} else {
 							Assert.Fail("result.Channels empty");
 						}
 					} else {
 						Assert.Fail("AddChannelsToChannelGroup failed");
 					}
-					tresult = true;
 				});
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
 			Assert.True(tresult, "test didn't return2");
@@ -1200,9 +1241,8 @@ namespace PubNubAPI.Tests
                     Debug.Log ("in RemoveChannelsFromCG");
                     if(!status.Error){
 						
-                        Assert.IsTrue(result.Message.Equals("OK"));
+                        tresult = result.Message.Equals("OK");
                     }
-					tresult = true;
 
                 });
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
@@ -1212,8 +1252,11 @@ namespace PubNubAPI.Tests
 			pubnub.ListChannelsForChannelGroup().ChannelGroup(channelGroup).Async((result, status) => {
 					if(!status.Error){
 						if(result.Channels!=null){
-							Assert.IsTrue(!result.Channels.Contains(channel));
-							Assert.IsTrue(result.Channels.Contains(channel2));
+							bool matchChannel1 = result.Channels.Contains(channel);
+							bool matchChannel2 = result.Channels.Contains(channel2);
+							Assert.IsTrue(!matchChannel1);
+							Assert.IsTrue(matchChannel2);
+							tresult = !matchChannel1 && matchChannel2;
 							
 						} else {
 							Assert.Fail("result.Channels empty");
@@ -1230,10 +1273,8 @@ namespace PubNubAPI.Tests
 			tresult = false;
 			pubnub.DeleteChannelGroup().ChannelGroup(channelGroup).Async((result, status) => {
                     if(!status.Error){
-						
-                        Assert.IsTrue(result.Message.Equals("OK"));
+                        tresult = result.Message.Equals("OK");
                     }
-					tresult = true;
                 });
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
 			Assert.True(tresult, "test didn't return 10");
@@ -1267,11 +1308,10 @@ namespace PubNubAPI.Tests
                     Debug.Log ("in AddChannelsToChannelGroup " + status.Error);
                     if(!status.Error){
 						Debug.Log(result.Message);
-						Assert.IsTrue(result.Message.Contains("Modified Ch"));
+						tresult = result.Message.Contains("Modified Ch");
 					} else {
 						Assert.Fail("AddPushNotificationsOnChannels failed");
 					}
-					tresult = true;
                 });
 						
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
@@ -1281,15 +1321,18 @@ namespace PubNubAPI.Tests
 			pubnub.AuditPushChannelProvisions().DeviceIDForPush(deviceId).PushType(pnPushType).Async((result, status) => {
                     if(!status.Error){
 						if(result.Channels!=null){
-							Assert.IsTrue(result.Channels.Contains(channel));
-							Assert.IsTrue(result.Channels.Contains(channel2));							
+							bool matchChannel1 = result.Channels.Contains(channel);
+							bool matchChannel2 = result.Channels.Contains(channel2);
+							Assert.IsTrue(matchChannel1);
+							Assert.IsTrue(matchChannel2);
+							tresult = matchChannel1 && matchChannel2;
+													
 						} else {
 							Assert.Fail("result.Channels empty");
 						}
 					} else {
 						Assert.Fail("AddChannelsToChannelGroup failed");
 					}
-					tresult = true;
                 });
 
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
@@ -1301,10 +1344,8 @@ namespace PubNubAPI.Tests
 			pubnub.RemovePushNotificationsFromChannels().Channels(listChannelsRemove).DeviceIDForPush(deviceId).PushType(pnPushType).Async((result, status) => {
                     Debug.Log ("in RemovePushNotificationsFromChannels");
 					if(!status.Error){
-						
-                        Assert.IsTrue(result.Message.Equals("Modified Channels"));
+                        tresult = result.Message.Equals("Modified Channels");
                     }
-					tresult = true;
                 });
 
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
@@ -1314,15 +1355,18 @@ namespace PubNubAPI.Tests
 			pubnub.AuditPushChannelProvisions().DeviceIDForPush(deviceId).PushType(pnPushType).Async((result, status) => {
                     if(!status.Error){
 						if(result.Channels!=null){
-							Assert.IsTrue(!result.Channels.Contains(channel));
-							Assert.IsTrue(result.Channels.Contains(channel2));							
+							bool matchChannel1 = result.Channels.Contains(channel);
+							bool matchChannel2 = result.Channels.Contains(channel2);
+							Assert.IsTrue(matchChannel1);
+							Assert.IsTrue(matchChannel2);
+							tresult = !matchChannel1 && matchChannel2;
+														
 						} else {
 							Assert.Fail("result.Channels empty");
 						}
 					} else {
 						Assert.Fail("AddChannelsToChannelGroup failed");
 					}
-					tresult = true;
                 });
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
 			
@@ -1331,10 +1375,8 @@ namespace PubNubAPI.Tests
 			tresult = false;
 			pubnub.RemoveAllPushNotifications().DeviceIDForPush(deviceId).PushType(pnPushType).Async((result, status) => {
                     if(!status.Error){
-						
-                        Assert.IsTrue(result.Message.Equals("Removed Device"));
+                        tresult = result.Message.Equals("Removed Device");
                     }
-					tresult = true;
                 });
 			
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
@@ -1362,10 +1404,16 @@ namespace PubNubAPI.Tests
 			pubnub.SusbcribeCallback += (sender, e) => { 
 				SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
 				if(!mea.Status.Category.Equals(PNStatusCategory.PNConnectedCategory)){
-					Assert.True(mea.MessageResult.Channel.Equals(channel));
-					Assert.True(mea.MessageResult.Payload.ToString().Equals(payload));
-
-					tresult = true;
+					Debug.Log("SusbcribeCallback" + mea.MessageResult.Subscription);
+					Debug.Log("SusbcribeCallback" + mea.MessageResult.Channel);
+					Debug.Log("SusbcribeCallback" + mea.MessageResult.Payload);
+					Debug.Log("SusbcribeCallback" + mea.MessageResult.Timetoken);
+					bool matchChannel = mea.MessageResult.Channel.Equals(channel);
+					Assert.True(matchChannel);
+					bool matchPayload = mea.MessageResult.Payload.ToString().Equals(payload);
+					Assert.True(matchPayload);
+					tresult = matchPayload  && matchChannel;
+					
 				} 
 			};
 			pubnub.Subscribe ().SetChannels(channelList2).Execute();
@@ -1402,10 +1450,15 @@ namespace PubNubAPI.Tests
 			pubnub.SusbcribeCallback += (sender, e) => { 
 				SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
 				if(!mea.Status.Category.Equals(PNStatusCategory.PNConnectedCategory)){
-					Assert.True(mea.MessageResult.Channel.Equals(channel));
-					Assert.True(mea.MessageResult.Payload.ToString().Equals(payload));
-
-					tresult = true;
+					Debug.Log("SusbcribeCallback" + mea.MessageResult.Subscription);
+					Debug.Log("SusbcribeCallback" + mea.MessageResult.Channel);
+					Debug.Log("SusbcribeCallback" + mea.MessageResult.Payload);
+					Debug.Log("SusbcribeCallback" + mea.MessageResult.Timetoken);
+					bool matchChannel = mea.MessageResult.Channel.Equals(channel);
+					Assert.True(matchChannel);
+					bool matchPayload = mea.MessageResult.Payload.ToString().Equals(payload);
+					Assert.True(matchPayload);
+					tresult = matchPayload  && matchChannel;
 				} 
 			};
 			pubnub.Subscribe ().SetChannels(channelList2).Execute();
@@ -1429,7 +1482,7 @@ namespace PubNubAPI.Tests
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random ();
 			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next (100);
-			string channel = "UnityTestNoStoreChannel";
+			string channel = "UnityPublishAndHistoryChannel";
 			string payload = string.Format("payload no store {0}", pnConfiguration.UUID);
 
 			PubNub pubnub = new PubNub(pnConfiguration);
@@ -1439,10 +1492,13 @@ namespace PubNubAPI.Tests
 			bool tresult = false;
 
 			pubnub.Publish().Channel(channel).Message(payload).Async((result, status) => {
-				Assert.True(!result.Timetoken.Equals(0));
-				Assert.True(status.Error.Equals(false));
-				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
-				tresult = true;
+				bool timetokenMatch = !result.Timetoken.Equals(0);
+				bool statusError = status.Error.Equals(false);
+				bool statusCodeMatch = status.StatusCode.Equals(0);
+				Assert.True(timetokenMatch);
+				Assert.True(statusError);
+				Assert.True(statusCodeMatch, status.StatusCode.ToString());
+				tresult = statusCodeMatch && statusError && timetokenMatch;
 			});
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
 			Assert.True(tresult, "test didnt return 1");
@@ -1456,8 +1512,7 @@ namespace PubNubAPI.Tests
 						PNHistoryItemResult pnHistoryItemResult = result.Messages[0] as PNHistoryItemResult;
 						Debug.Log("result.Messages[0]" + result.Messages[0].ToString());
 						if(pnHistoryItemResult != null){
-							Assert.IsTrue(pnHistoryItemResult.Entry.ToString().Contains(payload));
-							tresult = true;
+							tresult = pnHistoryItemResult.Entry.ToString().Contains(payload);
 						} else {
 							tresult = false;
 						}						
@@ -1488,10 +1543,13 @@ namespace PubNubAPI.Tests
 			bool tresult = false;
 
 			pubnub.Publish().Channel(channel).Message(payload).ShouldStore(false).Async((result, status) => {
-				Assert.True(!result.Timetoken.Equals(0));
-				Assert.True(status.Error.Equals(false));
-				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
-				tresult = true;
+				bool timetokenMatch = !result.Timetoken.Equals(0);
+				bool statusError = status.Error.Equals(false);
+				bool statusCodeMatch = status.StatusCode.Equals(0);
+				Assert.True(timetokenMatch);
+				Assert.True(statusError);
+				Assert.True(statusCodeMatch, status.StatusCode.ToString());
+				tresult = statusCodeMatch && statusError && timetokenMatch;
 			});
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
 			Assert.True(tresult, "test didnt return 1");
@@ -1505,13 +1563,12 @@ namespace PubNubAPI.Tests
 						PNHistoryItemResult pnHistoryItemResult = result.Messages[0] as PNHistoryItemResult;
 						Debug.Log("result.Messages[0]" + result.Messages[0].ToString());
 						if(pnHistoryItemResult != null){
-							Assert.IsTrue(!pnHistoryItemResult.Entry.ToString().Contains(payload));
-							tresult = true;
+							tresult = !pnHistoryItemResult.Entry.ToString().Contains(payload);
 						} else {
 							tresult = false;
 						}						
 					} else {
-						tresult = false;
+						tresult = true;
 					}
 					
                 }
@@ -1537,9 +1594,12 @@ namespace PubNubAPI.Tests
 
 			pubnub.Publish().Channel(channel).Message(payload).Async((result, status) => {
 				Debug.Log("Publish" + status.Error + status.StatusCode );
-				Assert.True(status.Error.Equals(true));
-				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
-				tresult = true;
+				bool statusError = status.Error.Equals(true);
+				bool statusCodeMatch = status.StatusCode.Equals(0);
+				Assert.True(statusError);
+				Assert.True(statusCodeMatch, status.StatusCode.ToString());
+				tresult = statusCodeMatch && statusError;
+				
 			});
 
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
@@ -1561,13 +1621,286 @@ namespace PubNubAPI.Tests
 
 			pubnub.Publish().Channel(channel).Message(null).Async((result, status) => {
 				Debug.Log("Publish" + status.Error + status.StatusCode );
-				Assert.True(status.Error.Equals(true));
-				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
-				tresult = true;
+				bool statusError = status.Error.Equals(true);
+				bool statusCodeMatch = status.StatusCode.Equals(0);
+				Assert.True(statusError);
+				Assert.True(statusCodeMatch, status.StatusCode.ToString());
+				tresult = statusCodeMatch && statusError;
 			});
 
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
 			Assert.True(tresult, "test didn't return 10");
+			
+			pubnub.CleanUp();
+		}
+
+		[UnityTest]
+		public IEnumerator TestFire() {
+			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
+			System.Random r = new System.Random ();
+			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next (100);
+			string channel = "UnityTestFireChannel";
+			string payload = string.Format("payload no store {0}", pnConfiguration.UUID);
+
+			PubNub pubnub = new PubNub(pnConfiguration);
+
+			List<string> channelList2 = new List<string>();
+			channelList2.Add(channel);
+			bool tresult = false;
+
+			pubnub.Fire().Channel(channel).Message(payload).Async((result, status) => {
+				bool timetokenMatch = !result.Timetoken.Equals(0);
+				bool statusError = status.Error.Equals(false);
+				bool statusCodeMatch = status.StatusCode.Equals(0);
+				Assert.True(timetokenMatch);
+				Assert.True(statusError);
+				Assert.True(statusCodeMatch, status.StatusCode.ToString());
+				tresult = statusCodeMatch && statusError && timetokenMatch;
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			Assert.True(tresult, "test didnt return 1");
+
+			tresult = false;
+			pubnub.History().Channel(channel).Count(1).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				if(!status.Error){
+
+					if((result.Messages!=null) && (result.Messages.Count>0)){
+						PNHistoryItemResult pnHistoryItemResult = result.Messages[0] as PNHistoryItemResult;
+						Debug.Log("result.Messages[0]" + result.Messages[0].ToString());
+						if(pnHistoryItemResult != null){
+							tresult = !pnHistoryItemResult.Entry.ToString().Contains(payload);
+						} else {
+							tresult = false;
+						}						
+					} else {
+						tresult = true;
+					}
+					
+                }
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			Assert.True(tresult, "test didnt return 2");
+			
+			pubnub.CleanUp();
+		}
+
+		[UnityTest]
+		public IEnumerator TestWildcardSubscribe() {
+			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
+			System.Random r = new System.Random ();
+			pnConfiguration.UUID = "UnityWildSubscribeUUID_" + r.Next (100);
+			string chToPub = "UnityWildSubscribeChannel." + r.Next (100);
+			string channel = "UnityWildSubscribeChannel.*";
+			string payload = string.Format("payload {0}", pnConfiguration.UUID);
+			PubNub pubnub = new PubNub(pnConfiguration);
+
+			List<string> channelList2 = new List<string>();
+			channelList2.Add(channel);
+			string whatToTest = "join1";
+			bool tJoinResult = false;
+			bool tLeaveResult = false;
+			bool tresult = false;
+
+			PNConfiguration pnConfiguration2 = PlayModeCommon.SetPNConfig(false);
+			pnConfiguration2.UUID = "UnityWildSubscribeUUID2_" + r.Next (100);
+
+			pubnub.SusbcribeCallback += (sender, e) => { 
+				SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
+				if(!mea.Status.Category.Equals(PNStatusCategory.PNConnectedCategory)){
+					switch (whatToTest){
+						case "join1":
+						case "join2":
+							if(mea.PresenceEventResult.Event.Equals("join")){
+								bool containsUUID = false;
+								if(whatToTest.Equals("join1")){
+									containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration.UUID);
+								} else {
+									containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UUID);
+								}
+								
+								Assert.True(containsUUID);
+								bool containsOccupancy = mea.PresenceEventResult.Occupancy > 0;
+								Assert.True(containsOccupancy);
+								bool containsTimestamp = mea.PresenceEventResult.Timestamp > 0;
+								Assert.True(containsTimestamp);
+								Debug.Log(containsUUID);
+								bool containsSubscription = mea.MessageResult.Subscription.Equals(channel);
+								Assert.True(containsSubscription);
+
+								tJoinResult = containsTimestamp && containsOccupancy && containsUUID && containsSubscription;
+							}	
+						break;
+						case "leave":
+							if(mea.PresenceEventResult.Event.Equals("leave")){
+								bool containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UUID);
+								Assert.True(containsUUID);
+								Debug.Log(containsUUID);
+								bool containsTimestamp = mea.PresenceEventResult.Timestamp > 0;
+								Assert.True(containsTimestamp);
+								bool containsSubscription = mea.MessageResult.Subscription.Equals(channel);
+								Assert.True(containsSubscription);
+								bool containsOccupancy = mea.PresenceEventResult.Occupancy > 0;
+								Assert.True(containsOccupancy);
+
+								tLeaveResult = containsTimestamp && containsOccupancy && containsUUID && containsSubscription;
+							}
+						break;
+						default:
+							Debug.Log("SusbcribeCallback" + mea.MessageResult.Subscription);
+							Debug.Log("SusbcribeCallback" + mea.MessageResult.Channel);
+							Debug.Log("SusbcribeCallback" + mea.MessageResult.Payload);
+							Debug.Log("SusbcribeCallback" + mea.MessageResult.Timetoken);
+							bool matchChannel = mea.MessageResult.Channel.Equals(chToPub);
+							Assert.True(matchChannel);
+							bool matchPayload = mea.MessageResult.Payload.ToString().Equals(payload);
+							Assert.True(matchPayload);
+
+							bool matchSubscription = mea.MessageResult.Subscription.Equals(channel);
+							Assert.True(matchSubscription);
+							tresult = matchPayload  && matchChannel && matchSubscription;
+						break;
+					}
+				} 
+			};
+			pubnub.Subscribe ().SetChannels(channelList2).Execute();
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			Assert.True(tJoinResult, "subscribe didn't get a join");
+
+			whatToTest = "";
+
+			pubnub.Publish().Channel(chToPub).Message(payload).Async((result, status) => {
+				bool timetokenMatch = !result.Timetoken.Equals(0);
+				bool statusError = status.Error.Equals(false);
+				bool statusCodeMatch = status.StatusCode.Equals(0);
+				Assert.True(timetokenMatch);
+				Assert.True(statusError);
+				Assert.True(statusCodeMatch, status.StatusCode.ToString());
+				tresult = statusCodeMatch && statusError && timetokenMatch;
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+
+			Assert.True(tresult, "Subcribe didn't get a message");
+
+			PubNub pubnub2 = new PubNub(pnConfiguration2);
+
+			whatToTest = "join2";
+
+			pubnub2.Subscribe ().SetChannels(channelList2).Execute();
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			Assert.True(tJoinResult, "subscribe2 didn't get a join");
+
+			whatToTest = "leave";
+
+			tresult = false;
+			pubnub2.Unsubscribe().Channels(channelList2).Async((result, status) => {
+					Debug.Log("status.Error:" + status.Error);
+					tresult = !status.Error;
+				});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			Assert.True(tresult, "unsubscribe didn't return");
+			Assert.True(tLeaveResult, "subscribe didn't get a leave");
+			
+			pubnub.CleanUp();
+		}
+
+		[UnityTest]
+		public IEnumerator TestUnsubscribeAllAndUnsubscribe() {
+			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
+			System.Random r = new System.Random ();
+			pnConfiguration.UUID = "UnityWildSubscribeUUID_" + r.Next (100);
+			string channel = "UnityWildSubscribeChannel." + r.Next (100);
+			string channel2 = "UnityWildSubscribeChannel." + r.Next (100);
+
+			string payload = string.Format("payload {0}", pnConfiguration.UUID);
+			PubNub pubnub = new PubNub(pnConfiguration);
+
+			List<string> channelList2 = new List<string>();
+			channelList2.Add(channel);
+			channelList2.Add(channel2);
+			string whatToTest = "join1";
+			bool tJoinResult = false;
+			bool tLeaveResult = false;
+			bool tresult = false;
+
+			PNConfiguration pnConfiguration2 = PlayModeCommon.SetPNConfig(false);
+			pnConfiguration2.UUID = "UnityWildSubscribeUUID2_" + r.Next (100);
+
+			pubnub.SusbcribeCallback += (sender, e) => { 
+				SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
+				if(!mea.Status.Category.Equals(PNStatusCategory.PNConnectedCategory)){
+					switch (whatToTest){
+						case "join1":
+						case "join2":
+							if(mea.PresenceEventResult.Event.Equals("join")){
+								bool containsUUID = false;
+								if(whatToTest.Equals("join1")){
+									containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration.UUID);
+								} else {
+									containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UUID);
+								}
+								bool containsOccupancy = mea.PresenceEventResult.Occupancy > 0;
+								Assert.True(containsOccupancy);
+								bool containsTimestamp = mea.PresenceEventResult.Timestamp > 0;
+								Assert.True(containsTimestamp);
+								Debug.Log(containsUUID);
+								bool containsChannel = mea.MessageResult.Channel.Equals(channel) || mea.MessageResult.Channel.Equals(channel2);
+								Assert.True(containsChannel);
+
+								tJoinResult = containsTimestamp && containsOccupancy && containsUUID && containsChannel;
+							}	
+						break;
+						case "leave":
+							if(mea.PresenceEventResult.Event.Equals("leave")){
+								bool containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UUID);
+								Assert.True(containsUUID);
+								Debug.Log(containsUUID);
+								bool containsTimestamp = mea.PresenceEventResult.Timestamp > 0;
+								Assert.True(containsTimestamp);
+								bool containsChannel = mea.MessageResult.Channel.Equals(channel) || mea.MessageResult.Channel.Equals(channel2);
+								Assert.True(containsChannel);
+								bool containsOccupancy = mea.PresenceEventResult.Occupancy > 0;
+								Assert.True(containsOccupancy);
+
+								tLeaveResult = containsTimestamp && containsOccupancy && containsUUID && containsChannel;
+							}
+						break;
+						default:
+							Debug.Log("SusbcribeCallback" + mea.MessageResult.Subscription);
+							Debug.Log("SusbcribeCallback" + mea.MessageResult.Channel);
+							Debug.Log("SusbcribeCallback" + mea.MessageResult.Payload);
+							Debug.Log("SusbcribeCallback" + mea.MessageResult.Timetoken);
+							bool matchChannel = mea.MessageResult.Channel.Equals(channel);
+							Assert.True(matchChannel);
+							bool matchPayload = mea.MessageResult.Payload.ToString().Equals(payload);
+							Assert.True(matchPayload);
+
+							tresult = matchPayload  && matchChannel;
+						break;
+					}
+				} 
+			};
+			pubnub.Subscribe ().SetChannels(channelList2).Execute();
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			Assert.True(tJoinResult, "subscribe didn't get a join");
+
+			whatToTest = "join2";
+			PubNub pubnub2 = new PubNub(pnConfiguration2);
+
+			pubnub2.Subscribe ().SetChannels(channelList2).Execute();
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			Assert.True(tJoinResult, "subscribe2 didn't get a join");
+
+			whatToTest = "leave";
+
+			tresult = false;
+			pubnub2.UnsubscribeAll().Async((result, status) => {
+					Debug.Log("status.Error:" + status.Error);
+					tresult = !status.Error;
+				});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			Assert.True(tresult, "unsubscribe didn't return");
+			Assert.True(tLeaveResult, "subscribe didn't get a leave");
 			
 			pubnub.CleanUp();
 		}
