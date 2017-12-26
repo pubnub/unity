@@ -1,5 +1,12 @@
 --- 
 changelog: 
+   -
+    changes: 
+      - 
+        text: "Leave fixes"
+        type: improvement
+    date: Dec 26, 17
+    version: v4.0-beta2 
   -
     changes: 
       - 
