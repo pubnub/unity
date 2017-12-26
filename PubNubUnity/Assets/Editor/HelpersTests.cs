@@ -769,7 +769,7 @@ namespace PubNubAPI.Tests
             PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
             pnUnity.SubscriptionInstance.CleanUp();            
             List<ChannelEntity> lstCE= EditorCommon.CreateListOfChannelEntities(channelGroup, channel, false, false, ref pnLog);  
-            string ces = Helpers.GetNamesFromChannelEntities(lstCE);
+            string ces = Helpers.GetNamesFromChannelEntities(lstCE, false);
 
             bool ceFound = true;
             foreach(ChannelEntity ch in lstCE){

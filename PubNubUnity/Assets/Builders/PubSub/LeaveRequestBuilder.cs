@@ -43,8 +43,8 @@ namespace PubNubAPI
 
             if(string.IsNullOrEmpty(channels) && (string.IsNullOrEmpty(channelGroups) )){
                 Debug.Log("Both ChannelGroupsToLeave and ChannelsToLeave are empty, running unsubscribe all");
-                channelGroups = Helpers.GetNamesFromChannelEntities(this.PubNubInstance.SubscriptionInstance.AllChannelGroups);
-                channels = Helpers.GetNamesFromChannelEntities(this.PubNubInstance.SubscriptionInstance.AllChannels);
+                channelGroups = Helpers.GetNamesFromChannelEntities(this.PubNubInstance.SubscriptionInstance.AllChannelGroups, true);
+                channels = Helpers.GetNamesFromChannelEntities(this.PubNubInstance.SubscriptionInstance.AllChannels, false);
                 ChannelsToUse = Helpers.CreateListOfStringFromListOfChannelEntity(this.PubNubInstance.SubscriptionInstance.AllChannels);
                 ChannelGroupsToUse = Helpers.CreateListOfStringFromListOfChannelEntity(this.PubNubInstance.SubscriptionInstance.AllChannelGroups);
             }

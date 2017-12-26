@@ -227,7 +227,7 @@ namespace PubNubAPI
             return errorData;
         }        
 
-        public static string GetNamesFromChannelEntities (List<ChannelEntity> channelEntities){
+        public static string GetAllNamesFromChannelEntities (List<ChannelEntity> channelEntities, bool descriptive){
             StringBuilder sbCh = new StringBuilder ();
             StringBuilder sbChGrp = new StringBuilder ();
             if (channelEntities != null) {
@@ -252,7 +252,12 @@ namespace PubNubAPI
 
                 }
             }
-            return string.Format ("channel(s) = {0} and channelGroups(s) = {1}", sbCh.ToString(), sbChGrp.ToString());
+            if(descriptive){
+                return string.Format ("channel(s) = {0} and channelGroups(s) = {1}", sbCh.ToString(), sbChGrp.ToString());
+            } else {
+                return string.Format ("{0},{1}", sbCh.ToString(), sbChGrp.ToString());
+            }
+            
         }
 
         public static string JsonEncodePublishMsg (object originalMessage, string cipherKey, IJsonLibrary jsonPluggableLibrary, PNLoggingMethod pnLog)

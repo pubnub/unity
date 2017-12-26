@@ -439,7 +439,7 @@ namespace PubNubAPI
                 }
 
                 #if (ENABLE_PUBNUB_LOGGING)
-                this.PubNubInstance.PNLog.WriteToLog (string.Format ("MultiChannelSubscribeRequest: Building request for {0} with timetoken={1}", Helpers.GetNamesFromChannelEntities(channelEntities), lastTimetoken), PNLoggingMethod.LevelInfo);
+                this.PubNubInstance.PNLog.WriteToLog (string.Format ("MultiChannelSubscribeRequest: Building request for {0} with timetoken={1}", Helpers.GetAllNamesFromChannelEntities(channelEntities, true), lastTimetoken), PNLoggingMethod.LevelInfo);
                 #endif
                 // Build URL
 				string channelsJsonState = PubNubInstance.SubscriptionInstance.CompiledUserState;
@@ -506,7 +506,7 @@ namespace PubNubAPI
             } catch (Exception ex) {
                 Debug.Log("in  MultiChannelSubscribeRequest" + ex.ToString());
                 #if (ENABLE_PUBNUB_LOGGING)
-                this.PubNubInstance.PNLog.WriteToLog (string.Format ("MultiChannelSubscribeRequest: method:_subscribe \n channel={0} \n timetoken={1} \n Exception Details={2}", Helpers.GetNamesFromChannelEntities(channelEntities), timetoken.ToString (), ex.ToString ()), PNLoggingMethod.LevelError);
+                this.PubNubInstance.PNLog.WriteToLog (string.Format ("MultiChannelSubscribeRequest: method:_subscribe \n channel={0} \n timetoken={1} \n Exception Details={2}", Helpers.GetAllNamesFromChannelEntities(channelEntities, true), timetoken.ToString (), ex.ToString ()), PNLoggingMethod.LevelError);
                 #endif
                 //PubnubCallbacks.CallErrorCallback<T> (ex, channelEntities,
                   //  PubnubErrorCode.None, PubnubErrorSeverity.Critical, PubnubErrorLevel);
