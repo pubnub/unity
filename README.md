@@ -6,6 +6,8 @@
 ### Supports PC, Mac, Linux, iOS, Android, WebPlayer, Windows Store Universal 10 and WebGL
 
 ### Important changes from previous version
+* 4.0-beta3
+  * Windows Universal compatibility
 * 4.0-beta2
   * Leave Fix
 * 4.0-beta1

@@ -7,7 +7,7 @@ namespace PubNubAPI
     public class PubNubUnityBase
     {
         protected Counter publishMessageCounter;
-        private const string build = "4.0-beta2";
+        private const string build = "4.0-beta3";
         private string pnsdkVersion = string.Format ("PubNub-CSharp-Unity/{0}", build);
 
         public string Version {
