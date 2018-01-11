@@ -18,7 +18,7 @@ namespace PubNubAPI
                 return pnUnity.GameObjectRef;
             }
         }
-
+ 
         private void PubNubUnityInitializationAfterCleanup(){
             if(cleanedUp){
                 pnUnity = new PubNubUnity(PNConfig, gameObj, jsonLibrary);

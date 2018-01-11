@@ -2,6 +2,9 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
+/*#if NETFX_CORE
+using System.Reflection;
+#endif*/
 
 namespace PubNubAPI
 {
@@ -40,12 +43,17 @@ namespace PubNubAPI
             //TODO validate state here
             try{
                 if(UserState!=null){
+                    /*#if NETFX_CORE
+                    Type t = UserState.GetTypeInfo();
+                    #else
                     Type t = UserState.GetType();
+                    #endif    
+                    
                     bool isDict = t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Dictionary<,>);
                     if(!isDict){
                         PNStatus pnStatus = base.CreateErrorResponseFromMessage("State is not of type Dictionary<,>", null, PNStatusCategory.PNBadRequestCategory);
                         Callback(null, pnStatus);
-                    } else {
+                    } else {*/
                         //string userState = "";
 
                         if (CheckAndAddExistingUserState (
@@ -65,7 +73,7 @@ namespace PubNubAPI
                             PNStatus pnStatus = base.CreateErrorResponseFromMessage("State not changed", null, PNStatusCategory.PNUnknownCategory);
                             Callback(null, pnStatus);
                         }
-                    }
+                    //}
                 }
             } catch (Exception ex){
                 PNStatus pnStatus = base.CreateErrorResponseFromException(ex, null, PNStatusCategory.PNUnknownCategory);

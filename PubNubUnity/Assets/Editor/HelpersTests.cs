@@ -3,6 +3,9 @@ using PubNubAPI;
 using NUnit.Framework;
 using System.Text;
 using System.Collections.Generic;
+/*#if NETFX_CORE
+using System.Reflection;
+#endif*/
 
 namespace PubNubAPI.Tests
 {
@@ -769,7 +772,7 @@ namespace PubNubAPI.Tests
             PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
             pnUnity.SubscriptionInstance.CleanUp();            
             List<ChannelEntity> lstCE= EditorCommon.CreateListOfChannelEntities(channelGroup, channel, false, false, ref pnLog);  
-            string ces = Helpers.GetNamesFromChannelEntities(lstCE, false);
+            string ces = Helpers.GetAllNamesFromChannelEntities(lstCE, false);
 
             bool ceFound = true;
             foreach(ChannelEntity ch in lstCE){

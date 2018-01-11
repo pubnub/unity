@@ -4,6 +4,9 @@ using System.Collections;
 using System.Text;
 using System.Security.Cryptography;
 using System.Linq;
+/*#if NETFX_CORE
+using System.Reflection;
+#endif*/
 
 namespace PubNubAPI
 {
@@ -85,13 +88,20 @@ namespace PubNubAPI
             return false;
         }
 
-        public static bool IsDictionary(object o)
+        /*public static bool IsDictionary(object o)
         {
             if(o == null) return false;
+            #if NETFX_CORE
+            return o is IDictionary &&
+                o.GetTypeInfo().IsGenericType &&
+                o.GetTypeInfo().GetGenericTypeDefinition().IsAssignableFrom(typeof(Dictionary<,>));
+            #else
             return o is IDictionary &&
                 o.GetType().IsGenericType &&
                 o.GetType().GetGenericTypeDefinition().IsAssignableFrom(typeof(Dictionary<,>));
-        }
+            #endif
+            
+        }*/
 
         public static long ValidateTimetoken(string timetoken, bool raiseError){
             if(!string.IsNullOrEmpty(timetoken)){

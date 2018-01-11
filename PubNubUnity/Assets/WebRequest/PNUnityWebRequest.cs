@@ -964,6 +964,36 @@ namespace PubNubAPI
                         message = unityWebRequestWrapper.CurrentUnityWebRequest.downloadHandler.text;
                     }
 
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    this.PNLog.WriteToLog(string.Format("ProcessResponse: unityWebRequestWrapper.CurrentUnityWebRequest.isNetworkError {0}\n unityWebRequestWrapper.CurrentUnityWebRequest.isHttpError {1}", unityWebRequestWrapper.CurrentUnityWebRequest.isNetworkError, unityWebRequestWrapper.CurrentUnityWebRequest.isHttpError), PNLoggingMethod.LevelInfo);
+                    #endif
+
+#if (NETFX_CORE)
+#if (ENABLE_PUBNUB_LOGGING)
+                    this.PNLog.WriteToLog (string.Format ("ProcessResponse: WWW Sub NETFX_CORE {0}\n Message: {1}\n URL: {2}", unityWebRequestWrapper.CurrentRequestType.ToString (), unityWebRequestWrapper.CurrentUnityWebRequest.error, unityWebRequestWrapper.URL), PNLoggingMethod.LevelInfo);
+#endif
+                    if(!string.IsNullOrEmpty(unityWebRequestWrapper.CurrentUnityWebRequest.error)){
+                        message = string.Format ("{0}\"Error\": \"{1}\", \"Description\": {2}{3}", "{", unityWebRequestWrapper.CurrentUnityWebRequest.error, message, "}");
+                        isError = true;
+                    }
+#else
+                    if ((!unityWebRequestWrapper.CurrentUnityWebRequest.isNetworkError) 
+                        && (!unityWebRequestWrapper.CurrentUnityWebRequest.isHttpError))
+                    {
+#if (ENABLE_PUBNUB_LOGGING)
+                        this.PNLog.WriteToLog (string.Format ("ProcessResponse: WWW Sub {0}\n Message: {1}\n URL: {2}", unityWebRequestWrapper.CurrentRequestType.ToString (), unityWebRequestWrapper.CurrentUnityWebRequest.error, unityWebRequestWrapper.URL), PNLoggingMethod.LevelInfo);
+#endif
+                        isError = false;
+                        
+                    } else {
+#if (ENABLE_PUBNUB_LOGGING)
+                        this.PNLog.WriteToLog (string.Format ("ProcessResponse: WWW Sub {0}\n Error: {1},\n text: {2}\n URL: {3}", unityWebRequestWrapper.CurrentRequestType.ToString (), unityWebRequestWrapper.CurrentUnityWebRequest.error, message, unityWebRequestWrapper.URL), PNLoggingMethod.LevelInfo);
+#endif
+                        message = string.Format ("{0}\"Error\": \"{1}\", \"Description\": {2}{3}", "{", unityWebRequestWrapper.CurrentUnityWebRequest.error, message, "}");
+                        isError = true;
+                    }
+#endif
+
                     if((!unityWebRequestWrapper.CurrentUnityWebRequest.isNetworkError) 
                         && (!unityWebRequestWrapper.CurrentUnityWebRequest.isHttpError))
                     {
