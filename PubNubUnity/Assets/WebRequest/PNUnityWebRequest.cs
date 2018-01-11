@@ -993,22 +993,6 @@ namespace PubNubAPI
                         isError = true;
                     }
 #endif
-
-                    if((!unityWebRequestWrapper.CurrentUnityWebRequest.isNetworkError) 
-                        && (!unityWebRequestWrapper.CurrentUnityWebRequest.isHttpError))
-                    {
-                        #if (ENABLE_PUBNUB_LOGGING)
-                        this.PNLog.WriteToLog (string.Format ("ProcessResponse: WWW Sub {0}\n Message: {1}\n URL: {2}", unityWebRequestWrapper.CurrentRequestType.ToString (), unityWebRequestWrapper.CurrentUnityWebRequest.error, unityWebRequestWrapper.URL), PNLoggingMethod.LevelInfo);
-                        #endif
-                        isError = false;
-                        
-                    } else {
-                        #if (ENABLE_PUBNUB_LOGGING)
-                        this.PNLog.WriteToLog (string.Format ("ProcessResponse: WWW Sub {0}\n Error: {1},\n text: {2}\n URL: {3}", unityWebRequestWrapper.CurrentRequestType.ToString (), unityWebRequestWrapper.CurrentUnityWebRequest.error, message, unityWebRequestWrapper.URL), PNLoggingMethod.LevelInfo);
-                        #endif
-                        message = string.Format ("{0}\"Error\": \"{1}\", \"Description\": {2}{3}", "{", unityWebRequestWrapper.CurrentUnityWebRequest.error, message, "}");
-                        isError = true;
-                    } 
                     Debug.Log("message:" + message);
                     
                     if (unityWebRequestWrapper.CurrentRequestState != null) {
