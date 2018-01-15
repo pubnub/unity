@@ -1,8 +1,9 @@
 #! /bin/sh
 
 # Downloads
-echo 'Downloading Unity-2017.2 pkg:'
-curl --retry 5 -o Unity.pkg https://netstorage.unity3d.com/unity/46dda1414e51/MacEditorInstaller/Unity-2017.2.0f3.pkg
+echo 'Downloading Unity-2017.3.0f3 pkg:'
+#curl --retry 5 -o Unity.pkg https://netstorage.unity3d.com/unity/46dda1414e51/MacEditorInstaller/Unity-2017.2.0f3.pkg
+curl --retry 5 -o Unity.pkg https://netstorage.unity3d.com/unity/a9f86dcd79df/MacEditorInstaller/Unity-2017.3.0f3.pkg
 if [ $? -ne 0 ]; then { echo "Unity Download failed"; exit $?; } fi
 
 #echo 'Downloading iOS build support:'

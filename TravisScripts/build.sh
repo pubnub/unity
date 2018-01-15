@@ -50,38 +50,38 @@ if [ $rc0 -ne 0 ]; then { echo "Failed unit tests"; /Applications/Unity/Unity.ap
 
 
 ## Make the builds
-echo "Attempting build of ${UNITYCI_PROJECT_NAME} for Windows"
-/Applications/Unity/Unity.app/Contents/MacOS/Unity \
-	-batchmode \
-	-nographics \
-	-silent-crashes \
-	-logFile $(pwd)/unity.log \
-	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
-	-executeMethod "AutoBuilder.PerformStandaloneWindows64" \
-	-quit
+# echo "Attempting build of ${UNITYCI_PROJECT_NAME} for Windows"
+# /Applications/Unity/Unity.app/Contents/MacOS/Unity \
+# 	-batchmode \
+# 	-nographics \
+# 	-silent-crashes \
+# 	-logFile $(pwd)/unity.log \
+# 	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
+# 	-executeMethod "AutoBuilder.PerformStandaloneWindows64" \
+# 	-quit
 	
-	#-buildWindowsPlayer "$(pwd)/Build/windows/${UNITYCI_PROJECT_NAME}.exe" \
+# 	#-buildWindowsPlayer "$(pwd)/Build/windows/${UNITYCI_PROJECT_NAME}.exe" \
 	
 
 rc1=$?
-echo "Build logs (Windows)"
+# echo "Build logs (Windows)"
 #cat $(pwd)/unity.log
 
-echo "Attempting build of ${UNITYCI_PROJECT_NAME} for OSX"
-/Applications/Unity/Unity.app/Contents/MacOS/Unity \
-	-batchmode \
-	-nographics \
-	-silent-crashes \
-	-logFile $(pwd)/unity.log \
-	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
-	-executeMethod "AutoBuilder.PerformStandaloneOSXUniversal" \
-	-quit
+# echo "Attempting build of ${UNITYCI_PROJECT_NAME} for OSX"
+# /Applications/Unity/Unity.app/Contents/MacOS/Unity \
+# 	-batchmode \
+# 	-nographics \
+# 	-silent-crashes \
+# 	-logFile $(pwd)/unity.log \
+# 	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
+# 	-executeMethod "AutoBuilder.PerformStandaloneOSXUniversal" \
+# 	-quit
 	
 	#-buildOSXUniversalPlayer "$(pwd)/Build/osx/${UNITYCI_PROJECT_NAME}.app" \
 	
 rc2=$?
 echo "Build logs (OSX)"
-#cat $(pwd)/unity.log
+cat $(pwd)/unity.log
 
 # returning license
 echo "returning license"
