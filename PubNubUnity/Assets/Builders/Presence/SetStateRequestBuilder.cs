@@ -2,17 +2,12 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
-/*#if NETFX_CORE
-using System.Reflection;
-#endif*/
 
 namespace PubNubAPI
 {
     public class SetStateRequestBuilder: PubNubNonSubBuilder<SetStateRequestBuilder, PNSetStateResult>, IPubNubNonSubscribeBuilder<SetStateRequestBuilder, PNSetStateResult>
     {
         List<ChannelEntity> ChannelEntities = null;
-        //private List<string> ChannelsToUse { get; set;}
-        //private List<string> ChannelGroupsToUse { get; set;}
 
         private string uuid { get; set;}
         private Dictionary<string, object> UserState { get; set;}
@@ -40,40 +35,22 @@ namespace PubNubAPI
         public void Async(Action<PNSetStateResult, PNStatus> callback)
         {
             this.Callback = callback;
-            //TODO validate state here
             try{
                 if(UserState!=null){
-                    /*#if NETFX_CORE
-                    Type t = UserState.GetTypeInfo();
-                    #else
-                    Type t = UserState.GetType();
-                    #endif    
-                    
-                    bool isDict = t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Dictionary<,>);
-                    if(!isDict){
-                        PNStatus pnStatus = base.CreateErrorResponseFromMessage("State is not of type Dictionary<,>", null, PNStatusCategory.PNBadRequestCategory);
+                    if (CheckAndAddExistingUserState (
+                        ChannelsToUse, 
+                        ChannelGroupsToUse,
+                        UserState, 
+                        false,
+                        uuid, 
+                        this.PubNubInstance.PNConfig.UUID,
+                        out ChannelEntities
+                    )) {
+                        base.Async(this);
+                    } else {
+                        PNStatus pnStatus = base.CreateErrorResponseFromMessage("State not changed", null, PNStatusCategory.PNUnknownCategory);
                         Callback(null, pnStatus);
-                    } else {*/
-                        //string userState = "";
-
-                        if (CheckAndAddExistingUserState (
-                            ChannelsToUse, 
-                            ChannelGroupsToUse,
-                            UserState, 
-                            false,
-                            uuid, 
-                            this.PubNubInstance.PNConfig.UUID,
-                            //out userState, 
-                            out ChannelEntities
-                        )) {
-                            base.Async(this);
-
-                            //SharedSetUserState(ChannelsForState, ChannelGroupsForState, channelEntities, uuid, UserState);
-                        } else {
-                            PNStatus pnStatus = base.CreateErrorResponseFromMessage("State not changed", null, PNStatusCategory.PNUnknownCategory);
-                            Callback(null, pnStatus);
-                        }
-                    //}
+                    }
                 }
             } catch (Exception ex){
                 PNStatus pnStatus = base.CreateErrorResponseFromException(ex, null, PNStatusCategory.PNUnknownCategory);
@@ -99,19 +76,6 @@ namespace PubNubAPI
             if (string.IsNullOrEmpty (uuid)) {
                 uuid = this.PubNubInstance.PNConfig.UUID;
             }
-            //TODO add state to instance
-            /* Uri request = BuildRequests.BuildSetStateRequest(
-                channels,
-                channelGroups,
-                Helpers.BuildJsonUserState(ChannelEntities),
-                uuid,
-                this.PubNubInstance.PNConfig.UUID,
-                this.PubNubInstance.PNConfig.Secure,
-                this.PubNubInstance.PNConfig.Origin,
-                this.PubNubInstance.PNConfig.AuthKey,
-                this.PubNubInstance.PNConfig.SubscribeKey,
-                this.PubNubInstance.Version
-            ); */
             Uri request = BuildRequests.BuildSetStateRequest(
                 channels,
                 channelGroups,
@@ -168,14 +132,8 @@ namespace PubNubAPI
             UpdateOrAddUserStateOfEntities(channels, false, userState, edit, isForOtherUUID, ref channelEntities, ref stateChanged);
             UpdateOrAddUserStateOfEntities(channelGroups, true, userState, edit, isForOtherUUID, ref channelEntities, ref stateChanged);
 
-            //returnUserState = Helpers.BuildJsonUserState(channelEntities);
-
             return stateChanged;
         }
-
-        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
-            
-        // }
 
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             //{"status": 200, "message": "OK", "payload": {"channels": {"channel1": {"k": "v"}, "channel2": {}}}, "uuid": "pn-c5a12d424054a3688066572fb955b7a0", "service": "Presence"}
@@ -183,7 +141,6 @@ namespace PubNubAPI
             //TODO read all values.
             
             PNSetStateResult pnSetStateResult = new PNSetStateResult();
-            //pnGetStateResult
             
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
             PNStatus pnStatus = new PNStatus();

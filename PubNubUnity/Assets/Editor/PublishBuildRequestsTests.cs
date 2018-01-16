@@ -8,7 +8,6 @@ namespace PubNubAPI.Tests
     [TestFixture]
     public class PublishBuildRequestsTests
     {
-        //TODO: Add tests for post
         #if DEBUG   
         [Test]
         public void TestBuildPublishRequest ()

@@ -7,9 +7,6 @@ namespace PubNubAPI
 {
     public class GetStateRequestBuilder: PubNubNonSubBuilder<GetStateRequestBuilder, PNGetStateResult>, IPubNubNonSubscribeBuilder<GetStateRequestBuilder, PNGetStateResult>
     {
-        //private List<string> ChannelsToUse { get; set;}
-        //private List<string> ChannelGroupsToUse { get; set;}
-
         private string uuid { get; set;}
 
         public GetStateRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNGetStateOperation){
@@ -53,17 +50,6 @@ namespace PubNubAPI
                 channelGroups = String.Join(",", ChannelGroupsToUse.ToArray());
             }
 
-            /* Uri request = BuildRequests.BuildGetStateRequest(
-                channels,
-                channelGroups,
-                uuid,
-                this.PubNubInstance.PNConfig.UUID,
-                this.PubNubInstance.PNConfig.Secure,
-                this.PubNubInstance.PNConfig.Origin,
-                this.PubNubInstance.PNConfig.AuthKey,
-                this.PubNubInstance.PNConfig.SubscribeKey,
-                this.PubNubInstance.Version
-            ); */
             Uri request = BuildRequests.BuildGetStateRequest(
                 channels,
                 channelGroups,
@@ -73,15 +59,9 @@ namespace PubNubAPI
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }
 
-        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
-            
-        // }
-
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             //{"status": 200, "message": "OK", "payload": {"channels": {"channel1": {"k": "v"}, "channel2": {}}}, "uuid": "pn-c5a12d424054a3688066572fb955b7a0", "service": "Presence"}
 
-            //TODO read all values.
-            
             PNGetStateResult pnGetStateResult = new PNGetStateResult();
             
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;

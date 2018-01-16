@@ -159,7 +159,6 @@ namespace PubNubAPI
                 pnUnity.PNConfig.Origin,
                 (channels != null) ? string.Join(",", channels.ToArray()) : "null",
                 (channelGroups != null) ? string.Join(",", channelGroups.ToArray()) : "null",
-                //(clientRequest != null) ? clientRequest.ToString() : "null"
                 url
                 ), PNLoggingMethod.LevelInfo);
             #endif
@@ -376,11 +375,6 @@ namespace PubNubAPI
                 ChannelParameters cp = new ChannelParameters ();
                 cp.IsAwaitingConnectCallback = isAwaitingConnectCallback;
                 cp.UserState = userState;
-                //cp.TypeParameterType = typeof(T);
-
-                //cp.Callbacks = PubnubCallbacks.GetPubnubChannelCallback<T> (userCallback, connectCallback, errorCallback, 
-                  //  disconnectCallback, wildcardPresenceCallback);
-
                 ChannelEntity ce = new ChannelEntity (ci, cp);
 
                 return ce;
@@ -461,8 +455,6 @@ namespace PubNubAPI
                         null,
                         pnUnity
                     );
-                //throw ex;
-                //PubnubCallbacks.CallErrorCallback<object> (ex, channelEntities, PubnubErrorCode.None, PubnubErrorSeverity.Critical, errorLevel);
             }
             object decodeMessage = (decryptMessage == "**DECRYPT ERROR**") ? decryptMessage : pnUnity.JsonLibrary.DeserializeToObject (decryptMessage);
             return decodeMessage;
@@ -576,91 +568,7 @@ namespace PubNubAPI
 
             return subscribeMessages;
         }
-        /*internal static List<object> DecryptCipheredMessage (List<object> message, List<ChannelEntity> channelEntities, string cipherKey, IJsonPluggableLibrary jsonPluggableLibrary, PubnubErrorFilter.Level errorLevel)
-        {
-            List<object> returnMessage = new List<object> ();
 
-            PubnubCrypto aes = new PubnubCrypto (cipherKey);
-            var myObjectArray = (from item in message
-                select item as object).ToArray ();
-            IEnumerable enumerable = myObjectArray [0] as IEnumerable;
-
-            if (enumerable != null) {
-                List<object> receivedMsg = new List<object> ();
-                foreach (object element in enumerable) {
-                    receivedMsg.Add (DecodeMessage (aes, element, channelEntities, jsonPluggableLibrary, errorLevel));
-                }
-                returnMessage.Add (receivedMsg);
-            }
-            for (int index = 1; index < myObjectArray.Length; index++) {
-                returnMessage.Add (myObjectArray [index]);
-            }
-            return returnMessage;
-        }
-
-        internal static List<object> DecryptNonCipheredMessage (List<object> message)
-        {
-            List<object> returnMessage = new List<object> ();
-            var myObjectArray = (from item in message
-                select item as object).ToArray ();
-            IEnumerable enumerable = myObjectArray [0] as IEnumerable;
-            if (enumerable != null) {
-                List<object> receivedMessage = new List<object> ();
-                foreach (object element in enumerable) {
-                    receivedMessage.Add (element);
-                }
-                returnMessage.Add (receivedMessage);
-            }
-            for (int index = 1; index < myObjectArray.Length; index++) {
-                returnMessage.Add (myObjectArray [index]);
-            }
-            return returnMessage;
-        }
-
-        internal static List<object> DecodeDecryptLoop (List<object> message, List<ChannelEntity> channelEntities, string cipherKey, IJsonPluggableLibrary jsonPluggableLibrary, PubnubErrorFilter.Level errorLevel)
-        {
-            if (cipherKey.Length > 0) {
-                return DecryptCipheredMessage (message, channelEntities, cipherKey, jsonPluggableLibrary, errorLevel);
-            } else {
-                return DecryptNonCipheredMessage (message);
-            }
-        }  */  
-        /*public static KeyValuePair<object, object > Cast<K, V>(this KeyValuePair<K, V> kvp)
-        {
-            return new KeyValuePair<object, object>(kvp.Key, kvp.Value);
-        }
-
-        public static KeyValuePair<T, V> CastFrom<T, V>(object obj)
-        {
-            return (KeyValuePair<T, V>) obj;
-        }
-
-        public static KeyValuePair<object , object > CastFrom(object obj)
-        {
-            var type = obj.GetType();
-            if (type.IsGenericType)
-            {
-                if (type == typeof (KeyValuePair<,>))
-                {
-                    var key = type.GetProperty("Key");
-                    var value = type.GetProperty("Value");
-                    var keyObj = key.GetValue(obj, null);
-                    var valueObj = value.GetValue(obj, null);
-                    return new KeyValuePair<object, object>(keyObj, valueObj);
-                }
-            }
-            throw new ArgumentException(" ### -> public static KeyValuePair<object , object > CastFrom(Object obj) : Error : obj argument must be KeyValuePair<,>");
-        }*/
-
-        /*public static T ConvertValue<T,W>(W value) where W : IConvertible
-        {
-            return (T)Convert.ChangeType(value, typeof(T));
-        }
-
-        public static T ConvertValue<T>(string value)
-        {
-            return (T)Convert.ChangeType(value, typeof(T));
-        }*/
         #endregion
     }
 }

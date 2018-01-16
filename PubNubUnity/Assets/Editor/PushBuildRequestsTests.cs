@@ -27,12 +27,6 @@ namespace PubNubAPI.Tests
             TestBuildRegisterDevicePushRequestCommon (true, "", "pushToken", PNPushType.GCM);
         }
 
-        /*[Test]
-        public void TestBuildRegisterDevicePushRequestWNS ()
-        {
-            TestBuildRegisterDevicePushRequestCommon (true, "", "pushToken", PNPushType.WNS);
-        }*/
-
         [Test]
         public void TestBuildRegisterDevicePushRequestAPNSAuth ()
         {
@@ -50,12 +44,6 @@ namespace PubNubAPI.Tests
         {
             TestBuildRegisterDevicePushRequestCommon (true, "authKey", "pushToken", PNPushType.GCM);
         }
-
-        /*[Test]
-        public void TestBuildRegisterDevicePushRequestWNSAuth ()
-        {
-            TestBuildRegisterDevicePushRequestCommon (true, "authKey", "pushToken", PNPushType.WNS);
-        }*/
 
         [Test]
         public void TestBuildRegisterDevicePushRequestSSLAPNS ()
@@ -75,12 +63,6 @@ namespace PubNubAPI.Tests
             TestBuildRegisterDevicePushRequestCommon (false, "", "pushToken", PNPushType.GCM);
         }
 
-        /*[Test]
-        public void TestBuildRegisterDevicePushRequestSSLWNS ()
-        {
-            TestBuildRegisterDevicePushRequestCommon (false, "", "pushToken", PNPushType.WNS);
-        }*/
-
         [Test]
         public void TestBuildRegisterDevicePushRequestSSLAPNSAuth ()
         {
@@ -98,12 +80,6 @@ namespace PubNubAPI.Tests
         {
             TestBuildRegisterDevicePushRequestCommon (false, "authKey", "pushToken", PNPushType.GCM);
         }
-
-        /*[Test]
-        public void TestBuildRegisterDevicePushRequestSSLWNSAuth ()
-        {
-            TestBuildRegisterDevicePushRequestCommon (false, "authKey", "pushToken", PNPushType.WNS);
-        }*/
 
         public void TestBuildRegisterDevicePushRequestCommon(bool ssl, string authKey, string pushToken, PNPushType pushType){
             string channel = "push_channel";
@@ -162,12 +138,6 @@ namespace PubNubAPI.Tests
             TestBuildRemoveChannelPushRequestCommon (true, "", "pushToken", PNPushType.GCM);
         }
 
-        /*[Test]
-        public void TestBuildRemoveChannelPushRequestWNS ()
-        {
-            TestBuildRemoveChannelPushRequestCommon (true, "", "pushToken", PNPushType.WNS);
-        }*/
-
         [Test]
         public void TestBuildRemoveChannelPushRequestAPNSAuth ()
         {
@@ -185,12 +155,6 @@ namespace PubNubAPI.Tests
         {
             TestBuildRemoveChannelPushRequestCommon (true, "authKey", "pushToken", PNPushType.GCM);
         }
-
-        /*[Test]
-        public void TestBuildRemoveChannelPushRequestWNSAuth ()
-        {
-            TestBuildRemoveChannelPushRequestCommon (true, "authKey", "pushToken", PNPushType.WNS);
-        }*/
 
         [Test]
         public void TestBuildRemoveChannelPushRequestSSLAPNS ()
@@ -210,12 +174,6 @@ namespace PubNubAPI.Tests
             TestBuildRemoveChannelPushRequestCommon (false, "", "pushToken", PNPushType.GCM);
         }
 
-        /*[Test]
-        public void TestBuildRemoveChannelPushRequestSSLWNS ()
-        {
-            TestBuildRemoveChannelPushRequestCommon (false, "", "pushToken", PNPushType.WNS);
-        }*/
-
         [Test]
         public void TestBuildRemoveChannelPushRequestSSLAPNSAuth ()
         {
@@ -233,12 +191,6 @@ namespace PubNubAPI.Tests
         {
             TestBuildRemoveChannelPushRequestCommon (false, "authKey", "pushToken", PNPushType.GCM);
         }
-
-        /*[Test]
-        public void TestBuildRemoveChannelPushRequestSSLWNSAuth ()
-        {
-            TestBuildRemoveChannelPushRequestCommon (false, "authKey", "pushToken", PNPushType.WNS);
-        }*/
 
         public void TestBuildRemoveChannelPushRequestCommon(bool ssl, string authKey, string pushToken, PNPushType pushType){
             string channel = "push_channel";
@@ -296,12 +248,6 @@ namespace PubNubAPI.Tests
             TestBuildGetChannelsPushRequestCommon (true, "", "pushToken", PNPushType.GCM);
         }
 
-        /*[Test]
-        public void TestBuildGetChannelsPushRequestWNS ()
-        {
-            TestBuildGetChannelsPushRequestCommon (true, "", "pushToken", PNPushType.WNS);
-        }*/
-
         [Test]
         public void TestBuildGetChannelsPushRequestAPNSAuth ()
         {
@@ -319,12 +265,6 @@ namespace PubNubAPI.Tests
         {
             TestBuildGetChannelsPushRequestCommon (true, "authKey", "pushToken", PNPushType.GCM);
         }
-
-        /*[Test]
-        public void TestBuildGetChannelsPushRequestWNSAuth ()
-        {
-            TestBuildGetChannelsPushRequestCommon (true, "authKey", "pushToken", PNPushType.WNS);
-        }*/
 
         [Test]
         public void TestBuildGetChannelsPushRequestSSLAPNS ()
@@ -344,12 +284,6 @@ namespace PubNubAPI.Tests
             TestBuildGetChannelsPushRequestCommon (false, "", "pushToken", PNPushType.GCM);
         }
 
-        /*[Test]
-        public void TestBuildGetChannelsPushRequestSSLWNS ()
-        {
-            TestBuildGetChannelsPushRequestCommon (false, "", "pushToken", PNPushType.WNS);
-        }*/
-
         [Test]
         public void TestBuildGetChannelsPushRequestSSLAPNSAuth ()
         {
@@ -367,12 +301,6 @@ namespace PubNubAPI.Tests
         {
             TestBuildGetChannelsPushRequestCommon (false, "authKey", "pushToken", PNPushType.GCM);
         }
-
-        /*[Test]
-        public void TestBuildGetChannelsPushRequestSSLWNSAuth ()
-        {
-            TestBuildGetChannelsPushRequestCommon (false, "authKey", "pushToken", PNPushType.WNS);
-        }*/
 
         public void TestBuildGetChannelsPushRequestCommon(bool ssl, string authKey, string pushToken, PNPushType pushType){
             string uuid = "customuuid";
@@ -432,12 +360,6 @@ namespace PubNubAPI.Tests
             BuildUnregisterDevicePushRequestCommon (true, "", "pushToken", PNPushType.GCM);
         }
 
-        /*[Test]
-        public void BuildUnregisterDevicePushRequestWNS ()
-        {
-            BuildUnregisterDevicePushRequestCommon (true, "", "pushToken", PNPushType.WNS);
-        }*/
-
         [Test]
         public void BuildUnregisterDevicePushRequestAPNSAuth ()
         {
@@ -455,12 +377,6 @@ namespace PubNubAPI.Tests
         {
             BuildUnregisterDevicePushRequestCommon (true, "authKey", "pushToken", PNPushType.GCM);
         }
-
-        /*[Test]
-        public void BuildUnregisterDevicePushRequestWNSAuth ()
-        {
-            BuildUnregisterDevicePushRequestCommon (true, "authKey", "pushToken", PNPushType.WNS);
-        }*/
 
         [Test]
         public void BuildUnregisterDevicePushRequestSSLAPNS ()
@@ -480,12 +396,6 @@ namespace PubNubAPI.Tests
             BuildUnregisterDevicePushRequestCommon (false, "", "pushToken", PNPushType.GCM);
         }
 
-        /*[Test]
-        public void BuildUnregisterDevicePushRequestSSLWNS ()
-        {
-            BuildUnregisterDevicePushRequestCommon (false, "", "pushToken", PNPushType.WNS);
-        }*/
-
         [Test]
         public void BuildUnregisterDevicePushRequestSSLAPNSAuth ()
         {
@@ -503,12 +413,6 @@ namespace PubNubAPI.Tests
         {
             BuildUnregisterDevicePushRequestCommon (false, "authKey", "pushToken", PNPushType.GCM);
         }
-
-        /*[Test]
-        public void BuildUnregisterDevicePushRequestSSLWNSAuth ()
-        {
-            BuildUnregisterDevicePushRequestCommon (false, "authKey", "pushToken", PNPushType.WNS);
-        }*/
 
         public void BuildUnregisterDevicePushRequestCommon(bool ssl, string authKey, string pushToken, PNPushType pushType){
             string uuid = "customuuid";

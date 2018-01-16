@@ -10,42 +10,6 @@ namespace PubNubAPI
     public class BuildRequests
     {
 
-        #region "Build Request State"
-
-        /*internal static RequestState<T> BuildRequestState<T>(List<ChannelEntity> channelEntities, ResponseType responseType, 
-            bool reconnect, long id, bool timeout, long timetoken, Type typeParam, string uuid,
-            Action<T> userCallback, Action<PubnubClientError> errorCallback
-        ){
-            RequestState<T> requestState = new RequestState<T> ();
-            requestState.ChannelEntities = channelEntities;
-            requestState.RespType = responseType;
-            requestState.Reconnect = reconnect;
-            requestState.SuccessCallback = userCallback;
-            requestState.ErrorCallback = errorCallback;
-            requestState.ID = id;
-            requestState.Timeout = timeout;
-            requestState.Timetoken = timetoken;
-            requestState.TypeParameterType = typeParam;
-            requestState.UUID = uuid;
-            return requestState;
-        }
-
-        internal static RequestState<T> BuildRequestState<T>(List<ChannelEntity> channelEntities, ResponseType responseType, 
-            bool reconnect, long id, bool timeout, long timetoken, Type typeParam
-        ){
-            return BuildRequestState<T> (channelEntities, responseType, reconnect, id, timeout, timetoken,
-                typeParam, String.Empty, null, null);
-        }
-
-        internal static RequestState<T> BuildRequestState<T>(Action<T> userCallback, Action<PubnubClientError> errorCallback, ResponseType responseType, 
-            bool reconnect, long id, bool timeout, long timetoken, Type typeParam, string uuid
-        ){
-            return BuildRequestState<T> (null, responseType, reconnect, id, timeout, timetoken,
-                typeParam, uuid, userCallback, errorCallback);
-        }*/
-
-        #endregion
-
         #region "Build Requests"
         public static Uri BuildRegisterDevicePushRequest(string channel, PNPushType pushType, string pushToken, ref PubNubUnity pnInstance)
         {
@@ -141,75 +105,6 @@ namespace PubNubAPI
             return BuildRestApiRequest<Uri>(url, PNOperationType.PNRemoveAllPushNotificationsOperation, parameterBuilder.ToString (), ref pnInstance);
         }
 
-        //internal static Uri BuildPublishRequest (string channel, string message, bool storeInHistory, string metadata, uint messageCounter, int ttl, string uuid, bool ssl, string origin, string authenticationKey, string publishKey, string subscribeKey, string cipherKey, string secretKey, string pnSdkVersion)
-
-        /*internal static Uri BuildPublishRequestUsingPOST (string channel, string message, bool storeInHistory, string metadata, uint messageCounter, int ttl, bool usePost, ref PubNubUnity pnInstance, out string postData){
-            string uuid = pnInstance.PNConfig.UUID;
-            bool ssl = pnInstance.PNConfig.Secure;
-            string origin = pnInstance.PNConfig.Origin;
-            int pubnubPresenceHeartbeatInSeconds = pnInstance.PNConfig.PresenceTimeout;
-            string authenticationKey = pnInstance.PNConfig.AuthKey;
-            string pnsdkVersion = pnInstance.Version;
-            PNOperationType type = PNOperationType.PNPublishOperation;
-
-            StringBuilder postBuilder = new StringBuilder ();
-            postBuilder.AppendFormat ("seqn={0}", messageCounter.ToString ());
-            uuid = Utility.EncodeUricomponent (uuid, type, false, false);
-            postBuilder = AppendUUIDToURL(postBuilder, uuid, false);
-            
-            postBuilder.Append ((storeInHistory) ? "" : "&store=0");
-            if (ttl >= 0) {
-                postBuilder.AppendFormat ("&ttl={0}", ttl.ToString());
-            }
-
-            if (!string.IsNullOrEmpty (metadata) || metadata.Equals("\"\"")) {
-                postBuilder.AppendFormat ("&meta={0}", Utility.EncodeUricomponent (metadata, type, false, false));
-            }
-            postBuilder.AppendFormat("&message={0}", message);
-            postBuilder = AppendLatencyToURL(postBuilder, type, ref pnInstance.Latency);
-            postBuilder = AppendAuthKeyToURL(postBuilder, authenticationKey, type);
-            postBuilder = AppendPNSDKVersionToURL(postBuilder, pnsdkVersion, type);
-            
-            string signature = "0";
-            if (!string.IsNullOrEmpty(pnInstance.PNConfig.SecretKey) && (pnInstance.PNConfig.SecretKey.Length > 0)) {
-                StringBuilder stringToSign = new StringBuilder ();
-                stringToSign
-                    .Append (pnInstance.PNConfig.PublishKey)
-                    .Append ('/')
-                    .Append (pnInstance.PNConfig.SubscribeKey)
-                    .Append ('/')
-                    .Append (pnInstance.PNConfig.SecretKey)
-                    .Append ('/')
-                    .Append (channel)
-                    .Append ('/');
-
-                    //.Append (message); // 1
-
-                // Sign Message
-                signature = Utility.Md5 (stringToSign.ToString ());
-            }
-            List<string> postURL = new List<string> ();
-            postURL.Add ("publish");
-            postURL.Add (pnInstance.PNConfig.PublishKey);
-            postURL.Add (pnInstance.PNConfig.SubscribeKey);
-            postURL.Add (signature);
-            postURL.Add (channel);
-            postURL.Add ("0");
-            //postURL.Add (message);
-
-            StringBuilder sbUrl = new StringBuilder();
-            sbUrl = AddSSLAndEncodeURL<Uri>(postURL, type, ssl, origin, sbUrl);
-
-            Uri requestUri = new Uri (sbUrl.ToString ());
-            postData = postBuilder.ToString();
-
-            return requestUri;
-            Uri uri = BuildPublishRequest(channel, message, storeInHistory, metadata, messageCounter, ttl, true, ref pnInstance);
-            postData = message;
-
-            return uri;
-        }*/
-
         public static Uri BuildPublishRequest (string channel, string message, bool storeInHistory, string metadata, uint messageCounter, int ttl, bool usePost, ref PubNubUnity pnInstance)
         {
             StringBuilder parameterBuilder = new StringBuilder ();
@@ -300,8 +195,6 @@ namespace PubNubAPI
                 parameterBuilder.AppendFormat ("&end={0}", end.ToString ().ToLower ());
             }
 
-            //parameterBuilder.AppendFormat ("&uuid={0}", Utility.EncodeUricomponent (uuid, PNOperationType.PNFetchMessagesOperation, false, false));
-
             List<string> url = new List<string> ();
 
             url.Add ("v3");
@@ -331,8 +224,6 @@ namespace PubNubAPI
             if (end != -1) {
                 parameterBuilder.AppendFormat ("&end={0}", end.ToString ().ToLower ());
             }
-            //parameterBuilder.AppendFormat ("&uuid={0}", Utility.EncodeUricomponent (uuid, PNOperationType.PNHistoryOperation, false, false));
-
             List<string> url = new List<string> ();
 
             url.Add ("v2");
@@ -399,7 +290,6 @@ namespace PubNubAPI
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNTimeOperation, "", ref pnInstance);
         }
 
-        //internal static Uri BuildSetStateRequest (string channel, string channelGroup, string jsonUserState, string uuid, string sessionUUID, bool ssl, string origin, string authenticationKey, string subscribeKey, string pnSdkVersion)
         public static Uri BuildSetStateRequest (string channel, string channelGroup, string jsonUserState, string uuid, ref PubNubUnity pnInstance)
         {
             StringBuilder paramBuilder = new StringBuilder ();
@@ -424,7 +314,6 @@ namespace PubNubAPI
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNSetStateOperation, paramBuilder.ToString (), ref pnInstance);
         }
 
-        //internal static Uri BuildGetStateRequest (string channel, string channelGroup, string uuid, string sessionUUID, bool ssl, string origin, string authenticationKey, string subscribeKey, string pnSdkVersion)
         public static Uri BuildGetStateRequest (string channel, string channelGroup, string uuid, ref PubNubUnity pnInstance)
         {
             string parameters = "";
@@ -498,7 +387,6 @@ namespace PubNubAPI
         }
 
         public static Uri BuildSubscribeRequest (string channels, string channelGroups, string timetoken, string channelsJsonState, string region, string filterExpr, ref PubNubUnity pnInstance){
-        // internal static Uri BuildSubscribeRequest (string channels, string channelGroups, string timetoken, string channelsJsonState, string uuid, string region, string filterExpr, bool ssl, string origin, string authenticationKey, string subscribeKey, int presenceHeartbeat, string pnsdkVersion)     
             StringBuilder subscribeParamBuilder = new StringBuilder ();
             subscribeParamBuilder.AppendFormat ("&tt={0}", timetoken);
 
@@ -626,7 +514,6 @@ namespace PubNubAPI
                 }
             }
 
-            //return BuildRestApiRequest<Uri>(url, PNOperationType.PNChannelsForGroupOperation, uuid, ssl, origin, 0, authenticationKey, "", pnsdkVersion);
             return BuildRestApiRequest<Uri>(url, PNOperationType.PNChannelsForGroupOperation, "", ref pnInstance);
         }
 
@@ -747,7 +634,6 @@ namespace PubNubAPI
             {
                 query = query.Substring(query.IndexOf('?') + 1);
             }
-            //Dictionary<string, string> dictQuery = new Dictionary<string, string>();
             List<string> lstQuery = new List<string>();
             foreach (string qp in Regex.Split(query, "&")){
                 lstQuery.Add(qp);
@@ -755,26 +641,6 @@ namespace PubNubAPI
             }
             lstQuery.Sort();
 
-            
-            /*foreach (string vp in Regex.Split(query, "&"))
-            {
-                string[] pair = Regex.Split(vp, "=");
-                if (pair.Length == 2)
-                {
-                    dictQuery.Add(pair[0], pair[1]);
-                }
-                else
-                {
-                    dictQuery.Add(pair[0], string.Empty);
-                }
-            }
-            var list = dictQuery.Keys.ToList();
-            list.Sort();
-
-            foreach (var key in list)
-            {
-                Console.WriteLine("{0}: {1}", key, dictQuery[key]);
-            }*/
             return string.Join("&", lstQuery.ToArray());
         }
 
@@ -803,7 +669,6 @@ namespace PubNubAPI
             return "";
         }
         
-        //private static Uri BuildRestApiRequest<T> (List<string> urlComponents, PNOperationType type, string uuid, bool ssl, string origin, int pubnubPresenceHeartbeatInSeconds, string authenticationKey, string parameters, string pnsdkVersion, ref PNLatency latency)
         private static Uri BuildRestApiRequest<T> (List<string> urlComponents, PNOperationType type, string parameters, ref PubNubUnity pnInstance)
         {
             string uuid = pnInstance.PNConfig.UUID;

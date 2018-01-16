@@ -1034,7 +1034,6 @@ namespace PubNubAPI.Tests
             pnConfiguration.AuthKey = authKey;
             pnConfiguration.UUID = uuid;
 
-            //PubNub pubnub = new PubNub (pnConfiguration);
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
             
             string authKeyString = "";

@@ -16,7 +16,6 @@ namespace PubNubAPI
 
         void Start(){
             this.RunningRequestEnd += delegate(PNOperationType operationType) {
-                //Debug.Log(operationType + DateTime.Now.ToLongTimeString());
                 UpdateRunningRequests(true);
             };
         }
@@ -145,10 +144,7 @@ namespace PubNubAPI
 
                             break;
                     }
-                } /*else {
-                    Debug.Log(RequestQueue.Instance.HasItems.ToString() + runRequests.ToString());    
-                }*/
-                //this.PubNubInstance.Latency.Update();
+                } 
             } else {
                 Debug.Log("PN instance null");
             }

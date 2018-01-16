@@ -12,16 +12,4 @@ namespace PubNubAPI
         }
     }
 
-    /*public class PNHereNowChannelData {
-        public string ChannelName;
-        public int Occupancy;
-        public List<PNHereNowOccupantData> Occupants;
-    }
-
-    public class PNHereNowOccupantData {
-        public string UUID;
-        public object State;
-
-    }*/
-
 }

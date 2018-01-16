@@ -7,7 +7,6 @@ namespace PubNubAPI
 {
     public class AddChannelsToChannelGroupRequestBuilder: PubNubNonSubBuilder<AddChannelsToChannelGroupRequestBuilder, PNChannelGroupsAddChannelResult>, IPubNubNonSubscribeBuilder<AddChannelsToChannelGroupRequestBuilder, PNChannelGroupsAddChannelResult>
     {
-        //private List<string> ChannelsToUse { get; set;}
         private string ChannelGroupToAdd { get; set;}
 
         public AddChannelsToChannelGroupRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNAddChannelsToGroupOperation){
@@ -48,17 +47,6 @@ namespace PubNubAPI
             RequestState requestState = new RequestState ();
             requestState.OperationType = base.OperationType;
 
-            /* Uri request = BuildRequests.BuildAddChannelsToChannelGroupRequest(
-                ChannelsToUse.ToArray(), 
-                "", 
-                ChannelGroupToAdd,
-                this.PubNubInstance.PNConfig.UUID,
-                this.PubNubInstance.PNConfig.Secure,
-                this.PubNubInstance.PNConfig.Origin,
-                this.PubNubInstance.PNConfig.AuthKey,
-                this.PubNubInstance.PNConfig.SubscribeKey,
-                this.PubNubInstance.Version
-            ); */
             Uri request = BuildRequests.BuildAddChannelsToChannelGroupRequest(
                 ChannelsToUse.ToArray(), 
                 "", 
@@ -70,10 +58,6 @@ namespace PubNubAPI
             #endif
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }
-
-        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
-            
-        // }
 
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             //{"service" : "channel-registry","status"  : 200,"error"   : false,"message" : "OK"}

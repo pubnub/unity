@@ -45,19 +45,11 @@ namespace PubNubAPI
             this.CreateErrorResponse(pnStatusCategory, exception, showInCallback, pnRequestState);
         }
         internal void RaiseError(PNStatus pnStatus){    
-            //this.CreateErrorResponse(pnStatusCategory, exception, showInCallback, level, pnRequestState);
-            //if(showInCallback){
             Callback(null, pnStatus);
-            //}
         }
-        //protected RequestState ReqState { get; set;}
-
         protected abstract void CreatePubNubResponse(object deSerializedResult, RequestState pnRequestState);
 
         protected void CreateErrorResponse(PNStatusCategory pnStatusCategory, Exception exception, bool showInCallback, RequestState pnRequestState){
-            //PNStatus pnStatus;
-            //if(Helpers.CheckErrorTypeAndCallback(cea, this.PubNubInstance, out pnStatus)){
-
             PNStatus pnStatus = Helpers.CreatePNStatus(
                 pnStatusCategory,
                 exception.Message,
@@ -133,10 +125,6 @@ namespace PubNubAPI
 
             RequestQueue.Instance.Enqueue (Callback, OperationType, pnBuilder, this.PubNubInstance);
         }
-
-        /*protected void CreatePubNubResponse<T>(object deSerializedResult){
-
-        }*/
 
         protected void RunWebRequest(QueueManager qm, Uri request, RequestState requestState, int timeout, int pause, PubNubNonSubBuilder<U, V> pnBuilder){
             #if (ENABLE_PUBNUB_LOGGING)

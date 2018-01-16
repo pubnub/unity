@@ -44,17 +44,12 @@ namespace PubNubAPI
         }
 
         void InternetAvailableHandler(object sender, EventArgs ea){
-            /*PubnubCallbacks.FireErrorCallbacksForAllChannels<T> (cbMessage, cea.PubnubRequestState,
-                    PubnubErrorSeverity.Info, PubnubErrorCode.YesInternet, PubnubErrorLevel);*/
-
-            //MultiplexExceptionHandler (ResponseType.SubscribeV2, false, true);
             reconnect = true;
             internetStatus = true;
             Debug.Log("Internet available");
 
             if(
                 PubNubInstance.PNConfig.HeartbeatNotificationOption.Equals(PNHeartbeatNotificationOption.All)
-                //|| PubNubInstance.PNConfig.HeartbeatNotificationOption.Equals(PNHeartbeatNotificationOption.Failures)
             ){
                 PNStatus pnStatus = Helpers.CreatePNStatus(
                         PNStatusCategory.PNReconnectedCategory,
@@ -76,8 +71,6 @@ namespace PubNubAPI
         }
 
         void InternetDisconnectedHandler(object sender, EventArgs ea){
-            /*PubnubCallbacks.FireErrorCallbacksForAllChannels<T> (cbMessage, pubnubRequestState,
-                    PubnubErrorSeverity.Warn, PubnubErrorCode.NoInternetRetryConnect, PubnubErrorLevel);*/
             Debug.Log("Internet disconnected");
             AbortPreviousRequest(null);
             internetStatus = false;
@@ -102,11 +95,8 @@ namespace PubNubAPI
         }
 
         void RetriesExceededHandler(object sender, EventArgs ea){
-            //coroutine.BounceRequest<T> (CurrentRequestType.Subscribe, null, false);
             BounceRequest();
 
-                /*PubnubCallbacks.FireErrorCallbacksForAllChannels<T> (cbMessage, pubnubRequestState,
-                    PubnubErrorSeverity.Warn, PubnubErrorCode.NoInternetRetryConnect, PubnubErrorLevel);*/
             Debug.Log("Retries exceeded");  
             hbWorker.ResetInternetCheckSettings();
 
@@ -145,9 +135,6 @@ namespace PubNubAPI
 
                 CreateEventArgsAndRaiseEvent(pnStatus);
             }
-            /*Helpers.CheckSubscribedChannelsAndSendCallbacks<T> (PubNubInstance.SubscriptionInstance.AllSubscribedChannelsAndChannelGroups,
-                type, NetworkCheckMaxRetries, PubnubErrorLevel);*/
-                
         }
 
         ~SubscriptionWorker(){
@@ -182,38 +169,6 @@ namespace PubNubAPI
 
         private string region = "";
 
-        /*void Start(){
-            Debug.Log("SubscriptionWorker start");
-        }
-        void Update(){
-
-            Debug.Log("SubscriptionWorker Update");
-        }*/
-
-        //private static volatile SubscriptionWorker<U> instance;
-        //private static object syncRoot = new System.Object();
-
-        /*public static SubscriptionWorker<U> Instance
-        {
-            get 
-            {
-                if (instance == null) 
-                {
-                    lock (syncRoot) 
-                    {
-                        if (instance == null) {
-                            instance = new SubscriptionWorker<U> ();
-                            //instance.webRequest = PubNub.GameObjectRef.AddComponent<PNUnityWebRequest> ();
-                            //instance.webRequest.SubWebRequestComplete += instance.WebRequestCompleteHandler;
-
-                        }
-                    }
-                }
-
-                return instance;
-            }
-        }*/
-
         public void BounceRequest(){
             AbortPreviousRequest(null);
             ContinueToSubscribeRestOfChannels();
@@ -225,7 +180,6 @@ namespace PubNubAPI
             this.PubNubInstance.PNLog.WriteToLog(string.Format("AbortPreviousRequest: Aborting previous subscribe/presence requests having channel(s)={0} and ChannelGroup(s) = {1}", Helpers.GetNamesFromChannelEntities(existingChannels, false), Helpers.GetNamesFromChannelEntities(existingChannels, true)), PNLoggingMethod.LevelInfo);
             #endif
 
-            //webRequest.AbortRequest<U>(PNCurrentRequestType.Subscribe, null, false);
             webRequest.AbortRequest(webRequestId, false);
         }
 
@@ -235,38 +189,9 @@ namespace PubNubAPI
 
             if (subscribedChannels != null && subscribedChannels.Count > 0)
             {
-                //TODO
                 Debug.Log("ContinueToSubscribeRestOfChannels: " + subscribedChannels.Count());
                 hbWorker.ResetInternetCheckSettings();
                 RunSubscribeRequest (0, false);
-
-                //Modify the value for type ResponseType. Presence or Subscrie is ok, but sending the close value would make sense
-                /*if (this.PubNubInstance.SubscriptionInstance.HasPresenceChannels)
-                {
-                    type = PNOperationType.PNPresenceOperation;
-                }
-                else
-                {
-                    type = PNOperationType.PNSubscribeOperation;
-                }
-                //Continue with any remaining channels for subscribe/presence
-                RequestState<T> reqState = StoredRequestState.Instance.GetStoredRequestState (CurrentRequestType.Subscribe) as RequestState<T>;
-                if (reqState == null) {
-                    if (typeof(T).Equals (typeof(object))) {
-                        RequestState<object> reqStateStr = StoredRequestState.Instance.GetStoredRequestState (CurrentRequestType.Subscribe) as RequestState<object>;
-                        MultiChannelSubscribeRequest<string> (type, 0, false);
-                    } else if (typeof(T).Equals (typeof(string))) {
-                        RequestState<string> reqStateObj = StoredRequestState.Instance.GetStoredRequestState (CurrentRequestType.Subscribe) as RequestState<string>;
-                        MultiChannelSubscribeRequest<object> (type, 0, false);
-                    } else {
-                        #if (ENABLE_PUBNUB_LOGGING)
-                        this.PubNubInstance.PNLog.WriteToLog (string.Format ("DateTime {0}, ContinueToSubscribeRestOfChannels: reqState none matched", DateTime.Now.ToString ()), PNLoggingMethod.LevelInfo);
-                        #endif
-                    }
-                } else {
-                    RequestState<T> reqStateStr = StoredRequestState.Instance.GetStoredRequestState (CurrentRequestType.Subscribe) as RequestState<T>;
-                    MultiChannelSubscribeRequest<T> (type, 0, false);
-                }*/
             }
             else
             {
@@ -275,18 +200,12 @@ namespace PubNubAPI
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PubNubInstance.PNLog.WriteToLog(string.Format("ContinueToSubscribeRestOfChannels: All channels are Unsubscribed. Further subscription was stopped"), PNLoggingMethod.LevelInfo);
                 #endif
-                //ExceptionHandlers.MultiplexException -= HandleMultiplexException<T>;
             }
         }
 
-        //public void Add (PNOperationType pnOpType, object pnBuilder, RequestState<SubscribeRequestBuilder> reqState){
         public void Add (long timetokenToUse, List<ChannelEntity> existingChannels){
             //Abort existing request
             try{
-                //Debug.Log("in add:" + reqState.Reconnect + this.PubNubInstance.Test);
-                //SubscribeRequestBuilder subscribeBuilder = (SubscribeRequestBuilder)pnBuilder;
-
-                //reconnect = false;
                 Debug.Log("after add");
 
                 bool internetStatus = true;
@@ -301,56 +220,11 @@ namespace PubNubAPI
                     RunSubscribeRequest (0, false);
                 }
                 
-               
-                /*EventHandler handler = PubNub.SusbcribeCallback;
-                if (handler != null) {
-                    Debug.Log ("Raising SusbcribeEvent");
-                    handler (typeof(SubscriptionWorker), mea);
-                } else {
-                    Debug.Log ("SusbcribeEvent null");
-                }*/
             }catch (Exception ex){
                 Debug.Log (ex.ToString());
             }
 
         }
-
-        /*public void MultiChannelSubscribeInit<T> (PNOperationType respType, string channel, string channelGroup, long timetokenToUse
-            )
-        {
-            string[] rawChannels = channel.Split (',');
-            string[] rawChannelGroups = channelGroup.Split (',');
-
-            List<ChannelEntity> subscribedChannels = Subscription.Instance.AllSubscribedChannelsAndChannelGroups;
-
-            ResetInternetCheckSettings ();
-
-            List<ChannelEntity> newChannelEntities;
-            bool channelsOrChannelGroupsAdded = Helpers.RemoveDuplicatesCheckAlreadySubscribedAndGetChannels<T> (respType, null, rawChannels, rawChannelGroups,
-                PubnubErrorLevel, false, out newChannelEntities);
-
-            if ((channelsOrChannelGroupsAdded) && (internetStatus)) {
-                Subscription.Instance.Add (newChannelEntities);
-
-                #if (ENABLE_PUBNUB_LOGGING)
-                Helpers.LogChannelEntitiesDictionary ();
-                #endif
-
-                if (!timetokenToUse.Equals (0)) {
-                    lastSubscribeTimetokenForNewMultiplex = timetokenToUse;
-                } else if (subscribedChannels.Count > 0) {
-                    lastSubscribeTimetokenForNewMultiplex = lastSubscribeTimetoken;
-                }
-                AbortPreviousRequest<T> (subscribedChannels);
-                MultiChannelSubscribeRequest<T> (respType, 0, false);
-            }
-            #if (ENABLE_PUBNUB_LOGGING)
-            else {
-            this.PubNubInstance.PNLog.WriteToLog (string.Format ("MultiChannelSubscribeInit: channelsOrChannelGroupsAdded {1}, internet status {2}",
-             channelsOrChannelGroupsAdded.ToString (), internetStatus.ToString ()), PNLoggingMethod.LevelInfo, PubNubInstance.PNConfig.LogVerbosity);
-            }
-            #endif
-        }*/
 
         private bool CheckAllChannelsAreUnsubscribed()
         {
@@ -358,7 +232,6 @@ namespace PubNubAPI
             {
                 hbWorker.StopHeartbeat();
                 phbWorker.StopPresenceHeartbeat();
-                // ExceptionHandlers.MultiplexException -= HandleMultiplexException<T>;
 
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PubNubInstance.PNLog.WriteToLog(string.Format("CheckAllChannelsAreUnsubscribed: All channels are Unsubscribed. Further subscription was stopped"), PNLoggingMethod.LevelInfo);
@@ -460,46 +333,15 @@ namespace PubNubAPI
                     filterExpr,
                     ref this.PubNubInstance
                 );
-                /*Uri requestUrl = BuildRequests.BuildSubscribeRequest (
-                    channels,
-                    channelGroups, 
-                    lastTimetoken.ToString(), 
-                    channelsJsonState,
-                    this.PubNubInstance.PNConfig.UUID, 
-                    region,
-                    filterExpr, 
-                    true, 
-                    PubNubInstance.PNConfig.Origin, 
-                    this.PubNubInstance.PNConfig.AuthKey, 
-                    PubNubInstance.PNConfig.SubscribeKey, 
-                    this.PubNubInstance.PNConfig.PresenceTimeout,
-                    PubNubInstance.Version
-                );*/
-                
-                /*Uri requestUrl = BuildRequests.BuildMultiChannelSubscribeRequest (channels,
-                    channelGroups, lastTimetoken.ToString(), channelsJsonState, this.SessionUUID, this.Region,
-                    filterExpr, this.ssl, this.Origin, authenticationKey, this.subscribeKey, this.PresenceHeartbeat);*/
 
-
-                //RequestState<T> pubnubRequestState = BuildRequests.BuildRequestState<T> (channelEntities, type, reconnect,
-                    //0, false, Convert.ToInt64 (timetoken.ToString ()), typeof(T));
-                // Wait for message
-                //ExceptionHandlers.MultiplexException += HandleMultiplexException<T>;
-
-                //UrlProcessRequest<T> (requestUrl, pubnubRequestState);
                 Debug.Log ("RunSubscribeRequest " + requestUrl.OriginalString);
 
-                //RequestState<SubscribeEnvelope> requestState = new RequestState<SubscribeEnvelope> ();
                 RequestState requestState = new RequestState ();
-                //requestState.ChannelEntities = channelEntities;
                 requestState.OperationType = PNOperationType.PNSubscribeOperation;
                 requestState.URL = requestUrl.OriginalString; 
                 requestState.Timeout = PubNubInstance.PNConfig.SubscribeTimeout;
                 requestState.Pause = 0;
                 requestState.Reconnect = reconnect;
-                //requestState.ChannelEntities = channelEntities;
-
-                //PNCallback<T> timeCallback = new PNTimeCallback<T> (callback);
                 //http://ps.pndsn.com/v2/presence/sub-key/sub-c-5c4fdcc6-c040-11e5-a316-0619f8945a4f/uuid/UUID_WhereNow?pnsdk=PubNub-Go%2F3.14.0&uuid=UUID_WhereNow
                 webRequestId = webRequest.Run(requestState);
 
@@ -508,9 +350,6 @@ namespace PubNubAPI
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PubNubInstance.PNLog.WriteToLog (string.Format ("MultiChannelSubscribeRequest: method:_subscribe \n channel={0} \n timetoken={1} \n Exception Details={2}", Helpers.GetAllNamesFromChannelEntities(channelEntities, true), timetoken.ToString (), ex.ToString ()), PNLoggingMethod.LevelError);
                 #endif
-                //PubnubCallbacks.CallErrorCallback<T> (ex, channelEntities,
-                  //  PubnubErrorCode.None, PubnubErrorSeverity.Critical, PubnubErrorLevel);
-
                 this.RunSubscribeRequest (timetoken, false);
             }
         }
@@ -561,134 +400,39 @@ namespace PubNubAPI
             else {
                 //do nothing. keep last subscribe token
             }
-            
-            /*if (requestState.Reconnect) {
-                if (enableResumeOnReconnect) {
-                    //do nothing. keep last subscribe token
-                }
-                else {
-                    lastSubscribeTimetoken = receivedTimetoken;
-                }
-            }*/
         }
 
-        //private void  SubscribePresenceHanlder (CustomEventArgs<U> cea)
         private void  SubscribePresenceHanlder (CustomEventArgs cea)
         {
-            //Debug.Log("in WebRequestCompleteHandler " + typeof(U));
+            Debug.Log("WebRequestCompleteHandler FireEvent");
+            SubscribeEnvelope resultSubscribeEnvelope = null;
+            string jsonString = cea.Message;
+            if (!jsonString.Equals("[]")) {
+                resultSubscribeEnvelope = ParseReceiedJSONV2 (jsonString);
+            
+                switch (cea.PubNubRequestState.OperationType) {
+                case PNOperationType.PNSubscribeOperation:
+                case PNOperationType.PNPresenceOperation:
+                    ProcessResponse (ref resultSubscribeEnvelope, cea.PubNubRequestState);
+                    if ((resultSubscribeEnvelope != null) && (resultSubscribeEnvelope.TimetokenMeta != null)) {
+                        ParseReceiedTimetoken (reconnect, resultSubscribeEnvelope.TimetokenMeta.Timetoken);
+                        this.region = resultSubscribeEnvelope.TimetokenMeta.Region;
 
-            //try {
-                
-                //if ((cea != null) && (cea.CurrRequestType.Equals(PNCurrentRequestType.Subscribe))) {
-                    Debug.Log("WebRequestCompleteHandler FireEvent");
-                    SubscribeEnvelope resultSubscribeEnvelope = null;
-                    string jsonString = cea.Message;
-                    if (!jsonString.Equals("[]")) {
-                        resultSubscribeEnvelope = ParseReceiedJSONV2 (jsonString);
-                    
-                    //resultSubscribeEnvelope.Messages
-                        switch (cea.PubNubRequestState.OperationType) {
-                        case PNOperationType.PNSubscribeOperation:
-                        case PNOperationType.PNPresenceOperation:
-                            ProcessResponse (ref resultSubscribeEnvelope, cea.PubNubRequestState);
-                            if ((resultSubscribeEnvelope != null) && (resultSubscribeEnvelope.TimetokenMeta != null)) {
-                                ParseReceiedTimetoken (reconnect, resultSubscribeEnvelope.TimetokenMeta.Timetoken);
-                                this.region = resultSubscribeEnvelope.TimetokenMeta.Region;
-
-                                RunSubscribeRequest (resultSubscribeEnvelope.TimetokenMeta.Timetoken, false);
-                            }
-
-                            else {
-                                #if (ENABLE_PUBNUB_LOGGING)
-                                this.PubNubInstance.PNLog.WriteToLog (string.Format ("ResponseCallbackNonErrorHandler ERROR: Couldn't extract timetoken, initiating fresh subscribe request. \nJSON response:\n {0}", jsonString), PNLoggingMethod.LevelError);
-                                #endif
-                                RunSubscribeRequest (0, false);
-                            }
-                            Debug.Log("WebRequestCompleteHandler ");
-                            break;
-                        default:
-                            break;
-                        }
-                    }
-                    
-                    //cea.PubnubRequestState.ChannelEntities
-                    //pns.AffectedChannels = rawChannels;
-                    //pns.AffectedChannelGroups = rawChannelGroups;
-
-                    //PNMessageResult pnmr = new PNMessageResult ("a", "b", "p", 11232234, 13431241234, null, "");
-
-                    //PNPresenceEventResult pnper = new PNPresenceEventResult ("a", "b", "join", 11232234, 13431241234, null, null, "", 1, "");
-
-                    
-                    //TODO identify from T instead of request state
-                    /*RequestState<T> requestState = cea.PubnubRequestState;        
-                    Debug.Log ("inCoroutineCompleteHandler " + requestState.RespType);
-                    switch(requestState.RespType){
-                    case PNOperationType.PNSubscribeOperation:*/
-                        //PNTimeCallback<T> timeCallback = new PNTimeCallback<T> ();
-
-                    /*PNMessageResult pnMessageResult = new PNMessageResult();
-                    pnMessageResult.Channel = cea.Message;
-                        PNStatus pnStatus = new PNStatus();
-                        pnStatus.Error = false;
-                        /*if (pnTimeResult is T) {
-                        //return (T)pnTimeResult;
-                        //Callback((T)pnTimeResult, pnStatus);
-                        } else {*/
-                        /*try {
-                            //return (T)Convert.ChangeType(pnTimeResult, typeof(T));
-                            Debug.Log ("Callback");
-                        Callback((SubscribeBuilder)Convert.ChangeType(pnTimeResult, typeof(SubscribeBuilder)), pnStatus);
-
-                            Debug.Log ("After Callback");
-                        } catch (InvalidCastException ice) {
-                            //return default(T);
-                            Debug.Log (ice.ToString());
-                            throw ice;
-                        }
-                        //}
-
-                        //T pnTimeResult2 = (T)pnTimeResult as object;
-                        //Callback(pnTimeResult2, pnStatus);
-                        //PNTimeResult pnTimeResult2 = (T)pnTimeResult;
-                        //timeCallback.OnResponse(pnTimeResult, pnStatus);
-
-                        /*if (cea.PubnubRequestState != null) {
-                        ProcessCoroutineCompleteResponse<T> (cea);
-                        }*/
-                       /* break;
-                    
-                    default:
-                        Debug.Log ("default");
-                        break;
+                        RunSubscribeRequest (resultSubscribeEnvelope.TimetokenMeta.Timetoken, false);
                     }
 
-                    #if (ENABLE_PUBNUB_LOGGING)
                     else {
-                    this.PubNubInstance.PNLog.WriteToLog (string.Format ("CoroutineCompleteHandler: PubnubRequestState null", DateTime.Now.ToString ()), PNLoggingMethod.LevelError);
+                        #if (ENABLE_PUBNUB_LOGGING)
+                        this.PubNubInstance.PNLog.WriteToLog (string.Format ("ResponseCallbackNonErrorHandler ERROR: Couldn't extract timetoken, initiating fresh subscribe request. \nJSON response:\n {0}", jsonString), PNLoggingMethod.LevelError);
+                        #endif
+                        RunSubscribeRequest (0, false);
                     }
-                    #endif*/
-                //}
-                //#if (ENABLE_PUBNUB_LOGGING)
-                /*else {
-                    //this.PubNubInstance.PNLog.WriteToLog 
-                    Debug.Log(string.Format ("CoroutineCompleteHandler: cea null"));//, PNLoggingMethod.LevelError);
-                }*/
-                //#endif
-            /*} catch (Exception ex) {
-                Debug.Log (ex.ToString());
-                #if (ENABLE_PUBNUB_LOGGING)
-                this.PubNubInstance.PNLog.WriteToLog (string.Format ("CoroutineCompleteHandler: Exception={0}",  ex.ToString ()), PNLoggingMethod.LevelError);
-                #endif
-                if(cea!=null){
-                    ExceptionHandler(cea.PubNubRequestState);
-                } else {
-                    ExceptionHandler(null);
+                    Debug.Log("WebRequestCompleteHandler ");
+                    break;
+                default:
+                    break;
                 }
-
-                //ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (ex.Message, cea.PubnubRequestState,
-                //  false, false, PubnubErrorLevel);
-            }*/
+            }
         }
 
         internal void ProcessResponse (ref SubscribeEnvelope resultSubscribeEnvelope, RequestState pnRequestState)
@@ -713,11 +457,8 @@ namespace PubNubAPI
             if(count > 0){
                 bool updateIsAwaitingConnectCallback = false;
                 for (int i=0; i<count; i++){
-                //foreach(ChannelEntity ce in PubNubInstance.SubscriptionInstance.ChannelsAndChannelGroupsAwaitingConnectCallback){
                     ChannelEntity ce = PubNubInstance.SubscriptionInstance.ChannelsAndChannelGroupsAwaitingConnectCallback[i];
                     updateIsAwaitingConnectCallback = true;
-                    //if(ce.ChannelID.IsPresenceChannel){
-                        //Send presence channel conneted status
                     PNStatus pnStatus = Helpers.CreatePNStatus(
                         PNStatusCategory.PNConnectedCategory,
                         "",
@@ -730,9 +471,6 @@ namespace PubNubAPI
                     );
 
                     CreateEventArgsAndRaiseEvent(pnStatus);
-                    //} else {
-                        //Send channel conneted status
-                    //}
                 }
                 if (updateIsAwaitingConnectCallback) {
                     PubNubInstance.SubscriptionInstance.UpdateIsAwaitingConnectCallbacksOfEntity (PubNubInstance.SubscriptionInstance.ChannelsAndChannelGroupsAwaitingConnectCallback, false);
@@ -742,95 +480,30 @@ namespace PubNubAPI
         }
 
         internal void FindChannelEntityAndCallback (SubscribeMessage subscribeMessage, ChannelIdentity ci){
-            /*ChannelEntity channelEntity = PubNubInstance.SubscriptionInstance.AllSubscribedChannelsAndChannelGroups.Find(x => x.ChannelID.Equals(ci));
-            if (channelEntity != null) {
-                #if (ENABLE_PUBNUB_LOGGING)
-                this.PubNubInstance.PNLog.WriteToLog(string.Format("FindChannelEntityAndCallback: \n ChannelEntity : {0}  cg?={1} ispres?={2}", channelEntity.ChannelID.ChannelOrChannelGroupName, channelEntity.ChannelID.IsChannelGroup.ToString(), channelEntity.ChannelID.IsPresenceChannel.ToString()), PNLoggingMethod.LevelInfo);
-                #endif*/
+            bool isPresenceChannel  = Utility.IsPresenceChannel(subscribeMessage.Channel);
 
-                //PubnubChannelCallback<T> channelCallbacks = ce.ChannelParams.Callbacks as PubnubChannelCallback<T>;
-                bool isPresenceChannel  = Utility.IsPresenceChannel(subscribeMessage.Channel);
+            PNStatus pns = new PNStatus ();
+            pns.Error = false;
+            SusbcribeEventEventArgs mea = new SusbcribeEventEventArgs();
+            mea.Status = pns;
 
-                //#if (PUBNUB_PS_V2_RESPONSE)
-                /*object messageResult;
-                if(isPresenceChannel)
-                {
-                    PNPresenceEventResult subMessageResult; 
-                    CreatePNPresenceEventResult(subscribeMessage, out subMessageResult);
-                    messageResult = subMessageResult;
-                } else {
-                    PNMessageResult subMessageResult; 
-                    CreatePNMessageResult(subscribeMessage, out subMessageResult);
-                    messageResult = subMessageResult;
-                }*/
-                /*#else
-                List<object> itemMessage;
-                AddMessageToListV2(cipherKey, jsonPluggableLibrary, subscribeMessage, ce, out itemMessage);
-                #endif*/
-                PNStatus pns = new PNStatus ();
-                pns.Error = false;
-                SusbcribeEventEventArgs mea = new SusbcribeEventEventArgs();
-                mea.Status = pns;
+            if (((subscribeMessage.SubscriptionMatch.Contains (".*")) && isPresenceChannel) || (isPresenceChannel)){
+                Debug.Log("Raising presence message event ");
+                PNPresenceEventResult subMessageResult; 
+                CreatePNPresenceEventResult(subscribeMessage, out subMessageResult);
+                mea.PresenceEventResult = subMessageResult;
+                PubNubInstance.RaiseEvent (mea);
+            } else {
+                PNMessageResult subMessageResult; 
+                CreatePNMessageResult(subscribeMessage, out subMessageResult);
+                Debug.Log("Raising message event ");
+                if(!string.IsNullOrEmpty(this.PubNubInstance.PNConfig.CipherKey) && (this.PubNubInstance.PNConfig.CipherKey.Length > 0)){
+                    subMessageResult.Payload = Helpers.DecodeMessage(PubNubInstance.PNConfig.CipherKey, subMessageResult.Payload, PNOperationType.PNSubscribeOperation, ref this.PubNubInstance);
+                } 
+                mea.MessageResult = subMessageResult;
+                PubNubInstance.RaiseEvent (mea);
 
-                if (((subscribeMessage.SubscriptionMatch.Contains (".*")) && isPresenceChannel) || (isPresenceChannel)){
-                    /*#if (ENABLE_PUBNUB_LOGGING)
-                    this.PubNubInstance.PNLog.WriteToLog(string.Format("FindChannelEntityAndCallback: Wildcard match ChannelEntity : {0} ", channelEntity.ChannelID.ChannelOrChannelGroupName), PNLoggingMethod.LevelInfo);
-                    #endif*/
-                    Debug.Log("Raising presence message event ");
-                    PNPresenceEventResult subMessageResult; 
-                    CreatePNPresenceEventResult(subscribeMessage, out subMessageResult);
-                    mea.PresenceEventResult = subMessageResult;
-                    PubNubInstance.RaiseEvent (mea);
-                    /*#if (PUBNUB_PS_V2_RESPONSE)
-                    PubnubCallbacks.GoToCallback<T>(messageResult, channelCallbacks.WildcardPresenceCallback, jsonPluggableLibrary);
-                    #else
-                    PubnubCallbacks.GoToCallback<T> (itemMessage, channelCallbacks.WildcardPresenceCallback, jsonPluggableLibrary);
-                    #endif*/
-                } else {
-                    PNMessageResult subMessageResult; 
-                    CreatePNMessageResult(subscribeMessage, out subMessageResult);
-                    Debug.Log("Raising message event ");
-                    if(!string.IsNullOrEmpty(this.PubNubInstance.PNConfig.CipherKey) && (this.PubNubInstance.PNConfig.CipherKey.Length > 0)){
-                        subMessageResult.Payload = Helpers.DecodeMessage(PubNubInstance.PNConfig.CipherKey, subMessageResult.Payload, PNOperationType.PNSubscribeOperation, ref this.PubNubInstance);
-                    } 
-                    mea.MessageResult = subMessageResult;
-                    PubNubInstance.RaiseEvent (mea);
-                    /*if(channelCallbacks!=null){
-                        #if (PUBNUB_PS_V2_RESPONSE)
-                            //PubnubCallbacks.GoToCallback<T>(messageResult, channelCallbacks.SuccessCallback, jsonPluggableLibrary);
-                        #else
-                            //PubnubCallbacks.GoToCallback<T> (itemMessage, channelCallbacks.SuccessCallback, jsonPluggableLibrary);
-                        #endif
-                    }else{
-                        #if (ENABLE_PUBNUB_LOGGING)
-                        this.PubNubInstance.PNLog.WriteToLog(string.Format("DateTime {0}, FindChannelEntityAndCallback: channelCallbacks null ", DateTime.Now.ToString()
-                        ), PNLoggingMethod.LevelInfo);
-                        #endif
-                    }*/
-                }
-                //Debug.Log("cea"+ cea.Message);
-                
-                
-                /*mea.pnMessageResult = pnmr;
-                mea.pnPresenceEventResult = pnper;*/
-                
-
-                
-
-            /*}
-            #if (ENABLE_PUBNUB_LOGGING)
-            else {
-                StringBuilder sbChannelEntity = new StringBuilder();
-                foreach( ChannelEntity channelEntity in channelEntity){
-                    sbChannelEntity.AppendFormat("ChannelEntity : {0} cg?={1} ispres?={2}", channelEntity.ChannelID.ChannelOrChannelGroupName,
-                        channelEntity.ChannelID.IsChannelGroup.ToString(),
-                        channelEntity.ChannelID.IsPresenceChannel.ToString()
-                    );
-                }
-                this.PubNubInstance.PNLog.WriteToLog(string.Format("FindChannelEntityAndCallback: ChannelEntity : null ci.name {0} \nChannelEntities: \n {1}", ci.ChannelOrChannelGroupName, sbChannelEntity.ToString()), PNLoggingMethod.LevelInfo);
             }
-            #endif*/
-
         }
 
         internal void ResponseToUserCallbackForSubscribe(List<SubscribeMessage> subscribeMessages)
@@ -904,69 +577,7 @@ namespace PubNubAPI
             }
         }
 
-
-        /*private void RetryLoop<T> (RequestState<T> pubnubRequestState)
-        {
-            internetStatus = false;
-            retryCount++;
-            if (retryCount <= NetworkCheckMaxRetries) {
-                string cbMessage = string.Format ("Internet Disconnected, retrying. Retry count {0} of {1}",
-                    retryCount.ToString (), NetworkCheckMaxRetries);
-                #if (ENABLE_PUBNUB_LOGGING)
-                this.PubNubInstance.PNLog.WriteToLog (string.Format("RetryLoop: {1}",  cbMessage), PNLoggingMethod.LevelError);
-                #endif
-                PubnubCallbacks.FireErrorCallbacksForAllChannels<T> (cbMessage, pubnubRequestState,
-                    PubnubErrorSeverity.Warn, PubnubErrorCode.NoInternetRetryConnect, PubnubErrorLevel);
-
-            } else {
-                retriesExceeded = true;
-                string cbMessage = string.Format ("Internet Disconnected. Retries exceeded {0}. Unsubscribing connected channels.",
-                    NetworkCheckMaxRetries);
-                #if (ENABLE_PUBNUB_LOGGING)
-                this.PubNubInstance.PNLog.WriteToLog (string.Format("RetryLoop: {1}",  cbMessage), PNLoggingMethod.LevelError);
-                #endif
-
-                //stop heartbeat.
-                StopHeartbeat<T>();
-                //reset internetStatus
-                ResetInternetCheckSettings();
-
-                coroutine.BounceRequest<T> (CurrentRequestType.Subscribe, null, false);
-
-                PubnubCallbacks.FireErrorCallbacksForAllChannels<T> (cbMessage, pubnubRequestState,
-                    PubnubErrorSeverity.Warn, PubnubErrorCode.NoInternetRetryConnect, PubnubErrorLevel);
-
-
-                MultiplexExceptionHandler<T> (ResponseType.SubscribeV2, true, false);
-            }
-        }*/
-
         #region "Heartbeats"
-
-        /*void StopHeartbeat ()
-        {
-            #if (ENABLE_PUBNUB_LOGGING)
-            this.PubNubInstance.PNLog.WriteToLog (string.Format ("DateTime {0}, Stopping Heartbeat ", DateTime.Now.ToString ()), PNLoggingMethod.LevelInfo);
-            #endif
-            keepHearbeatRunning = false;
-            isHearbeatRunning = false;
-            hbWorker.StopHeartbeat();
-            //webRequest.HeartbeatCoroutineComplete -= CoroutineCompleteHandler<PNOperationType.PNHeartbeatOperation>;
-            //webRequest.AbortRequest<> (CurrentRequestType.Heartbeat, null, false);
-        }
-
-        void StopPresenceHeartbeat ()
-        {
-            #if (ENABLE_PUBNUB_LOGGING)
-            this.PubNubInstance.PNLog.WriteToLog (string.Format ("DateTime {0}, Stopping PresenceHeartbeat ", DateTime.Now.ToString ()), PNLoggingMethod.LevelInfo);
-            #endif
-            keepPresenceHearbeatRunning = false;
-            isPresenceHearbeatRunning = false;
-
-            phbWorker.StopPresenceHeartbeat();
-            //webRequest.PresenceHeartbeatCoroutineComplete -= CoroutineCompleteHandler<T>;
-            //webRequest.AbortRequest<> (CurrentRequestType.PresenceHeartbeat, null, false);
-        }*/
 
         public void CreateEventArgsAndRaiseEvent(PNStatus pnStatus){
             SusbcribeEventEventArgs mea = new SusbcribeEventEventArgs();
@@ -1028,40 +639,8 @@ namespace PubNubAPI
             
         }
 
-        /*private void HandleMultiplexException<T> (object sender, EventArgs ea)
-        {
-            ExceptionHandlerEventArgs<T> mea = ea as ExceptionHandlerEventArgs<T>;
-            ExceptionHandler (mea.reconnectMaxTried);
-        }*/
-
-        /*private void ProcessCoroutineCompleteResponse<T> (CustomEventArgs<T> cea)
-        {
-            #if (ENABLE_PUBNUB_LOGGING)
-            this.PubNubInstance.PNLog.WriteToLog (string.Format ("DateTime {0}, ProcessCoroutineCompleteResponse: In handler of event cea {1} RequestType CoroutineCompleteHandler {2}", DateTime.Now.ToString (), cea.PubnubRequestState.RespType.ToString (), typeof(T)), PNLoggingMethod.LevelInfo);
-            #endif
-            switch (cea.PubnubRequestState.RespType) {
-            case ResponseType.Heartbeat:
-
-                HeartbeatHandler<T> (cea);
-
-                break;
-
-            case ResponseType.PresenceHeartbeat:
-
-                PresenceHeartbeatHandler<T> (cea);
-
-                break;
-            default:
-
-                SubscribePresenceHanlder<T> (cea);
-
-                break;
-            }
-        }*/
-
         private void WebRequestCompleteHandler (object sender, EventArgs ea)
         {
-            //CustomEventArgs<U> cea = ea as CustomEventArgs<U>;
             CustomEventArgs cea = ea as CustomEventArgs;
 
             try {
@@ -1075,25 +654,13 @@ namespace PubNubAPI
                     } else {
                         SubscribePresenceHanlder (cea);    
                     }
-                    /*}
-                    #if (ENABLE_PUBNUB_LOGGING)
-                    else {
-                        this.PubNubInstance.PNLog.WriteToLog (string.Format ("DateTime {0}, WebRequestCompleteHandler: PubnubRequestState null", DateTime.Now.ToString ()), PNLoggingMethod.LevelError);
-                    }
-                    #endif*/
+
                 }
-                /*else {
-                    #if (ENABLE_PUBNUB_LOGGING)
-                    this.PubNubInstance.PNLog.WriteToLog (string.Format ("WebRequestCompleteHandler: cea null"), PNLoggingMethod.LevelError);                    
-                    #endif
-                    ExceptionHandler(cea.PubNubRequestState);
-                }*/
             } catch (Exception ex) {
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PubNubInstance.PNLog.WriteToLog (string.Format ("WebRequestCompleteHandler: Exception={0}", ex.ToString ()), PNLoggingMethod.LevelError);
                 #endif
                 ExceptionHandler(cea.PubNubRequestState);
-                //ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (ex.Message, cea.PubnubRequestState, false, false, PubnubErrorLevel);
             }
         }
 

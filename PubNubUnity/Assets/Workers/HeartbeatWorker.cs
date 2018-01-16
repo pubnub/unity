@@ -28,7 +28,6 @@ namespace PubNubAPI
         internal HeartbeatWorker(PubNubUnity pn, PNUnityWebRequest webRequest){
             PubNubInstance  = pn;
             this.webRequest = webRequest;
-            //webRequest = PubNubInstance.GameObjectRef.AddComponent<PNUnityWebRequest> ();
             webRequest.WebRequestComplete += WebRequestCompleteHandler;
             this.webRequest.PNLog = this.PubNubInstance.PNLog;
             Debug.Log("HeartbeatWorker HB");
@@ -51,38 +50,22 @@ namespace PubNubAPI
             if (webRequest != null) {
                 webRequest.WebRequestComplete -= WebRequestCompleteHandler;
                 webRequest.AbortRequest(webRequestId, false);
-                //UnityEngine.Object.Destroy (webRequest);
             }
         }
 
         private void WebRequestCompleteHandler (object sender, EventArgs ea)
         {
             Debug.Log("WebRequestCompleteHandler HB");
-            //CustomEventArgs<PNTimeResult> cea = ea as CustomEventArgs<PNTimeResult>;
             CustomEventArgs cea = ea as CustomEventArgs;
             
             try {
                 if ((cea != null) && (cea.CurrRequestType.Equals(PNCurrentRequestType.Heartbeat))) {
-                    //if (cea.PubnubRequestState != null) {
                     HeartbeatHandler (cea);
-                    /*}
-                    #if (ENABLE_PUBNUB_LOGGING)
-                    else {
-                        this.PubNubInstance.PNLog.WriteToLog (string.Format ("CoroutineCompleteHandler: PubnubRequestState null"), PNLoggingMethod.LevelError);
-                    }
-                    #endif*/
                 }
-                /*#if (ENABLE_PUBNUB_LOGGING)
-                else {
-                    this.PubNubInstance.PNLog.WriteToLog (string.Format ("CoroutineCompleteHandler: cea null"), PNLoggingMethod.LevelError);
-                }
-                #endif*/
             } catch (Exception ex) {
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PubNubInstance.PNLog.WriteToLog (string.Format ("WebRequestCompleteHandler: Exception={0}", ex.ToString ()), PNLoggingMethod.LevelError);
                 #endif
-
-                //ExceptionHandlers.UrlRequestCommonExceptionHandler<T> (ex.Message, cea.PubnubRequestState, false, false, PubnubErrorLevel);
             }
         }
 
@@ -90,7 +73,6 @@ namespace PubNubAPI
         {
             Debug.Log(string.Format ("StopHeartbeat keepHearbeatRunning={0} isHearbeatRunning={1}", keepHearbeatRunning, isHearbeatRunning));
             keepHearbeatRunning = false;
-            //if (isHearbeatRunning || webRequest.CheckIfRequestIsRunning(PNCurrentRequestType.Heartbeat)){
             if (isHearbeatRunning){
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PubNubInstance.PNLog.WriteToLog (string.Format ("Stopping Heartbeat "), PNLoggingMethod.LevelInfo);
@@ -98,8 +80,6 @@ namespace PubNubAPI
                 Debug.Log(string.Format ("Stopping Heartbeat keepHearbeatRunning={0} isHearbeatRunning={1}", keepHearbeatRunning, isHearbeatRunning));
                 
                 isHearbeatRunning = false;
-                //webRequest.HeartbeatCoroutineComplete -= CoroutineCompleteHandler<PNOperationType.PNHeartbeatOperation>;
-                //webRequest.AbortRequest<PNTimeResult> (PNCurrentRequestType.Heartbeat, null, false);
                 webRequest.AbortRequest (webRequestId, false);
             }
         }
@@ -116,17 +96,7 @@ namespace PubNubAPI
             try {
                 if(!this.PubNubInstance.PNConfig.ReconnectionPolicy.Equals(PNReconnectionPolicy.NONE)){
                     isHearbeatRunning = true;
-                    /*Uri requestUrl = BuildRequests.BuildTimeRequest (this.SessionUUID,
-                        this.ssl, this.Origin);
 
-                    coroutine.HeartbeatCoroutineComplete += CoroutineCompleteHandler<T>;*/
-                               
-                    /* Uri request = BuildRequests.BuildTimeRequest(
-                        this.PubNubInstance.PNConfig.UUID,
-                        this.PubNubInstance.PNConfig.Secure,
-                        this.PubNubInstance.PNConfig.Origin,
-                        this.PubNubInstance.Version
-                    ); */
                     Uri request = BuildRequests.BuildTimeRequest(
                         ref this.PubNubInstance
                     );
@@ -141,13 +111,7 @@ namespace PubNubAPI
                     Debug.Log(string.Format ("heartbeat: request.OriginalString {0} ", request.OriginalString ));
                     webRequestId = webRequest.Run(requestState);
                     
-                    //for heartbeat and presence heartbeat treat reconnect as pause
-                    /* RequestState<T> requestState = BuildRequests.BuildRequestState<T> (pubnubRequestState.ChannelEntities,
-                        ResponseType.Heartbeat, pause, pubnubRequestState.ID, false, 0, null);
-                    StoredRequestState.Instance.SetRequestState (CurrentRequestType.Heartbeat, requestState);
-                    coroutine.Run<T> (requestUrl.OriginalString, requestState, HeartbeatTimeout, pauseTime);*/
                     #if (ENABLE_PUBNUB_LOGGING)
-                    //this.PubNubInstance.PNLog.WriteToLog (string.Format ("StartHeartbeat: Heartbeat running for {1}", pubnubRequestState.ID), PNLoggingMethod.LevelInfo);
                     this.PubNubInstance.PNLog.WriteToLog (string.Format ("StartHeartbeat: Heartbeat running"), PNLoggingMethod.LevelInfo);
                     #endif
                 } 
@@ -155,7 +119,6 @@ namespace PubNubAPI
             catch (Exception ex) {
                 Debug.Log(ex.ToString());
                 #if (ENABLE_PUBNUB_LOGGING)
-                //this.PubNubInstance.PNLog.WriteToLog (string.Format ("StartHeartbeat: Heartbeat exception {1}", ex.ToString ()), PNLoggingMethod.LevelError);
                 this.PubNubInstance.PNLog.WriteToLog (string.Format ("StartHeartbeat: Heartbeat exception {0}", ex.ToString ()), PNLoggingMethod.LevelError);
                 #endif
             }
@@ -175,13 +138,11 @@ namespace PubNubAPI
             #endif
         }
 
-        //private void HeartbeatHandler (CustomEventArgs<PNTimeResult> cea){
         private void HeartbeatHandler (CustomEventArgs cea){    
             Debug.Log(string.Format ("HeartbeatHandler keepHearbeatRunning={0} isHearbeatRunning={1} cea.iserror {2}", keepHearbeatRunning, isHearbeatRunning, cea.IsError));
             if (cea.IsTimeout || cea.IsError) {
                 RetryLoop ();
                 #if (ENABLE_PUBNUB_LOGGING)
-                //this.PubNubInstance.PNLog.WriteToLog (string.Format ("HeartbeatHandler: Heartbeat timeout={1}", cea.Message.ToString ()), PNPNLoggingMethod.LevelError);
                 this.PubNubInstance.PNLog.WriteToLog (string.Format ("HeartbeatHandler: Heartbeat timeout={0}", cea.Message.ToString ()), PNLoggingMethod.LevelError);
                 #endif
             } else {
@@ -191,7 +152,6 @@ namespace PubNubAPI
             if (keepHearbeatRunning) {
 
                 #if (ENABLE_PUBNUB_LOGGING)
-                //this.PubNubInstance.PNLog.WriteToLog (string.Format ("HeartbeatHandler: Restarting Heartbeat {0}", cea.PubnubRequestState.ID), PNLoggingMethod.LevelInfo);
                 this.PubNubInstance.PNLog.WriteToLog (string.Format ("HeartbeatHandler: Restarting Heartbeat, internetStatus: {0}", internetStatus), PNLoggingMethod.LevelInfo);
                 #endif
 
@@ -256,7 +216,6 @@ namespace PubNubAPI
             }
         }        
 
-        //private void InternetConnectionAvailableHandler(CustomEventArgs<PNTimeResult> cea){
         private void InternetConnectionAvailableHandler(CustomEventArgs cea){    
             internetStatus = true;
             retriesExceeded = false;

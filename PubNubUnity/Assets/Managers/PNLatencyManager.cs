@@ -59,35 +59,15 @@ namespace PubNubAPI
         }
 
         void UpdateLatency(){
-            //while(RunUpdateLatencyLoop){
-            //Debug.Log("In Latency Updator");
             TimeSpan ts = TimeSpan.FromTicks(DateTime.UtcNow.Ticks);
-            //double minutesFromTs = ts.TotalMinutes;
-            //Debug.Log("FromUnixTime now:" + FromUnixTime2(DateTime.UtcNow.Ticks));
             long t = DateTime.UtcNow.Ticks - 60 * 10000000;
             
-            //TimeSpan ts2 = TimeSpan.FromTicks(t);
-            //Debug.Log("FromUnixTime now - 10:" + FromUnixTime2(t));
-
-            /*TimeSpan ts2 = TimeSpan.FromTicks(t);
-            double minutesFromTs2 = ts2.TotalMinutes;
-            Debug.Log("t: " + t);
-            Debug.Log("epoch: " + epoch.AddSeconds(t).ToString());*/
-
             UpdateLatency(ref TimeLatency, t, ref Time, "Time");
             UpdateLatency(ref PublishLatency, t, ref Publish, "Publish");
             UpdateLatency(ref PresenceLatency, t, ref Presence, "Presence");
             UpdateLatency(ref MobilePushLatency, t, ref MobilePush, "MobilePush");
             UpdateLatency(ref HistoryLatency, t, ref History, "History");
             UpdateLatency(ref ChannelGroupsLatency, t, ref ChannelGroups, "ChannelGroups");
-            /*Debug.Log("Latency " + Time);
-            Debug.Log("Latency " + Publish);
-            Debug.Log("Latency " + Presence);
-            Debug.Log("Latency " + MobilePush);
-            Debug.Log("Latency " + History);
-            Debug.Log("Latency " + ChannelGroups);*/
-                //yield return new WaitForSeconds(1);
-            //}
         }
 
         void UpdateLatency(ref SafeDictionary<long, float> dict, long t, ref float f, string name){
@@ -96,8 +76,6 @@ namespace PubNubAPI
             foreach(long key in keys){
                 if(key < t){
                     dict.Remove(key);
-                    //Debug.Log(name + "Latency " + key + " removed");
-                    //Debug.Log(name + "FromUnixTime removed:" + FromUnixTime2(key));
                 } else {
                     timeAvg += dict[key];
                 }
@@ -107,13 +85,11 @@ namespace PubNubAPI
                 timeAvg /= count;
             }
             f = timeAvg;
-            //Debug.Log(name + "Latency " + f);
         }
 
         public void StoreLatency(long startTime, long endTime, PNOperationType operationType){
             float latency = (endTime - startTime)/10000000f; // seconds
             Debug.Log("Latency" + operationType.ToString()  + latency);
-            //List<string> ls = new List<string>();
             //TODO Add delete history 
             switch(operationType){
                 case PNOperationType.PNTimeOperation:

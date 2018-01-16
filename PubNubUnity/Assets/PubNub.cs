@@ -22,9 +22,8 @@ namespace PubNubAPI
         private void PubNubUnityInitializationAfterCleanup(){
             if(cleanedUp){
                 pnUnity = new PubNubUnity(PNConfig, gameObj, jsonLibrary);
-                //pnUnity = new PubNubUnity(pnConfiguration, gameObjectRef, jsonLibrary);
             
-                pnUnity.SusbcribeCallback += (sender, e) => { //; //+= (pnStatus, pnMessageResut, pnPresenceEventResult) => {
+                pnUnity.SusbcribeCallback += (sender, e) => { 
                     SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
 
                     Debug.Log ("SusbcribeCallback PN");
@@ -86,7 +85,6 @@ namespace PubNubAPI
 
         public IJsonLibrary JsonLibrary{
             get{
-                //PubNubUnityInitializationAfterCleanup();
                 if(pnUnity != null){
                     return pnUnity.JsonLibrary;
                 } else {

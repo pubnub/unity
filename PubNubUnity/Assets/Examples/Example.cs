@@ -4,9 +4,6 @@ using PubNubAPI;
 using System.Collections.Generic;
 using System;
 
-//delete
-//using UnityEngine.Networking;
-
 namespace PubNubExample
 {
     public class Example : MonoBehaviour {
@@ -127,7 +124,6 @@ namespace PubNubExample
             Dictionary<string, object> state = new Dictionary<string, object>();
             state.Add  ("k1", "v1");
             pubnub.SetPresenceState().Channels(listChannels).ChannelGroups(listChannelGroups).State(state).Async ((result, status) => {
-            //pubnub.SetPresenceState().Channels(new List<string> (){ch1}).State(state).Async ((result, status) => {    
                 if(status.Error){
                     Debug.Log (string.Format("In Example, SetPresenceState Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                 } else {
@@ -139,7 +135,6 @@ namespace PubNubExample
             });
         }
         void ButtonGetPresenceStateHandler(){
-            //pubnub.GetPresenceState().Channels(new List<string> (){ch1}).Async ((result, status) => {
             pubnub.GetPresenceState().Channels(listChannels).ChannelGroups(listChannelGroups).Async ((result, status) => {
                 
                 if(status.Error){
@@ -158,7 +153,6 @@ namespace PubNubExample
                 if(status.Error){
                     Debug.Log (string.Format("In Example, History Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                 } else {
-                    //Debug.Log (string.Format("DateTime {0}, In Example, result: {1}", DateTime.UtcNow ,result.EndTimetoken, (result.Messages.Count>0)?result.Messages[0].ToString():""));
                     foreach (PNHistoryItemResult histItem in result.Messages){
                         Debug.Log(string.Format("histItem: {0}, {1}", histItem.Entry.ToString(), histItem.Timetoken.ToString()));
                         Display(string.Format("histItem: {0}, {1}", histItem.Entry.ToString(), histItem.Timetoken.ToString()));
@@ -301,7 +295,6 @@ namespace PubNubExample
         }
 
         void SubscribeHandler(){
-            //pubnub.Subscribe ().SetChannelGroups (listChannelGroups).SetChannels(listChannels).WithPresence().Execute();
             pubnub.Subscribe ().SetChannels(new List<string> (){ch1}).WithPresence().Execute();
         }
 
@@ -365,8 +358,6 @@ namespace PubNubExample
     	// Use this for initialization
     	void Start () {
             AddComponents();
-            /*UnityWebRequest wr = UnityWebRequest.Post ("http://localhost:8082?s=a", "sss");
-            wr.Send();*/
 
             Init();
     	}
@@ -395,7 +386,6 @@ namespace PubNubExample
             pubnub.AddListener (
                 (s) => {
                     PrintStatus(s);
-                    //Debug.Log ("AddListener in status" + String.Join(", ", s.AffectedChannelGroups.ToArray()) + String.Join(", ", s.AffectedChannels.ToArray()));
                 },
                 (m) => {
                     Debug.Log ("AddListener in message" + m.Channel + m.Payload);
@@ -427,7 +417,6 @@ namespace PubNubExample
 
                 Debug.Log ("In Example, SusbcribeCallback");
                 if(mea.Status != null){
-                    //Debug.Log ("SusbcribeCallback in status" + String.Join(", ", mea.pnStatus.AffectedChannelGroups.ToArray()) + String.Join(", ", mea.pnStatus.AffectedChannels.ToArray()));
                     PrintStatus(mea.Status);
                     if(mea.Status.Category.Equals(PNStatusCategory.PNConnectedCategory)){
                         pubnub.Publish().Channel("channel1").Message("test message").UsePost(true).Async((result, status) => {

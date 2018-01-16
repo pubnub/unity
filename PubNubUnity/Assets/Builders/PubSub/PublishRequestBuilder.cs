@@ -87,65 +87,19 @@ namespace PubNubAPI
         }
 
         protected override void RunWebRequest(QueueManager qm){
-            //TODO USe POST
             RequestState requestState = new RequestState ();
             requestState.OperationType = OperationType;
 
-            //TODO publishAsIs with cipher
             string jsonMessage = (publishAsIs) ? PublishMessage.ToString () : Helpers.JsonEncodePublishMsg (PublishMessage, this.PubNubInstance.PNConfig.CipherKey, this.PubNubInstance.JsonLibrary, this.PubNubInstance.PNLog);
             string jsonMetadata = string.Empty;
             if (this.Metadata!=null) {
                 jsonMetadata = Helpers.JsonEncodePublishMsg (this.Metadata, "", this.PubNubInstance.JsonLibrary, this.PubNubInstance.PNLog);
             }
 
-            //Uri request;
             if(UsePostMethod){
                 requestState.httpMethod = HTTPMethod.Post;
-                //string postData = ;
-                /*request = BuildRequests.BuildPublishRequestUsingPOST(
-                    this.PublishChannel,
-                    jsonMessage,
-                    this.ShouldStoreInHistory,
-                    jsonMetadata,
-                    publishCounter,
-                    this.PublishTtl,
-                    UsePostMethod,
-                    ref this.PubNubInstance,
-                    out postData
-                );*/
-                //requestState.POSTData = string.Format("message={0}", jsonMessage);
                 requestState.POSTData = jsonMessage;
-            } else {
-
-                /* Uri request = BuildRequests.BuildPublishRequest(
-                    this.PublishChannel,
-                    jsonMessage,
-                    this.ShouldStoreInHistory,
-                    jsonMetadata,
-                    publishCounter,
-                    this.PublishTtl,
-                    this.PubNubInstance.PNConfig.UUID,
-                    this.PubNubInstance.PNConfig.Secure,
-                    this.PubNubInstance.PNConfig.Origin,
-                    this.PubNubInstance.PNConfig.AuthKey,
-                    this.PubNubInstance.PNConfig.PublishKey,
-                    this.PubNubInstance.PNConfig.SubscribeKey,
-                    this.PubNubInstance.PNConfig.CipherKey,
-                    this.PubNubInstance.PNConfig.SecretKey,
-                    this.PubNubInstance.Version
-                ); 
-
-                request = BuildRequests.BuildPublishRequest(
-                    this.PublishChannel,
-                    jsonMessage,
-                    this.ShouldStoreInHistory,
-                    jsonMetadata,
-                    publishCounter,
-                    this.PublishTtl,
-                    UsePostMethod,
-                    ref this.PubNubInstance
-                );*/
-            }
+            } 
             Uri request = BuildRequests.BuildPublishRequest(
                     this.PublishChannel,
                     jsonMessage,
@@ -192,9 +146,5 @@ namespace PubNubAPI
 
         }
 
-        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
-            
-        // }
-        
     }
 }

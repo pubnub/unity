@@ -201,86 +201,6 @@ namespace PubNubAPI.Tests
             Assert.IsTrue (expected.Equals (received), expNRec);
         }
 
-        /*/// <summary>
-        /// Blocks the current thread unit the response is received
-        /// or timeout occurs
-        /// </summary>
-        /// <param name="countdownSeconds">seconds to timeout</param>
-        public void WaitForResponse (int countdownSeconds = 30)
-        {
-            Timer timer = new Timer ();
-            DateTime start = DateTime.UtcNow; 
-            DateTime endTime = start.AddSeconds (countdownSeconds); 
-            timer.Enabled = true;
-            timer.Start ();
-            timer.Elapsed += delegate(object sender, ElapsedEventArgs e) {
-                TimeSpan remainingTime = endTime - DateTime.UtcNow;
-                if (remainingTime < TimeSpan.Zero) {
-                    timer.Enabled = false; 
-                    DeliveryStatus = true;
-                }
-            };
-            while (!DeliveryStatus)
-                ;
-            timer.Stop ();
-        }
-
-        public PubnubUnitTest CreateUnitTestInstance (string testClassName, string testCaseName)
-        {
-            PubnubUnitTest unitTest = new PubnubUnitTest ();
-            unitTest.TestClassName = testClassName;
-            unitTest.TestCaseName = testCaseName;
-            return unitTest;
-        }
-
-        public void DisplayErrorMessage2 (PubnubClientError result)
-        {
-            Response = result.ToString();
-            DeliveryStatus = true;
-            UnityEngine.Debug.Log ("DisplayErrorMessage1:" + result.ToString ());
-        }
-
-        public void DisplayErrorMessage (PubnubClientError result)
-        {
-            ErrorResponse = result.Description;
-            //DeliveryStatus = true;
-            UnityEngine.Debug.Log ("DisplayErrorMessage:" + result.ToString ());
-        }
-
-        public void DisplayReturnMessageDummy (object result)
-        {
-            //deliveryStatus = true;
-            //Response = result;
-            ErrorResponse = result.ToString();
-            UnityEngine.Debug.Log ("DisplayReturnMessageDummy:" + result.ToString ());
-        }
-
-        public void DisplayReturnMessage (object result)
-        {
-            UnityEngine.Debug.Log ("DisplayReturnMessageO:" + result.ToString ());
-            Response = result;
-            DeliveryStatus = true;
-        }
-
-        public void DisplayReturnMessage (string result)
-        {
-            UnityEngine.Debug.Log ("DisplayReturnMessageS:" + result.ToString ());
-            Response = (object)result.ToString ();
-            DeliveryStatus = true;
-        }
-
-        public long Timestamp (Pubnub pubnub)
-        {
-            DeliveryStatus = false;
-
-            pubnub.Time (DisplayReturnMessage, DisplayReturnMessage);
-            while (!DeliveryStatus)
-                ;
-
-            IList<object> fields = Response as IList<object>;
-            return Convert.ToInt64 (fields [0].ToString ());
-        }*/
-
         /// <summary>
         /// Deserialize the specified message using either JSONFX or NEWTONSOFT.JSON.
         /// The functionality is based on the pre-compiler flag
@@ -381,52 +301,6 @@ namespace PubNubAPI.Tests
                 }     
             );
         }
-
-        /*public static void WildcardPresenceCallback (object result)
-        {
-            UnityEngine.Debug.Log (string.Format ("WildcardPresenceCallback CALLBACK LOG: {0}", result.ToString()));
-        }
-
-        public static void WildcardPresenceCallback (string result)
-        {
-            UnityEngine.Debug.Log (string.Format ("WildcardPresenceCallback CALLBACK LOG: {0}", result));
-        }
-
-        public static void UserCallback (string result)
-        {
-            UnityEngine.Debug.Log (string.Format ("REGULAR CALLBACK LOG: {0}", result));
-        }
-
-        public static void UserCallback (object result)
-        {
-            UnityEngine.Debug.Log (string.Format ("REGULAR CALLBACK LOG: {0}", result.ToString()));
-        }
-
-        public static void DisconnectCallback (string result)
-        {
-            UnityEngine.Debug.Log (string.Format ("Disconnect CALLBACK LOG: {0}", result));
-        }
-
-        public static void DisconnectCallback (object result)
-        {
-            UnityEngine.Debug.Log (string.Format ("Disconnect CALLBACK LOG: {0}", result));
-        }
-
-        public static void ConnectCallback (string result)
-        {
-            UnityEngine.Debug.Log (string.Format ("CONNECT CALLBACK LOG: {0}", result));
-        }
-
-        public static void ConnectCallback (object result)
-        {
-            UnityEngine.Debug.Log (string.Format ("CONNECT CALLBACK LOG: {0}", result.ToString()));
-        }
-
-        /*public static void ErrorCallback (PubnubClientError result)
-        {
-            UnityEngine.Debug.Log (string.Format ("Error CALLBACK LOG: {0}", result.ToString()));
-        }*/
-
     }
 
     /// <summary>
@@ -454,7 +328,6 @@ namespace PubNubAPI.Tests
     class PubnubDemoMessage
     {
         public string DefaultMessage = "~!@#$%^&*()_+ `1234567890-= qwertyuiop[]\\ {}| asdfghjkl;' :\" zxcvbnm,./ <>? ";
-        //public string DefaultMessage = "\"";
         public PubnubDemoMessage ()
         {
         }

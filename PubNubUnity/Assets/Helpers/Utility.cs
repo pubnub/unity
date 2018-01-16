@@ -4,9 +4,6 @@ using System.Collections;
 using System.Text;
 using System.Security.Cryptography;
 using System.Linq;
-/*#if NETFX_CORE
-using System.Reflection;
-#endif*/
 
 namespace PubNubAPI
 {
@@ -30,15 +27,6 @@ namespace PubNubAPI
         #endif  
     
         public static bool CheckDictionaryForError(Dictionary<string, object> dictionary, string keyName){
-            /*object objMessage;
-            dictionary.TryGetValue(keyName, out objMessage);
-            
-            if(objMessage != null){
-                bool bMessage = (bool)objMessage;
-                return bMessage;
-            } else {
-                return false;
-            }*/
             if(dictionary.ContainsKey(keyName) && dictionary[keyName].Equals(true)){
                 return true;
             } else {
@@ -88,21 +76,6 @@ namespace PubNubAPI
             return false;
         }
 
-        /*public static bool IsDictionary(object o)
-        {
-            if(o == null) return false;
-            #if NETFX_CORE
-            return o is IDictionary &&
-                o.GetTypeInfo().IsGenericType &&
-                o.GetTypeInfo().GetGenericTypeDefinition().IsAssignableFrom(typeof(Dictionary<,>));
-            #else
-            return o is IDictionary &&
-                o.GetType().IsGenericType &&
-                o.GetType().GetGenericTypeDefinition().IsAssignableFrom(typeof(Dictionary<,>));
-            #endif
-            
-        }*/
-
         public static long ValidateTimetoken(string timetoken, bool raiseError){
             if(!string.IsNullOrEmpty(timetoken)){
                 long r;
@@ -146,14 +119,6 @@ namespace PubNubAPI
             }
             return null;
         }
-
-        /*public static void CheckPushType(PushTypeService pushType)
-        {
-            if (pushType == PushTypeService.None)
-            {
-                throw new ArgumentException("Missing PushTypeService");
-            }
-        }*/
 
         public static void CheckChannelOrChannelGroup(string channel, string channelGroup){
             if ((string.IsNullOrEmpty(channel) || string.IsNullOrEmpty(channel.Trim())) 
@@ -202,38 +167,6 @@ namespace PubNubAPI
                 throw new MissingMemberException("Invalid publish key");
             }
         }
-
-        /*public static void CheckCallback<T>(Action<T> callback, CallbackType callbackType)
-        {
-            if (callback == null)
-            {
-                throw new ArgumentException(string.Format("Missing {0} Callback", callbackType.ToString()));
-            }
-        }
-
-        public static void CheckJSONPluggableLibrary()
-        {
-            if (PubnubUnity.JsonPluggableLibrary == null)
-            {
-                throw new NullReferenceException("Missing Json Pluggable Library for Pubnub Instance");
-            }
-        }*/
-
-        /*public static void CheckUserState(string jsonUserState)
-        {
-            if (string.IsNullOrEmpty(jsonUserState) || string.IsNullOrEmpty(jsonUserState.Trim()))
-            {
-                throw new ArgumentException("Missing User State");
-            }
-        }
-
-        public static void CheckSecretKey(string secretKey)
-        {
-            if (string.IsNullOrEmpty(secretKey) || string.IsNullOrEmpty(secretKey.Trim()) || secretKey.Length <= 0)
-            {
-                throw new MissingMemberException("Invalid secret key");
-            }
-        }*/
 
         public static Guid GenerateGuid ()
         {

@@ -11,7 +11,6 @@ namespace PubNubAPI
 
         }
 
-        //private List<string> ChannelsToUse { get; set;}
         private string DeviceIDForPush{ get; set;}
         public void Channels(List<string> channels){
             ChannelsToUse = channels;
@@ -50,18 +49,6 @@ namespace PubNubAPI
             RequestState requestState = new RequestState ();
             requestState.OperationType = OperationType;
             
-            /* Uri request = BuildRequests.BuildRemoveChannelPushRequest(
-                string.Join(",", ChannelsToUse.ToArray()), 
-                PushType, 
-                DeviceIDForPush,
-                this.PubNubInstance.PNConfig.UUID,
-                this.PubNubInstance.PNConfig.Secure,
-                this.PubNubInstance.PNConfig.Origin,
-                this.PubNubInstance.PNConfig.AuthKey,
-                this.PubNubInstance.PNConfig.SubscribeKey,
-                this.PubNubInstance.Version
-            ); */
-
             Uri request = BuildRequests.BuildRemoveChannelPushRequest(
                 string.Join(",", ChannelsToUse.ToArray()), 
                 PushType, 
@@ -112,11 +99,6 @@ namespace PubNubAPI
             Callback(pnPushRemoveChannelResult, pnStatus);
         }
 
-        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
-            
-        // }
-        
-        
     }
 }
 

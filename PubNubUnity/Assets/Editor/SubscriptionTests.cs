@@ -218,17 +218,10 @@ namespace PubNubAPI.Tests
             pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
             pnConfiguration.PresenceTimeout = 60;
             pnConfiguration.PresenceInterval= 30;
-            //pnConfiguration.UUID = uuid;
-            //pnConfiguration.AuthKey = authKey;
-
-            //PubNub pn = new PubNub(pnConfiguration);
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
 
             pnUnity.SubscriptionInstance.CleanUp();
 
-            //Remove duplicate channels
-            //Already subscribed
-            //New channel
             readCallback = fireCallback;
             List<string> validChannels = new List<string> ();
             validChannels.Add (channel);
@@ -243,25 +236,23 @@ namespace PubNubAPI.Tests
 
             pnUnity.SubscriptionInstance.RemoveDuplicatesCheckAlreadySubscribedAndGetChannels(responseType, validChannels, null, false, out channelEntities2);
 
-            //if (!readCallback) {
-                string channels2 = Helpers.GetNamesFromChannelEntities(channelEntities2, false);
+            string channels2 = Helpers.GetNamesFromChannelEntities(channelEntities2, false);
 
-                bool channelMatch = false;
-                if (channelEntities != null) {
-                    foreach (ChannelEntity c in channelEntities2) {
-                        string ch2= c.ChannelID.ChannelOrChannelGroupName;
-                        if(c.ChannelID.IsPresenceChannel){
-                            channel = channel + Utility.PresenceChannelSuffix;
-                        }
-                        channelMatch = channel.Equals(ch2);
-                        if(channelMatch)
-                            break;
+            bool channelMatch = false;
+            if (channelEntities != null) {
+                foreach (ChannelEntity c in channelEntities2) {
+                    string ch2= c.ChannelID.ChannelOrChannelGroupName;
+                    if(c.ChannelID.IsPresenceChannel){
+                        channel = channel + Utility.PresenceChannelSuffix;
                     }
+                    channelMatch = channel.Equals(ch2);
+                    if(channelMatch)
+                        break;
                 }
-                UnityEngine.Debug.Log ("not fireCallback:" +channelMatch + channels2 + channel);
-                Assert.IsTrue (channelMatch);
+            }
+            UnityEngine.Debug.Log ("not fireCallback:" +channelMatch + channels2 + channel);
+            Assert.IsTrue (channelMatch);
 
-            //}
         }
 
         [Test]
@@ -274,10 +265,6 @@ namespace PubNubAPI.Tests
             pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
             pnConfiguration.PresenceTimeout = 60;
             pnConfiguration.PresenceInterval= 30;
-            //pnConfiguration.UUID = uuid;
-            //pnConfiguration.AuthKey = authKey;
-
-            //PubNub pn = new PubNub(pnConfiguration);
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
 
             pnUnity.SubscriptionInstance.CleanUp();

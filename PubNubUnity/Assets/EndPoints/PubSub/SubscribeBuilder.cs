@@ -25,11 +25,6 @@ namespace PubNubAPI
             return this;
         }
 
-        /*public SubscribeBuilder Reconnect(bool reconnect) {
-            pubBuilder.Reconnect(reconnect);
-            return this;
-        }*/
-
         public SubscribeBuilder SetChannels(List<string> channels){
             pubBuilder.SetChannels (channels);
             return this;

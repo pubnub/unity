@@ -7,9 +7,6 @@ namespace PubNubAPI
 {
     public class HereNowRequestBuilder: PubNubNonSubBuilder<HereNowRequestBuilder, PNHereNowResult>, IPubNubNonSubscribeBuilder<HereNowRequestBuilder, PNHereNowResult>
     {
-        //private List<string> ChannelsToUse { get; set;}
-        //private List<string> ChannelGroupsToUse { get; set;}
-
         private bool IncludeStateInHereNow { get; set;}
         private bool IncludeUUIDsInHereNow { get; set;}
 
@@ -53,18 +50,6 @@ namespace PubNubAPI
             if((ChannelGroupsToUse != null) && (ChannelGroupsToUse.Count>0)){
                 channelGroups = String.Join(",", ChannelGroupsToUse.ToArray());
             }
-            /* Uri request = BuildRequests.BuildHereNowRequest(
-                channels,
-                channelGroups,
-                IncludeUUIDsInHereNow,
-                IncludeStateInHereNow,
-                this.PubNubInstance.PNConfig.UUID,
-                this.PubNubInstance.PNConfig.Secure,
-                this.PubNubInstance.PNConfig.Origin,
-                this.PubNubInstance.PNConfig.AuthKey,
-                this.PubNubInstance.PNConfig.SubscribeKey,
-                this.PubNubInstance.Version
-            ); */
             Uri request = BuildRequests.BuildHereNowRequest(
                 channels,
                 channelGroups,
@@ -79,7 +64,6 @@ namespace PubNubAPI
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             //{"status": 200, "message": "OK", "payload": {"channels": {"channel1": {"occupancy": 1, "uuids": ["a"]}, "channel2": {"occupancy": 1, "uuids": ["a"]}}, "total_channels": 2, "total_occupancy": 2}, "service": "Presence"} 
              //{"status": 200, "message": "OK", "occupancy": 1, "uuids": [{"uuid": "UnityTestHereNowUUID"}], "service": "Presence"} 
-            //TODO read all values.
             PNHereNowResult pnHereNowResult = new PNHereNowResult();
             
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
@@ -121,14 +105,6 @@ namespace PubNubAPI
                         Dictionary<string, object> channelsResultDict = new Dictionary<string, object>();
                         channelsResultDict.Add("uuids", uuidsArray);
                         objChannelsDict.Add(ChannelsToUse[0], channelsResultDict);
-                        /*foreach(object objUUID in  uuidsArray){
-                            Debug.Log(objUUID.GetType());
-                            Dictionary<string, object> uuidDict = objUUID as Dictionary<string, object>;
-                            object uuid;
-                            if(uuidDict.TryGetValue("uuid", out uuid)){
-                                objChannelsDict.Add(ChannelsToUse[0], uuid);
-                            }
-                        }*/
                         pnStatus.Error = CreateHereNowResult(objChannelsDict, out channelsResult);
 
                         pnHereNowResult.Channels = channelsResult;
@@ -142,60 +118,6 @@ namespace PubNubAPI
                             }
                         }
 
-                        /*if(objChannelsDict!=null){
-                            Dictionary<string, PNHereNowChannelData> channelsResult;
-                            pnStatus.Error = CreateHereNowResult(objChannelsDict, out channelsResult);
-                            
-                            pnHereNowResult.Channels = channelsResult;
-                        } 
-                        Type valueType = objPayload.GetType ();
-                        var expectedType = typeof(string[]);
-                        var expectedType2 = typeof(object[]);
-                        object[] objUuid = null;
-                        #if !(UNITY_WSA || UNITY_WSA_8_1 || UNITY_WSA_10_0)
-
-                                    if (expectedType.IsAssignableFrom (valueType)) {
-                                        objUuid = objPayload as string[];
-                                    } else if (expectedType2.IsAssignableFrom (valueType)) {
-                                        objUuid = objPayload as object[];
-                                    } else if (objPayload is IList && objPayload.GetType ().IsGenericType) {
-                                        objUuid = ((IEnumerable)objPayload).Cast<object> ().ToArray ();
-                                    } else {
-                                        objUuid = CommonIntergrationTests.Deserialize<object[]> (objPayload.ToString ());
-                                    }
-                                    foreach (object obj in objUuid) {
-                                        UnityEngine.Debug.Log ("session:" + obj.ToString ()); 
-                                        if (obj.Equals (matchUUID)) {
-                                            return true;
-                                        }
-                                    }
-                        #else
-
-                                    if (expectedType==valueType)
-                                    {
-                                        objUuid = uuids as string[];
-                                    }
-                                    else if (expectedType2==valueType)
-                                    {
-                                        objUuid = uuids as object[];
-                                    }
-                                    else if (uuids is IList && uuids.GetType()==Type.GetType("Generic"))
-                                    {
-                                        objUuid = ((IEnumerable)uuids).Cast<object>().ToArray();
-                                    }
-                                    else
-                                    {
-                                        objUuid = CommonIntergrationTests.Deserialize<object[]>(uuids.ToString());
-                                    }
-                                    foreach (object obj in objUuid)
-                                    {
-                                        UnityEngine.Debug.Log("session:" + obj.ToString());
-                                        if (obj.Equals(matchUUID))
-                                        {
-                                            return true;
-                                        }
-                                    }
-                        #endif*/
                     } else {
                         if(objPayload!=null){
                             Dictionary<string, object>[] payload = objPayload as Dictionary<string, object>[];
@@ -214,15 +136,10 @@ namespace PubNubAPI
             Callback(pnHereNowResult, pnStatus);
         }
 
-        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
-            
-        // }
-
         //TODO refactor
         protected bool CreateHereNowResult(object objChannelsDict, out Dictionary<string, PNHereNowChannelData> channelsResult ){
             Dictionary<string, object> channelsDict = objChannelsDict as Dictionary<string, object>;
             channelsResult = new Dictionary<string, PNHereNowChannelData>();
-            //List<string> channels = ch.ToList<string>();//new List<string> ();
             if(channelsDict!=null){
                 foreach(KeyValuePair<string, object> kvpair in channelsDict){
                     string channelName = kvpair.Key;
@@ -249,7 +166,6 @@ namespace PubNubAPI
                         
                         if(uuids!=null){
                             Debug.Log("uuids ! null:" + channelName);
-                            //occupantData.UUID 
                             string[] arrUuids = uuids as string[];
                             
                             if(arrUuids!=null){
@@ -263,8 +179,6 @@ namespace PubNubAPI
                                 Dictionary<string, object>[] dictUuidsState = uuids as Dictionary<string, object>[];
                                 foreach (Dictionary<string, object> objUuidsState in dictUuidsState){
                                     PNHereNowOccupantData occupantData = new PNHereNowOccupantData();
-                                    //if(objUuidsState!=null){
-                                    //Dictionary<string, object>[] objUuidsState = uuids as Dictionary<string, object>[];
                                     
                                     object objUuid;
                                     bool bUuid = false;
@@ -287,7 +201,6 @@ namespace PubNubAPI
                             
 
                         }
-                        //Debug.Log("uuids:" + uuids.ToString());
                     }
                     channelsResult.Add(channelName, channelData);
                 }

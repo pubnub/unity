@@ -132,19 +132,6 @@ namespace PubNubAPI.Tests
             Assert.True(log.Contains("seq, sa key not found."));
         }
         
-        /*[Test]
-        //[ExpectedException (typeof(ArgumentException))]
-        public void TestCheckPushTypeNone(){
-            var ex = Assert.Throws<ArgumentException>(() => Utility.CheckPushType(PushTypeService.None)); 
-
-            Assert.That(ex.Message.Contains("Missing PushTypeService"), ex.Message, null);
-        }
-
-        [Test]
-        public void TestCheckPushType(){
-            Utility.CheckPushType(PushTypeService.APNS);
-        }*/
-
         [Test]
         public void TestCheckAndAddNameSpaceEmpty(){
             List<string> ls = Utility.CheckAndAddNameSpace("");
@@ -189,37 +176,21 @@ namespace PubNubAPI.Tests
         }
 
         [Test]
-        //[ExpectedException (typeof(MissingMemberException))]
         public void TestCheckChannelGroupMissingMemberException(){
-            //string s = Utility.CheckChannelGroup(",", false);
 
             var ex = Assert.Throws<MissingMemberException>(() => Utility.CheckChannelGroup(",", false)); 
 
             Assert.That(ex.Message.Contains("Invalid channel group"), ex.Message, null);
-
-            /*Assert.True(
-                s.Contains("cg") 
-                && !s.Contains("cg-pnpres")
-                && s.Contains("cg2") 
-                && !s.Contains("cg2-pnpres"));*/
         }
 
         [Test]
-        //[ExpectedException (typeof(MissingMemberException))]
         public void TestCheckChannelGroupMissingMembeExcep(){
             var ex = Assert.Throws<MissingMemberException>(() => Utility.CheckChannelGroup("ch, ", false)); 
 
             Assert.That(ex.Message.Contains("Invalid channel group"), ex.Message, null);
-            /*string s = Utility.CheckChannelGroup("ch,  ", false);
-            Assert.True(
-                s.Contains("ch") 
-                && !s.Contains("ch-pnpres")
-                && s.Contains("ch2") 
-                && !s.Contains("ch2-pnpres"));*/
         }
 
         [Test]
-        //[ExpectedException (typeof(ArgumentException))]
         public void TestCheckChannelOrChannelGroupBothEmpty(){
             var ex = Assert.Throws<ArgumentException>(() => Utility.CheckChannelOrChannelGroup("", "")); 
 
@@ -251,10 +222,7 @@ namespace PubNubAPI.Tests
         }
 
         [Test]
-        //[ExpectedException (typeof(ArgumentException))]
         public void TestValidateTimetokenRaiseError (){
-            //long o = Utility.ValidateTimetoken("a", true);
-            //Assert.True(o.Equals(0));
             var ex = Assert.Throws<ArgumentException>(() => Utility.ValidateTimetoken("a", true)); 
 
             Assert.That(ex.Message.Contains("Invalid timetoken"), ex.Message, null);
@@ -273,7 +241,6 @@ namespace PubNubAPI.Tests
         }
 
         [Test]
-        //[ExpectedException (typeof(ArgumentException))]
         public void TestCheckChannelOrChannelGroupFalse ()
         {
             var ex = Assert.Throws<ArgumentException>(() =>  Utility.CheckChannelOrChannelGroup ("", "")); 
@@ -282,7 +249,6 @@ namespace PubNubAPI.Tests
         }
 
         [Test]
-        //[ExpectedException (typeof(ArgumentException))]
         public void TestCheckChannelFalse ()
         {
             var ex = Assert.Throws<ArgumentException>(() =>  Utility.CheckChannel ("")); 
@@ -319,7 +285,6 @@ namespace PubNubAPI.Tests
         }
 
         [Test]
-        //[ExpectedException (typeof(ArgumentException))]
         public void TestCheckChannelsFalse ()
         {
             var ex = Assert.Throws<ArgumentException>(() =>  Utility.CheckChannels (new string[]{})); 
@@ -335,7 +300,6 @@ namespace PubNubAPI.Tests
         }
 
         [Test]
-        //[ExpectedException (typeof(ArgumentException))]
         public void TestCheckMessage ()
         {
             var ex = Assert.Throws<ArgumentException>(() =>  Utility.CheckMessage (null)); 
@@ -344,7 +308,6 @@ namespace PubNubAPI.Tests
         }
 
         [Test]
-        //[ExpectedException (typeof(MissingMemberException))]
         public void TestCheckPublishKey ()
         {
             var ex = Assert.Throws<MissingMemberException>(() =>  Utility.CheckPublishKey (null)); 
@@ -352,72 +315,11 @@ namespace PubNubAPI.Tests
             Assert.That(ex.Message.Contains("Invalid publish key"), ex.Message, null);
         }
 
-        /*[Test]
-        //[ExpectedException (typeof(ArgumentException))]
-        public void TestCheckCallbackError ()
-        {
-            var ex = Assert.Throws<ArgumentException>(() =>  Utility.CheckCallback<PubnubClientError> (null, CallbackType.Error)); 
-
-            Assert.That(ex.Message.Contains("Missing Error Callback"), ex.Message, null);
-
-        }
-
-        [Test]
-        //[ExpectedException (typeof(ArgumentException))]
-        public void TestCheckCallbackUser ()
-        {
-            var ex = Assert.Throws<ArgumentException>(() =>  Utility.CheckCallback<string> (null, CallbackType.Success)); 
-
-            Assert.That(ex.Message.Contains("Missing Success Callback"), ex.Message, null);
-
-        }*/
-
-        /*[Test]
-        public void TestCheckJSONPluggableLibrary ()
-        {
-            try{
-                Utility.CheckJSONPluggableLibrary ();
-                Assert.True (true);
-            }catch{
-                Assert.True (false);
-            }
-        }*/
-
-        /*[Test]
-        //[ExpectedException (typeof(ArgumentException))]
-        public void TestCheckUserState ()
-        {
-            var ex = Assert.Throws<ArgumentException>(() =>  Utility.CheckUserState (null)); 
-
-            Assert.That(ex.Message.Contains("Missing User State"), ex.Message, null);
-        }*/
-
-        /*[Test]
-        //[ExpectedException (typeof(MissingMemberException))]
-        public void TestCheckSecretKey ()
-        {
-            var ex = Assert.Throws<MissingMemberException>(() => Utility.CheckSecretKey (null)); 
-
-            Assert.That(ex.Message.Contains("Invalid secret key"), ex.Message, null);
-        }*/
-
         [Test]
         public void TestGenerateGuid ()
         {
             Assert.IsTrue(Utility.GenerateGuid ().ToString() != "");
         }
-
-        /*[Test]
-        public void CheckRequestTimeoutMessageInError ()
-        {
-            CustomEventArgs<string> cea = new CustomEventArgs<string> ();
-            cea.CurrRequestType = CurrentRequestType.Subscribe;
-            cea.IsError = true;
-            cea.IsTimeout = false;
-            cea.Message = "The request timed out.";
-            cea.PubnubRequestState = null;
-            Assert.IsTrue(Utility.CheckRequestTimeoutMessageInError<string> (cea));
-        }*/
 
         [Test]
         public void TestIsPresenceChannelTrue ()

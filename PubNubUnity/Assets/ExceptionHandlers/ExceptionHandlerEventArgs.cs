@@ -7,7 +7,6 @@ namespace PubNubAPI
     {
         internal List<ChannelEntity> channelEntities;
         internal bool reconnectMaxTried;
-        //internal bool resumeOnReconnect;
         internal PNOperationType responseType;
     }
 }

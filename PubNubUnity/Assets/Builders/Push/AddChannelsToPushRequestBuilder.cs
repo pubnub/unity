@@ -9,7 +9,6 @@ namespace PubNubAPI
     {      
         public AddChannelsToPushRequestBuilder(PubNubUnity pn):base(pn, PNOperationType.PNAddPushNotificationsOnChannelsOperation){
         }
-        //private List<string> ChannelsToUse { get; set;}
         private string DeviceIDForPush{ get; set;}
         public void Channels(List<string> channels){
             ChannelsToUse = channels;
@@ -52,18 +51,6 @@ namespace PubNubAPI
             RequestState requestState = new RequestState ();
             requestState.OperationType = OperationType;
             
-            /* Uri request = BuildRequests.BuildRegisterDevicePushRequest(
-                string.Join(",", ChannelsToUse.ToArray()), 
-                PushType, 
-                DeviceIDForPush,
-                this.PubNubInstance.PNConfig.UUID,
-                this.PubNubInstance.PNConfig.Secure,
-                this.PubNubInstance.PNConfig.Origin,
-                this.PubNubInstance.PNConfig.AuthKey,
-                this.PubNubInstance.PNConfig.SubscribeKey,
-                this.PubNubInstance.Version
-            ); */
-
             Uri request = BuildRequests.BuildRegisterDevicePushRequest(
                 string.Join(",", ChannelsToUse.ToArray()), 
                 PushType, 
@@ -78,7 +65,6 @@ namespace PubNubAPI
             //{"error": "Invalid device token"} 
             //[1, "Modified Channels"] 
             //{"error": "Use of the mobile push notifications API requires the Push Notifications add-on which is not enabled for this subscribe key. Login to your PubNub Dashboard Account and ADD the Push Notifications add-on. Contact support@pubnub.com if you require further assistance."} 
-            //TODO read all values.
             PNPushAddChannelResult pnPushAddChannelResult = new PNPushAddChannelResult();
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
             PNStatus pnStatus = new PNStatus();
@@ -116,10 +102,6 @@ namespace PubNubAPI
             }
             Callback(pnPushAddChannelResult, pnStatus);
         }
-        
-        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
-            
-        // }
         
     }
 }

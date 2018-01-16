@@ -62,10 +62,6 @@ namespace PubNubAPI
 
         }
  
-        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
-            
-        // }
-
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             //{"status": 200, "error": false, "error_message": ""} 
             //{"status": 403, "error": true, "error_message": "Use of the history API requires the Storage & Playback which is not enabled for this subscribe key. Login to your PubNub Dashboard Account and enable Storage & Playback. Contact support@pubnub.com if you require further assistance.", "channels": {}}

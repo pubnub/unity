@@ -42,16 +42,6 @@ namespace PubNubAPI
             RequestState requestState = new RequestState ();
             requestState.OperationType = OperationType;
             
-            /* Uri request = BuildRequests.BuildRemoveAllDevicePushRequest(
-                PushType, 
-                DeviceIDForPush,
-                this.PubNubInstance.PNConfig.UUID,
-                this.PubNubInstance.PNConfig.Secure,
-                this.PubNubInstance.PNConfig.Origin,
-                this.PubNubInstance.PNConfig.AuthKey,
-                this.PubNubInstance.PNConfig.SubscribeKey,
-                this.PubNubInstance.Version
-            ); */
             Uri request = BuildRequests.BuildRemoveAllDevicePushRequest(
                 PushType, 
                 DeviceIDForPush,
@@ -101,11 +91,6 @@ namespace PubNubAPI
 
             Callback(pnPushRemoveAllChannelsResult, pnStatus);
         }
-
-        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
-            
-        // }
-        
         
     }
 }

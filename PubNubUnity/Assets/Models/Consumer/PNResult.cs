@@ -8,8 +8,6 @@ namespace PubNubAPI
         {
         }
 
-        /*public static PNResult Create(){
-        }*/
     }
 }
 

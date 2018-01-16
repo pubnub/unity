@@ -88,20 +88,6 @@ namespace PubNubAPI
             #endif
             //TODO: start=0&end=0
 
-            /* Uri request = BuildRequests.BuildHistoryRequest(
-                this.HistoryChannel,
-                this.StartTime,
-                this.EndTime,
-                this.HistoryCount,
-                this.ReverseHistory,
-                this.IncludeTimetokenInHistory,
-                this.PubNubInstance.PNConfig.UUID,
-                this.PubNubInstance.PNConfig.Secure,
-                this.PubNubInstance.PNConfig.Origin,
-                this.PubNubInstance.PNConfig.AuthKey,
-                this.PubNubInstance.PNConfig.SubscribeKey,
-                this.PubNubInstance.Version
-            ); */
             Uri request = BuildRequests.BuildHistoryRequest(
                 this.HistoryChannel,
                 this.StartTime,
@@ -114,10 +100,6 @@ namespace PubNubAPI
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }
  
-        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
-            
-        // }
-
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             //[[{"text":"hey"},{"text":"hey"},{"text":"hey"},{"text":"hey"}],15011678612673119,15011678623670911]
             PNHistoryResult pnHistoryResult = new PNHistoryResult();

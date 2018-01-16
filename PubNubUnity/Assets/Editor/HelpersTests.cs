@@ -3,9 +3,6 @@ using PubNubAPI;
 using NUnit.Framework;
 using System.Text;
 using System.Collections.Generic;
-/*#if NETFX_CORE
-using System.Reflection;
-#endif*/
 
 namespace PubNubAPI.Tests
 {
@@ -13,7 +10,6 @@ namespace PubNubAPI.Tests
     public class HelpersTests
     {
         #if DEBUG  
-        //CreatePNStatus
 
         [Test]
         public void TestCreatePNStatusWithCGAndCh(){
@@ -222,7 +218,6 @@ namespace PubNubAPI.Tests
             Assert.True(pnStatus.TlsEnabled.Equals(pnConfiguration.Secure));
             Assert.True(pnStatus.UUID.Equals(pnConfiguration.UUID));
             Assert.True(channelEntities1[0].ChannelID.ChannelOrChannelGroupName.Equals(pnStatus.AffectedChannelGroups[0]));
-            //Assert.True(pnStatus.AffectedChannels.Count.Equals(0));
             Assert.True(pnStatus.ClientRequest.Equals(pnRequestState.URL));
         }
 
@@ -908,22 +903,6 @@ namespace PubNubAPI.Tests
 
         bool IsTimeout = false;
         bool IsError = false;
-        /*[Test]
-        public void TestResponseCallbackErrorOrTimeoutHandlerSubscribe400CGnCH()
-        {
-            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
-            ExceptionStatusCode = 400;
-
-            TestResponseCallbackErrorOrTimeoutHandler<SubscribeEnvelope> (channelGroups, "test message", channels, false, PNOperationType.PNSubscribeOperation, PNCurrentRequestType.Subscribe, false, false, 0, false, ExceptionStatusCode);
-        }
-
-        [Test]
-        public void TestResponseCallbackErrorOrTimeoutHandlerSubscribe414CGnCH()
-        {
-            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
-            ExceptionStatusCode = 414;
-            TestResponseCallbackErrorOrTimeoutHandler<SubscribeEnvelope> (channelGroups, "414 response", channels, false, PNOperationType.PNSubscribeOperation, PNCurrentRequestType.Subscribe, false, false, 0, false, ExceptionStatusCode);
-        }*/
         [Test]
         public void CheckRequestTimeoutMessageInError ()
         {
@@ -1048,19 +1027,6 @@ namespace PubNubAPI.Tests
 
             TestResponseCallbackErrorOrTimeoutHandler<SubscribeEnvelope> (channelGroups, "Failed downloading UnityWeb", channels, false, PNOperationType.PNSubscribeOperation, PNCurrentRequestType.Subscribe, false, true, 0, false, ExceptionStatusCode);
         }
-
-        /*[Test]
-        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribeFailedTOCGnCH()
-        {
-            string[] channels = {"testSubscribe","test2Subscribe"};string[] channelGroups = {"testSubscribeCG","test2SubscribeCG"}; 
-            ExceptionStatusCode = 400;
-
-            TestResponseCallbackErrorOrTimeoutHandler (channelGroups, "timedout", channels, false,
-                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
-                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
-                true, true, 0, false, PubnubErrorFilter.Level.Warning
-            );
-        }*/
 
         [Test]
         public void TestResponseCallbackErrorOrTimeoutHandlerErrRORSubscribe400CGnCH()
@@ -1293,19 +1259,6 @@ namespace PubNubAPI.Tests
 
             TestResponseCallbackErrorOrTimeoutHandler<SubscribeEnvelope> (channelGroups, "Failed downloading UnityWeb", null, false, PNOperationType.PNSubscribeOperation, PNCurrentRequestType.Subscribe, false, true, 0, false, ExceptionStatusCode);
         }
-
-        /*[Test]
-        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribeFailedTOCG()
-        {
-            string[] channelGroups = {"testSubscribe","test2Subscribe"}; 
-            ExceptionStatusCode = 400;
-
-            TestResponseCallbackErrorOrTimeoutHandler (channelGroups, "timedout", null, false,
-                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
-                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
-                true, true, 0, false, PubnubErrorFilter.Level.Warning
-            );
-        }*/
 
         [Test]
         public void TestResponseCallbackErrorOrTimeoutHandlerErrRORSubscribe400CG()
@@ -1540,19 +1493,6 @@ namespace PubNubAPI.Tests
             TestResponseCallbackErrorOrTimeoutHandler<SubscribeEnvelope> (null, "Failed downloading UnityWeb", channels, false, PNOperationType.PNSubscribeOperation, PNCurrentRequestType.Subscribe, false, true, 0, false, ExceptionStatusCode);
         }
 
-        /*[Test]
-        public void TestResponseCallbackErrorOrTimeoutHandlerErrSubscribeFailedTO ()
-        {
-            string[] channels = {"testSubscribe","test2Subscribe"}; 
-            ExceptionStatusCode = 400;
-
-            TestResponseCallbackErrorOrTimeoutHandler ("timedout", channels, false,
-                ResponseType.SubscribeV2, CurrentRequestType.Subscribe, UserCallbackCommonExceptionHandler, 
-                ConnectCallbackCommonExceptionHandler, ErrorCallbackCommonExceptionHandler, 
-                true, true, 0, false, PubnubErrorFilter.Level.Warning
-            );
-        }*/
-
         [Test]
         public void TestResponseCallbackErrorOrTimeoutHandlerErrRORSubscribe400 ()
         {
@@ -1682,9 +1622,6 @@ namespace PubNubAPI.Tests
             pnConfiguration.PresenceTimeout = 60;
             pnConfiguration.PresenceInterval= 30;
             pnConfiguration.Secure = ssl;
-            //pnConfiguration.AuthKey = authKey;
-
-            //PubNub pn = new PubNub(pnConfiguration);
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
             
             PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
@@ -1729,12 +1666,6 @@ namespace PubNubAPI.Tests
             PNStatus pnStatus;
             Helpers.CheckErrorTypeAndCallback<T> (cea, pnUnity, out pnStatus);
 
-            /*if (responseType == ResponseType.PresenceV2 || responseType == ResponseType.SubscribeV2) {
-                DateTime dt = DateTime.Now;
-                while (dt.AddSeconds(2) > DateTime.Now) {
-                    UnityEngine.Debug.Log ("waiting");
-                }
-            }*/
             if(pnStatus!=null){
                 if(channelEntities1!= null)
                     Assert.True(EditorCommon.MatchChannelsEntities(channelEntities1, pnStatus.AffectedChannels));

@@ -7,7 +7,6 @@ namespace PubNubAPI
 {
     public class TimeRequestBuilder: PubNubNonSubBuilder<TimeRequestBuilder, PNTimeResult>, IPubNubNonSubscribeBuilder<TimeRequestBuilder, PNTimeResult>
     {      
-        //protected Action<PNTimeResult, PNStatus> Callback;  
         public TimeRequestBuilder(PubNubUnity pn):base(pn, PNOperationType.PNTimeOperation){
         }
         
@@ -56,10 +55,6 @@ namespace PubNubAPI
             
         }
 
-        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
-            
-        // }
-        
     }
 }
 

@@ -42,18 +42,7 @@ namespace PubNubAPI
             RequestState requestState = new RequestState ();
             requestState.OperationType = OperationType;
             
-           /*  Uri request = BuildRequests.BuildGetChannelsPushRequest(
-                PushType,
-                DeviceIDForPush,
-                this.PubNubInstance.PNConfig.UUID,
-                this.PubNubInstance.PNConfig.Secure,
-                this.PubNubInstance.PNConfig.Origin,
-                this.PubNubInstance.PNConfig.AuthKey,
-                this.PubNubInstance.PNConfig.SubscribeKey,
-                this.PubNubInstance.Version
-            ); */
-
-             Uri request = BuildRequests.BuildGetChannelsPushRequest(
+            Uri request = BuildRequests.BuildGetChannelsPushRequest(
                 PushType,
                 DeviceIDForPush,
                 ref this.PubNubInstance
@@ -90,10 +79,6 @@ namespace PubNubAPI
             Callback(pnPushListProvisionsResult, pnStatus);
         }
 
-        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
-            
-        // }        
-        
     }
 }
 

@@ -29,8 +29,6 @@ namespace PubNubAPI
         public PNErrorData ErrorData  {get; set;}
         public bool Error {get; set;}
 
-        // boolean automaticallyRetry;
-
         public long StatusCode {get; set;}
         public PNOperationType Operation {get; set;}
 
@@ -44,7 +42,6 @@ namespace PubNubAPI
         // send back channel, channel groups that were affected by this operation
         public List<String> AffectedChannels {get; set;}
         public List<String> AffectedChannelGroups {get; set;}
-        //private Endpoint executedEndpoint;
     }
 }
 

@@ -77,8 +77,6 @@ namespace PubNubAPI
                 #endif
             }
         }
-        
-        //public string FilterExpression { get; set;}
         string filterExpr;
         public string FilterExpression{
             get { return filterExpr; }

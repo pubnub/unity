@@ -34,17 +34,6 @@ namespace PubNubAPI
             RequestState requestState = new RequestState ();
             requestState.OperationType = base.OperationType;
             
-            /* Uri request = BuildRequests.BuildGetChannelsForChannelGroupRequest(
-                "",
-                ChannelGroupToList,
-                false,
-                this.PubNubInstance.PNConfig.UUID,
-                this.PubNubInstance.PNConfig.Secure,
-                this.PubNubInstance.PNConfig.Origin,
-                this.PubNubInstance.PNConfig.AuthKey,
-                this.PubNubInstance.PNConfig.SubscribeKey,
-                this.PubNubInstance.Version
-            ); */
             Uri request = BuildRequests.BuildGetChannelsForChannelGroupRequest(
                 "",
                 ChannelGroupToList,
@@ -61,6 +50,7 @@ namespace PubNubAPI
 
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             //{"status": 200, "payload": {"channels": ["channel1", "channel2"], "group": "channelGroup1"}, "service": "channel-registry", "error": false} 
+            
             PNChannelGroupsAllChannelsResult pnChannelGroupsAllChannelsResult = new PNChannelGroupsAllChannelsResult();
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
             PNStatus pnStatus = new PNStatus();

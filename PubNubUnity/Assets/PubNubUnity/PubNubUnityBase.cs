@@ -52,13 +52,6 @@ namespace PubNubAPI
         public PubNubUnityBase(PNConfiguration pnConfiguration, GameObject gameObjectRef, IJsonLibrary jsonLibrary){
             PNConfig = pnConfiguration;
             PNLog = new PNLoggingMethod(PNConfig.LogVerbosity);
-            //new PNLatency();
-            /*if (PNConfig.LogVerbosity.Equals (PNLogVerbosity.BODY)) {
-				//Debug.logger.logEnabled = true;
-			} else {
-				//Debug.logger.logEnabled = false;
-			}*/
-
             #if(UNITY_IOS)
             Version = string.Format("PubNub-CSharp-UnityIOS/{0}", build);
             #elif(UNITY_STANDALONE_WIN)

@@ -1,5 +1,4 @@
 using System;
-
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -61,45 +60,23 @@ namespace PubNubAPI
                 newChannelEntities
             );
 
-            //if (newChannelEntities.Count > 0) {
-                //Retrieve the current channels already subscribed previously and terminate them
-                this.PubNubInstance.SubWorker.AbortPreviousRequest(subscribedChannels);
+            //Retrieve the current channels already subscribed previously and terminate them
+            this.PubNubInstance.SubWorker.AbortPreviousRequest(subscribedChannels);
 
-                /* Uri request = BuildRequests.BuildLeaveRequest(
+            if(!this.PubNubInstance.PNConfig.SuppressLeaveEvents){
+                Uri request = BuildRequests.BuildLeaveRequest(
                     channels,
                     channelGroups,
-                    this.PubNubInstance.SubscriptionInstance.CompiledUserState,
-                    this.PubNubInstance.PNConfig.UUID,
-                    this.PubNubInstance.PNConfig.Secure,
-                    this.PubNubInstance.PNConfig.Origin,
-                    this.PubNubInstance.PNConfig.AuthKey,
-                    this.PubNubInstance.PNConfig.SubscribeKey,
-                    this.PubNubInstance.Version,
-                    this.PubNubInstance.Latency
-                ); */
+                    ref this.PubNubInstance
+                );
+                base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
+            }
 
-                if(!this.PubNubInstance.PNConfig.SuppressLeaveEvents){
-                    Uri request = BuildRequests.BuildLeaveRequest(
-                        channels,
-                        channelGroups,
-                        ref this.PubNubInstance
-                    );
-                    base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
-                }
-
-                //Remove the valid channels from subscribe list for unsubscribe
-                RemoveUnsubscribedChannelsAndDeleteUserState(newChannelEntities);
+            RemoveUnsubscribedChannelsAndDeleteUserState(newChannelEntities);
                 
 
-                //Get all the channels
-                //this.PubNubInstance.SubWorker.ContinueToSubscribeRestOfChannels(requestState.RespType);
-                this.PubNubInstance.SubWorker.ContinueToSubscribeRestOfChannels();
-            //} else {
-
-            //}
-            //this.PubNubInstance.SubscriptionInstance.Delete()
-
-            
+            //Get all the channels
+            this.PubNubInstance.SubWorker.ContinueToSubscribeRestOfChannels();            
         }
 
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
@@ -129,34 +106,23 @@ namespace PubNubAPI
             foreach(ChannelEntity ce in channelEntities)
             {
                 string channelToBeRemoved = ce.ChannelID.ChannelOrChannelGroupName;
-                //PubnubChannelCallback<T> channelCallback = ce.ChannelParams.Callbacks as PubnubChannelCallback<T>;
                 if (this.PubNubInstance.SubscriptionInstance.Delete (ce)) {
                     string message = string.Format ("{0} Unsubscribed from {1}", (ce.ChannelID.IsPresenceChannel) ? "Presence" : "", channelToBeRemoved.Replace (Utility.PresenceChannelSuffix, ""));
-                    //List<object> result = Helpers.CreateJsonResponse (jsonString, channelToBeRemoved.Replace (Utility.PresenceChannelSuffix, ""), JsonPluggableLibrary);
                     #if (ENABLE_PUBNUB_LOGGING)
                     this.PubNubInstance.PNLog.WriteToLog (string.Format ("RemoveUnsubscribedChannelsAndDeleteUserState: JSON response={0}", message), PNLoggingMethod.LevelInfo);
                     #endif
                     PNStatus pnStatus = base.CreateStatusResponseFromMessage(false, message, null, PNStatusCategory.PNConnectedCategory);
                     Callback(null, pnStatus);
-
-                    /* PubnubCallbacks.GoToCallback<T> (result, channelCallback.DisconnectCallback, JsonPluggableLibrary);*/
                 } else {
                     string message = string.Format("Unsubscribe Error. Please retry the unsubscribe operation. channel{0}", channelToBeRemoved);
-                    //PubnubErrorCode errorType = (ce.ChannelID.IsPresenceChannel) ? PubnubErrorCode.PresenceUnsubscribeFailed : PubnubErrorCode.UnsubscribeFailed;
                     #if (ENABLE_PUBNUB_LOGGING)
                     this.PubNubInstance.PNLog.WriteToLog(string.Format("RemoveUnsubscribedChannelsAndDeleteUserState: channel={0} unsubscribe error", channelToBeRemoved), PNLoggingMethod.LevelInfo);
                     #endif
-                    /*PubnubCallbacks.CallErrorCallback<T>(message, channelCallback.ErrorCallback,errorType, PubnubErrorSeverity.Critical, PubnubErrorLevel);*/
                     PNStatus pnStatus = base.CreateErrorResponseFromMessage(message, null, PNStatusCategory.PNUnknownCategory);
                     Callback(null, pnStatus);
                 }
             }
         }
-
-        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
-            
-        // }
-        
     }
 }
 

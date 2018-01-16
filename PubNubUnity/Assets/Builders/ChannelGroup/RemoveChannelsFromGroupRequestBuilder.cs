@@ -10,7 +10,6 @@ namespace PubNubAPI
         public RemoveChannelsFromGroupRequestBuilder(PubNubUnity pn):base(pn, PNOperationType.PNRemoveChannelsFromGroupOperation){
 
         }
-        //private List<string> ChannelsToUse { get; set;}
         public void Channels(List<string> channels){
             ChannelsToUse = channels;
         }
@@ -46,17 +45,6 @@ namespace PubNubAPI
             RequestState requestState = new RequestState();
             requestState.OperationType = base.OperationType;
             
-            /* Uri request = BuildRequests.BuildRemoveChannelsFromChannelGroupRequest(
-                ChannelsToUse.ToArray(), 
-                "", 
-                ChannelGroupToDelete,
-                this.PubNubInstance.PNConfig.UUID,
-                this.PubNubInstance.PNConfig.Secure,
-                this.PubNubInstance.PNConfig.Origin,
-                this.PubNubInstance.PNConfig.AuthKey,
-                this.PubNubInstance.PNConfig.SubscribeKey,
-                this.PubNubInstance.Version
-            ); */
             Uri request = BuildRequests.BuildRemoveChannelsFromChannelGroupRequest(
                 ChannelsToUse.ToArray(), 
                 "", 
@@ -65,9 +53,6 @@ namespace PubNubAPI
             );
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }
-        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
-            
-        // }
 
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             PNChannelGroupsRemoveChannelResult pnChannelGroupsRemoveChannelResult = new PNChannelGroupsRemoveChannelResult();

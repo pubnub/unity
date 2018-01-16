@@ -7,9 +7,6 @@ namespace PubNubAPI
 {
     public sealed class Subscription
     {
-        //private static volatile Subscription instance;
-        //private static object syncRoot = new Object();
-
         private PubNubUnity PubNubInstance;
 
         public Subscription(PubNubUnity pn){
@@ -21,30 +18,6 @@ namespace PubNubAPI
             AllChannelGroups = new List<ChannelEntity> ();
             AllSubscribedChannelsAndChannelGroups  = new List<ChannelEntity> ();
         }
-
-        /*public static Subscription Instance
-        {
-            get 
-            {
-                if (instance == null) 
-                {
-                    lock (syncRoot) 
-                    {
-                        if (instance == null) 
-                            instance = new Subscription();
-
-                        instance.ChannelsAndChannelGroupsAwaitingConnectCallback = new List<ChannelEntity> ();
-                        instance.AllPresenceChannelsOrChannelGroups = new List<ChannelEntity> ();
-                        instance.AllNonPresenceChannelsOrChannelGroups = new List<ChannelEntity> ();
-                        instance.AllChannels = new List<ChannelEntity> ();
-                        instance.AllChannelGroups = new List<ChannelEntity> ();
-                        instance.AllSubscribedChannelsAndChannelGroups  = new List<ChannelEntity> ();
-                    }
-                }
-
-                return instance;
-            }
-        }*/
 
         public bool HasChannelGroups {get; private set;}
         public bool HasPresenceChannels {get; private set;}
@@ -99,8 +72,6 @@ namespace PubNubAPI
         public bool ConnectCallbackSent {
             get;
             private set;
-            //update SubscribedChannelsAndChannelGroupsAwaitingConnectCallback
-            //and set isAwaitingConnectCallback false
         }
 
         public SafeDictionary<ChannelIdentity, ChannelParameters> ChannelEntitiesDictionary 
@@ -119,10 +90,8 @@ namespace PubNubAPI
                 this.PubNubInstance.PNLog.WriteToLog (string.Format ("Add: channelEntities key add {0} {1} {2}", channelEntity.ChannelID.ChannelOrChannelGroupName, channelEntity.ChannelID.IsChannelGroup, channelEntity.ChannelParams.IsSubscribed), PNLoggingMethod.LevelInfo);
                 #endif
             } else {
-                //channelEntitiesDictionary [channelEntity.ChannelID].Callbacks = channelEntity.ChannelParams.Callbacks;
                 channelEntitiesDictionary [channelEntity.ChannelID].IsAwaitingConnectCallback = channelEntity.ChannelParams.IsAwaitingConnectCallback;
                 channelEntitiesDictionary [channelEntity.ChannelID].IsSubscribed = true;
-                //channelEntitiesDictionary [channelEntity.ChannelID].TypeParameterType = channelEntity.ChannelParams.TypeParameterType;
                 Dictionary<string, object> userState = channelEntitiesDictionary [channelEntity.ChannelID].UserState;
                 if (userState == null) {
                     channelEntitiesDictionary [channelEntity.ChannelID].UserState = channelEntity.ChannelParams.UserState;
@@ -374,8 +343,6 @@ namespace PubNubAPI
 
                     string message = string.Format ("Detected and removed duplicate channels {0}", channel); 
 
-                    //PubnubCallbacks.CallErrorCallback<T> (message, errorCallback, PubnubErrorCode.DuplicateChannel, 
-                      //  PubnubErrorSeverity.Info, errorLevel);
                 }
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PubNubInstance.PNLog.WriteToLog (string.Format ("RemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCommon: channelsOrChannelGroups len={0}, channelsOrChannelGroups = {1}", channelsOrChannelGroups.Count, string.Join(",", channelsOrChannelGroups.ToArray())), PNLoggingMethod.LevelInfo);
@@ -417,12 +384,9 @@ namespace PubNubAPI
                     if (unsubscribeCheck) {
                         if (!channelIsSubscribed) {
                             string message = string.Format ("{0}Channel Not Subscribed", (ce.ChannelID.IsPresenceChannel) ? "Presence " : "");
-                            //PubnubErrorCode errorType = (ce.ChannelID.IsPresenceChannel) ? PubnubErrorCode.NotPresenceSubscribed : PubnubErrorCode.NotSubscribed;
                             #if (ENABLE_PUBNUB_LOGGING)
                             this.PubNubInstance.PNLog.WriteToLog (string.Format ("CreateChannelEntityAndAddToSubscribe: channel={0} response={1}",  channelName, message), PNLoggingMethod.LevelInfo);
                             #endif
-                            /*PubnubCallbacks.CallErrorCallback<T> (ce, message,
-                                errorType, PubnubErrorSeverity.Info, errorLevel);*/
                         } else {
                             channelEntities.Add (ce);
                             bReturn = true;
@@ -430,9 +394,6 @@ namespace PubNubAPI
                     } else {
                         if (channelIsSubscribed) {
                             string message = string.Format ("{0}Already subscribed", (ce.ChannelID.IsPresenceChannel) ? "Presence " : "");
-                            /*PubnubErrorCode errorType = (ce.ChannelID.IsPresenceChannel) ? PubnubErrorCode.AlreadyPresenceSubscribed : PubnubErrorCode.AlreadySubscribed;
-                            PubnubCallbacks.CallErrorCallback<T> (ce, message,
-                                errorType, PubnubErrorSeverity.Info, errorLevel);*/
                             #if (ENABLE_PUBNUB_LOGGING)
                             this.PubNubInstance.PNLog.WriteToLog (string.Format ("CreateChannelEntityAndAddToSubscribe: channel={0} response={1}",  channelName, message), PNLoggingMethod.LevelInfo);
                             #endif
