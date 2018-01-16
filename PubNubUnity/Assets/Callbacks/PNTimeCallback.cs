@@ -15,8 +15,9 @@ namespace PubNubAPI
 
         internal override void OnResponse (T result, PNStatus status)
         {
-            if(callbackAction != null)
+            if(callbackAction != null){
                 callbackAction.Invoke(result, status);
+            }
         }
 
         #endregion

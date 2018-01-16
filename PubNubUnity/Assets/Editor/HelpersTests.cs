@@ -1663,7 +1663,7 @@ namespace PubNubAPI.Tests
             cea.IsTimeout = isTimeout;
             cea.CurrRequestType = crt;
             PNStatus pnStatus;
-            Helpers.CheckErrorTypeAndCallback<T> (cea, pnUnity, out pnStatus);
+            Helpers.TryCheckErrorTypeAndCallback<T> (cea, pnUnity, out pnStatus);
 
             if(pnStatus!=null){
                 if(channelEntities1!= null)

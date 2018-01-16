@@ -8,7 +8,7 @@ namespace PubNubAPI
     {
         private QueueManager queueManager;
         private PubNubNonSubBuilder<U, V> PNBuilder;
-        public static int InstanceCount;
+        private static int InstanceCount;
         private long ResponseCode = 0;
         private string URL = "";
         private string webRequestId = "";
@@ -42,13 +42,6 @@ namespace PubNubAPI
             webRequest = this.queueManager.PubNubInstance.GameObjectRef.AddComponent<PNUnityWebRequest> ();
             webRequest.WebRequestComplete += WebRequestCompleteHandler;
             this.webRequest.PNLog = this.queueManager.PubNubInstance.PNLog;
-        }
-            
-        
-
-        public void Queue(PNConfiguration pnConfig, Action<V, PNStatus> callback){
-            
-
         }
 
         public void RunWebRequest(RequestState requestState, PubNubNonSubBuilder<U, V> pnBuilder){
@@ -88,7 +81,7 @@ namespace PubNubAPI
                
                 if ((cea != null) && (cea.CurrRequestType.Equals(PNCurrentRequestType.NonSubscribe))) {
                     PNStatus pnStatus;
-                    if(Helpers.CheckErrorTypeAndCallback<V>(cea, this.queueManager.PubNubInstance, out pnStatus)){
+                    if(Helpers.TryCheckErrorTypeAndCallback<V>(cea, this.queueManager.PubNubInstance, out pnStatus)){
                         #if (ENABLE_PUBNUB_LOGGING)
                         this.queueManager.PubNubInstance.PNLog.WriteToLog(string.Format ("WebRequestCompleteHandler: Is Error true "), PNLoggingMethod.LevelInfo);
                         #endif

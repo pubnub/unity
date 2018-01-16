@@ -646,7 +646,7 @@ namespace PubNubAPI
             try {
                 if ((cea != null) && (cea.CurrRequestType.Equals(PNCurrentRequestType.Subscribe))) {
                     PNStatus pnStatus;
-                    if (Helpers.CheckErrorTypeAndCallback<U>(cea, this.PubNubInstance, out pnStatus)){
+                    if (Helpers.TryCheckErrorTypeAndCallback<U>(cea, this.PubNubInstance, out pnStatus)){
                         Debug.Log("Is Error true");
                         ExceptionHandler(cea.PubNubRequestState);
                         
@@ -687,14 +687,17 @@ namespace PubNubAPI
             Dictionary<string, object> pnPresenceEventDict = (Dictionary<string, object>)payload;
             string log = "";
             int occupancy = 0;
-            if(Utility.CheckKeyAndParseInt(pnPresenceEventDict, "occupancy", "occupancy", out log, out occupancy)){
+            if(Utility.TryCheckKeyAndParseInt(pnPresenceEventDict, "occupancy", "occupancy", out log, out occupancy)){
                 Debug.Log("occupancy:" + occupancy);
             }
+            long timetoken;
+            Utility.TryCheckKeyAndParseLong(pnPresenceEventDict, "timestamp", "timestamp", out log, out timetoken);
+
             PNPresenceEvent pnPresenceEvent = new PNPresenceEvent (
                 (pnPresenceEventDict.ContainsKey("action"))?pnPresenceEventDict["action"].ToString():"",
                 (pnPresenceEventDict.ContainsKey("uuid"))?pnPresenceEventDict["uuid"].ToString():"",
                 occupancy,
-                Utility.CheckKeyAndParseLong(pnPresenceEventDict, "timestamp", "timestamp", out log),
+                timetoken,
                 (pnPresenceEventDict.ContainsKey("state"))?pnPresenceEventDict["state"]:null,
                 Utility.CheckKeyAndConvertObjToStringArr((pnPresenceEventDict.ContainsKey("join"))?pnPresenceEventDict["join"]:null),
                 Utility.CheckKeyAndConvertObjToStringArr((pnPresenceEventDict.ContainsKey("leave"))?pnPresenceEventDict["leave"]:null),

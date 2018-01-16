@@ -74,7 +74,8 @@ namespace PubNubAPI.Tests
             var dict = new Dictionary<string, object>(); 
             dict.Add("s", 2);
             string log;
-            long o = Utility.CheckKeyAndParseLong(dict, "seq", "s", out log);
+            long o;
+            Utility.TryCheckKeyAndParseLong(dict, "seq", "s", out log, out o);
             Assert.True(o.Equals(2));
         }
 
@@ -83,7 +84,8 @@ namespace PubNubAPI.Tests
             var dict = new Dictionary<string, object>(); 
             dict.Add("s", "l");
             string log;
-            long o = Utility.CheckKeyAndParseLong(dict, "seq", "s", out log);
+            long o;
+            Utility.TryCheckKeyAndParseLong(dict, "seq", "s", out log, out o);
             Assert.True(o.Equals(0));
             UnityEngine.Debug.Log(log);
             Assert.True(log.Contains("seq, s conversion failed: "));
@@ -94,7 +96,8 @@ namespace PubNubAPI.Tests
             var dict = new Dictionary<string, object>(); 
             dict.Add("s", "l");
             string log;
-            long o = Utility.CheckKeyAndParseLong(dict, "seq", "sa", out log);
+            long o;
+            Utility.TryCheckKeyAndParseLong(dict, "seq", "sa", out log, out o);
             Assert.True(o.Equals(0));
         }
 
@@ -104,7 +107,7 @@ namespace PubNubAPI.Tests
             dict.Add("s", 2);
             string log;
             int val;
-            Assert.True(Utility.CheckKeyAndParseInt(dict, "seq", "s", out log, out val));
+            Assert.True(Utility.TryCheckKeyAndParseInt(dict, "seq", "s", out log, out val));
             Assert.True(val.Equals(2));
         }
 
@@ -114,7 +117,7 @@ namespace PubNubAPI.Tests
             dict.Add("s", "l");
             string log;
             int val;
-            Assert.False(Utility.CheckKeyAndParseInt(dict, "seq", "s", out log, out val));
+            Assert.False(Utility.TryCheckKeyAndParseInt(dict, "seq", "s", out log, out val));
             Assert.True(val.Equals(0));
             UnityEngine.Debug.Log(log);
             Assert.True(log.Contains("seq, s conversion failed: "));
@@ -126,7 +129,7 @@ namespace PubNubAPI.Tests
             dict.Add("s", "l");
             string log;
             int val;
-            Assert.False(Utility.CheckKeyAndParseInt(dict, "seq", "sa", out log, out val));
+            Assert.False(Utility.TryCheckKeyAndParseInt(dict, "seq", "sa", out log, out val));
             Assert.True(val.Equals(0));
             UnityEngine.Debug.Log(log);
             Assert.True(log.Contains("seq, sa key not found."));

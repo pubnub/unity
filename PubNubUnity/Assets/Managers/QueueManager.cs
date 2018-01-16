@@ -143,6 +143,8 @@ namespace PubNubAPI
                             removeGroupRequestBuilder.RaiseRunRequest(this);
 
                             break;
+                        default:
+                            break;    
                     }
                 } 
             } else {

@@ -51,7 +51,7 @@ namespace PubNubAPI
             List<ChannelEntity> subscribedChannels = this.PubNubInstance.SubscriptionInstance.AllSubscribedChannelsAndChannelGroups;
 
             List<ChannelEntity> newChannelEntities;
-            bool channelsOrChannelGroupsAdded = this.PubNubInstance.SubscriptionInstance.RemoveDuplicatesCheckAlreadySubscribedAndGetChannels(
+            bool channelsOrChannelGroupsAdded = this.PubNubInstance.SubscriptionInstance.TryRemoveDuplicatesCheckAlreadySubscribedAndGetChannels(
                 OperationType,
                 ChannelsToUse,
                 ChannelGroupsToUse,

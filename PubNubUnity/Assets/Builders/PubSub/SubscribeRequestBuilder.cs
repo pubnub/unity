@@ -81,7 +81,7 @@ namespace PubNubAPI
             PNOperationType pnOpType = PNOperationType.PNSubscribeOperation;
             long timetokenToUse = this.Timetoken;
             
-            bool channelsOrChannelGroupsAdded = this.PubNubInstance.SubscriptionInstance.RemoveDuplicatesCheckAlreadySubscribedAndGetChannels (pnOpType, rawChannels, rawChannelGroups, false, out newChannelEntities);
+            bool channelsOrChannelGroupsAdded = this.PubNubInstance.SubscriptionInstance.TryRemoveDuplicatesCheckAlreadySubscribedAndGetChannels (pnOpType, rawChannels, rawChannelGroups, false, out newChannelEntities);
             if (channelsOrChannelGroupsAdded){
                 this.PubNubInstance.SubscriptionInstance.Add (newChannelEntities);
                 this.PubNubInstance.SubWorker.Add (timetokenToUse, subscribedChannels);

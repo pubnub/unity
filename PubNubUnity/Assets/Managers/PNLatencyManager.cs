@@ -122,6 +122,8 @@ namespace PubNubAPI
                 case PNOperationType.PNRemoveGroupOperation:
                     ChannelGroupsLatency.Add(DateTime.UtcNow.Ticks, latency);
                     break;
+                default:
+                    break;    
             }
 
         }

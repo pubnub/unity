@@ -115,7 +115,7 @@ namespace PubNubAPI
         public bool Delete(ChannelEntity channelEntity)
         {
             ChannelParameters cp;
-            bool bDeleted = channelEntitiesDictionary.Remove(channelEntity.ChannelID, out cp);
+            bool bDeleted = channelEntitiesDictionary.TryRemove(channelEntity.ChannelID, out cp);
             #if (ENABLE_PUBNUB_LOGGING)
             this.PubNubInstance.PNLog.WriteToLog (string.Format ("Delete: channelEntities key found {0} {1}", channelEntity.ChannelID.ChannelOrChannelGroupName, bDeleted.ToString()), PNLoggingMethod.LevelInfo);
             #endif
@@ -304,7 +304,7 @@ namespace PubNubAPI
         }
         #endif
 
-        public bool RemoveDuplicatesCheckAlreadySubscribedAndGetChannels(PNOperationType type, List<string> rawChannels, List<string> rawChannelGroups, bool unsubscribeCheck, out List<ChannelEntity> channelEntities)
+        public bool TryRemoveDuplicatesCheckAlreadySubscribedAndGetChannels(PNOperationType type, List<string> rawChannels, List<string> rawChannelGroups, bool unsubscribeCheck, out List<ChannelEntity> channelEntities)
         {
             bool bReturn = false;
             bool channelAdded = false;
@@ -318,7 +318,7 @@ namespace PubNubAPI
                 channelGroupAdded = RemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCommon(type, rawChannelGroups, true, unsubscribeCheck, ref channelEntities);
             }
 
-            bReturn = channelAdded | channelGroupAdded;
+            bReturn = channelAdded || channelGroupAdded;
 
             return bReturn;
         }

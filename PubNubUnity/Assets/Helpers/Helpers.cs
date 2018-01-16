@@ -46,7 +46,7 @@ namespace PubNubAPI
             }
         }
 
-        public static bool CheckErrorTypeAndCallback<T> (CustomEventArgs cea, PubNubUnity pnUnity, out PNStatus pnStatus){
+        public static bool TryCheckErrorTypeAndCallback<T> (CustomEventArgs cea, PubNubUnity pnUnity, out PNStatus pnStatus){
             bool retBool = false;
             PNStatusCategory pnStatusCat = PNStatusCategory.PNUnknownCategory;
             if (cea.IsTimeout || CheckRequestTimeoutMessageInError(cea)){
@@ -301,8 +301,8 @@ namespace PubNubAPI
         {
             Dictionary<string, object> timeTokenData = (Dictionary<string, object>)timeTokenDataObject;
             string log;
-            long timetoken = Utility.CheckKeyAndParseLong(timeTokenData, whichTT, "t", out log);
-            //TODO use trygetvalue
+            long timetoken;
+            Utility.TryCheckKeyAndParseLong(timeTokenData, whichTT, "t", out log, out timetoken);
             TimetokenMetadata timetokenMetadata = new TimetokenMetadata (timetoken, (timeTokenData.ContainsKey ("r")) ? timeTokenData["r"].ToString(): "");
 
             #if (ENABLE_PUBNUB_LOGGING)
@@ -472,7 +472,8 @@ namespace PubNubAPI
                 string issuingClientId = (dict.Contains ("i")) ? dict ["i"].ToString () : "";
                 string subscribeKey = (dict.Contains ("k")) ? dict ["k"].ToString () : "";
                 string log; 
-                long sequenceNumber = Utility.CheckKeyAndParseLong (dict, "sequenceNumber", "s", out log);
+                long sequenceNumber;
+                Utility.TryCheckKeyAndParseLong (dict, "sequenceNumber", "s", out log, out sequenceNumber);
                 
                 TimetokenMetadata originatingTimetoken = (dict.Contains ("o")) ? Helpers.CreateTimetokenMetadata (dict ["o"], "Originating TT: ", pnLog) : null;
                 TimetokenMetadata publishMetadata = (dict.Contains ("p")) ? Helpers.CreateTimetokenMetadata (dict ["p"], "Publish TT: ", pnLog) : null;

@@ -230,11 +230,11 @@ namespace PubNubAPI.Tests
 
             List<ChannelEntity> channelEntities;
 
-            pnUnity.SubscriptionInstance.RemoveDuplicatesCheckAlreadySubscribedAndGetChannels(responseType, multiChannels, null, false, out channelEntities);
+            pnUnity.SubscriptionInstance.TryRemoveDuplicatesCheckAlreadySubscribedAndGetChannels(responseType, multiChannels, null, false, out channelEntities);
 
             List<ChannelEntity> channelEntities2;
 
-            pnUnity.SubscriptionInstance.RemoveDuplicatesCheckAlreadySubscribedAndGetChannels(responseType, validChannels, null, false, out channelEntities2);
+            pnUnity.SubscriptionInstance.TryRemoveDuplicatesCheckAlreadySubscribedAndGetChannels(responseType, validChannels, null, false, out channelEntities2);
 
             string channels2 = Helpers.GetNamesFromChannelEntities(channelEntities2, false);
 

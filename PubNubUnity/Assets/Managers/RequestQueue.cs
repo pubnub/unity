@@ -30,8 +30,9 @@ namespace PubNubAPI
                 {
                     lock (syncRoot) 
                     {
-                        if (instance == null) 
+                        if (instance == null){
                             instance = new RequestQueue();
+                        }
                     }
                 }
 

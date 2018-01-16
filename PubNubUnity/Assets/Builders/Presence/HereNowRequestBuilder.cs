@@ -92,10 +92,10 @@ namespace PubNubAPI
                             
                             pnHereNowResult.Channels = channelsResult;
                         } 
-                    } else if(Utility.CheckKeyAndParseInt(dictionary, "total_channels", "total_channels", out log, out totalChannels)){
+                    } else if(Utility.TryCheckKeyAndParseInt(dictionary, "total_channels", "total_channels", out log, out totalChannels)){
                             pnHereNowResult.TotalChannels = totalChannels;
                             Debug.Log(log);
-                    } else if(Utility.CheckKeyAndParseInt(dictionary, "total_occupancy", "total_occupancy", out log, out total_occupancy)){
+                    } else if(Utility.TryCheckKeyAndParseInt(dictionary, "total_occupancy", "total_occupancy", out log, out total_occupancy)){
                             pnHereNowResult.TotalOccupancy = total_occupancy;
                             Debug.Log(log);
                     } else if((ChannelsToUse.Count.Equals(1) && (ChannelGroupsToUse==null)) && dictionary.TryGetValue("uuids", out objPayload)){

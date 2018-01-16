@@ -26,8 +26,9 @@ namespace PubNubAPI
             
         }
 
-
+        //Removed
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
+            throw new NotImplementedException();
         }
         
     }

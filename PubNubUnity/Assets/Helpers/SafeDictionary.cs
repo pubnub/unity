@@ -69,18 +69,13 @@ namespace PubNubAPI
             }
         }
 
-        public bool Remove(TKey key, out TValue value)
+        public bool TryRemove(TKey key, out TValue value)
         {
             lock (syncRoot)
             {
                 d.TryGetValue(key, out value);
                 return d.Remove(key);
             }
-        }
-
-        public bool TryRemove(TKey key, out TValue value)
-        {
-            return Remove (key, out value);
         }
 
         public bool TryGetValue(TKey key, out TValue value)

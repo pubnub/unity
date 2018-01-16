@@ -9,8 +9,8 @@ namespace PubNubAPI
 {
     public static class Utility
     {
-        public const string PresenceChannelSuffix = "-pnpres";
-        public const int iOSRequestTimeout = 59;
+        public static readonly string PresenceChannelSuffix = "-pnpres";
+        public static readonly int iOSRequestTimeout = 59;
 
         #if(UNITY_IOS)
         public static int CheckTimeoutValue(int value){
@@ -46,8 +46,8 @@ namespace PubNubAPI
         }
 
         //TODO Handle exception
-        public static long CheckKeyAndParseLong(IDictionary dict, string what, string key, out string log){
-            long sequenceNumber = 0;
+        public static bool TryCheckKeyAndParseLong(IDictionary dict, string what, string key, out string log, out long sequenceNumber){
+            sequenceNumber = 0;
             log = ""; 
             if (dict.Contains (key)) {
                 long seqNumber;
@@ -55,12 +55,13 @@ namespace PubNubAPI
                     log = string.Format ("{0}, {1} conversion failed: {2}.", what, key, dict [key].ToString ());
                 }
                 sequenceNumber = seqNumber;
+                return true;
             }
-            return sequenceNumber;
+            return false;
         }
 
         //TODO Handle exception
-        public static bool CheckKeyAndParseInt(IDictionary dict, string what, string key, out string log, out int val){
+        public static bool TryCheckKeyAndParseInt(IDictionary dict, string what, string key, out string log, out int val){
             val = 0;
             log = "";
             if (dict.Contains (key)) {
