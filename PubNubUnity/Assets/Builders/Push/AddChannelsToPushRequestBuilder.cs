@@ -55,7 +55,7 @@ namespace PubNubAPI
                 string.Join(",", ChannelsToUse.ToArray()), 
                 PushType, 
                 DeviceIDForPush,
-                ref this.PubNubInstance
+                this.PubNubInstance
             );
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this);
         }

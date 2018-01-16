@@ -95,7 +95,7 @@ namespace PubNubAPI
                 this.HistoryCount,
                 this.ReverseHistory,
                 this.IncludeTimetokenInHistory,
-                ref this.PubNubInstance
+                this.PubNubInstance
             );
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
 
@@ -174,7 +174,7 @@ namespace PubNubAPI
                             }
                             if(!string.IsNullOrEmpty(this.PubNubInstance.PNConfig.CipherKey) && (this.PubNubInstance.PNConfig.CipherKey.Length > 0)){
                                 //TODO: handle exception
-                                objPayload = Helpers.DecodeMessage(this.PubNubInstance.PNConfig.CipherKey, objPayload, OperationType, ref this.PubNubInstance);
+                                objPayload = Helpers.DecodeMessage(this.PubNubInstance.PNConfig.CipherKey, objPayload, OperationType, this.PubNubInstance);
                             } 
                             
                             PNMessageResult pnMessageResult = new PNMessageResult(

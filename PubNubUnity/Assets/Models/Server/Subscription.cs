@@ -213,7 +213,7 @@ namespace PubNubAPI
             return oldUserState;
         }
 
-        public bool UpdateOrAddUserStateOfEntity(ref ChannelEntity channelEntity, Dictionary<string, object> userState, bool edit){
+        public bool TryUpdateOrAddUserStateOfEntity(ref ChannelEntity channelEntity, Dictionary<string, object> userState, bool edit){
             bool stateChanged = false;
             if (channelEntitiesDictionary.ContainsKey (channelEntity.ChannelID)) {
 
@@ -374,7 +374,7 @@ namespace PubNubAPI
                     #endif
 
                     //create channelEntity
-                    ChannelEntity ce = Helpers.CreateChannelEntity (channelName, true, isChannelGroup, null, ref this.PubNubInstance.PNLog);
+                    ChannelEntity ce = Helpers.CreateChannelEntity (channelName, true, isChannelGroup, null, this.PubNubInstance.PNLog);
 
                     bool channelIsSubscribed = false;
                     if (ChannelEntitiesDictionary.ContainsKey (ce.ChannelID)){

@@ -25,7 +25,7 @@ namespace PubNubAPI
             requestState.OperationType = OperationType;
             
             Uri request = BuildRequests.BuildTimeRequest(
-                ref this.PubNubInstance
+                this.PubNubInstance
             );
 
             #if (ENABLE_PUBNUB_LOGGING)

@@ -229,7 +229,7 @@ namespace PubNubAPI.Tests
                 chStr = ch;
             }
 
-            Uri uri = BuildRequests.BuildLeaveRequest (ch, cg, ref pnUnity);
+            Uri uri = BuildRequests.BuildLeaveRequest (ch, cg, pnUnity);
 
             //https://ps.pndsn.com/v2/presence/sub_key/demo-36/channel/test/leave?uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
             string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/channel/{3}/leave?uuid={4}{7}{5}&pnsdk={6}",

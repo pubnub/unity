@@ -38,7 +38,7 @@ namespace PubNubAPI
                 "",
                 ChannelGroupToList,
                 false,
-                ref this.PubNubInstance
+                this.PubNubInstance
             );
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         

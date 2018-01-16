@@ -11,7 +11,7 @@ namespace PubNubAPI
     {
 
         #region "Build Requests"
-        public static Uri BuildRegisterDevicePushRequest(string channel, PNPushType pushType, string pushToken, ref PubNubUnity pnInstance)
+        public static Uri BuildRegisterDevicePushRequest(string channel, PNPushType pushType, string pushToken, PubNubUnity pnInstance)
         {
             StringBuilder parameterBuilder = new StringBuilder();
 
@@ -27,10 +27,10 @@ namespace PubNubAPI
             url.Add("devices");
             url.Add(pushToken);
 
-            return BuildRestApiRequest<Uri>(url, PNOperationType.PNAddPushNotificationsOnChannelsOperation, parameterBuilder.ToString(), ref pnInstance);
+            return BuildRestApiRequest<Uri>(url, PNOperationType.PNAddPushNotificationsOnChannelsOperation, parameterBuilder.ToString(), pnInstance);
         }
 
-        public static Uri BuildRemoveChannelPushRequest(string channel, PNPushType pushType, string pushToken, ref PubNubUnity pnInstance)
+        public static Uri BuildRemoveChannelPushRequest(string channel, PNPushType pushType, string pushToken, PubNubUnity pnInstance)
         {
             StringBuilder parameterBuilder = new StringBuilder();
 
@@ -46,10 +46,10 @@ namespace PubNubAPI
             url.Add("devices");
             url.Add(pushToken);
 
-            return BuildRestApiRequest<Uri>(url, PNOperationType.PNRemoveChannelsFromGroupOperation, parameterBuilder.ToString(), ref pnInstance);
+            return BuildRestApiRequest<Uri>(url, PNOperationType.PNRemoveChannelsFromGroupOperation, parameterBuilder.ToString(), pnInstance);
         }
 
-        internal static Uri BuildRemoveAllDevicePushRequest(PNPushType pushType, string pushToken, ref PubNubUnity pnInstance)
+        internal static Uri BuildRemoveAllDevicePushRequest(PNPushType pushType, string pushToken, PubNubUnity pnInstance)
         {
             StringBuilder parameterBuilder = new StringBuilder();
 
@@ -65,10 +65,10 @@ namespace PubNubAPI
             url.Add(pushToken);
             url.Add("remove");
 
-            return BuildRestApiRequest<Uri>(url, PNOperationType.PNRemoveChannelsFromGroupOperation, parameterBuilder.ToString(), ref pnInstance);
+            return BuildRestApiRequest<Uri>(url, PNOperationType.PNRemoveChannelsFromGroupOperation, parameterBuilder.ToString(), pnInstance);
         }
 
-        public static Uri BuildGetChannelsPushRequest(PNPushType pushType, string pushToken, ref PubNubUnity pnInstance)
+        public static Uri BuildGetChannelsPushRequest(PNPushType pushType, string pushToken, PubNubUnity pnInstance)
         {
             StringBuilder parameterBuilder = new StringBuilder();
 
@@ -83,10 +83,10 @@ namespace PubNubAPI
             url.Add("devices");
             url.Add(pushToken);
 
-            return BuildRestApiRequest<Uri>(url, PNOperationType.PNPushNotificationEnabledChannelsOperation, parameterBuilder.ToString(), ref pnInstance);
+            return BuildRestApiRequest<Uri>(url, PNOperationType.PNPushNotificationEnabledChannelsOperation, parameterBuilder.ToString(), pnInstance);
         }
 
-        public static Uri BuildUnregisterDevicePushRequest(PNPushType pushType, string pushToken, ref PubNubUnity pnInstance)
+        public static Uri BuildUnregisterDevicePushRequest(PNPushType pushType, string pushToken, PubNubUnity pnInstance)
         {
             StringBuilder parameterBuilder = new StringBuilder();
 
@@ -102,10 +102,10 @@ namespace PubNubAPI
             url.Add (pushToken);
             url.Add("remove");
 
-            return BuildRestApiRequest<Uri>(url, PNOperationType.PNRemoveAllPushNotificationsOperation, parameterBuilder.ToString (), ref pnInstance);
+            return BuildRestApiRequest<Uri>(url, PNOperationType.PNRemoveAllPushNotificationsOperation, parameterBuilder.ToString (), pnInstance);
         }
 
-        public static Uri BuildPublishRequest (string channel, string message, bool storeInHistory, string metadata, uint messageCounter, int ttl, bool usePost, ref PubNubUnity pnInstance)
+        public static Uri BuildPublishRequest (string channel, string message, bool storeInHistory, string metadata, uint messageCounter, int ttl, bool usePost, PubNubUnity pnInstance)
         {
             StringBuilder parameterBuilder = new StringBuilder ();
             parameterBuilder.AppendFormat ("&seqn={0}", messageCounter.ToString ());
@@ -151,10 +151,10 @@ namespace PubNubAPI
                 url.Add (message);
             }
 
-            return BuildRestApiRequest<Uri> (url, PNOperationType.PNPublishOperation, parameterBuilder.ToString (), ref pnInstance);
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNPublishOperation, parameterBuilder.ToString (), pnInstance);
         }
 
-        internal static Uri BuildDeleteMessagesRequest (string channel, long start, long end, ref PubNubUnity pnInstance){
+        internal static Uri BuildDeleteMessagesRequest (string channel, long start, long end, PubNubUnity pnInstance){
             StringBuilder parameterBuilder = new StringBuilder ();
             if (start != -1) {
                 parameterBuilder.AppendFormat ("&start={0}", start.ToString ().ToLower ());
@@ -174,10 +174,10 @@ namespace PubNubAPI
             url.Add ("channel");
             url.Add (channel);
 
-            return BuildRestApiRequest<Uri> (url, PNOperationType.PNDeleteMessagesOperation, parameterBuilder.ToString(), ref pnInstance);
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNDeleteMessagesOperation, parameterBuilder.ToString(), pnInstance);
         }
 
-        internal static Uri BuildFetchRequest (string[] channels, long start, long end, uint count, bool reverse, bool includeToken, ref PubNubUnity pnInstance)
+        internal static Uri BuildFetchRequest (string[] channels, long start, long end, uint count, bool reverse, bool includeToken, PubNubUnity pnInstance)
         {
             StringBuilder parameterBuilder = new StringBuilder ();
 
@@ -204,10 +204,10 @@ namespace PubNubAPI
             url.Add ("channel");
             url.Add (Utility.EncodeUricomponent(string.Join(",", channels), PNOperationType.PNFetchMessagesOperation, true, false));
 
-            return BuildRestApiRequest<Uri> (url, PNOperationType.PNFetchMessagesOperation, parameterBuilder.ToString(), ref pnInstance);
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNFetchMessagesOperation, parameterBuilder.ToString(), pnInstance);
         }
 
-        public static Uri BuildHistoryRequest (string channel, long start, long end, uint count, bool reverse, bool includeToken, ref PubNubUnity pnInstance)
+        public static Uri BuildHistoryRequest (string channel, long start, long end, uint count, bool reverse, bool includeToken, PubNubUnity pnInstance)
         {
             StringBuilder parameterBuilder = new StringBuilder ();
 
@@ -233,10 +233,10 @@ namespace PubNubAPI
             url.Add ("channel");
             url.Add (channel);
 
-            return BuildRestApiRequest<Uri> (url, PNOperationType.PNHistoryOperation, parameterBuilder.ToString(), ref pnInstance);
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNHistoryOperation, parameterBuilder.ToString(), pnInstance);
         }
 
-        public static Uri BuildHereNowRequest (string channel, string channelGroups, bool showUUIDList, bool includeUserState, ref PubNubUnity pnInstance)
+        public static Uri BuildHereNowRequest (string channel, string channelGroups, bool showUUIDList, bool includeUserState, PubNubUnity pnInstance)
         {
             int disableUUID = (showUUIDList) ? 0 : 1;
             int userState = (includeUserState) ? 1 : 0;
@@ -262,11 +262,11 @@ namespace PubNubAPI
                 url.Add (",");
             }
 
-            return BuildRestApiRequest<Uri> (url, PNOperationType.PNHereNowOperation, parameterBuilder.ToString(), ref pnInstance);
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNHereNowOperation, parameterBuilder.ToString(), pnInstance);
         }
 
 
-        public static Uri BuildWhereNowRequest (string uuid, ref PubNubUnity pnInstance)
+        public static Uri BuildWhereNowRequest (string uuid, PubNubUnity pnInstance)
         {
             List<string> url = new List<string> ();
 
@@ -277,20 +277,20 @@ namespace PubNubAPI
             url.Add ("uuid");
             url.Add (uuid);
 
-            return BuildRestApiRequest<Uri> (url, PNOperationType.PNWhereNowOperation, "", ref pnInstance);
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNWhereNowOperation, "", pnInstance);
         }
 
-        public static Uri BuildTimeRequest (ref PubNubUnity pnInstance)
+        public static Uri BuildTimeRequest (PubNubUnity pnInstance)
         {
             List<string> url = new List<string> ();
 
             url.Add ("time");
             url.Add ("0");
 
-            return BuildRestApiRequest<Uri> (url, PNOperationType.PNTimeOperation, "", ref pnInstance);
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNTimeOperation, "", pnInstance);
         }
 
-        public static Uri BuildSetStateRequest (string channel, string channelGroup, string jsonUserState, string uuid, ref PubNubUnity pnInstance)
+        public static Uri BuildSetStateRequest (string channel, string channelGroup, string jsonUserState, string uuid, PubNubUnity pnInstance)
         {
             StringBuilder paramBuilder = new StringBuilder ();
             paramBuilder.AppendFormat ("?state={0}", Utility.EncodeUricomponent (jsonUserState, PNOperationType.PNSetStateOperation, false, false));
@@ -311,10 +311,10 @@ namespace PubNubAPI
             url.Add (uuid);
             url.Add ("data");
 
-            return BuildRestApiRequest<Uri> (url, PNOperationType.PNSetStateOperation, paramBuilder.ToString (), ref pnInstance);
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNSetStateOperation, paramBuilder.ToString (), pnInstance);
         }
 
-        public static Uri BuildGetStateRequest (string channel, string channelGroup, string uuid, ref PubNubUnity pnInstance)
+        public static Uri BuildGetStateRequest (string channel, string channelGroup, string uuid, PubNubUnity pnInstance)
         {
             string parameters = "";
             if (!string.IsNullOrEmpty(channelGroup) && channelGroup.Trim().Length > 0)
@@ -333,10 +333,10 @@ namespace PubNubAPI
             url.Add ("uuid");
             url.Add (uuid);
 
-            return BuildRestApiRequest<Uri> (url, PNOperationType.PNGetStateOperation, parameters, ref pnInstance);
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNGetStateOperation, parameters, pnInstance);
         }
 
-        public static Uri BuildPresenceHeartbeatRequest (string channels, string channelGroups, string channelsJsonState, ref PubNubUnity pnInstance)
+        public static Uri BuildPresenceHeartbeatRequest (string channels, string channelGroups, string channelsJsonState, PubNubUnity pnInstance)
         {
             StringBuilder presenceParamBuilder = new StringBuilder ();
             if (channelsJsonState != "{}" && channelsJsonState != "") {
@@ -357,10 +357,10 @@ namespace PubNubAPI
             url.Add (string.IsNullOrEmpty(channels) ? "," : channels);
             url.Add ("heartbeat");
 
-            return BuildRestApiRequest<Uri> (url, PNOperationType.PNPresenceHeartbeatOperation, presenceParamBuilder.ToString(), ref pnInstance);
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNPresenceHeartbeatOperation, presenceParamBuilder.ToString(), pnInstance);
         }
 
-        public static Uri BuildLeaveRequest (string channels, string channelGroups, ref PubNubUnity pnInstance)
+        public static Uri BuildLeaveRequest (string channels, string channelGroups, PubNubUnity pnInstance)
         {
             string compiledUserState = pnInstance.SubscriptionInstance.CompiledUserState;
             
@@ -383,10 +383,10 @@ namespace PubNubAPI
             url.Add (string.IsNullOrEmpty(channels) ? "," : channels);
             url.Add ("leave");
 
-            return BuildRestApiRequest<Uri> (url, PNOperationType.PNLeaveOperation, unsubscribeParamBuilder.ToString(), ref pnInstance);
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNLeaveOperation, unsubscribeParamBuilder.ToString(), pnInstance);
         }
 
-        public static Uri BuildSubscribeRequest (string channels, string channelGroups, string timetoken, string channelsJsonState, string region, string filterExpr, ref PubNubUnity pnInstance){
+        public static Uri BuildSubscribeRequest (string channels, string channelGroups, string timetoken, string channelsJsonState, string region, string filterExpr, PubNubUnity pnInstance){
             StringBuilder subscribeParamBuilder = new StringBuilder ();
             subscribeParamBuilder.AppendFormat ("&tt={0}", timetoken);
 
@@ -418,11 +418,11 @@ namespace PubNubAPI
                 url, 
                 PNOperationType.PNSubscribeOperation, 
                 subscribeParamBuilder.ToString (),
-                ref pnInstance
+                pnInstance
             );
         }
 
-        public static Uri BuildAddChannelsToChannelGroupRequest(string[] channels, string nameSpace, string groupName, ref PubNubUnity pnInstance)
+        public static Uri BuildAddChannelsToChannelGroupRequest(string[] channels, string nameSpace, string groupName, PubNubUnity pnInstance)
         {
             string parameters = string.Format("?add={0}", Utility.EncodeUricomponent(string.Join(",", channels), PNOperationType.PNAddChannelsToGroupOperation, true, false));
 
@@ -440,10 +440,10 @@ namespace PubNubAPI
             url.Add("channel-group");
             url.Add(groupName);
 
-            return BuildRestApiRequest<Uri>(url, PNOperationType.PNAddChannelsToGroupOperation, parameters, ref pnInstance);
+            return BuildRestApiRequest<Uri>(url, PNOperationType.PNAddChannelsToGroupOperation, parameters, pnInstance);
         }
 
-        public static Uri BuildRemoveChannelsFromChannelGroupRequest(string[] channels, string nameSpace, string groupName, ref PubNubUnity pnInstance)
+        public static Uri BuildRemoveChannelsFromChannelGroupRequest(string[] channels, string nameSpace, string groupName, PubNubUnity pnInstance)
         {
             bool channelsAvailable = false;
             string parameters = "";
@@ -471,10 +471,10 @@ namespace PubNubAPI
                 respType = PNOperationType.PNRemoveGroupOperation;
             }
 
-            return BuildRestApiRequest<Uri> (url, respType, parameters, ref pnInstance);
+            return BuildRestApiRequest<Uri> (url, respType, parameters, pnInstance);
         }
 
-        public static Uri BuildGetChannelsForChannelGroupRequest(string nameSpace, string groupName, bool limitToChannelGroupScopeOnly, ref PubNubUnity pnInstance)
+        public static Uri BuildGetChannelsForChannelGroupRequest(string nameSpace, string groupName, bool limitToChannelGroupScopeOnly, PubNubUnity pnInstance)
         {
             bool groupNameAvailable = false;
             bool nameSpaceAvailable = false;
@@ -514,7 +514,7 @@ namespace PubNubAPI
                 }
             }
 
-            return BuildRestApiRequest<Uri>(url, PNOperationType.PNChannelsForGroupOperation, "", ref pnInstance);
+            return BuildRestApiRequest<Uri>(url, PNOperationType.PNChannelsForGroupOperation, "", pnInstance);
         }
 
         private static StringBuilder AppendAuthKeyToURL(StringBuilder url, string authenticationKey, PNOperationType type){
@@ -548,44 +548,50 @@ namespace PubNubAPI
             return url;
         }
 
-        private static StringBuilder AppendLatencyToURL(StringBuilder url, PNOperationType operationType, ref PNLatencyManager latency){
+        private static StringBuilder AppendLatencyToURL(StringBuilder url, PNOperationType operationType, PNLatencyManager latency){
             //TODO Add delete history 
             switch(operationType){
                 case PNOperationType.PNTimeOperation:
-                    if(latency.Time > 0)
+                    if(latency.Time > 0){
                         url.AppendFormat("&l_time={0}", latency.Time);
+                    }
                     break;
                 case PNOperationType.PNPublishOperation:
-                    if(latency.Publish > 0)
+                    if(latency.Publish > 0){
                         url.AppendFormat("&l_pub={0}", latency.Publish);
+                    }
                     break;
                 case PNOperationType.PNWhereNowOperation:
                 case PNOperationType.PNHereNowOperation:
                 case PNOperationType.PNLeaveOperation:
                 case PNOperationType.PNSetStateOperation:
                 case PNOperationType.PNGetStateOperation:
-                    if(latency.Presence > 0)
+                    if(latency.Presence > 0){
                         url.AppendFormat("&l_pres={0}", latency.Presence);
+                    }
                     break;
                 case PNOperationType.PNRemoveAllPushNotificationsOperation:
                 case PNOperationType.PNAddPushNotificationsOnChannelsOperation:
                 case PNOperationType.PNPushNotificationEnabledChannelsOperation:
                 case PNOperationType.PNRemovePushNotificationsFromChannelsOperation:
-                    if(latency.MobilePush > 0)
+                    if(latency.MobilePush > 0){
                         url.AppendFormat("&l_push={0}", latency.MobilePush);
+                    }
                     break;
                 case PNOperationType.PNFetchMessagesOperation:
                 case PNOperationType.PNHistoryOperation:
-                    if(latency.History > 0)
+                    if(latency.History > 0){
                         url.AppendFormat("&l_hist={0}", latency.History);
+                    }
                     break;
                 case PNOperationType.PNAddChannelsToGroupOperation:
                 case PNOperationType.PNChannelGroupsOperation:
                 case PNOperationType.PNChannelsForGroupOperation:
                 case PNOperationType.PNRemoveChannelsFromGroupOperation:
                 case PNOperationType.PNRemoveGroupOperation:
-                    if(latency.ChannelGroups > 0)
+                    if(latency.ChannelGroups > 0){
                         url.AppendFormat("&l_cg={0}", latency.ChannelGroups);
+                    }
                     break;
                 default:
                     break;
@@ -644,7 +650,7 @@ namespace PubNubAPI
             return string.Join("&", lstQuery.ToArray());
         }
 
-        static string GenerateSignatureAndAddToURL(ref PubNubUnity pnInstance, Uri uri, string url){
+        static string GenerateSignatureAndAddToURL(PubNubUnity pnInstance, Uri uri, string url){
             if (!string.IsNullOrEmpty(pnInstance.PNConfig.SecretKey) && (pnInstance.PNConfig.SecretKey.Length > 0)) {
                 string signature = "";
                 string parameters = SetParametersInOrder(uri);
@@ -669,7 +675,7 @@ namespace PubNubAPI
             return "";
         }
         
-        private static Uri BuildRestApiRequest<T> (List<string> urlComponents, PNOperationType type, string parameters, ref PubNubUnity pnInstance)
+        private static Uri BuildRestApiRequest<T> (List<string> urlComponents, PNOperationType type, string parameters, PubNubUnity pnInstance)
         {
             string uuid = pnInstance.PNConfig.UUID;
             bool ssl = pnInstance.PNConfig.Secure;
@@ -773,7 +779,7 @@ namespace PubNubAPI
                 url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
                 string urlPath = string.Format("/{0}", string.Join( "/", urlComponents.ToArray()));
                 UnityEngine.Debug.Log(string.Format("urlComponentsString {0}", urlPath));
-                url = url.Append(GenerateSignatureAndAddToURL(ref pnInstance, new Uri (urlPath.ToString ()), urlComponentsEncoded));
+                url = url.Append(GenerateSignatureAndAddToURL(pnInstance, new Uri (urlPath.ToString ()), urlComponentsEncoded));
                 break;
             case PNOperationType.PNHistoryOperation:
             case PNOperationType.PNFetchMessagesOperation:
@@ -789,7 +795,7 @@ namespace PubNubAPI
                 break;
             }
 
-            url = AppendLatencyToURL(url, type, ref pnInstance.Latency);
+            url = AppendLatencyToURL(url, type, pnInstance.Latency);
             Uri requestUri = new Uri (url.ToString ());
 
             return requestUri;

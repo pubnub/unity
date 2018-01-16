@@ -499,7 +499,7 @@ namespace PubNubAPI.Tests
                 signature = Utility.Md5 (stringToSign.ToString ());
             }
 
-            Uri uri = BuildRequests.BuildPublishRequest (channel, originalMessage, storeInHistory, metadata, 0, ttl, false, ref pnUnity);
+            Uri uri = BuildRequests.BuildPublishRequest (channel, originalMessage, storeInHistory, metadata, 0, ttl, false, pnUnity);
 
             string ttlStr = (ttl == -1) ? "" : string.Format("&ttl={0}", ttl.ToString());
 

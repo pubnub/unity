@@ -197,7 +197,7 @@ namespace PubNubAPI
         /// <remarks>
         /// The RFC named it "MD5Init"
         /// </remarks>
-        public virtual void Initialize ()
+        public void Initialize ()
         {
             count [0] = count [1] = 0;
 

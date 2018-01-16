@@ -1055,7 +1055,7 @@ namespace PubNubAPI.Tests
             }
 
             Uri uri = BuildRequests.BuildHistoryRequest (channel, startTime, endTime, (uint)count, reverse, 
-                includeTimetoken, ref pnUnity
+                includeTimetoken, pnUnity
             );
 
             if (count == -1) {

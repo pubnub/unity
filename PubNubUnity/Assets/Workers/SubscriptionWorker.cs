@@ -331,7 +331,7 @@ namespace PubNubAPI
                     channelsJsonState,
                     region,
                     filterExpr,
-                    ref this.PubNubInstance
+                    this.PubNubInstance
                 );
 
                 Debug.Log ("RunSubscribeRequest " + requestUrl.OriginalString);
@@ -369,8 +369,8 @@ namespace PubNubAPI
                 if (resultSubscribeEnvelope is Dictionary<string, object>) {
 
                     Dictionary<string, object> message = (Dictionary<string, object>)resultSubscribeEnvelope;
-					subscribeEnvelope.TimetokenMeta = Helpers.CreateTimetokenMetadata (message ["t"], "Subscribe TT: ", ref this.PubNubInstance.PNLog);
-					subscribeEnvelope.Messages = Helpers.CreateListOfSubscribeMessage (message ["m"], ref this.PubNubInstance.PNLog);
+					subscribeEnvelope.TimetokenMeta = Helpers.CreateTimetokenMetadata (message ["t"], "Subscribe TT: ", this.PubNubInstance.PNLog);
+					subscribeEnvelope.Messages = Helpers.CreateListOfSubscribeMessage (message ["m"], this.PubNubInstance.PNLog);
 
                     return subscribeEnvelope;
                 } else {
@@ -498,7 +498,7 @@ namespace PubNubAPI
                 CreatePNMessageResult(subscribeMessage, out subMessageResult);
                 Debug.Log("Raising message event ");
                 if(!string.IsNullOrEmpty(this.PubNubInstance.PNConfig.CipherKey) && (this.PubNubInstance.PNConfig.CipherKey.Length > 0)){
-                    subMessageResult.Payload = Helpers.DecodeMessage(PubNubInstance.PNConfig.CipherKey, subMessageResult.Payload, PNOperationType.PNSubscribeOperation, ref this.PubNubInstance);
+                    subMessageResult.Payload = Helpers.DecodeMessage(PubNubInstance.PNConfig.CipherKey, subMessageResult.Payload, PNOperationType.PNSubscribeOperation, this.PubNubInstance);
                 } 
                 mea.MessageResult = subMessageResult;
                 PubNubInstance.RaiseEvent (mea);

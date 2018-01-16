@@ -308,7 +308,7 @@ namespace PubNubAPI
             unityWebRequestWrapper.IsComplete = false;
             GetOrPostOrDelete(ref unityWebRequestWrapper);
 
-            AsyncOperation async = unityWebRequestWrapper.CurrentUnityWebRequest.Send ();
+            UnityWebRequestAsyncOperation asyncOp = unityWebRequestWrapper.CurrentUnityWebRequest.SendWebRequest();
             currentWebRequests[key] = unityWebRequestWrapper;
 
             #if (ENABLE_PUBNUB_LOGGING)

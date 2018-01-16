@@ -33,20 +33,20 @@ if [ $rc0 -ne 0 ]; then { echo "Failed unit tests"; /Applications/Unity/Unity.ap
 #	-logFile $(pwd)/unity.log \
 #	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
 #	-runTests \
-#	-testResults $(pwd)/test.xml \
+#	-testResults $(pwd)/test2.xml \
 #	-testPlatform playmode \
 #	-username ${UNITYCI_USER_NAME} \
 #	-password ${UNITYCI_PASS} \
 #	-serial ${UNITYCI_SERIAL} 
 
-#rc0=$?
+#rc3=$?
 #echo "Unity Logs:"
 #cat ~/Library/Logs/Unity/Editor.log
 #cat $(pwd)/unity.log
 #echo "Unit test logs"
-#cat $(pwd)/test.xml
+#cat $(pwd)/test2.xml
 # exit if tests failed
-#if [ $rc0 -ne 0 ]; then { echo "Failed unit tests"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc0; } fi	
+#if [ $rc3 -ne 0 ]; then { echo "Failed unit tests"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc0; } fi	
 
 
 ## Make the builds

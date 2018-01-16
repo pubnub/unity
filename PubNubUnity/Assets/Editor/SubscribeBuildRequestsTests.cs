@@ -1146,7 +1146,7 @@ namespace PubNubAPI.Tests
                 chStr = ch;
             }
 
-            Uri uri = BuildRequests.BuildSubscribeRequest (ch, cg, tt, userState, region, filterExpr, ref pnUnity);
+            Uri uri = BuildRequests.BuildSubscribeRequest (ch, cg, tt, userState, region, filterExpr, pnUnity);
 
             string filterExpression = "";
             if(!string.IsNullOrEmpty (filterExpr)){

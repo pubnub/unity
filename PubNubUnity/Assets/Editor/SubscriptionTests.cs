@@ -270,7 +270,7 @@ namespace PubNubAPI.Tests
             pnUnity.SubscriptionInstance.CleanUp();
             PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
             //Add CE with ch cg, ch-pres, cgpres, 2 awaiting connect callback with userstate
-            List<ChannelEntity> channelEntities = EditorCommon.CreateListOfChannelEntities(true, true, true, true, ref pnLog);
+            List<ChannelEntity> channelEntities = EditorCommon.CreateListOfChannelEntities(true, true, true, true, pnLog);
             pnUnity.SubscriptionInstance.Add(channelEntities);
 
             // Test All
@@ -285,9 +285,9 @@ namespace PubNubAPI.Tests
 
 
             // Delete 2
-            ChannelEntity ce = Helpers.CreateChannelEntity("ch2", false, false, null, ref pnLog);
+            ChannelEntity ce = Helpers.CreateChannelEntity("ch2", false, false, null, pnLog);
             pnUnity.SubscriptionInstance.Delete(ce);
-            ChannelEntity ce2 = Helpers.CreateChannelEntity("cg2", false, true, null, ref pnLog);
+            ChannelEntity ce2 = Helpers.CreateChannelEntity("cg2", false, true, null, pnLog);
             pnUnity.SubscriptionInstance.Delete(ce2);
 
             // Test All
@@ -302,11 +302,11 @@ namespace PubNubAPI.Tests
             
 
             // UpdateOrAddUserStateOfEntity
-            ChannelEntity ce3 = Helpers.CreateChannelEntity("ch1", false, false, null, ref pnLog);
+            ChannelEntity ce3 = Helpers.CreateChannelEntity("ch1", false, false, null, pnLog);
             var dictSMN = new Dictionary<string, object>();
             dictSMN.Add("k","v9");
 
-            pnUnity.SubscriptionInstance.UpdateOrAddUserStateOfEntity(ref ce3, dictSMN, true);
+            pnUnity.SubscriptionInstance.TryUpdateOrAddUserStateOfEntity(ref ce3, dictSMN, true);
 
             // Test All
             RunAssertions(pnUnity, "{\"ch1\":{\"k\":\"v9\",\"k2\":\"v2\"},\"ch2-pnpres\":{\"k7\":\"v7\",\"k8\":\"v8\"},\"ch7\":{\"k7\":\"v7\",\"k8\":\"v8\"},\"cg1\":{\"k5\":\"v5\",\"k6\":\"v6\"},\"cg2-pnpres\":{\"k7\":\"v7\",\"k8\":\"v8\"},\"cg8\":{\"k7\":\"v7\",\"k8\":\"v8\"}}",
@@ -319,8 +319,8 @@ namespace PubNubAPI.Tests
                 new string[] {"ch1", "ch2-pnpres", "ch7", "cg1", "cg2-pnpres", "cg8" });
 
             // UpdateIsAwaitingConnectCallbacksOfEntity
-            ChannelEntity ce4 = Helpers.CreateChannelEntity("ch7", false, false, null, ref pnLog);
-            ChannelEntity ce5 = Helpers.CreateChannelEntity("cg8", false, true, null, ref pnLog);
+            ChannelEntity ce4 = Helpers.CreateChannelEntity("ch7", false, false, null, pnLog);
+            ChannelEntity ce5 = Helpers.CreateChannelEntity("cg8", false, true, null, pnLog);
 
             List<ChannelEntity> lstCE = new List<ChannelEntity>();
             lstCE.Add(ce4);

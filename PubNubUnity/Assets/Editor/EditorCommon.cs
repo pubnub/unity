@@ -89,55 +89,55 @@ namespace PubNubAPI.Tests
             return "UnityUnitTests_" + r.Next (100);
         }
 
-        public static List<ChannelEntity> CreateListOfChannelEntities(bool channelGroup, bool channel, bool presence, bool awaitingConnectCallback, ref PNLoggingMethod pnLog){
+        public static List<ChannelEntity> CreateListOfChannelEntities(bool channelGroup, bool channel, bool presence, bool awaitingConnectCallback, PNLoggingMethod pnLog){
             var dictSM = new Dictionary<string, object>();
             dictSM.Add("k","v");
             dictSM.Add("k2","v2");
 
 
-            ChannelEntity ce1 = Helpers.CreateChannelEntity("ch1", false, false, dictSM, ref pnLog);
+            ChannelEntity ce1 = Helpers.CreateChannelEntity("ch1", false, false, dictSM, pnLog);
 
             var dictSM2 = new Dictionary<string, object>();
             dictSM2.Add("k3","v3");
             dictSM2.Add("k4","v4");
 
-            ChannelEntity ce2 = Helpers.CreateChannelEntity("ch2", false, false, dictSM2, ref pnLog);
+            ChannelEntity ce2 = Helpers.CreateChannelEntity("ch2", false, false, dictSM2, pnLog);
 
             var dictSM3 = new Dictionary<string, object>();
             dictSM3.Add("k5","v5");
             dictSM3.Add("k6","v6");
 
-            ChannelEntity ce3 = Helpers.CreateChannelEntity("cg1", false, true, dictSM3, ref pnLog);
+            ChannelEntity ce3 = Helpers.CreateChannelEntity("cg1", false, true, dictSM3, pnLog);
 
             var dictSM4 = new Dictionary<string, object>();
             dictSM4.Add("k7","v7");
             dictSM4.Add("k8","v8");
 
-            ChannelEntity ce4 = Helpers.CreateChannelEntity("cg2", false, true, dictSM4, ref pnLog);
+            ChannelEntity ce4 = Helpers.CreateChannelEntity("cg2", false, true, dictSM4, pnLog);
 
             var dictSM5 = new Dictionary<string, object>();
             dictSM5.Add("k7","v7");
             dictSM5.Add("k8","v8");
 
-            ChannelEntity ce5 = Helpers.CreateChannelEntity("cg2-pnpres", false, true, dictSM5, ref pnLog); 
+            ChannelEntity ce5 = Helpers.CreateChannelEntity("cg2-pnpres", false, true, dictSM5, pnLog); 
 
             var dictSM6 = new Dictionary<string, object>();
             dictSM6.Add("k7","v7");
             dictSM6.Add("k8","v8");
 
-            ChannelEntity ce6 = Helpers.CreateChannelEntity("ch2-pnpres", false, false, dictSM6, ref pnLog);
+            ChannelEntity ce6 = Helpers.CreateChannelEntity("ch2-pnpres", false, false, dictSM6, pnLog);
             
             var dictSM7 = new Dictionary<string, object>();
             dictSM7.Add("k7","v7");
             dictSM7.Add("k8","v8");
 
-            ChannelEntity ce7 = Helpers.CreateChannelEntity("ch7", true, false, dictSM7, ref pnLog);
+            ChannelEntity ce7 = Helpers.CreateChannelEntity("ch7", true, false, dictSM7, pnLog);
 
             var dictSM8 = new Dictionary<string, object>();
             dictSM8.Add("k7","v7");
             dictSM8.Add("k8","v8");
 
-            ChannelEntity ce8 = Helpers.CreateChannelEntity("cg8", true, true, dictSM8, ref pnLog);
+            ChannelEntity ce8 = Helpers.CreateChannelEntity("cg8", true, true, dictSM8, pnLog);
 
             List<ChannelEntity> lstCE = new List<ChannelEntity>();
             if(channel){

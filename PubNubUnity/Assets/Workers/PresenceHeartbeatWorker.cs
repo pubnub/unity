@@ -93,7 +93,7 @@ namespace PubNubAPI
                         Helpers.GetNamesFromChannelEntities(PubNubInstance.SubscriptionInstance.AllNonPresenceChannelsOrChannelGroups, false),
                         Helpers.GetNamesFromChannelEntities(PubNubInstance.SubscriptionInstance.AllNonPresenceChannelsOrChannelGroups, true),
                         channelsJsonState,
-                        ref this.PubNubInstance
+                        this.PubNubInstance
                     );
 
                     RequestState requestState = new RequestState ();

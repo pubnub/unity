@@ -297,7 +297,7 @@ namespace PubNubAPI
             return sb.ToString();
         }
 
-        public static TimetokenMetadata CreateTimetokenMetadata (object timeTokenDataObject, string whichTT, ref PNLoggingMethod pnLog)
+        public static TimetokenMetadata CreateTimetokenMetadata (object timeTokenDataObject, string whichTT, PNLoggingMethod pnLog)
         {
             Dictionary<string, object> timeTokenData = (Dictionary<string, object>)timeTokenDataObject;
             string log;
@@ -360,7 +360,7 @@ namespace PubNubAPI
             return jsonStateBuilder.ToString ();
         }
 
-        public static ChannelEntity CreateChannelEntity(string channelOrChannelGroupName2, bool isAwaitingConnectCallback, bool isChannelGroup, Dictionary<string, object> userState, ref PNLoggingMethod pnLog){
+        public static ChannelEntity CreateChannelEntity(string channelOrChannelGroupName2, bool isAwaitingConnectCallback, bool isChannelGroup, Dictionary<string, object> userState, PNLoggingMethod pnLog){
             string channelOrChannelGroupName = channelOrChannelGroupName2.Trim ();
             #if (ENABLE_PUBNUB_LOGGING)
             pnLog.WriteToLog(string.Format("CreateChannelEntity: channelOrChannelGroupName {0}, {1}", channelOrChannelGroupName.ToString(), channelOrChannelGroupName2.ToString()), PNLoggingMethod.LevelInfo);
@@ -387,12 +387,12 @@ namespace PubNubAPI
             }
         }
 
-        public static List<ChannelEntity> CreateChannelEntity(string[] channelOrChannelGroupNames, bool isAwaitingConnectCallback, bool isChannelGroup, Dictionary<string, object> userState, ref PNLoggingMethod pnLog){
+        public static List<ChannelEntity> CreateChannelEntity(string[] channelOrChannelGroupNames, bool isAwaitingConnectCallback, bool isChannelGroup, Dictionary<string, object> userState, PNLoggingMethod pnLog){
             List<ChannelEntity> channelEntities = null;
             if (channelOrChannelGroupNames != null) {
                 channelEntities = new List<ChannelEntity> ();
                 foreach (string ch in channelOrChannelGroupNames) {
-                    ChannelEntity chEntity= CreateChannelEntity (ch, isAwaitingConnectCallback, isChannelGroup, userState, ref pnLog);
+                    ChannelEntity chEntity= CreateChannelEntity (ch, isAwaitingConnectCallback, isChannelGroup, userState, pnLog);
                     if (chEntity != null) {
                         channelEntities.Add (chEntity);
                     }
@@ -435,7 +435,7 @@ namespace PubNubAPI
             return retJsonUserState;
         }
 
-        public static object DecodeMessage (string cipherKey, object element, PNOperationType pnOperationType, ref PubNubUnity pnUnity)
+        public static object DecodeMessage (string cipherKey, object element, PNOperationType pnOperationType, PubNubUnity pnUnity)
         {
             PubnubCrypto aes = new PubnubCrypto (cipherKey, pnUnity.PNLog);
             string decryptMessage = "";
@@ -460,7 +460,7 @@ namespace PubNubAPI
             return decodeMessage;
         }
 
-        public static void AddToSubscribeMessageList (object dictObject, ref List<SubscribeMessage> subscribeMessages, ref PNLoggingMethod pnLog)
+        public static bool TryAddToSubscribeMessageList (object dictObject, ref List<SubscribeMessage> subscribeMessages, PNLoggingMethod pnLog)
         {
             var dict = dictObject as IDictionary;      
             if ((dict != null) && (dict.Count > 1)) {
@@ -474,8 +474,8 @@ namespace PubNubAPI
                 string log; 
                 long sequenceNumber = Utility.CheckKeyAndParseLong (dict, "sequenceNumber", "s", out log);
                 
-                TimetokenMetadata originatingTimetoken = (dict.Contains ("o")) ? Helpers.CreateTimetokenMetadata (dict ["o"], "Originating TT: ", ref pnLog) : null;
-                TimetokenMetadata publishMetadata = (dict.Contains ("p")) ? Helpers.CreateTimetokenMetadata (dict ["p"], "Publish TT: ", ref pnLog) : null;
+                TimetokenMetadata originatingTimetoken = (dict.Contains ("o")) ? Helpers.CreateTimetokenMetadata (dict ["o"], "Originating TT: ", pnLog) : null;
+                TimetokenMetadata publishMetadata = (dict.Contains ("p")) ? Helpers.CreateTimetokenMetadata (dict ["p"], "Publish TT: ", pnLog) : null;
                 object userMetadata = (dict.Contains ("u")) ? (object)dict ["u"] : null;
 
                 SubscribeMessage subscribeMessage = new SubscribeMessage (
@@ -526,15 +526,17 @@ namespace PubNubAPI
                 #endif
 
                 subscribeMessages.Add (subscribeMessage);
+                return true;
             } 
             #if (ENABLE_PUBNUB_LOGGING)
             else {
                 pnLog.WriteToLog (string.Format ("AddToSubscribeMessageList: CreateListOfSubscribeMessage create SubscribeMessage failed. dictObject type: {0}, dict type : {1}", dictObject.ToString (), dict.ToString ()), PNLoggingMethod.LevelInfo);
             }
             #endif
+            return false;
         }
 
-        public static List<SubscribeMessage> CreateListOfSubscribeMessage (object message, ref PNLoggingMethod pnLog)
+        public static List<SubscribeMessage> CreateListOfSubscribeMessage (object message, PNLoggingMethod pnLog)
         {
             List<SubscribeMessage> subscribeMessages = new List<SubscribeMessage> ();
             if (message != null) {
@@ -547,7 +549,7 @@ namespace PubNubAPI
                     if ((myObjectArray!= null) && (myObjectArray.Length > 0)) {
 
                         foreach (object dictObject in myObjectArray) {
-                            AddToSubscribeMessageList (dictObject, ref subscribeMessages, ref pnLog);
+                             TryAddToSubscribeMessageList (dictObject, ref subscribeMessages, pnLog);
                         }
                     }
                 } else {
@@ -555,7 +557,7 @@ namespace PubNubAPI
                     List<object> messageList = message as List<object>;
                     if ((messageList != null) && messageList.Count > 0) {
                         foreach (object dictObject in messageList) {
-                            AddToSubscribeMessageList (dictObject, ref subscribeMessages, ref pnLog);
+                            TryAddToSubscribeMessageList (dictObject, ref subscribeMessages, pnLog);
                         }
                     }
                 }

@@ -16,8 +16,8 @@ namespace PubNubAPI.Tests
             PNConfiguration pnConfiguration = EditorCommon.CreatePNConfig();
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
             PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
-            List<ChannelEntity> channelEntities1 = EditorCommon.CreateListOfChannelEntities(true, false, false, false, ref pnLog);
-            List<ChannelEntity> channelEntities2 = EditorCommon.CreateListOfChannelEntities(false, true, false, false, ref pnLog);
+            List<ChannelEntity> channelEntities1 = EditorCommon.CreateListOfChannelEntities(true, false, false, false, pnLog);
+            List<ChannelEntity> channelEntities2 = EditorCommon.CreateListOfChannelEntities(false, true, false, false, pnLog);
             pnUnity.SubscriptionInstance.Add(channelEntities1);
             pnUnity.SubscriptionInstance.Add(channelEntities2);
 
@@ -116,8 +116,8 @@ namespace PubNubAPI.Tests
             PNConfiguration pnConfiguration = EditorCommon.CreatePNConfig();
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
             PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
-            List<ChannelEntity> channelEntities1 = EditorCommon.CreateListOfChannelEntities(true, false, false, false, ref pnLog);
-            List<ChannelEntity> channelEntities2 = EditorCommon.CreateListOfChannelEntities(false, true, false, false, ref pnLog);
+            List<ChannelEntity> channelEntities1 = EditorCommon.CreateListOfChannelEntities(true, false, false, false, pnLog);
+            List<ChannelEntity> channelEntities2 = EditorCommon.CreateListOfChannelEntities(false, true, false, false, pnLog);
             pnUnity.SubscriptionInstance.Add(channelEntities1);
             pnUnity.SubscriptionInstance.Add(channelEntities2);
 
@@ -155,7 +155,7 @@ namespace PubNubAPI.Tests
             PNConfiguration pnConfiguration = EditorCommon.CreatePNConfig();
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
             PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
-            List<ChannelEntity> channelEntities1 = EditorCommon.CreateListOfChannelEntities(true, false, false, false, ref pnLog);
+            List<ChannelEntity> channelEntities1 = EditorCommon.CreateListOfChannelEntities(true, false, false, false, pnLog);
             
             RequestState pnRequestState = new RequestState();
             pnRequestState.URL = "https://testurl";
@@ -192,7 +192,7 @@ namespace PubNubAPI.Tests
             PNConfiguration pnConfiguration = EditorCommon.CreatePNConfig();
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
             PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
-            List<ChannelEntity> channelEntities1 = EditorCommon.CreateListOfChannelEntities(true, false, false, false, ref pnLog);
+            List<ChannelEntity> channelEntities1 = EditorCommon.CreateListOfChannelEntities(true, false, false, false, pnLog);
             
             RequestState pnRequestState = new RequestState();
             pnRequestState.URL = "https://testurl";
@@ -226,7 +226,7 @@ namespace PubNubAPI.Tests
             PNConfiguration pnConfiguration = EditorCommon.CreatePNConfig();
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
             PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
-            List<ChannelEntity> channelEntities1 = EditorCommon.CreateListOfChannelEntities(false, true, false, false, ref pnLog);
+            List<ChannelEntity> channelEntities1 = EditorCommon.CreateListOfChannelEntities(false, true, false, false, pnLog);
             
             RequestState pnRequestState = new RequestState();
             pnRequestState.URL = "https://testurl";
@@ -263,7 +263,7 @@ namespace PubNubAPI.Tests
             PNConfiguration pnConfiguration = EditorCommon.CreatePNConfig();
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
             PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
-            List<ChannelEntity> channelEntities1 = EditorCommon.CreateListOfChannelEntities(false, true, false, false, ref pnLog);
+            List<ChannelEntity> channelEntities1 = EditorCommon.CreateListOfChannelEntities(false, true, false, false, pnLog);
             
             RequestState pnRequestState = new RequestState();
             pnRequestState.URL = "https://testurl";
@@ -427,7 +427,7 @@ namespace PubNubAPI.Tests
             pnConfiguration.PresenceTimeout = 60;
             pnConfiguration.PresenceInterval= 30;
             PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
-            List<SubscribeMessage> lsm = Helpers.CreateListOfSubscribeMessage(obj, ref pnLog);
+            List<SubscribeMessage> lsm = Helpers.CreateListOfSubscribeMessage(obj, pnLog);
 
             if(lsm!=null){
                 ParseSubscribeMessageList(lsm);
@@ -450,7 +450,7 @@ namespace PubNubAPI.Tests
             pnConfiguration.PresenceTimeout = 60;
             pnConfiguration.PresenceInterval= 30;
             PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
-            Helpers.AddToSubscribeMessageList(EditorCommon.CreateSubscribeDictionary(), ref lsm, ref pnLog);
+            Helpers.TryAddToSubscribeMessageList(EditorCommon.CreateSubscribeDictionary(), ref lsm, pnLog);
 
             if(lsm!=null){
                 ParseSubscribeMessageList(lsm);
@@ -526,7 +526,7 @@ namespace PubNubAPI.Tests
             pnConfiguration.PresenceTimeout = 60;
             pnConfiguration.PresenceInterval= 30;
             PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
-            TimetokenMetadata ttm= Helpers.CreateTimetokenMetadata(dict, "orig", ref pnLog);
+            TimetokenMetadata ttm= Helpers.CreateTimetokenMetadata(dict, "orig", pnLog);
             Assert.True(
                 ttm.Region.Equals("east")
                 && ttm.Timetoken.Equals(14685037252884276));
@@ -545,7 +545,7 @@ namespace PubNubAPI.Tests
             pnConfiguration.PresenceTimeout = 60;
             pnConfiguration.PresenceInterval= 30;
             PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
-            TimetokenMetadata ttm= Helpers.CreateTimetokenMetadata(dict, "orig", ref pnLog);
+            TimetokenMetadata ttm= Helpers.CreateTimetokenMetadata(dict, "orig", pnLog);
             Assert.True(
                 ttm.Region.Equals("")
                 && ttm.Timetoken.Equals(14685037252884276));
@@ -576,9 +576,9 @@ namespace PubNubAPI.Tests
             pnConfiguration.PresenceInterval= 30;
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
             PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
-            List<ChannelEntity> channelEntities = Helpers.CreateChannelEntity(multiChannel, false, false, null, ref pnLog);
+            List<ChannelEntity> channelEntities = Helpers.CreateChannelEntity(multiChannel, false, false, null, pnLog);
 
-            object resp= Helpers.DecodeMessage(cipherKey, inputMessage, PNOperationType.PNSubscribeOperation, ref pnUnity);
+            object resp= Helpers.DecodeMessage(cipherKey, inputMessage, PNOperationType.PNSubscribeOperation, pnUnity);
 
             UnityEngine.Debug.Log ("ser2:" + resultExpected.ToString());
             UnityEngine.Debug.Log ("ser1:" + resp.ToString());
@@ -705,7 +705,7 @@ namespace PubNubAPI.Tests
             pnUnity.SubscriptionInstance.CleanUp();
 
             string state = pnUnity.JsonLibrary.SerializeToJsonString(dictSM);
-            ChannelEntity ce1 = Helpers.CreateChannelEntity("ch1", false, isChannelGroup, dictSM, ref pnLog);
+            ChannelEntity ce1 = Helpers.CreateChannelEntity("ch1", false, isChannelGroup, dictSM, pnLog);
 
             List<ChannelEntity> lstCe = new List<ChannelEntity>();
             lstCe.Add(ce1);
@@ -717,17 +717,16 @@ namespace PubNubAPI.Tests
 
                 List<ChannelEntity> lstCe2 = new List<ChannelEntity>();
                 lstCe2.Add(ce1);
-                ChannelEntity ce3 = Helpers.CreateChannelEntity("ch1", false, false, null, ref pnLog);
+                ChannelEntity ce3 = Helpers.CreateChannelEntity("ch1", false, false, null, pnLog);
 
-                pnUnity.SubscriptionInstance.UpdateOrAddUserStateOfEntity(ref ce3, dictSM2, edit);
+                pnUnity.SubscriptionInstance.TryUpdateOrAddUserStateOfEntity(ref ce3, dictSM2, edit);
 
-                //pnUnity.SubscriptionInstance.UpdateOrAddUserStateOfEntity(channelName, isChannelGroup, dictSM2, edit, isForOtherUUID, ref lstCe2);
                 string ustate = pnUnity.JsonLibrary.SerializeToJsonString(lstCe2[0].ChannelParams.UserState);
                 string state2 = pnUnity.JsonLibrary.SerializeToJsonString(dictSM2);
                 UnityEngine.Debug.Log(string.Format("{0}\n{1}", state2, ustate));
             }
 
-            if(pnUnity.SubscriptionInstance.UpdateOrAddUserStateOfEntity(ref ce1, dictSM, edit)){
+            if(pnUnity.SubscriptionInstance.TryUpdateOrAddUserStateOfEntity(ref ce1, dictSM, edit)){
                 string ustate = pnUnity.JsonLibrary.SerializeToJsonString(lstCe[0].ChannelParams.UserState);
                 UnityEngine.Debug.Log(string.Format("{0}\n{1}", state, ustate));
                 Assert.AreEqual(ustate, state, string.Format ("{0}\n{1}", ustate, state));
@@ -766,7 +765,7 @@ namespace PubNubAPI.Tests
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
             PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
             pnUnity.SubscriptionInstance.CleanUp();            
-            List<ChannelEntity> lstCE= EditorCommon.CreateListOfChannelEntities(channelGroup, channel, false, false, ref pnLog);  
+            List<ChannelEntity> lstCE= EditorCommon.CreateListOfChannelEntities(channelGroup, channel, false, false, pnLog);  
             string ces = Helpers.GetAllNamesFromChannelEntities(lstCE, false);
 
             bool ceFound = true;
@@ -801,7 +800,7 @@ namespace PubNubAPI.Tests
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
             PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
             pnUnity.SubscriptionInstance.CleanUp();            
-            List<ChannelEntity> lstCE= EditorCommon.CreateListOfChannelEntities(channelGroup, channel, false, false, ref pnLog);  
+            List<ChannelEntity> lstCE= EditorCommon.CreateListOfChannelEntities(channelGroup, channel, false, false, pnLog);  
              
             string ces = Helpers.GetNamesFromChannelEntities(lstCE, channelGroup);
 
@@ -861,7 +860,7 @@ namespace PubNubAPI.Tests
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
             PNLoggingMethod pnLog = new PNLoggingMethod(pnConfiguration.LogVerbosity);
             pnUnity.SubscriptionInstance.CleanUp();
-            List<ChannelEntity> lstCE= EditorCommon.CreateListOfChannelEntities(channelGroup, channel, false, false, ref pnLog);
+            List<ChannelEntity> lstCE= EditorCommon.CreateListOfChannelEntities(channelGroup, channel, false, false, pnLog);
             string ret = Helpers.BuildJsonUserState(lstCE);
             UnityEngine.Debug.Log("ret:" + ret);
             if(channel && channelGroup){
@@ -1639,10 +1638,10 @@ namespace PubNubAPI.Tests
                 IsError = false;
             }
 
-            List<ChannelEntity> channelEntities = Helpers.CreateChannelEntity(channels, true, false, null, ref pnLog);
+            List<ChannelEntity> channelEntities = Helpers.CreateChannelEntity(channels, true, false, null, pnLog);
             
             List<ChannelEntity> channelEntities1 = (channelEntities==null)? null : new List<ChannelEntity>(channelEntities);
-            List<ChannelEntity> channelGroupEntities = Helpers.CreateChannelEntity(channelGroups, true, true, null, ref pnLog);  
+            List<ChannelEntity> channelGroupEntities = Helpers.CreateChannelEntity(channelGroups, true, true, null, pnLog);  
 
             if((channelEntities != null) && (channelGroupEntities != null)){
                 channelEntities.AddRange(channelGroupEntities);

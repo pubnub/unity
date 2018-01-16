@@ -81,14 +81,14 @@ namespace PubNubAPI
                 channelGroups,
                 Helpers.BuildJsonUserState(ChannelEntities),
                 uuid,
-                ref this.PubNubInstance
+                this.PubNubInstance
             );
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }
 
         internal bool UpdateOrAddUserStateOfEntity(string channel, bool isChannelGroup, Dictionary<string, object> userState, bool edit, bool isForOtherUUID, ref List<ChannelEntity> channelEntities)
         {
-            ChannelEntity ce = Helpers.CreateChannelEntity (channel, false, isChannelGroup, userState, ref this.PubNubInstance.PNLog);
+            ChannelEntity ce = Helpers.CreateChannelEntity (channel, false, isChannelGroup, userState, this.PubNubInstance.PNLog);
             bool stateChanged = false;
 
             if (isForOtherUUID) {
@@ -96,7 +96,7 @@ namespace PubNubAPI
                 channelEntities.Add (ce);
                 stateChanged = true;
             } else {
-                stateChanged = this.PubNubInstance.SubscriptionInstance.UpdateOrAddUserStateOfEntity (ref ce, userState, edit);
+                stateChanged = this.PubNubInstance.SubscriptionInstance.TryUpdateOrAddUserStateOfEntity (ref ce, userState, edit);
                 if (!stateChanged) {
                     PNStatus pnStatus = base.CreateErrorResponseFromMessage("No change in User State", null, PNStatusCategory.PNUnknownCategory);
                     Callback(null, pnStatus);

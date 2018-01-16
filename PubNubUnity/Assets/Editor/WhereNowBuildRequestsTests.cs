@@ -79,7 +79,7 @@ namespace PubNubAPI.Tests
                 authKeyString = string.Format ("&auth={0}", pnConfiguration.AuthKey);
             }
 
-            Uri uri = BuildRequests.BuildWhereNowRequest (uuid, ref pnUnity);
+            Uri uri = BuildRequests.BuildWhereNowRequest (uuid, pnUnity);
 
             //http://ps.pndsn.com/v2/presence/sub_key/demo-36/uuid/customuuid?uuid=&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
             string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/uuid/{3}?uuid={4}{5}&pnsdk={6}",

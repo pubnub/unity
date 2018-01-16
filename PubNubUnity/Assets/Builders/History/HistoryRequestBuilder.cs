@@ -95,7 +95,7 @@ namespace PubNubAPI
                 this.HistoryCount,
                 this.ReverseHistory,
                 this.IncludeTimetokenInHistory,
-                ref this.PubNubInstance
+                this.PubNubInstance
             );
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }
@@ -152,7 +152,7 @@ namespace PubNubAPI
             historyMessage.TryGetValue("message", out v);
             if(!string.IsNullOrEmpty(cipherKey) && (cipherKey.Length > 0)){
                 //TODO: handle exception
-                pnHistoryItemResult.Entry = Helpers.DecodeMessage(cipherKey, v, OperationType, ref this.PubNubInstance);
+                pnHistoryItemResult.Entry = Helpers.DecodeMessage(cipherKey, v, OperationType, this.PubNubInstance);
             } else {
                 pnHistoryItemResult.Entry = v;
             }
@@ -171,7 +171,7 @@ namespace PubNubAPI
             pnHistoryItemResult = new PNHistoryItemResult();
             if(!string.IsNullOrEmpty(cipherKey) && (cipherKey.Length > 0)){
                 //TODO: handle exception
-                pnHistoryItemResult.Entry = Helpers.DecodeMessage(cipherKey, element, OperationType, ref this.PubNubInstance);
+                pnHistoryItemResult.Entry = Helpers.DecodeMessage(cipherKey, element, OperationType, this.PubNubInstance);
             } else {
                 pnHistoryItemResult.Entry = element;
             }
