@@ -7,15 +7,15 @@ namespace PubNubAPI
 {
     public class UnsubscribeBuilder
     {     
-        private LeaveRequestBuilder pubBuilder;
+        private readonly LeaveRequestBuilder pubBuilder;
 
-        public UnsubscribeBuilder Channels(List<string> channels){
-            pubBuilder.Channels(channels);
+        public UnsubscribeBuilder Channels(List<string> channelNames){
+            pubBuilder.Channels(channelNames);
             return this;
         }
 
-        public UnsubscribeBuilder ChannelGroups(List<string> channelGroup){
-            pubBuilder.ChannelGroups(channelGroup);
+        public UnsubscribeBuilder ChannelGroups(List<string> channelGroupNames){
+            pubBuilder.ChannelGroups(channelGroupNames);
             return this;
         }
         

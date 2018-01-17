@@ -7,51 +7,51 @@ namespace PubNubAPI
 {
     public class PublishBuilder
     {     
-        private PublishRequestBuilder pubBuilder;
+        private readonly PublishRequestBuilder pubBuilder;
         
         public PublishBuilder(PubNubUnity pn, uint counter){
             pubBuilder = new PublishRequestBuilder(pn, counter);
 
             Debug.Log ("PublishBuilder Construct");
         }
-        public PublishBuilder Message(object message){
-            pubBuilder.Message(message);
+        public PublishBuilder Message(object messageToPublish){
+            pubBuilder.Message(messageToPublish);
             return this;
         }
 
-        public PublishBuilder Channel(string channel){
-            pubBuilder.Channel(channel);
+        public PublishBuilder Channel(string channelName){
+            pubBuilder.Channel(channelName);
             return this;
         }
 
-        public PublishBuilder ShouldStore(bool shouldStore){
-            pubBuilder.ShouldStore(shouldStore);
+        public PublishBuilder ShouldStore(bool shouldStoreInHistory){
+            pubBuilder.ShouldStore(shouldStoreInHistory);
             return this;
         }
 
-        public PublishBuilder UsePost(bool usePost){
-            pubBuilder.UsePost(usePost);
+        public PublishBuilder UsePost(bool usePostRequest){
+            pubBuilder.UsePost(usePostRequest);
             return this;
         }
 
-        public PublishBuilder Meta(Dictionary<string, string> meta){
-            pubBuilder.Meta(meta);
+        public PublishBuilder Meta(Dictionary<string, string> metadata){
+            pubBuilder.Meta(metadata);
             return this;
         }
 
-        public PublishBuilder PublishAsIs(bool publishAsIs){
-            pubBuilder.PublishAsIs(publishAsIs);
+        public PublishBuilder PublishAsIs(bool publishMessageAsIs){
+            pubBuilder.PublishAsIs(publishMessageAsIs);
             return this;
         }
 
 
-        public PublishBuilder Replicate(bool replicate){
-            pubBuilder.Replicate(replicate);
+        public PublishBuilder Replicate(bool replicateMessage){
+            pubBuilder.Replicate(replicateMessage);
             return this;
         }
 
-        public PublishBuilder Ttl(int ttl){
-            pubBuilder.Ttl(ttl);
+        public PublishBuilder Ttl(int publishTTL){
+            pubBuilder.Ttl(publishTTL);
             return this;
         }
 

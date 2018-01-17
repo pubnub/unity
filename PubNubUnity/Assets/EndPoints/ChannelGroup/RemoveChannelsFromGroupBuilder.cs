@@ -7,14 +7,14 @@ namespace PubNubAPI
 {
     public class RemoveChannelsFromGroupBuilder
     {     
-        private RemoveChannelsFromGroupRequestBuilder pubBuilder;
-        public RemoveChannelsFromGroupBuilder Channels(List<string> channels){
-            pubBuilder.Channels(channels);
+        private readonly RemoveChannelsFromGroupRequestBuilder pubBuilder;
+        public RemoveChannelsFromGroupBuilder Channels(List<string> channelNames){
+            pubBuilder.Channels(channelNames);
             return this;
         }
 
-        public RemoveChannelsFromGroupBuilder ChannelGroup(string channelGroup){
-            pubBuilder.ChannelGroup(channelGroup);
+        public RemoveChannelsFromGroupBuilder ChannelGroup(string channelGroupNames){
+            pubBuilder.ChannelGroup(channelGroupNames);
             return this;
         }
 

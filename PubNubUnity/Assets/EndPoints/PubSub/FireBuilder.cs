@@ -7,35 +7,35 @@ namespace PubNubAPI
 {
     public class FireBuilder
     {     
-        private PublishRequestBuilder pubBuilder;
+        private readonly PublishRequestBuilder pubBuilder;
         
         public FireBuilder(PubNubUnity pn, uint counter){
             pubBuilder = new PublishRequestBuilder(pn, counter);
 
             Debug.Log ("FireBuilder Construct");
         }
-        public FireBuilder Message(object message){
-            pubBuilder.Message(message);
+        public FireBuilder Message(object messageToPublish){
+            pubBuilder.Message(messageToPublish);
             return this;
         }
 
-        public FireBuilder Channel(string channel){
-            pubBuilder.Channel(channel);
+        public FireBuilder Channel(string channelName){
+            pubBuilder.Channel(channelName);
             return this;
         }
 
-        public FireBuilder UsePost(bool usePost){
-            pubBuilder.UsePost(usePost);
+        public FireBuilder UsePost(bool usePostRequest){
+            pubBuilder.UsePost(usePostRequest);
             return this;
         }
 
-        public FireBuilder Meta(Dictionary<string, string> meta){
-            pubBuilder.Meta(meta);
+        public FireBuilder Meta(Dictionary<string, string> metadata){
+            pubBuilder.Meta(metadata);
             return this;
         }
 
-        public FireBuilder PublishAsIs(bool publishAsIs){
-            pubBuilder.PublishAsIs(publishAsIs);
+        public FireBuilder PublishAsIs(bool publishMessageAsIs){
+            pubBuilder.PublishAsIs(publishMessageAsIs);
             return this;
         }
 

@@ -6,16 +6,15 @@ namespace PubNubAPI
 {
     public class SubscribeRequestBuilder 
     {
-        private bool ReconnectSub = true;
         public long Timetoken { get; set;}
         public List<string> Channels { get; private set;}
         public List<string> ChannelGroups { get; private set;}
 
         protected PubNubUnity PubNubInstance { get; set;}
 
-        public bool IncludePresenceChannel = false;
+        public bool IncludePresenceChannel {get; set;}
 
-        public bool SubscribeToPresenceChannelOnly = false;
+        public bool SubscribeToPresenceChannelOnly {get; set;}
 
         public SubscribeRequestBuilder(PubNubUnity pn) {
             PubNubInstance = pn;

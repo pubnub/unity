@@ -7,7 +7,7 @@ namespace PubNubAPI
 {
     public class DeleteMessagesBuilder
     {     
-        private DeleteMessagesRequestBuilder pubBuilder;
+        private readonly DeleteMessagesRequestBuilder pubBuilder;
         
         public DeleteMessagesBuilder(PubNubUnity pn){
             pubBuilder = new DeleteMessagesRequestBuilder(pn);
@@ -15,18 +15,18 @@ namespace PubNubAPI
             Debug.Log ("DeleteBuilder Construct");
         }
 
-        public DeleteMessagesBuilder Start(long start){
-            pubBuilder.Start(start);
+        public DeleteMessagesBuilder Start(long startTime){
+            pubBuilder.Start(startTime);
             return this;
         }
 
-        public DeleteMessagesBuilder End(long end){
-            pubBuilder.End(end);
+        public DeleteMessagesBuilder End(long endTime){
+            pubBuilder.End(endTime);
             return this;
         }
 
-        public DeleteMessagesBuilder Channel(string channel){
-            pubBuilder.Channel(channel);
+        public DeleteMessagesBuilder Channel(string channelName){
+            pubBuilder.Channel(channelName);
             return this;
         }
 

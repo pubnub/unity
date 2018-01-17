@@ -7,15 +7,15 @@ namespace PubNubAPI
 {
     public class WhereNowBuilder
     {     
-        private WhereNowRequestBuilder pubBuilder;
+        private readonly WhereNowRequestBuilder pubBuilder;
         
         public WhereNowBuilder(PubNubUnity pn){
             pubBuilder = new WhereNowRequestBuilder(pn);
 
             Debug.Log ("WhereNowBuilder Construct");
         }
-        public WhereNowBuilder Uuid(string uuid){
-            pubBuilder.Uuid(uuid);
+        public WhereNowBuilder Uuid(string uuidForWhereNow){
+            pubBuilder.Uuid(uuidForWhereNow);
             return this;
         }
 

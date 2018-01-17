@@ -7,7 +7,7 @@ namespace PubNubAPI
 {
     public class GetStateBuilder
     {     
-        private GetStateRequestBuilder pubBuilder;
+        private readonly GetStateRequestBuilder pubBuilder;
         
         public GetStateBuilder(PubNubUnity pn){
             pubBuilder = new GetStateRequestBuilder(pn);
@@ -15,18 +15,18 @@ namespace PubNubAPI
             Debug.Log ("GetStateBuilder Construct");
         }
         
-        public GetStateBuilder UUID(string uuid){
-            pubBuilder.UUID(uuid);
+        public GetStateBuilder UUID(string uuidForState){
+            pubBuilder.UUID(uuidForState);
             return this;
         }
 
-        public GetStateBuilder Channels(List<string> channels){
-            pubBuilder.Channels(channels);
+        public GetStateBuilder Channels(List<string> channelNames){
+            pubBuilder.Channels(channelNames);
             return this;
         }
 
-        public GetStateBuilder ChannelGroups(List<string> channelGroups){
-            pubBuilder.ChannelGroups(channelGroups);
+        public GetStateBuilder ChannelGroups(List<string> channelGroupNames){
+            pubBuilder.ChannelGroups(channelGroupNames);
             return this;
         }
         public void Async(Action<PNGetStateResult, PNStatus> callback)

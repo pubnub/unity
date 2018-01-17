@@ -12,8 +12,8 @@ namespace PubNubAPI
         public WhereNowRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNWhereNowOperation){
         }
 
-        public WhereNowRequestBuilder Uuid(string uuid){
-            UuidForWhereNow = uuid;
+        public WhereNowRequestBuilder Uuid(string uuidForWhereNow){
+            UuidForWhereNow = uuidForWhereNow;
             return this;
         }
 
@@ -43,7 +43,7 @@ namespace PubNubAPI
         }
 
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
-            //{"status": 200, "message": "OK", "payload": {"channels": ["channel2", "channel1"]}, "service": "Presence"}
+            //Returned JSON: `{"status": 200, "message": "OK", "payload": {"channels": ["channel2", "channel1"]}, "service": "Presence"}`
             
             PNWhereNowResult pnWhereNowResult = new PNWhereNowResult();
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;

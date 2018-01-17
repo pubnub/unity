@@ -12,8 +12,8 @@ namespace PubNubAPI
 
         private string DeviceIDForPush{ get; set;}
 
-        public void DeviceId(string deviceId){
-            DeviceIDForPush = deviceId;
+        public void DeviceId(string deviceIdToPush){
+            DeviceIDForPush = deviceIdToPush;
         }
 
         public PNPushType PushType {get;set;}
@@ -52,7 +52,7 @@ namespace PubNubAPI
         }
 
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
-            //["channel1", "channel2"] 
+            //Returned JSON `["channel1", "channel2"] `
             PNPushListProvisionsResult pnPushListProvisionsResult = new PNPushListProvisionsResult();
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
             PNStatus pnStatus = new PNStatus();
@@ -62,7 +62,7 @@ namespace PubNubAPI
                     pnPushListProvisionsResult = null;
                     pnStatus = base.CreateErrorResponseFromMessage(message, requestState, PNStatusCategory.PNUnknownCategory);
                 }
-            } else if(dictionary==null) {
+            } else {
                 object[] c = deSerializedResult as object[];
                 
                 if (c != null) {
@@ -70,10 +70,10 @@ namespace PubNubAPI
                     foreach(string ch in c){
                         pnPushListProvisionsResult.Channels.Add(ch);
                     }
-                }   
-            } else {
-                pnPushListProvisionsResult = null;
-                pnStatus = base.CreateErrorResponseFromMessage("Response dictionary is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
+                } else {
+                    pnPushListProvisionsResult = null;
+                    pnStatus = base.CreateErrorResponseFromMessage("Response dictionary is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
+                }
             }
 
             Callback(pnPushListProvisionsResult, pnStatus);

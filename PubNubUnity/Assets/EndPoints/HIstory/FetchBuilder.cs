@@ -7,35 +7,35 @@ namespace PubNubAPI
 {
     public class FetchBuilder
     {     
-        private FetchMessagesRequestBuilder pubBuilder;
+        private readonly FetchMessagesRequestBuilder pubBuilder;
         
-        public FetchBuilder IncludeTimetoken(bool includeTimetoken){
-            pubBuilder.IncludeTimetoken(includeTimetoken);
+        public FetchBuilder IncludeTimetoken(bool includeTimetokenForFetch){
+            pubBuilder.IncludeTimetoken(includeTimetokenForFetch);
             return this;
         }
 
-        public FetchBuilder Reverse(bool reverse){
-            pubBuilder.Reverse(reverse);
+        public FetchBuilder Reverse(bool reverseHistory){
+            pubBuilder.Reverse(reverseHistory);
             return this;
         }
 
-        public FetchBuilder Start(long start){
-            pubBuilder.Start(start);
+        public FetchBuilder Start(long startTime){
+            pubBuilder.Start(startTime);
             return this;
         }
 
-        public FetchBuilder End(long end){
-            pubBuilder.End(end);
+        public FetchBuilder End(long endTime){
+            pubBuilder.End(endTime);
             return this;
         }
 
-        public FetchBuilder Channels(List<string> channel){
-            pubBuilder.Channel(channel);
+        public FetchBuilder Channels(List<string> channelNames){
+            pubBuilder.Channel(channelNames);
             return this;
         }
 
-        public FetchBuilder Count(ushort count){
-            pubBuilder.Count(count);
+        public FetchBuilder Count(ushort historyCount){
+            pubBuilder.Count(historyCount);
             return this;
         }
         public FetchBuilder(PubNubUnity pn){

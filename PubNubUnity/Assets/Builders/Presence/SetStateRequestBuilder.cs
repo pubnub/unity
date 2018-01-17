@@ -7,7 +7,7 @@ namespace PubNubAPI
 {
     public class SetStateRequestBuilder: PubNubNonSubBuilder<SetStateRequestBuilder, PNSetStateResult>, IPubNubNonSubscribeBuilder<SetStateRequestBuilder, PNSetStateResult>
     {
-        List<ChannelEntity> ChannelEntities = null;
+        List<ChannelEntity> ChannelEntities;
 
         private string uuid { get; set;}
         private Dictionary<string, object> UserState { get; set;}
@@ -15,20 +15,20 @@ namespace PubNubAPI
         public SetStateRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNSetStateOperation){
         }
 
-        public void UUID(string uuid){
-            this.uuid = uuid;
+        public void UUID(string uuidToSetState){
+            this.uuid = uuidToSetState;
         }
 
-        public void State(Dictionary<string, object> state){
-            this.UserState = state;
+        public void State(Dictionary<string, object> userState){
+            this.UserState = userState;
         }
 
-        public void Channels(List<string> channels){
-            ChannelsToUse = channels;
+        public void Channels(List<string> channelNames){
+            ChannelsToUse = channelNames;
         }
 
-        public void ChannelGroups(List<string> channelGroups){
-            ChannelGroupsToUse = channelGroups;
+        public void ChannelGroups(List<string> channelGroupNames){
+            ChannelGroupsToUse = channelGroupNames;
         }
 
         #region IPubNubBuilder implementation
@@ -136,7 +136,7 @@ namespace PubNubAPI
         }
 
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
-            //{"status": 200, "message": "OK", "payload": {"channels": {"channel1": {"k": "v"}, "channel2": {}}}, "uuid": "pn-c5a12d424054a3688066572fb955b7a0", "service": "Presence"}
+            //Returned JSON: `{"status": 200, "message": "OK", "payload": {"channels": {"channel1": {"k": "v"}, "channel2": {}}}, "uuid": "pn-c5a12d424054a3688066572fb955b7a0", "service": "Presence"}`
 
             //TODO read all values.
             
@@ -157,8 +157,6 @@ namespace PubNubAPI
                         Dictionary<string, object> payload = objPayload as Dictionary<string, object>;
                         object objChannelsDict;
                         payload.TryGetValue("channels", out objChannelsDict);
-                        //TODO NO CG
-                        //payload.TryGetValue("channelGroups", out objChannelsDict);
 
                         if(objChannelsDict!=null){
                             Dictionary<string, object> channelsDict = objPayload as Dictionary<string, object>;

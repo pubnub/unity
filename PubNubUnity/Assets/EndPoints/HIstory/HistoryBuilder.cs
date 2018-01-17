@@ -7,40 +7,40 @@ namespace PubNubAPI
 {
     public class HistoryBuilder
     {     
-        private HistoryRequestBuilder pubBuilder;
+        private readonly HistoryRequestBuilder pubBuilder;
         
         public HistoryBuilder(PubNubUnity pn){
             pubBuilder = new HistoryRequestBuilder(pn);
 
             Debug.Log ("HistoryBuilder Construct");
         }
-        public HistoryBuilder IncludeTimetoken(bool includeTimetoken){
-            pubBuilder.IncludeTimetoken(includeTimetoken);
+        public HistoryBuilder IncludeTimetoken(bool includeTimetokenForHistory){
+            pubBuilder.IncludeTimetoken(includeTimetokenForHistory);
             return this;
         }
 
-        public HistoryBuilder Reverse(bool reverse){
-            pubBuilder.Reverse(reverse);
+        public HistoryBuilder Reverse(bool reverseHistory){
+            pubBuilder.Reverse(reverseHistory);
             return this;
         }
 
-        public HistoryBuilder Start(long start){
-            pubBuilder.Start(start);
+        public HistoryBuilder Start(long startTime){
+            pubBuilder.Start(startTime);
             return this;
         }
 
-        public HistoryBuilder End(long end){
-            pubBuilder.End(end);
+        public HistoryBuilder End(long endTime){
+            pubBuilder.End(endTime);
             return this;
         }
 
-        public HistoryBuilder Channel(string channel){
-            pubBuilder.Channel(channel);
+        public HistoryBuilder Channel(string channelName){
+            pubBuilder.Channel(channelName);
             return this;
         }
 
-        public HistoryBuilder Count(ushort count){
-            pubBuilder.Count(count);
+        public HistoryBuilder Count(ushort historyCount){
+            pubBuilder.Count(historyCount);
             return this;
         }
 

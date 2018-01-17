@@ -7,10 +7,10 @@ namespace PubNubAPI
 {
     public class GetAllChannelsForGroupBuilder
     {     
-        private GetAllChannelsForGroupRequestBuilder pubBuilder;
+        private readonly GetAllChannelsForGroupRequestBuilder pubBuilder;
         
-        public GetAllChannelsForGroupBuilder ChannelGroup(string channelGroup){
-            pubBuilder.ChannelGroup(channelGroup);
+        public GetAllChannelsForGroupBuilder ChannelGroup(string channelGroupName){
+            pubBuilder.ChannelGroup(channelGroupName);
             return this;
         }
         

@@ -4,12 +4,7 @@ namespace PubNubAPI
 {
     internal class PNTimeCallback<T>: PNCallback<T>
     {
-        Action<T, PNStatus> callbackAction = null;
-        string message;
-
-        public PNTimeCallback()
-        {
-        }
+        Action<T, PNStatus> callbackAction;
 
         #region implemented abstract members of PNCallback
 

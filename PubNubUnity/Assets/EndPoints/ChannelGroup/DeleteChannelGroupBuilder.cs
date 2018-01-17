@@ -7,9 +7,9 @@ namespace PubNubAPI
 {
     public class DeleteChannelGroupBuilder
     {     
-        private DeleteChannelGroupRequestBuilder pubBuilder;
-        public DeleteChannelGroupBuilder ChannelGroup(string channelGroup){
-            pubBuilder.ChannelGroup(channelGroup);
+        private readonly DeleteChannelGroupRequestBuilder pubBuilder;
+        public DeleteChannelGroupBuilder ChannelGroup(string channelGroupName){
+            pubBuilder.ChannelGroup(channelGroupName);
             return this;
         }
         

@@ -10,12 +10,12 @@ namespace PubNubAPI
 
         }
 
-        public void ChannelGroups(List<string> channelGroups){
-            ChannelGroupsToUse = channelGroups;
+        public void ChannelGroups(List<string> channelGroupNames){
+            ChannelGroupsToUse = channelGroupNames;
         }
         
-        public void Channels(List<string> channels){
-            ChannelsToUse = channels;
+        public void Channels(List<string> channelNames){
+            ChannelsToUse = channelNames;
         }
         
         #region IPubNubBuilder implementation
@@ -51,7 +51,7 @@ namespace PubNubAPI
             List<ChannelEntity> subscribedChannels = this.PubNubInstance.SubscriptionInstance.AllSubscribedChannelsAndChannelGroups;
 
             List<ChannelEntity> newChannelEntities;
-            bool channelsOrChannelGroupsAdded = this.PubNubInstance.SubscriptionInstance.TryRemoveDuplicatesCheckAlreadySubscribedAndGetChannels(
+            this.PubNubInstance.SubscriptionInstance.TryRemoveDuplicatesCheckAlreadySubscribedAndGetChannels(
                 OperationType,
                 ChannelsToUse,
                 ChannelGroupsToUse,
@@ -80,7 +80,7 @@ namespace PubNubAPI
         }
 
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
-            //{"status": 200, "message": "OK", "action": "leave", "service": "Presence"}
+            //Returned JSON `{"status": 200, "message": "OK", "action": "leave", "service": "Presence"}`
             PNLeaveRequestResult pnLeaveRequestResult = new PNLeaveRequestResult();
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
             PNStatus pnStatus = new PNStatus();

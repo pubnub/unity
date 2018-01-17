@@ -7,7 +7,7 @@ namespace PubNubAPI
 {
     public class UnsubscribeAllBuilder
     {     
-        private LeaveRequestBuilder pubBuilder;
+        private readonly LeaveRequestBuilder pubBuilder;
 
         public UnsubscribeAllBuilder(PubNubUnity pn){
             pubBuilder = new LeaveRequestBuilder(pn);

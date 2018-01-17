@@ -6,7 +6,7 @@ namespace PubNubAPI
 {
     public class SubscribeBuilder
     {
-        private SubscribeRequestBuilder pubBuilder;
+        private readonly SubscribeRequestBuilder pubBuilder;
         public SubscribeBuilder(PubNubUnity pn){
             pubBuilder = new SubscribeRequestBuilder(pn);
 

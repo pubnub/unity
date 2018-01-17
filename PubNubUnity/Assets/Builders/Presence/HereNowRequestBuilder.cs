@@ -13,20 +13,20 @@ namespace PubNubAPI
         public HereNowRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNHereNowOperation){
         }
 
-        public void IncludeUUIDs(bool includeUUIDs){
-            IncludeUUIDsInHereNow = includeUUIDs;
+        public void IncludeUUIDs(bool includeUUIDsInHereNow){
+            this.IncludeUUIDsInHereNow = includeUUIDsInHereNow;
         }
 
-        public void IncludeState(bool includeState){
-            IncludeStateInHereNow = includeState;
+        public void IncludeState(bool includeStateInHereNow){
+            this.IncludeStateInHereNow = includeStateInHereNow;
         }
 
-        public void Channels(List<string> channels){
-            ChannelsToUse = channels;
+        public void Channels(List<string> channelNames){
+            ChannelsToUse = channelNames;
         }
 
-        public void ChannelGroups(List<string> channelGroups){
-            ChannelGroupsToUse = channelGroups;
+        public void ChannelGroups(List<string> channelGroupNames){
+            ChannelGroupsToUse = channelGroupNames;
         }
 
         #region IPubNubBuilder implementation
@@ -62,8 +62,8 @@ namespace PubNubAPI
 
         //TODO refactor
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
-            //{"status": 200, "message": "OK", "payload": {"channels": {"channel1": {"occupancy": 1, "uuids": ["a"]}, "channel2": {"occupancy": 1, "uuids": ["a"]}}, "total_channels": 2, "total_occupancy": 2}, "service": "Presence"} 
-             //{"status": 200, "message": "OK", "occupancy": 1, "uuids": [{"uuid": "UnityTestHereNowUUID"}], "service": "Presence"} 
+            //Retruned JSON: `{"status": 200, "message": "OK", "payload": {"channels": {"channel1": {"occupancy": 1, "uuids": ["a"]}, "channel2": {"occupancy": 1, "uuids": ["a"]}}, "total_channels": 2, "total_occupancy": 2}, "service": "Presence"}`
+            //Retruned JSON: `{"status": 200, "message": "OK", "occupancy": 1, "uuids": [{"uuid": "UnityTestHereNowUUID"}], "service": "Presence"}` 
             PNHereNowResult pnHereNowResult = new PNHereNowResult();
             
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
@@ -120,7 +120,10 @@ namespace PubNubAPI
 
                     } else {
                         if(objPayload!=null){
-                            Dictionary<string, object>[] payload = objPayload as Dictionary<string, object>[];
+                            pnHereNowResult = null;
+                            string msg = string.Format("Payload dictionary is not null of type: {0}", objPayload.GetType());
+                            pnStatus = base.CreateErrorResponseFromMessage(msg, requestState, PNStatusCategory.PNMalformedResponseCategory);
+                            
                         } else {
                             pnHereNowResult = null;
                             pnStatus = base.CreateErrorResponseFromMessage("Payload dictionary is null", requestState, PNStatusCategory.PNMalformedResponseCategory);

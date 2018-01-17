@@ -40,19 +40,14 @@ namespace PubNubAPI
             PNStatus pnStatus = new PNStatus();
             if ((c != null) && (c.Length > 0)) {
                 pnTimeResult.TimeToken = c [0];
-
-                Callback(pnTimeResult, pnStatus);
-                
             } else {
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PubNubInstance.PNLog.WriteToLog(string.Format("CreatePubNubResponse (c == null) || (c.Length < 0) {0}", deSerializedResult.ToString()), PNLoggingMethod.LevelInfo);
                 #endif
-                pnTimeResult = null;
                 pnStatus.Error = true;
                 pnStatus = base.CreateErrorResponseFromMessage("Response is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
-
             }
-            
+            Callback(pnTimeResult, pnStatus);
         }
 
     }

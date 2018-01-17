@@ -14,7 +14,7 @@ namespace PubNubAPI
     #region "PubnubCrypto"
     public class PubnubCrypto: PubnubCryptoBase
     {
-        PNLoggingMethod pnLog;
+        PNLoggingMethod pnLog {get; set;}
         public PubnubCrypto (string cipher_key, PNLoggingMethod pnLog)
             : base (cipher_key)
         {

@@ -10,8 +10,8 @@ namespace PubNubAPI
 {
     public sealed class Counter
     {
-        private uint current = 0;
-        private object syncRoot;
+        private uint current;
+        private readonly object syncRoot;
 
         public Counter(){
             syncRoot = new object();
@@ -66,25 +66,29 @@ namespace PubNubAPI
                     || ((pnUnity.Version.Contains("UnityWeb")) && (cea.Message.Contains ("Failed downloading")))) {
                         pnStatusCat = PNStatusCategory.PNAccessDeniedCategory;
                 } else if (cea.PubNubRequestState != null){
-                    if(cea.PubNubRequestState.ResponseCode.Equals(403)){
-                        pnStatusCat = PNStatusCategory.PNAccessDeniedCategory;
-                    } else if (cea.PubNubRequestState.ResponseCode.Equals ("500")){
-                        pnStatusCat = PNStatusCategory.PNUnexpectedDisconnectCategory;
-                    } else if (cea.PubNubRequestState.ResponseCode.Equals ("502")){
-                        pnStatusCat = PNStatusCategory.PNUnexpectedDisconnectCategory;
-                    } else if (cea.PubNubRequestState.ResponseCode.Equals ("503")){
-                        pnStatusCat = PNStatusCategory.PNUnexpectedDisconnectCategory;  
-                    } else if (cea.PubNubRequestState.ResponseCode.Equals ("504")){
-                        pnStatusCat = PNStatusCategory.PNTimeoutCategory;  
-                    } else if (cea.PubNubRequestState.ResponseCode.Equals ("414")){
-                        pnStatusCat = PNStatusCategory.PNBadRequestCategory;  
-                    } else if (cea.PubNubRequestState.ResponseCode.Equals ("481")){
-                        pnStatusCat = PNStatusCategory.PNUnexpectedDisconnectCategory;
-                    } else if (cea.PubNubRequestState.ResponseCode.Equals ("451")){
-                        pnStatusCat = PNStatusCategory.PNUnexpectedDisconnectCategory;
-                    } else if (cea.PubNubRequestState.ResponseCode.Equals ("400")){
-                        pnStatusCat = PNStatusCategory.PNBadRequestCategory;  
-                    } 
+                    switch(cea.PubNubRequestState.ResponseCode){
+                        case 403:
+                            pnStatusCat = PNStatusCategory.PNAccessDeniedCategory;
+                        break;
+                        case 500:
+                        case 502:
+                        case 503:
+                        case 481:
+                        case 451:
+                            pnStatusCat = PNStatusCategory.PNUnexpectedDisconnectCategory;
+                        break;
+                        case 504:
+                            pnStatusCat = PNStatusCategory.PNTimeoutCategory;
+                        break;
+                        case 414:
+                        case 400:
+                            pnStatusCat = PNStatusCategory.PNBadRequestCategory;
+                        break;
+                        default:
+                            pnStatusCat = PNStatusCategory.PNUnknownCategory;
+                        break;
+                        
+                    }
                 } 
                 retBool = true;
             } else {
@@ -455,6 +459,7 @@ namespace PubNubAPI
                         null,
                         pnUnity
                     );
+                pnUnity.SubWorker.CreateEventArgsAndRaiseEvent(pnStatus);    
             }
             object decodeMessage = (decryptMessage == "**DECRYPT ERROR**") ? decryptMessage : pnUnity.JsonLibrary.DeserializeToObject (decryptMessage);
             return decodeMessage;

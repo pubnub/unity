@@ -15,7 +15,7 @@ namespace PubNubAPI.Tests
     {
         PNLoggingMethod PNLog = new PNLoggingMethod(PNLogVerbosity.BODY);
         PNConfiguration pnConfig = new PNConfiguration();
-        PubNub pn;
+        PubNub pn {get; set;}
         
         /// <summary>
         /// Tests the yay decryption.
@@ -107,7 +107,6 @@ namespace PubNubAPI.Tests
             string message = "yay!";
             //serialize the string
             message = EditorCommon.Serialize (message);
-            Console.WriteLine (message);
             //Encrypt
             string encrypted = pubnubCrypto.Encrypt (message);
             Assert.True (("Wi24KS4pcTzvyuGOHubiXg==").Equals (encrypted));
@@ -617,10 +616,8 @@ namespace PubNubAPI.Tests
             //serialized string
             string message = null;
             //encrypt
-            //string encrypted = pubnubCrypto.Encrypt (message);
 
             var ex = Assert.Throws<ArgumentNullException>(() => pubnubCrypto.Encrypt (message)); // True (("").Equals (encrypted));
-            //Debug.Log(ex.Message);
             Assert.That(ex.Message.Contains("Argument cannot be null."),ex.Message, null);
         }
 
@@ -637,7 +634,6 @@ namespace PubNubAPI.Tests
             //deserialized string
             string message = null;
             //decrypt
-            //string decrypted = pubnubCrypto.Decrypt (message);
             var ex = Assert.Throws<ArgumentNullException>(() => pubnubCrypto.Decrypt (message)); 
 
             Assert.That(ex.Message.Contains("Argument cannot be null."), ex.Message, null);
@@ -654,9 +650,7 @@ namespace PubNubAPI.Tests
             PubnubCrypto pubnubCrypto = new PubnubCrypto ("enigma", PNLog);
             string message = "漢語";
             message = EditorCommon.Serialize (message);
-            Console.WriteLine (message);
             string encrypted = pubnubCrypto.Encrypt (message);
-            Console.WriteLine (encrypted);
             Assert.That (("+BY5/miAA8aeuhVl4d13Kg==").Equals (encrypted));
         }
 
@@ -668,9 +662,7 @@ namespace PubNubAPI.Tests
             PubnubCrypto pubnubCrypto = new PubnubCrypto ("enigma", PNLog);
             string message = "漢語";
             message = Common.SerializeMiniJson (message);
-            Console.WriteLine (message);
             string encrypted = pubnubCrypto.Encrypt (message);
-            Console.WriteLine (encrypted);
             Assert.That (("+BY5/miAA8aeuhVl4d13Kg==").Equals (encrypted));
         }
         #endif
@@ -755,9 +747,7 @@ namespace PubNubAPI.Tests
             PubnubCrypto pubnubCrypto = new PubnubCrypto ("enigma", PNLog);
             string message = "ÜÖ";
             message = EditorCommon.Serialize (message);
-            Console.WriteLine (message);
             string encrypted = pubnubCrypto.Encrypt (message);
-            Console.WriteLine (encrypted);
 
             Assert.True (("stpgsG1DZZxb44J7mFNSzg==").Equals (encrypted));
         }
@@ -770,9 +760,7 @@ namespace PubNubAPI.Tests
             PubnubCrypto pubnubCrypto = new PubnubCrypto ("enigma", PNLog);
             string message = "ÜÖ";
             message = Common.SerializeMiniJson (message);
-            Console.WriteLine (message);
             string encrypted = pubnubCrypto.Encrypt (message);
-            Console.WriteLine (encrypted);
 
             Assert.True (("stpgsG1DZZxb44J7mFNSzg==").Equals (encrypted));
         }

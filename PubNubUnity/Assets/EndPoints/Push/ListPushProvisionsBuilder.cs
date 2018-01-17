@@ -7,15 +7,15 @@ namespace PubNubAPI
 {
     public class ListPushProvisionsBuilder
     {     
-        private ListPushProvisionsRequestBuilder pubBuilder;
+        private readonly ListPushProvisionsRequestBuilder pubBuilder;
         
-        public ListPushProvisionsBuilder DeviceIDForPush (string deviceId){ 
-            pubBuilder.DeviceId(deviceId);
+        public ListPushProvisionsBuilder DeviceIDForPush (string deviceIdForPush){ 
+            pubBuilder.DeviceId(deviceIdForPush);
             return this;
         }
 
-        public ListPushProvisionsBuilder PushType(PNPushType pushType) {
-            pubBuilder.PushType = pushType;
+        public ListPushProvisionsBuilder PushType(PNPushType pnPushType) {
+            pubBuilder.PushType = pnPushType;
             return this;
         }
 

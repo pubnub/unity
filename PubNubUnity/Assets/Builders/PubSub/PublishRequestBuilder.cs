@@ -10,14 +10,14 @@ namespace PubNubAPI
         private object PublishMessage { get; set;}
         private string PublishChannel { get; set;}
         private bool ShouldStoreInHistory = true;
-        private bool UsePostMethod = false;
+        private bool UsePostMethod;
         private Dictionary<string, string> Metadata { get; set;}
         private bool ReplicateMessage = true;
         private int PublishTtl { get; set;}
 
-        private bool publishAsIs = false;
+        private bool publishAsIs;
         
-        private uint publishCounter;
+        private readonly uint publishCounter;
         public PublishRequestBuilder(PubNubUnity pn, uint counter): base(pn, PNOperationType.PNPublishOperation){
             this.publishCounter = counter;
         }
@@ -46,43 +46,43 @@ namespace PubNubAPI
         }
         #endregion
 
-        public PublishRequestBuilder Message(object message){
-            PublishMessage = message;
+        public PublishRequestBuilder Message(object messageToPublish){
+            PublishMessage = messageToPublish;
             return this;
         }
 
-        public PublishRequestBuilder PublishAsIs(bool publishAsIs){
-            this.publishAsIs = publishAsIs;
+        public PublishRequestBuilder PublishAsIs(bool publishMessageAsIs){
+            this.publishAsIs = publishMessageAsIs;
             return this;
         }
 
-        public PublishRequestBuilder Channel(string channel){
-            PublishChannel = channel;
+        public PublishRequestBuilder Channel(string channelName){
+            PublishChannel = channelName;
             return this;
         }
 
-        public PublishRequestBuilder ShouldStore(bool shouldStore){
-            ShouldStoreInHistory = shouldStore;
+        public PublishRequestBuilder ShouldStore(bool shouldStoreInHistory){
+            ShouldStoreInHistory = shouldStoreInHistory;
             return this;
         }
 
-        public PublishRequestBuilder UsePost(bool usePost){
-            UsePostMethod = usePost;
+        public PublishRequestBuilder UsePost(bool usePostRequest){
+            UsePostMethod = usePostRequest;
             return this;
         }
 
-        public PublishRequestBuilder Meta(Dictionary<string, string> meta){
-            Metadata = meta;
+        public PublishRequestBuilder Meta(Dictionary<string, string> metadata){
+            Metadata = metadata;
             return this;
         }
 
-        public PublishRequestBuilder Replicate(bool replicate){
-            ReplicateMessage = replicate;
+        public PublishRequestBuilder Replicate(bool replicateMessage){
+            ReplicateMessage = replicateMessage;
             return this;
         }
 
-        public PublishRequestBuilder Ttl(int ttl){
-            PublishTtl = ttl;
+        public PublishRequestBuilder Ttl(int publishTTL){
+            PublishTtl = publishTTL;
             return this;
         }
 
@@ -126,7 +126,7 @@ namespace PubNubAPI
                 if(c.Length > 1){
                     status = c[1].ToString();
                 }
-                if(statusCode.Equals("0") || (!status.ToLower().Equals("sent"))){
+                if(statusCode.Equals("0") || (!status.ToLowerInvariant().Equals("sent"))){
                     pnPublishResult = null;
                     string message = "";
                     if(c.Length > 2){

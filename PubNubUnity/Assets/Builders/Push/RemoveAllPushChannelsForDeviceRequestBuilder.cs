@@ -12,8 +12,8 @@ namespace PubNubAPI
 
         private string DeviceIDForPush{ get; set;}
 
-        public void DeviceId(string deviceId){
-            DeviceIDForPush = deviceId;
+        public void DeviceId(string deviceIdForPush){
+            DeviceIDForPush = deviceIdForPush;
         }
 
         public PNPushType PushType {get;set;}
@@ -52,7 +52,7 @@ namespace PubNubAPI
         }
 
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
-            //[1, "Removed Device"] 
+            //Returned JSON `[1, "Removed Device"] `
             PNPushRemoveAllChannelsResult pnPushRemoveAllChannelsResult = new PNPushRemoveAllChannelsResult();
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
             PNStatus pnStatus = new PNStatus();
@@ -62,7 +62,7 @@ namespace PubNubAPI
                     pnPushRemoveAllChannelsResult = null;
                     pnStatus = base.CreateErrorResponseFromMessage(message, requestState, PNStatusCategory.PNUnknownCategory);
                 }
-            } else if(dictionary==null) {
+            } else {
                 object[] c = deSerializedResult as object[];
                 
                 if (c != null) {
@@ -74,7 +74,7 @@ namespace PubNubAPI
                     if(c.Length > 1){
                         status = c[1].ToString();
                     }
-                    if(statusCode.Equals("0") || (!status.ToLower().Equals("removed device"))){
+                    if(statusCode.Equals("0") || (!status.ToLowerInvariant().Equals("removed device"))){
                         pnPushRemoveAllChannelsResult = null;
                         pnStatus = base.CreateErrorResponseFromMessage(status, requestState, PNStatusCategory.PNUnknownCategory);
                     } else {
@@ -84,10 +84,7 @@ namespace PubNubAPI
                     pnPushRemoveAllChannelsResult = null;
                     pnStatus = base.CreateErrorResponseFromMessage("deSerializedResult object is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
                 }
-            } else {
-                pnPushRemoveAllChannelsResult = null;
-                pnStatus = base.CreateErrorResponseFromMessage("Response dictionary is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
-            }
+            } 
 
             Callback(pnPushRemoveAllChannelsResult, pnStatus);
         }

@@ -7,15 +7,15 @@ namespace PubNubAPI
 {
     public class AddChannelsToChannelGroupBuilder
     {     
-        private AddChannelsToChannelGroupRequestBuilder pubBuilder;
+        private readonly AddChannelsToChannelGroupRequestBuilder pubBuilder;
 
-        public AddChannelsToChannelGroupBuilder Channels(List<string> channels){
-            pubBuilder.Channels(channels);
+        public AddChannelsToChannelGroupBuilder Channels(List<string> channelNames){
+            pubBuilder.Channels(channelNames);
             return this;
         }
 
-        public AddChannelsToChannelGroupBuilder ChannelGroup(string channelGroup){
-            pubBuilder.ChannelGroup(channelGroup);
+        public AddChannelsToChannelGroupBuilder ChannelGroup(string channelGroupName){
+            pubBuilder.ChannelGroup(channelGroupName);
             return this;
         }
         

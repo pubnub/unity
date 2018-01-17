@@ -7,7 +7,7 @@ namespace PubNubAPI
 {
     public class HereNowBuilder
     {     
-        private HereNowRequestBuilder pubBuilder;
+        private readonly HereNowRequestBuilder pubBuilder;
         
         public HereNowBuilder(PubNubUnity pn){
             pubBuilder = new HereNowRequestBuilder(pn);
@@ -15,23 +15,23 @@ namespace PubNubAPI
             Debug.Log ("HereNowBuilder Construct");
         }
         
-        public HereNowBuilder IncludeUUIDs(bool includeUUIDs){
-            pubBuilder.IncludeUUIDs(includeUUIDs);
+        public HereNowBuilder IncludeUUIDs(bool includeUUIDInHereNow){
+            pubBuilder.IncludeUUIDs(includeUUIDInHereNow);
             return this;
         }
 
-        public HereNowBuilder IncludeState(bool includeState){
-            pubBuilder.IncludeState(includeState);
+        public HereNowBuilder IncludeState(bool includeStateInHereNow){
+            pubBuilder.IncludeState(includeStateInHereNow);
             return this;
         }
 
-        public HereNowBuilder Channels(List<string> channels){
-            pubBuilder.Channels(channels);
+        public HereNowBuilder Channels(List<string> channelNames){
+            pubBuilder.Channels(channelNames);
             return this;
         }
 
-        public HereNowBuilder ChannelGroups(List<string> channelGroups){
-            pubBuilder.ChannelGroups(channelGroups);
+        public HereNowBuilder ChannelGroups(List<string> channelGroupNames){
+            pubBuilder.ChannelGroups(channelGroupNames);
             return this;
         }
         public void Async(Action<PNHereNowResult, PNStatus> callback)

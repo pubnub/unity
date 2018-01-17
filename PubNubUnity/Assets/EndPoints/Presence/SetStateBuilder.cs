@@ -7,7 +7,7 @@ namespace PubNubAPI
 {
     public class SetStateBuilder
     {     
-        private SetStateRequestBuilder pubBuilder;
+        private readonly SetStateRequestBuilder pubBuilder;
         
         public SetStateBuilder(PubNubUnity pn){
             pubBuilder = new SetStateRequestBuilder(pn);
@@ -15,23 +15,23 @@ namespace PubNubAPI
             Debug.Log ("SetStateBuilder Construct");
         }
         
-        public SetStateBuilder UUID(string uuid){
-            pubBuilder.UUID(uuid);
+        public SetStateBuilder UUID(string uuidForState){
+            pubBuilder.UUID(uuidForState);
             return this;
         }
 
-        public SetStateBuilder State(Dictionary<string, object> state){
-            pubBuilder.State(state);
+        public SetStateBuilder State(Dictionary<string, object> stateToSet){
+            pubBuilder.State(stateToSet);
             return this;
         }
 
-        public SetStateBuilder Channels(List<string> channels){
-            pubBuilder.Channels(channels);
+        public SetStateBuilder Channels(List<string> channelNames){
+            pubBuilder.Channels(channelNames);
             return this;
         }
 
-        public SetStateBuilder ChannelGroups(List<string> channelGroups){
-            pubBuilder.ChannelGroups(channelGroups);
+        public SetStateBuilder ChannelGroups(List<string> channelGroupNames){
+            pubBuilder.ChannelGroups(channelGroupNames);
             return this;
         }
         public void Async(Action<PNSetStateResult, PNStatus> callback)

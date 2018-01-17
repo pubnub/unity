@@ -10,12 +10,12 @@ namespace PubNubAPI
         public AddChannelsToPushRequestBuilder(PubNubUnity pn):base(pn, PNOperationType.PNAddPushNotificationsOnChannelsOperation){
         }
         private string DeviceIDForPush{ get; set;}
-        public void Channels(List<string> channels){
-            ChannelsToUse = channels;
+        public void Channels(List<string> channelNames){
+            ChannelsToUse = channelNames;
         }
 
-        public void DeviceId(string deviceId){
-            DeviceIDForPush = deviceId;
+        public void DeviceId(string deviceIdForPush){
+            DeviceIDForPush = deviceIdForPush;
         }
 
         public PNPushType PushType {get;set;}
@@ -61,10 +61,10 @@ namespace PubNubAPI
         }
 
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
-            //{"service" : "channel-registry","status"  : 200,"error"   : false,"message" : "OK"}
-            //{"error": "Invalid device token"} 
-            //[1, "Modified Channels"] 
-            //{"error": "Use of the mobile push notifications API requires the Push Notifications add-on which is not enabled for this subscribe key. Login to your PubNub Dashboard Account and ADD the Push Notifications add-on. Contact support@pubnub.com if you require further assistance."} 
+            //Returned JSON `{"service" : "channel-registry","status"  : 200,"error"   : false,"message" : "OK"}`
+            //Returned JSON `{"error": "Invalid device token"} `
+            //Returned JSON `[1, "Modified Channels"] `
+            //Returned JSON `{"error": "Use of the mobile push notifications API requires the Push Notifications add-on which is not enabled for this subscribe key. Login to your PubNub Dashboard Account and ADD the Push Notifications add-on. Contact support@pubnub.com if you require further assistance."} `
             PNPushAddChannelResult pnPushAddChannelResult = new PNPushAddChannelResult();
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
             PNStatus pnStatus = new PNStatus();
@@ -74,7 +74,7 @@ namespace PubNubAPI
                     pnPushAddChannelResult = null;
                     pnStatus = base.CreateErrorResponseFromMessage(message, requestState, PNStatusCategory.PNUnknownCategory);
                 }
-            } else if(dictionary==null) {
+            } else {
                 object[] c = deSerializedResult as object[];
                 
                 if (c != null) {
@@ -86,7 +86,7 @@ namespace PubNubAPI
                     if(c.Length > 1){
                         status = c[1].ToString();
                     }
-                    if(statusCode.Equals("0") || (!status.ToLower().Equals("modified channels"))){
+                    if(statusCode.Equals("0") || (!status.ToLowerInvariant().Equals("modified channels"))){
                         pnPushAddChannelResult = null;
                         pnStatus = base.CreateErrorResponseFromMessage(status, requestState, PNStatusCategory.PNUnknownCategory);
                     } else {
@@ -96,10 +96,7 @@ namespace PubNubAPI
                     pnPushAddChannelResult = null;
                     pnStatus = base.CreateErrorResponseFromMessage("deSerializedResult object is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
                 }
-            } else {
-                pnPushAddChannelResult = null;
-                pnStatus = base.CreateErrorResponseFromMessage("Response dictionary is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
-            }
+            } 
             Callback(pnPushAddChannelResult, pnStatus);
         }
         

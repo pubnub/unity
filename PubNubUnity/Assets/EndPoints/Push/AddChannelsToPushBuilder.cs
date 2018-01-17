@@ -7,20 +7,20 @@ namespace PubNubAPI
 {
     public class AddChannelsToPushBuilder
     {     
-        private AddChannelsToPushRequestBuilder pubBuilder;
+        private readonly AddChannelsToPushRequestBuilder pubBuilder;
         
-        public AddChannelsToPushBuilder Channels(List<string> channels){
-            pubBuilder.Channels(channels);
+        public AddChannelsToPushBuilder Channels(List<string> channelNames){
+            pubBuilder.Channels(channelNames);
             return this;
         }
         
-        public AddChannelsToPushBuilder DeviceIDForPush (string deviceId){ 
-            pubBuilder.DeviceId(deviceId);
+        public AddChannelsToPushBuilder DeviceIDForPush (string deviceIdForPush){ 
+            pubBuilder.DeviceId(deviceIdForPush);
             return this;
         }
 
-        public AddChannelsToPushBuilder PushType(PNPushType pushType) {
-            pubBuilder.PushType = pushType;
+        public AddChannelsToPushBuilder PushType(PNPushType pnPushType) {
+            pubBuilder.PushType = pnPushType;
             return this;
         }
 

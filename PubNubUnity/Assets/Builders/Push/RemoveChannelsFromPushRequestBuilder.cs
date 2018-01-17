@@ -12,12 +12,12 @@ namespace PubNubAPI
         }
 
         private string DeviceIDForPush{ get; set;}
-        public void Channels(List<string> channels){
-            ChannelsToUse = channels;
+        public void Channels(List<string> channelNames){
+            ChannelsToUse = channelNames;
         }
 
-        public void DeviceId(string deviceId){
-            DeviceIDForPush = deviceId;
+        public void DeviceId(string deviceIdForPush){
+            DeviceIDForPush = deviceIdForPush;
         }
 
         public PNPushType PushType {get;set;}
@@ -69,7 +69,7 @@ namespace PubNubAPI
                     pnPushRemoveChannelResult = null;
                     pnStatus = base.CreateErrorResponseFromMessage(message, requestState, PNStatusCategory.PNUnknownCategory);
                 }
-            } else if(dictionary==null) {
+            } else {
                 object[] c = deSerializedResult as object[];
                 
                 if (c != null) {
@@ -81,7 +81,7 @@ namespace PubNubAPI
                     if(c.Length > 1){
                         status = c[1].ToString();
                     }
-                    if(statusCode.Equals("0") || (!status.ToLower().Equals("modified channels"))){
+                    if(statusCode.Equals("0") || (!status.ToLowerInvariant().Equals("modified channels"))){
                         pnPushRemoveChannelResult = null;
                         pnStatus = base.CreateErrorResponseFromMessage(status, requestState, PNStatusCategory.PNUnknownCategory);
                     } else {
@@ -91,9 +91,6 @@ namespace PubNubAPI
                     pnPushRemoveChannelResult = null;
                     pnStatus = base.CreateErrorResponseFromMessage("deSerializedResult object is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
                 }
-            } else {
-                pnPushRemoveChannelResult = null;
-                pnStatus = base.CreateErrorResponseFromMessage("Response dictionary is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
             }
 
             Callback(pnPushRemoveChannelResult, pnStatus);

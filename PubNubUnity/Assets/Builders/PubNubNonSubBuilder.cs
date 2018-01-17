@@ -16,7 +16,7 @@ namespace PubNubAPI
         protected delegate void CreateResponseDelegate(object deSerializedResult, RequestState pnRequestState);
         protected event CreateResponseDelegate CreateResponse;
 
-        public PNOperationType OperationType;
+        public PNOperationType OperationType {get; set;}
 
         protected PubNubUnity PubNubInstance;
         protected internal PubNubNonSubBuilder(PubNubUnity pn, PNOperationType pnOperationType){

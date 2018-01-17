@@ -7,20 +7,20 @@ namespace PubNubAPI
 {
     public class RemoveChannelsFromPushBuilder
     {     
-        private RemoveChannelsFromPushRequestBuilder pubBuilder;
+        private readonly RemoveChannelsFromPushRequestBuilder pubBuilder;
         
-        public RemoveChannelsFromPushBuilder Channels(List<string> channels){
-            pubBuilder.Channels(channels);
+        public RemoveChannelsFromPushBuilder Channels(List<string> channelNames){
+            pubBuilder.Channels(channelNames);
             return this;
         }
 
-        public RemoveChannelsFromPushBuilder DeviceIDForPush (string deviceId){ 
-            pubBuilder.DeviceId(deviceId);
+        public RemoveChannelsFromPushBuilder DeviceIDForPush (string deviceIdForPush){ 
+            pubBuilder.DeviceId(deviceIdForPush);
             return this;
         }
 
-        public RemoveChannelsFromPushBuilder PushType(PNPushType pushType) {
-            pubBuilder.PushType = pushType;
+        public RemoveChannelsFromPushBuilder PushType(PNPushType pnPushType) {
+            pubBuilder.PushType = pnPushType;
             return this;
         }
         public RemoveChannelsFromPushBuilder(PubNubUnity pn){

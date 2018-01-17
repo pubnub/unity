@@ -7,7 +7,7 @@ namespace PubNubAPI
 {
     public class TimeBuilder
     {     
-        private TimeRequestBuilder pubBuilder;
+        private readonly TimeRequestBuilder pubBuilder;
         
         public TimeBuilder(PubNubUnity pn){
             pubBuilder = new TimeRequestBuilder(pn);

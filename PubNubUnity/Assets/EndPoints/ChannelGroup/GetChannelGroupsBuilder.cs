@@ -7,7 +7,7 @@ namespace PubNubAPI
 {
     public class GetChannelGroupsBuilder
     {     
-        private GetChannelGroupsRequestBuilder pubBuilder;
+        private readonly GetChannelGroupsRequestBuilder pubBuilder;
         
         public GetChannelGroupsBuilder(PubNubUnity pn){
             pubBuilder = new GetChannelGroupsRequestBuilder(pn);
