@@ -27,39 +27,39 @@ namespace PubNubAPI
             }
         }
         
-        private bool ReverseHistory = false;
-        private bool IncludeTimetokenInHistory = false;
+        private bool ReverseHistory;
+        private bool IncludeTimetokenInHistory;
         public HistoryRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNHistoryOperation){
         }
 
-        public HistoryRequestBuilder IncludeTimetoken(bool includeTimetoken){
-            IncludeTimetokenInHistory = includeTimetoken;
+        public HistoryRequestBuilder IncludeTimetoken(bool include){
+            IncludeTimetokenInHistory = include;
             return this;
         }
 
-        public HistoryRequestBuilder Reverse(bool reverse){
-            ReverseHistory = reverse;
+        public HistoryRequestBuilder Reverse(bool reverseHistory){
+            ReverseHistory = reverseHistory;
             return this;
         }
 
-        public HistoryRequestBuilder Start(long start){
-            StartTime = start;
+        public HistoryRequestBuilder Start(long startTime){
+            StartTime = startTime;
             return this;
         }
 
-        public HistoryRequestBuilder End(long end){
-            EndTime = end;
+        public HistoryRequestBuilder End(long endTime){
+            EndTime = endTime;
             return this;
         }
 
-        public HistoryRequestBuilder Channel(string channel){
-            HistoryChannel = channel;
-            ChannelsToUse = new List<string>(){HistoryChannel};
+        public HistoryRequestBuilder Channel(string channelName){
+            HistoryChannel = channelName;
+            ChannelsToUse = new List<string>{HistoryChannel};
             return this;
         }
 
-        public HistoryRequestBuilder Count(ushort count){
-            HistoryCount = count;
+        public HistoryRequestBuilder Count(ushort historyCount){
+            HistoryCount = historyCount;
             return this;
         }
 
@@ -147,7 +147,7 @@ namespace PubNubAPI
             //[[{"message":{"text":"hey"},"timetoken":14986549102032676},{"message":"E8VOcbfrYqLyHMtoVGv9UQ==","timetoken":14986619049105442},{"message":"E8VOcbfrYqLyHMtoVGv9UQ==","timetoken":14986619291068634}],14986549102032676,14986619291068634]
             pnHistoryItemResult = new PNHistoryItemResult();
             Dictionary<string, object> historyMessage = element as Dictionary<string, object>;
-            Debug.Log("historyMessage" + historyMessage.ToString());
+            Debug.Log("historyMessage" + historyMessage);
             object v;
             historyMessage.TryGetValue("message", out v);
             if(!string.IsNullOrEmpty(cipherKey) && (cipherKey.Length > 0)){
@@ -161,7 +161,7 @@ namespace PubNubAPI
             object t;
             historyMessage.TryGetValue("timetoken", out t);
             pnHistoryItemResult.Timetoken = Utility.ValidateTimetoken(t.ToString(), false);
-            Debug.Log(" t " + t.ToString());
+            Debug.Log(" t " + t);
             
         }
 
@@ -181,10 +181,10 @@ namespace PubNubAPI
         private bool ExtractMessages(object[] historyResponseArray, ref PNHistoryResult pnHistoryResult){
             IEnumerable enumerable = historyResponseArray [0] as IEnumerable;
             if (enumerable != null) {
-                Debug.Log("enumerable" + enumerable.ToString());
+                Debug.Log("enumerable" + enumerable);
                 foreach (object elem in enumerable) {
                     var element = elem;
-                    Debug.Log("element:" + element.ToString());
+                    Debug.Log("element:" + element);
                     PNHistoryItemResult pnHistoryItemResult;
 
                     if(this.IncludeTimetokenInHistory){

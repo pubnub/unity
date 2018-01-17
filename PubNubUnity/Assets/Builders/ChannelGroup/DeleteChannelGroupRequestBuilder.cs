@@ -11,9 +11,9 @@ namespace PubNubAPI
         }
         private string ChannelGroupToDelete { get; set;}
 
-        public void ChannelGroup(string channelGroup){
-            ChannelGroupToDelete = channelGroup;
-            ChannelGroupsToUse = new List<string>(){ChannelGroupToDelete};
+        public void ChannelGroup(string channelGroupName){
+            ChannelGroupToDelete = channelGroupName;
+            ChannelGroupsToUse = new List<string>{ChannelGroupToDelete};
         }
         
         #region IPubNubBuilder implementation

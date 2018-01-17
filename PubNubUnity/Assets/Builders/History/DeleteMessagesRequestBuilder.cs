@@ -12,16 +12,16 @@ namespace PubNubAPI
         private long StartTime = -1;
         private long EndTime = -1;
         
-        public void Start(long start){
-            this.StartTime = start;
+        public void Start(long startTime){
+            this.StartTime = startTime;
         }
 
-        public void End(long end){
-            this.EndTime = end;
+        public void End(long endTime){
+            this.EndTime = endTime;
         }
 
-        public void Channel(string channel){
-            this.HistoryChannel = channel;
+        public void Channel(string channelName){
+            this.HistoryChannel = channelName;
         }
 
         public DeleteMessagesRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNDeleteMessagesOperation){
@@ -63,8 +63,8 @@ namespace PubNubAPI
         }
  
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
-            //{"status": 200, "error": false, "error_message": ""} 
-            //{"status": 403, "error": true, "error_message": "Use of the history API requires the Storage & Playback which is not enabled for this subscribe key. Login to your PubNub Dashboard Account and enable Storage & Playback. Contact support@pubnub.com if you require further assistance.", "channels": {}}
+            //Returned Code `{"status": 200, "error": false, "error_message": ""} `
+            //Returned Code `{"status": 403, "error": true, "error_message": "Use of the history API requires the Storage & Playback which is not enabled for this subscribe key. Login to your PubNub Dashboard Account and enable Storage & Playback. Contact support@pubnub.com if you require further assistance.", "channels": {}}`
             PNDeleteMessagesResult pnDeleteMessagesResult = new PNDeleteMessagesResult();
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
             PNStatus pnStatus = new PNStatus();

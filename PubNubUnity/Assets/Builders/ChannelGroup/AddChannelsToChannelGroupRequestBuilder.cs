@@ -12,13 +12,13 @@ namespace PubNubAPI
         public AddChannelsToChannelGroupRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNAddChannelsToGroupOperation){
         }
 
-        public void Channels(List<string> channels){
-            ChannelsToUse = channels;
+        public void Channels(List<string> channelNames){
+            ChannelsToUse = channelNames;
         }
 
-        public void ChannelGroup(string channelGroup){
-            ChannelGroupToAdd = channelGroup;
-            ChannelGroupsToUse = new List<string>(){ChannelGroupToAdd};
+        public void ChannelGroup(string channelGroupName){
+            ChannelGroupToAdd = channelGroupName;
+            ChannelGroupsToUse = new List<string>{ChannelGroupToAdd};
         }
 
         #region IPubNubBuilder implementation
@@ -60,7 +60,7 @@ namespace PubNubAPI
         }
 
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
-            //{"service" : "channel-registry","status"  : 200,"error"   : false,"message" : "OK"}
+            //Returned JSON: `{"service" : "channel-registry","status"  : 200,"error"   : false,"message" : "OK"}`
 
             PNChannelGroupsAddChannelResult pnChannelGroupsAddChannelResult = new PNChannelGroupsAddChannelResult();
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;

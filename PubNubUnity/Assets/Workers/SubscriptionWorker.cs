@@ -208,7 +208,7 @@ namespace PubNubAPI
             try{
                 Debug.Log("after add");
 
-                bool internetStatus = true;
+                internetStatus = true;
                 if (internetStatus) {
 
                     if (!timetokenToUse.Equals (0)) {

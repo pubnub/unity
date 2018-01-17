@@ -30,35 +30,35 @@ namespace PubNubAPI
             }
         }
         
-        private bool ReverseHistory = false;
-        private bool IncludeTimetokenInHistory = false;
-        public FetchMessagesRequestBuilder IncludeTimetoken(bool includeTimetoken){
-            IncludeTimetokenInHistory = includeTimetoken;
+        private bool ReverseHistory;
+        private bool IncludeTimetokenInHistory;
+        public FetchMessagesRequestBuilder IncludeTimetoken(bool include){
+            IncludeTimetokenInHistory = include;
             return this;
         }
 
-        public FetchMessagesRequestBuilder Reverse(bool reverse){
-            ReverseHistory = reverse;
+        public FetchMessagesRequestBuilder Reverse(bool reverseHistory){
+            ReverseHistory = reverseHistory;
             return this;
         }
 
-        public FetchMessagesRequestBuilder Start(long start){
-            StartTime = start;
+        public FetchMessagesRequestBuilder Start(long startTime){
+            StartTime = startTime;
             return this;
         }
 
-        public FetchMessagesRequestBuilder End(long end){
-            EndTime = end;
+        public FetchMessagesRequestBuilder End(long endTime){
+            EndTime = endTime;
             return this;
         }
 
-        public FetchMessagesRequestBuilder Channel(List<string> channel){
-            ChannelsToUse = channel;
+        public FetchMessagesRequestBuilder Channel(List<string> channelNames){
+            ChannelsToUse = channelNames;
             return this;
         }
 
-        public FetchMessagesRequestBuilder Count(ushort count){
-            HistoryCount = count;
+        public FetchMessagesRequestBuilder Count(ushort historyCount){
+            HistoryCount = historyCount;
             return this;
         }
         
@@ -102,7 +102,7 @@ namespace PubNubAPI
         }
 
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
-            //{"status": 200, "error": false, "error_message": "", "channels": {"channel2":[{"message":{"text":"hey"},"timetoken":"15011678669001834"}],"channel1":[{"message":{"text":"hey"},"timetoken":"15011678623670911"}]}}
+            //Returned JSON: `{"status": 200, "error": false, "error_message": "", "channels": {"channel2":[{"message":{"text":"hey"},"timetoken":"15011678669001834"}],"channel1":[{"message":{"text":"hey"},"timetoken":"15011678623670911"}]}}`
             PNFetchMessagesResult pnFetchMessagesResult = new PNFetchMessagesResult();
             PNStatus pnStatus = new PNStatus();
             try{

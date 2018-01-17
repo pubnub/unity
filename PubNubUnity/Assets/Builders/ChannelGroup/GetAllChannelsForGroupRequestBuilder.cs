@@ -11,9 +11,9 @@ namespace PubNubAPI
         }
         private string ChannelGroupToList { get; set;}
 
-        public void ChannelGroup(string channelGroup){
-            ChannelGroupToList = channelGroup;
-            ChannelGroupsToUse = new List<string>(){ChannelGroupToList};
+        public void ChannelGroup(string channelGroupName){
+            ChannelGroupToList = channelGroupName;
+            ChannelGroupsToUse = new List<string>{ChannelGroupToList};
         }
         
         #region IPubNubBuilder implementation
@@ -44,12 +44,8 @@ namespace PubNubAPI
         
         }
 
-        // protected override void CreateErrorResponse(Exception exception, bool showInCallback, bool level){
-            
-        // }
-
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
-            //{"status": 200, "payload": {"channels": ["channel1", "channel2"], "group": "channelGroup1"}, "service": "channel-registry", "error": false} 
+            //Returned JSON `{"status": 200, "payload": {"channels": ["channel1", "channel2"], "group": "channelGroup1"}, "service": "channel-registry", "error": false}`
             
             PNChannelGroupsAllChannelsResult pnChannelGroupsAllChannelsResult = new PNChannelGroupsAllChannelsResult();
             Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;

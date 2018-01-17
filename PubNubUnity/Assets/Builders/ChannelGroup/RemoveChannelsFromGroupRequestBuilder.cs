@@ -10,14 +10,14 @@ namespace PubNubAPI
         public RemoveChannelsFromGroupRequestBuilder(PubNubUnity pn):base(pn, PNOperationType.PNRemoveChannelsFromGroupOperation){
 
         }
-        public void Channels(List<string> channels){
-            ChannelsToUse = channels;
+        public void Channels(List<string> channelNames){
+            ChannelsToUse = channelNames;
         }
         private string ChannelGroupToDelete { get; set;}
 
-        public void ChannelGroup(string channelGroup){
-            ChannelGroupToDelete = channelGroup;
-            ChannelGroupsToUse = new List<string>(){ChannelGroupToDelete};
+        public void ChannelGroup(string channelGroupName){
+            ChannelGroupToDelete = channelGroupName;
+            ChannelGroupsToUse = new List<string>{ChannelGroupToDelete};
         }
         
         #region IPubNubBuilder implementation
