@@ -7,7 +7,7 @@ namespace PubNubAPI
 {
     public sealed class Subscription
     {
-        private PubNubUnity PubNubInstance;
+        private readonly PubNubUnity PubNubInstance;
 
         public Subscription(PubNubUnity pn){
             PubNubInstance = pn;
@@ -340,8 +340,6 @@ namespace PubNubAPI
                     #if (ENABLE_PUBNUB_LOGGING)
                     this.PubNubInstance.PNLog.WriteToLog (string.Format ("RemoveDuplicatesCheckAlreadySubscribedAndGetChannelsCommon: duplicates channelsOrChannelGroups {0}", channel), PNLoggingMethod.LevelInfo);
                     #endif
-
-                    string message = string.Format ("Detected and removed duplicate channels {0}", channel); 
 
                 }
                 #if (ENABLE_PUBNUB_LOGGING)

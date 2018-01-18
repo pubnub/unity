@@ -7,22 +7,22 @@ namespace PubNubAPI
 {
     public class RequestState
     {
-        public PNOperationType OperationType;
+        public PNOperationType OperationType {get; set;}
 
         internal long StartRequestTicks;
         internal long EndRequestTicks;
 
-        public long ResponseCode;
-        public string URL;
+        public long ResponseCode {get; set;}
+        public string URL {get; set;}
 
-        public string WebRequestId;
-        public HTTPMethod httpMethod;
+        public string WebRequestId {get; set;}
+        public HTTPMethod httpMethod {get; set;}
 
-        public string POSTData = "";
+        public string POSTData  {get; set;}
 
-        public int Timeout;
-        public int Pause;
-        public bool Reconnect;
+        public int Timeout {get; set;}
+        public int Pause {get; set;}
+        public bool Reconnect {get; set;}
 
         public RequestState ()
         {

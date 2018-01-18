@@ -10,7 +10,7 @@ namespace PubNubAPI
     #region "Logging and error codes"
     public class PNLoggingMethod
     {
-        private static int logLevel = 0;
+        private static int logLevel;
 
         public static Level LogLevel {
             get {
@@ -60,8 +60,8 @@ namespace PubNubAPI
             PNLogVerb = pnLogVerbosity;
         }
 
-        //writeToLog is kept for future improvements in logging, can be used to add levels to logging
-        public void WriteToLog (string logText, bool writeToLog)
+        //write is kept for future improvements in logging, can be used to add levels to logging
+        public void WriteToLog (string logText, bool write)
         {
             if (PNLogVerb.Equals(PNLogVerbosity.BODY)) {
                 UnityEngine.Debug.Log (string.Format("\n{0} {1} \n", DateTime.UtcNow.ToString (), logText));

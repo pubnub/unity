@@ -9,24 +9,46 @@ using System.Collections;
 namespace PubNubAPI
 {
     public sealed class PNLatencyManager: MonoBehaviour {
-        public float Time; //l_time
-        public float Publish; //l_pub
-        public float Presence; //l_pres
-        public float AccessManager; //l_pam
-        public float ChannelGroups; //l_cg
-        public float History; //l_hist
-        public float MobilePush; //l_push
+        private float time; //l_time
+        public float Time{
+            get{return time;}
+            set{time = value;}
+        }
+        public float publish; //l_pub
+        public float Publish{
+            get{return publish;}
+            set{publish = value;}
+        }
+        public float presence; //l_pres
+        public float Presence{
+            get{return presence;}
+            set{presence = value;}
+        }
+        public float channelGroups; //l_cg
+        public float ChannelGroups{
+            get{return channelGroups;}
+            set{channelGroups = value;}
+        }
+        public float history; //l_hist
+        public float History{
+            get{return history;}
+            set{history = value;}
+        }
+        public float mobilePush; //l_push
+        public float MobilePush{
+            get{return mobilePush;}
+            set{mobilePush = value;}
+        }
 
         private SafeDictionary<long, float> TimeLatency = new SafeDictionary<long, float>(); 
         private SafeDictionary<long, float> PublishLatency = new SafeDictionary<long, float>(); 
         private SafeDictionary<long, float> PresenceLatency = new SafeDictionary<long, float>(); 
-        private SafeDictionary<long, float> AccessManagerLatency = new SafeDictionary<long, float>(); 
         private SafeDictionary<long, float> ChannelGroupsLatency = new SafeDictionary<long, float>(); 
         private SafeDictionary<long, float> HistoryLatency = new SafeDictionary<long, float>(); 
         private SafeDictionary<long, float> MobilePushLatency = new SafeDictionary<long, float>(); 
 
         private static readonly DateTime epoch = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Local);
-        private bool RunUpdateLatencyLoop = false;
+        private bool RunUpdateLatencyLoop;
 
         private const float timerConst = 1; 
         private float timer = timerConst; 
@@ -59,15 +81,14 @@ namespace PubNubAPI
         }
 
         void UpdateLatency(){
-            TimeSpan ts = TimeSpan.FromTicks(DateTime.UtcNow.Ticks);
             long t = DateTime.UtcNow.Ticks - 60 * 10000000;
             
-            UpdateLatency(ref TimeLatency, t, ref Time, "Time");
-            UpdateLatency(ref PublishLatency, t, ref Publish, "Publish");
-            UpdateLatency(ref PresenceLatency, t, ref Presence, "Presence");
-            UpdateLatency(ref MobilePushLatency, t, ref MobilePush, "MobilePush");
-            UpdateLatency(ref HistoryLatency, t, ref History, "History");
-            UpdateLatency(ref ChannelGroupsLatency, t, ref ChannelGroups, "ChannelGroups");
+            UpdateLatency(ref TimeLatency, t, ref time, "Time");
+            UpdateLatency(ref PublishLatency, t, ref publish, "Publish");
+            UpdateLatency(ref PresenceLatency, t, ref presence, "Presence");
+            UpdateLatency(ref MobilePushLatency, t, ref mobilePush, "MobilePush");
+            UpdateLatency(ref HistoryLatency, t, ref history, "History");
+            UpdateLatency(ref ChannelGroupsLatency, t, ref channelGroups, "ChannelGroups");
         }
 
         void UpdateLatency(ref SafeDictionary<long, float> dict, long t, ref float f, string name){

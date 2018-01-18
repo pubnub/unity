@@ -6,9 +6,5 @@ namespace PubNubAPI
     public class PNSetStateResult: PNResult
     {
         public Dictionary<string, object> StateByChannels  { get; set;}
-        public PNSetStateResult ()
-        {
-
-        }
     }
 }

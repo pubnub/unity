@@ -4,11 +4,7 @@ namespace PubNubAPI
 {
     public class PNLeaveRequestResult: PNResult
     {
-        public string Message;
-        public PNLeaveRequestResult ()
-        {
-
-        }
+        public string Message {get; set;}
     }
 
 }

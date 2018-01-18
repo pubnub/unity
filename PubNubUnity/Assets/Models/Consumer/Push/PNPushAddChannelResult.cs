@@ -4,11 +4,7 @@ namespace PubNubAPI
 {
     public class PNPushAddChannelResult: PNResult
     {
-        public string Message;
-        public PNPushAddChannelResult ()
-        {
-
-        }
+        public string Message {get; set;}
     }
 
 }

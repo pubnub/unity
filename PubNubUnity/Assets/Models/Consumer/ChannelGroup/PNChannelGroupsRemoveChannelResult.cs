@@ -5,12 +5,8 @@ namespace PubNubAPI
 {
     public class PNChannelGroupsRemoveChannelResult: PNResult
     {
-        public string Message;
+        public string Message {get; set;}
         
-        public PNChannelGroupsRemoveChannelResult ()
-        {
-
-        }
     }
 
 }

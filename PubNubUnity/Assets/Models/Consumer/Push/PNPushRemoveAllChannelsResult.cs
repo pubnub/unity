@@ -4,11 +4,7 @@ namespace PubNubAPI
 {
     public class PNPushRemoveAllChannelsResult: PNResult
     {
-        public string Message;
-        public PNPushRemoveAllChannelsResult ()
-        {
-
-        }
+        public string Message {get; set;}
     }
 
 }

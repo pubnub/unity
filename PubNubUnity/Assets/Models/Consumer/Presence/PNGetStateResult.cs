@@ -6,10 +6,6 @@ namespace PubNubAPI
     public class PNGetStateResult: PNResult
     {
         public Dictionary<string, object> StateByChannels  { get; set;}
-        public PNGetStateResult ()
-        {
-
-        }
     }
 
 }

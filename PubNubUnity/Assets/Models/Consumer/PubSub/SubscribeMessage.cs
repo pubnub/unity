@@ -4,20 +4,17 @@ namespace PubNubAPI
 {
     public class SubscribeMessage
     {
-        private string a { get; set;} //shard;
-        private string b { get; set;} //subscriptionMatch
-        private string c { get; set;} //channel
-        private object d { get; set;} //payload
-        //private bool ear { get; set;} //eat after reading
-        private string f { get; set;} //flags
-        private string i { get; set;} //issuingClientId
-        private string k { get; set;} //subscribeKey
-        private long s { get; set;} //sequenceNumber
-        private TimetokenMetadata o { get; set;} //originatingTimetoken
-        private TimetokenMetadata p { get; set;} //publishMetadata
-        //private string r { get; set;} //replicationMap
-        private object u { get; set;} //userMetadata
-        //private string w { get; set;} //waypointList
+        private string a { get; set;} //JSON shard;
+        private string b { get; set;} //JSON subscriptionMatch
+        private string c { get; set;} //JSON channel
+        private object d { get; set;} //JSON payload
+        private string f { get; set;} //JSON flags
+        private string i { get; set;} //JSON issuingClientId
+        private string k { get; set;} //JSON subscribeKey
+        private long s { get; set;} //JSON sequenceNumber
+        private TimetokenMetadata o { get; set;} //JSON originatingTimetoken
+        private TimetokenMetadata p { get; set;} //JSON publishMetadata
+        private object u { get; set;} //JSON userMetadata
 
         internal SubscribeMessage(string shard, string subscriptionMatch, string channel, object payload,
             string flags, string issuingClientId, string subscribeKey, long sequenceNumber, TimetokenMetadata originatingTimetoken,
@@ -61,12 +58,6 @@ namespace PubNubAPI
             }
         }
 
-        /*public bool EatAfterReading{
-            get{
-                return ear;
-            }
-        }*/
-
         public string Flags{
             get{
                 return f;
@@ -103,24 +94,11 @@ namespace PubNubAPI
             }
         }
 
-        /*public object ReplicationMap{
-            get{
-                return r;
-            }
-        }*/
-
         public object UserMetadata{
             get{
                 return u;
             }
         }
-
-        /*public string WaypointList{
-            get{
-                return w;
-            }
-        }*/
-
 
     }
 }

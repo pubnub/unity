@@ -16,7 +16,7 @@ namespace PubNubAPI
             StringBuilder parameterBuilder = new StringBuilder();
 
             parameterBuilder.AppendFormat("?add={0}", Utility.EncodeUricomponent(channel, PNOperationType.PNAddPushNotificationsOnChannelsOperation, true, false));
-            parameterBuilder.AppendFormat("&type={0}", pushType.ToString().ToLower());
+            parameterBuilder.AppendFormat("&type={0}", pushType.ToString().ToLowerInvariant());
 
             // Build URL
             List<string> url = new List<string>();
@@ -35,7 +35,7 @@ namespace PubNubAPI
             StringBuilder parameterBuilder = new StringBuilder();
 
             parameterBuilder.AppendFormat("?remove={0}", Utility.EncodeUricomponent(channel, PNOperationType.PNRemoveChannelsFromGroupOperation, true, false));
-            parameterBuilder.AppendFormat("&type={0}", pushType.ToString().ToLower());
+            parameterBuilder.AppendFormat("&type={0}", pushType.ToString().ToLowerInvariant());
 
             // Build URL
             List<string> url = new List<string>();
@@ -53,7 +53,7 @@ namespace PubNubAPI
         {
             StringBuilder parameterBuilder = new StringBuilder();
 
-            parameterBuilder.AppendFormat("?type={0}", pushType.ToString().ToLower());
+            parameterBuilder.AppendFormat("?type={0}", pushType.ToString().ToLowerInvariant());
 
             // Build URL
             List<string> url = new List<string>();
@@ -72,7 +72,7 @@ namespace PubNubAPI
         {
             StringBuilder parameterBuilder = new StringBuilder();
 
-            parameterBuilder.AppendFormat("?type={0}", pushType.ToString().ToLower());
+            parameterBuilder.AppendFormat("?type={0}", pushType.ToString().ToLowerInvariant());
 
             // Build URL
             List<string> url = new List<string>();
@@ -90,7 +90,7 @@ namespace PubNubAPI
         {
             StringBuilder parameterBuilder = new StringBuilder();
 
-            parameterBuilder.AppendFormat("?type={0}", pushType.ToString().ToLower());
+            parameterBuilder.AppendFormat("?type={0}", pushType.ToString().ToLowerInvariant());
 
             // Build URL
             List<string> url = new List<string>();
@@ -157,10 +157,10 @@ namespace PubNubAPI
         internal static Uri BuildDeleteMessagesRequest (string channel, long start, long end, PubNubUnity pnInstance){
             StringBuilder parameterBuilder = new StringBuilder ();
             if (start != -1) {
-                parameterBuilder.AppendFormat ("&start={0}", start.ToString ().ToLower ());
+                parameterBuilder.AppendFormat ("&start={0}", start.ToString ().ToLowerInvariant ());
             }
             if (end != -1) {
-                parameterBuilder.AppendFormat ("&end={0}", end.ToString ().ToLower ());
+                parameterBuilder.AppendFormat ("&end={0}", end.ToString ().ToLowerInvariant ());
             }
             long timeStamp = Utility.TranslateDateTimeToSeconds (DateTime.UtcNow);
             parameterBuilder.AppendFormat ("&timestamp={0}", timeStamp.ToString());
@@ -183,16 +183,16 @@ namespace PubNubAPI
 
             parameterBuilder.AppendFormat ("?max={0}", count);
             if (includeToken) {
-                parameterBuilder.AppendFormat ("&include_token={0}", includeToken.ToString ().ToLower ());
+                parameterBuilder.AppendFormat ("&include_token={0}", includeToken.ToString ().ToLowerInvariant ());
             }
             if (reverse) {
-                parameterBuilder.AppendFormat ("&reverse={0}", reverse.ToString ().ToLower ());
+                parameterBuilder.AppendFormat ("&reverse={0}", reverse.ToString ().ToLowerInvariant ());
             }
             if (start != -1) {
-                parameterBuilder.AppendFormat ("&start={0}", start.ToString ().ToLower ());
+                parameterBuilder.AppendFormat ("&start={0}", start.ToString ().ToLowerInvariant ());
             }
             if (end != -1) {
-                parameterBuilder.AppendFormat ("&end={0}", end.ToString ().ToLower ());
+                parameterBuilder.AppendFormat ("&end={0}", end.ToString ().ToLowerInvariant ());
             }
 
             List<string> url = new List<string> ();
@@ -213,16 +213,16 @@ namespace PubNubAPI
 
             parameterBuilder.AppendFormat ("?count={0}", count);
             if (includeToken) {
-                parameterBuilder.AppendFormat ("&include_token={0}", includeToken.ToString ().ToLower ());
+                parameterBuilder.AppendFormat ("&include_token={0}", includeToken.ToString ().ToLowerInvariant ());
             }
             if (reverse) {
-                parameterBuilder.AppendFormat ("&reverse={0}", reverse.ToString ().ToLower ());
+                parameterBuilder.AppendFormat ("&reverse={0}", reverse.ToString ().ToLowerInvariant ());
             }
             if (start != -1) {
-                parameterBuilder.AppendFormat ("&start={0}", start.ToString ().ToLower ());
+                parameterBuilder.AppendFormat ("&start={0}", start.ToString ().ToLowerInvariant ());
             }
             if (end != -1) {
-                parameterBuilder.AppendFormat ("&end={0}", end.ToString ().ToLower ());
+                parameterBuilder.AppendFormat ("&end={0}", end.ToString ().ToLowerInvariant ());
             }
             List<string> url = new List<string> ();
 
@@ -592,8 +592,6 @@ namespace PubNubAPI
                     if(latency.ChannelGroups > 0){
                         url.AppendFormat("&l_cg={0}", latency.ChannelGroups);
                     }
-                    break;
-                default:
                     break;
             }
             return url;

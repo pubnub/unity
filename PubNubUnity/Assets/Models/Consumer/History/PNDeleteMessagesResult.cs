@@ -5,10 +5,6 @@ namespace PubNubAPI
 {
     public class PNDeleteMessagesResult: PNResult
     {
-        public string Message;
-        public PNDeleteMessagesResult ()
-        {
-
-        }
+        public string Message {get; set;}
     }
 }

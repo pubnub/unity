@@ -8,10 +8,6 @@ namespace PubNubAPI
         public List<PNHistoryItemResult> Messages { get; set;}
         public long StartTimetoken { get; set;}
         public long EndTimetoken { get; set;}
-        public PNHistoryResult ()
-        {
-
-        }
     }
 
     public class PNHistoryItemResult {

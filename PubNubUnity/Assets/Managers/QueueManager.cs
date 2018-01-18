@@ -12,7 +12,7 @@ namespace PubNubAPI
         private bool RunRequest = true;
         internal ushort NoOfConcurrentRequests = 1;
         public PubNubUnity PubNubInstance { get; set;}
-        private ushort RunningRequests = 0;
+        private ushort RunningRequests;
 
         void Start(){
             this.RunningRequestEnd += delegate(PNOperationType operationType) {
@@ -57,7 +57,7 @@ namespace PubNubAPI
                     object operationParams = qs.OperationParams;
                     switch(operationType){
                         case PNOperationType.PNTimeOperation:
-                            TimeRequestBuilder timebuilder  = operationParams as TimeRequestBuilder;//((TimeBuilder)operationParams);
+                            TimeRequestBuilder timebuilder  = operationParams as TimeRequestBuilder;
                             timebuilder.RaiseRunRequest(this);
                             break;
                         case PNOperationType.PNWhereNowOperation:
@@ -143,8 +143,6 @@ namespace PubNubAPI
                             removeGroupRequestBuilder.RaiseRunRequest(this);
 
                             break;
-                        default:
-                            break;    
                     }
                 } 
             } else {

@@ -8,9 +8,9 @@ namespace PubNubAPI
         public PNConfiguration PNConfig { get; set;}
         private PubNubUnity pnUnity;
         private bool cleanedUp = true;
-        private IJsonLibrary jsonLibrary = null;
+        private readonly IJsonLibrary jsonLibrary;
 
-        private GameObject gameObj;
+        private readonly GameObject gameObj;
 
         public GameObject GameObjectRef {
             get {

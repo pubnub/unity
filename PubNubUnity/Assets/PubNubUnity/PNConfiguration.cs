@@ -21,10 +21,10 @@ namespace PubNubAPI
             }
         }
 
-        public string SubscribeKey = "";
-        public string PublishKey = "";
-        public string SecretKey = "";
-        public string CipherKey = "";
+        public string SubscribeKey {get; set;}
+        public string PublishKey {get; set;}
+        public string SecretKey {get; set;}
+        public string CipherKey {get; set;}
         private string uuid;
         public string UUID { 
             get{
@@ -46,7 +46,12 @@ namespace PubNubAPI
         public string AuthKey { get; set;}
         public bool Secure { get; set;}
 
-        public int MessageQueueOverflowCount =100;
+        public int messageQueueOverflowCount =100;
+        public int MessageQueueOverflowCount
+        {
+            get {return messageQueueOverflowCount;}
+            set {messageQueueOverflowCount = value;}
+        }
 
         private int subscribeTimeout = 310;
         public int SubscribeTimeout { 

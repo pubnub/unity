@@ -5,8 +5,8 @@ namespace PubNubAPI
 {
     public class SubscribeEnvelope
     {
-        private List<SubscribeMessage> m { get; set;} //messages;
-        private TimetokenMetadata t { get; set;} //subscribeMetadata;
+        private List<SubscribeMessage> m { get; set;} //JSON messages;
+        private TimetokenMetadata t { get; set;} //JSON subscribeMetadata;
 
         public List<SubscribeMessage> Messages{
             get{

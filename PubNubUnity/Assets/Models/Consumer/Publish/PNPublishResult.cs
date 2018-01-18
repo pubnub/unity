@@ -5,10 +5,6 @@ namespace PubNubAPI
 {
     public class PNPublishResult: PNResult
     {
-        public long Timetoken;
-        public PNPublishResult ()
-        {
-
-        }
+        public long Timetoken {get; set;}
     }
 }
