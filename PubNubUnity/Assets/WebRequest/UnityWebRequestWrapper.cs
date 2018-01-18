@@ -13,10 +13,10 @@ namespace PubNubAPI
         internal PNCurrentRequestType CurrentRequestType;
         internal bool IsComplete;
         internal RequestState CurrentRequestState;
-        internal bool RunTimer = false;
-        internal float Timer = 0;
-        internal bool RunPauseTimer = false;
-        internal float PauseTimer = 0;
+        internal bool RunTimer;
+        internal float Timer;
+        internal bool RunPauseTimer;
+        internal float PauseTimer;
         internal UnityWebRequestWrapper(PNCurrentRequestType crt, RequestState requestState){
             this.CurrentUnityWebRequest = null;
             this.URL = requestState.URL;

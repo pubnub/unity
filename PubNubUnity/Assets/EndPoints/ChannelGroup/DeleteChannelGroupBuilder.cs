@@ -15,8 +15,6 @@ namespace PubNubAPI
         
         public DeleteChannelGroupBuilder(PubNubUnity pn){
             pubBuilder = new DeleteChannelGroupRequestBuilder(pn);
-
-            Debug.Log ("DeleteChannelGroupRequestBuilder Construct");
         }
         public void Async(Action<PNChannelGroupsDeleteGroupResult, PNStatus> callback)
         {

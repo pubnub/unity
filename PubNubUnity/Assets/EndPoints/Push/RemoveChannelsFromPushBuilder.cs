@@ -25,8 +25,6 @@ namespace PubNubAPI
         }
         public RemoveChannelsFromPushBuilder(PubNubUnity pn){
             pubBuilder = new RemoveChannelsFromPushRequestBuilder(pn);
-
-            Debug.Log ("RemoveChannelsFromPushRequestBuilder Construct");
         }
         public void Async(Action<PNPushRemoveChannelResult, PNStatus> callback)
         {

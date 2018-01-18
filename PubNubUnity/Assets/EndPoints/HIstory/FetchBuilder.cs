@@ -41,7 +41,6 @@ namespace PubNubAPI
         public FetchBuilder(PubNubUnity pn){
             pubBuilder = new FetchMessagesRequestBuilder(pn);
 
-            Debug.Log ("FetchMessagesRequestBuilder Construct");
         }
         public void Async(Action<PNFetchMessagesResult, PNStatus> callback)
         {

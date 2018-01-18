@@ -11,8 +11,6 @@ namespace PubNubAPI
         
         public FireBuilder(PubNubUnity pn, uint counter){
             pubBuilder = new PublishRequestBuilder(pn, counter);
-
-            Debug.Log ("FireBuilder Construct");
         }
         public FireBuilder Message(object messageToPublish){
             pubBuilder.Message(messageToPublish);

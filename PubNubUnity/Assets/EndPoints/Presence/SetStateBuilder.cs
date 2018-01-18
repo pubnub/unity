@@ -11,8 +11,6 @@ namespace PubNubAPI
         
         public SetStateBuilder(PubNubUnity pn){
             pubBuilder = new SetStateRequestBuilder(pn);
-
-            Debug.Log ("SetStateBuilder Construct");
         }
         
         public SetStateBuilder UUID(string uuidForState){

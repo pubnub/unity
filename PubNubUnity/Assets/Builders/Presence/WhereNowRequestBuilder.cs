@@ -29,7 +29,9 @@ namespace PubNubAPI
             RequestState requestState = new RequestState ();
             requestState.OperationType = OperationType;
 
-            Debug.Log ("WhereNowBuilder UuidForWhereNow: " + this.UuidForWhereNow);
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PubNubInstance.PNLog.WriteToLog(string.Format ("WhereNowBuilder UuidForWhereNow: {0}", this.UuidForWhereNow), PNLoggingMethod.LevelInfo);
+            #endif                                    
 
             string uuidForWhereNow = this.PubNubInstance.PNConfig.UUID;
             if(!string.IsNullOrEmpty(this.UuidForWhereNow)){

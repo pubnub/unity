@@ -11,8 +11,6 @@ namespace PubNubAPI
 
         public UnsubscribeAllBuilder(PubNubUnity pn){
             pubBuilder = new LeaveRequestBuilder(pn);
-
-            Debug.Log ("UnsubscribeAllBuilder Construct");
         }
         public void Async(Action<PNLeaveRequestResult, PNStatus> callback)
         {

@@ -25,8 +25,9 @@ namespace PubNubAPI
             
                 pnUnity.SusbcribeCallback += (sender, e) => { 
                     SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
-
-                    Debug.Log ("SusbcribeCallback PN");
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    this.pnUnity.PNLog.WriteToLog("SusbcribeCallback PN", PNLoggingMethod.LevelInfo);
+                    #endif
                     RaiseEvent(mea);
                 };
 
@@ -104,121 +105,101 @@ namespace PubNubAPI
         }
 
         public TimeBuilder Time(){            
-            Debug.Log ("TimeBuilder");
             PubNubUnityInitializationAfterCleanup();
             return pnUnity.Time();
         }
 
         public WhereNowBuilder WhereNow(){
-            Debug.Log ("WhereNowBuilder");
             PubNubUnityInitializationAfterCleanup();
             return pnUnity.WhereNow();
         }
 
         public HereNowBuilder HereNow(){
-            Debug.Log ("HereNowBuilder");
             PubNubUnityInitializationAfterCleanup();
             return pnUnity.HereNow();
         }
 
         public HistoryBuilder History(){
-            Debug.Log ("HistoryBuilder");
             PubNubUnityInitializationAfterCleanup();
             return pnUnity.History();
         }
 
         public FetchBuilder FetchMessages(){
-            Debug.Log ("FetchBuilder");
             PubNubUnityInitializationAfterCleanup();
             return pnUnity.FetchMessages();
         }
 
         public DeleteMessagesBuilder DeleteMessages(){
-            Debug.Log ("DeleteBuilder");
             PubNubUnityInitializationAfterCleanup();
             return pnUnity.DeleteMessages();
         }
 
         public PublishBuilder Publish(){
-            Debug.Log ("PubBuilder");
             PubNubUnityInitializationAfterCleanup();
             return pnUnity.Publish();
         }
 
         public FireBuilder Fire(){
-            Debug.Log ("Fire Builder");
             PubNubUnityInitializationAfterCleanup();
             return pnUnity.Fire();
         }
 
         public UnsubscribeBuilder Unsubscribe(){
-            Debug.Log ("UnsubscribeBuilder");
             PubNubUnityInitializationAfterCleanup();
             return pnUnity.Unsubscribe();
         }
 
         public UnsubscribeAllBuilder UnsubscribeAll(){
-            Debug.Log ("UnsubscribeAll");
             PubNubUnityInitializationAfterCleanup();
             return pnUnity.UnsubscribeAll();
         }
 
         public GetStateBuilder GetPresenceState(){
-            Debug.Log ("GetPresenceState");
             PubNubUnityInitializationAfterCleanup();
             return pnUnity.GetPresenceState();
         }
 
         public SetStateBuilder SetPresenceState(){
-            Debug.Log ("SetPresenceState");
             PubNubUnityInitializationAfterCleanup();
             return pnUnity.SetPresenceState();
         }
 
         public AddChannelsToChannelGroupBuilder AddChannelsToChannelGroup(){
-            Debug.Log ("AddChannelsToChannelGroupBuilder");
             PubNubUnityInitializationAfterCleanup();
             return pnUnity.AddChannelsToChannelGroup();
         }
 
         public DeleteChannelGroupBuilder DeleteChannelGroup(){
-            Debug.Log ("DeleteChannelGroupBuilder");
             PubNubUnityInitializationAfterCleanup();
             return pnUnity.DeleteChannelGroup();
         }
 
         public RemoveChannelsFromGroupBuilder RemoveChannelsFromChannelGroup(){
-            Debug.Log ("RemoveChannelsFromGroupBuilder");
             PubNubUnityInitializationAfterCleanup();
             return pnUnity.RemoveChannelsFromChannelGroup();
         }
 
         public GetAllChannelsForGroupBuilder ListChannelsForChannelGroup(){
-            Debug.Log ("GetAllChannelsForGroupBuilder");
             PubNubUnityInitializationAfterCleanup();
             return pnUnity.ListChannelsForChannelGroup();
         }
 
         public AddChannelsToPushBuilder AddPushNotificationsOnChannels(){
-            Debug.Log ("AddChannelsToPushBuilder");
             PubNubUnityInitializationAfterCleanup();
             return pnUnity.AddPushNotificationsOnChannels();
         }
 
         public ListPushProvisionsBuilder AuditPushChannelProvisions(){
-            Debug.Log ("AuditPushChannelProvisions");
             PubNubUnityInitializationAfterCleanup();
             return pnUnity.AuditPushChannelProvisions();
         }
 
         public RemoveAllPushChannelsForDeviceBuilder RemoveAllPushNotifications(){
-            Debug.Log ("RemoveAllPushNotifications");
             PubNubUnityInitializationAfterCleanup();
             return pnUnity.RemoveAllPushNotifications();
         }
 
-        public RemoveChannelsFromPushBuilder RemovePushNotificationsFromChannels(){
-            Debug.Log ("RemovePushNotificationsFromChannels");
+        public RemoveChannelsFromPushBuilder RemovePushNotificationsFromChannels(){            
             PubNubUnityInitializationAfterCleanup();
             return pnUnity.RemovePushNotificationsFromChannels();            
         }

@@ -12,7 +12,6 @@ namespace PubNubAPI
         public GetStateBuilder(PubNubUnity pn){
             pubBuilder = new GetStateRequestBuilder(pn);
 
-            Debug.Log ("GetStateBuilder Construct");
         }
         
         public GetStateBuilder UUID(string uuidForState){

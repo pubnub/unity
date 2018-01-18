@@ -11,8 +11,6 @@ namespace PubNubAPI
         
         public HereNowBuilder(PubNubUnity pn){
             pubBuilder = new HereNowRequestBuilder(pn);
-
-            Debug.Log ("HereNowBuilder Construct");
         }
         
         public HereNowBuilder IncludeUUIDs(bool includeUUIDInHereNow){

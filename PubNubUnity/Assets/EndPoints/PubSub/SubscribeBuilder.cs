@@ -9,8 +9,6 @@ namespace PubNubAPI
         private readonly SubscribeRequestBuilder pubBuilder;
         public SubscribeBuilder(PubNubUnity pn){
             pubBuilder = new SubscribeRequestBuilder(pn);
-
-            Debug.Log ("SubscribeBuilder Construct");
         }
         
 

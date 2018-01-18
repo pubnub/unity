@@ -27,7 +27,10 @@ namespace PubNubAPI
                 } else {
                     RunningRequests++;
                 }
-                Debug.Log("RunningRequests+RequestComplete:" + RunningRequests.ToString() + RequestComplete.ToString());
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PubNubInstance.PNLog.WriteToLog(string.Format("RunningRequests+RequestComplete {0} -- {1}", RunningRequests.ToString(), RequestComplete.ToString()), PNLoggingMethod.LevelInfo);
+                #endif
+                
                 if ((NoOfConcurrentRequests.Equals(0)) || (RunningRequests <= NoOfConcurrentRequests)) {
                     RunRequest = true;
                 } else {
@@ -53,7 +56,10 @@ namespace PubNubAPI
                     UpdateRunningRequests(false);
                     QueueStorage qs =  RequestQueue.Instance.Dequeue ();
                     PNOperationType operationType = qs.OperationType;
-                    Debug.Log(operationType.ToString());
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    this.PubNubInstance.PNLog.WriteToLog(string.Format("operationType.ToString() {0}", operationType.ToString()), PNLoggingMethod.LevelInfo);
+                    #endif
+                    
                     object operationParams = qs.OperationParams;
                     switch(operationType){
                         case PNOperationType.PNTimeOperation:
@@ -113,7 +119,10 @@ namespace PubNubAPI
 
                             break;
                         case PNOperationType.PNChannelGroupsOperation:
-                            Debug.Log((operationParams == null)? "operationParams null" : "operationParams not null");
+                            #if (ENABLE_PUBNUB_LOGGING)
+                            this.PubNubInstance.PNLog.WriteToLog((operationParams == null)? "operationParams null" : "operationParams not null", PNLoggingMethod.LevelInfo);
+                            #endif
+                            
                             GetChannelGroupsRequestBuilder getChannelGroupsBuilder = operationParams as GetChannelGroupsRequestBuilder;
                             getChannelGroupsBuilder.RaiseRunRequest(this);
 
@@ -143,10 +152,14 @@ namespace PubNubAPI
                             removeGroupRequestBuilder.RaiseRunRequest(this);
 
                             break;
+                        default:
+                        break;
                     }
                 } 
-            } else {
-                Debug.Log("PN instance null");
+            } else {                
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PubNubInstance.PNLog.WriteToLog("PN instance null", PNLoggingMethod.LevelInfo);
+                #endif
             }
         }
     }

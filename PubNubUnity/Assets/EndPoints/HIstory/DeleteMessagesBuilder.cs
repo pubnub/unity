@@ -11,8 +11,6 @@ namespace PubNubAPI
         
         public DeleteMessagesBuilder(PubNubUnity pn){
             pubBuilder = new DeleteMessagesRequestBuilder(pn);
-
-            Debug.Log ("DeleteBuilder Construct");
         }
 
         public DeleteMessagesBuilder Start(long startTime){

@@ -11,8 +11,6 @@ namespace PubNubAPI
         
         public WhereNowBuilder(PubNubUnity pn){
             pubBuilder = new WhereNowRequestBuilder(pn);
-
-            Debug.Log ("WhereNowBuilder Construct");
         }
         public WhereNowBuilder Uuid(string uuidForWhereNow){
             pubBuilder.Uuid(uuidForWhereNow);

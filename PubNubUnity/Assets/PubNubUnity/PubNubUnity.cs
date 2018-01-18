@@ -71,7 +71,10 @@ namespace PubNubAPI
             SusbcribeCallback += (object sender, EventArgs e) => {
                 SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
 
-                Debug.Log ("AddListener SusbcribeCallback");
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PNLog.WriteToLog("AddListener SusbcribeCallback", PNLoggingMethod.LevelInfo);
+                #endif
+                
                 if(mea!=null){
                     if(mea.Status != null){
                         callback(mea.Status);
@@ -91,98 +94,159 @@ namespace PubNubAPI
         }
 
         public TimeBuilder Time(){
-            Debug.Log ("TimeBuilder");
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("TimeBuilder", PNLoggingMethod.LevelInfo);
+            #endif
+            
             return new TimeBuilder (this);
         }
 
         public WhereNowBuilder WhereNow(){
-            Debug.Log ("WhereNowBuilder");
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("WhereNowBuilder", PNLoggingMethod.LevelInfo);
+            #endif
+            
             return new WhereNowBuilder (this);
         }
 
         public HereNowBuilder HereNow(){
-            Debug.Log ("HereNowBuilder");
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("HereNowBuilder", PNLoggingMethod.LevelInfo);
+            #endif
+            
             return new HereNowBuilder (this);
         }
 
         public HistoryBuilder History(){
-            Debug.Log ("HistoryBuilder");
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("HistoryBuilder", PNLoggingMethod.LevelInfo);
+            #endif
+            
             return new HistoryBuilder (this);
         }
         public FetchBuilder FetchMessages(){
-            Debug.Log ("FetchBuilder");
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("FetchBuilder", PNLoggingMethod.LevelInfo);
+            #endif
+            
             return new FetchBuilder  (this);
         }
 
         public DeleteMessagesBuilder DeleteMessages(){
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("DeleteMessagesBuilder", PNLoggingMethod.LevelInfo);
+            #endif
+            
             return new DeleteMessagesBuilder (this);
         }
 
         public PublishBuilder Publish(){
-            Debug.Log ("PublishBuilder");
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("PublishBuilder", PNLoggingMethod.LevelInfo);
+            #endif
+            
             return new PublishBuilder (this, publishMessageCounter.NextValue());
         }
         public FireBuilder Fire(){
-            Debug.Log ("FireBuilder");
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("FireBuilder", PNLoggingMethod.LevelInfo);
+            #endif
+            
             return new FireBuilder (this, publishMessageCounter.NextValue());
         }
         
         public UnsubscribeBuilder Unsubscribe(){
-            Debug.Log ("Unsubscribe");
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("Unsubscribe", PNLoggingMethod.LevelInfo);
+            #endif
+            
             return new UnsubscribeBuilder (this);
         }
         
         public UnsubscribeAllBuilder UnsubscribeAll(){
-            Debug.Log ("UnsubscribeAll");
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("UnsubscribeAll", PNLoggingMethod.LevelInfo);
+            #endif
+            
             return new UnsubscribeAllBuilder (this);
         }
         
         public GetStateBuilder GetPresenceState(){
-            Debug.Log ("GetPresenceState");
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("GetPresenceState", PNLoggingMethod.LevelInfo);
+            #endif
+            
             return new GetStateBuilder(this);
         }
         public SetStateBuilder SetPresenceState(){
-            Debug.Log ("SetPresenceState");
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("SetPresenceState", PNLoggingMethod.LevelInfo);
+            #endif
+            
             return new SetStateBuilder(this);
         }
 
         public AddChannelsToChannelGroupBuilder AddChannelsToChannelGroup(){
-            Debug.Log ("AddChannelsToChannelGroupBuilder");
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("AddChannelsToChannelGroupBuilder", PNLoggingMethod.LevelInfo);
+            #endif
+            
             return new AddChannelsToChannelGroupBuilder(this);
         }
 
         public DeleteChannelGroupBuilder DeleteChannelGroup(){
-            Debug.Log ("DeleteChannelGroupBuilder");
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("DeleteChannelGroupBuilder", PNLoggingMethod.LevelInfo);
+            #endif
+            
             return new DeleteChannelGroupBuilder(this);
         }
 
         public RemoveChannelsFromGroupBuilder RemoveChannelsFromChannelGroup(){
-            Debug.Log ("RemoveChannelsFromGroupBuilder");
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("RemoveChannelsFromGroupBuilder", PNLoggingMethod.LevelInfo);
+            #endif
+            
             return new RemoveChannelsFromGroupBuilder(this);
         }
 
         public GetAllChannelsForGroupBuilder ListChannelsForChannelGroup(){
-            Debug.Log ("GetAllChannelsForGroupBuilder");
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("GetAllChannelsForGroupBuilder", PNLoggingMethod.LevelInfo);
+            #endif
+
             return new GetAllChannelsForGroupBuilder(this);
         }
 
         public AddChannelsToPushBuilder AddPushNotificationsOnChannels(){
-            Debug.Log ("AddPushNotificationsOnChannels");
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("AddPushNotificationsOnChannels", PNLoggingMethod.LevelInfo);
+            #endif
+            
             return new AddChannelsToPushBuilder(this);
         }
 
         public ListPushProvisionsBuilder AuditPushChannelProvisions(){
-            Debug.Log ("AuditPushChannelProvisions");
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("AuditPushChannelProvisions", PNLoggingMethod.LevelInfo);
+            #endif
+            
             return new ListPushProvisionsBuilder(this);
         }
 
         public RemoveAllPushChannelsForDeviceBuilder RemoveAllPushNotifications(){
-            Debug.Log ("RemoveAllPushNotifications");
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("RemoveAllPushNotifications", PNLoggingMethod.LevelInfo);
+            #endif
+            
             return new RemoveAllPushChannelsForDeviceBuilder(this);
         }
 
         public RemoveChannelsFromPushBuilder RemovePushNotificationsFromChannels(){
-            Debug.Log ("RemovePushNotificationsFromChannels");
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("RemovePushNotificationsFromChannels", PNLoggingMethod.LevelInfo);
+            #endif
+            
             return new RemoveChannelsFromPushBuilder(this);
         }
     }

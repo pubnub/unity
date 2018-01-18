@@ -26,8 +26,6 @@ namespace PubNubAPI
 
         public AddChannelsToPushBuilder(PubNubUnity pn){
             pubBuilder = new AddChannelsToPushRequestBuilder(pn);
-
-            Debug.Log ("AddChannelsToPushRequestBuilder Construct");
         }
         public void Async(Action<PNPushAddChannelResult, PNStatus> callback)
         {

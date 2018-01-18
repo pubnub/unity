@@ -644,7 +644,10 @@ namespace PubNubAPI
             List<string> lstQuery = new List<string>();
             foreach (string qp in Regex.Split(query, "&")){
                 lstQuery.Add(qp);
-                UnityEngine.Debug.Log("qp: "+qp);
+                #if (ENABLE_PUBNUB_LOGGING)
+                UnityEngine.Debug.Log(string.Format("qp {0}", qp));
+                #endif
+                
             }
             lstQuery.Sort();
 
@@ -655,7 +658,9 @@ namespace PubNubAPI
             if (!string.IsNullOrEmpty(pnInstance.PNConfig.SecretKey) && (pnInstance.PNConfig.SecretKey.Length > 0)) {
                 string signature = "";
                 string parameters = SetParametersInOrder(uri);
-                UnityEngine.Debug.Log("ordered parameters: " + parameters);
+                #if (ENABLE_PUBNUB_LOGGING)
+                UnityEngine.Debug.Log(string.Format("ordered parameters:  {0}", parameters));
+                #endif
 
                 StringBuilder stringToSign = new StringBuilder ();
                 stringToSign
@@ -779,7 +784,10 @@ namespace PubNubAPI
                 url = AppendAuthKeyToURL(url, authenticationKey, type);
                 url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
                 string urlPath = string.Format("/{0}", string.Join( "/", urlComponents.ToArray()));
+                #if (ENABLE_PUBNUB_LOGGING)                
                 UnityEngine.Debug.Log(string.Format("urlComponentsString {0}", urlPath));
+                #endif
+
                 url = url.Append(GenerateSignatureAndAddToURL(pnInstance, new Uri (urlPath.ToString ()), urlComponentsEncoded));
                 break;
             case PNOperationType.PNHistoryOperation:

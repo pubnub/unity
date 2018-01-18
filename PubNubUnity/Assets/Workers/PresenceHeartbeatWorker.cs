@@ -5,12 +5,12 @@ namespace PubNubAPI
 {
     internal class PresenceHeartbeatWorker
     {  
-        private bool keepPresenceHearbeatRunning = false;
-        private bool isPresenceHearbeatRunning = false;
+        private bool keepPresenceHearbeatRunning;
+        private bool isPresenceHearbeatRunning;
 
-        private PNUnityWebRequest webRequest;
+        private readonly PNUnityWebRequest webRequest;
         private string webRequestId = "";
-        private PubNubUnity PubNubInstance;
+        private readonly PubNubUnity PubNubInstance;
         internal PresenceHeartbeatWorker(PubNubUnity pn, PNUnityWebRequest webRequest){
             PubNubInstance  = pn;
             this.webRequest = webRequest;
@@ -31,17 +31,22 @@ namespace PubNubAPI
 
         private void WebRequestCompleteHandler (object sender, EventArgs ea)
         {
-            Debug.Log("WebRequestCompleteHandler PHB");
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PubNubInstance.PNLog.WriteToLog ("WebRequestCompleteHandler PHB", PNLoggingMethod.LevelError);
+            #endif
+            
             CustomEventArgs cea = ea as CustomEventArgs;
 
             try {
                 if ((cea != null) && (cea.CurrRequestType.Equals(PNCurrentRequestType.PresenceHeartbeat))) {
-                    Debug.Log(" PHB cea not null");
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    this.PubNubInstance.PNLog.WriteToLog ("PHB cea not null", PNLoggingMethod.LevelError);
+                    #endif
+                    
                     PresenceHeartbeatHandler (cea);
 
                 }                
             } catch (Exception ex) {
-                Debug.Log(ex.ToString());
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PubNubInstance.PNLog.WriteToLog (string.Format ("WebRequestCompleteHandler: Exception={0}", ex.ToString ()), PNLoggingMethod.LevelError);
                 #endif
@@ -63,7 +68,10 @@ namespace PubNubAPI
         }
 
         private void PresenceHeartbeatHandler (CustomEventArgs cea){
-            Debug.Log(string.Format ("PresenceHeartbeatHandler keepPresenceHearbeatRunning={0} isPresenceHearbeatRunning={1}", keepPresenceHearbeatRunning, isPresenceHearbeatRunning));
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PubNubInstance.PNLog.WriteToLog (string.Format ("PresenceHeartbeatHandler keepPresenceHearbeatRunning={0} isPresenceHearbeatRunning={1}", keepPresenceHearbeatRunning, isPresenceHearbeatRunning), PNLoggingMethod.LevelError);
+            #endif
+            
             isPresenceHearbeatRunning = false;
 
             #if (ENABLE_PUBNUB_LOGGING)
@@ -103,7 +111,9 @@ namespace PubNubAPI
                     requestState.Pause = pauseTime;
                     requestState.Reconnect = pause;
 
-                    Debug.Log(string.Format ("presenceheartbeat: request.OriginalString {0} ", request.OriginalString ));
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    this.PubNubInstance.PNLog.WriteToLog (string.Format ("presenceheartbeat: request.OriginalString {0} ", request.OriginalString ), PNLoggingMethod.LevelError);
+                    #endif
 
                     webRequestId = webRequest.Run(requestState);
 
@@ -113,7 +123,6 @@ namespace PubNubAPI
                 }
             }
             catch (Exception ex) {
-                Debug.Log(ex.ToString());
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PubNubInstance.PNLog.WriteToLog (string.Format ("StartPresenceHeartbeat: PresenceHeartbeat exception {0}", ex.ToString ()), PNLoggingMethod.LevelError);
                 #endif
@@ -122,7 +131,10 @@ namespace PubNubAPI
         
         internal void RunPresenceHeartbeat (bool pause, int pauseTime)
         {
-            Debug.Log(string.Format ("RunPresenceHeartbeat keepPresenceHearbeatRunning={0} isPresenceHearbeatRunning={1}", keepPresenceHearbeatRunning, isPresenceHearbeatRunning));
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PubNubInstance.PNLog.WriteToLog (string.Format ("RunPresenceHeartbeat keepPresenceHearbeatRunning={0} isPresenceHearbeatRunning={1}", keepPresenceHearbeatRunning, isPresenceHearbeatRunning), PNLoggingMethod.LevelError);
+            #endif
+            
             keepPresenceHearbeatRunning = true;
             if (!isPresenceHearbeatRunning) {
                 StartPresenceHeartbeat (pause, pauseTime);

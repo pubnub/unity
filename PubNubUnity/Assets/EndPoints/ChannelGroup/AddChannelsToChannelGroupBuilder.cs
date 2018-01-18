@@ -21,8 +21,6 @@ namespace PubNubAPI
         
         public AddChannelsToChannelGroupBuilder(PubNubUnity pn){
             pubBuilder = new AddChannelsToChannelGroupRequestBuilder(pn);
-
-            Debug.Log ("AddChannelsToChannelGroupRequestBuilder Construct");
         }
         public void Async(Action<PNChannelGroupsAddChannelResult, PNStatus> callback)
         {

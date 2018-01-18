@@ -131,7 +131,6 @@ namespace PubNubAPI
                     pnStatus = base.CreateErrorResponseFromMessage("Response dictionary is null", requestState, PNStatusCategory.PNUnknownCategory);
                 }
             } catch (Exception ex) {
-                Debug.Log(ex.ToString());
                 pnFetchMessagesResult = null;
                 pnStatus = base.CreateErrorResponseFromException(ex, requestState, PNStatusCategory.PNUnknownCategory);
             }

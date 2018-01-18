@@ -40,7 +40,9 @@ namespace PubNubAPI
             }
 
             if (PushType.Equals(PNPushType.None)) {
-                Debug.Log("PNPushType not selected, using GCM");                
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PubNubInstance.PNLog.WriteToLog("PNPushType not selected, using GCM", PNLoggingMethod.LevelInfo);
+                #endif               
                 PushType = PNPushType.GCM;
             }
             base.Async(this);

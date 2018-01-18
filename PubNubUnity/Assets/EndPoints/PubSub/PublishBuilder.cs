@@ -11,8 +11,6 @@ namespace PubNubAPI
         
         public PublishBuilder(PubNubUnity pn, uint counter){
             pubBuilder = new PublishRequestBuilder(pn, counter);
-
-            Debug.Log ("PublishBuilder Construct");
         }
         public PublishBuilder Message(object messageToPublish){
             pubBuilder.Message(messageToPublish);

@@ -112,9 +112,11 @@ namespace PubNubAPI
 
                     var historyResponseArray = (from item in result
                             select item as object).ToArray ();
+                    #if (ENABLE_PUBNUB_LOGGING)
                     foreach(var h in historyResponseArray){
-                        Debug.Log(h.ToString());
+                        this.PubNubInstance.PNLog.WriteToLog(string.Format ("HistoryRequestBuilder: {0}", h.ToString()), PNLoggingMethod.LevelInfo);
                     }
+                    #endif                            
 
                     if(historyResponseArray.Length >= 1){
                         //TODO add checks
@@ -126,12 +128,10 @@ namespace PubNubAPI
 
                     if(historyResponseArray.Length > 1){
                         pnHistoryResult.StartTimetoken = Utility.ValidateTimetoken(historyResponseArray[1].ToString(), true);
-                        Debug.Log(pnHistoryResult.StartTimetoken);
                     }
 
                     if(historyResponseArray.Length > 2){
                         pnHistoryResult.EndTimetoken = Utility.ValidateTimetoken(historyResponseArray[2].ToString(), true);
-                        Debug.Log(pnHistoryResult.EndTimetoken);
                     }
                 }
             } catch (Exception ex) {
@@ -147,7 +147,9 @@ namespace PubNubAPI
             //[[{"message":{"text":"hey"},"timetoken":14986549102032676},{"message":"E8VOcbfrYqLyHMtoVGv9UQ==","timetoken":14986619049105442},{"message":"E8VOcbfrYqLyHMtoVGv9UQ==","timetoken":14986619291068634}],14986549102032676,14986619291068634]
             pnHistoryItemResult = new PNHistoryItemResult();
             Dictionary<string, object> historyMessage = element as Dictionary<string, object>;
-            Debug.Log("historyMessage" + historyMessage);
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PubNubInstance.PNLog.WriteToLog(string.Format ("ExtractMessageWithTimetokens: historyMessage {0}", historyMessage), PNLoggingMethod.LevelInfo);
+            #endif                            
             object v;
             historyMessage.TryGetValue("message", out v);
             if(!string.IsNullOrEmpty(cipherKey) && (cipherKey.Length > 0)){
@@ -156,12 +158,16 @@ namespace PubNubAPI
             } else {
                 pnHistoryItemResult.Entry = v;
             }
-            Debug.Log(" v "+pnHistoryItemResult.Entry);
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PubNubInstance.PNLog.WriteToLog(string.Format ("ExtractMessageWithTimetokens: v {0}", pnHistoryItemResult.Entry), PNLoggingMethod.LevelInfo);
+            #endif                            
 
             object t;
             historyMessage.TryGetValue("timetoken", out t);
             pnHistoryItemResult.Timetoken = Utility.ValidateTimetoken(t.ToString(), false);
-            Debug.Log(" t " + t);
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PubNubInstance.PNLog.WriteToLog(string.Format ("ExtractMessageWithTimetokens: t {0}", t), PNLoggingMethod.LevelInfo);
+            #endif                            
             
         }
 
@@ -175,16 +181,24 @@ namespace PubNubAPI
             } else {
                 pnHistoryItemResult.Entry = element;
             }
-            Debug.Log(" v "+pnHistoryItemResult.Entry);
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PubNubInstance.PNLog.WriteToLog(string.Format ("ExtractMessage: v {0}", pnHistoryItemResult.Entry), PNLoggingMethod.LevelInfo);
+            #endif                            
+
         }
 
         private bool ExtractMessages(object[] historyResponseArray, ref PNHistoryResult pnHistoryResult){
             IEnumerable enumerable = historyResponseArray [0] as IEnumerable;
             if (enumerable != null) {
-                Debug.Log("enumerable" + enumerable);
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PubNubInstance.PNLog.WriteToLog(string.Format ("enumerable: {0}", enumerable), PNLoggingMethod.LevelInfo);
+                #endif                            
+                
                 foreach (object elem in enumerable) {
                     var element = elem;
-                    Debug.Log("element:" + element);
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    this.PubNubInstance.PNLog.WriteToLog(string.Format ("element: {0}", element), PNLoggingMethod.LevelInfo);
+                    #endif                     
                     PNHistoryItemResult pnHistoryItemResult;
 
                     if(this.IncludeTimetokenInHistory){

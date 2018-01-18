@@ -55,7 +55,6 @@ namespace PubNubAPI
 
         public void CleanUp(){
             RunUpdateLatencyLoop = false;
-            Debug.Log("Stopping Latency Updator");
         }
 
         public DateTime FromUnixTime2(long unixTime)
@@ -65,8 +64,6 @@ namespace PubNubAPI
 
         void Start(){
             RunUpdateLatencyLoop = true;
-            
-            Debug.Log("Running Latency Updator");
         }
 
         void Update(){
@@ -110,7 +107,6 @@ namespace PubNubAPI
 
         public void StoreLatency(long startTime, long endTime, PNOperationType operationType){
             float latency = (endTime - startTime)/10000000f; // seconds
-            Debug.Log("Latency" + operationType.ToString()  + latency);
             //TODO Add delete history 
             switch(operationType){
                 case PNOperationType.PNTimeOperation:

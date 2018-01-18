@@ -12,7 +12,6 @@ namespace PubNubAPI
         public HistoryBuilder(PubNubUnity pn){
             pubBuilder = new HistoryRequestBuilder(pn);
 
-            Debug.Log ("HistoryBuilder Construct");
         }
         public HistoryBuilder IncludeTimetoken(bool includeTimetokenForHistory){
             pubBuilder.IncludeTimetoken(includeTimetokenForHistory);

@@ -107,8 +107,9 @@ namespace PubNubAPI
             }
             #endif
 
-            Debug.Log ("channelsOrChannelGroupsAdded" + channelsOrChannelGroupsAdded);
-            Debug.Log ("newChannelEntities" + newChannelEntities.Count);
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PubNubInstance.PNLog.WriteToLog(string.Format ("channelsOrChannelGroupsAdded: {0}\nnewChannelEntities:{1}", channelsOrChannelGroupsAdded, newChannelEntities.Count), PNLoggingMethod.LevelInfo);
+            #endif                                    
         }
         
         public void SetChannels(List<string> channels){

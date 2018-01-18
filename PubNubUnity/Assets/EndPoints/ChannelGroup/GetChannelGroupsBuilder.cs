@@ -11,8 +11,6 @@ namespace PubNubAPI
         
         public GetChannelGroupsBuilder(PubNubUnity pn){
             pubBuilder = new GetChannelGroupsRequestBuilder(pn);
-
-            Debug.Log ("GetChannelGroupsBuilder Construct");
         }
         public void Async(Action<PNChannelGroupsListAllResult, PNStatus> callback)
         {

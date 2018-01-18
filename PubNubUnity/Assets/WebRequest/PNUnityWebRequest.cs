@@ -70,13 +70,11 @@ namespace PubNubAPI
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PNLog.WriteToLog (string.Format ("CheckElapsedTime: timeout {0}",  unityWebRequestWrapper.CurrentRequestType.ToString ()), PNLoggingMethod.LevelInfo);
                 #endif
-                Debug.Log ("CheckElapsedTime timer");
                 RaiseEvents (true, unityWebRequestWrapper, key);
             } else if ((unityWebRequestWrapper != null) && ((unityWebRequestWrapper.CurrentUnityWebRequest != null) && (unityWebRequestWrapper.CurrentUnityWebRequest.isDone))) {
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PNLog.WriteToLog (string.Format ("CheckElapsedTime: done {0}",  unityWebRequestWrapper.CurrentRequestType.ToString ()), PNLoggingMethod.LevelInfo);
                 #endif
-                Debug.Log ("CheckElapsedTime done");
                 RaiseEvents (false, unityWebRequestWrapper, key);
             } else if ((unityWebRequestWrapper.Timer > 0) && ((unityWebRequestWrapper.CurrentUnityWebRequest != null) && (unityWebRequestWrapper.CurrentUnityWebRequest.isDone))) {
                 #if (ENABLE_PUBNUB_LOGGING)
@@ -163,10 +161,16 @@ namespace PubNubAPI
         string GenerateAndValidateWebRequestId(){
             string newId = Guid.NewGuid ().ToString ();
             if(!currentWebRequests.ContainsKey(newId)){
-                Debug.Log("newId:" + newId);
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PNLog.WriteToLog (string.Format ("newId: {0}",  newId), PNLoggingMethod.LevelInfo);
+                #endif  
+
                 return newId;
             } else {
-                Debug.Log("newId, Duplicate found: " + newId);
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PNLog.WriteToLog (string.Format ("newId, Duplicate found: {0}",  newId), PNLoggingMethod.LevelInfo);
+                #endif  
+                
                 return GenerateAndValidateWebRequestId();
             }
         }
@@ -203,7 +207,6 @@ namespace PubNubAPI
                     }
                 }
             } catch (Exception ex) {
-                Debug.Log(ex.ToString());
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PNLog.WriteToLog (string.Format ("BounceRequest: Exception: {0}",  ex.ToString ()), PNLoggingMethod.LevelError);
                 #endif
@@ -239,7 +242,10 @@ namespace PubNubAPI
                 break;
             }
            
-            Debug.Log("pubnubRequestState:"+ pubnubRequestState.OperationType);
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog (string.Format ("pubnubRequestState: {0}", pubnubRequestState.OperationType), PNLoggingMethod.LevelInfo);
+            #endif  
+            
             string webRequestId = "";
             UnityWebRequestWrapper webRequestWrapper = new UnityWebRequestWrapper(crt, pubnubRequestState);
             
@@ -248,7 +254,10 @@ namespace PubNubAPI
                 currentWebRequests.Add(webRequestId, webRequestWrapper);
             }
 
-            Debug.Log ("Run crt"+ crt);
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog (string.Format ("Run crt: {0}", crt), PNLoggingMethod.LevelInfo);
+            #endif  
+            
             if (delayStart) {
                 webRequestWrapper.PauseTimer = pubnubRequestState.Pause;
                 webRequestWrapper.RunPauseTimer = true;
@@ -285,7 +294,6 @@ namespace PubNubAPI
 
         internal void StartWebRequests(UnityWebRequestWrapper unityWebRequestWrapper, string key)
         {
-            Debug.Log ("Run StartWebRequestsByName");
             #if (ENABLE_PUBNUB_LOGGING)
             this.PNLog.WriteToLog (string.Format ("StartWebRequestsByName: URL {1} {0}", unityWebRequestWrapper.URL, unityWebRequestWrapper.CurrentRequestType.ToString()), PNLoggingMethod.LevelInfo);
             #endif
@@ -308,10 +316,8 @@ namespace PubNubAPI
         {
             try {
                 
-                Debug.Log("in process response -> " + unityWebRequestWrapper.CurrentRequestState.OperationType);
-
                 #if (ENABLE_PUBNUB_LOGGING)
-                this.PNLog.WriteToLog (string.Format ("ProcessResponse: Process Request {0}, url: {1} ",  unityWebRequestWrapper.CurrentRequestType.ToString (), unityWebRequestWrapper.URL), PNLoggingMethod.LevelInfo);
+                this.PNLog.WriteToLog (string.Format ("ProcessResponse: Process Request {0}, url: {1}, OPType: {2}",  unityWebRequestWrapper.CurrentRequestType.ToString (), unityWebRequestWrapper.URL, unityWebRequestWrapper.CurrentRequestState.OperationType), PNLoggingMethod.LevelInfo);
                 #endif
 
                 if (unityWebRequestWrapper.CurrentUnityWebRequest != null) {
@@ -350,8 +356,10 @@ namespace PubNubAPI
                         isError = true;
                     }
 #endif
-                    Debug.Log("message:" + message);
-                    
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    this.PNLog.WriteToLog (string.Format ("message: {0}", message), PNLoggingMethod.LevelInfo);
+                    #endif
+
                     if (unityWebRequestWrapper.CurrentRequestState != null) {
                         unityWebRequestWrapper.CurrentRequestState.EndRequestTicks = DateTime.UtcNow.Ticks;
                         unityWebRequestWrapper.CurrentRequestState.ResponseCode = unityWebRequestWrapper.CurrentUnityWebRequest.responseCode;
@@ -365,12 +373,11 @@ namespace PubNubAPI
                     else {
                         this.PNLog.WriteToLog (string.Format ("ProcessResponse: WWW Sub request null2"), PNLoggingMethod.LevelInfo);                        
                     }
+                    this.PNLog.WriteToLog ("BEFORE FireEvent", PNLoggingMethod.LevelInfo);                        
                     #endif
-                    Debug.Log("BEFORE FireEvent");
                     FireEvent (message, isError, false, unityWebRequestWrapper.CurrentRequestState, unityWebRequestWrapper.CurrentRequestType, key);
                 } 
             } catch (Exception ex) {
-                Debug.Log(ex.ToString());
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PNLog.WriteToLog (string.Format ("ProcessResponse: RunWebRequestSub {0}, Exception: {1}",  unityWebRequestWrapper.CurrentRequestType.ToString (), ex.ToString ()), PNLoggingMethod.LevelError);
                 #endif
@@ -396,7 +403,6 @@ namespace PubNubAPI
                 #endif
 
             } catch (Exception ex) {
-                Debug.Log(ex.ToString());
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PNLog.WriteToLog (string.Format ("ProcessTimeout: {0} {1}",  ex.ToString (), unityWebRequestWrapper.CurrentRequestType.ToString ()), PNLoggingMethod.LevelError);
                 #endif
@@ -405,7 +411,10 @@ namespace PubNubAPI
 
         public void FireEvent (string message, bool isError, bool isTimeout, RequestState pubnubRequestState, PNCurrentRequestType crt, string key)
         {
-            Debug.Log(" FireEvent" + crt);
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog (string.Format ("FireEvent {0}", crt), PNLoggingMethod.LevelError);
+            #endif
+            
             CustomEventArgs cea = new CustomEventArgs ();
             cea.PubNubRequestState = pubnubRequestState;
             cea.Message = message;

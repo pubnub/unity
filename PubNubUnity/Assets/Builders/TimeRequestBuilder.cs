@@ -15,7 +15,6 @@ namespace PubNubAPI
         public void Async(Action<PNTimeResult, PNStatus> callback)
         {
             this.Callback = callback;
-            Debug.Log ("TimeBuilder Async");
             base.Async(this);
         }
         #endregion
