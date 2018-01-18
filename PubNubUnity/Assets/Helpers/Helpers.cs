@@ -267,7 +267,7 @@ namespace PubNubAPI
         {
             string message = jsonPluggableLibrary.SerializeToJsonString (originalMessage);
 
-            if (cipherKey.Length > 0) {
+            if (!string.IsNullOrEmpty(cipherKey) && (cipherKey.Length > 0)) {
                 PubnubCrypto aes = new PubnubCrypto (cipherKey, pnLog);
                 string encryptMessage = aes.Encrypt (message);
                 message = jsonPluggableLibrary.SerializeToJsonString (encryptMessage);

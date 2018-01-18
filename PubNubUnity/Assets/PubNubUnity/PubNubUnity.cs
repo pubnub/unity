@@ -41,12 +41,6 @@ namespace PubNubAPI
             }
         }
 
-        /// <summary>
-        /// Gets or sets the set game object.
-        /// This method should be called before init
-        /// </summary>
-        /// <value>The set game object.</value>
-        //public GameObject GameObjectRef { get; set;}
         public PubNubUnity (PNConfiguration pnConfiguration, GameObject gameObjectRef, IJsonLibrary jsonLibrary): base(pnConfiguration, gameObjectRef, jsonLibrary)
         {
             #if (ENABLE_PUBNUB_LOGGING)

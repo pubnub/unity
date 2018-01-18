@@ -14,7 +14,7 @@ namespace PubNubAPI
         #region "IL2CPP workarounds"
         internal PNLoggingMethod PNLog;
 
-        private object syncRoot = new System.Object();
+        private readonly object syncRoot = new System.Object();
 
         //Got an exception when using JSON serialisation for [],
         //IL2CPP needs to know about the array type at compile time.
@@ -40,21 +40,8 @@ namespace PubNubAPI
 
         #endregion
 
-        public float subscribeTimer = 310; 
-        public float heartbeatTimer = 10;
-        public float presenceHeartbeatTimer = 10;
-        public float nonSubscribeTimer = 15;
-        public float heartbeatPauseTimer = 10;
-        public float presenceHeartbeatPauseTimer = 10;
-        public float subscribePauseTimer = 10;
-
         public const float timerConst = 0; 
         public float timer = timerConst; 
-
-        internal bool isHearbeatComplete = false;
-        internal bool isPresenceHeartbeatComplete = false;
-        internal bool isSubscribeComplete = false;
-        internal bool isNonSubscribeComplete = false;
 
         SafeDictionary<string, UnityWebRequestWrapper> currentWebRequests = new SafeDictionary<string, UnityWebRequestWrapper> ();
 

@@ -63,7 +63,7 @@ if [ $rc0 -ne 0 ]; then { echo "Failed unit tests"; /Applications/Unity/Unity.ap
 # 	#-buildWindowsPlayer "$(pwd)/Build/windows/${UNITYCI_PROJECT_NAME}.exe" \
 	
 
-rc1=$?
+#rc1=$?
 # echo "Build logs (Windows)"
 #cat $(pwd)/unity.log
 
@@ -79,12 +79,13 @@ rc1=$?
 	
 	#-buildOSXUniversalPlayer "$(pwd)/Build/osx/${UNITYCI_PROJECT_NAME}.app" \
 	
-rc2=$?
-echo "Build logs (OSX)"
-cat $(pwd)/unity.log
+#rc2=$?
+#echo "Build logs (OSX)"
+#cat $(pwd)/unity.log
 
 # returning license
 echo "returning license"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense
 
-exit $(($rc1|$rc2))
+#exit $(($rc1|$rc2))
+exit

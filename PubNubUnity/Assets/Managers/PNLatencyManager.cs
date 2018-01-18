@@ -14,27 +14,27 @@ namespace PubNubAPI
             get{return time;}
             set{time = value;}
         }
-        public float publish; //l_pub
+        private float publish; //l_pub
         public float Publish{
             get{return publish;}
             set{publish = value;}
         }
-        public float presence; //l_pres
+        private float presence; //l_pres
         public float Presence{
             get{return presence;}
             set{presence = value;}
         }
-        public float channelGroups; //l_cg
+        private float channelGroups; //l_cg
         public float ChannelGroups{
             get{return channelGroups;}
             set{channelGroups = value;}
         }
-        public float history; //l_hist
+        private float history; //l_hist
         public float History{
             get{return history;}
             set{history = value;}
         }
-        public float mobilePush; //l_push
+        private float mobilePush; //l_push
         public float MobilePush{
             get{return mobilePush;}
             set{mobilePush = value;}

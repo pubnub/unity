@@ -33,8 +33,8 @@ namespace PubNubAPI
     }
 
     public static class JSONSerializer{
-        private static IJsonLibrary jsonLibrary = null;
         public static IJsonLibrary JsonLibrary(PubNubUnityBase pnUnityBase){
+            IJsonLibrary jsonLibrary;
             #if (USE_MiniJSON)
                 #if (ENABLE_PUBNUB_LOGGING)
                 pnUnityBase.PNLog.WriteToLog("JSON LIB: USE_MiniJSON", PNLoggingMethod.LevelInfo);
@@ -54,7 +54,7 @@ namespace PubNubAPI
     #if (USE_JSONFX_UNITY_IOS)
     public class JsonFxUnitySerializer : IJsonLibrary
     {
-        PubNubUnityBase pnUnityBase;
+        readonly PubNubUnityBase  pnUnityBase;
         public JsonFxUnitySerializer(PubNubUnityBase pnUnityBase){
             this.pnUnityBase = pnUnityBase;
         }

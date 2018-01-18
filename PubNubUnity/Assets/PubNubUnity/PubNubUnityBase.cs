@@ -22,7 +22,7 @@ namespace PubNubAPI
         internal PNLoggingMethod PNLog;
         public PNConfiguration PNConfig { get; set;}
         internal QueueManager QManager { get; set;}
-        private IJsonLibrary jsonLibrary = null;
+        private IJsonLibrary jsonLibrary;
         public IJsonLibrary JsonLibrary {
             get {
                 if (jsonLibrary == null)
@@ -47,7 +47,11 @@ namespace PubNubAPI
         public Subscription SubscriptionInstance { get; set;}
         internal SubscriptionWorker<SubscribeEnvelope> SubWorker { get; set;}
         internal bool localGobj;
-        public PNLatencyManager Latency;
+        public readonly PNLatencyManager latency;
+        public PNLatencyManager Latency{
+            get {return latency;}
+        }
+
 
         public PubNubUnityBase(PNConfiguration pnConfiguration, GameObject gameObjectRef, IJsonLibrary jsonLibrary){
             PNConfig = pnConfiguration;
@@ -88,7 +92,7 @@ namespace PubNubAPI
             publishMessageCounter = new Counter ();
             
             QManager = GameObjectRef.AddComponent<QueueManager> ();
-            Latency = GameObjectRef.AddComponent<PNLatencyManager> ();
+            latency = GameObjectRef.AddComponent<PNLatencyManager> ();
             QManager.NoOfConcurrentRequests = PNConfig.ConcurrentNonSubscribeWorkers;
         }
 

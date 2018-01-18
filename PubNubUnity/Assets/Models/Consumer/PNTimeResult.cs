@@ -6,10 +6,6 @@ namespace PubNubAPI
     public class PNTimeResult: PNResult
     {
         public long TimeToken { get; set;}
-        public PNTimeResult ()
-        {
-            
-        }
     }
 
 }

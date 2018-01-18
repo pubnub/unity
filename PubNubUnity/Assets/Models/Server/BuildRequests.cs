@@ -593,6 +593,9 @@ namespace PubNubAPI
                         url.AppendFormat("&l_cg={0}", latency.ChannelGroups);
                     }
                     break;
+                default:
+                    break;    
+                    
             }
             return url;
         }

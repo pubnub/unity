@@ -46,7 +46,7 @@ namespace PubNubAPI
         public string AuthKey { get; set;}
         public bool Secure { get; set;}
 
-        public int messageQueueOverflowCount =100;
+        private int messageQueueOverflowCount =100;
         public int MessageQueueOverflowCount
         {
             get {return messageQueueOverflowCount;}
@@ -93,7 +93,14 @@ namespace PubNubAPI
             }
         }
 
-        public PNHeartbeatNotificationOption HeartbeatNotificationOption = PNHeartbeatNotificationOption.Failures;
+        private PNHeartbeatNotificationOption heartbeatNotificationOption = PNHeartbeatNotificationOption.Failures;
+
+        public PNHeartbeatNotificationOption HeartbeatNotificationOption
+        {
+            get {return heartbeatNotificationOption;}
+            set {heartbeatNotificationOption = value;}
+        }
+
         private string origin = "ps.pndsn.com";
         public string Origin { 
             get{
@@ -104,14 +111,30 @@ namespace PubNubAPI
             }
         }
         //In seconds, how long the server will consider this client to be online before issuing a leave event.
-        public PNReconnectionPolicy ReconnectionPolicy = PNReconnectionPolicy.LINEAR;//PNReconnectionPolicy.NONE;
+        private PNReconnectionPolicy reconnectionPolicy = PNReconnectionPolicy.LINEAR;
+        public PNReconnectionPolicy ReconnectionPolicy
+        {
+            get {return reconnectionPolicy;}
+            set {reconnectionPolicy = value;}
+        }
         public int PresenceTimeout { get; set;}
         //In seconds, How often the client should announce it's existence via heartbeating.
         public int PresenceInterval { get; set;}
 
-        public int MaximumReconnectionRetries = 50;
+        private int maximumReconnectionRetries = 50;
+        public int MaximumReconnectionRetries
+        {
+            get {return maximumReconnectionRetries;}
+            set {maximumReconnectionRetries = value;}
+        }
 
-        public bool SuppressLeaveEvents = false;
+        private bool suppressLeaveEvents = false;
+
+        public bool SuppressLeaveEvents
+        {
+            get {return suppressLeaveEvents;}
+            set {suppressLeaveEvents = value;}
+        }
     }
 }
 
