@@ -1,4 +1,3 @@
-#define ENABLE_PUBNUB_LOGGING
 #if((!USE_JSONFX_UNITY_IOS) && (!USE_MiniJSON))
 #define USE_JSONFX_UNITY_IOS
 //#define USE_MiniJSON

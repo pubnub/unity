@@ -23,8 +23,8 @@ namespace PubNubAPI
             return this;
         }
 
-        public SubscribeBuilder SetChannels(List<string> channels){
-            pubBuilder.SetChannels (channels);
+        public SubscribeBuilder Channels(List<string> channelNames){
+            pubBuilder.Channels (channelNames);
             return this;
         }
 
@@ -33,8 +33,8 @@ namespace PubNubAPI
             return this;
         }
 
-        public SubscribeBuilder SetChannelGroups(List<string> channelGroups){
-            pubBuilder.SetChannelGroups(channelGroups);
+        public SubscribeBuilder ChannelGroups(List<string> channelGroupNames){
+            pubBuilder.ChannelGroups(channelGroupNames);
             return this;
         }
         #endregion

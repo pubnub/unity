@@ -295,7 +295,7 @@ namespace PubNubExample
         }
 
         void SubscribeHandler(){
-            pubnub.Subscribe ().SetChannels(new List<string> (){ch1}).WithPresence().Execute();
+            pubnub.Subscribe ().Channels(new List<string> (){ch1}).WithPresence().Execute();
         }
 
         void AddComponents(){

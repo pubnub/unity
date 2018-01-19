@@ -3,6 +3,13 @@ changelog:
    -
     changes: 
       - 
+        text: "Logging enhancements"
+        type: improvement
+    date: Jan 18, 18
+    version: v4.0-beta5 
+   -
+    changes: 
+      - 
         text: "Cleanup"
         type: improvement
     date: Jan 16, 18
@@ -260,4 +267,4 @@ supported-platforms:
 name: unity
 schema: 1
 scm: github.com/pubnub/unity
-version: “v4.0-beta4”
+version: “v4.0-beta5”

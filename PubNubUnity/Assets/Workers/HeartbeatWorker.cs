@@ -1,4 +1,3 @@
-//#define ENABLE_PUBNUB_LOGGING
 using System;
 using UnityEngine;
 

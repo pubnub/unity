@@ -7,7 +7,7 @@ namespace PubNubAPI
     public class PubNubUnityBase
     {
         protected Counter publishMessageCounter;
-        private const string build = "4.0-beta4";
+        private const string build = "4.0-beta5";
         private string pnsdkVersion = string.Format ("PubNub-CSharp-Unity/{0}", build);
 
         public string Version {
@@ -43,7 +43,7 @@ namespace PubNubAPI
                 }
             }
         }
-        public GameObject GameObjectRef { get; set;}
+        internal GameObject GameObjectRef { get; set;}
         public Subscription SubscriptionInstance { get; set;}
         internal SubscriptionWorker<SubscribeEnvelope> SubWorker { get; set;}
         internal bool localGobj;
@@ -77,7 +77,7 @@ namespace PubNubAPI
             this.PNLog.WriteToLog (Version, PNLoggingMethod.LevelInfo);
             #endif
 
-            if (GameObjectRef == null) {
+            if (gameObjectRef == null) {
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PNLog.WriteToLog ("Initilizing new GameObject", PNLoggingMethod.LevelInfo);
                 #endif
@@ -87,6 +87,7 @@ namespace PubNubAPI
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PNLog.WriteToLog ("Reusing already initialized GameObject", PNLoggingMethod.LevelInfo);
                 #endif
+                GameObjectRef = gameObjectRef;
                 localGobj = false;
             }
             publishMessageCounter = new Counter ();

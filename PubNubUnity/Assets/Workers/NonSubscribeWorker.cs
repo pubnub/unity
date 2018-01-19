@@ -1,5 +1,4 @@
-﻿#define ENABLE_PUBNUB_LOGGING
-using System;
+﻿using System;
 using UnityEngine.Networking;
 
 namespace PubNubAPI

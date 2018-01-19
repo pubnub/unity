@@ -84,7 +84,7 @@ namespace PubNubAPI
                             Dictionary<string, object> channelsDict = objPayload as Dictionary<string, object>;
                             #if (ENABLE_PUBNUB_LOGGING)
                             foreach(KeyValuePair<string, object> kvp in channelsDict){
-                                this.PubNubInstance.PNLog.WriteToLog(string.Format ("KVP: {0} {1}", kvp.Key + kvp.Value), PNLoggingMethod.LevelInfo);
+                                this.PubNubInstance.PNLog.WriteToLog(string.Format ("KVP: {0} {1}", kvp.Key, kvp.Value), PNLoggingMethod.LevelInfo);
                             }
                             #endif
                             pnGetStateResult.StateByChannels = channelsDict;

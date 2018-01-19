@@ -7,8 +7,8 @@ namespace PubNubAPI
     public class SubscribeRequestBuilder 
     {
         public long Timetoken { get; set;}
-        public List<string> Channels { get; private set;}
-        public List<string> ChannelGroups { get; private set;}
+        public List<string> ChannelsToUse { get; private set;}
+        public List<string> ChannelGroupsToUse { get; private set;}
 
         protected PubNubUnity PubNubInstance { get; set;}
 
@@ -55,15 +55,15 @@ namespace PubNubAPI
 
         public void Execute(){
 
-            if(((this.Channels == null) || (this.Channels.Count <= 0)) && ((this.ChannelGroups == null) || (this.ChannelGroups.Count <= 0))){
+            if(((this.ChannelsToUse == null) || (this.ChannelsToUse.Count <= 0)) && ((this.ChannelGroupsToUse == null) || (this.ChannelGroupsToUse.Count <= 0))){
                 PNStatus pnStatus = Helpers.CreatePNStatus(
                     PNStatusCategory.PNUnknownCategory,
                     "Both Channels and ChannelGroups cannot be empty",
                     null,
                     true,                
                     PNOperationType.PNSubscribeOperation,
-                    this.Channels,
-                    this.ChannelGroups,
+                    this.ChannelsToUse,
+                    this.ChannelGroupsToUse,
                     null,
                     PubNubInstance
                 );
@@ -73,8 +73,8 @@ namespace PubNubAPI
 
             List<ChannelEntity> subscribedChannels = this.PubNubInstance.SubscriptionInstance.AllSubscribedChannelsAndChannelGroups;
             List<ChannelEntity> newChannelEntities;
-            List<string> rawChannels = this.Channels;
-            List<string> rawChannelGroups = this.ChannelGroups;
+            List<string> rawChannels = this.ChannelsToUse;
+            List<string> rawChannelGroups = this.ChannelGroupsToUse;
             CheckPresenceAndAddSuffix(ref rawChannels, IncludePresenceChannel, SubscribeToPresenceChannelOnly);
             CheckPresenceAndAddSuffix(ref rawChannelGroups, IncludePresenceChannel, SubscribeToPresenceChannelOnly);
             PNOperationType pnOpType = PNOperationType.PNSubscribeOperation;
@@ -112,16 +112,16 @@ namespace PubNubAPI
             #endif                                    
         }
         
-        public void SetChannels(List<string> channels){
-            Channels = channels;
+        public void Channels(List<string> channelNames){
+            ChannelsToUse = channelNames;
         }
 
         public void SetTimeToken(long timetoken){
             Timetoken = timetoken;
         }
 
-        public void SetChannelGroups(List<string> channelGroups){
-            ChannelGroups = channelGroups;
+        public void ChannelGroups(List<string> channelGroupNames){
+            ChannelGroupsToUse = channelGroupNames;
         }
         #endregion
     }
