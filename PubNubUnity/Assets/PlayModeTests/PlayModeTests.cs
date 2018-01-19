@@ -1325,7 +1325,7 @@ namespace PubNubAPI.Tests
 			string deviceId = "UnityTestDeviceId";
 			PNPushType pnPushType = PNPushType.GCM;
 
-			pubnub.AddPushNotificationsOnChannels().Channels(channelList).DeviceIDForPush(deviceId).PushType(pnPushType).Async((result, status) => {
+			pubnub.AddPushNotificationsOnChannels().Channels(channelList).DeviceID(deviceId).PushType(pnPushType).Async((result, status) => {
                     Debug.Log ("in AddChannelsToChannelGroup " + status.Error);
                     if(!status.Error){
 						Debug.Log(result.Message);
@@ -1339,7 +1339,7 @@ namespace PubNubAPI.Tests
 			Assert.True(tresult, "test didn't return1");
 			tresult = false;
 
-			pubnub.AuditPushChannelProvisions().DeviceIDForPush(deviceId).PushType(pnPushType).Async((result, status) => {
+			pubnub.AuditPushChannelProvisions().DeviceID(deviceId).PushType(pnPushType).Async((result, status) => {
                     if(!status.Error){
 						if(result.Channels!=null){
 							bool matchChannel1 = result.Channels.Contains(channel);
@@ -1362,7 +1362,7 @@ namespace PubNubAPI.Tests
 
 			List<string> listChannelsRemove = new List<string>{channel};
 			listChannelsRemove.Add(channel);
-			pubnub.RemovePushNotificationsFromChannels().Channels(listChannelsRemove).DeviceIDForPush(deviceId).PushType(pnPushType).Async((result, status) => {
+			pubnub.RemovePushNotificationsFromChannels().Channels(listChannelsRemove).DeviceID(deviceId).PushType(pnPushType).Async((result, status) => {
                     Debug.Log ("in RemovePushNotificationsFromChannels");
 					if(!status.Error){
                         tresult = result.Message.Equals("Modified Channels");
@@ -1373,7 +1373,7 @@ namespace PubNubAPI.Tests
 			Assert.True(tresult, "test didn't return 8");
 
 			tresult = false;
-			pubnub.AuditPushChannelProvisions().DeviceIDForPush(deviceId).PushType(pnPushType).Async((result, status) => {
+			pubnub.AuditPushChannelProvisions().DeviceID(deviceId).PushType(pnPushType).Async((result, status) => {
                     if(!status.Error){
 						if(result.Channels!=null){
 							bool matchChannel1 = result.Channels.Contains(channel);
@@ -1394,7 +1394,7 @@ namespace PubNubAPI.Tests
 			Assert.True(tresult, "test didn't return 9");
 
 			tresult = false;
-			pubnub.RemoveAllPushNotifications().DeviceIDForPush(deviceId).PushType(pnPushType).Async((result, status) => {
+			pubnub.RemoveAllPushNotifications().DeviceID(deviceId).PushType(pnPushType).Async((result, status) => {
                     if(!status.Error){
                         tresult = result.Message.Equals("Removed Device");
                     }

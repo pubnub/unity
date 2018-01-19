@@ -14,7 +14,7 @@ namespace PubNubAPI
             return this;
         }
         
-        public AddChannelsToPushBuilder DeviceIDForPush (string deviceIdForPush){ 
+        public AddChannelsToPushBuilder DeviceID (string deviceIdForPush){ 
             pubBuilder.DeviceId(deviceIdForPush);
             return this;
         }

@@ -9,7 +9,7 @@ namespace PubNubAPI
     {     
         private readonly ListPushProvisionsRequestBuilder pubBuilder;
         
-        public ListPushProvisionsBuilder DeviceIDForPush (string deviceIdForPush){ 
+        public ListPushProvisionsBuilder DeviceID (string deviceIdForPush){ 
             pubBuilder.DeviceId(deviceIdForPush);
             return this;
         }

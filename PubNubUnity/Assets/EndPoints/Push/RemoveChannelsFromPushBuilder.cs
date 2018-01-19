@@ -14,7 +14,7 @@ namespace PubNubAPI
             return this;
         }
 
-        public RemoveChannelsFromPushBuilder DeviceIDForPush (string deviceIdForPush){ 
+        public RemoveChannelsFromPushBuilder DeviceID (string deviceIdForPush){ 
             pubBuilder.DeviceId(deviceIdForPush);
             return this;
         }

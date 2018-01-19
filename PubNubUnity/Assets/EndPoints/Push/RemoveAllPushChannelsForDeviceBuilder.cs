@@ -9,7 +9,7 @@ namespace PubNubAPI
     {     
         private readonly RemoveAllPushChannelsForDeviceRequestBuilder pubBuilder;
         
-        public RemoveAllPushChannelsForDeviceBuilder DeviceIDForPush (string deviceIdForPush){ 
+        public RemoveAllPushChannelsForDeviceBuilder DeviceID (string deviceIdForPush){ 
             pubBuilder.DeviceId(deviceIdForPush);
             return this;
         }

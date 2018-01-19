@@ -272,7 +272,7 @@ namespace PubNubExample
              ListAllChannelsOfGroup(pubnub, cg1);
         }
         void ButtonAddPushNotificationsOnChannelsHandler(){
-            pubnub.AddPushNotificationsOnChannels().Channels(listChannels).DeviceIDForPush(deviceId).PushType(pnPushType).Async((result, status) => {
+            pubnub.AddPushNotificationsOnChannels().Channels(listChannels).DeviceID(deviceId).PushType(pnPushType).Async((result, status) => {
                     Debug.Log ("in AddPushNotificationsOnChannels");
                     if(status.Error){
                         Debug.Log (string.Format("In Example, AddPushNotificationsOnChannels Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
@@ -600,7 +600,7 @@ namespace PubNubExample
         }
 
         void RemoveChannelsFromPush(List<string> listChannels, PubNub pubnub, string deviceId, PNPushType pnPushType){
-            pubnub.RemovePushNotificationsFromChannels().Channels(listChannels).DeviceIDForPush(deviceId).PushType(pnPushType).Async((result, status) => {
+            pubnub.RemovePushNotificationsFromChannels().Channels(listChannels).DeviceID(deviceId).PushType(pnPushType).Async((result, status) => {
                     Debug.Log ("in RemovePushNotificationsFromChannels");
                     if(status.Error){
                         Debug.Log (string.Format("In Example, RemovePushNotificationsFromChannels Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
@@ -612,7 +612,7 @@ namespace PubNubExample
         }
 
         void AuditPushChannelProvisions(PubNub pubnub, string deviceId, PNPushType pnPushType){
-            pubnub.AuditPushChannelProvisions().DeviceIDForPush(deviceId).PushType(pnPushType).Async((result, status) => {
+            pubnub.AuditPushChannelProvisions().DeviceID(deviceId).PushType(pnPushType).Async((result, status) => {
                     Debug.Log ("in AuditPushChannelProvisions");
                     if(status.Error){
                         Debug.Log (string.Format("In Example, AuditPushChannelProvisions Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
@@ -627,7 +627,7 @@ namespace PubNubExample
         }
 
         void RemoveAllPushNotificationsFromChannels(PubNub pubnub, string deviceId, PNPushType pnPushType){
-            pubnub.RemoveAllPushNotifications().DeviceIDForPush(deviceId).PushType(pnPushType).Async((result, status) => {
+            pubnub.RemoveAllPushNotifications().DeviceID(deviceId).PushType(pnPushType).Async((result, status) => {
                     Debug.Log ("in RemoveAllPushNotificationsFromChannels");
                     if(status.Error){
                         Debug.Log (string.Format("In Example, RemoveAllPushNotificationsFromChannels Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
