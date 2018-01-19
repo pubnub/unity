@@ -1,0 +1,6 @@
+---
+exclude_paths:
+  - '**/Examples/**'
+  - '**/Editor/**'
+  - '**/PlayModeTests/**' 
+  - '**/ThirdParty/**'
