@@ -85,7 +85,6 @@ namespace PubNubAPI
                 this.PubNubInstance.SubscriptionInstance.Add (newChannelEntities);
                 this.PubNubInstance.SubWorker.Add (timetokenToUse, subscribedChannels);
             }
-            #if (ENABLE_PUBNUB_LOGGING)
             else {
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PubNubInstance.PNLog.WriteToLog (string.Format ("MultiChannelSubscribeInit: channelsOrChannelGroupsAdded {0}", channelsOrChannelGroupsAdded.ToString ()), PNLoggingMethod.LevelInfo);
@@ -105,7 +104,6 @@ namespace PubNubAPI
 
                 PubNubInstance.SubWorker.CreateEventArgsAndRaiseEvent(pnStatus);
             }
-            #endif
 
             #if (ENABLE_PUBNUB_LOGGING)
             this.PubNubInstance.PNLog.WriteToLog(string.Format ("channelsOrChannelGroupsAdded: {0}\nnewChannelEntities:{1}", channelsOrChannelGroupsAdded, newChannelEntities.Count), PNLoggingMethod.LevelInfo);

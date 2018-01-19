@@ -615,6 +615,7 @@ namespace PubNubAPI.Tests
 			pubnub.SusbcribeCallback += (sender, e) => { 
 				SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
 				if(mea.Status.Category.Equals(PNStatusCategory.PNUnknownCategory)){
+					Debug.Log("mea.Status.Error:" + mea.Status.Error);
 					Assert.True(mea.Status.Error);
 					bool errorData = true;
 					if(mea.Status.ErrorData!=null){
