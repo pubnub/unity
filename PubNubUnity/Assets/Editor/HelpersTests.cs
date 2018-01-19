@@ -87,7 +87,7 @@ namespace PubNubAPI.Tests
             PNStatus pnStatus = Helpers.CreatePNStatus(
                         PNStatusCategory.PNReconnectedCategory,
                         message,
-                        new Exception(message),
+                        new PubNubException(message),
                         true,
                         PNOperationType.PNSubscribeOperation,
                         pnUnity.SubscriptionInstance.AllChannels,
@@ -126,7 +126,7 @@ namespace PubNubAPI.Tests
             PNStatus pnStatus = Helpers.CreatePNStatus(
                         PNStatusCategory.PNReconnectedCategory,
                         message,
-                        new Exception(message),
+                        new PubNubException(message),
                         true,
                         PNOperationType.PNSubscribeOperation,
                         pnUnity.SubscriptionInstance.AllChannels,
@@ -164,7 +164,7 @@ namespace PubNubAPI.Tests
             PNStatus pnStatus = Helpers.CreatePNStatus(
                         PNStatusCategory.PNConnectedCategory,
                         message,
-                        new Exception(message),
+                        new PubNubException(message),
                         true,
                         PNOperationType.PNSubscribeOperation,
                         channelEntities1[0], //channel entity
@@ -235,7 +235,7 @@ namespace PubNubAPI.Tests
             PNStatus pnStatus = Helpers.CreatePNStatus(
                         PNStatusCategory.PNConnectedCategory,
                         message,
-                        new Exception(message),
+                        new PubNubException(message),
                         true,
                         PNOperationType.PNSubscribeOperation,
                         channelEntities1[0], //channel entity
@@ -389,7 +389,7 @@ namespace PubNubAPI.Tests
             PNStatus pnStatus = Helpers.CreatePNStatus(
                     PNStatusCategory.PNUnknownCategory,
                     message,
-                    new Exception(message),
+                    new PubNubException(message),
                     true,                
                     PNOperationType.PNSubscribeOperation,
                     ch,

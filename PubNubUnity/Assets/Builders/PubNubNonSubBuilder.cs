@@ -70,7 +70,7 @@ namespace PubNubAPI
             return Helpers.CreatePNStatus(
                     pnStatusCategory,
                     message,
-                    new Exception(message),
+                    new PubNubException(message),
                     true,                
                     OperationType,
                     ChannelsToUse,
@@ -84,7 +84,7 @@ namespace PubNubAPI
             return Helpers.CreatePNStatus(
                     pnStatusCategory,
                     message,
-                    (isError)?new Exception(message):null,
+                    (isError)?new PubNubException(message):null,
                     isError,                
                     OperationType,
                     ChannelsToUse,

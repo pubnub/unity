@@ -93,7 +93,7 @@ namespace PubNubAPI
                 PNStatus pnStatus = Helpers.CreatePNStatus(
                     PNStatusCategory.PNUnknownCategory,
                     CommonText.DuplicateChannelsOrChannelGroups,
-                    new Exception(CommonText.DuplicateChannelsOrChannelGroups),
+                    new PubNubException(CommonText.DuplicateChannelsOrChannelGroups),
                     true,                
                     PNOperationType.PNSubscribeOperation,
                     rawChannels,
