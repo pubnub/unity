@@ -2,10 +2,12 @@
 
 [![Build Status](https://travis-ci.org/pubnub/unity.svg?branch=CE-2968-UnityV4)](https://travis-ci.org/pubnub/unity)
 
-## PubNub 4.0-beta5 Web Data Push Cloud-Hosted API for Unity 5+
+## PubNub 4.0-beta6 Web Data Push Cloud-Hosted API for Unity 5+
 ### Supports PC, Mac, Linux, iOS, Android, WebPlayer, Windows Store Universal 10 and WebGL
 
 ### Important changes from previous version
+* 4.0-beta6
+  * Cleanup
 * 4.0-beta5
   * Logging enhancements
 * 4.0-beta4
