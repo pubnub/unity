@@ -266,7 +266,7 @@ namespace PubNubAPI
         /// <returns></returns>
         public static DateTime TranslatePubnubUnixNanoSecondsToDateTime (long unixNanoSecondTime)
         {
-            double timeStamp = unixNanoSecondTime / 10000000;
+            double timeStamp = (double)unixNanoSecondTime / 10000000;
             DateTime dateTime = new DateTime (1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds (timeStamp);
             return dateTime;
         }

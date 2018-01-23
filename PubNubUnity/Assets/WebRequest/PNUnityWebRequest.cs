@@ -43,7 +43,7 @@ namespace PubNubAPI
         public const float timerConst = 0; 
         public float timer = timerConst; 
 
-        SafeDictionary<string, UnityWebRequestWrapper> currentWebRequests = new SafeDictionary<string, UnityWebRequestWrapper> ();
+        readonly SafeDictionary<string, UnityWebRequestWrapper> currentWebRequests = new SafeDictionary<string, UnityWebRequestWrapper> ();
 
         public event EventHandler<EventArgs> CompleteOrTimeoutEvent; 
         internal CurrentRequestTypeEventArgs CreateCurrentRequestTypeEventArgs(UnityWebRequestWrapper unityWebRequestWrapper, bool isTimeout){
@@ -190,7 +190,7 @@ namespace PubNubAPI
                             unityWebRequestWrapper.CurrentUnityWebRequest.Abort();
                             unityWebRequestWrapper.CurrentUnityWebRequest.Dispose();
                         }
-                        currentWebRequests.Remove(webRequestId);// = unityWebRequestWrapper;
+                        currentWebRequests.Remove(webRequestId);
                         unityWebRequestWrapper.CurrentRequestState.ResponseCode = 0;
                         unityWebRequestWrapper.CurrentRequestState.URL =  unityWebRequestWrapper.URL;
                         if(fireEvent){
@@ -274,7 +274,7 @@ namespace PubNubAPI
                 unityWebRequestWrapper.CurrentUnityWebRequest.uploadHandler   = new UploadHandlerRaw(Encoding.UTF8.GetBytes(unityWebRequestWrapper.CurrentRequestState.POSTData));
                 unityWebRequestWrapper.CurrentUnityWebRequest.downloadHandler = new DownloadHandlerBuffer();
                 unityWebRequestWrapper.CurrentUnityWebRequest.method = UnityWebRequest.kHttpVerbPOST;
-                unityWebRequestWrapper.CurrentUnityWebRequest.SetRequestHeader("Content-Type","application/json"); //x-www-form-urlencoded");///application/json");
+                unityWebRequestWrapper.CurrentUnityWebRequest.SetRequestHeader("Content-Type","application/json"); 
                 
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PNLog.WriteToLog (string.Format ("POST Data : {1} \nURL:{0}", unityWebRequestWrapper.URL, unityWebRequestWrapper.CurrentRequestState.POSTData), PNLoggingMethod.LevelInfo);

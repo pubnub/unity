@@ -624,8 +624,9 @@ namespace PubNubAPI
 
         protected void ExceptionHandler (RequestState pnRequestState)
         {
-            List<ChannelEntity> channelEntities = PubNubInstance.SubscriptionInstance.AllSubscribedChannelsAndChannelGroups;
             #if (ENABLE_PUBNUB_LOGGING)
+            List<ChannelEntity> channelEntities = PubNubInstance.SubscriptionInstance.AllSubscribedChannelsAndChannelGroups;
+            
             this.PubNubInstance.PNLog.WriteToLog (string.Format ("InExceptionHandler: responsetype"), PNLoggingMethod.LevelInfo);
             string channelGroups = Helpers.GetNamesFromChannelEntities (channelEntities, true);
             string channels = Helpers.GetNamesFromChannelEntities (channelEntities, false);

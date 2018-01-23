@@ -8,8 +8,6 @@ namespace PubNubAPI
         private readonly QueueManager queueManager;
         private PubNubNonSubBuilder<U, V> PNBuilder;
         private static int InstanceCount;
-        private long ResponseCode;
-        private string URL = "";
         private string webRequestId = "";
 
         private static object syncRoot = new System.Object();
@@ -35,8 +33,6 @@ namespace PubNubAPI
             lock (syncRoot) {
                 InstanceCount++;
             }
-            ResponseCode = 0;
-            URL = "";
             this.queueManager = queueManager;
             webRequest = this.queueManager.PubNubInstance.GameObjectRef.AddComponent<PNUnityWebRequest> ();
             webRequest.WebRequestComplete += WebRequestCompleteHandler;

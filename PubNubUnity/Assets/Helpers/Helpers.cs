@@ -281,14 +281,7 @@ namespace PubNubAPI
             if (channelEntities != null) {
                 int count = 0;
                 foreach (ChannelEntity c in channelEntities) {
-                    if (isChannelGroup && c.ChannelID.IsChannelGroup) {
-                        if (count > 0) {
-                            sb.Append (",");
-                        }
-
-                        sb.Append (c.ChannelID.ChannelOrChannelGroupName);
-                        count++;
-                    } else if (!isChannelGroup && !c.ChannelID.IsChannelGroup) {
+                    if ((isChannelGroup && c.ChannelID.IsChannelGroup) || (!isChannelGroup && !c.ChannelID.IsChannelGroup)){
                         if (count > 0) {
                             sb.Append (",");
                         }

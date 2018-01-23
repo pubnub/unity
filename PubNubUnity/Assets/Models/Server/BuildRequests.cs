@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace PubNubAPI
 {
 
-    public class BuildRequests
+    public static class BuildRequests
     {
 
         #region "Build Requests"
@@ -673,7 +673,6 @@ namespace PubNubAPI
                     .Append (parameters);
 
                 // Sign Message
-                signature = Utility.Md5 (stringToSign.ToString ());
                 PubnubCrypto pubnubCrypto = new PubnubCrypto (pnInstance.PNConfig.CipherKey, pnInstance.PNLog);
                 signature = pubnubCrypto.PubnubAccessManagerSign (pnInstance.PNConfig.SecretKey, stringToSign.ToString ());
                 return string.Format("&signature={0}", signature);

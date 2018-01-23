@@ -19,7 +19,7 @@ namespace PubNubAPI
         public PNOperationType OperationType {get; set;}
 
         protected PubNubUnity PubNubInstance;
-        protected internal PubNubNonSubBuilder(PubNubUnity pn, PNOperationType pnOperationType){
+        protected PubNubNonSubBuilder(PubNubUnity pn, PNOperationType pnOperationType){
             PubNubInstance = pn;
             this.OperationType = pnOperationType;
             

@@ -13,7 +13,7 @@ namespace PubNubAPI
         }
         private static volatile RequestQueue instance;
         private static object syncRoot = new System.Object();
-        private Queue q = new Queue();
+        private readonly Queue q = new Queue();
 
         public int QueueCount {
             get;

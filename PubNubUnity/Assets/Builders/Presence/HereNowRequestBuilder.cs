@@ -114,21 +114,17 @@ namespace PubNubAPI
                         pnHereNowResult.Channels = channelsResult;
                         #if (ENABLE_PUBNUB_LOGGING)
                         this.PubNubInstance.PNLog.WriteToLog(string.Format ("pnStatus.Error: {0} channelsResult.Count().ToString(): {1} ChannelsToUse[0]: {2}", pnStatus.Error, channelsResult.Count().ToString(), ChannelsToUse[0]), PNLoggingMethod.LevelInfo);
-                        #endif
 
                         foreach(KeyValuePair<string,PNHereNowChannelData> kvp in channelsResult){
-                            #if (ENABLE_PUBNUB_LOGGING)
                             this.PubNubInstance.PNLog.WriteToLog(string.Format ("kvp.Key: {0} ", kvp.Key), PNLoggingMethod.LevelInfo);
-                            #endif
 
                             PNHereNowChannelData pnHereNowChannelData = kvp.Value;
                             List<PNHereNowOccupantData> pnHereNowOccupantDataList = pnHereNowChannelData.Occupants;
-                            #if (ENABLE_PUBNUB_LOGGING)
                             foreach(PNHereNowOccupantData pnHereNowOccupantData in pnHereNowOccupantDataList){
                                 this.PubNubInstance.PNLog.WriteToLog(string.Format ("pnHereNowOccupantData.UUID: {0} ", pnHereNowOccupantData.UUID), PNLoggingMethod.LevelInfo);
                             }
-                            #endif
                         }
+                        #endif
 
                     } else {
                         if(objPayload!=null){
