@@ -712,32 +712,11 @@ namespace PubNubAPI
                 break;
 
             case PNOperationType.PNPresenceHeartbeatOperation:
-
-                url = AppendUUIDToURL(url, uuid, true);
-                url.Append (parameters);
-                url = AppendAuthKeyToURL(url, authenticationKey, type);
-                url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
-                break;
-
-            case PNOperationType.PNSetStateOperation:
-
-                url.Append (parameters);
-                url = AppendUUIDToURL(url, uuid, false);
-                url = AppendAuthKeyToURL(url, authenticationKey, type);
-                url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
-                break;
-
             case PNOperationType.PNGetStateOperation:
+            case PNOperationType.PNPublishOperation:
 
                 url = AppendUUIDToURL(url, uuid, true);
                 url.Append (parameters);
-                url = AppendAuthKeyToURL(url, authenticationKey, type);
-                url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
-                break;
-            case PNOperationType.PNHereNowOperation:
-
-                url.Append (parameters);
-                url = AppendUUIDToURL(url, uuid, false);
                 url = AppendAuthKeyToURL(url, authenticationKey, type);
                 url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
                 break;
@@ -748,20 +727,14 @@ namespace PubNubAPI
                 url = AppendAuthKeyToURL(url, authenticationKey, type);
                 url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
                 break;
-
-            case PNOperationType.PNPublishOperation:
-            
-                url = AppendUUIDToURL(url, uuid, true);
-                url.Append (parameters);
-                url = AppendAuthKeyToURL(url, authenticationKey, type);
-                url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
-                break;
             case PNOperationType.PNPushNotificationEnabledChannelsOperation:
             case PNOperationType.PNAddPushNotificationsOnChannelsOperation:
             case PNOperationType.PNRemoveAllPushNotificationsOperation:
             case PNOperationType.PNRemovePushNotificationsFromChannelsOperation:
             case PNOperationType.PNAddChannelsToGroupOperation:
             case PNOperationType.PNRemoveChannelsFromGroupOperation:
+            case PNOperationType.PNSetStateOperation:
+            case PNOperationType.PNHereNowOperation:
             
                 url.Append (parameters);
                 url = AppendUUIDToURL (url, uuid, false);

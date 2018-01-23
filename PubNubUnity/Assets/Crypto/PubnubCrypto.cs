@@ -140,7 +140,7 @@ namespace PubNubAPI
                         #if (ENABLE_PUBNUB_LOGGING)
                         pnLog.WriteToLog (string.Format ("Decrypt Error. {0}",  ex.ToString ()), PNLoggingMethod.LevelInfo);
                         #endif
-                        throw new Exception("Decrypt Error", ex);
+                        throw new PubNubException("Decrypt Error", ex);
                     }
                 }
             }

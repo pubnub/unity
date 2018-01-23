@@ -105,7 +105,7 @@ namespace PubNubAPI
                     }
                 }
             } else {
-                throw new ArgumentException(string.Format("Channel Group is null"));
+                throw new ArgumentException("Channel Group is null");
             }
             return string.Join(",", multiChannelGroups);
         }
