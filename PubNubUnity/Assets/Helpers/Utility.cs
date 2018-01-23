@@ -176,7 +176,7 @@ namespace PubNubAPI
 
         public static bool IsPresenceChannel (string channel)
         {
-            if (channel.LastIndexOf (PresenceChannelSuffix) > 0) {
+            if (channel.LastIndexOf (PresenceChannelSuffix, StringComparison.InvariantCulture) > 0) {
                 return true;
             } else {
                 return false;
@@ -234,10 +234,10 @@ namespace PubNubAPI
             MD5 md5 = new MD5CryptoServiceProvider ();
             byte[] data = Encoding.Unicode.GetBytes (text);
             byte[] hash = md5.ComputeHash (data);
-            string hexaHash = "";
+            StringBuilder hexaHash = new StringBuilder();
             foreach (byte b in hash)
-                hexaHash += String.Format ("{0:x2}", b);
-            return hexaHash;
+                hexaHash.AppendFormat ("{0:x2}", b);
+            return hexaHash.ToString();
         }
 
         public static long TranslateDateTimeToSeconds (DateTime dotNetUTCDateTime)

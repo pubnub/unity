@@ -28,13 +28,6 @@ namespace PubNubAPI
             base.CleanUp();
         }
 
-        /*~PubNubUnity(){
-            #if (ENABLE_PUBNUB_LOGGING)
-            base.PNLog.WriteToLog ("Destructing PubnubUnity", PNLoggingMethod.LevelInfo);
-            #endif
-            this.CleanUp ();
-        }*/
-
         public void Reconnect(){
             if(SubWorker != null){
                 SubWorker.BounceRequest();
