@@ -114,7 +114,7 @@ namespace PubNubAPI
                 parameterBuilder.AppendFormat ("&ttl={0}", ttl.ToString());
             }
             if(!repilicate){
-                parameterBuilder.AppendFormat ("&norep=true");
+                parameterBuilder.Append("&norep=true");
             }
 
             if (!string.IsNullOrEmpty (metadata) || metadata.Equals("\"\"")) {
@@ -139,7 +139,6 @@ namespace PubNubAPI
                     }
 
                 // Sign Message
-                //signature = Utility.Md5 (stringToSign.ToString ());
                 PubnubCrypto pnCrypto = new PubnubCrypto (pnInstance.PNConfig.CipherKey, pnInstance.PNLog);
                 signature = pnCrypto.ComputeHashRaw(stringToSign.ToString ());
             }
