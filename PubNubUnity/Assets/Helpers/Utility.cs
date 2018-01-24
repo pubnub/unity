@@ -229,17 +229,6 @@ namespace PubNubAPI
             return encodedUri;
         }
 
-        public static string Md5 (string text)
-        {
-            MD5 md5 = new MD5CryptoServiceProvider ();
-            byte[] data = Encoding.Unicode.GetBytes (text);
-            byte[] hash = md5.ComputeHash (data);
-            StringBuilder hexaHash = new StringBuilder();
-            foreach (byte b in hash)
-                hexaHash.AppendFormat ("{0:x2}", b);
-            return hexaHash.ToString();
-        }
-
         public static long TranslateDateTimeToSeconds (DateTime dotNetUTCDateTime)
         {
             TimeSpan timeSpan = dotNetUTCDateTime - new DateTime (1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);

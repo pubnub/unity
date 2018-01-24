@@ -594,7 +594,7 @@ namespace PubNubAPI
         /// Algorithm to use for Hashing
         /// </param>
         //private string ComputeHash(string input, HashAlgorithm algorithm)
-        protected abstract string ComputeHashRaw (string input);
+        public abstract string ComputeHashRaw (string input);
 
         protected string GetEncryptionKey ()
         {

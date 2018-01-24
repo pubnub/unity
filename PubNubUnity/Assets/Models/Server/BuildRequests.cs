@@ -105,13 +105,16 @@ namespace PubNubAPI
             return BuildRestApiRequest<Uri>(url, PNOperationType.PNRemoveAllPushNotificationsOperation, parameterBuilder.ToString (), pnInstance);
         }
 
-        public static Uri BuildPublishRequest (string channel, string message, bool storeInHistory, string metadata, uint messageCounter, int ttl, bool usePost, PubNubUnity pnInstance)
+        public static Uri BuildPublishRequest (string channel, string message, bool storeInHistory, string metadata, uint messageCounter, int ttl, bool usePost, bool repilicate, PubNubUnity pnInstance)
         {
             StringBuilder parameterBuilder = new StringBuilder ();
             parameterBuilder.AppendFormat ("&seqn={0}", messageCounter.ToString ());
             parameterBuilder.Append ((storeInHistory) ? "" : "&store=0");
             if (ttl >= 0) {
                 parameterBuilder.AppendFormat ("&ttl={0}", ttl.ToString());
+            }
+            if(!repilicate){
+                parameterBuilder.AppendFormat ("&norep=true");
             }
 
             if (!string.IsNullOrEmpty (metadata) || metadata.Equals("\"\"")) {
@@ -136,7 +139,9 @@ namespace PubNubAPI
                     }
 
                 // Sign Message
-                signature = Utility.Md5 (stringToSign.ToString ());
+                //signature = Utility.Md5 (stringToSign.ToString ());
+                PubnubCrypto pnCrypto = new PubnubCrypto (pnInstance.PNConfig.CipherKey, pnInstance.PNLog);
+                signature = pnCrypto.ComputeHashRaw(stringToSign.ToString ());
             }
 
             // Build URL

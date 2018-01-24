@@ -545,11 +545,14 @@ namespace PubNubAPI.Tests
         }
 
         [Test]
-        public void TestMd5 ()
+        public void TestHash ()
         {
             //test unsafe surrogate and normal test
-            string expected = "83a644046796c6a0d76bc161f73b75b4";
-            string received = Utility.Md5("test md5");
+            string expected = "46-65-08-E8-6F-35-1D-95-27-3B-91-A1-A6-E0-BC-C2-2F-23-99-5A-49-A0-E0-61-91-C8-B9-7E-C5-2E-40-90"; //"83a644046796c6a0d76bc161f73b75b4";
+            PubnubCrypto pnCrypto = new PubnubCrypto ("", new PNLoggingMethod(PNLogVerbosity.BODY));
+            string received =  pnCrypto.ComputeHashRaw("test md5");
+
+            //string received = Utility.Md5("test md5");
             UnityEngine.Debug.Log (received);
             Assert.IsTrue(expected.Equals(received));
         }

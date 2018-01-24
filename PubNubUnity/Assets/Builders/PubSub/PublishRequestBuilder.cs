@@ -108,6 +108,7 @@ namespace PubNubAPI
                     publishCounter,
                     this.PublishTtl,
                     UsePostMethod,
+                    this.ReplicateMessage,
                     this.PubNubInstance
                 );
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 

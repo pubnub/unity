@@ -22,7 +22,7 @@ namespace PubNubAPI
         }
 
         #if UNITY_WSA || UNITY_WSA_8_1 || UNITY_WSA_10_0
-        protected override string ComputeHashRaw(string input)
+        public override string ComputeHashRaw(string input)
         {
             Sha256Digest algorithm = new Sha256Digest();
             Byte[] inputBytes = System.Text.Encoding.UTF8.GetBytes(input);
@@ -91,7 +91,7 @@ namespace PubNubAPI
             }
         }
         #else
-        protected override string ComputeHashRaw (string input)
+        public override string ComputeHashRaw (string input)
         {
         #if (SILVERLIGHT || WINDOWS_PHONE || MONOTOUCH || __IOS__ || MONODROID || __ANDROID__ || UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_IOS || UNITY_ANDROID || UNITY_5 || UNITY_WEBGL)
             HashAlgorithm algorithm = new System.Security.Cryptography.SHA256Managed ();

@@ -549,10 +549,19 @@ namespace PubNubAPI
             #endif
             if (subscribeMessages.Count >= this.PubNubInstance.PNConfig.MessageQueueOverflowCount)
             {
-                //TODO
-                /*StatusBuilder statusBuilder = new StatusBuilder(pubnubConfig, jsonLib);
-                PNStatus status = statusBuilder.CreateStatusResponse(type, PNStatusCategory.PNRequestMessageCountExceededCategory, asyncRequestState, (int)HttpStatusCode.OK, null);
-                Announce(status);*/
+                PNStatus pnStatus = Helpers.CreatePNStatus(
+                            PNStatusCategory.PNRequestMessageCountExceededCategory,
+                            "",
+                            null,
+                            true,
+                            PNOperationType.PNSubscribeOperation,
+                            PubNubInstance.SubscriptionInstance.AllChannels,
+                            PubNubInstance.SubscriptionInstance.AllChannelGroups,
+                            null,
+                            this.PubNubInstance
+                        );
+
+                CreateEventArgsAndRaiseEvent(pnStatus);
             }
              
             foreach (SubscribeMessage subscribeMessage in subscribeMessages){
