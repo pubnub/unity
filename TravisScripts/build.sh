@@ -7,7 +7,7 @@
 
 ## Run the editor unit tests
 echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} StandaloneOSXUniversal"
-echo "Test ${UNITYCI_TEST}"
+#echo "Test ${UNITYCI_TEST}"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
  	-batchmode \
  	-logFile $(pwd)/unity.log \
@@ -22,7 +22,7 @@ echo "Test ${UNITYCI_TEST}"
 rc0=$?
 echo "Unity Logs:"
 cat ~/Library/Logs/Unity/Editor.log
-cat $(pwd)/unity.log
+#cat $(pwd)/unity.log
 echo "Unit test logs"
 cat $(pwd)/test.xml
 #exit if tests failed
