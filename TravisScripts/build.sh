@@ -25,7 +25,7 @@ cat ~/Library/Logs/Unity/Editor.log
 cat $(pwd)/unity.log
 echo "Unit test logs"
 cat $(pwd)/test.xml
-exit if tests failed
+#exit if tests failed
 if [ $rc0 -ne 0 ]; then { echo "Failed unit tests"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc0; } fi	
 
 #/Applications/Unity/Unity.app/Contents/MacOS/Unity \
