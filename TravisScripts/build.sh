@@ -51,27 +51,6 @@ cat $(pwd)/test2.xml
 if [ $rc1 -ne 0 ]; then { echo "Failed unit tests playmode"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc1; } fi	
 
 
-echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} StandaloneOSXUniversal"
-/Applications/Unity/Unity.app/Contents/MacOS/Unity \
- 	-batchmode \
- 	-logFile $(pwd)/unity.log \
- 	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
- 	-runTests  \
- 	-testResults $(pwd)/test3.xml \
- 	-testPlatform StandaloneOSXIntel64 \
- 	-username ${UNITYCI_USER_NAME} \
- 	-password ${UNITYCI_PASS} \
- 	-serial ${UNITYCI_SERIAL} 
-
-rc3=$?
-echo "Unity Logs:"
-cat ~/Library/Logs/Unity/Editor.log
-#cat $(pwd)/unity.log
-echo "Unit test logs"
-cat $(pwd)/test3.xml
-#exit if tests failed
-if [ $rc3 -ne 0 ]; then { echo "Failed unit tests StandaloneOSXUniversal"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc3; } fi	
-
 echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} iOS"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
  	-batchmode \
