@@ -2714,7 +2714,7 @@ namespace PubNubAPI.Tests
 
                 } 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			yield return new WaitForSeconds (5);
 			Assert.True(tresult, "fetch test didnt return 2");
 			tresult = false;
 
@@ -2761,7 +2761,7 @@ namespace PubNubAPI.Tests
 
                 } 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			yield return new WaitForSeconds (5);
 			Assert.True(tresult, "fetch test didnt return 3");
 			
 			pubnub.CleanUp();
