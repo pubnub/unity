@@ -14,7 +14,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} StandaloneOSXUnivers
  	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
  	-runTests \
  	-testResults $(pwd)/test.xml \
- 	-testPlatform StandaloneOSXUniversal \
+ 	-testPlatform editmode \
  	-username ${UNITYCI_USER_NAME} \
  	-password ${UNITYCI_PASS} \
  	-serial ${UNITYCI_SERIAL} 
@@ -34,9 +34,9 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} StandaloneOSXUnivers
  	-batchmode \
  	-logFile $(pwd)/unity.log \
  	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
- 	-runTests playmode \
+ 	-runTests  \
  	-testResults $(pwd)/test2.xml \
- 	-testPlatform StandaloneOSXUniversal \
+ 	-testPlatform playmode \
  	-username ${UNITYCI_USER_NAME} \
  	-password ${UNITYCI_PASS} \
  	-serial ${UNITYCI_SERIAL} 
