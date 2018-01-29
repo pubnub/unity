@@ -28,27 +28,28 @@ cat $(pwd)/test.xml
 #exit if tests failed
 if [ $rc0 -ne 0 ]; then { echo "Failed unit tests editmode"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc0; } fi	
 
-
-echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} Android"
+echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} playmode"
+#echo "Test ${UNITYCI_TEST}"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
  	-batchmode \
  	-logFile $(pwd)/unity.log \
  	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
  	-runTests  \
- 	-testResults $(pwd)/test5.xml \
- 	-testPlatform Android \
+ 	-testResults $(pwd)/test2.xml \
+ 	-testPlatform playmode \
  	-username ${UNITYCI_USER_NAME} \
  	-password ${UNITYCI_PASS} \
  	-serial ${UNITYCI_SERIAL} 
 
-rc5=$?
+rc1=$?
 echo "Unity Logs:"
 cat ~/Library/Logs/Unity/Editor.log
 #cat $(pwd)/unity.log
 echo "Unit test logs"
-cat $(pwd)/test5.xml
+cat $(pwd)/test2.xml
 #exit if tests failed
-if [ $rc5 -ne 0 ]; then { echo "Failed unit tests Android"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc5; } fi	
+if [ $rc1 -ne 0 ]; then { echo "Failed unit tests playmode"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc1; } fi	
+
 
 
 #/Applications/Unity/Unity.app/Contents/MacOS/Unity \
