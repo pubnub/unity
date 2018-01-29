@@ -12,7 +12,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} StandaloneOSXUnivers
  	-batchmode \
  	-logFile $(pwd)/unity.log \
  	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
- 	-runTests editmode \
+ 	-runTests \
  	-testResults $(pwd)/test.xml \
  	-testPlatform StandaloneOSXUniversal \
  	-username ${UNITYCI_USER_NAME} \
@@ -48,7 +48,7 @@ cat ~/Library/Logs/Unity/Editor.log
 echo "Unit test logs"
 cat $(pwd)/test2.xml
 #exit if tests failed
-if [ $rc1 -ne 0 ]; then { echo "Failed unit tests"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc0; } fi	
+if [ $rc1 -ne 0 ]; then { echo "Failed unit tests"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc1; } fi	
 
 #/Applications/Unity/Unity.app/Contents/MacOS/Unity \
 #	-batchmode \
