@@ -535,7 +535,7 @@ namespace PubNubAPI.Tests
 			yield return DoPublishTestProcsssing(payload, publishChannel);
 		}
 
-		[UnityTest]
+		//[UnityTest]
 		public IEnumerator TestJoinLeave() {
 			string channel = "UnityTestJoinChannel";
 			yield return DoJoinLeaveTestProcsssing(channel);
@@ -637,11 +637,13 @@ namespace PubNubAPI.Tests
 
 		public IEnumerator DoJoinLeaveTestProcsssing(string channel) {
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
-			pnConfiguration.UUID = "UnityTestJoinUUID";
+			System.Random r = new System.Random ();
+			channel = channel+ r.Next (100);
+			pnConfiguration.UUID = "UnityTestJoinUUID_" + r.Next (100);
 			PubNub pubnub = new PubNub(pnConfiguration);
 			
 			PNConfiguration pnConfiguration2 = PlayModeCommon.SetPNConfig(false);
-			System.Random r = new System.Random ();
+			
 			pnConfiguration2.UUID = "UnityTestJoinUUID_" + r.Next (100);
 
 			List<string> channelList2 = new List<string>();
@@ -661,12 +663,9 @@ namespace PubNubAPI.Tests
 						Assert.True(containsOccupancy);
 						bool containsTimestamp = mea.PresenceEventResult.Timestamp > 0;
 						Assert.True(containsTimestamp);
-						Debug.Log(containsUUID);
+						
 						tJoinResult = containsTimestamp && containsOccupancy && containsUUID;
-						pubnub2.Unsubscribe().Channels(channelList2).Async((result, status) => {
-							Debug.Log("status.Error:" + status.Error);
-							Assert.True(!status.Error);
-						});
+						Debug.Log("containsUUID"+containsUUID+tJoinResult);
 						
 					} else if (mea.PresenceEventResult.Event.Equals("leave")){
 						bool containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UUID);
@@ -675,8 +674,7 @@ namespace PubNubAPI.Tests
 						Assert.True(containsTimestamp);
 						tLeaveResult = containsTimestamp && containsUUID;
 						
-						Debug.Log(containsUUID);
-						tLeaveResult = true;
+						Debug.Log("containsUUID"+containsUUID+tLeaveResult);
 					}					
 				} 
 			};
@@ -688,7 +686,11 @@ namespace PubNubAPI.Tests
 			yield return new WaitForSeconds (7);			
 			
 			Assert.True(tJoinResult, "join test didn't return");
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			pubnub2.Unsubscribe().Channels(channelList2).Async((result, status) => {
+					Debug.Log("status.Error:" + status.Error);
+					Assert.True(!status.Error);
+				});
+			yield return new WaitForSeconds (7);
 			Assert.True(tLeaveResult, "leave test didn't return");
 			pubnub.CleanUp();
 			pubnub2.CleanUp();
@@ -2712,7 +2714,7 @@ namespace PubNubAPI.Tests
 
                 } 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
 			Assert.True(tresult, "fetch test didnt return 2");
 			tresult = false;
 
