@@ -10,10 +10,6 @@ echo 'Downloading StandardAssets-2017.2.0f3.pkg:'
 curl --retry 5 -o Unity_StandardAssets.pkg https://download.unity3d.com/download_unity/46dda1414e51/MacStandardAssetsInstaller/StandardAssets-2017.2.0f3.pkg
 if [ $? -ne 0 ]; then { echo "Unity StandardAssets Download failed"; exit $?; } fi
 
-echo 'Downloading WebGL build support:'
-curl --retry 5 -o Unity_WebGL.pkg https://beta.unity3d.com/download/46dda1414e51/MacEditorTargetInstaller/UnitySetup-WebGL-Support-for-Editor-2017.2.0f3.pkg
-if [ $? -ne 0 ]; then { echo "Download failed"; exit $?; } fi
-
 # Install
 echo 'Installing Unity.pkg'
 sudo installer -dumplog -package Unity.pkg -target /
@@ -31,6 +27,3 @@ echo === Done ===
 
 echo 'Installing StandardAssets-2017.2.0f3.pkg'
 sudo installer -dumplog -package Unity_StandardAssets.pkg -target /
-
-echo 'Installing Unity_WebGL.pkg'
-sudo installer -dumplog -package Unity_WebGL.pkg -target /
