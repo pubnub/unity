@@ -20,6 +20,3 @@ mkdir ~/Library/Unity/Certificates
 cp "./TravisScripts/CACerts.pem" ~/Library/Unity/Certificates/
 
 echo === Done ===
-
-echo 'Installing StandardAssets-2017.2.0f3.pkg'
-sudo installer -dumplog -package Unity_StandardAssets.pkg -target /
