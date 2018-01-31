@@ -10,10 +10,9 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 #echo "Test ${UNITYCI_TEST}"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
  	-batchmode \
- 	-logFile $(pwd)/editor.log \
  	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
- 	-runEditorTests \
- 	-editorTestsResultFile $(pwd)/test1.xml \
+ 	-runTests \
+ 	-testResults $(pwd)/test1.xml \
  	-testPlatform editmode \
  	-username ${UNITYCI_USER_NAME} \
  	-password ${UNITYCI_PASS} \
@@ -21,13 +20,13 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 
 rc0=$?
 #echo "Unity Logs:"
-cat $(pwd)/editor.log
+#cat $(pwd)/editor.log
 ls $(pwd)
 echo "ls $(pwd)/${UNITYCI_PROJECT_NAME}"
 ls $(pwd)/${UNITYCI_PROJECT_NAME}
 #cat $(pwd)/unity.log
-cd $(pwd)
-find . -print | grep -i '.*[.]xml'
+#cd $(pwd)
+#find . -print | grep -i '.*[.]xml'
 echo "Unit test logs"
 cat $(pwd)/test1.xml
 #exit if tests failed
