@@ -21,7 +21,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 
 rc0=$?
 #echo "Unity Logs:"
-#cat $(pwd)/editor.log
+cat $(pwd)/editor.log
 ls $(pwd)
 echo "ls $(pwd)/${UNITYCI_PROJECT_NAME}"
 ls $(pwd)/${UNITYCI_PROJECT_NAME}
