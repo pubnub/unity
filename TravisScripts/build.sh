@@ -12,6 +12,8 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
  	-batchmode \
  	-logFile $(pwd)/editor.log \
  	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
+ 	-runTests
+ 	-testResults $(pwd)/test1.xml \
  	-runEditorTests \
  	-editorTestsResultFile \
  	-testPlatform editmode \
@@ -27,7 +29,7 @@ echo "ls $(pwd)/${UNITYCI_PROJECT_NAME}"
 ls $(pwd)/${UNITYCI_PROJECT_NAME}
 #cat $(pwd)/unity.log
 echo "Unit test logs"
-cat $(pwd)/test.xml
+cat $(pwd)/test1.xml
 #exit if tests failed
 if [ $rc0 -ne 0 ]; then { echo "Failed unit tests editmode"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc0; } fi	
 
