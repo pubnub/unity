@@ -12,7 +12,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
  	-batchmode \
  	-logFile $(pwd)/unity.log \
  	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
- 	-runTests \
+ 	-runEditorTests	 \
  	-testResults $(pwd)/test.xml \
  	-testPlatform editmode \
  	-username ${UNITYCI_USER_NAME} \
@@ -33,7 +33,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} iOS"
  	-batchmode \
  	-logFile $(pwd)/unity.log \
  	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
- 	-runTests  \
+ 	-runEditorTests	  \
  	-testResults $(pwd)/test4.xml \
  	-testPlatform iOS \
  	-username ${UNITYCI_USER_NAME} \
@@ -56,7 +56,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} playmode"
  	-batchmode \
  	-logFile $(pwd)/unity.log \
  	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
- 	-runTests  \
+ 	-runEditorTests	  \
  	-testResults $(pwd)/test2.xml \
  	-testPlatform playmode \
  	-username ${UNITYCI_USER_NAME} \
@@ -71,8 +71,6 @@ echo "Unit test logs"
 cat $(pwd)/test2.xml
 #exit if tests failed
 if [ $rc1 -ne 0 ]; then { echo "Failed unit tests playmode"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc1; } fi	
-
-
 
 # returning license
 echo "returning license"
