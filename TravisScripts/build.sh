@@ -28,6 +28,8 @@ ls $(pwd)
 echo "ls $(pwd)/${UNITYCI_PROJECT_NAME}"
 ls $(pwd)/${UNITYCI_PROJECT_NAME}
 #cat $(pwd)/unity.log
+cd $(pwd)
+find . -print | grep -i '.*[.]xml'
 echo "Unit test logs"
 cat $(pwd)/test1.xml
 #exit if tests failed
