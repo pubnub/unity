@@ -13,7 +13,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
  	-logFile $(pwd)/editor.log \
  	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
  	-runEditorTests \
- 	-testResults $(pwd)/test.xml \
+ 	-editorTestsResultFile \
  	-testPlatform editmode \
  	-username ${UNITYCI_USER_NAME} \
  	-password ${UNITYCI_PASS} \
@@ -23,6 +23,8 @@ rc0=$?
 #echo "Unity Logs:"
 #cat $(pwd)/editor.log
 ls $(pwd)
+echo "ls $(pwd)/${UNITYCI_PROJECT_NAME}"
+ls $(pwd)/${UNITYCI_PROJECT_NAME}
 #cat $(pwd)/unity.log
 echo "Unit test logs"
 cat $(pwd)/test.xml
