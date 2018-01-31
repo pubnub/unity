@@ -14,13 +14,13 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 
 rc0=$?
 #echo "Unity Logs:"
-cat $(pwd)/editor2.log
-ls $(pwd)
-echo "ls $(pwd)/${UNITYCI_PROJECT_NAME}"
-ls $(pwd)/${UNITYCI_PROJECT_NAME}
+#cat $(pwd)/editor2.log
+#ls $(pwd)
+#echo "ls $(pwd)/${UNITYCI_PROJECT_NAME}"
+#ls $(pwd)/${UNITYCI_PROJECT_NAME}
 #cat $(pwd)/unity.log
 #cd $(pwd)
-$(find . -print | grep -i '.*[.]xml')
+#$(find . -print | grep -i '.*[.]xml')
 echo "Unit test logs"
 cat $(pwd)/test1.xml
 #exit if tests failed
