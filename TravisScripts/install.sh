@@ -4,6 +4,17 @@
 echo 'Downloading Unity-2017.3.0f3 pkg:'
 curl --retry 5 -o Unity.pkg https://netstorage.unity3d.com/unity/a9f86dcd79df/MacEditorInstaller/Unity-2017.3.0f3.pkg
 if [ $? -ne 0 ]; then { echo "Unity Download failed"; exit $?; } fi
+	
+echo 'Downloading StandardAssets-2017.2.0f3.pkg:'
+#curl --retry 5 -o Unity_StandardAssets.pkg https://download.unity3d.com/download_unity/46dda1414e51/MacStandardAssetsInstaller/StandardAssets-2017.2.0f3.pkg
+curl --retry 5 -o Unity_StandardAssets.pkg https://download.unity3d.com/download_unity/a9f86dcd79df/MacStandardAssetsInstaller/StandardAssets-2017.3.0f3.pkg
+if [ $? -ne 0 ]; then { echo "Unity StandardAssets Download failed"; exit $?; } fi
+
+echo 'Downloading iOS build support:'
+#curl --retry 5 -o Unity_iOS.pkg https://beta.unity3d.com/download/46dda1414e51/MacEditorTargetInstaller/UnitySetup-iOS-Support-for-Editor-2017.2.0f3.pkg
+curl --retry 5 -o Unity_iOS.pkg https://beta.unity3d.com/download/a9f86dcd79df/MacEditorTargetInstaller/UnitySetup-iOS-Support-for-Editor-2017.3.0f3.pkg
+if [ $? -ne 0 ]; then { echo "iOS Download failed"; exit $?; } fi
+
 
 # Install
 echo 'Installing Unity.pkg'
@@ -19,3 +30,8 @@ mkdir ~/Library/Unity/Certificates
 cp "./TravisScripts/CACerts.pem" ~/Library/Unity/Certificates/
 
 echo === Done ===
+echo 'Installing StandardAssets-2017.2.0f3.pkg'
+sudo installer -dumplog -package Unity_StandardAssets.pkg -target /
+
+echo 'Installing Unity_iOS.pkg'
+sudo installer -dumplog -package Unity_iOS.pkg -target /
