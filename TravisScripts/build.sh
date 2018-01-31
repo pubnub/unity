@@ -8,13 +8,20 @@
 ## Run the editor unit tests
 echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 #echo "Test ${UNITYCI_TEST}"
-/Applications/Unity/Unity.app/Contents/MacOS/Unity -batchmode -logFile $(pwd)/editor2.log -projectPath $(pwd)/${UNITYCI_PROJECT_NAME} -runTests -testResults $(pwd)/test1.xml -testPlatform editmode -username ${UNITYCI_USER_NAME} -password ${UNITYCI_PASS} -serial ${UNITYCI_SERIAL}
-#echo $c
-#eval $c
+/Applications/Unity/Unity.app/Contents/MacOS/Unity \
+	-batchmode \
+	-logFile $(pwd)/editor1.log \
+	-projectPath $(pwd)/${UNITYCI_PROJECT_NAME} \
+	-runTests \
+	-testResults $(pwd)/test1.xml \
+	-testPlatform editmode \
+	-username ${UNITYCI_USER_NAME} \
+	-password ${UNITYCI_PASS} \
+	-serial ${UNITYCI_SERIAL}
 
 rc0=$?
 #echo "Unity Logs:"
-#cat $(pwd)/editor2.log
+#cat $(pwd)/editor1.log
 #ls $(pwd)
 #echo "ls $(pwd)/${UNITYCI_PROJECT_NAME}"
 #ls $(pwd)/${UNITYCI_PROJECT_NAME}
@@ -30,15 +37,15 @@ if [ $rc0 -ne 0 ]; then { echo "Failed unit tests editmode"; /Applications/Unity
 echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} playmode"
 #echo "Test ${UNITYCI_TEST}"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
- 	-batchmode \
- 	-logFile $(pwd)/editor2.log \
- 	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
- 	-runEditorTests \
- 	-testResults $(pwd)/test2.xml \
- 	-testPlatform playmode \
- 	-username ${UNITYCI_USER_NAME} \
- 	-password ${UNITYCI_PASS} \
- 	-serial ${UNITYCI_SERIAL} 
+	-batchmode \
+	-logFile $(pwd)/editor2.log \
+	-projectPath $(pwd)/${UNITYCI_PROJECT_NAME} \
+	-runTests \
+	-testResults $(pwd)/test2.xml \
+	-testPlatform playmode \
+	-username ${UNITYCI_USER_NAME} \
+	-password ${UNITYCI_PASS} \
+	-serial ${UNITYCI_SERIAL}
 
 rc1=$?
 echo "Unity Logs:"
