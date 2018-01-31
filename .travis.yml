@@ -1,5 +1,6 @@
 language: generic
 os: osx
+osx_image: xcode9.2
 branches:
   only:
   - CE-2968-UnityV4
