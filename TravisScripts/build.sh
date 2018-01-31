@@ -10,10 +10,10 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 #echo "Test ${UNITYCI_TEST}"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
  	-batchmode \
- 	-logFile $(pwd)/unity.log \
+ 	-logFile $(pwd) \
  	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
- 	-runEditorTests	 \
- 	-testResults $(pwd)/test.xml \
+ 	-runEditorTests \
+ 	-editorTestsResultFile $(pwd)/test.xml \
  	-testPlatform editmode \
  	-username ${UNITYCI_USER_NAME} \
  	-password ${UNITYCI_PASS} \
@@ -21,7 +21,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 
 rc0=$?
 echo "Unity Logs:"
-cat ~/Library/Logs/Unity/Editor.log
+cat $(pwd)/Editor.log
 #cat $(pwd)/unity.log
 echo "Unit test logs"
 cat $(pwd)/test.xml
@@ -31,10 +31,10 @@ if [ $rc0 -ne 0 ]; then { echo "Failed unit tests editmode"; /Applications/Unity
 echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} iOS"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
  	-batchmode \
- 	-logFile $(pwd)/unity.log \
+ 	-logFile $(pwd) \
  	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
- 	-runEditorTests	  \
- 	-testResults $(pwd)/test4.xml \
+ 	-runEditorTests \
+ 	-editorTestsResultFile $(pwd)/test4.xml \
  	-testPlatform iOS \
  	-username ${UNITYCI_USER_NAME} \
  	-password ${UNITYCI_PASS} \
@@ -42,7 +42,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} iOS"
 
 rc4=$?
 echo "Unity Logs:"
-cat ~/Library/Logs/Unity/Editor.log
+cat $(pwd)/Editor.log
 #cat $(pwd)/unity.log
 echo "Unit test logs"
 cat $(pwd)/test4.xml
@@ -54,10 +54,10 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} playmode"
 #echo "Test ${UNITYCI_TEST}"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
  	-batchmode \
- 	-logFile $(pwd)/unity.log \
+ 	-logFile $(pwd) \
  	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
- 	-runEditorTests	  \
- 	-testResults $(pwd)/test2.xml \
+ 	-runEditorTests \
+ 	-editorTestsResultFile $(pwd)/test2.xml \
  	-testPlatform playmode \
  	-username ${UNITYCI_USER_NAME} \
  	-password ${UNITYCI_PASS} \
@@ -65,7 +65,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} playmode"
 
 rc1=$?
 echo "Unity Logs:"
-cat ~/Library/Logs/Unity/Editor.log
+cat $(pwd)/Editor.log
 #cat $(pwd)/unity.log
 echo "Unit test logs"
 cat $(pwd)/test2.xml
