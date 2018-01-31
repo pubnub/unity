@@ -20,8 +20,9 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
  	-serial ${UNITYCI_SERIAL} 
 
 rc0=$?
-echo "Unity Logs:"
-cat $(pwd)/editor.log
+#echo "Unity Logs:"
+#cat $(pwd)/editor.log
+ls $(pwd)
 #cat $(pwd)/unity.log
 echo "Unit test logs"
 cat $(pwd)/test.xml
