@@ -8,13 +8,13 @@
 ## Run the editor unit tests
 echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 #echo "Test ${UNITYCI_TEST}"
-c = $(/Applications/Unity/Unity.app/Contents/MacOS/Unity -batchmode -projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" -runTests -testResults $(pwd)/test1.xml -testPlatform editmode -username ${UNITYCI_USER_NAME} -password ${UNITYCI_PASS} -serial ${UNITYCI_SERIAL})
-echo $c
-eval $c
+/Applications/Unity/Unity.app/Contents/MacOS/Unity -batchmode -logFile $(pwd)/editor2.log -projectPath $(pwd)/${UNITYCI_PROJECT_NAME} -runTests -testResults $(pwd)/test1.xml -testPlatform editmode -username ${UNITYCI_USER_NAME} -password ${UNITYCI_PASS} -serial ${UNITYCI_SERIAL}
+#echo $c
+#eval $c
 
 rc0=$?
 #echo "Unity Logs:"
-#cat $(pwd)/editor.log
+cat $(pwd)/editor.log
 ls $(pwd)
 echo "ls $(pwd)/${UNITYCI_PROJECT_NAME}"
 ls $(pwd)/${UNITYCI_PROJECT_NAME}
