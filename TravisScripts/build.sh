@@ -12,7 +12,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
  	-batchmode \
  	-logFile $(pwd)/editor.log \
  	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
- 	-runTests
+ 	-runEditorTests
  	-username ${UNITYCI_USER_NAME} \
  	-password ${UNITYCI_PASS} \
  	-serial ${UNITYCI_SERIAL} 
