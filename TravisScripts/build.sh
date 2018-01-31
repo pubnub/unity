@@ -54,6 +54,7 @@ cat $(pwd)/test4.xml
 #exit if tests failed
 if [ $rc4 -ne 0 ]; then { echo "Failed unit tests iOS"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc4; } fi	
 
+
 echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} StandaloneOSXIntel64"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
  	-batchmode \
