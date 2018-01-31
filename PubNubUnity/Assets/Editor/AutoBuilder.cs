@@ -34,8 +34,8 @@ public static class AutoBuilder
     [MenuItem ("File/AutoBuilder/StandaloneOSXUniversal")]
     static void PerformStandaloneOSXUniversal ()
     {
-        EditorUserBuildSettings.SwitchActiveBuildTarget (BuildTarget.StandaloneOSXUniversal);
-        BuildPipeline.BuildPlayer (GetScenePaths (), "Builds/StandaloneOSXUniversal.app", BuildTarget.StandaloneOSXUniversal, BuildOptions.None);
+        EditorUserBuildSettings.SwitchActiveBuildTarget (BuildTarget.StandaloneOSX);
+        BuildPipeline.BuildPlayer (GetScenePaths (), "Builds/StandaloneOSXUniversal.app", BuildTarget.StandaloneOSX, BuildOptions.None);
     }
 
     [MenuItem ("File/AutoBuilder/StandaloneWindows64")]
