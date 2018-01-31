@@ -13,7 +13,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
  	-logFile $(pwd)/editor.log \
  	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
  	-runEditorTests \
- 	-editorTestsResultFile $(pwd)/test.xml \
+ 	-testResults $(pwd)/test.xml \
  	-testPlatform editmode \
  	-username ${UNITYCI_USER_NAME} \
  	-password ${UNITYCI_PASS} \
@@ -34,7 +34,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} iOS"
  	-logFile $(pwd)/editor4.log \
  	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
  	-runEditorTests \
- 	-editorTestsResultFile $(pwd)/test4.xml \
+ 	-testResults $(pwd)/test4.xml \
  	-testPlatform iOS \
  	-username ${UNITYCI_USER_NAME} \
  	-password ${UNITYCI_PASS} \
@@ -57,7 +57,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} playmode"
  	-logFile $(pwd)/editor2.log \
  	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
  	-runEditorTests \
- 	-editorTestsResultFile $(pwd)/test2.xml \
+ 	-testResults $(pwd)/test2.xml \
  	-testPlatform playmode \
  	-username ${UNITYCI_USER_NAME} \
  	-password ${UNITYCI_PASS} \
