@@ -1,0 +1,25 @@
+version: '{build}'
+image: Visual Studio 2015
+platform: x64
+
+build_script:
+  - ps: |
+        $source = "https://netstorage.unity3d.com/unity/a9f86dcd79df/Windows64EditorInstaller/UnitySetup64-2017.3.0f3.exe"
+        $destination = ".\UnitySetup64.exe"
+        Invoke-WebRequest $source -OutFile $destination
+        Start-Process -FilePath ".\UnitySetup64.exe" -Wait -ArgumentList ('/S', '/Q')
+        Write-Host "$(date) UnitySetup64-2017.3.0f3 Installed"-ForegroundColor green
+
+clone_folder: c:\projects\pn-unity
+
+test_script:
+  - ps: |
+        $testResultsFile = "C:\temp\results.xml"
+        Start-Process -Wait -FilePath Unity.exe -ArgumentList ('-logFile C:\temp\unity.log' -runTests' '-projectPath c:\projects\unity\PubNubUnity' '-testResults $testResultsFile' '-testPlatform editmode')
+        $res = Invoke-Pester -OutputFormat NUnitXml -OutputFile $testResultsFile -PassThru
+        (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path $testResultsFile))
+        if ($res.FailedCount -gt 0) { 
+            throw "$($res.FailedCount) tests failed."
+        }  
+
+deploy: off
