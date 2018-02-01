@@ -33,14 +33,14 @@ cat $(pwd)/test1.xml
 #exit if tests failed
 if [ $rc0 -ne 0 ]; then { echo "Failed unit tests editmode"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc0; } fi	
 
-echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} iOS"
+echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} WebGL"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
  	-batchmode \
  	-logFile $(pwd)/unity.log \
  	-projectPath $(pwd)/${UNITYCI_PROJECT_NAME} \
  	-runTests  \
  	-testResults $(pwd)/test4.xml \
- 	-testPlatform iOS \
+ 	-testPlatform WebGL \
  	-username ${UNITYCI_USER_NAME} \
  	-password ${UNITYCI_PASS} \
  	-serial ${UNITYCI_SERIAL} 
@@ -52,7 +52,7 @@ rc4=$?
 echo "Unit test logs"
 cat $(pwd)/test4.xml
 #exit if tests failed
-if [ $rc4 -ne 0 ]; then { echo "Failed unit tests iOS"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc4; } fi	
+if [ $rc4 -ne 0 ]; then { echo "Failed unit tests WebGL"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc4; } fi	
 
 
 echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} StandaloneOSXIntel64"
