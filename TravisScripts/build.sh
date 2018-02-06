@@ -4,7 +4,7 @@
 #  a subdirectory of the repo root directory, e.g. for this repo "unity-ci-test" 
 #  the project folder is "UnityProject". If this is not true then adjust the 
 #  -projectPath argument to point to the right location.
-
+  
 ## Run the editor unit tests
 echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 #echo "Test ${UNITYCI_TEST}"
@@ -33,26 +33,26 @@ cat $(pwd)/test1.xml
 #exit if tests failed
 if [ $rc0 -ne 0 ]; then { echo "Failed unit tests editmode"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc0; } fi	
 
-echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} WebGL"
+echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} Android"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
  	-batchmode \
  	-logFile $(pwd)/unity.log \
- 	-projectPath $(pwd)/${UNITYCI_PROJECT_NAME} \
+ 	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
  	-runTests  \
- 	-testResults $(pwd)/test4.xml \
- 	-testPlatform WebGL \
+ 	-testResults $(pwd)/test5.xml \
+ 	-testPlatform Android \
  	-username ${UNITYCI_USER_NAME} \
  	-password ${UNITYCI_PASS} \
  	-serial ${UNITYCI_SERIAL} 
 
-rc4=$?
-#echo "Unity Logs:"
-#cat ~/Library/Logs/Unity/Editor.log
+rc5=$?
+echo "Unity Logs:"
+cat ~/Library/Logs/Unity/Editor.log
 #cat $(pwd)/unity.log
 echo "Unit test logs"
-cat $(pwd)/test4.xml
+cat $(pwd)/test5.xml
 #exit if tests failed
-if [ $rc4 -ne 0 ]; then { echo "Failed unit tests WebGL"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc4; } fi	
+if [ $rc5 -ne 0 ]; then { echo "Failed unit tests Android"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc5; } fi	
 
 
 echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} StandaloneOSXIntel64"

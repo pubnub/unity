@@ -1,5 +1,15 @@
 language: generic
 os: osx
+android:
+  components:
+    - build-tools-26.0.2
+    - android-26
+    - sys-img-armeabi-v7a-android-tv-l
+    - add-on
+    - extra
+    - tools
+    - platform-tools
+
 branches:
   only:
   - CE-2968-UnityV4
@@ -7,6 +17,11 @@ notifications:
   email:
     on_success: never
     on_failure: change
+before_script:
+  - echo no | android create avd --force -n test -t android-26 --abi armeabi-v7a
+  - emulator -avd test -no-audio -no-window &
+  - android-wait-for-emulator
+  - adb shell input keyevent 82 &    
 install:
 - sudo -E sh ./TravisScripts/install.sh
 script:
