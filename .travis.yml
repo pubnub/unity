@@ -1,14 +1,12 @@
 language: android
 os: osx
 sudo: required
-dist: trusty
 android:
   components:
-    - tools # see https://github.com/travis-ci/travis-ci/issues/6040#issuecomment-219367943)
+    - tools
     - platform-tools
-    - build-tools-26.0.1
-    - build-tools-26.0.2
-    - android-26
+    - build-tools-22
+    - android-22
     - extra-android-support
     - sys-img-armeabi-v7a-android-tv-l
     - add-on
