@@ -1,6 +1,7 @@
 language: android
 os: osx
 sudo: required
+dist: precise
 android:
   components:
     - tools
