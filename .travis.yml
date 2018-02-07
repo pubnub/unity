@@ -10,16 +10,12 @@ env:
  - ADB_INSTALL_TIMEOUT=5 # minutes
 android:
  components:
- - tools
- - tools
- - platform-tools
- - build-tools-$ANDROID_BUILD_TOOLS
- - android-$ANDROID_API
- - android-$EMULATOR_API_LEVEL
- - extra-google-m2repository
- - extra-android-m2repository # for design library
- - sys-img-armeabi-v7a-addon-google_apis-google-$ANDROID_API_LEVEL
- - sys-img-armeabi-v7a-addon-google_apis-google-$EMULATOR_API_LEVEL
+    - tools # see https://github.com/travis-ci/travis-ci/issues/6040#issuecomment-219367943)
+    - platform-tools
+    - build-tools-26.0.1
+    - build-tools-26.0.2
+    - android-26
+    - extra-android-support
  licenses:
  - android-sdk-preview-license-.+
  - android-sdk-license-.+
