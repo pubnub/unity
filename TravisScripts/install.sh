@@ -10,9 +10,9 @@ echo 'Downloading StandardAssets-2017.2.0f3.pkg:'
 curl --retry 5 -o Unity_StandardAssets.pkg https://download.unity3d.com/download_unity/a9f86dcd79df/MacStandardAssetsInstaller/StandardAssets-2017.3.0f3.pkg
 if [ $? -ne 0 ]; then { echo "Unity StandardAssets Download failed"; exit $?; } fi
 
-echo 'Downloading Android build support:'
-curl --retry 5 -o Unity_Android.pkg https://beta.unity3d.com/download/a9f86dcd79df/MacEditorTargetInstaller/UnitySetup-Android-Support-for-Editor-2017.3.0f3.pkg
-if [ $? -ne 0 ]; then { echo "Download failed"; exit $?; } fi
+echo 'Downloading iOS build support:'
+curl --retry 5 -o Unity_iOS.pkg https://beta.unity3d.com/download/a9f86dcd79df/MacEditorTargetInstaller/UnitySetup-iOS-Support-for-Editor-2017.3.0f3.pkg
+if [ $? -ne 0 ]; then { echo "iOS Download failed"; exit $?; } fi	
 
 # Install
 echo 'Installing Unity.pkg'
@@ -31,5 +31,7 @@ echo === Done ===
 echo 'Installing StandardAssets-2017.2.0f3.pkg'
 sudo installer -dumplog -package Unity_StandardAssets.pkg -target /
 
-echo 'Installing Unity_Android.pkg'
-sudo installer -dumplog -package Unity_Android.pkg -target /
+echo 'Installing Unity_iOS.pkg'
+sudo installer -dumplog -package Unity_iOS.pkg -target /
+
+

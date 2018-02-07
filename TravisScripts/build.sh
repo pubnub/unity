@@ -4,10 +4,10 @@
 #  a subdirectory of the repo root directory, e.g. for this repo "unity-ci-test" 
 #  the project folder is "UnityProject". If this is not true then adjust the 
 #  -projectPath argument to point to the right location.
-  
+
 ## Run the editor unit tests
 echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
-#echo "Test ${UNITYCI_TEST}"
+
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
 	-batchmode \
 	-logFile $(pwd)/editor1.log \
@@ -20,40 +20,10 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 	-serial ${UNITYCI_SERIAL}
 
 rc0=$?
-#echo "Unity Logs:"
-#cat $(pwd)/editor1.log
-#ls $(pwd)
-#echo "ls $(pwd)/${UNITYCI_PROJECT_NAME}"
-#ls $(pwd)/${UNITYCI_PROJECT_NAME}
-#cat $(pwd)/unity.log
-#cd $(pwd)
-#$(find . -print | grep -i '.*[.]xml')
 echo "Unit test logs"
 cat $(pwd)/test1.xml
 #exit if tests failed
 if [ $rc0 -ne 0 ]; then { echo "Failed unit tests editmode"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc0; } fi	
-
-echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} Android"
-/Applications/Unity/Unity.app/Contents/MacOS/Unity \
- 	-batchmode \
- 	-logFile $(pwd)/unity.log \
- 	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
- 	-runTests  \
- 	-testResults $(pwd)/test5.xml \
- 	-testPlatform Android \
- 	-username ${UNITYCI_USER_NAME} \
- 	-password ${UNITYCI_PASS} \
- 	-serial ${UNITYCI_SERIAL} 
-
-rc5=$?
-echo "Unity Logs:"
-cat ~/Library/Logs/Unity/Editor.log
-#cat $(pwd)/unity.log
-echo "Unit test logs"
-cat $(pwd)/test5.xml
-#exit if tests failed
-if [ $rc5 -ne 0 ]; then { echo "Failed unit tests Android"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc5; } fi	
-
 
 echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} StandaloneOSXIntel64"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
@@ -68,16 +38,12 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} StandaloneOSXIntel64
  	-serial ${UNITYCI_SERIAL} 
 
 rc3=$?
-echo "Unity Logs:"
-cat ~/Library/Logs/Unity/Editor.log
-#cat $(pwd)/unity.log
 echo "Unit test logs"
 cat $(pwd)/test3.xml
 #exit if tests failed
 if [ $rc3 -ne 0 ]; then { echo "Failed unit tests StandaloneOSXIntel64"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc3; } fi	
 
 echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} playmode"
-#echo "Test ${UNITYCI_TEST}"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
 	-batchmode \
 	-logFile $(pwd)/editor2.log \
@@ -90,9 +56,6 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} playmode"
 	-serial ${UNITYCI_SERIAL}
 
 rc1=$?
-#echo "Unity Logs:"
-#cat $(pwd)/editor2.log
-#cat $(pwd)/unity.log
 echo "Unit test logs 2"
 cat $(pwd)/test2.xml
 #exit if tests failed
@@ -102,5 +65,4 @@ if [ $rc1 -ne 0 ]; then { echo "Failed unit tests playmode"; /Applications/Unity
 echo "returning license"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense
 
-#exit $(($rc1|$rc2))
 exit
