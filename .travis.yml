@@ -1,7 +1,7 @@
 language: android
 os: osx
 sudo: required
-
+dist: precise
 env:
  global:
  - ANDROID_API=26
