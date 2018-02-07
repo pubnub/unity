@@ -1,7 +1,8 @@
 language: android
 os: osx
 sudo: required
-dist: precise
+dist: trusty
+group: edge
 android:
   components:
     - tools
