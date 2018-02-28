@@ -148,6 +148,7 @@ namespace PubNubExample
             });
         }
         void ButtonHistoryHandler(){
+            
             pubnub.History ().Channel("channel1").IncludeTimetoken(true).Async ((result, status) => {
                 
                 if(status.Error){
@@ -189,7 +190,7 @@ namespace PubNubExample
         }
         
         void ButtonWhereNowHandler(){
-            pubnub.WhereNow ().Async ((result, status) => {
+            pubnub.WhereNow ().Uuid("some-other-uuid").Async ((result, status) => {
                 Debug.Log ("in WhereNow");
                 if(status.Error){
                     PrintStatus(status);
@@ -376,51 +377,29 @@ namespace PubNubExample
             pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
             pnConfiguration.PresenceTimeout = 60;    
             pnConfiguration.PresenceInterval= 30;
-            //pnConfiguration.Origin = "localhost:8082";
+            pnConfiguration.AuthKey = "authKey";
+            //pnConfiguration.FilterExpression = "such=wow";
+            pnConfiguration.HeartbeatNotificationOption = PNHeartbeatNotificationOption.All;
 
             //TODO: remove
             pnConfiguration.UUID = "PubNubUnityExample";
             Debug.Log ("PNConfiguration");  
             pubnub = new PubNub (pnConfiguration);
 
-            pubnub.AddListener (
-                (s) => {
-                    PrintStatus(s);
-                },
-                (m) => {
-                    Debug.Log ("AddListener in message" + m.Channel + m.Payload);
-                    //example to check channel
-                    //example to cast message
-
-                },
-                (p) => {
-                    Debug.Log ("AddListener in presence" + p.Channel + p.Occupancy + p.Event);
-                }
-
-            );
-
             listChannelGroups = new List<string> (){cg1, cg2};
             listChannels = new List<string> (){ch1, ch2};
-            
-            /*Dictionary<string, object> state = new Dictionary<string, object>();
-            state.Add  ("k1", "v1");
-            pubnub.SetPresenceState().ChannelGroups(listChannelGroups).Channels(listChannels).State(state).Async ((result, status) => {
-                if(status.Error){
-                    Debug.Log (string.Format("In Example, SetPresenceState Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
-                } else {
-                    Debug.Log (string.Format("DateTime {0}, In Example SetPresenceState, result:", DateTime.UtcNow));
-                }
-            });*/
 
-            pubnub.SusbcribeCallback += (sender, e) => { //; //+= (pnStatus, pnMessageResut, pnPresenceEventResult) => {
+            //pubnub.SusbcribeCallback += SusbcribeCallbackHandler;
+
+            
+            /*pubnub.SusbcribeCallback += (sender, e) => { 
                 SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
 
-                Debug.Log ("In Example, SusbcribeCallback");
                 if(mea.Status != null){
-                    PrintStatus(mea.Status);
+                    
                     if(mea.Status.Category.Equals(PNStatusCategory.PNConnectedCategory)){
-                        pubnub.Publish().Channel("channel1").Message("test message").UsePost(true).Async((result, status) => {
-                            Debug.Log ("in Publish");
+                        PrintStatus(mea.Status);
+                        pubnub.Publish().Channel("my_channel").Message("Hello from the PubNub Unity SDK").UsePost(true).Async((result, status) => {
                             if(!status.Error){
                                 Debug.Log (string.Format("DateTime {0}, In Publish Example, Timetoken: {1}", DateTime.UtcNow , result.Timetoken));
                             } else {
@@ -438,165 +417,173 @@ namespace PubNubExample
                 if(mea.PresenceEventResult != null){
                     Debug.Log ("In Example, SusbcribeCallback in presence" + mea.PresenceEventResult.Channel + mea.PresenceEventResult.Occupancy + mea.PresenceEventResult.Event);
                 }
-                /*pubnub.Fire().Channel("channel1").Message("test fire essage").Async((result, status) => {
-                    Debug.Log ("in Fire");
-                    Debug.Log (string.Format("DateTime {0}, In Fire Example, Timetoken: {1}", DateTime.UtcNow , result.Timetoken));
-                    Debug.Log (status.Error);
-
-                });
-                
-                pubnub.WhereNow ().Async ((result, status) => {
-                    Debug.Log ("in WhereNow");
-                    Debug.Log (string.Format("DateTime {0}, In Example, Channels: {1}", DateTime.UtcNow , (result.Channels!=null)?string.Join(",",result.Channels.ToArray()):""));
-                    Debug.Log (status.Error);
-
-                });*/
-                
-                //herenow
-                /*pubnub.HereNow().Channels(listChannels).ChannelGroups(listChannelGroups).IncludeState(true).IncludeUUIDs(true).Async((result, status) => {
-                    Debug.Log ("in HereNow1");
-                    Debug.Log (string.Format("DateTime {0}, In Example, Channels: {1} {2}", DateTime.UtcNow , result.TotalChannels, result.TotalOccupancy));
-                    DisplayHereNowResult(result);
-                    
-                    Debug.Log (status.Error);
-
-                });
-                //globalherenow
-                pubnub.HereNow().IncludeState(true).IncludeUUIDs(true).Async((result, status) => {
-                    Debug.Log ("in HereNow2");
-                    
-                    Debug.Log (string.Format("DateTime {0}, In Example, Channels: {1} {2}", DateTime.UtcNow , result.TotalChannels, result.TotalOccupancy));
-                    DisplayHereNowResult(result);
-                    Debug.Log (status.Error);
-
-                });
-
-                pubnub.HereNow().IncludeState(false).IncludeUUIDs(true).Async((result, status) => {
-                    Debug.Log ("in HereNow3");
-                    Debug.Log (string.Format("DateTime {0}, In Example, Channels: {1} {2}", DateTime.UtcNow , result.TotalChannels, result.TotalOccupancy));
-                    DisplayHereNowResult(result);
-                    Debug.Log (status.Error);
-
-                });
-
-                pubnub.HereNow().IncludeState(false).IncludeUUIDs(false).Async((result, status) => {
-                    Debug.Log ("in HereNow4");
-                    Debug.Log (string.Format("DateTime {0}, In Example, Channels: {1} {2}", DateTime.UtcNow , result.TotalChannels, result.TotalOccupancy));
-                    DisplayHereNowResult(result);
-                    Debug.Log (status.Error);
-
-                });
-
-                pubnub.HereNow().IncludeState(true).IncludeUUIDs(false).Async((result, status) => {
-                    Debug.Log ("in HereNow5");
-                    Debug.Log (string.Format("DateTime {0}, In Example, Channels: {1} {2}", DateTime.UtcNow , result.TotalChannels, result.TotalOccupancy));
-                    DisplayHereNowResult(result);
-                    Debug.Log (status.Error);
-
-                });*/
-
-            };
-
-            //Debug.Log ("PubNub");
-            
-
-            Debug.Log ("before Time");
-            /*pubnub.Time ().Async (new PNTimeCallback<PNTimeResult>(
-                (r, s) => {
-                    Debug.Log ("in Time");
-                }
-            ));*/
+            };*/
            
+            //pubnub.Subscribe ().ChannelGroups(new List<string> (){"my_channel"}).Channels(new List<string> (){"my_channel"}).WithPresence().Execute();            
+            //GetHistoryRecursive(0, "channel1");
+            
+            /*pubnub.SusbcribeCallback += SusbcribeCallbackHandler2;
+            string myChannel = "jasdeep-status";
+            pubnub.Subscribe()
+                .Channels(new List<string>() {
+                    string.Format("{0},{1}-UPDATES", myChannel, myChannel),
+                })
+                .Execute();
 
-            //pubnub.History ().Channel("channel1").Start(14987439725282000).End(14985453001147606).IncludeTimetoken(false).Reverse(false).Async ((result, status) => {
-            /*pubnub.History ().Channel("channel1").Async ((result, status) => {
+            Dictionary<string, object> message = new Dictionary<string, object>();
+            message.Add("message_id", "10001");
+            message.Add("channel", "jasdeep-status-UPDATES");
+            message.Add("original_timetoken", DateTime.Now.ToString());
+            message.Add("user", "jasdeep");
+            message.Add("status", "Writing up design patterns...");
+            message.Add("usecase", "update");
+            message.Add("deleted", false);
+            message.Add("is_update", true);
+            
+            pubnub.Publish()
+                .Channel("my_channel")
+                .Message(message)
+                .Async((result, status) => {
+                    if (!status.Error) {
+                        Debug.Log(string.Format("DateTime {0}, In Publish Example, Timetoken: {1}", DateTime.UtcNow , result.Timetoken));
+                    } else {
+                        Debug.Log(status.Error);
+                        Debug.Log(status.ErrorData.Info);
+                    }
+                });*/
+        }
+        Dictionary<string, Dictionary<string, object>> messageList = new Dictionary<string, Dictionary<string, object>>();
+ 
+
+        void SusbcribeCallbackHandler2(object sender, EventArgs e) {
+            SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
+
+            if (mea.Status != null) {
+                switch (mea.Status.Category) {
+                    case PNStatusCategory.PNUnexpectedDisconnectCategory:
+                    case PNStatusCategory.PNTimeoutCategory:
+                        
+                    break;
+                }
+            }
+            if (mea.MessageResult != null) {
+                Debug.Log("SusbcribeCallback in message" + mea.MessageResult.Channel + mea.MessageResult.Payload);
+                Dictionary<string, object> messageIds = mea.MessageResult.Payload as Dictionary<string, object>;
+
+                UnityEngine.Debug.Log("message_id:" + messageIds["message_id"]);
+                DisplayMessages (messageIds, mea.MessageResult.Channel);
+
+        
+            }
+            if (mea.PresenceEventResult != null) {
+                Debug.Log("SusbcribeCallback in presence" + mea.PresenceEventResult.Channel + mea.PresenceEventResult.Occupancy + mea.PresenceEventResult.Event);
+            }
+        }
+
+        void DisplayMessages(Dictionary<string, object> message, string channel) {
+            UnityEngine.Debug.Log(channel);
+        
+            // if new message, add to list
+            if (!messageList.ContainsKey(channel)) {
+                Dictionary<string, object> messageIdAndVal = new Dictionary<string, object> ();
+                messageIdAndVal.Add (message["message_id"].ToString(), message);
+                messageList.Add(channel, messageIdAndVal);
+                UnityEngine.Debug.Log (string.Format ("Add: {0}", message ["message_id"]));
+            } else {
+                bool deleted = (bool)message ["deleted"];
+                if (deleted) {
+                    // delete from message list
+                    messageList.Remove(channel);
+        
+                    // update UI, remove message from display
+                    // ...
+                    UnityEngine.Debug.Log (string.Format ("Remove: {0}", message ["message_id"]));
+                } else {
+                    // replace content (same as adding new one, because of identical message_id)
+                    Dictionary<string, object> messageIdAndVal = new Dictionary<string, object> ();
+                    messageIdAndVal.Add (message ["message_id"].ToString(), message);
+        
+                    messageList[channel] = messageIdAndVal;
+                    // update UI, update display content
+                    // ...
+                    UnityEngine.Debug.Log (string.Format ("Update: {0}", message ["message_id"]));
+                }
+            }
+        }
+
+
+        void FetchRecursive(long start, List<string> listChannels){
+
+            pubnub.FetchMessages().Channels(listChannels).Start(start).Async ((result, status) => {
+            //pubnub.FetchMessages().Channels(new List<string>{"channel2"}).Async ((result, status) => {    
+                if(status.Error){
+                    Debug.Log (string.Format("In Example, FetchMessages Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
+                } else {
+                    Debug.Log (string.Format("In FetchMessages, result: "));//,result.EndTimetoken, result.Messages[0].ToString()));
+                    foreach(KeyValuePair<string, List<PNMessageResult>> kvp in result.Channels){
+                        Debug.Log("kvp channelname" + kvp.Key);
+                        foreach(PNMessageResult pnMessageResut in kvp.Value){
+                            Debug.Log("Channel: " + pnMessageResut.Channel);
+                            Debug.Log("payload: " + pnMessageResut.Payload.ToString());
+                            Debug.Log("timetoken: " + pnMessageResut.Timetoken.ToString());
+
+                        }    
+                    }
+                    
+                }
+            });
+        }
+
+        void GetHistoryRecursive(long start, string channel){
+            pubnub.History ().Channel(channel).Start(start).Reverse(true).IncludeTimetoken(true).Async ((result, status) => {
                 
                 if(status.Error){
                     Debug.Log (string.Format("In Example, History Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                 } else {
-                    Debug.Log (string.Format("DateTime {0}, In Example, result: {1}", DateTime.UtcNow ,result.EndTimetoken, (result.Messages.Count>0)?result.Messages[0].ToString():""));
-                }
-            });
-
-            pubnub.GetPresenceState().Channels(listChannels).ChannelGroups(listChannelGroups).Async ((result, status) => {
-            //pubnub.GetPresenceState().Channels(listChannels).ChannelGroups(listChannelGroups).Async ((result, status) => {
-                
-                if(status.Error){
-                    Debug.Log (string.Format("In Example, GetPresenceState Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
-                } else {
-                    Debug.Log (string.Format("DateTime {0}, In Example GetPresenceState, result:", DateTime.UtcNow));
-                }
-            });
-            //pubnub.Time ().Async (new PNCallback<PNTimeResult>(){
-
-                //Debug.Log ("in Time")
-            //});*/
-
-            /*FetchMessages(pubnub, listChannels);
-
-            pubnub.AddChannelsToChannelGroup().Channels(listChannels).ChannelGroup(cg1).Async((result, status) => {
-                Debug.Log ("in AddChannelsToChannelGroup");
-                if(status.Error){
-                    Debug.Log (string.Format("In Example, AddChannelsToChannelGroup Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
-                } else {
-                    Debug.Log (string.Format("DateTime {0}, In Example AddChannelsToChannelGroup, result: {1}", DateTime.UtcNow, result.Message));
-                }
-
-                ListAllChannelsOfGroup(pubnub, cg1);
-
-                List<string> listChannelsRemove = new List<string> (){ch1};
-                RemoveChannelsFromCG(pubnub, cg1, listChannelsRemove);
-
-                
-                
-                
-                pubnub.DeleteChannelsFromChannelGroup().ChannelGroup(cg1).Async((result1, status1) => {
-                    if(status1.Error){
-                        Debug.Log (string.Format("In Example, DeleteChannelsFromChannelGroup Error: {0} {1} {2}", status1.StatusCode, status1.ErrorData, status1.Category));
-                    } else {
-                        Debug.Log (string.Format("DateTime {0}, In Example DeleteChannelsFromChannelGroup, result: {1}", DateTime.UtcNow, result1.Message));
+                    if((result.Messages!=null) && (result.Messages.Count>0)){
+                        foreach (PNHistoryItemResult histItem in result.Messages){
+                            Debug.Log(string.Format("histItem: {0}, {1}", histItem.Entry.ToString(), histItem.Timetoken.ToString()));
+                        }
+                        GetHistoryRecursive(result.EndTimetoken, channel);
                     }
-                
-                });
-                ListAllChannelsOfGroup(pubnub, cg1);
-            });
-            string deviceId = "aaa";
-            PNPushType pnPushType = PNPushType.GCM;
-
-            /*pubnub.Unsubscribe().ChannelGroups(listChannelGroups).Channels(listChannels).Async((result, status) => {
-                Debug.Log ("in Unsubscribe");
-                if(status.Error){
-                    Debug.Log (string.Format("In Example, Unsubscribe Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
-                } else {
-                    Debug.Log (string.Format("DateTime {0}, In Unsubscribe, result: {1}", DateTime.UtcNow, result.Message));
                 }
             });
+        }
 
-            pubnub.UnsubscribeAll().Async((result, status) => {
-                Debug.Log ("in UnsubscribeAll");
-                if(status.Error){
-                    Debug.Log (string.Format("In Example, UnsubscribeAll Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
-                } else {
-                    Debug.Log (string.Format("DateTime {0}, In UnsubscribeAll, result: {1}", DateTime.UtcNow, result.Message));
-                }
-            });
-            */
 
-            /*pubnub.AddPushNotificationsOnChannels().Channels(listChannels).DeviceIDForPush(deviceId).PushType(pnPushType).Async((result, status) => {
-                    Debug.Log ("in AddPushNotificationsOnChannels");
-                    if(status.Error){
-                        Debug.Log (string.Format("In Example, AddPushNotificationsOnChannels Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
-                    } else {
-                        Debug.Log (string.Format("DateTime {0}, In AddPushNotificationsOnChannels, result: {1}", DateTime.UtcNow, result.Message));
+
+        void SusbcribeCallbackHandler(object sender, EventArgs e){
+            SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
+
+                if(mea.Status != null){
+                    switch (mea.Status.Category){
+                        case PNStatusCategory.PNConnectedCategory:
+                        PrintStatus(mea.Status);
+                        pubnub.Publish().Channel("my_channel").Message("Hello from the PubNub Unity SDK").Ttl(10).UsePost(true).Async((result, status) => {
+                            if(!status.Error){
+                                Debug.Log (string.Format("DateTime {0}, In Publish Example, Timetoken: {1}", DateTime.UtcNow , result.Timetoken));
+                            } else {
+                                Debug.Log (status.Error);
+                                Debug.Log (status.ErrorData.Info);
+                            }
+
+                        });
+                        
+                        break;
+                        case PNStatusCategory.PNUnexpectedDisconnectCategory:
+                        case PNStatusCategory.PNTimeoutCategory:
+                        pubnub.Reconnect();
+                        pubnub.CleanUp();
+                        break;
                     }
-                    AuditPushChannelProvisions(pubnub, deviceId, pnPushType);
-                    RemoveChannelsFromPush(listChannels, pubnub, deviceId, pnPushType);
-                });
-            /*Debug.Log ("after Time");*/
-            
-            //pubnub.WhereNow ().Uuid ("test uuid").Async ((result, status) => {
-            
-            //pubnub.Subscribe ().Async<string> ();
+                }
+                if(mea.MessageResult != null){
+                    Debug.Log ("In Example, SusbcribeCallback in message" + mea.MessageResult.Channel + mea.MessageResult.Payload);
+                    Display(string.Format("SusbcribeCallback Result: {0}", pubnub.JsonLibrary.SerializeToJsonString(mea.MessageResult.Payload)));
+                }
+                if(mea.PresenceEventResult != null){
+                    Debug.Log ("In Example, SusbcribeCallback in presence" + mea.PresenceEventResult.Channel + mea.PresenceEventResult.Occupancy + mea.PresenceEventResult.Event);
+                }
         }
 
         void RemoveChannelsFromPush(List<string> listChannels, PubNub pubnub, string deviceId, PNPushType pnPushType){

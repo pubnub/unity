@@ -743,6 +743,10 @@ namespace PubNubAPI
             }
             long timetoken;
             Utility.TryCheckKeyAndParseLong(pnPresenceEventDict, "timestamp", "timestamp", out log, out timetoken);
+            bool hereNowRefresh = false;
+            if(pnPresenceEventDict.ContainsKey("here_now_refresh")){
+                hereNowRefresh = (bool)pnPresenceEventDict["here_now_refresh"];
+            }
 
             PNPresenceEvent pnPresenceEvent = new PNPresenceEvent (
                 (pnPresenceEventDict.ContainsKey("action"))?pnPresenceEventDict["action"].ToString():"",
@@ -752,7 +756,8 @@ namespace PubNubAPI
                 (pnPresenceEventDict.ContainsKey("state"))?pnPresenceEventDict["state"]:null,
                 Utility.CheckKeyAndConvertObjToStringArr((pnPresenceEventDict.ContainsKey("join"))?pnPresenceEventDict["join"]:null),
                 Utility.CheckKeyAndConvertObjToStringArr((pnPresenceEventDict.ContainsKey("leave"))?pnPresenceEventDict["leave"]:null),
-                Utility.CheckKeyAndConvertObjToStringArr((pnPresenceEventDict.ContainsKey("timeout"))?pnPresenceEventDict["timeout"]:null)
+                Utility.CheckKeyAndConvertObjToStringArr((pnPresenceEventDict.ContainsKey("timeout"))?pnPresenceEventDict["timeout"]:null),
+                hereNowRefresh
             );
             //"action": "join", "timestamp": 1473952169, "uuid": "a7acb27c-f1da-4031-a2cc-58656196b06d", "occupancy": 1
             //"action": "interval", "timestamp": 1490700797, "occupancy": 3, "join": ["Client-odx4y", "test"]

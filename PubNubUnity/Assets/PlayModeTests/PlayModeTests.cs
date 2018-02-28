@@ -657,6 +657,10 @@ namespace PubNubAPI.Tests
 				SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
 				if(!mea.Status.Category.Equals(PNStatusCategory.PNConnectedCategory)){
 					if(mea.PresenceEventResult.Event.Equals("join")){
+						Debug.Log(mea.PresenceEventResult.UUID);
+						Debug.Log(mea.PresenceEventResult.Timestamp);
+						Debug.Log(mea.PresenceEventResult.Occupancy);
+						Debug.Log(string.Join(",",mea.PresenceEventResult.Join.ToArray()));
 						bool containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UUID);
 						Assert.True(containsUUID);
 						bool containsOccupancy = mea.PresenceEventResult.Occupancy > 0;
