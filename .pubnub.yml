@@ -3,6 +3,13 @@ changelog:
    -
     changes: 
       - 
+        text: "Here Now Refresh"
+        type: improvement
+    date: Feb 28, 18
+    version: v4.0-rc2
+   -
+    changes: 
+      - 
         text: "Cleanup"
         type: improvement
     date: Jan 22, 18
@@ -256,11 +263,11 @@ features:
     - SUBSCRIBE-FILTER-EXPRESSION
     - SUBSCRIBE-PUBSUB-V2
     - SUBSCRIBE-PUBLISHER-UUID
+    - REQUEST-MESSAGE-COUNT-EXCEEDED
   time: 
     - TIME-TIME
   others:
-    - TELEMETRY
-    - REQUEST-MESSAGE-COUNT-EXCEEDED
+    - TELEMETRY 
 supported-platforms:
   - 
     version: PubNub Unity SDK
@@ -279,4 +286,4 @@ supported-platforms:
 name: unity
 schema: 1
 scm: github.com/pubnub/unity
-version: “v4.0-beta6”
+version: "v4.0-rc2"
