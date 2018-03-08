@@ -3,6 +3,13 @@ changelog:
    -
     changes: 
       - 
+        text: "Integration tests fixes"
+        type: improvement
+    date: Mar 8, 18
+    version: v4.0.1
+   -
+    changes: 
+      - 
         text: "Here Now Refresh"
         type: improvement
     date: Feb 28, 18
@@ -286,4 +293,4 @@ supported-platforms:
 name: unity
 schema: 1
 scm: github.com/pubnub/unity
-version: "v4.0-rc2"
+version: "v4.0.1"
