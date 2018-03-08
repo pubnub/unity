@@ -2987,9 +2987,11 @@ namespace PubNubAPI.Tests
 			tresult = false;
 			pubnub.FetchMessages().Channels(channelList2).Start(timetoken2).Reverse(true).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
+				Debug.Log("status.Error.Equals(false)"+status.Error.Equals(false));
 				if(!status.Error){
 					
-					if((result.Channels != null) && (result.Channels.Count.Equals(1))){
+					if((result.Channels != null)){
+						Debug.Log("(result.Channels != null) && (result.Channels.Count.Equals(1))"+((result.Channels != null) && (result.Channels.Count.Equals(1))));
 						Dictionary<string, List<PNMessageResult>> fetchResult = result.Channels as Dictionary<string, List<PNMessageResult>>;
 						Debug.Log("fetchResult.Count:" + fetchResult.Count);
 						bool found1 = false, found2 = false;
@@ -3010,6 +3012,8 @@ namespace PubNubAPI.Tests
 							}
 						}
 						tresult = found1;
+					} else {
+						Debug.Log("(result.Channels == null) && !(result.Channels.Count.Equals(1))" + result.Channels.Count);
 					}
 
                 } 
