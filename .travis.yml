@@ -1,8 +1,5 @@
 language: generic
 os: osx
-branches:
-  only:
-  - CE-2968-UnityV4
 notifications:
   email:
     on_success: never
