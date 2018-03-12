@@ -1,12 +1,65 @@
 --- 
 changelog: 
+   -
+    changes: 
+      - 
+        text: "Integration tests fixes"
+        type: improvement
+    date: Mar 8, 18
+    version: v4.0.1
+   -
+    changes: 
+      - 
+        text: "Here Now Refresh"
+        type: improvement
+    date: Feb 28, 18
+    version: v4.0-rc2
+   -
+    changes: 
+      - 
+        text: "Cleanup"
+        type: improvement
+    date: Jan 22, 18
+    version: v4.0-beta6
+   -
+    changes: 
+      - 
+        text: "Logging enhancements"
+        type: improvement
+    date: Jan 18, 18
+    version: v4.0-beta5 
+   -
+    changes: 
+      - 
+        text: "Cleanup"
+        type: improvement
+    date: Jan 16, 18
+    version: v4.0-beta4 
+   -
+    changes: 
+      - 
+        text: "Windows Universal compatibility"
+        type: improvement
+    date: Jan 11, 18
+    version: v4.0-beta3 
+   -
+    changes: 
+      - 
+        text: "Leave fixes"
+        type: improvement
+    date: Dec 26, 17
+    version: v4.0-beta2 
+  -
+    changes: 
+      - 
+        text: "All new PubNub Unity SDK"
+        type: improvement
+    date: Dec 11, 17
+    version: v4.0-beta1
   - 
     changes: 
       - 
-        text: "Subscribe with timetoken fix"
-        type: bug
-      -
-        text: "Unit and integration tests compatibility with UnityEditor 2017.*"
+        text: "Presence delta intervals"
         type: improvement
     date: Dec 18, 17
     version: v3.7.10
@@ -190,8 +243,6 @@ changelog:
     date: ~
     version: v3.6.8.1
 features: 
-  access: 
-    - ACCESS-GRANT
   channel-groups: 
     - CHANNEL-GROUPS-ADD-CHANNELS
     - CHANNEL-GROUPS-REMOVE-CHANNELS
@@ -203,12 +254,15 @@ features:
     - PRESENCE-SET-STATE
     - PRESENCE-GET-STATE
     - PRESENCE-HEARTBEAT
+    - PRESENCE-HERE-NOW-REFRESH
   publish: 
     - PUBLISH-STORE-FLAG
     - PUBLISH-WITH-METADATA
     - PUBLISH-GET
+    - PUBLISH-POST
     - PUBLISH-ASYNC
     - PUBLISH-MESSAGE-TTL
+    - PUBLISH-FIRE
   push: 
     - PUSH-ADD-DEVICE-TO-CHANNELS
     - PUSH-REMOVE-DEVICE-FROM-CHANNELS
@@ -219,6 +273,7 @@ features:
     - STORAGE-INCLUDE-TIMETOKEN
     - STORAGE-START-END
     - STORAGE-COUNT
+    - STORAGE-DELETE-MESSAGES
   subscribe: 
     - SUBSCRIBE-CHANNELS
     - SUBSCRIBE-CHANNEL-GROUPS
@@ -229,8 +284,11 @@ features:
     - SUBSCRIBE-FILTER-EXPRESSION
     - SUBSCRIBE-PUBSUB-V2
     - SUBSCRIBE-PUBLISHER-UUID
+    - REQUEST-MESSAGE-COUNT-EXCEEDED
   time: 
     - TIME-TIME
+  others:
+    - TELEMETRY 
 supported-platforms:
   - 
     version: PubNub Unity SDK
@@ -245,8 +303,8 @@ supported-platforms:
       - Mac OS X 10.8+, with Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support.
     editors:
       - Unity 5.5.1
-      - Unity 2007.1.0
+      - Unity 2017.3.0f3
 name: unity
 schema: 1
 scm: github.com/pubnub/unity
-version: "3.7.10"
+version: "v4.0.1"

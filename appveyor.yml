@@ -1,0 +1,15 @@
+version: '{build}'
+image: Visual Studio 2015
+platform: x64
+
+build_script:
+  - ps: .\AppVeyorScripts\install.ps1
+
+
+clone_folder: c:\projects\pn-unity
+
+test_script:
+  - ps: .\AppVeyorScripts\test.ps1
+        
+
+deploy: off
