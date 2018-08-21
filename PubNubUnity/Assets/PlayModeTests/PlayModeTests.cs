@@ -988,6 +988,20 @@ namespace PubNubAPI.Tests
 
 		}
 
+		// [UnityTest]
+		// public IEnumerator TestDeleteMessagesBuildRequestsSecretKeyError(){
+        //     PNConfiguration pnConfiguration = new PNConfiguration ();
+        //     pnConfiguration.SubscribeKey = "demo";
+        //     pnConfiguration.PublishKey = "demo";
+        //     PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
+        //     pnUnity.DeleteMessages().Channel("test").Async((result, status) => {
+		// 		bool statusError = status.Error;
+		// 		Debug.Log("statusError:" + statusError);
+        //         Assert.IsTrue (expected.Equals (received), expNRec);
+        //      });
+        //     yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+        // }
+
 		[UnityTest]
 		public IEnumerator TestCG() {
 			

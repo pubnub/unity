@@ -39,6 +39,13 @@ namespace PubNubAPI
                 return;
             }
 
+            if(string.IsNullOrEmpty(this.PubNubInstance.PNConfig.SecretKey)){
+                PNStatus pnStatus = base.CreateErrorResponseFromMessage("SecretKey is required", null, PNStatusCategory.PNBadRequestCategory);
+                Callback(null, pnStatus);                
+
+                return;
+            }
+
             base.Async(this);
         }
 
