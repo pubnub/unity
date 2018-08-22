@@ -31,7 +31,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} playmode"
 	-batchmode \
 	-logFile $(pwd)/editor2.log \
 	-projectPath $(pwd)/${UNITYCI_PROJECT_NAME} \
-	-runEditorTests \
+	-runTests \
 	-testResults $(pwd)/test2.xml \
 	-testPlatform playmode \
 	-username ${UNITYCI_USER_NAME} \
