@@ -6,6 +6,25 @@
 #  -projectPath argument to point to the right location.
 
 ## Run the editor unit tests
+echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
+
+/Applications/Unity/Unity.app/Contents/MacOS/Unity \
+	-batchmode \
+	-logFile $(pwd)/editor1.log \
+	-projectPath $(pwd)/${UNITYCI_PROJECT_NAME} \
+	-runTests \
+	-testResults $(pwd)/test1.xml \
+	-testPlatform editmode \
+	-username ${UNITYCI_USER_NAME} \
+	-password ${UNITYCI_PASS} \
+	-serial ${UNITYCI_SERIAL}
+
+rc0=$?
+echo "Unit test logs"
+#cat $(pwd)/editor1.log
+cat $(pwd)/test1.xml
+#exit if tests failed
+if [ $rc0 -ne 0 ]; then { echo "Failed unit tests editmode"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc0; } fi	
 
 echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} playmode"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
@@ -21,7 +40,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} playmode"
 
 rc1=$?
 echo "Unit test logs 2"
-cat $(pwd)/editor2.log
+#cat $(pwd)/editor2.log
 cat $(pwd)/test2.xml
 #exit if tests failed
 if [ $rc1 -ne 0 ]; then { echo "Failed unit tests playmode"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc1; } fi	
