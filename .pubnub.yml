@@ -1,211 +1,211 @@
----
-changelog:
-   -
-    changes:
-      -
-        text: "Delete Messages Fix "
-        type: bug
-    date: Aug 23, 18
+--- 
+changelog: 
+  - 
+    changes: 
+      - 
+        text: "Delete Messages Fix"
+        type: improvement
+    date: "Aug 23, 18"
     version: v4.0.2
-   -
-    changes:
-      -
+  - 
+    changes: 
+      - 
         text: "Integration tests fixes"
         type: improvement
-    date: Mar 8, 18
+    date: "Mar 8, 18"
     version: v4.0.1
-   -
-    changes:
-      -
+  - 
+    changes: 
+      - 
         text: "Here Now Refresh"
         type: improvement
-    date: Feb 28, 18
+    date: "Feb 28, 18"
     version: v4.0-rc2
-   -
-    changes:
-      -
-        text: "Cleanup"
+  - 
+    changes: 
+      - 
+        text: Cleanup
         type: improvement
-    date: Jan 22, 18
+    date: "Jan 22, 18"
     version: v4.0-beta6
-   -
-    changes:
-      -
+  - 
+    changes: 
+      - 
         text: "Logging enhancements"
         type: improvement
-    date: Jan 18, 18
-    version: v4.0-beta5 
-   -
-    changes:
-      -
-        text: "Cleanup"
+    date: "Jan 18, 18"
+    version: v4.0-beta5
+  - 
+    changes: 
+      - 
+        text: Cleanup
         type: improvement
-    date: Jan 16, 18
-    version: v4.0-beta4 
-   -
-    changes:
-      -
+    date: "Jan 16, 18"
+    version: v4.0-beta4
+  - 
+    changes: 
+      - 
         text: "Windows Universal compatibility"
         type: improvement
-    date: Jan 11, 18
-    version: v4.0-beta3 
-   -
-    changes:
-      -
+    date: "Jan 11, 18"
+    version: v4.0-beta3
+  - 
+    changes: 
+      - 
         text: "Leave fixes"
         type: improvement
-    date: Dec 26, 17
-    version: v4.0-beta2 
-   -
-    changes:
-      -
+    date: "Dec 26, 17"
+    version: v4.0-beta2
+  - 
+    changes: 
+      - 
         text: "All new PubNub Unity SDK"
         type: improvement
-    date: Dec 11, 17
+    date: "Dec 11, 17"
     version: v4.0-beta1
-   -
+  - 
     changes: 
-      -
+      - 
         text: "Presence delta intervals"
         type: improvement
-    date: Dec 18, 17
+    date: "Dec 18, 17"
     version: v3.7.10
-   -
-    changes:
-      -
+  - 
+    changes: 
+      - 
         text: "Unity UWP compatibility"
         type: improvement
-    date: Aug 8, 17
+    date: "Aug 8, 17"
     version: v3.7.9
-   -
-    changes:
-      -
+  - 
+    changes: 
+      - 
         text: "Presence delta intervals"
         type: improvement
-    date: Mar 31, 17
+    date: "Mar 31, 17"
     version: v3.7.8
-   -
-    changes:
-      -
+  - 
+    changes: 
+      - 
         text: "Region check in Timetoken dictionary"
         type: bug
-      -
+      - 
         text: "Prefix UUID with 'pn-'"
         type: improvement
-    date: Feb 20, 17
+    date: "Feb 20, 17"
     version: v3.7.7
-   -
-    changes:
-      -
+  - 
+    changes: 
+      - 
         text: "Fixed user state issue for other UUID"
         type: bug
-    date: Jan 12, 17
+    date: "Jan 12, 17"
     version: v3.7.6.2
-   -
-    changes:
-      -
+  - 
+    changes: 
+      - 
         text: "Changed origin to ps.pndsn.com"
         type: feature
-    date: Dec 21, 16
+    date: "Dec 21, 16"
     version: v3.7.6.1
-   -
-    changes:
-      -
+  - 
+    changes: 
+      - 
         text: "Offers the ability to set a per message time to live in storage."
         type: feature
-      -
+      - 
         text: "Find out which UUID sent the message (only avialable when debug symbol `PUBNUB_PS_V2_RESPONSE` is used)."
         type: feature
-    date: Dec 9, 16
+    date: "Dec 9, 16"
     version: v3.7.6
-   -
-    changes:
-      -
+  - 
+    changes: 
+      - 
         text: "Windows Store Universal 10 store compatibility"
         type: improvement
-      -
+      - 
         text: "Changed the JSON lib to use: https://github.com/MarkerMetro/MarkerMetro.Unity.JsonFx, as it is compatible with Windows store."
         type: improvement
-      -
+      - 
         text: "BouncyCastle(http://www.bouncycastle.org/csharp/) is used for crypto functionality."
         type: improvement
     date: ~
     version: v3.7.5
-   -
-    changes:
-      -
+  - 
+    changes: 
+      - 
         text: "Added a debug symbol `PUBNUB_PS_V2_RESPONSE` to enable v4 subscribe"
         type: feature
-    date: Sep 24, 16
+    date: "Sep 24, 16"
     version: v3.7.4
-   -
-    changes:
-      -
+  - 
+    changes: 
+      - 
         text: "Fixed SetGameObject"
         type: feature
     date: ~
     version: v3.7.3
-   -
-    changes:
-      -
+  - 
+    changes: 
+      - 
         text: "PubSub v2"
         type: feature
-      -
+      - 
         text: "Channel Groups"
         type: feature
-      -
+      - 
         text: "Message Filtering"
         type: feature
-      -
+      - 
         text: "Wildcard Subscribe"
         type: feature
-      -
+      - 
         text: "Code optimizations"
         type: improvement
-    date: Aug 2, 16
+    date: "Aug 2, 16"
     version: v3.7.2
-   -
-    changes:
-      -
+  - 
+    changes: 
+      - 
         text: "A new debug symbol to reduce the usage of coroutines. Set REDUCE_PUBNUB_COROUTINES, to use the alternate logic for www coroutines used by the PubNub's SDK. When using this option it is recommended that you call TerminateCurrentSubscriberRequest when the app comes back to the foreground else an ongoing long request will wait till the timeout value to abort and reinit the request."
         type: improvement
-      -
+      - 
         text: "For iOS if the value of NonSubscribeTimeout and SubscribeTimeout is greater than 59 secs, the SDK will force the value to be 59 secs."
         type: improvement
-    date: Jun 21, 16
+    date: "Jun 21, 16"
     version: v3.6.9.1
-   -
-    changes:
-      -
+  - 
+    changes: 
+      - 
         text: "Refactored code."
         type: improvement
-      -
+      - 
         text: "JSON library: the pre-compiler directives to choose between MiniJSON and JSONFx have been moved to the class JSONSerializer.cs."
         type: improvement
-      -
+      - 
         text: |
-            `Logging: In addition to setting the variables PubnubLogLevel = LoggingMethod.Level.Info and PubnubErrorLevel = PubnubErrorFilter.Level.Info you also need to add a "define symbol": ENABLE_PUBNUB_LOGGING for each of the platform you want to enable logging. 
+            `Logging: In addition to setting the variables PubnubLogLevel = LoggingMethod.Level.Info and PubnubErrorLevel = PubnubErrorFilter.Level.Info you also need to add a "define symbol": ENABLE_PUBNUB_LOGGING for each of the platform you want to enable logging.
             
-            This setting is available in the Unity Editor: File-> Build Settings -> Player Settings -> Other Settings -> Configuration -> Scripting define symbols. 
+            This setting is available in the Unity Editor: File-> Build Settings -> Player Settings -> Other Settings -> Configuration -> Scripting define symbols.
             After you type ENABLE_PUBNUB_LOGGING in it do remember to press return with the focus still in the text box or your setting will not be saved.
             `
         type: improvement
-      -
+      - 
         text: "Add mobile push methods."
         type: feature
-      -
+      - 
         text: "Default value of SSL is now true."
         type: improvement
     date: ~
     version: v3.6.9.0
-   -
-    changes:
-      -
+  - 
+    changes: 
+      - 
         text: "some fixes for subscribe request timeouts."
         type: bug
     date: ~
     version: v3.6.8.8
-   -
+  - 
     changes: 
       - 
         text: "removes forceful garbage collection."
@@ -213,56 +213,58 @@ changelog:
     date: ~
     version: v3.6.8.7
   - 
-    changes:
-      -
+    changes: 
+      - 
         text: "Fix for \"null\" message in callback when a message contains multiple messages, one of which is of type System.Collections.Generic.Dictionary`2[System.String,System.Object]."
         type: bug
     date: ~
     version: v3.6.8.6
-   -
-    changes:
-      -
+  - 
+    changes: 
+      - 
         text: "Duplicate messages on some occasions."
         type: bug
     date: ~
     version: v3.6.8.4
-   -
-    changes:
-      -
+  - 
+    changes: 
+      - 
         text: "Non subscribe callbacks were not fired when called from within a callback of an earlier request."
         type: bug
     date: ~
     version: v3.6.8.3
-   -
-    changes:
-      -
+  - 
+    changes: 
+      - 
         text: "Missed messages when adding a channel to multiplexed."
         type: bug
-      -
+      - 
         text: "Sub timeout gets fired when in app goes in background and the request is not complete."
         type: bug
-      -
+      - 
         text: "User State didn't change in some cases."
         type: bug
-      -
+      - 
         text: "Multiple requests heartbeats were running."
         type: bug
     date: ~
     version: v3.6.8.1
-features:
-  channel-groups:
+features: 
+  channel-groups: 
     - CHANNEL-GROUPS-ADD-CHANNELS
     - CHANNEL-GROUPS-REMOVE-CHANNELS
     - CHANNEL-GROUPS-REMOVE-GROUPS
     - CHANNEL-GROUPS-LIST-CHANNELS-IN-GROUP
-  presence:
+  others: 
+    - TELEMETRY
+  presence: 
     - PRESENCE-HERE-NOW
     - PRESENCE-WHERE-NOW
     - PRESENCE-SET-STATE
     - PRESENCE-GET-STATE
     - PRESENCE-HEARTBEAT
     - PRESENCE-HERE-NOW-REFRESH
-  publish:
+  publish: 
     - PUBLISH-STORE-FLAG
     - PUBLISH-WITH-METADATA
     - PUBLISH-GET
@@ -270,18 +272,18 @@ features:
     - PUBLISH-ASYNC
     - PUBLISH-MESSAGE-TTL
     - PUBLISH-FIRE
-  push:
+  push: 
     - PUSH-ADD-DEVICE-TO-CHANNELS
     - PUSH-REMOVE-DEVICE-FROM-CHANNELS
     - PUSH-LIST-CHANNELS-FROM-DEVICE
     - PUSH-REMOVE-DEVICE
-  storage:
+  storage: 
     - STORAGE-REVERSE
     - STORAGE-INCLUDE-TIMETOKEN
     - STORAGE-START-END
     - STORAGE-COUNT
     - STORAGE-DELETE-MESSAGES
-  subscribe:
+  subscribe: 
     - SUBSCRIBE-CHANNELS
     - SUBSCRIBE-CHANNEL-GROUPS
     - SUBSCRIBE-PRESENCE-CHANNELS
@@ -292,26 +294,24 @@ features:
     - SUBSCRIBE-PUBSUB-V2
     - SUBSCRIBE-PUBLISHER-UUID
     - REQUEST-MESSAGE-COUNT-EXCEEDED
-  time:
+  time: 
     - TIME-TIME
-  others:
-    - TELEMETRY 
-supported-platforms:
-  -
-    version: PubNub Unity SDK
-    platforms:
-      - iOS player, will require iOS 7.0 or higher.
-      - Android, OS 2.3.1 or later; ARMv7 (Cortex) CPU with NEON support or Atom CPU; OpenGL ES 2.0 or later.
-      - Windows Phone, 8.1 or later.
-      - Windows Store Apps, 8.1 or later.
-      - WebGL, Any recent desktop version of Firefox, Chrome, Edge or Safari.
-      - Windows 7+, with Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support.
-      - Ubuntu 12.04+, with Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support.
-      - Mac OS X 10.8+, with Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support.
-    editors:
-      - Unity 5.5.1
-      - Unity 2017.3.0f3
 name: unity
 schema: 1
 scm: github.com/pubnub/unity
-version: "v4.0.2"
+supported-platforms: 
+  - 
+    editors: 
+      - "Unity 5.5.1"
+      - "Unity 2017.3.0f3"
+    platforms: 
+      - "iOS player, will require iOS 7.0 or higher."
+      - "Android, OS 2.3.1 or later; ARMv7 (Cortex) CPU with NEON support or Atom CPU; OpenGL ES 2.0 or later."
+      - "Windows Phone, 8.1 or later."
+      - "Windows Store Apps, 8.1 or later."
+      - "WebGL, Any recent desktop version of Firefox, Chrome, Edge or Safari."
+      - "Windows 7+, with Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support."
+      - "Ubuntu 12.04+, with Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support."
+      - "Mac OS X 10.8+, with Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support."
+    version: "PubNub Unity SDK"
+version: v4.0.2
