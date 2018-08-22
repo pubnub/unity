@@ -8,7 +8,7 @@ notifications:
 install:
 - sudo -E sh ./TravisScripts/install.sh
 script:
-- sudo -E sh ./TravisScripts/build.sh
+- travis_wait sudo -E sh ./TravisScripts/build.sh
 env:
   global:
   - UNITYCI_PROJECT_NAME="PubNubUnity"
