@@ -40,6 +40,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} playmode"
 
 rc1=$?
 echo "Unit test logs 2"
+cat $(pwd)/editor2.log
 cat $(pwd)/test2.xml
 #exit if tests failed
 if [ $rc1 -ne 0 ]; then { echo "Failed unit tests playmode"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc1; } fi	
