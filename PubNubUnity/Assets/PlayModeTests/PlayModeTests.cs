@@ -1324,7 +1324,7 @@ namespace PubNubAPI.Tests
 
 		}
 
-		[UnityTest]
+		//[UnityTest]
 		public IEnumerator TestPush() {
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random ();
@@ -2347,36 +2347,36 @@ namespace PubNubAPI.Tests
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "history test didnt return");
 
-			testCount = 2;
-			testStart = 2;
-			pubnub.History().Channel(channel).Start(timetoken2).End(timetoken3).Async((result, status) => {
-				Assert.True(status.Error.Equals(false));
-				if(!status.Error){
+			// testCount = 2;
+			// testStart = 2;
+			// pubnub.History().Channel(channel).Start(timetoken2).End(timetoken3).Async((result, status) => {
+			// 	Assert.True(status.Error.Equals(false));
+			// 	if(!status.Error){
 
-					if((result.Messages!=null) && (result.Messages.Count.Equals(testCount))){
-						List<PNHistoryItemResult> listPNHistoryItemResult = result.Messages as List<PNHistoryItemResult>;	
-						for(int i=0; i<testCount; i++){
-							PNHistoryItemResult pnHistoryItemResult = listPNHistoryItemResult[i] as PNHistoryItemResult;
-							if(pnHistoryItemResult != null){
-								bool found = false;
-								for(int j=testStart; j<testCount+testStart; j++){
-									if(pnHistoryItemResult.Entry.ToString().Contains(payloadList[j])){
-										found = true;
-										Debug.Log("found" + payloadList[j] );
-										break;
-									}
-								}
-								tresult = found;
-								if(!tresult){
-									break;
-								}
-							}
-						}						
-					} 
-                } 
-			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
-			Assert.True(tresult, "history test didnt return 2");
+			// 		if((result.Messages!=null) && (result.Messages.Count.Equals(testCount))){
+			// 			List<PNHistoryItemResult> listPNHistoryItemResult = result.Messages as List<PNHistoryItemResult>;	
+			// 			for(int i=0; i<testCount; i++){
+			// 				PNHistoryItemResult pnHistoryItemResult = listPNHistoryItemResult[i] as PNHistoryItemResult;
+			// 				if(pnHistoryItemResult != null){
+			// 					bool found = false;
+			// 					for(int j=testStart; j<testCount+testStart; j++){
+			// 						if(pnHistoryItemResult.Entry.ToString().Contains(payloadList[j])){
+			// 							found = true;
+			// 							Debug.Log("found" + payloadList[j] );
+			// 							break;
+			// 						}
+			// 					}
+			// 					tresult = found;
+			// 					if(!tresult){
+			// 						break;
+			// 					}
+			// 				}
+			// 			}						
+			// 		} 
+            //     } 
+			// });
+			//yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			//Assert.True(tresult, "history test didnt return 2");
 			
 			pubnub.CleanUp();
 		}	
@@ -2500,70 +2500,70 @@ namespace PubNubAPI.Tests
 			});
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "history test didnt return");
-			tresult = false;
-			testCount = 2;
-			testStart = 2;
-			pubnub.History().Channel(channel).End(timetoken1).Async((result, status) => {
-				Assert.True(status.Error.Equals(false));
-				if(!status.Error){
+			// tresult = false;
+			// testCount = 2;
+			// testStart = 2;
+			// pubnub.History().Channel(channel).End(timetoken1).Async((result, status) => {
+			// 	Assert.True(status.Error.Equals(false));
+			// 	if(!status.Error){
 
-					if((result.Messages!=null) && (result.Messages.Count.Equals(testCount+testStart))){
-						List<PNHistoryItemResult> listPNHistoryItemResult = result.Messages as List<PNHistoryItemResult>;	
-						for(int i=0; i<testCount; i++){
-							PNHistoryItemResult pnHistoryItemResult = listPNHistoryItemResult[i] as PNHistoryItemResult;
-							if(pnHistoryItemResult != null){
-								bool found = false;
-								Debug.Log("finding:" + pnHistoryItemResult.Entry.ToString() );
-								for(int j=0; j<testCount+testStart; j++){
-									if(pnHistoryItemResult.Entry.ToString().Contains(payloadList[j])){
-										found = true;
-										Debug.Log("found" + payloadList[j] );
-										break;
-									}
-								}
-								tresult = found;
-								if(!tresult){
-									break;
-								}
-							}
-						}						
-					} 
-                } 
-			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
-			Assert.True(tresult, "history test didnt return 2");
+			// 		if((result.Messages!=null) && (result.Messages.Count.Equals(testCount+testStart))){
+			// 			List<PNHistoryItemResult> listPNHistoryItemResult = result.Messages as List<PNHistoryItemResult>;	
+			// 			for(int i=0; i<testCount; i++){
+			// 				PNHistoryItemResult pnHistoryItemResult = listPNHistoryItemResult[i] as PNHistoryItemResult;
+			// 				if(pnHistoryItemResult != null){
+			// 					bool found = false;
+			// 					Debug.Log("finding:" + pnHistoryItemResult.Entry.ToString() );
+			// 					for(int j=0; j<testCount+testStart; j++){
+			// 						if(pnHistoryItemResult.Entry.ToString().Contains(payloadList[j])){
+			// 							found = true;
+			// 							Debug.Log("found" + payloadList[j] );
+			// 							break;
+			// 						}
+			// 					}
+			// 					tresult = found;
+			// 					if(!tresult){
+			// 						break;
+			// 					}
+			// 				}
+			// 			}						
+			// 		} 
+            //     } 
+			// });
+			// yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			// Assert.True(tresult, "history test didnt return 2");
 
-			testCount = 2;
-			testStart = 2;
-			pubnub.History().Channel(channel).Start(timetoken3).Async((result, status) => {
-				Assert.True(status.Error.Equals(false));
-				if(!status.Error){
+			// testCount = 2;
+			// testStart = 2;
+			// pubnub.History().Channel(channel).Start(timetoken3).Async((result, status) => {
+			// 	Assert.True(status.Error.Equals(false));
+			// 	if(!status.Error){
 
-					if((result.Messages!=null) && (result.Messages.Count.Equals(testCount+testStart))){
-						List<PNHistoryItemResult> listPNHistoryItemResult = result.Messages as List<PNHistoryItemResult>;	
-						for(int i=0; i<testCount; i++){
-							PNHistoryItemResult pnHistoryItemResult = listPNHistoryItemResult[i] as PNHistoryItemResult;
-							if(pnHistoryItemResult != null){
-								bool found = false;
-								Debug.Log("finding:" + pnHistoryItemResult.Entry.ToString() );
-								for(int j=0; j<testCount+testStart; j++){
-									if(pnHistoryItemResult.Entry.ToString().Contains(payloadList[j])){
-										found = true;
-										Debug.Log("found" + payloadList[j] );
-										break;
-									}
-								}
-								tresult = found;
-								if(!tresult){
-									break;
-								}
-							}
-						}						
-					} 
-                } 
-			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
-			Assert.True(tresult, "history test didnt return 3");
+			// 		if((result.Messages!=null) && (result.Messages.Count.Equals(testCount+testStart))){
+			// 			List<PNHistoryItemResult> listPNHistoryItemResult = result.Messages as List<PNHistoryItemResult>;	
+			// 			for(int i=0; i<testCount; i++){
+			// 				PNHistoryItemResult pnHistoryItemResult = listPNHistoryItemResult[i] as PNHistoryItemResult;
+			// 				if(pnHistoryItemResult != null){
+			// 					bool found = false;
+			// 					Debug.Log("finding:" + pnHistoryItemResult.Entry.ToString() );
+			// 					for(int j=0; j<testCount+testStart; j++){
+			// 						if(pnHistoryItemResult.Entry.ToString().Contains(payloadList[j])){
+			// 							found = true;
+			// 							Debug.Log("found" + payloadList[j] );
+			// 							break;
+			// 						}
+			// 					}
+			// 					tresult = found;
+			// 					if(!tresult){
+			// 						break;
+			// 					}
+			// 				}
+			// 			}						
+			// 		} 
+            //     } 
+			// });
+			// yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			// Assert.True(tresult, "history test didnt return 3");
 			
 			pubnub.CleanUp();
 		}	
