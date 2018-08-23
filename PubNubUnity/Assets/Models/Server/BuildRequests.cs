@@ -158,7 +158,7 @@ namespace PubNubAPI
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNPublishOperation, parameterBuilder.ToString (), pnInstance);
         }
 
-        internal static Uri BuildDeleteMessagesRequest (string channel, long start, long end, PubNubUnity pnInstance){
+        public static Uri BuildDeleteMessagesRequest (string channel, long start, long end, PubNubUnity pnInstance){
             StringBuilder parameterBuilder = new StringBuilder ();
             if (start != -1) {
                 parameterBuilder.AppendFormat ("&start={0}", start.ToString ().ToLowerInvariant ());
@@ -181,7 +181,7 @@ namespace PubNubAPI
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNDeleteMessagesOperation, parameterBuilder.ToString(), pnInstance);
         }
 
-        internal static Uri BuildFetchRequest (string[] channels, long start, long end, uint count, bool reverse, bool includeToken, PubNubUnity pnInstance)
+        public static Uri BuildFetchRequest (string[] channels, long start, long end, uint count, bool reverse, bool includeToken, PubNubUnity pnInstance)
         {
             StringBuilder parameterBuilder = new StringBuilder ();
 
@@ -639,8 +639,11 @@ namespace PubNubAPI
             return url;
         }
 
-        static string SetParametersInOrder(Uri uri){
+        public static string SetParametersInOrder(Uri uri){
             string query = uri.Query;
+                #if (ENABLE_PUBNUB_LOGGING)
+                UnityEngine.Debug.Log(string.Format("query: {0}", query));
+                #endif
             if(query.Contains("?"))
             {
                 query = query.Substring(query.IndexOf('?') + 1);
@@ -658,7 +661,7 @@ namespace PubNubAPI
             return string.Join("&", lstQuery.ToArray());
         }
 
-        static string GenerateSignatureAndAddToURL(PubNubUnity pnInstance, Uri uri, string url){
+        public static string GenerateSignatureAndAddToURL(PubNubUnity pnInstance, Uri uri, string url){
             if (!string.IsNullOrEmpty(pnInstance.PNConfig.SecretKey) && (pnInstance.PNConfig.SecretKey.Length > 0)) {
                 string signature = "";
                 string parameters = SetParametersInOrder(uri);
@@ -760,12 +763,14 @@ namespace PubNubAPI
                 url = AppendAuthKeyToURL(url, authenticationKey, type);
                 url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
                 string urlPath = string.Format("/{0}", string.Join( "/", urlComponents.ToArray()));
-                #if (ENABLE_PUBNUB_LOGGING)                
-                UnityEngine.Debug.Log(string.Format("urlComponentsString {0}", urlPath));
-                #endif
 
-                url = url.Append(GenerateSignatureAndAddToURL(pnInstance, new Uri (urlPath.ToString ()), urlComponentsEncoded));
+                string sig = GenerateSignatureAndAddToURL(pnInstance, new Uri (url.ToString ()), urlComponentsEncoded);
+                #if (ENABLE_PUBNUB_LOGGING)                
+                UnityEngine.Debug.Log(string.Format("urlComponentsString : {0}\nsig: {1}\nurlPath: {2},\nurlComponentsEncoded: {3}", url, sig, urlPath, urlComponentsEncoded));
+                #endif
+                url = url.Append(sig);
                 break;
+
             case PNOperationType.PNHistoryOperation:
             case PNOperationType.PNFetchMessagesOperation:
                 url.Append (parameters);

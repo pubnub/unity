@@ -21,9 +21,16 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 
 rc0=$?
 echo "Unit test logs"
+#cat $(pwd)/editor1.log
 cat $(pwd)/test1.xml
+
+# returning license
+echo "returning license"
+/Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense
+
 #exit if tests failed
-if [ $rc0 -ne 0 ]; then { echo "Failed unit tests editmode"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc0; } fi	
+#if [ $rc0 -ne 0 ]; then { echo "Failed unit tests editmode"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc0; } fi	
+if [ $rc1 -ne 0 ]; then { echo "Failed unit tests editmode"; exit $rc1; } fi	
 
 echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} playmode"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
@@ -39,12 +46,16 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} playmode"
 
 rc1=$?
 echo "Unit test logs 2"
+#cat $(pwd)/editor2.log
 cat $(pwd)/test2.xml
-#exit if tests failed
-if [ $rc1 -ne 0 ]; then { echo "Failed unit tests playmode"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc1; } fi	
 
 # returning license
 echo "returning license"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense
+
+#exit if tests failed
+#if [ $rc1 -ne 0 ]; then { echo "Failed unit tests playmode"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc1; } fi	
+if [ $rc1 -ne 0 ]; then { echo "Failed unit tests playmode"; exit $rc1; } fi	
+
 
 exit
