@@ -39,7 +39,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} playmode"
 	-projectPath $(pwd)/${UNITYCI_PROJECT_NAME} \
 	-runTests \
 	-testResults $(pwd)/test2.xml \
-	-testPlatform StandaloneOSXIntel64 \
+	-testPlatform playmode \
 	-username ${UNITYCI_USER_NAME} \
 	-password ${UNITYCI_PASS} \
 	-serial ${UNITYCI_SERIAL}
