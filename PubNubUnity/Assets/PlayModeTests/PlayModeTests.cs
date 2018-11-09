@@ -1111,7 +1111,7 @@ namespace PubNubAPI.Tests
                     }
                 }
             });
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
 			Assert.True(tresult, "test didn't return 4");
 
 			tresult = false;
@@ -1180,7 +1180,7 @@ namespace PubNubAPI.Tests
                 }
             });
 
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
 			Assert.True(tresult, "test didn't return 6");
 
 			tresult = false;
