@@ -1726,7 +1726,7 @@ namespace PubNubAPI.Tests
 			pubnub.CleanUp();
 		}
 
-		[UnityTest]
+		//[UnityTest]
 		public IEnumerator TestWildcardSubscribe() {
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random ();
