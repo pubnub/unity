@@ -1114,7 +1114,7 @@ namespace PubNubAPI.Tests
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
 			Assert.True(tresult, "test didn't return 4");
 
-			tresult = false;
+			/*tresult = false;
 
 			pubnub.GetPresenceState().ChannelGroups(channelGroupList).Async ((result, status) => {
                 if(status.Error){
@@ -1221,7 +1221,7 @@ namespace PubNubAPI.Tests
             });
 
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
-			Assert.True(tresult, "test didn't return 7");
+			Assert.True(tresult, "test didn't return 7");*/
 			pubnub.CleanUp();
 		}
 
