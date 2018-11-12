@@ -3,6 +3,13 @@ changelog:
   - 
     changes: 
       - 
+        text: "Travis update for UnityPackage"
+        type: improvement
+    date: "Nov 12, 18"
+    version: v4.0.3
+  - 
+    changes: 
+      - 
         text: "Delete Messages Fix"
         type: improvement
     date: "Aug 23, 18"
