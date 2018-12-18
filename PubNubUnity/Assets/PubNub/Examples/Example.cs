@@ -386,7 +386,7 @@ namespace PubNubExample
             listChannelGroups = new List<string> (){cg1, cg2};
             listChannels = new List<string> (){ch1, ch2};
 
-            //pubnub.SusbcribeCallback += SusbcribeCallbackHandler;
+            pubnub.SusbcribeCallback += SusbcribeCallbackHandler2;
 
             
             /*pubnub.SusbcribeCallback += (sender, e) => { 
@@ -416,7 +416,7 @@ namespace PubNubExample
                 }
             };*/
            
-            //pubnub.Subscribe ().ChannelGroups(new List<string> (){"my_channel"}).Channels(new List<string> (){"my_channel"}).WithPresence().Execute();            
+            pubnub.Subscribe ().ChannelGroups(new List<string> (){"my_channel_group"}).Channels(new List<string> (){"channel1"}).WithPresence().Execute();            
             //GetHistoryRecursive(0, "channel1");
             
             /*pubnub.SusbcribeCallback += SusbcribeCallbackHandler2;
@@ -465,10 +465,10 @@ namespace PubNubExample
             }
             if (mea.MessageResult != null) {
                 Debug.Log("SusbcribeCallback in message" + mea.MessageResult.Channel + mea.MessageResult.Payload);
-                Dictionary<string, object> messageIds = mea.MessageResult.Payload as Dictionary<string, object>;
+                // Dictionary<string, object> messageIds = mea.MessageResult.Payload as Dictionary<string, object>;
 
-                UnityEngine.Debug.Log("message_id:" + messageIds["message_id"]);
-                DisplayMessages (messageIds, mea.MessageResult.Channel);
+                // UnityEngine.Debug.Log("message_id:" + messageIds["message_id"]);
+                // DisplayMessages (messageIds, mea.MessageResult.Channel);
 
         
             }
