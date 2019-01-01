@@ -71,7 +71,7 @@ namespace PubNubAPI
             #if (ENABLE_PUBNUB_LOGGING)
             this.PubNubInstance.PNLog.WriteToLog (string.Format ("PresenceHeartbeatHandler keepPresenceHearbeatRunning={0} isPresenceHearbeatRunning={1}", keepPresenceHearbeatRunning, isPresenceHearbeatRunning), PNLoggingMethod.LevelError);
             #endif
-            
+
             isPresenceHearbeatRunning = false;
 
             #if (ENABLE_PUBNUB_LOGGING)
@@ -109,8 +109,20 @@ namespace PubNubAPI
                     requestState.URL = request.OriginalString; 
                     requestState.Timeout = PubNubInstance.PNConfig.NonSubscribeTimeout;
                     requestState.Pause = pauseTime;
-                    requestState.Reconnect = pause;
+                    if(PubNubInstance.SubWorker.RequestSentAt != null){
+                        int timediff = PubNubInstance.PNConfig.PresenceInterval - (DateTime.UtcNow.Second - PubNubInstance.SubWorker.RequestSentAt);
 
+                        if(timediff > 10){
+                            #if (ENABLE_PUBNUB_LOGGING)
+                            this.PubNubInstance.PNLog.WriteToLog (string.Format ("presenceheartbeat timediff: {0} ", timediff), PNLoggingMethod.LevelInfo);
+                            #endif
+
+                            requestState.Pause = pauseTime+timediff;
+                        }
+                    }
+
+                    requestState.Reconnect = pause;
+                    
                     #if (ENABLE_PUBNUB_LOGGING)
                     this.PubNubInstance.PNLog.WriteToLog (string.Format ("presenceheartbeat: request.OriginalString {0} ", request.OriginalString ), PNLoggingMethod.LevelError);
                     #endif

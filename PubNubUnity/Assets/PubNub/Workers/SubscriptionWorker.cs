@@ -26,6 +26,7 @@ namespace PubNubAPI
         private bool internetStatus = true;
 
         readonly bool enableResumeOnReconnect;
+        public int RequestSentAt;
 
 
         //Allow one instance only        
@@ -329,6 +330,7 @@ namespace PubNubAPI
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PubNubInstance.PNLog.WriteToLog (string.Format ("RunRequests: Heartbeat started"), PNLoggingMethod.LevelInfo);
                 #endif
+                RequestSentAt = DateTime.UtcNow.Second;
                 if (PubNubInstance.PNConfig.PresenceInterval > 0){
                     phbWorker.RunPresenceHeartbeat(false, PubNubInstance.PNConfig.PresenceInterval);
                 }
