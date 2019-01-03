@@ -8,6 +8,14 @@ namespace PubNubAPI
         private bool keepPresenceHearbeatRunning;
         private bool isPresenceHearbeatRunning;
 
+        public bool RunIndependentOfSubscribe{
+            get;set;
+        }
+
+        internal string Channels {get;set;}
+        internal string ChannelGroups {get;set;}
+        internal string State {get;set;}
+
         private readonly PNUnityWebRequest webRequest;
         private string webRequestId = "";
         private readonly PubNubUnity PubNubInstance;
@@ -94,13 +102,28 @@ namespace PubNubAPI
         void StartPresenceHeartbeat (bool pause, int pauseTime)
         {
             try {
-                if(PubNubInstance.SubscriptionInstance.AllNonPresenceChannelsOrChannelGroups.Count > 0){
-                    isPresenceHearbeatRunning = true;
-                    string channelsJsonState = PubNubInstance.SubscriptionInstance.CompiledUserState;
+                string channelsJsonState;
+                int allNonPresenceChannelsOrChannelGroupsCount;
+                string channels;
+                string channelGroups;
 
+                if (RunIndependentOfSubscribe){
+                    channelsJsonState = State;
+                    allNonPresenceChannelsOrChannelGroupsCount = ChannelGroups.Length + Channels.Length;
+                    channels = Channels;
+                    channelGroups = ChannelGroups;
+                } else {
+                    channelsJsonState = PubNubInstance.SubscriptionInstance.CompiledUserState;
+                    allNonPresenceChannelsOrChannelGroupsCount = PubNubInstance.SubscriptionInstance.AllNonPresenceChannelsOrChannelGroups.Count;
+                    channels = Helpers.GetNamesFromChannelEntities(PubNubInstance.SubscriptionInstance.AllNonPresenceChannelsOrChannelGroups, false);
+                    channelGroups = Helpers.GetNamesFromChannelEntities(PubNubInstance.SubscriptionInstance.AllNonPresenceChannelsOrChannelGroups, true);
+                }
+
+                if (allNonPresenceChannelsOrChannelGroupsCount > 0){
+                    isPresenceHearbeatRunning = true;
                     Uri request = BuildRequests.BuildPresenceHeartbeatRequest(
-                        Helpers.GetNamesFromChannelEntities(PubNubInstance.SubscriptionInstance.AllNonPresenceChannelsOrChannelGroups, false),
-                        Helpers.GetNamesFromChannelEntities(PubNubInstance.SubscriptionInstance.AllNonPresenceChannelsOrChannelGroups, true),
+                        channels,
+                        channelGroups,
                         channelsJsonState,
                         this.PubNubInstance
                     );
@@ -113,7 +136,7 @@ namespace PubNubAPI
                     requestState.Reconnect = pause;
                     
                     #if (ENABLE_PUBNUB_LOGGING)
-                    this.PubNubInstance.PNLog.WriteToLog (string.Format ("presenceheartbeat: request.OriginalString {0} ", request.OriginalString ), PNLoggingMethod.LevelError);
+                    this.PubNubInstance.PNLog.WriteToLog (string.Format ("presenceheartbeat: /presence/ request.OriginalString {0} ", request.OriginalString ), PNLoggingMethod.LevelError);
                     #endif
 
                     webRequestId = webRequest.Run(requestState);
@@ -141,7 +164,7 @@ namespace PubNubAPI
             this.PubNubInstance.PNLog.WriteToLog (string.Format ("RunPresenceHeartbeat keepPresenceHearbeatRunning={0} isPresenceHearbeatRunning={1}", keepPresenceHearbeatRunning, isPresenceHearbeatRunning), PNLoggingMethod.LevelError);
             #endif
 
-            if(PubNubInstance.SubWorker.RequestSentAt > 0){
+            if ((PubNubInstance.SubWorker.RequestSentAt > 0) && !RunIndependentOfSubscribe){
                 int timediff = PubNubInstance.PNConfig.PresenceInterval - (DateTime.UtcNow.Second - PubNubInstance.SubWorker.RequestSentAt);
                 if(timediff > 10){
                     #if (ENABLE_PUBNUB_LOGGING)

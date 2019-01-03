@@ -163,6 +163,14 @@ namespace PubNubAPI
             
             return new UnsubscribeAllBuilder (this);
         }
+
+        public PresenceHeartbeatBuilder Presence(){
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("Presence", PNLoggingMethod.LevelInfo);
+            #endif
+            
+            return new PresenceHeartbeatBuilder(this);
+        }
         
         public GetStateBuilder GetPresenceState(){
             #if (ENABLE_PUBNUB_LOGGING)

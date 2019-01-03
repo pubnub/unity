@@ -158,6 +158,11 @@ namespace PubNubAPI
             return pnUnity.UnsubscribeAll();
         }
 
+        public PresenceHeartbeatBuilder Presence(){
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.Presence();
+        }
+
         public GetStateBuilder GetPresenceState(){
             PubNubUnityInitializationAfterCleanup();
             return pnUnity.GetPresenceState();

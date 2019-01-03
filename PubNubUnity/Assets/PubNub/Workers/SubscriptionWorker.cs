@@ -19,7 +19,7 @@ namespace PubNubAPI
         private readonly PubNubUnity PubNubInstance;
 
         private readonly HeartbeatWorker hbWorker;
-        private readonly PresenceHeartbeatWorker phbWorker;
+        internal readonly PresenceHeartbeatWorker PHBWorker;
         private string webRequestId = ""; 
 
         private bool reconnect = false;
@@ -40,7 +40,7 @@ namespace PubNubAPI
             hbWorker.InternetAvailable += InternetAvailableHandler;
             hbWorker.InternetDisconnected += InternetDisconnectedHandler;
             hbWorker.RetriesExceeded += RetriesExceededHandler;
-            phbWorker = new PresenceHeartbeatWorker(pn, webRequest);
+            PHBWorker = new PresenceHeartbeatWorker(pn, webRequest);
             enableResumeOnReconnect = this.PubNubInstance.PNConfig.ReconnectionPolicy.Equals(PNReconnectionPolicy.LINEAR) | this.PubNubInstance.PNConfig.ReconnectionPolicy.Equals(PNReconnectionPolicy.EXPONENTIAL);
         }
 
@@ -160,8 +160,8 @@ namespace PubNubAPI
             if(hbWorker != null){
                 hbWorker.CleanUp();
             }
-            if(phbWorker != null){
-                phbWorker.CleanUp();
+            if(PHBWorker != null){
+                PHBWorker.CleanUp();
             }
         }
         private bool resetTimetoken = false;
@@ -210,7 +210,7 @@ namespace PubNubAPI
             else
             {
                 hbWorker.StopHeartbeat();
-                phbWorker.StopPresenceHeartbeat();
+                PHBWorker.StopPresenceHeartbeat();
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PubNubInstance.PNLog.WriteToLog(string.Format("ContinueToSubscribeRestOfChannels: All channels are Unsubscribed. Further subscription was stopped"), PNLoggingMethod.LevelInfo);
                 #endif
@@ -248,7 +248,7 @@ namespace PubNubAPI
             if (PubNubInstance.SubscriptionInstance.AllSubscribedChannelsAndChannelGroups.Count <=0)
             {
                 hbWorker.StopHeartbeat();
-                phbWorker.StopPresenceHeartbeat();
+                PHBWorker.StopPresenceHeartbeat();
 
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PubNubInstance.PNLog.WriteToLog(string.Format("CheckAllChannelsAreUnsubscribed: All channels are Unsubscribed. Further subscription was stopped"), PNLoggingMethod.LevelInfo);
@@ -332,7 +332,7 @@ namespace PubNubAPI
                 #endif
                 RequestSentAt = DateTime.UtcNow.Second;
                 if (PubNubInstance.PNConfig.PresenceInterval > 0){
-                    phbWorker.RunPresenceHeartbeat(false, PubNubInstance.PNConfig.PresenceInterval);
+                    PHBWorker.RunPresenceHeartbeat(false, PubNubInstance.PNConfig.PresenceInterval);
                 }
 
                 #if (ENABLE_PUBNUB_LOGGING)

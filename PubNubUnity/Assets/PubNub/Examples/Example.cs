@@ -161,7 +161,18 @@ namespace PubNubExample
                 }
             });
         }
+
+        bool connected = false;
         void ButtonTimeHandler(){
+            if(connected){
+                connected = false;
+            } else {
+                connected = true;
+            }
+            pubnub.Presence().Connected(connected).Channels(listChannels).Async ((result, status) => {
+                Debug.Log("result" + result);
+                
+            });
             pubnub.Time ().Async ((result, status) => {
                 
                 if(status.Error){
@@ -416,7 +427,8 @@ namespace PubNubExample
                 }
             };*/
            
-            pubnub.Subscribe ().ChannelGroups(new List<string> (){"my_channel_group"}).Channels(new List<string> (){"channel1"}).WithPresence().Execute();            
+            //pubnub.Subscribe ().ChannelGroups(new List<string> (){"my_channel_group"}).Channels(new List<string> (){"channel1"}).WithPresence().Execute();            
+            
             //GetHistoryRecursive(0, "channel1");
             
             /*pubnub.SusbcribeCallback += SusbcribeCallbackHandler2;
