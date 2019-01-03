@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using System.Linq;
 
 namespace PubNubAPI
 {
@@ -109,7 +110,8 @@ namespace PubNubAPI
 
                 if (RunIndependentOfSubscribe){
                     channelsJsonState = State;
-                    allNonPresenceChannelsOrChannelGroupsCount = ChannelGroups.Length + Channels.Length;
+                    allNonPresenceChannelsOrChannelGroupsCount = ((ChannelGroups.Length>0)?ChannelGroups.Split(',').Count():0) + ((Channels.Length>0)?Channels.Split(',').Count():0);
+                    Debug.Log("allNonPresenceChannelsOrChannelGroupsCount:"+ allNonPresenceChannelsOrChannelGroupsCount);
                     channels = Channels;
                     channelGroups = ChannelGroups;
                 } else {
