@@ -38,20 +38,21 @@ namespace PubNubAPI
 
             string channels = "";
             if((ChannelsToUse != null) && (ChannelsToUse.Count>0)){
-                string[] chArr = ChannelsToUse.ToArray();
+                ChannelsToUse.RemoveAll(t => t.Contains(Utility.PresenceChannelSuffix));
+                string[] chArr = ChannelsToUse.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToArray();
                 channels = String.Join(",", chArr);
                 ChannelEntities.AddRange(Helpers.CreateChannelEntity(chArr, false, false, null, PubNubInstance.PNLog));
             }
 
             string channelGroups = "";
             if((ChannelGroupsToUse != null) && (ChannelGroupsToUse.Count>0)){
-                string[] cgArr = ChannelGroupsToUse.ToArray();
+                ChannelGroupsToUse.RemoveAll(t => t.Contains(Utility.PresenceChannelSuffix));
+                string[] cgArr = ChannelGroupsToUse.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToArray();
                 channelGroups = String.Join(",", cgArr);
                 ChannelEntities.AddRange(Helpers.CreateChannelEntity(cgArr, false, true, null, PubNubInstance.PNLog));
             }
 
             if(connected){
-
                 PubNubInstance.SubWorker.PHBWorker.RunIndependentOfSubscribe = true;
                 PubNubInstance.SubWorker.PHBWorker.ChannelGroups = channelGroups;
                 PubNubInstance.SubWorker.PHBWorker.Channels = channels;
