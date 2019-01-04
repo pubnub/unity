@@ -9,6 +9,9 @@ changelog:
         text: "Heartbeats per channel"
         type: feature
       - 
+        text: "QueryParams in all API calls"
+        type: feature
+      - 
         text: "User Exceptions Fix"
         type: improvement
     date: "Jan 9, 19"
@@ -284,6 +287,7 @@ features:
     - CHANNEL-GROUPS-LIST-CHANNELS-IN-GROUP
   others: 
     - TELEMETRY
+    - QUERY-PARAM
   presence: 
     - PRESENCE-HERE-NOW
     - PRESENCE-WHERE-NOW
