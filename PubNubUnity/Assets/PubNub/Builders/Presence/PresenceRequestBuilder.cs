@@ -71,7 +71,7 @@ namespace PubNubAPI
         #endregion
 
         protected override void RunWebRequest(QueueManager qm){
-            
+            //No processing here, processing done in async method
         }
 
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
