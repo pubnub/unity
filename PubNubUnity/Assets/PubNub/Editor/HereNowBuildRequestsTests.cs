@@ -345,7 +345,7 @@ namespace PubNubAPI.Tests
             int userState = (includeUserState) ? 1 : 0;
             string parameters = string.Format ("disable_uuids={0}&state={1}", disableUUID, userState);
 
-            Uri uri = BuildRequests.BuildHereNowRequest (channel, channelGroup, showUUIDList, includeUserState, pnUnity);
+            Uri uri = BuildRequests.BuildHereNowRequest (channel, channelGroup, showUUIDList, includeUserState, pnUnity, null);
 
             //http://ps.pndsn.com/v2/presence/sub_key/demo/channel/here_now_channel?disable_uuids=1&state=0&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityOSX/3.6.9.0
             string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/channel/{3}?{4}{8}&uuid={5}{6}&pnsdk={7}",
@@ -480,7 +480,7 @@ namespace PubNubAPI.Tests
             int userState = (includeUserState) ? 1 : 0;
             string parameters = string.Format ("disable_uuids={0}&state={1}", disableUUID, userState);
 
-            Uri uri = BuildRequests.BuildHereNowRequest ("", "", showUUIDList, includeUserState, pnUnity);
+            Uri uri = BuildRequests.BuildHereNowRequest ("", "", showUUIDList, includeUserState, pnUnity, null);
 
             //http://ps.pndsn.com/v2/presence/sub_key/demo?disable_uuids=1&state=0&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityOSX/3.6.9.0
             string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}?{3}&uuid={4}{5}&pnsdk={6}",

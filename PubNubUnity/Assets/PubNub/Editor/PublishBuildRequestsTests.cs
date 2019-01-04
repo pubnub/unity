@@ -505,7 +505,7 @@ namespace PubNubAPI.Tests
 
             }
 
-            Uri uri = BuildRequests.BuildPublishRequest (channel, originalMessage, storeInHistory, metadata, 0, ttl, false, replicate, pnUnity);
+            Uri uri = BuildRequests.BuildPublishRequest (channel, originalMessage, storeInHistory, metadata, 0, ttl, false, replicate, pnUnity, null);
 
             string ttlStr = (ttl == -1) ? "" : string.Format("&ttl={0}", ttl.ToString());
 

@@ -18,9 +18,15 @@ namespace PubNubAPI
             return this;
         }
 
+        public RemoveChannelsFromGroupBuilder QueryParam(Dictionary<string, string> queryParam){
+            pubBuilder.QueryParam(queryParam);
+            return this;
+        }
+
         public RemoveChannelsFromGroupBuilder(PubNubUnity pn){
             pubBuilder = new RemoveChannelsFromGroupRequestBuilder(pn);
         }
+
         public void Async(Action<PNChannelGroupsRemoveChannelResult, PNStatus> callback)
         {
             pubBuilder.Async(callback);

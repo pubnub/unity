@@ -18,6 +18,10 @@ namespace PubNubAPI
             pubBuilder.DeviceId(deviceIdForPush);
             return this;
         }
+        public AddChannelsToPushBuilder QueryParam(Dictionary<string, string> queryParam){
+            pubBuilder.QueryParam(queryParam);
+            return this;
+        }
 
         public AddChannelsToPushBuilder PushType(PNPushType pnPushType) {
             pubBuilder.PushType = pnPushType;

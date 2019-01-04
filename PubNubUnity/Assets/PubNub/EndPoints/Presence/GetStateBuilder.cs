@@ -28,6 +28,12 @@ namespace PubNubAPI
             pubBuilder.ChannelGroups(channelGroupNames);
             return this;
         }
+
+        public GetStateBuilder QueryParam(Dictionary<string, string> queryParam){
+            pubBuilder.QueryParam(queryParam);
+            return this;
+        }
+
         public void Async(Action<PNGetStateResult, PNStatus> callback)
         {
             pubBuilder.Async(callback);

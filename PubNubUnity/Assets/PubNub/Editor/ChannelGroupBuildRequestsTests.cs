@@ -92,7 +92,7 @@ namespace PubNubAPI.Tests
             }
 
             Uri uri = BuildRequests.BuildAddChannelsToChannelGroupRequest (channels, "", channelGroup,
-                pnUnity
+                pnUnity, null
             );
 
             string ch = string.Join(",", channels);
@@ -203,7 +203,7 @@ namespace PubNubAPI.Tests
             }
 
             Uri uri = BuildRequests.BuildRemoveChannelsFromChannelGroupRequest (channels, "", channelGroup,
-                pnUnity
+                pnUnity, null
             );
 
             string ch = "";
@@ -308,7 +308,7 @@ namespace PubNubAPI.Tests
             }
 
             Uri uri = BuildRequests.BuildGetChannelsForChannelGroupRequest ("", channelGroup, allCg,
-                pnUnity
+                pnUnity, null
             );
 
             //http://ps.pndsn.com/v1/channel-registration/sub-key/demo-36/channel-group/channelGroup?add=addChannel1,%20addChannel2&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityOSX%2F3.7

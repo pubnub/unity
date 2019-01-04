@@ -36,7 +36,7 @@ namespace PubNubAPI.Tests
 
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
 
-            Uri uri = BuildRequests.BuildTimeRequest (pnUnity);
+            Uri uri = BuildRequests.BuildTimeRequest (pnUnity, null);
 
             //https://ps.pndsn.com/time/0?uuid=customuuid&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
             string expected = string.Format ("http{0}://{1}/time/0?uuid={2}&pnsdk={3}",

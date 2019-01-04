@@ -8,6 +8,7 @@ namespace PubNubAPI
     {
         protected List<string> ChannelGroupsToUse { get; set;}
         protected List<string> ChannelsToUse { get; set;}
+        protected Dictionary<string, string> QueryParams { get; set;}
         protected Action<V, PNStatus> Callback;
 
         protected delegate void RunRequestDelegate(QueueManager qm);
@@ -19,6 +20,11 @@ namespace PubNubAPI
         public PNOperationType OperationType {get; set;}
 
         protected PubNubUnity PubNubInstance;
+
+        internal void QueryParam(Dictionary<string, string> queryParam){
+            QueryParams = queryParam;
+        }
+
         protected PubNubNonSubBuilder(PubNubUnity pn, PNOperationType pnOperationType){
             PubNubInstance = pn;
             this.OperationType = pnOperationType;

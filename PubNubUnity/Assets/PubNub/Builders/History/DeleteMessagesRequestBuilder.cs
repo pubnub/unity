@@ -63,7 +63,8 @@ namespace PubNubAPI
                 this.HistoryChannel,
                 this.StartTime,
                 this.EndTime,
-                this.PubNubInstance
+                this.PubNubInstance,
+                this.QueryParams
             );
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
 

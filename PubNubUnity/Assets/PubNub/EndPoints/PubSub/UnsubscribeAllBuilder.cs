@@ -12,6 +12,10 @@ namespace PubNubAPI
         public UnsubscribeAllBuilder(PubNubUnity pn){
             pubBuilder = new LeaveRequestBuilder(pn);
         }
+        public UnsubscribeAllBuilder QueryParam(Dictionary<string, string> queryParam){
+            pubBuilder.QueryParam(queryParam);
+            return this;
+        }
         public void Async(Action<PNLeaveRequestResult, PNStatus> callback)
         {
             pubBuilder.Async(callback);

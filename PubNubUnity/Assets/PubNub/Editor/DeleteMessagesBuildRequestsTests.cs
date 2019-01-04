@@ -126,7 +126,7 @@ namespace PubNubAPI.Tests
                 endTimeString = string.Format("&end={0}", endTime);
             }
 
-            Uri uri = BuildRequests.BuildDeleteMessagesRequest (channel, startTime, endTime, pnUnity);
+            Uri uri = BuildRequests.BuildDeleteMessagesRequest (channel, startTime, endTime, pnUnity, null);
 
             var segments = uri.Segments;
             foreach(string seg in segments){

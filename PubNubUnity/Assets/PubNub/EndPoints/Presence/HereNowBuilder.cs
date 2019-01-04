@@ -32,6 +32,12 @@ namespace PubNubAPI
             pubBuilder.ChannelGroups(channelGroupNames);
             return this;
         }
+
+        public HereNowBuilder QueryParam(Dictionary<string, string> queryParam){
+            pubBuilder.QueryParam(queryParam);
+            return this;
+        }
+
         public void Async(Action<PNHereNowResult, PNStatus> callback)
         {
             pubBuilder.Async(callback);

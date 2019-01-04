@@ -127,7 +127,8 @@ namespace PubNubAPI
                         channels,
                         channelGroups,
                         channelsJsonState,
-                        this.PubNubInstance
+                        this.PubNubInstance,
+                        null
                     );
 
                     RequestState requestState = new RequestState ();

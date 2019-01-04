@@ -17,6 +17,7 @@ namespace PubNubAPI
             pubBuilder.Connected(connected);
             return this;
         }
+
         public PresenceHeartbeatBuilder State(Dictionary<string, object> state){
             pubBuilder.State(state);
             return this;
@@ -31,6 +32,12 @@ namespace PubNubAPI
             pubBuilder.ChannelGroups(channelGroupNames);
             return this;
         }
+
+        public PresenceHeartbeatBuilder QueryParam(Dictionary<string, string> queryParam){
+            pubBuilder.QueryParam(queryParam);
+            return this;
+        }
+        
         public void Async(Action<PNPresenceHeartbeatResult, PNStatus> callback)
         {
             pubBuilder.Async(callback);

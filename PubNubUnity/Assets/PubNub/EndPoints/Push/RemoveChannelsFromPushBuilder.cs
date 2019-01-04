@@ -23,9 +23,14 @@ namespace PubNubAPI
             pubBuilder.PushType = pnPushType;
             return this;
         }
+        public RemoveChannelsFromPushBuilder QueryParam(Dictionary<string, string> queryParam){
+            pubBuilder.QueryParam(queryParam);
+            return this;
+        }
         public RemoveChannelsFromPushBuilder(PubNubUnity pn){
             pubBuilder = new RemoveChannelsFromPushRequestBuilder(pn);
         }
+        
         public void Async(Action<PNPushRemoveChannelResult, PNStatus> callback)
         {
             pubBuilder.Async(callback);

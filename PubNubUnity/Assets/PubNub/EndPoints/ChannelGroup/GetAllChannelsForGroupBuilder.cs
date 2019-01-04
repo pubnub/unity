@@ -13,10 +13,16 @@ namespace PubNubAPI
             pubBuilder.ChannelGroup(channelGroupName);
             return this;
         }
+
+        public GetAllChannelsForGroupBuilder QueryParam(Dictionary<string, string> queryParam){
+            pubBuilder.QueryParam(queryParam);
+            return this;
+        }
         
         public GetAllChannelsForGroupBuilder(PubNubUnity pn){
             pubBuilder = new GetAllChannelsForGroupRequestBuilder(pn);
         }
+        
         public void Async(Action<PNChannelGroupsAllChannelsResult, PNStatus> callback)
         {
             pubBuilder.Async(callback);

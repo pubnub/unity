@@ -70,7 +70,8 @@ namespace PubNubAPI
                 Uri request = BuildRequests.BuildLeaveRequest(
                     channels,
                     channelGroups,
-                    this.PubNubInstance
+                    this.PubNubInstance,
+                    this.QueryParams
                 );
                 base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
             }

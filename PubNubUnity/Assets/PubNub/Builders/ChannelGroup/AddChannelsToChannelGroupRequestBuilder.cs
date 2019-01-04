@@ -51,7 +51,8 @@ namespace PubNubAPI
                 ChannelsToUse.ToArray(), 
                 "", 
                 ChannelGroupToAdd,
-                this.PubNubInstance
+                this.PubNubInstance,
+                this.QueryParams
             );
             #if (ENABLE_PUBNUB_LOGGING)
             this.PubNubInstance.PNLog.WriteToLog(string.Format("RunPNChannelGroupsAddChannel {0}", request.OriginalString), PNLoggingMethod.LevelInfo);

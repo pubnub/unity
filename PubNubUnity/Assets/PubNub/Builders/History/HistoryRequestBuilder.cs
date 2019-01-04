@@ -95,7 +95,8 @@ namespace PubNubAPI
                 this.HistoryCount,
                 this.ReverseHistory,
                 this.IncludeTimetokenInHistory,
-                this.PubNubInstance
+                this.PubNubInstance,
+                this.QueryParams
             );
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }

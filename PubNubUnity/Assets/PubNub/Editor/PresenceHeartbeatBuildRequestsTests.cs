@@ -471,7 +471,7 @@ namespace PubNubAPI.Tests
                 chStr = ch;
             }
 
-            Uri uri = BuildRequests.BuildPresenceHeartbeatRequest (ch, cg, userState, pnUnity);
+            Uri uri = BuildRequests.BuildPresenceHeartbeatRequest (ch, cg, userState, pnUnity, null);
 
             //https://ps.pndsn.com/v2/presence/sub_key/demo-36/channel/user_state_channel/heartbeat?uuid=customuuid&state={"k":"v"}&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
 

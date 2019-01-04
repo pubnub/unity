@@ -18,6 +18,10 @@ namespace PubNubAPI
             pubBuilder.PushType = pnPushType;
             return this;
         }
+        public RemoveAllPushChannelsForDeviceBuilder QueryParam(Dictionary<string, string> queryParam){
+            pubBuilder.QueryParam(queryParam);
+            return this;
+        }
 
         public RemoveAllPushChannelsForDeviceBuilder(PubNubUnity pn){
             pubBuilder = new RemoveAllPushChannelsForDeviceRequestBuilder(pn);

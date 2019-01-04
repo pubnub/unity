@@ -119,7 +119,7 @@ namespace PubNubAPI.Tests
                 authKeyString = string.Format ("&auth={0}", pnConfiguration.AuthKey);
             }
 
-            Uri uri = BuildRequests.BuildSetStateRequest (channel, channelGroup, userState, uuid, pnUnity);
+            Uri uri = BuildRequests.BuildSetStateRequest (channel, channelGroup, userState, uuid, pnUnity, null);
 
             //https://ps.pndsn.com/v2/presence/sub_key/demo-36/channel/user_state_channel/uuid/customuuid/data?state={"k":"v"}&uuid=customuuid&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
             //https://ps.pndsn.com/v2/presence/sub_key/demo-36/channel/user_state_channel/uuid/customuuid/data?state={"k":"v"}&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
@@ -244,7 +244,7 @@ namespace PubNubAPI.Tests
                 authKeyString = string.Format ("&auth={0}", pnConfiguration.AuthKey);
             }
 
-            Uri uri = BuildRequests.BuildGetStateRequest (channel, channelGroup, uuid, pnUnity);
+            Uri uri = BuildRequests.BuildGetStateRequest (channel, channelGroup, uuid, pnUnity, null);
 
             //https://ps.pndsn.com/v2/presence/sub_key/demo-36/channel/user_state_channel/uuid/customuuid?uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
             string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/channel/{3}/uuid/{4}?uuid={6}{9}{7}&pnsdk={8}",

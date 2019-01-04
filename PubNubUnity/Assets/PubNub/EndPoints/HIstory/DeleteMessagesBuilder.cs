@@ -27,6 +27,11 @@ namespace PubNubAPI
             pubBuilder.Channel(channelName);
             return this;
         }
+        
+        public DeleteMessagesBuilder QueryParam(Dictionary<string, string> queryParam){
+            pubBuilder.QueryParam(queryParam);
+            return this;
+        }
 
         public void Async(Action<PNDeleteMessagesResult, PNStatus> callback)
         {

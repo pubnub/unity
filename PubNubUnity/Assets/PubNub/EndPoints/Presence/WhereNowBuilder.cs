@@ -17,6 +17,11 @@ namespace PubNubAPI
             return this;
         }
 
+        public WhereNowBuilder QueryParam(Dictionary<string, string> queryParam){
+            pubBuilder.QueryParam(queryParam);
+            return this;
+        }
+
         public void Async(Action<PNWhereNowResult, PNStatus> callback)
         {
             pubBuilder.Async(callback);
