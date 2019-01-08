@@ -2,6 +2,7 @@ using System;
 using PubNubAPI;
 using NUnit.Framework;
 using System.Text;
+using System.Collections.Generic;
 
 namespace PubNubAPI.Tests
 {
@@ -66,7 +67,27 @@ namespace PubNubAPI.Tests
             TestBuildAddChannelsToChannelGroupRequestCommon (channels, true, "");
         }
 
+        [Test]
+        public void BuildAddChannelsToChannelGroupRequestSSLNoAuthChQP ()
+        {
+            string [] channels = {"addChannel1"};
+            TestBuildAddChannelsToChannelGroupRequestCommon (channels, true, "", true);
+        }
+
         public void TestBuildAddChannelsToChannelGroupRequestCommon(string[] channels, bool ssl, string authKey){
+            TestBuildAddChannelsToChannelGroupRequestCommon(channels, ssl, authKey, false);
+        }
+            
+        public void TestBuildAddChannelsToChannelGroupRequestCommon(string[] channels, bool ssl, string authKey, bool sendQueryParams)
+        {
+            Dictionary<string,string> queryParams = new Dictionary<string, string>();
+            string queryParamString = "";
+            if(sendQueryParams){
+                queryParams.Add("d","f");
+                queryParamString="&d=f";
+            } else {
+                queryParams = null;
+            }
 
             string channelGroup = "channelGroup";
             string uuid = "customuuid";
@@ -92,18 +113,18 @@ namespace PubNubAPI.Tests
             }
 
             Uri uri = BuildRequests.BuildAddChannelsToChannelGroupRequest (channels, "", channelGroup,
-                pnUnity, null
+                pnUnity, queryParams
             );
 
             string ch = string.Join(",", channels);
 
             //http://ps.pndsn.com/v1/channel-registration/sub-key/demo-36/channel-group/channelGroup?add=addChannel1,%20addChannel2&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityOSX%2F3.7
-            string expected = string.Format ("http{0}://{1}/v1/channel-registration/sub-key/{2}/channel-group/{3}?add={4}&uuid={5}{6}&pnsdk={7}",
+            string expected = string.Format ("http{0}://{1}/v1/channel-registration/sub-key/{2}/channel-group/{3}?add={4}&uuid={5}{6}&pnsdk={7}{8}",
                 ssl?"s":"", pnConfiguration.Origin, EditorCommon.SubscribeKey, channelGroup, 
                 Utility.EncodeUricomponent(ch, PNOperationType.PNAddChannelsToGroupOperation, true, true),
                 uuid, authKeyString, 
-                Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNAddChannelsToGroupOperation, false, true)
-
+                Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNAddChannelsToGroupOperation, false, true),
+                queryParamString
             );
             string received = uri.OriginalString;
             EditorCommon.LogAndCompare (expected, received);
@@ -318,7 +339,6 @@ namespace PubNubAPI.Tests
                 uuid, authKeyString, 
                 Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNChannelsForGroupOperation, false, true),
                 channelGroupStr
-
             );
             string received = uri.OriginalString;
             EditorCommon.LogAndCompare (expected, received);

@@ -61,11 +61,14 @@ namespace PubNubAPI
                 } else {
                     PubNubInstance.SubWorker.PHBWorker.State = "";
                 }
-                
+                PubNubInstance.SubWorker.PHBWorker.StopPresenceHeartbeat();
                 PubNubInstance.SubWorker.PHBWorker.RunPresenceHeartbeat(false, PubNubInstance.PNConfig.PresenceInterval);
             } else {
                 PubNubInstance.SubWorker.PHBWorker.RunIndependentOfSubscribe = false;
+                PubNubInstance.SubWorker.PHBWorker.ChannelGroups = channelGroups;
+                PubNubInstance.SubWorker.PHBWorker.Channels = channels;
                 PubNubInstance.SubWorker.PHBWorker.StopPresenceHeartbeat();
+                PubNubInstance.SubWorker.PHBWorker.RunPresenceHeartbeat(false, PubNubInstance.PNConfig.PresenceInterval);
             }
         }
         #endregion
@@ -75,48 +78,7 @@ namespace PubNubAPI
         }
 
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
-            //Returned JSON: `{"status": 200, "message": "OK", "payload": {"channels": {"channel1": {"k": "v"}, "channel2": {}}}, "uuid": "pn-c5a12d424054a3688066572fb955b7a0", "service": "Presence"}`
-
-            // PNGetStateResult pnGetStateResult = new PNGetStateResult();
-            
-            // Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
-            // PNStatus pnStatus = new PNStatus();
-            // if(dictionary != null) {
-            //     string message = Utility.ReadMessageFromResponseDictionary(dictionary, "message");
-            //     if(Utility.CheckDictionaryForError(dictionary, "error")){
-            //         pnGetStateResult = null;
-            //         pnStatus = base.CreateErrorResponseFromMessage(message, requestState, PNStatusCategory.PNUnknownCategory);
-            //     } else {
-            //         object objPayload;
-            //         dictionary.TryGetValue("payload", out objPayload);
-
-            //         if(objPayload!=null){
-            //             Dictionary<string, object> payload = objPayload as Dictionary<string, object>;
-            //             object objChannelsDict;
-            //             payload.TryGetValue("channels", out objChannelsDict);
-
-            //             if(objChannelsDict!=null){
-            //                 Dictionary<string, object> channelsDict = objPayload as Dictionary<string, object>;
-            //                 #if (ENABLE_PUBNUB_LOGGING)
-            //                 foreach(KeyValuePair<string, object> kvp in channelsDict){
-            //                     this.PubNubInstance.PNLog.WriteToLog(string.Format ("KVP: {0} {1}", kvp.Key, kvp.Value), PNLoggingMethod.LevelInfo);
-            //                 }
-            //                 #endif
-            //                 pnGetStateResult.StateByChannels = channelsDict;
-            //             } else {
-            //                 pnGetStateResult.StateByChannels = payload;
-            //             }
-                
-            //         } else {
-            //             pnGetStateResult = null;
-            //             pnStatus = base.CreateErrorResponseFromMessage("payload dictionary is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
-            //         }
-            //     }
-            // } else {
-            //     pnGetStateResult = null;
-            //     pnStatus = base.CreateErrorResponseFromMessage("Response dictionary is null", requestState, PNStatusCategory.PNMalformedResponseCategory);
-            // }
-            // Callback(pnGetStateResult, pnStatus);
+            //No processing here
         }
 
     }

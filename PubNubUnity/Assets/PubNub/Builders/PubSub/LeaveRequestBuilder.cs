@@ -110,20 +110,23 @@ namespace PubNubAPI
             foreach(ChannelEntity ce in channelEntities)
             {
                 string channelToBeRemoved = ce.ChannelID.ChannelOrChannelGroupName;
+                PNLeaveRequestResult pnLeaveRequestResult = new PNLeaveRequestResult();
                 if (this.PubNubInstance.SubscriptionInstance.Delete (ce)) {
                     string message = string.Format ("{0} Unsubscribed from {1}", (ce.ChannelID.IsPresenceChannel) ? "Presence" : "", channelToBeRemoved.Replace (Utility.PresenceChannelSuffix, ""));
                     #if (ENABLE_PUBNUB_LOGGING)
                     this.PubNubInstance.PNLog.WriteToLog (string.Format ("RemoveUnsubscribedChannelsAndDeleteUserState: JSON response={0}", message), PNLoggingMethod.LevelInfo);
                     #endif
                     PNStatus pnStatus = base.CreateStatusResponseFromMessage(false, message, null, PNStatusCategory.PNConnectedCategory);
-                    Callback(null, pnStatus);
+                    pnLeaveRequestResult.Message = message;
+                    Callback(pnLeaveRequestResult, pnStatus);
                 } else {
                     string message = string.Format("Unsubscribe Error. Please retry the unsubscribe operation. channel{0}", channelToBeRemoved);
                     #if (ENABLE_PUBNUB_LOGGING)
                     this.PubNubInstance.PNLog.WriteToLog(string.Format("RemoveUnsubscribedChannelsAndDeleteUserState: channel={0} unsubscribe error", channelToBeRemoved), PNLoggingMethod.LevelInfo);
                     #endif
                     PNStatus pnStatus = base.CreateErrorResponseFromMessage(message, null, PNStatusCategory.PNUnknownCategory);
-                    Callback(null, pnStatus);
+                    pnLeaveRequestResult.Message = message;
+                    Callback(pnLeaveRequestResult, pnStatus);
                 }
             }
         }
