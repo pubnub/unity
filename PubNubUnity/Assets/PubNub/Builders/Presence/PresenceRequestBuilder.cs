@@ -7,8 +7,7 @@ namespace PubNubAPI
 {
     public class PresenceHeartbeatRequestBuilder: PubNubNonSubBuilder<PresenceHeartbeatRequestBuilder, PNPresenceHeartbeatResult>, IPubNubNonSubscribeBuilder<PresenceHeartbeatRequestBuilder, PNPresenceHeartbeatResult>
     {
-        private bool connected { get; set;}
-        List<ChannelEntity> channelEntities;
+        private bool connected { get; set;}        
         private Dictionary<string, object> UserState { get; set;}
         public PresenceHeartbeatRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNPresenceHeartbeatOperation){
         }
@@ -34,7 +33,7 @@ namespace PubNubAPI
             this.Callback = callback;
             RequestState requestState = new RequestState ();
             requestState.OperationType = OperationType;
-            channelEntities = new List<ChannelEntity>();
+            List<ChannelEntity> channelEntities = new List<ChannelEntity>();
 
             string channels = "";
             if((ChannelsToUse != null) && (ChannelsToUse.Count>0)){
