@@ -26,7 +26,7 @@ namespace PubNubAPI
         private bool internetStatus = true;
 
         readonly bool enableResumeOnReconnect;
-        public int RequestSentAt;
+        public int RequestSentAt {get;set;}
 
 
         //Allow one instance only        

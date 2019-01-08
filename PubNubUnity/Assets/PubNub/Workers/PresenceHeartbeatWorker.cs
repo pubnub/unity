@@ -176,7 +176,6 @@ namespace PubNubAPI
 
                     StopPresenceHeartbeat();
                     pause = true;
-                    pauseTime = pauseTime;
                 }
             }
             

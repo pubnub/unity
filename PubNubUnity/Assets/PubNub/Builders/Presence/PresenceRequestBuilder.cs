@@ -8,7 +8,7 @@ namespace PubNubAPI
     public class PresenceHeartbeatRequestBuilder: PubNubNonSubBuilder<PresenceHeartbeatRequestBuilder, PNPresenceHeartbeatResult>, IPubNubNonSubscribeBuilder<PresenceHeartbeatRequestBuilder, PNPresenceHeartbeatResult>
     {
         private bool connected { get; set;}
-        List<ChannelEntity> ChannelEntities;
+        List<ChannelEntity> channelEntities;
         private Dictionary<string, object> UserState { get; set;}
         public PresenceHeartbeatRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNPresenceHeartbeatOperation){
         }
@@ -34,14 +34,14 @@ namespace PubNubAPI
             this.Callback = callback;
             RequestState requestState = new RequestState ();
             requestState.OperationType = OperationType;
-            ChannelEntities = new List<ChannelEntity>();
+            channelEntities = new List<ChannelEntity>();
 
             string channels = "";
             if((ChannelsToUse != null) && (ChannelsToUse.Count>0)){
                 ChannelsToUse.RemoveAll(t => t.Contains(Utility.PresenceChannelSuffix));
                 string[] chArr = ChannelsToUse.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToArray();
                 channels = String.Join(",", chArr);
-                ChannelEntities.AddRange(Helpers.CreateChannelEntity(chArr, false, false, null, PubNubInstance.PNLog));
+                channelEntities.AddRange(Helpers.CreateChannelEntity(chArr, false, false, null, PubNubInstance.PNLog));
             }
 
             string channelGroups = "";
@@ -49,7 +49,7 @@ namespace PubNubAPI
                 ChannelGroupsToUse.RemoveAll(t => t.Contains(Utility.PresenceChannelSuffix));
                 string[] cgArr = ChannelGroupsToUse.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToArray();
                 channelGroups = String.Join(",", cgArr);
-                ChannelEntities.AddRange(Helpers.CreateChannelEntity(cgArr, false, true, null, PubNubInstance.PNLog));
+                channelEntities.AddRange(Helpers.CreateChannelEntity(cgArr, false, true, null, PubNubInstance.PNLog));
             }
 
             if(connected){
@@ -57,7 +57,7 @@ namespace PubNubAPI
                 PubNubInstance.SubWorker.PHBWorker.ChannelGroups = channelGroups;
                 PubNubInstance.SubWorker.PHBWorker.Channels = channels;
                 if(UserState!=null){
-                    PubNubInstance.SubWorker.PHBWorker.State = Helpers.BuildJsonUserState(ChannelEntities);
+                    PubNubInstance.SubWorker.PHBWorker.State = Helpers.BuildJsonUserState(channelEntities);
                 } else {
                     PubNubInstance.SubWorker.PHBWorker.State = "";
                 }
