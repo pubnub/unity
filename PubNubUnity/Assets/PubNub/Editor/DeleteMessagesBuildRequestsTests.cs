@@ -3,6 +3,7 @@ using PubNubAPI;
 using NUnit.Framework;
 using System.Text;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace PubNubAPI.Tests
 {
@@ -94,8 +95,29 @@ namespace PubNubAPI.Tests
             DeleteMessagesBuildRequestsCommon (true, channel, "", startTime, endTime, paramsInOrder, uriParamString);
         }
 
+        [Test]
+        public void TestDeleteMessagesBuildRequestsStartQP(){
+            long startTime = -1;
+            long endTime = 15078933628583256;
+            string channel = "DeleteMessagesChannel2";
+            string paramsInOrder = "{0}&pnsdk={1}&timestamp={2}&uuid=DeleteMessagesTestUUID";
+            //uuid=PubNubUnityExample&start=15078932998876451&end=15078933628583256&timestamp=1534756366&auth=authKey&pnsdk=PubNub-CSharp-UnityWin%2F4.0.1
+            string uriParamString = "uuid={0}{1}{2}&timestamp={3}{4}&pnsdk={5}";
+
+            DeleteMessagesBuildRequestsCommon (true, channel, "", startTime, endTime, paramsInOrder, uriParamString, true);
+        }
 
         public void DeleteMessagesBuildRequestsCommon(bool ssl, string channel, string authKey, long startTime, long endTime, string paramsInOrderVal, string uriParamString){
+            DeleteMessagesBuildRequestsCommon(ssl, channel, authKey, startTime, endTime, paramsInOrderVal, uriParamString, false);
+        }
+
+        public void DeleteMessagesBuildRequestsCommon(bool ssl, string channel, string authKey, long startTime, long endTime, string paramsInOrderVal, string uriParamString, bool sendQueryParams){
+            Dictionary<string,string> queryParams = new Dictionary<string, string>();
+            if(sendQueryParams){
+                queryParams.Add("a","f");
+            } else {
+                queryParams = null;
+            }
             PNConfiguration pnConfiguration = new PNConfiguration ();
             pnConfiguration.Origin = EditorCommon.Origin;
             pnConfiguration.SubscribeKey = EditorCommon.SubscribeKey;
@@ -126,7 +148,7 @@ namespace PubNubAPI.Tests
                 endTimeString = string.Format("&end={0}", endTime);
             }
 
-            Uri uri = BuildRequests.BuildDeleteMessagesRequest (channel, startTime, endTime, pnUnity, null);
+            Uri uri = BuildRequests.BuildDeleteMessagesRequest (channel, startTime, endTime, pnUnity, queryParams);
 
             var segments = uri.Segments;
             foreach(string seg in segments){
@@ -162,6 +184,9 @@ namespace PubNubAPI.Tests
                 case "pnsdk":
                 Assert.AreEqual(version,kv[1]);
                 break;
+                case "a":
+                Assert.AreEqual("f",kv[1]);
+                break;
                 case "signature":
                 sig = kv[1];
                 break;
@@ -177,10 +202,10 @@ namespace PubNubAPI.Tests
                 version
                 );
             
-            Uri uriFormatted = new Uri(string.Format("http{0}://{1}/v3/history/sub-key/{2}/channel/{3}?{4}", ssl?"s":"", pnConfiguration.Origin, EditorCommon.SubscribeKey, channel, uriParamStringFormatted));    
+            Uri uriFormatted = new Uri(string.Format("http{0}://{1}/v3/history/sub-key/{2}/channel/{3}?{4}", ssl?"s":"", pnConfiguration.Origin, EditorCommon.SubscribeKey, channel, uriParamStringFormatted
+                ));    
             UnityEngine.Debug.Log("uriFormatted: " + uriFormatted);
-              
-
+            
             string paramsInOrder = BuildRequests.SetParametersInOrder(uriFormatted);
             if((startTime==-1) && (endTime==-1)){
                 paramsInOrderVal = string.Format(paramsInOrderVal, version, timestamp);

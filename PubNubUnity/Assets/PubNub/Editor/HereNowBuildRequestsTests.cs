@@ -2,6 +2,7 @@ using System;
 using PubNubAPI;
 using NUnit.Framework;
 using System.Text;
+using System.Collections.Generic;
 
 namespace PubNubAPI.Tests
 {
@@ -299,6 +300,12 @@ namespace PubNubAPI.Tests
             TestBuildHereNowRequestCommon (true, true, true, true, true, "");
         }
 
+        [Test]
+        public void TestBuildHereNowRequestShowUUIDInclStateSSLNoAuthCGnCHQP ()
+        {
+            TestBuildHereNowRequestCommon (true, true, true, true, true, "", true);
+        }
+
         public void TestBuildHereNowRequestCommon(bool ssl, bool showUUIDList, bool includeUserState, string authKey){
             TestBuildHereNowRequestCommon(true, false, ssl, showUUIDList, includeUserState, authKey);
         }
@@ -308,7 +315,18 @@ namespace PubNubAPI.Tests
         }
 
         public void TestBuildHereNowRequestCommon(bool testCh, bool testCg, bool ssl, bool showUUIDList, bool includeUserState, string authKey){
-            
+            TestBuildHereNowRequestCommon(testCh, testCg, ssl, showUUIDList, includeUserState, authKey, false);
+        }
+
+        public void TestBuildHereNowRequestCommon(bool testCh, bool testCg, bool ssl, bool showUUIDList, bool includeUserState, string authKey, bool sendQueryParams){
+            Dictionary<string,string> queryParams = new Dictionary<string, string>();
+            string queryParamString = "";
+            if(sendQueryParams){
+                queryParams.Add("d","f");
+                queryParamString="&d=f";
+            } else {
+                queryParams = null;
+            }
             string channel = "here_now_channel";
             string channelGroup = "here_now_channelGroup";
             string channelGroupStr = string.Format("&channel-group={0}",  Utility.EncodeUricomponent(channelGroup, PNOperationType.PNHereNowOperation, true, false));
@@ -345,14 +363,15 @@ namespace PubNubAPI.Tests
             int userState = (includeUserState) ? 1 : 0;
             string parameters = string.Format ("disable_uuids={0}&state={1}", disableUUID, userState);
 
-            Uri uri = BuildRequests.BuildHereNowRequest (channel, channelGroup, showUUIDList, includeUserState, pnUnity, null);
+            Uri uri = BuildRequests.BuildHereNowRequest (channel, channelGroup, showUUIDList, includeUserState, pnUnity, queryParams);
 
             //http://ps.pndsn.com/v2/presence/sub_key/demo/channel/here_now_channel?disable_uuids=1&state=0&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityOSX/3.6.9.0
-            string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/channel/{3}?{4}{8}&uuid={5}{6}&pnsdk={7}",
+            string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/channel/{3}?{4}{8}&uuid={5}{6}&pnsdk={7}{9}",
                 ssl?"s":"", pnConfiguration.Origin, EditorCommon.SubscribeKey, channel, parameters,
                 uuid, authKeyString, 
                 Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNHereNowOperation, false, true),
-                channelGroupStr
+                channelGroupStr,
+                queryParamString
             );
             string received = uri.OriginalString;
             EditorCommon.LogAndCompare (expected, received);
@@ -454,7 +473,25 @@ namespace PubNubAPI.Tests
             TestBuildGlobalHereNowRequestCommon (true, true, true, "");
         }
 
+        [Test]
+        public void TestBuildGlobalHereNowRequestShowUUIDInclStateSSLNoAuthQP ()
+        {
+            TestBuildGlobalHereNowRequestCommon (true, true, true, "", true);
+        }
+
         public void TestBuildGlobalHereNowRequestCommon(bool ssl, bool showUUIDList, bool includeUserState, string authKey){
+            TestBuildGlobalHereNowRequestCommon(ssl, showUUIDList, includeUserState, authKey, false);
+        }
+
+        public void TestBuildGlobalHereNowRequestCommon(bool ssl, bool showUUIDList, bool includeUserState, string authKey, bool sendQueryParams){
+            Dictionary<string,string> queryParams = new Dictionary<string, string>();
+            string queryParamString = "";
+            if(sendQueryParams){
+                queryParams.Add("d","f");
+                queryParamString="&d=f";
+            } else {
+                queryParams = null;
+            }
             string uuid = "customuuid";
 
             PNConfiguration pnConfiguration = new PNConfiguration ();
@@ -480,13 +517,14 @@ namespace PubNubAPI.Tests
             int userState = (includeUserState) ? 1 : 0;
             string parameters = string.Format ("disable_uuids={0}&state={1}", disableUUID, userState);
 
-            Uri uri = BuildRequests.BuildHereNowRequest ("", "", showUUIDList, includeUserState, pnUnity, null);
+            Uri uri = BuildRequests.BuildHereNowRequest ("", "", showUUIDList, includeUserState, pnUnity, queryParams);
 
             //http://ps.pndsn.com/v2/presence/sub_key/demo?disable_uuids=1&state=0&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityOSX/3.6.9.0
-            string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}?{3}&uuid={4}{5}&pnsdk={6}",
+            string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}?{3}&uuid={4}{5}&pnsdk={6}{7}",
                 ssl?"s":"", pnConfiguration.Origin, EditorCommon.SubscribeKey, parameters,
                 uuid, authKeyString, 
-                Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNHereNowOperation, false, true)
+                Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNHereNowOperation, false, true),
+                queryParamString
             );
             string received = uri.OriginalString;
             EditorCommon.LogAndCompare (expected, received);
