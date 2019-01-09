@@ -314,7 +314,10 @@ namespace PubNubExample
         }
 
         void SubscribeHandler(){
-            pubnub.Subscribe ().Channels(new List<string> (){ch1}).WithPresence().Execute();
+            Dictionary<string, string> dict = new Dictionary<string, string>();
+            dict.Add  ("k1", "v1");
+
+            pubnub.Subscribe ().Channels(new List<string> (){ch1}).WithPresence().QueryParam(dict).Execute();
         }
 
         void AddComponents(){

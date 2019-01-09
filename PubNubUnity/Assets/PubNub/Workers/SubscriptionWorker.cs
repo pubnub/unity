@@ -27,7 +27,7 @@ namespace PubNubAPI
 
         readonly bool enableResumeOnReconnect;
         public int RequestSentAt {get;set;}
-
+        public Dictionary<string, string> QueryParams { get; set;}
 
         //Allow one instance only        
         public SubscriptionWorker (PubNubUnity pn)
@@ -353,7 +353,8 @@ namespace PubNubAPI
                     channelsJsonState,
                     region,
                     filterExpr,
-                    this.PubNubInstance
+                    this.PubNubInstance,
+                    this.QueryParams
                 );
 
                 #if (ENABLE_PUBNUB_LOGGING)

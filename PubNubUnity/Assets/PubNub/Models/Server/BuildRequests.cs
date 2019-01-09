@@ -390,7 +390,7 @@ namespace PubNubAPI
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNLeaveOperation, unsubscribeParamBuilder.ToString(), pnInstance, queryParams);
         }
 
-        public static Uri BuildSubscribeRequest (string channels, string channelGroups, string timetoken, string channelsJsonState, string region, string filterExpr, PubNubUnity pnInstance){
+        public static Uri BuildSubscribeRequest (string channels, string channelGroups, string timetoken, string channelsJsonState, string region, string filterExpr, PubNubUnity pnInstance, Dictionary<string, string> queryParams){
             StringBuilder subscribeParamBuilder = new StringBuilder ();
             subscribeParamBuilder.AppendFormat ("&tt={0}", timetoken);
 
@@ -423,7 +423,7 @@ namespace PubNubAPI
                 PNOperationType.PNSubscribeOperation, 
                 subscribeParamBuilder.ToString (),
                 pnInstance,
-                null
+                queryParams
             );
         }
 

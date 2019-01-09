@@ -2,6 +2,7 @@ using System;
 using PubNubAPI;
 using NUnit.Framework;
 using System.Text;
+using System.Collections.Generic;
 
 namespace PubNubAPI.Tests
 {
@@ -1085,6 +1086,18 @@ namespace PubNubAPI.Tests
                 userState, true, "authKey", "", "", 30);
         }
 
+       [Test]
+        public void TestBuildSubscribeRequestSSLMultiChannelTTStateAuthCGOnlyQP ()
+        {
+            long timetoken = 14498416434364941;
+            string userState = "{\"k\":\"v\"}";
+            string[] channels = { "test", "test2" };
+            string[] channelGroups = { "CGOnly", "CGOnly2" };
+
+            TestBuildSubscribeRequestCommon (null, channelGroups, timetoken,
+                userState, true, "authKey", "", "", 0, true);
+        }
+
         public void TestBuildSubscribeRequestCommon(string[] channels, object timetoken, string userState,
             bool ssl, string authKey){
             TestBuildSubscribeRequestCommon(channels, null, timetoken, userState, ssl, authKey, "", "", 0);
@@ -1093,7 +1106,21 @@ namespace PubNubAPI.Tests
         public void TestBuildSubscribeRequestCommon(string[] channels, string[] channelGroups, 
             object timetoken, string userState,
             bool ssl, string authKey, string filterExpr, string region, int presenceHeartbeat){
+                TestBuildSubscribeRequestCommon(channels, channelGroups, timetoken, userState, ssl, authKey, filterExpr, region, presenceHeartbeat, false);
+        }
+
+        public void TestBuildSubscribeRequestCommon(string[] channels, string[] channelGroups, 
+            object timetoken, string userState,
+            bool ssl, string authKey, string filterExpr, string region, int presenceHeartbeat, bool sendQueryParams){
             string uuid = "customuuid";
+            Dictionary<string,string> queryParams = new Dictionary<string, string>();
+            string queryParamString = "";
+            if(sendQueryParams){
+                queryParams.Add("d","f");
+                queryParamString="&d=f";
+            } else {
+                queryParams = null;
+            }
 
             PNConfiguration pnConfiguration = new PNConfiguration ();
             pnConfiguration.Origin = EditorCommon.Origin;
@@ -1146,7 +1173,7 @@ namespace PubNubAPI.Tests
                 chStr = ch;
             }
 
-            Uri uri = BuildRequests.BuildSubscribeRequest (ch, cg, tt, userState, region, filterExpr, pnUnity);
+            Uri uri = BuildRequests.BuildSubscribeRequest (ch, cg, tt, userState, region, filterExpr, pnUnity, queryParams);
 
             string filterExpression = "";
             if(!string.IsNullOrEmpty (filterExpr)){
@@ -1160,7 +1187,7 @@ namespace PubNubAPI.Tests
                 
             //http://ps.pndsn.com/v2/subscribe/demo-36/test/0?uuid=customuuid&tt=21221&state={"k":"v"}&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
             //http://ps.pndsn.com/v2/subscribe/demo-36/test/0?uuid=customuuid&tt=0&filter-expr=(region%20%3D%3D%20%22east%22)&channel-group=cg&auth=authKey&pnsdk=PubNub-CSharp-UnityOSX/3.7
-            string expected = string.Format ("http{0}://{1}/v2/subscribe/{2}/{3}/0?uuid={5}{4}{10}{11}{6}{7}{12}{8}{13}&pnsdk={9}",
+            string expected = string.Format ("http{0}://{1}/v2/subscribe/{2}/{3}/0?uuid={5}{4}{10}{11}{6}{7}{12}{8}{13}&pnsdk={9}{14}",
                 ssl?"s":"", pnConfiguration.Origin, pnConfiguration.SubscribeKey, 
                 chStr, 
                 ttStr,
@@ -1172,7 +1199,8 @@ namespace PubNubAPI.Tests
                 filterExpression,
                 reg,
                 cgStr,
-                phb
+                phb,
+                queryParamString
             );
             string received = uri.OriginalString;
             EditorCommon.LogAndCompare (expected, received);
