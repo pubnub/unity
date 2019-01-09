@@ -381,7 +381,7 @@ namespace PubNubAPI
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PNLog.WriteToLog (string.Format ("ProcessResponse: PubNubUserException: Exception={0}", ex.ToString ()), PNLoggingMethod.LevelError);
                 #endif
-                throw ex;                
+                throw;                
             } catch (Exception ex) {
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PNLog.WriteToLog (string.Format ("ProcessResponse: RunWebRequestSub {0}, Exception: {1}",  unityWebRequestWrapper.CurrentRequestType.ToString (), ex.ToString ()), PNLoggingMethod.LevelError);

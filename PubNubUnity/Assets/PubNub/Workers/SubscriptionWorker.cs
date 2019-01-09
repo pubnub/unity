@@ -712,7 +712,7 @@ namespace PubNubAPI
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PubNubInstance.PNLog.WriteToLog (string.Format ("WebRequestCompleteHandler: PubNubUserException: Exception={0}", ex.ToString ()), PNLoggingMethod.LevelError);
                 #endif
-                throw ex;
+                throw;
             } catch (Exception ex) {
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PubNubInstance.PNLog.WriteToLog (string.Format ("WebRequestCompleteHandler: Exception={0}", ex.ToString ()), PNLoggingMethod.LevelError);

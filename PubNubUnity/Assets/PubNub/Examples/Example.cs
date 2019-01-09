@@ -316,6 +316,7 @@ namespace PubNubExample
         void SubscribeHandler(){
             Dictionary<string, string> dict = new Dictionary<string, string>();
             dict.Add  ("k1", "v1");
+            pubnub.SusbcribeCallback += SusbcribeCallbackHandler;
 
             pubnub.Subscribe ().Channels(new List<string> (){ch1}).WithPresence().QueryParam(dict).Execute();
         }
@@ -529,6 +530,8 @@ namespace PubNubExample
                 }
                 if(mea.MessageResult != null){
                     Debug.Log ("In Example, SusbcribeCallback in message" + mea.MessageResult.Channel + mea.MessageResult.Payload);
+                    //var a = mea.MessageResult.Payload as Dictionary<string, string>;
+                    //var b = a["a"];
                     Display(string.Format("SusbcribeCallback Result: {0}", pubnub.JsonLibrary.SerializeToJsonString(mea.MessageResult.Payload)));
                 }
                 if(mea.PresenceEventResult != null){
