@@ -13,7 +13,10 @@ changelog:
         type: feature
       - 
         text: "User Exceptions Fix"
-        type: improvement
+        type: improvement      
+      - 
+        text: "Leave callback message exception fix"
+        type: bug       
     date: "Jan 9, 19"
     version: v4.0.5
   - 
