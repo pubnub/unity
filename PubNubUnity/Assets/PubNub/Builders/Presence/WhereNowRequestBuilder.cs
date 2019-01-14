@@ -12,10 +12,9 @@ namespace PubNubAPI
         public WhereNowRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNWhereNowOperation){
         }
 
-        public WhereNowRequestBuilder Uuid(string uuidForWhereNow){
+        public void Uuid(string uuidForWhereNow){
             UuidForWhereNow = uuidForWhereNow;
-            return this;
-        }
+        }        
 
         #region IPubNubBuilder implementation
         public void Async(Action<PNWhereNowResult, PNStatus> callback)
@@ -37,9 +36,11 @@ namespace PubNubAPI
             if(!string.IsNullOrEmpty(this.UuidForWhereNow)){
                 uuidForWhereNow = this.UuidForWhereNow;
             }
+            
             Uri request = BuildRequests.BuildWhereNowRequest(
                 uuidForWhereNow,
-                this.PubNubInstance
+                this.PubNubInstance,
+                this.QueryParams
             );
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }

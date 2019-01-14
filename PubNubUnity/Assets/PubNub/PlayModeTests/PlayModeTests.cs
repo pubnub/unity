@@ -2007,7 +2007,7 @@ namespace PubNubAPI.Tests
 					case "join1":
 					case "join2":
 					if(!mea.Status.Category.Equals(PNStatusCategory.PNConnectedCategory)){
-						if(mea.PresenceEventResult.Event.Equals("join")){
+						if ((mea.PresenceEventResult!=null) && (mea.PresenceEventResult.Event.Equals("join"))){
 							bool containsUUID = false;
 							if(whatToTest.Equals("join1")){
 								containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration.UUID);
@@ -2032,7 +2032,7 @@ namespace PubNubAPI.Tests
 					break;
 					case "leave":
 					if(!mea.Status.Category.Equals(PNStatusCategory.PNConnectedCategory)){
-						if(mea.PresenceEventResult.Event.Equals("leave")){
+						if((mea.PresenceEventResult!=null) && (mea.PresenceEventResult.Event.Equals("leave"))){
 							bool containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UUID);
 							Assert.True(containsUUID);
 							Debug.Log(containsUUID);

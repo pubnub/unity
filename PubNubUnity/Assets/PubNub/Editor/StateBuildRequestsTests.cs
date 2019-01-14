@@ -2,6 +2,7 @@ using System;
 using PubNubAPI;
 using NUnit.Framework;
 using System.Text;
+using System.Collections.Generic;
 
 namespace PubNubAPI.Tests
 {
@@ -81,11 +82,29 @@ namespace PubNubAPI.Tests
             TestBuildSetUserStateRequestCommon ( true, false,  true, "authKey");
         }
 
+        [Test]
+        public void TestBuildSetUserStateRequestAuthSSLCGQP ()
+        {
+            TestBuildSetUserStateRequestCommon ( true, false,  true, "authKey", true);
+        }
+
         public void TestBuildSetUserStateRequestCommon(bool ssl, string authKey){
             TestBuildSetUserStateRequestCommon(false, false, ssl, authKey);
         }
 
         public void TestBuildSetUserStateRequestCommon(bool testCg, bool testCh, bool ssl, string authKey){
+            TestBuildSetUserStateRequestCommon(testCg, testCh, ssl, authKey, false);
+        }
+
+        public void TestBuildSetUserStateRequestCommon(bool testCg, bool testCh, bool ssl, string authKey, bool sendQueryParams){
+            Dictionary<string,string> queryParams = new Dictionary<string, string>();
+            string queryParamString = "";
+            if(sendQueryParams){
+                queryParams.Add("d","f");
+                queryParamString="&d=f";
+            } else {
+                queryParams = null;
+            }
             string channel = "user_state_channel";
             string userState = "{\"k\":\"v\"}";
             string uuid = "customuuid";
@@ -119,16 +138,17 @@ namespace PubNubAPI.Tests
                 authKeyString = string.Format ("&auth={0}", pnConfiguration.AuthKey);
             }
 
-            Uri uri = BuildRequests.BuildSetStateRequest (channel, channelGroup, userState, uuid, pnUnity);
+            Uri uri = BuildRequests.BuildSetStateRequest (channel, channelGroup, userState, uuid, pnUnity, queryParams);
 
             //https://ps.pndsn.com/v2/presence/sub_key/demo-36/channel/user_state_channel/uuid/customuuid/data?state={"k":"v"}&uuid=customuuid&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
             //https://ps.pndsn.com/v2/presence/sub_key/demo-36/channel/user_state_channel/uuid/customuuid/data?state={"k":"v"}&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
-            string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/channel/{3}/uuid/{4}/data?state={5}{9}&uuid={6}{7}&pnsdk={8}",
+            string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/channel/{3}/uuid/{4}/data?state={5}{9}&uuid={6}{7}&pnsdk={8}{10}",
                 ssl?"s":"", pnConfiguration.Origin, EditorCommon.SubscribeKey, channel, uuid, 
                 Utility.EncodeUricomponent(userState, PNOperationType.PNSetStateOperation, false, false),
                 uuid, authKeyString, 
                 Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNSetStateOperation, false, false),
-                channelGroupStr
+                channelGroupStr,
+                queryParamString
             );
             string received = uri.OriginalString;
             EditorCommon.LogAndCompare (expected, received);
@@ -206,11 +226,29 @@ namespace PubNubAPI.Tests
             TestBuildGetUserStateRequestCommon (true, false, true, "");
         }
 
+        [Test]
+        public void TestBuildGetUserStateRequestSSLCGQP()
+        {
+            TestBuildGetUserStateRequestCommon (true, false, true, "", true);
+        }
+
         public void TestBuildGetUserStateRequestCommon(bool ssl, string authKey){
             TestBuildGetUserStateRequestCommon(false, false, ssl, authKey);
         }
 
         public void TestBuildGetUserStateRequestCommon(bool testCg, bool testCh, bool ssl, string authKey){
+            TestBuildGetUserStateRequestCommon(testCg, testCh, ssl, authKey, false);
+        }
+
+        public void TestBuildGetUserStateRequestCommon(bool testCg, bool testCh, bool ssl, string authKey, bool sendQueryParams){
+            Dictionary<string,string> queryParams = new Dictionary<string, string>();
+            string queryParamString = "";
+            if(sendQueryParams){
+                queryParams.Add("d","f");
+                queryParamString="&d=f";
+            } else {
+                queryParams = null;
+            }
             string channel = "user_state_channel";
             string userState = "{\"k\":\"v\"}";
             string uuid = "customuuid";
@@ -244,15 +282,16 @@ namespace PubNubAPI.Tests
                 authKeyString = string.Format ("&auth={0}", pnConfiguration.AuthKey);
             }
 
-            Uri uri = BuildRequests.BuildGetStateRequest (channel, channelGroup, uuid, pnUnity);
+            Uri uri = BuildRequests.BuildGetStateRequest (channel, channelGroup, uuid, pnUnity, queryParams);
 
             //https://ps.pndsn.com/v2/presence/sub_key/demo-36/channel/user_state_channel/uuid/customuuid?uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
-            string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/channel/{3}/uuid/{4}?uuid={6}{9}{7}&pnsdk={8}",
+            string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/channel/{3}/uuid/{4}?uuid={6}{9}{7}&pnsdk={8}{10}",
                 ssl?"s":"", pnConfiguration.Origin, EditorCommon.SubscribeKey, channel, uuid, 
                 Utility.EncodeUricomponent(userState, PNOperationType.PNGetStateOperation, false, false),
                 uuid, authKeyString, 
                 Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNGetStateOperation, false, false),
-                channelGroupStr
+                channelGroupStr,
+                queryParamString
             );
             string received = uri.OriginalString;
             EditorCommon.LogAndCompare (expected, received);

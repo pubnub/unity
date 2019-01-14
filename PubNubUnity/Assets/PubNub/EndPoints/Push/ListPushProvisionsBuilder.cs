@@ -18,6 +18,10 @@ namespace PubNubAPI
             pubBuilder.PushType = pnPushType;
             return this;
         }
+        public ListPushProvisionsBuilder QueryParam(Dictionary<string, string> queryParam){
+            pubBuilder.QueryParam(queryParam);
+            return this;
+        }
 
         public ListPushProvisionsBuilder(PubNubUnity pn){
             pubBuilder = new ListPushProvisionsRequestBuilder(pn);

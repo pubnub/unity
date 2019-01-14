@@ -12,6 +12,12 @@ namespace PubNubAPI
         public GetChannelGroupsBuilder(PubNubUnity pn){
             pubBuilder = new GetChannelGroupsRequestBuilder(pn);
         }
+
+        public GetChannelGroupsBuilder QueryParam(Dictionary<string, string> queryParam){
+            pubBuilder.QueryParam(queryParam);
+            return this;
+        }
+
         public void Async(Action<PNChannelGroupsListAllResult, PNStatus> callback)
         {
             pubBuilder.Async(callback);

@@ -53,6 +53,11 @@ namespace PubNubAPI
             return this;
         }
 
+        public PublishBuilder QueryParam(Dictionary<string, string> queryParam){
+            pubBuilder.QueryParam(queryParam);
+            return this;
+        }
+
         public void Async(Action<PNPublishResult, PNStatus> callback)
         {
             pubBuilder.Async(callback);

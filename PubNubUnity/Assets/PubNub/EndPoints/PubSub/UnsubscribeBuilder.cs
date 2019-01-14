@@ -18,6 +18,10 @@ namespace PubNubAPI
             pubBuilder.ChannelGroups(channelGroupNames);
             return this;
         }
+        public UnsubscribeBuilder QueryParam(Dictionary<string, string> queryParam){
+            pubBuilder.QueryParam(queryParam);
+            return this;
+        }
         
         public UnsubscribeBuilder(PubNubUnity pn){
             pubBuilder = new LeaveRequestBuilder(pn);

@@ -2,6 +2,7 @@ using System;
 using PubNubAPI;
 using NUnit.Framework;
 using System.Text;
+using System.Collections.Generic;
 
 namespace PubNubAPI.Tests
 {
@@ -187,13 +188,30 @@ namespace PubNubAPI.Tests
             TestBuildLeaveRequestCommon (null,  channelGroups, false, "");
         }
 
+        [Test]
+        public void TestBuildLeaveRequestCGOnlyQP ()
+        {
+            string[] channelGroups = { "test" };
+            TestBuildLeaveRequestCommon (null,  channelGroups, false, "", true);
+        }
+
         public void TestBuildLeaveRequestCommon(string[] channels, bool ssl, string authKey){
             TestBuildLeaveRequestCommon(channels, null, ssl, authKey);
         }
-
         public void TestBuildLeaveRequestCommon(string[] channels, string[] channelGroups, bool ssl, string authKey)
         {
-
+            TestBuildLeaveRequestCommon(channels, channelGroups, ssl, authKey, false);
+        }
+        public void TestBuildLeaveRequestCommon(string[] channels, string[] channelGroups, bool ssl, string authKey, bool sendQueryParams)
+        {
+            Dictionary<string,string> queryParams = new Dictionary<string, string>();
+            string queryParamString = "";
+            if(sendQueryParams){
+                queryParams.Add("d","f");
+                queryParamString="&d=f";
+            } else {
+                queryParams = null;
+            }
             string uuid = "customuuid";
             PNConfiguration pnConfiguration = new PNConfiguration ();
             pnConfiguration.Origin = EditorCommon.Origin;
@@ -229,13 +247,14 @@ namespace PubNubAPI.Tests
                 chStr = ch;
             }
 
-            Uri uri = BuildRequests.BuildLeaveRequest (ch, cg, pnUnity);
+            Uri uri = BuildRequests.BuildLeaveRequest (ch, cg, pnUnity, queryParams);
 
             //https://ps.pndsn.com/v2/presence/sub_key/demo-36/channel/test/leave?uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
-            string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/channel/{3}/leave?uuid={4}{7}{5}&pnsdk={6}",
+            string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/channel/{3}/leave?uuid={4}{7}{5}&pnsdk={6}{8}",
                 ssl?"s":"", pnConfiguration.Origin, EditorCommon.SubscribeKey, chStr,
                 uuid, authKeyString, Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNLeaveOperation, false, true),
-                cgStr
+                cgStr,
+                queryParamString
             );
             string received = uri.OriginalString;
             EditorCommon.LogAndCompare (expected, received);

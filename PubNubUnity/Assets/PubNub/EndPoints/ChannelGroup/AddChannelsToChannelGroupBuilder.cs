@@ -14,6 +14,11 @@ namespace PubNubAPI
             return this;
         }
 
+        public AddChannelsToChannelGroupBuilder QueryParam(Dictionary<string, string> queryParam){
+            pubBuilder.QueryParam(queryParam);
+            return this;
+        }
+
         public AddChannelsToChannelGroupBuilder ChannelGroup(string channelGroupName){
             pubBuilder.ChannelGroup(channelGroupName);
             return this;
@@ -22,6 +27,7 @@ namespace PubNubAPI
         public AddChannelsToChannelGroupBuilder(PubNubUnity pn){
             pubBuilder = new AddChannelsToChannelGroupRequestBuilder(pn);
         }
+        
         public void Async(Action<PNChannelGroupsAddChannelResult, PNStatus> callback)
         {
             pubBuilder.Async(callback);

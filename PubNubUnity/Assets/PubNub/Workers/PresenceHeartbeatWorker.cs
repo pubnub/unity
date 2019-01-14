@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using System.Linq;
 
 namespace PubNubAPI
 {
@@ -7,6 +8,14 @@ namespace PubNubAPI
     {  
         private bool keepPresenceHearbeatRunning;
         private bool isPresenceHearbeatRunning;
+
+        public bool RunIndependentOfSubscribe{
+            get;set;
+        }
+
+        internal string Channels {get;set;}
+        internal string ChannelGroups {get;set;}
+        internal string State {get;set;}
 
         private readonly PNUnityWebRequest webRequest;
         private string webRequestId = "";
@@ -56,6 +65,7 @@ namespace PubNubAPI
         internal void StopPresenceHeartbeat ()
         {
             keepPresenceHearbeatRunning = false;
+            PubNubInstance.SubWorker.RequestSentAt =0;
             if (isPresenceHearbeatRunning)
             {
                 #if (ENABLE_PUBNUB_LOGGING)
@@ -71,7 +81,7 @@ namespace PubNubAPI
             #if (ENABLE_PUBNUB_LOGGING)
             this.PubNubInstance.PNLog.WriteToLog (string.Format ("PresenceHeartbeatHandler keepPresenceHearbeatRunning={0} isPresenceHearbeatRunning={1}", keepPresenceHearbeatRunning, isPresenceHearbeatRunning), PNLoggingMethod.LevelError);
             #endif
-            
+
             isPresenceHearbeatRunning = false;
 
             #if (ENABLE_PUBNUB_LOGGING)
@@ -93,15 +103,32 @@ namespace PubNubAPI
         void StartPresenceHeartbeat (bool pause, int pauseTime)
         {
             try {
-                if(PubNubInstance.SubscriptionInstance.AllNonPresenceChannelsOrChannelGroups.Count > 0){
-                    isPresenceHearbeatRunning = true;
-                    string channelsJsonState = PubNubInstance.SubscriptionInstance.CompiledUserState;
+                string channelsJsonState;
+                int allNonPresenceChannelsOrChannelGroupsCount;
+                string channels;
+                string channelGroups;
 
+                if (RunIndependentOfSubscribe){
+                    channelsJsonState = State;
+                    allNonPresenceChannelsOrChannelGroupsCount = ((ChannelGroups.Length>0)?ChannelGroups.Split(',').Count():0) + ((Channels.Length>0)?Channels.Split(',').Count():0);
+                    Debug.Log("allNonPresenceChannelsOrChannelGroupsCount:"+ allNonPresenceChannelsOrChannelGroupsCount);
+                    channels = Channels;
+                    channelGroups = ChannelGroups;
+                } else {
+                    channelsJsonState = PubNubInstance.SubscriptionInstance.CompiledUserState;
+                    allNonPresenceChannelsOrChannelGroupsCount = PubNubInstance.SubscriptionInstance.AllNonPresenceChannelsOrChannelGroups.Count;
+                    channels = Helpers.GetNamesFromChannelEntities(PubNubInstance.SubscriptionInstance.AllNonPresenceChannelsOrChannelGroups, false);
+                    channelGroups = Helpers.GetNamesFromChannelEntities(PubNubInstance.SubscriptionInstance.AllNonPresenceChannelsOrChannelGroups, true);
+                }
+
+                if (allNonPresenceChannelsOrChannelGroupsCount > 0){
+                    isPresenceHearbeatRunning = true;
                     Uri request = BuildRequests.BuildPresenceHeartbeatRequest(
-                        Helpers.GetNamesFromChannelEntities(PubNubInstance.SubscriptionInstance.AllNonPresenceChannelsOrChannelGroups, false),
-                        Helpers.GetNamesFromChannelEntities(PubNubInstance.SubscriptionInstance.AllNonPresenceChannelsOrChannelGroups, true),
+                        channels,
+                        channelGroups,
                         channelsJsonState,
-                        this.PubNubInstance
+                        this.PubNubInstance,
+                        null
                     );
 
                     RequestState requestState = new RequestState ();
@@ -110,17 +137,22 @@ namespace PubNubAPI
                     requestState.Timeout = PubNubInstance.PNConfig.NonSubscribeTimeout;
                     requestState.Pause = pauseTime;
                     requestState.Reconnect = pause;
-
+                    
                     #if (ENABLE_PUBNUB_LOGGING)
-                    this.PubNubInstance.PNLog.WriteToLog (string.Format ("presenceheartbeat: request.OriginalString {0} ", request.OriginalString ), PNLoggingMethod.LevelError);
+                    this.PubNubInstance.PNLog.WriteToLog (string.Format ("presenceheartbeat: /presence/ request.OriginalString {0} ", request.OriginalString ), PNLoggingMethod.LevelError);
                     #endif
 
                     webRequestId = webRequest.Run(requestState);
 
                     #if (ENABLE_PUBNUB_LOGGING)
-                    this.PubNubInstance.PNLog.WriteToLog (string.Format ("StartPresenceHeartbeat: PresenceHeartbeat running "), PNLoggingMethod.LevelInfo);
+                    this.PubNubInstance.PNLog.WriteToLog (string.Format ("StartPresenceHeartbeat: PresenceHeartbeat running, {0} ", pauseTime), PNLoggingMethod.LevelInfo);
                     #endif
+                } 
+                #if (ENABLE_PUBNUB_LOGGING)
+                else {
+                    this.PubNubInstance.PNLog.WriteToLog (string.Format ("StartPresenceHeartbeat: AllNonPresenceChannelsOrChannelGroups < 0 "), PNLoggingMethod.LevelInfo);
                 }
+                #endif
             }
             catch (Exception ex) {
                 #if (ENABLE_PUBNUB_LOGGING)
@@ -134,6 +166,18 @@ namespace PubNubAPI
             #if (ENABLE_PUBNUB_LOGGING)
             this.PubNubInstance.PNLog.WriteToLog (string.Format ("RunPresenceHeartbeat keepPresenceHearbeatRunning={0} isPresenceHearbeatRunning={1}", keepPresenceHearbeatRunning, isPresenceHearbeatRunning), PNLoggingMethod.LevelError);
             #endif
+
+            if ((PubNubInstance.SubWorker.RequestSentAt > 0) && !RunIndependentOfSubscribe){
+                int timediff = PubNubInstance.PNConfig.PresenceInterval - (DateTime.UtcNow.Second - PubNubInstance.SubWorker.RequestSentAt);
+                if(timediff > 10){
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    this.PubNubInstance.PNLog.WriteToLog (string.Format ("presenceheartbeat /presence/ timediff: {0} ", timediff), PNLoggingMethod.LevelInfo);
+                    #endif
+
+                    StopPresenceHeartbeat();
+                    pause = true;
+                }
+            }
             
             keepPresenceHearbeatRunning = true;
             if (!isPresenceHearbeatRunning) {

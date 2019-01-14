@@ -108,7 +108,8 @@ namespace PubNubAPI
                     isHearbeatRunning = true;
 
                     Uri request = BuildRequests.BuildTimeRequest(
-                        this.PubNubInstance
+                        this.PubNubInstance,
+                        null
                     );
 
                     RequestState requestState = new RequestState ();

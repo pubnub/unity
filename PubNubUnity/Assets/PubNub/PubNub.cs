@@ -38,7 +38,11 @@ namespace PubNubAPI
         public event EventHandler<EventArgs> SusbcribeCallback; 
         private void RaiseEvent(EventArgs ea){
             if (SusbcribeCallback != null) {
-                SusbcribeCallback.Raise (typeof(PubNub), ea);
+                try{
+                    SusbcribeCallback.Raise (typeof(PubNub), ea);
+                }catch (Exception ex) {
+                    throw new PubNubUserException(ex.Message, ex);
+                }
             }
         }
 
@@ -152,6 +156,11 @@ namespace PubNubAPI
         public UnsubscribeAllBuilder UnsubscribeAll(){
             PubNubUnityInitializationAfterCleanup();
             return pnUnity.UnsubscribeAll();
+        }
+
+        public PresenceHeartbeatBuilder Presence(){
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.Presence();
         }
 
         public GetStateBuilder GetPresenceState(){

@@ -38,10 +38,17 @@ namespace PubNubAPI
             pubBuilder.Count(historyCount);
             return this;
         }
+
+        public FetchBuilder QueryParam(Dictionary<string, string> queryParam){
+            pubBuilder.QueryParam(queryParam);
+            return this;
+        }
+
         public FetchBuilder(PubNubUnity pn){
             pubBuilder = new FetchMessagesRequestBuilder(pn);
 
         }
+
         public void Async(Action<PNFetchMessagesResult, PNStatus> callback)
         {
             pubBuilder.Async(callback);

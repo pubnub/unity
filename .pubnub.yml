@@ -3,6 +3,25 @@ changelog:
   - 
     changes: 
       - 
+        text: "Presence Heartbeat call delays itself when a Subscribe call precedes it"
+        type: improvement
+      - 
+        text: "Heartbeats per channel"
+        type: feature
+      - 
+        text: "QueryParams in all API calls"
+        type: feature
+      - 
+        text: "User Exceptions Fix"
+        type: improvement      
+      - 
+        text: "Leave callback message exception fix"
+        type: bug       
+    date: "Jan 9, 19"
+    version: v4.0.5
+  - 
+    changes: 
+      - 
         text: "UnityPackage reorganization"
         type: improvement
     date: "Nov 13, 18"
@@ -271,12 +290,15 @@ features:
     - CHANNEL-GROUPS-LIST-CHANNELS-IN-GROUP
   others: 
     - TELEMETRY
+    - QUERY-PARAM
   presence: 
     - PRESENCE-HERE-NOW
     - PRESENCE-WHERE-NOW
     - PRESENCE-SET-STATE
     - PRESENCE-GET-STATE
     - PRESENCE-HEARTBEAT
+    - PRESENCE-HEARTBEAT-ON-DEMAND
+    - PRESENCE-HEARTBEAT-THROTTLED    
     - PRESENCE-HERE-NOW-REFRESH
   publish: 
     - PUBLISH-STORE-FLAG
@@ -317,7 +339,8 @@ supported-platforms:
   - 
     editors: 
       - "Unity 5.5.1"
-      - "Unity 2017.3.0f3"
+      - "Unity 2017.3.*"
+      - "Unity 2018.*"
     platforms: 
       - "iOS player, will require iOS 7.0 or higher."
       - "Android, OS 2.3.1 or later; ARMv7 (Cortex) CPU with NEON support or Atom CPU; OpenGL ES 2.0 or later."
@@ -328,4 +351,4 @@ supported-platforms:
       - "Ubuntu 12.04+, with Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support."
       - "Mac OS X 10.8+, with Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support."
     version: "PubNub Unity SDK"
-version: v4.0.4
+version: v4.0.5

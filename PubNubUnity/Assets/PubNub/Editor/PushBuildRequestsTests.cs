@@ -2,6 +2,7 @@ using System;
 using PubNubAPI;
 using NUnit.Framework;
 using System.Text;
+using System.Collections.Generic;
 
 namespace PubNubAPI.Tests
 {
@@ -81,9 +82,28 @@ namespace PubNubAPI.Tests
             TestBuildRegisterDevicePushRequestCommon (false, "authKey", "pushToken", PNPushType.GCM);
         }
 
+        [Test]
+        public void TestBuildRegisterDevicePushRequestSSLGCMAuthQP ()
+        {
+            TestBuildRegisterDevicePushRequestCommon (false, "authKey", "pushToken", PNPushType.GCM, true);
+        }
+
         public void TestBuildRegisterDevicePushRequestCommon(bool ssl, string authKey, string pushToken, PNPushType pushType){
+            TestBuildRegisterDevicePushRequestCommon(ssl, authKey, pushToken, pushType, false);
+        }
+
+        public void TestBuildRegisterDevicePushRequestCommon(bool ssl, string authKey, string pushToken, PNPushType pushType, bool sendQueryParams){
             string channel = "push_channel";
             string uuid = "customuuid";
+            Dictionary<string,string> queryParams = new Dictionary<string, string>();
+            string queryParamString = "";
+            if(sendQueryParams){
+                queryParams.Add("d","f");
+                queryParamString="&d=f";
+            } else {
+                queryParams = null;
+            }
+
 
             PNConfiguration pnConfiguration = new PNConfiguration ();
             pnConfiguration.Origin = EditorCommon.Origin;
@@ -104,15 +124,16 @@ namespace PubNubAPI.Tests
                 authKeyString = string.Format ("&auth={0}", pnConfiguration.AuthKey);
             }
 
-            Uri uri = BuildRequests.BuildRegisterDevicePushRequest (channel, pushType, pushToken, pnUnity); 
+            Uri uri = BuildRequests.BuildRegisterDevicePushRequest (channel, pushType, pushToken, pnUnity, queryParams); 
 
             //[1, "Modified Channels"]
             //https://ps.pndsn.com/v1/push/sub-key/demo-36/devices/pushToken?add=push_channel&type=apns&uuid=customuuid&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
-            string expected = string.Format ("http{0}://{1}/v1/push/sub-key/{2}/devices/{3}?add={4}&type={5}&uuid={6}{7}&pnsdk={8}",
+            string expected = string.Format ("http{0}://{1}/v1/push/sub-key/{2}/devices/{3}?add={4}&type={5}&uuid={6}{7}&pnsdk={8}{9}",
                 ssl?"s":"", pnConfiguration.Origin, EditorCommon.SubscribeKey, pushToken, 
                 Utility.EncodeUricomponent(channel, PNOperationType.PNAddPushNotificationsOnChannelsOperation, true, false), pushType.ToString().ToLower(),
                 uuid, authKeyString, 
-                Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNAddPushNotificationsOnChannelsOperation, false, true)
+                Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNAddPushNotificationsOnChannelsOperation, false, true),
+                queryParamString
             );
             string received = uri.OriginalString;
             UnityEngine.Debug.Log("exp:"+expected);
@@ -192,9 +213,28 @@ namespace PubNubAPI.Tests
             TestBuildRemoveChannelPushRequestCommon (false, "authKey", "pushToken", PNPushType.GCM);
         }
 
+        [Test]
+        public void TestBuildRemoveChannelPushRequestSSLGCMAuthQP ()
+        {
+            TestBuildRemoveChannelPushRequestCommon (false, "authKey", "pushToken", PNPushType.GCM, true);
+        }
+
         public void TestBuildRemoveChannelPushRequestCommon(bool ssl, string authKey, string pushToken, PNPushType pushType){
+            TestBuildRemoveChannelPushRequestCommon(ssl, authKey, pushToken, pushType, false);
+        }
+
+        public void TestBuildRemoveChannelPushRequestCommon(bool ssl, string authKey, string pushToken, PNPushType pushType, bool sendQueryParams){
             string channel = "push_channel";
             string uuid = "customuuid";
+            Dictionary<string,string> queryParams = new Dictionary<string, string>();
+            string queryParamString = "";
+            if(sendQueryParams){
+                queryParams.Add("d","f");
+                queryParamString="&d=f";
+            } else {
+                queryParams = null;
+            }
+
 
             PNConfiguration pnConfiguration = new PNConfiguration ();
             pnConfiguration.Origin = EditorCommon.Origin;
@@ -215,14 +255,15 @@ namespace PubNubAPI.Tests
                 authKeyString = string.Format ("&auth={0}", pnConfiguration.AuthKey);
             }
 
-            Uri uri = BuildRequests.BuildRemoveChannelPushRequest (channel, pushType, pushToken, pnUnity);
+            Uri uri = BuildRequests.BuildRemoveChannelPushRequest (channel, pushType, pushToken, pnUnity, queryParams);
             //[1, "Modified Channels"]
             //http://ps.pndsn.com/v1/push/sub-key/demo-36/devices/pushToken?remove=push_channel&type=mpns&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
-            string expected = string.Format ("http{0}://{1}/v1/push/sub-key/{2}/devices/{3}?remove={4}&type={5}&uuid={6}{7}&pnsdk={8}",
+            string expected = string.Format ("http{0}://{1}/v1/push/sub-key/{2}/devices/{3}?remove={4}&type={5}&uuid={6}{7}&pnsdk={8}{9}",
                 ssl?"s":"", pnConfiguration.Origin, EditorCommon.SubscribeKey, pushToken, 
                 Utility.EncodeUricomponent(channel, PNOperationType.PNRemovePushNotificationsFromChannelsOperation, true, false), pushType.ToString().ToLower(),
                 uuid, authKeyString, 
-                Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNRemovePushNotificationsFromChannelsOperation, false, true)
+                Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNRemovePushNotificationsFromChannelsOperation, false, true),
+                queryParamString
             );
             string received = uri.OriginalString;
             UnityEngine.Debug.Log("exp:"+expected);
@@ -302,9 +343,26 @@ namespace PubNubAPI.Tests
             TestBuildGetChannelsPushRequestCommon (false, "authKey", "pushToken", PNPushType.GCM);
         }
 
-        public void TestBuildGetChannelsPushRequestCommon(bool ssl, string authKey, string pushToken, PNPushType pushType){
-            string uuid = "customuuid";
+        [Test]
+        public void TestBuildGetChannelsPushRequestSSLGCMAuthQP ()
+        {
+            TestBuildGetChannelsPushRequestCommon (false, "authKey", "pushToken", PNPushType.GCM, true);
+        }
 
+        public void TestBuildGetChannelsPushRequestCommon(bool ssl, string authKey, string pushToken, PNPushType pushType){
+            TestBuildGetChannelsPushRequestCommon(ssl, authKey, pushToken, pushType, false);
+        }
+
+        public void TestBuildGetChannelsPushRequestCommon(bool ssl, string authKey, string pushToken, PNPushType pushType, bool sendQueryParams){
+            string uuid = "customuuid";
+            Dictionary<string,string> queryParams = new Dictionary<string, string>();
+            string queryParamString = "";
+            if(sendQueryParams){
+                queryParams.Add("d","f");
+                queryParamString="&d=f";
+            } else {
+                queryParams = null;
+            }
             PNConfiguration pnConfiguration = new PNConfiguration ();
             pnConfiguration.Origin = EditorCommon.Origin;
             pnConfiguration.SubscribeKey = EditorCommon.SubscribeKey;
@@ -324,17 +382,18 @@ namespace PubNubAPI.Tests
                 authKeyString = string.Format ("&auth={0}", pnConfiguration.AuthKey);
             }
 
-            Uri uri = BuildRequests.BuildGetChannelsPushRequest (pushType, pushToken, pnUnity);
+            Uri uri = BuildRequests.BuildGetChannelsPushRequest (pushType, pushToken, pnUnity, queryParams);
 
             //[1, "Modified Channels"]
             //["push_channel"]
             //https://ps.pndsn.com/v1/push/sub-key/demo-36/devices/pushToken?type=wns&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
             //https://ps.pndsn.com/v1/push/sub-key/demo-36/devices/pushToken?type=mpns&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
-            string expected = string.Format ("http{0}://{1}/v1/push/sub-key/{2}/devices/{3}?type={4}&uuid={5}{6}&pnsdk={7}",
+            string expected = string.Format ("http{0}://{1}/v1/push/sub-key/{2}/devices/{3}?type={4}&uuid={5}{6}&pnsdk={7}{8}",
                 ssl?"s":"", pnConfiguration.Origin, EditorCommon.SubscribeKey, pushToken, 
                 pushType.ToString().ToLower(),
                 uuid, authKeyString, 
-                Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNPushNotificationEnabledChannelsOperation, false, true)
+                Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNPushNotificationEnabledChannelsOperation, false, true),
+                queryParamString
             );
             string received = uri.OriginalString;
             UnityEngine.Debug.Log("exp:"+expected);
@@ -414,8 +473,26 @@ namespace PubNubAPI.Tests
             BuildUnregisterDevicePushRequestCommon (false, "authKey", "pushToken", PNPushType.GCM);
         }
 
+        [Test]
+        public void BuildUnregisterDevicePushRequestSSLGCMAuthQP ()
+        {
+            BuildUnregisterDevicePushRequestCommon (false, "authKey", "pushToken", PNPushType.GCM, true);
+        }
+
         public void BuildUnregisterDevicePushRequestCommon(bool ssl, string authKey, string pushToken, PNPushType pushType){
+            BuildUnregisterDevicePushRequestCommon(ssl, authKey, pushToken, pushType, false);
+        }
+
+        public void BuildUnregisterDevicePushRequestCommon(bool ssl, string authKey, string pushToken, PNPushType pushType, bool sendQueryParams){
             string uuid = "customuuid";
+            Dictionary<string,string> queryParams = new Dictionary<string, string>();
+            string queryParamString = "";
+            if(sendQueryParams){
+                queryParams.Add("d","f");
+                queryParamString="&d=f";
+            } else {
+                queryParams = null;
+            }
 
             PNConfiguration pnConfiguration = new PNConfiguration ();
             pnConfiguration.Origin = EditorCommon.Origin;
@@ -436,14 +513,15 @@ namespace PubNubAPI.Tests
                 authKeyString = string.Format ("&auth={0}", pnConfiguration.AuthKey);
             }
 
-            Uri uri = BuildRequests.BuildUnregisterDevicePushRequest (pushType, pushToken, pnUnity);
+            Uri uri = BuildRequests.BuildUnregisterDevicePushRequest (pushType, pushToken, pnUnity, queryParams);
             //[1, "Removed Device"]
             //https://ps.pndsn.com/v1/push/sub-key/demo-36/devices/pushToken/remove?type=wns&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
-            string expected = string.Format ("http{0}://{1}/v1/push/sub-key/{2}/devices/{3}/remove?type={4}&uuid={5}{6}&pnsdk={7}",
+            string expected = string.Format ("http{0}://{1}/v1/push/sub-key/{2}/devices/{3}/remove?type={4}&uuid={5}{6}&pnsdk={7}{8}",
                 ssl?"s":"", pnConfiguration.Origin, EditorCommon.SubscribeKey, pushToken, 
                 pushType.ToString().ToLower(),
                 uuid, authKeyString, 
-                Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNRemoveAllPushNotificationsOperation, false, true)
+                Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNRemoveAllPushNotificationsOperation, false, true),
+                queryParamString
             );
             string received = uri.OriginalString;
             UnityEngine.Debug.Log("exp:"+expected);

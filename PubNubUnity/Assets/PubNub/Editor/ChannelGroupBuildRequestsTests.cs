@@ -2,6 +2,7 @@ using System;
 using PubNubAPI;
 using NUnit.Framework;
 using System.Text;
+using System.Collections.Generic;
 
 namespace PubNubAPI.Tests
 {
@@ -66,7 +67,27 @@ namespace PubNubAPI.Tests
             TestBuildAddChannelsToChannelGroupRequestCommon (channels, true, "");
         }
 
+        [Test]
+        public void BuildAddChannelsToChannelGroupRequestSSLNoAuthChQP ()
+        {
+            string [] channels = {"addChannel1"};
+            TestBuildAddChannelsToChannelGroupRequestCommon (channels, true, "", true);
+        }
+
         public void TestBuildAddChannelsToChannelGroupRequestCommon(string[] channels, bool ssl, string authKey){
+            TestBuildAddChannelsToChannelGroupRequestCommon(channels, ssl, authKey, false);
+        }
+            
+        public void TestBuildAddChannelsToChannelGroupRequestCommon(string[] channels, bool ssl, string authKey, bool sendQueryParams)
+        {
+            Dictionary<string,string> queryParams = new Dictionary<string, string>();
+            string queryParamString = "";
+            if(sendQueryParams){
+                queryParams.Add("d","f");
+                queryParamString="&d=f";
+            } else {
+                queryParams = null;
+            }
 
             string channelGroup = "channelGroup";
             string uuid = "customuuid";
@@ -92,18 +113,18 @@ namespace PubNubAPI.Tests
             }
 
             Uri uri = BuildRequests.BuildAddChannelsToChannelGroupRequest (channels, "", channelGroup,
-                pnUnity
+                pnUnity, queryParams
             );
 
             string ch = string.Join(",", channels);
 
             //http://ps.pndsn.com/v1/channel-registration/sub-key/demo-36/channel-group/channelGroup?add=addChannel1,%20addChannel2&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityOSX%2F3.7
-            string expected = string.Format ("http{0}://{1}/v1/channel-registration/sub-key/{2}/channel-group/{3}?add={4}&uuid={5}{6}&pnsdk={7}",
+            string expected = string.Format ("http{0}://{1}/v1/channel-registration/sub-key/{2}/channel-group/{3}?add={4}&uuid={5}{6}&pnsdk={7}{8}",
                 ssl?"s":"", pnConfiguration.Origin, EditorCommon.SubscribeKey, channelGroup, 
                 Utility.EncodeUricomponent(ch, PNOperationType.PNAddChannelsToGroupOperation, true, true),
                 uuid, authKeyString, 
-                Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNAddChannelsToGroupOperation, false, true)
-
+                Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNAddChannelsToGroupOperation, false, true),
+                queryParamString
             );
             string received = uri.OriginalString;
             EditorCommon.LogAndCompare (expected, received);
@@ -167,7 +188,6 @@ namespace PubNubAPI.Tests
             TestBuildRemoveChannelsFromChannelGroupRequestCommon (channels, false, "authKey");
         }
 
-
         [Test]
         public void BuildBuildRemoveChannelsFromChannelGroupRequestAuth ()
         {
@@ -175,9 +195,29 @@ namespace PubNubAPI.Tests
             TestBuildRemoveChannelsFromChannelGroupRequestCommon (channels, false, "authKey");
         }
 
+        [Test]
+        public void BuildBuildRemoveChannelsFromChannelGroupRequestAuthQP ()
+        {
+            string [] channels = {"addChannel1"};
+            TestBuildRemoveChannelsFromChannelGroupRequestCommon (channels, false, "authKey", true);
+        }
+
+        public void TestBuildRemoveChannelsFromChannelGroupRequestCommon(string[] channels, bool ssl, string authKey){
+            TestBuildRemoveChannelsFromChannelGroupRequestCommon(channels, ssl, authKey, false);
+        }
+
         //remove channels
         //remove cg
-        public void TestBuildRemoveChannelsFromChannelGroupRequestCommon(string[] channels, bool ssl, string authKey){
+        public void TestBuildRemoveChannelsFromChannelGroupRequestCommon(string[] channels, bool ssl, string authKey, bool sendQueryParams){
+
+            Dictionary<string,string> queryParams = new Dictionary<string, string>();
+            string queryParamString = "";
+            if(sendQueryParams){
+                queryParams.Add("d","f");
+                queryParamString="&d=f";
+            } else {
+                queryParams = null;
+            }
 
             string channelGroup = "channelGroup";
             string uuid = "customuuid";
@@ -203,7 +243,7 @@ namespace PubNubAPI.Tests
             }
 
             Uri uri = BuildRequests.BuildRemoveChannelsFromChannelGroupRequest (channels, "", channelGroup,
-                pnUnity
+                pnUnity, queryParams
             );
 
             string ch = "";
@@ -216,11 +256,12 @@ namespace PubNubAPI.Tests
             }
 
             //http://ps.pndsn.com/v1/channel-registration/sub-key/demo-36/channel-group/channelGroup?add=addChannel1,%20addChannel2&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityOSX%2F3.7
-            string expected = string.Format ("http{0}://{1}/v1/channel-registration/sub-key/{2}/channel-group/{3}{8}?{4}uuid={5}{6}&pnsdk={7}",
+            string expected = string.Format ("http{0}://{1}/v1/channel-registration/sub-key/{2}/channel-group/{3}{8}?{4}uuid={5}{6}&pnsdk={7}{9}",
                 ssl?"s":"", pnConfiguration.Origin, EditorCommon.SubscribeKey, channelGroup, 
                 chStr, uuid, authKeyString, 
                 Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNRemoveChannelsFromGroupOperation, false, true),
-                chStr2
+                chStr2,
+                queryParamString
 
             );
             string received = uri.OriginalString;
@@ -275,10 +316,28 @@ namespace PubNubAPI.Tests
             TestBuildGetChannelsForChannelGroupRequestCommon (true, true, "authKey");
         }
 
+        [Test]
+        public void TestBuildGetChannelsForChannelGroupRequestSSLAuthAllQP ()
+        {
+            TestBuildGetChannelsForChannelGroupRequestCommon (true, true, "authKey", true);
+        }
+
+        public void TestBuildGetChannelsForChannelGroupRequestCommon(bool allCg, bool ssl, string authKey){
+            TestBuildGetChannelsForChannelGroupRequestCommon(allCg, ssl, authKey, false);
+        }
         //GetChannels
         //Get All CG
-        public void TestBuildGetChannelsForChannelGroupRequestCommon(bool allCg, 
-            bool ssl, string authKey){
+        public void TestBuildGetChannelsForChannelGroupRequestCommon(bool allCg, bool ssl, string authKey, bool sendQueryParams){
+
+            Dictionary<string,string> queryParams = new Dictionary<string, string>();
+            string queryParamString = "";
+            if(sendQueryParams){
+                queryParams.Add("d","f");
+                queryParamString="&d=f";
+            } else {
+                queryParams = null;
+            }
+
 
             string channelGroup = "channelGroup";
             string channelGroupStr ="channel-group/";
@@ -308,17 +367,17 @@ namespace PubNubAPI.Tests
             }
 
             Uri uri = BuildRequests.BuildGetChannelsForChannelGroupRequest ("", channelGroup, allCg,
-                pnUnity
+                pnUnity, queryParams
             );
 
             //http://ps.pndsn.com/v1/channel-registration/sub-key/demo-36/channel-group/channelGroup?add=addChannel1,%20addChannel2&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityOSX%2F3.7
-            string expected = string.Format ("http{0}://{1}/v1/channel-registration/sub-key/{2}/{8}{3}?uuid={5}{6}&pnsdk={7}",
+            string expected = string.Format ("http{0}://{1}/v1/channel-registration/sub-key/{2}/{8}{3}?uuid={5}{6}&pnsdk={7}{9}",
                 ssl?"s":"", pnConfiguration.Origin, EditorCommon.SubscribeKey, channelGroup, 
                 "",
                 uuid, authKeyString, 
                 Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNChannelsForGroupOperation, false, true),
-                channelGroupStr
-
+                channelGroupStr,
+                queryParamString
             );
             string received = uri.OriginalString;
             EditorCommon.LogAndCompare (expected, received);

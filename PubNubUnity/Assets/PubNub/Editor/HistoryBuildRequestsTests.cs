@@ -2,6 +2,7 @@ using System;
 using PubNubAPI;
 using NUnit.Framework;
 using System.Text;
+using System.Collections.Generic;
 
 namespace PubNubAPI.Tests
 {
@@ -1017,10 +1018,32 @@ namespace PubNubAPI.Tests
             TestBuildDetailedHistoryRequestCommon (true, true, true, "", startTime, endTime, -1);
         }
 
+        [Test]
+        public void TestBuildDetailedHistoryRequestIncludeTTReverseSSLStartEndNoAuthNoCountQP ()
+        {
+            long startTime = -1;
+            long endTime = -1;
+
+            TestBuildDetailedHistoryRequestCommon (true, true, true, "", startTime, endTime, -1, true);
+        }
+
         public void TestBuildDetailedHistoryRequestCommon(bool ssl, bool reverse, bool includeTimetoken, 
             string authKey, long startTime, long endTime, int count){
+                TestBuildDetailedHistoryRequestCommon(ssl, reverse, includeTimetoken, authKey, startTime, endTime, count, false);
+        }
+
+        public void TestBuildDetailedHistoryRequestCommon(bool ssl, bool reverse, bool includeTimetoken, 
+            string authKey, long startTime, long endTime, int count, bool sendQueryParams){
             string channel = "history_channel";
             string uuid = "customuuid";
+            Dictionary<string,string> queryParams = new Dictionary<string, string>();
+            string queryParamString = "";
+            if(sendQueryParams){
+                queryParams.Add("d","f");
+                queryParamString="&d=f";
+            } else {
+                queryParams = null;
+            }
 
             PNConfiguration pnConfiguration = new PNConfiguration ();
             pnConfiguration.Origin = EditorCommon.Origin;
@@ -1055,7 +1078,7 @@ namespace PubNubAPI.Tests
             }
 
             Uri uri = BuildRequests.BuildHistoryRequest (channel, startTime, endTime, (uint)count, reverse, 
-                includeTimetoken, pnUnity
+                includeTimetoken, pnUnity, queryParams
             );
 
             if (count == -1) {
@@ -1064,11 +1087,12 @@ namespace PubNubAPI.Tests
             //Received:http://ps.pndsn.com/v2/history/sub-key/demo/channel/history_channel?count=90&reverse=true&start=14498416434364941&end=14498416799269095&auth=authKey&uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX/3.6.9.0
             //Received:https://ps.pndsn.com/v2/history/sub-key/demo/channel/history_channel?count=90&include_token=true&start=14498416434364941&end=14498416799269095&auth=authKey&uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX/3.6.9.0
             //http://ps.pndsn.com/v2/history/sub-key/demo/channel/publish_channel?count=90&start=14498416434364941&end=14498416799269095&auth=authKey&uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX/3.6.9.0
-            string expected = string.Format ("http{0}://{1}/v2/history/sub-key/{2}/channel/{3}?count={4}{5}{6}{7}{8}{9}&uuid={10}&pnsdk={11}",
+            string expected = string.Format ("http{0}://{1}/v2/history/sub-key/{2}/channel/{3}?count={4}{5}{6}{7}{8}{9}&uuid={10}&pnsdk={11}{12}",
                 ssl?"s":"", pnConfiguration.Origin, EditorCommon.SubscribeKey, channel, count,
                 includeTimetoken?"&include_token=true":"", reverse?"&reverse=true":"",
                 startTimeString, endTimeString,    authKeyString, uuid, 
-                Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNHistoryOperation, false, true)
+                Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNHistoryOperation, false, true),
+                queryParamString
             );
             string received = uri.OriginalString;
             EditorCommon.LogAndCompare (expected, received);

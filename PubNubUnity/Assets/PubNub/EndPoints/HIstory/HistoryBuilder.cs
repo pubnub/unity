@@ -43,6 +43,11 @@ namespace PubNubAPI
             return this;
         }
 
+        public HistoryBuilder QueryParam(Dictionary<string, string> queryParam){
+            pubBuilder.QueryParam(queryParam);
+            return this;
+        }
+
         public void Async(Action<PNHistoryResult, PNStatus> callback)
         {
             pubBuilder.Async(callback);

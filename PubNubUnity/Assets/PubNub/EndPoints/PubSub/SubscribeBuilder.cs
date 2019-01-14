@@ -37,6 +37,12 @@ namespace PubNubAPI
             pubBuilder.ChannelGroups(channelGroupNames);
             return this;
         }
+
+        public SubscribeBuilder QueryParam(Dictionary<string, string> queryParam){
+            pubBuilder.QueryParam(queryParam);
+            return this;
+        }
+
         #endregion
     }
 }

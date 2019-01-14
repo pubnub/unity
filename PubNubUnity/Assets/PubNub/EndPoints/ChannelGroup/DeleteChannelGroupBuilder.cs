@@ -12,10 +12,16 @@ namespace PubNubAPI
             pubBuilder.ChannelGroup(channelGroupName);
             return this;
         }
+
+        public DeleteChannelGroupBuilder QueryParam(Dictionary<string, string> queryParam){
+            pubBuilder.QueryParam(queryParam);
+            return this;
+        }
         
         public DeleteChannelGroupBuilder(PubNubUnity pn){
             pubBuilder = new DeleteChannelGroupRequestBuilder(pn);
         }
+        
         public void Async(Action<PNChannelGroupsDeleteGroupResult, PNStatus> callback)
         {
             pubBuilder.Async(callback);

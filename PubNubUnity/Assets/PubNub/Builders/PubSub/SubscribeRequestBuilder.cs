@@ -10,6 +10,8 @@ namespace PubNubAPI
         public List<string> ChannelsToUse { get; private set;}
         public List<string> ChannelGroupsToUse { get; private set;}
 
+        internal Dictionary<string, string> QueryParams { get; private set;}
+
         protected PubNubUnity PubNubInstance { get; set;}
 
         public bool IncludePresenceChannel {get; set;}
@@ -84,6 +86,7 @@ namespace PubNubAPI
             if (channelsOrChannelGroupsAdded){
                 this.PubNubInstance.SubscriptionInstance.Add (newChannelEntities);
                 this.PubNubInstance.SubWorker.Add (timetokenToUse, subscribedChannels);
+                this.PubNubInstance.SubWorker.QueryParams = QueryParams;
             }
             else {
                 #if (ENABLE_PUBNUB_LOGGING)
@@ -120,6 +123,10 @@ namespace PubNubAPI
 
         public void ChannelGroups(List<string> channelGroupNames){
             ChannelGroupsToUse = channelGroupNames;
+        }
+
+        public void QueryParam(Dictionary<string, string> queryParam){
+            QueryParams = queryParam;
         }
         #endregion
     }
