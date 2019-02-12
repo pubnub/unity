@@ -23,10 +23,10 @@ namespace PubNubAPI
             if(cleanedUp){
                 pnUnity = new PubNubUnity(PNConfig, gameObj, jsonLibrary);
             
-                pnUnity.SusbcribeCallback += (sender, e) => { 
-                    SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
+                pnUnity.SubscribeCallback += (sender, e) => { 
+                    SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
                     #if (ENABLE_PUBNUB_LOGGING)
-                    this.pnUnity.PNLog.WriteToLog("SusbcribeCallback PN", PNLoggingMethod.LevelInfo);
+                    this.pnUnity.PNLog.WriteToLog("SubscribeCallback PN", PNLoggingMethod.LevelInfo);
                     #endif
                     RaiseEvent(mea);
                 };
@@ -35,11 +35,11 @@ namespace PubNubAPI
             }
         }
 
-        public event EventHandler<EventArgs> SusbcribeCallback; 
+        public event EventHandler<EventArgs> SubscribeCallback; 
         private void RaiseEvent(EventArgs ea){
-            if (SusbcribeCallback != null) {
+            if (SubscribeCallback != null) {
                 try{
-                    SusbcribeCallback.Raise (typeof(PubNub), ea);
+                    SubscribeCallback.Raise (typeof(PubNub), ea);
                 }catch (Exception ex) {
                     throw new PubNubUserException(ex.Message, ex);
                 }

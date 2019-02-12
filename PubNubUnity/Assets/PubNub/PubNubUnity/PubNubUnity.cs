@@ -6,10 +6,10 @@ namespace PubNubAPI
 {
     public class PubNubUnity: PubNubUnityBase
     {
-        public event EventHandler<EventArgs> SusbcribeCallback; 
+        public event EventHandler<EventArgs> SubscribeCallback; 
         public void RaiseEvent(EventArgs ea){
-            if (SusbcribeCallback != null) {
-                SusbcribeCallback.Raise (typeof(PubNubUnity), ea);
+            if (SubscribeCallback != null) {
+                SubscribeCallback.Raise (typeof(PubNubUnity), ea);
             }
         }
 
@@ -61,11 +61,11 @@ namespace PubNubAPI
 
         public void AddListener(Action<PNStatus> callback, Action<PNMessageResult> callback2, Action<PNPresenceEventResult> callback3)
         {
-            SusbcribeCallback += (object sender, EventArgs e) => {
-                SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
+            SubscribeCallback += (object sender, EventArgs e) => {
+                SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
 
                 #if (ENABLE_PUBNUB_LOGGING)
-                this.PNLog.WriteToLog("AddListener SusbcribeCallback", PNLoggingMethod.LevelInfo);
+                this.PNLog.WriteToLog("AddListener SubscribeCallback", PNLoggingMethod.LevelInfo);
                 #endif
                 
                 if(mea!=null){
