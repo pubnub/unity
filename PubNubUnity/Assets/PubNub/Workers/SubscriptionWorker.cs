@@ -6,12 +6,13 @@ using System.Text;
 
 namespace PubNubAPI
 {
-    internal class SubscribeEventEventArgs : EventArgs
+    
+    public class SubscribeEventEventArgs : EventArgs
     {
         public PNStatus Status;
         public PNPresenceEventResult PresenceEventResult;
         public PNMessageResult MessageResult;
-    }
+    }   
 
     public class SubscriptionWorker<U>
     {

@@ -36,6 +36,9 @@ namespace PubNubAPI
         }
 
         public event EventHandler<EventArgs> SubscribeCallback; 
+
+        [System.Obsolete("This is an obsolete event, use SubscribeCallback")]
+        public event EventHandler<EventArgs> SusbcribeCallback; 
         private void RaiseEvent(EventArgs ea){
             if (SubscribeCallback != null) {
                 try{

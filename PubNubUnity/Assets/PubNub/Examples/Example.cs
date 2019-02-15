@@ -388,9 +388,9 @@ namespace PubNubExample
         void Init(){
             Debug.Log ("Starting");
             PNConfiguration pnConfiguration = new PNConfiguration ();
-            pnConfiguration.SubscribeKey = "sub-c-b05d4a0c-708d-11e7-96c9-0619f8945a4f";//"demo";
-            pnConfiguration.PublishKey = "pub-c-94691e07-c8aa-42f9-a838-bea61ac6655e";//"demo";
-            pnConfiguration.SecretKey = "sec-c-ZmIyZjFjMjQtZTNmZC00MmIwLWFhNzUtNDUyNmIwYWU1YzRl";//"demo";
+            pnConfiguration.SubscribeKey = "demo";
+            pnConfiguration.PublishKey = "demo";
+            pnConfiguration.SecretKey = "demo";
             pnConfiguration.Secure = true;
             pnConfiguration.CipherKey = "enigma";
             pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
@@ -504,6 +504,7 @@ namespace PubNubExample
 
 
         void SubscribeCallbackHandler(object sender, EventArgs e){
+            Debug.Log("SubscribeCallbackHandler Event handler");
             SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
 
                 if(mea.Status != null){
@@ -527,6 +528,8 @@ namespace PubNubExample
                         pubnub.CleanUp();
                         break;
                     }
+                } else {
+                    Debug.Log("mea.Status null" + e.GetType().ToString() + mea.GetType().ToString());
                 }
                 if(mea.MessageResult != null){
                     Debug.Log ("In Example, SubscribeCallback in message" + mea.MessageResult.Channel + mea.MessageResult.Payload);
