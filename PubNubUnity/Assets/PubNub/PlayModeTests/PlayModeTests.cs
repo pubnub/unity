@@ -1977,7 +1977,6 @@ namespace PubNubAPI.Tests
 			pubnub2.CleanUp();
 		}
 
-		[UnityTest]
 		public IEnumerator TestReconnect() {
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random ();
@@ -2105,7 +2104,6 @@ namespace PubNubAPI.Tests
 			pubnub2.CleanUp();
 		}
 
-		[UnityTest]
 		public IEnumerator TestPresenceCG() {
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random ();
