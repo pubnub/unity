@@ -316,7 +316,7 @@ namespace PubNubExample
         void SubscribeHandler(){
             Dictionary<string, string> dict = new Dictionary<string, string>();
             dict.Add  ("k1", "v1");
-            pubnub.SusbcribeCallback += SusbcribeCallbackHandler;
+            pubnub.SubscribeCallback += SubscribeCallbackHandler;
 
             pubnub.Subscribe ().Channels(new List<string> (){ch1}).WithPresence().QueryParam(dict).Execute();
         }
@@ -388,9 +388,9 @@ namespace PubNubExample
         void Init(){
             Debug.Log ("Starting");
             PNConfiguration pnConfiguration = new PNConfiguration ();
-            pnConfiguration.SubscribeKey = "sub-c-b05d4a0c-708d-11e7-96c9-0619f8945a4f";//"demo";
-            pnConfiguration.PublishKey = "pub-c-94691e07-c8aa-42f9-a838-bea61ac6655e";//"demo";
-            pnConfiguration.SecretKey = "sec-c-ZmIyZjFjMjQtZTNmZC00MmIwLWFhNzUtNDUyNmIwYWU1YzRl";//"demo";
+            pnConfiguration.SubscribeKey = "demo";
+            pnConfiguration.PublishKey = "demo";
+            pnConfiguration.SecretKey = "demo";
             pnConfiguration.Secure = true;
             pnConfiguration.CipherKey = "enigma";
             pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
@@ -411,8 +411,8 @@ namespace PubNubExample
         Dictionary<string, Dictionary<string, object>> messageList = new Dictionary<string, Dictionary<string, object>>();
  
 
-        void SusbcribeCallbackHandler2(object sender, EventArgs e) {
-            SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
+        void SubscribeCallbackHandler2(object sender, EventArgs e) {
+            SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
 
             if (mea.Status != null) {
                 Debug.Log("mea.Status: " + mea.Status);
@@ -424,10 +424,10 @@ namespace PubNubExample
                 }
             }
             if (mea.MessageResult != null) {
-                Debug.Log("SusbcribeCallback in message" + mea.MessageResult.Channel + mea.MessageResult.Payload);
+                Debug.Log("SubscribeCallback in message" + mea.MessageResult.Channel + mea.MessageResult.Payload);
             }
             if (mea.PresenceEventResult != null) {
-                Debug.Log("SusbcribeCallback in presence" + mea.PresenceEventResult.Channel + mea.PresenceEventResult.Occupancy + mea.PresenceEventResult.Event);
+                Debug.Log("SubscribeCallback in presence" + mea.PresenceEventResult.Channel + mea.PresenceEventResult.Occupancy + mea.PresenceEventResult.Event);
             }
         }
 
@@ -503,8 +503,9 @@ namespace PubNubExample
 
 
 
-        void SusbcribeCallbackHandler(object sender, EventArgs e){
-            SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
+        void SubscribeCallbackHandler(object sender, EventArgs e){
+            Debug.Log("SubscribeCallbackHandler Event handler");
+            SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
 
                 if(mea.Status != null){
                     switch (mea.Status.Category){
@@ -527,15 +528,17 @@ namespace PubNubExample
                         pubnub.CleanUp();
                         break;
                     }
+                } else {
+                    Debug.Log("mea.Status null" + e.GetType().ToString() + mea.GetType().ToString());
                 }
                 if(mea.MessageResult != null){
-                    Debug.Log ("In Example, SusbcribeCallback in message" + mea.MessageResult.Channel + mea.MessageResult.Payload);
+                    Debug.Log ("In Example, SubscribeCallback in message" + mea.MessageResult.Channel + mea.MessageResult.Payload);
                     //var a = mea.MessageResult.Payload as Dictionary<string, string>;
                     //var b = a["a"];
-                    Display(string.Format("SusbcribeCallback Result: {0}", pubnub.JsonLibrary.SerializeToJsonString(mea.MessageResult.Payload)));
+                    Display(string.Format("SubscribeCallback Result: {0}", pubnub.JsonLibrary.SerializeToJsonString(mea.MessageResult.Payload)));
                 }
                 if(mea.PresenceEventResult != null){
-                    Debug.Log ("In Example, SusbcribeCallback in presence" + mea.PresenceEventResult.Channel + mea.PresenceEventResult.Occupancy + mea.PresenceEventResult.Event);
+                    Debug.Log ("In Example, SubscribeCallback in presence" + mea.PresenceEventResult.Channel + mea.PresenceEventResult.Occupancy + mea.PresenceEventResult.Event);
                 }
         }
 

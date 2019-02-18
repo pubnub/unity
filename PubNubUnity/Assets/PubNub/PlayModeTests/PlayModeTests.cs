@@ -553,8 +553,8 @@ namespace PubNubAPI.Tests
 			channelList2.Add(channel);
 			bool tresult = false;
 
-			pubnub.SusbcribeCallback += (sender, e) => { 
-				SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
+			pubnub.SubscribeCallback += (sender, e) => { 
+				SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
 				if(mea.Status.Category.Equals(PNStatusCategory.PNConnectedCategory)){
 					tresult = mea.Status.UUID.Contains(pnConfiguration.UUID);
 					Assert.True(tresult);
@@ -579,8 +579,8 @@ namespace PubNubAPI.Tests
 			channelList2.Add(channel);
 			bool tresult = false;
 
-			pubnub.SusbcribeCallback += (sender, e) => { 
-				SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
+			pubnub.SubscribeCallback += (sender, e) => { 
+				SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
 				if(mea.Status.Category.Equals(PNStatusCategory.PNCancelledCategory)){
 					Assert.True(mea.Status.Error);
 					if(mea.Status.ErrorData!=null){
@@ -612,8 +612,8 @@ namespace PubNubAPI.Tests
 			channelList2.Add(channel);
 			bool tresult = false;
 
-			pubnub.SusbcribeCallback += (sender, e) => { 
-				SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
+			pubnub.SubscribeCallback += (sender, e) => { 
+				SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
 				if(mea.Status.Category.Equals(PNStatusCategory.PNUnknownCategory)){
 					Debug.Log("mea.Status.Error:" + mea.Status.Error);
 					Assert.True(mea.Status.Error);
@@ -653,8 +653,8 @@ namespace PubNubAPI.Tests
 
 			PubNub pubnub2 = new PubNub(pnConfiguration2);
 
-			pubnub.SusbcribeCallback += (sender, e) => { 
-				SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
+			pubnub.SubscribeCallback += (sender, e) => { 
+				SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
 				if(!mea.Status.Category.Equals(PNStatusCategory.PNConnectedCategory)){
 					if(mea.PresenceEventResult.Event.Equals("join")){
 						Debug.Log(mea.PresenceEventResult.UUID);
@@ -715,8 +715,8 @@ namespace PubNubAPI.Tests
 			channelList2.Add(publishChannel);
 			//bool testReturn = false;
 			
-			pubnub.SusbcribeCallback += (sender, e) => { 
-				SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
+			pubnub.SubscribeCallback += (sender, e) => { 
+				SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
 				if(!mea.Status.Category.Equals(PNStatusCategory.PNConnectedCategory)){
 					if(payload.ContainsKey(mea.MessageResult.Payload.ToString())){
 						payload[mea.MessageResult.Payload.ToString()] = true;
@@ -755,8 +755,8 @@ namespace PubNubAPI.Tests
 			
 			bool testReturn = false;
 			
-			pubnub.SusbcribeCallback += (sender, e) => { 
-				SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
+			pubnub.SubscribeCallback += (sender, e) => { 
+				SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
 				if(!mea.Status.Category.Equals(PNStatusCategory.PNConnectedCategory)){
 					Debug.Log("PAYLOAD20:" + payload.ToString() + payload.GetType());		
 					
@@ -975,8 +975,8 @@ namespace PubNubAPI.Tests
 			channelList2.Add(channel);
 			bool tresult = false;
 
-			pubnub.SusbcribeCallback += (sender, e) => { 
-				SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
+			pubnub.SubscribeCallback += (sender, e) => { 
+				SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
 				if(!mea.Status.Category.Equals(PNStatusCategory.PNConnectedCategory)){
 					tresult = mea.MessageResult.Channel.Equals(channel) && mea.MessageResult.Payload.ToString().Equals(payload);
 				} 
@@ -1056,14 +1056,14 @@ namespace PubNubAPI.Tests
 			tresult = false;
 			string payload = string.Format("payload {0}", pnConfiguration.UUID);
 
-			pubnub.SusbcribeCallback += (sender, e) => { 
-				SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
+			pubnub.SubscribeCallback += (sender, e) => { 
+				SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
 				if(!mea.Status.Category.Equals(PNStatusCategory.PNConnectedCategory)){
 					if(mea.MessageResult!=null){
-						Debug.Log("SusbcribeCallback" + mea.MessageResult.Subscription);
-						Debug.Log("SusbcribeCallback" + mea.MessageResult.Channel);
-						Debug.Log("SusbcribeCallback" + mea.MessageResult.Payload);
-						Debug.Log("SusbcribeCallback" + mea.MessageResult.Timetoken);
+						Debug.Log("SubscribeCallback" + mea.MessageResult.Subscription);
+						Debug.Log("SubscribeCallback" + mea.MessageResult.Channel);
+						Debug.Log("SubscribeCallback" + mea.MessageResult.Payload);
+						Debug.Log("SubscribeCallback" + mea.MessageResult.Timetoken);
 						bool matchChannel = mea.MessageResult.Channel.Equals(channel);
 						Assert.True(matchChannel);
 						bool matchSubscription = mea.MessageResult.Subscription.Equals(channelGroup);
@@ -1442,13 +1442,13 @@ namespace PubNubAPI.Tests
 			channelList2.Add(channel);
 			bool tresult = false;
 
-			pubnub.SusbcribeCallback += (sender, e) => { 
-				SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
+			pubnub.SubscribeCallback += (sender, e) => { 
+				SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
 				if(!mea.Status.Category.Equals(PNStatusCategory.PNConnectedCategory)){
-					Debug.Log("SusbcribeCallback" + mea.MessageResult.Subscription);
-					Debug.Log("SusbcribeCallback" + mea.MessageResult.Channel);
-					Debug.Log("SusbcribeCallback" + mea.MessageResult.Payload);
-					Debug.Log("SusbcribeCallback" + mea.MessageResult.Timetoken);
+					Debug.Log("SubscribeCallback" + mea.MessageResult.Subscription);
+					Debug.Log("SubscribeCallback" + mea.MessageResult.Channel);
+					Debug.Log("SubscribeCallback" + mea.MessageResult.Payload);
+					Debug.Log("SubscribeCallback" + mea.MessageResult.Timetoken);
 					bool matchChannel = mea.MessageResult.Channel.Equals(channel);
 					Assert.True(matchChannel);
 					bool matchPayload = mea.MessageResult.Payload.ToString().Equals(payload);
@@ -1488,13 +1488,13 @@ namespace PubNubAPI.Tests
 			channelList2.Add(channel);
 			bool tresult = false;
 
-			pubnub.SusbcribeCallback += (sender, e) => { 
-				SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
+			pubnub.SubscribeCallback += (sender, e) => { 
+				SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
 				if(!mea.Status.Category.Equals(PNStatusCategory.PNConnectedCategory)){
-					Debug.Log("SusbcribeCallback" + mea.MessageResult.Subscription);
-					Debug.Log("SusbcribeCallback" + mea.MessageResult.Channel);
-					Debug.Log("SusbcribeCallback" + mea.MessageResult.Payload);
-					Debug.Log("SusbcribeCallback" + mea.MessageResult.Timetoken);
+					Debug.Log("SubscribeCallback" + mea.MessageResult.Subscription);
+					Debug.Log("SubscribeCallback" + mea.MessageResult.Channel);
+					Debug.Log("SubscribeCallback" + mea.MessageResult.Payload);
+					Debug.Log("SubscribeCallback" + mea.MessageResult.Timetoken);
 					bool matchChannel = mea.MessageResult.Channel.Equals(channel);
 					Assert.True(matchChannel);
 					bool matchPayload = mea.MessageResult.Payload.ToString().Equals(payload);
@@ -1746,8 +1746,8 @@ namespace PubNubAPI.Tests
 			PNConfiguration pnConfiguration2 = PlayModeCommon.SetPNConfig(false);
 			pnConfiguration2.UUID = "UnityWildSubscribeUUID2_" + r.Next (100);
 
-			pubnub.SusbcribeCallback += (sender, e) => { 
-				SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
+			pubnub.SubscribeCallback += (sender, e) => { 
+				SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
 				if(!mea.Status.Category.Equals(PNStatusCategory.PNConnectedCategory)){
 					switch (whatToTest){
 						case "join1":
@@ -1798,10 +1798,10 @@ namespace PubNubAPI.Tests
 							}
 						break;
 						default:
-							Debug.Log("SusbcribeCallback" + mea.MessageResult.Subscription);
-							Debug.Log("SusbcribeCallback" + mea.MessageResult.Channel);
-							Debug.Log("SusbcribeCallback" + mea.MessageResult.Payload);
-							Debug.Log("SusbcribeCallback" + mea.MessageResult.Timetoken);
+							Debug.Log("SubscribeCallback" + mea.MessageResult.Subscription);
+							Debug.Log("SubscribeCallback" + mea.MessageResult.Channel);
+							Debug.Log("SubscribeCallback" + mea.MessageResult.Payload);
+							Debug.Log("SubscribeCallback" + mea.MessageResult.Timetoken);
 							bool matchChannel = mea.MessageResult.Channel.Equals(chToPub);
 							Assert.True(matchChannel);
 							bool matchPayload = mea.MessageResult.Payload.ToString().Equals(payload);
@@ -1878,8 +1878,8 @@ namespace PubNubAPI.Tests
 			PNConfiguration pnConfiguration2 = PlayModeCommon.SetPNConfig(false);
 			pnConfiguration2.UUID = "UnityWildSubscribeUUID2_" + r.Next (100);
 
-			pubnub.SusbcribeCallback += (sender, e) => { 
-				SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
+			pubnub.SubscribeCallback += (sender, e) => { 
+				SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
 				if(!mea.Status.Category.Equals(PNStatusCategory.PNConnectedCategory)){
 					switch (whatToTest){
 						case "join1":
@@ -1926,10 +1926,10 @@ namespace PubNubAPI.Tests
 							}
 						break;
 						default:
-							Debug.Log("SusbcribeCallback" + mea.MessageResult.Subscription);
-							Debug.Log("SusbcribeCallback" + mea.MessageResult.Channel);
-							Debug.Log("SusbcribeCallback" + mea.MessageResult.Payload);
-							Debug.Log("SusbcribeCallback" + mea.MessageResult.Timetoken);
+							Debug.Log("SubscribeCallback" + mea.MessageResult.Subscription);
+							Debug.Log("SubscribeCallback" + mea.MessageResult.Channel);
+							Debug.Log("SubscribeCallback" + mea.MessageResult.Payload);
+							Debug.Log("SubscribeCallback" + mea.MessageResult.Timetoken);
 							bool matchChannel = mea.MessageResult.Channel.Equals(channel);
 							Assert.True(matchChannel);
 							bool matchPayload = mea.MessageResult.Payload.ToString().Equals(payload);
@@ -1977,7 +1977,6 @@ namespace PubNubAPI.Tests
 			pubnub2.CleanUp();
 		}
 
-		[UnityTest]
 		public IEnumerator TestReconnect() {
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random ();
@@ -1995,8 +1994,8 @@ namespace PubNubAPI.Tests
 			PNConfiguration pnConfiguration2 = PlayModeCommon.SetPNConfig(false);
 			pnConfiguration2.UUID = "UnityReconnectUUID2" + r.Next (100);
 
-			pubnub.SusbcribeCallback += (sender, e) => { 
-				SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
+			pubnub.SubscribeCallback += (sender, e) => { 
+				SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
 				
 				switch (whatToTest){
 					case "connected":
@@ -2053,10 +2052,10 @@ namespace PubNubAPI.Tests
 					break;
 					default:
 					if(!mea.Status.Category.Equals(PNStatusCategory.PNConnectedCategory)){
-						Debug.Log("SusbcribeCallback" + mea.MessageResult.Subscription);
-						Debug.Log("SusbcribeCallback" + mea.MessageResult.Channel);
-						Debug.Log("SusbcribeCallback" + mea.MessageResult.Payload);
-						Debug.Log("SusbcribeCallback" + mea.MessageResult.Timetoken);
+						Debug.Log("SubscribeCallback" + mea.MessageResult.Subscription);
+						Debug.Log("SubscribeCallback" + mea.MessageResult.Channel);
+						Debug.Log("SubscribeCallback" + mea.MessageResult.Payload);
+						Debug.Log("SubscribeCallback" + mea.MessageResult.Timetoken);
 						bool matchChannel = mea.MessageResult.Channel.Equals(channel);
 						Assert.True(matchChannel);
 						bool matchPayload = mea.MessageResult.Payload.ToString().Equals(payload);
@@ -2105,7 +2104,6 @@ namespace PubNubAPI.Tests
 			pubnub2.CleanUp();
 		}
 
-		[UnityTest]
 		public IEnumerator TestPresenceCG() {
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random ();
@@ -2140,8 +2138,8 @@ namespace PubNubAPI.Tests
 			tresult = false;
 			string whatToTest = "join1";
 
-			pubnub.SusbcribeCallback += (sender, e) => { 
-				SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
+			pubnub.SubscribeCallback += (sender, e) => { 
+				SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
 				
 				switch (whatToTest){					
 					case "join1":
@@ -3056,14 +3054,14 @@ namespace PubNubAPI.Tests
 			tresult = false;
 			string payload = string.Format("payload {0}", pnConfiguration.UUID);
 
-			pubnub.SusbcribeCallback += (sender, e) => { 
-				SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
+			pubnub.SubscribeCallback += (sender, e) => { 
+				SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
 				if(!mea.Status.Category.Equals(PNStatusCategory.PNConnectedCategory)){
 					if(mea.MessageResult!=null){
-						Debug.Log("SusbcribeCallback" + mea.MessageResult.Subscription);
-						Debug.Log("SusbcribeCallback" + mea.MessageResult.Channel);
-						Debug.Log("SusbcribeCallback" + mea.MessageResult.Payload);
-						Debug.Log("SusbcribeCallback" + mea.MessageResult.Timetoken);
+						Debug.Log("SubscribeCallback" + mea.MessageResult.Subscription);
+						Debug.Log("SubscribeCallback" + mea.MessageResult.Channel);
+						Debug.Log("SubscribeCallback" + mea.MessageResult.Payload);
+						Debug.Log("SubscribeCallback" + mea.MessageResult.Timetoken);
 						bool matchChannel = mea.MessageResult.Channel.Equals(channel);
 						Assert.True(matchChannel);
 						bool matchPayload = mea.MessageResult.Payload.ToString().Equals(payload);
@@ -3247,8 +3245,8 @@ namespace PubNubAPI.Tests
 			pnConfiguration2.SuppressLeaveEvents = true;
 			PubNub pubnub2 = new PubNub(pnConfiguration2);
 
-			pubnub2.SusbcribeCallback += (sender, e) => { 
-				SusbcribeEventEventArgs mea = e as SusbcribeEventEventArgs;
+			pubnub2.SubscribeCallback += (sender, e) => { 
+				SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
 				if(!mea.Status.Category.Equals(PNStatusCategory.PNConnectedCategory)){
 					switch (whatToTest){
 						case "join1":
@@ -3289,10 +3287,10 @@ namespace PubNubAPI.Tests
 							}
 						break;
 						default:
-							Debug.Log("SusbcribeCallback" + mea.MessageResult.Subscription);
-							Debug.Log("SusbcribeCallback" + mea.MessageResult.Channel);
-							Debug.Log("SusbcribeCallback" + mea.MessageResult.Payload);
-							Debug.Log("SusbcribeCallback" + mea.MessageResult.Timetoken);
+							Debug.Log("SubscribeCallback" + mea.MessageResult.Subscription);
+							Debug.Log("SubscribeCallback" + mea.MessageResult.Channel);
+							Debug.Log("SubscribeCallback" + mea.MessageResult.Payload);
+							Debug.Log("SubscribeCallback" + mea.MessageResult.Timetoken);
 							bool matchChannel = mea.MessageResult.Channel.Equals(channel);
 							Assert.True(matchChannel);
 							bool matchPayload = mea.MessageResult.Payload.ToString().Equals(payload);

@@ -3,6 +3,13 @@ changelog:
   - 
     changes: 
       - 
+        text: "BREAKING CHANGE: Fixed a typo by renaming the `event` from `SusbcribeCallback` to `SubscribeCallback` and the `EventArgs` from `SusbcribeEventEventArgs` to `SubscribeEventEventArgs` "
+        type: improvement 
+    date: "Feb 18, 19"
+    version: v4.1.0
+  - 
+    changes: 
+      - 
         text: "Presence Heartbeat call delays itself when a Subscribe call precedes it"
         type: improvement
       - 
@@ -351,4 +358,4 @@ supported-platforms:
       - "Ubuntu 12.04+, with Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support."
       - "Mac OS X 10.8+, with Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support."
     version: "PubNub Unity SDK"
-version: v4.0.5
+version: v4.1.0

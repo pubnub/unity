@@ -6,12 +6,13 @@ using System.Text;
 
 namespace PubNubAPI
 {
-    internal class SusbcribeEventEventArgs : EventArgs
+    
+    public class SubscribeEventEventArgs : EventArgs
     {
         public PNStatus Status;
         public PNPresenceEventResult PresenceEventResult;
         public PNMessageResult MessageResult;
-    }
+    }   
 
     public class SubscriptionWorker<U>
     {
@@ -517,7 +518,7 @@ namespace PubNubAPI
 
             PNStatus pns = new PNStatus ();
             pns.Error = false;
-            SusbcribeEventEventArgs mea = new SusbcribeEventEventArgs();
+            SubscribeEventEventArgs mea = new SubscribeEventEventArgs();
             mea.Status = pns;
 
             if (((subscribeMessage.SubscriptionMatch.Contains (".*")) && isPresenceChannel) || (isPresenceChannel)){
@@ -628,7 +629,7 @@ namespace PubNubAPI
         #region "Heartbeats"
 
         public void CreateEventArgsAndRaiseEvent(PNStatus pnStatus){
-            SusbcribeEventEventArgs mea = new SusbcribeEventEventArgs();
+            SubscribeEventEventArgs mea = new SubscribeEventEventArgs();
             mea.Status = pnStatus;
 
             PubNubInstance.RaiseEvent (mea);
