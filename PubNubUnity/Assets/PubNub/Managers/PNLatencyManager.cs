@@ -129,6 +129,7 @@ namespace PubNubAPI
                     MobilePushLatency.Add(DateTime.UtcNow.Ticks, latency);
                     break;
                 case PNOperationType.PNFetchMessagesOperation:
+                case PNOperationType.PNMessageCountsOperation:
                 case PNOperationType.PNHistoryOperation:
                     HistoryLatency.Add(DateTime.UtcNow.Ticks, latency);
                     break;

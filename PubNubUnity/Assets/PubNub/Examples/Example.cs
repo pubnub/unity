@@ -407,6 +407,13 @@ namespace PubNubExample
 
             listChannelGroups = new List<string> (){cg1, cg2};
             listChannels = new List<string> (){ch1, ch2};
+            pubnub.MessageCounts().ChannelTimetokens(new List<string>{"15499825804610610","15499925804610615"}).Channels(listChannels).Timetoken("1549982652").Async((result, status) =>{
+                if(status.Error){
+                    Debug.Log (string.Format("In Example, MessageCounts Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
+                } else {
+                    Debug.Log(result);
+                }
+            });
         }
         Dictionary<string, Dictionary<string, object>> messageList = new Dictionary<string, Dictionary<string, object>>();
  

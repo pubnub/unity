@@ -125,6 +125,14 @@ namespace PubNubAPI
             return new FetchBuilder  (this);
         }
 
+        public MessageCountsBuilder MessageCounts(){
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("MessageCountsBuilder", PNLoggingMethod.LevelInfo);
+            #endif
+            
+            return new MessageCountsBuilder  (this);
+        }
+
         public DeleteMessagesBuilder DeleteMessages(){
             #if (ENABLE_PUBNUB_LOGGING)
             this.PNLog.WriteToLog("DeleteMessagesBuilder", PNLoggingMethod.LevelInfo);

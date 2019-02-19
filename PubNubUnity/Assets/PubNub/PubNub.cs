@@ -136,6 +136,11 @@ namespace PubNubAPI
             return pnUnity.FetchMessages();
         }
 
+        public MessageCountsBuilder MessageCounts(){
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.MessageCounts();
+        }
+
         public DeleteMessagesBuilder DeleteMessages(){
             PubNubUnityInitializationAfterCleanup();
             return pnUnity.DeleteMessages();
