@@ -111,7 +111,9 @@ namespace PubNubAPI
                 if (RunIndependentOfSubscribe){
                     channelsJsonState = State;
                     allNonPresenceChannelsOrChannelGroupsCount = ((ChannelGroups.Length>0)?ChannelGroups.Split(',').Count():0) + ((Channels.Length>0)?Channels.Split(',').Count():0);
+                    #if (ENABLE_PUBNUB_LOGGING)                
                     Debug.Log("allNonPresenceChannelsOrChannelGroupsCount:"+ allNonPresenceChannelsOrChannelGroupsCount);
+                    #endif
                     channels = Channels;
                     channelGroups = ChannelGroups;
                 } else {

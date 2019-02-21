@@ -83,12 +83,16 @@ namespace PubNubAPI
                         object objChannelsDict;
                         dictionary.TryGetValue("channels", out objChannelsDict);
                         if(objChannelsDict != null){
-                            Dictionary<string, int> channelsDict = objChannelsDict as Dictionary<string, int>;
+                            Dictionary<string, object> channelsDict = objChannelsDict as Dictionary<string, object>;
                             if(channelsDict==null){
                                 pnMessageCountsResult = null;
                                 pnStatus = base.CreateErrorResponseFromMessage("channelsResult dictionary is null", requestState, PNStatusCategory.PNUnknownCategory);
                             } else {
-                                pnMessageCountsResult.Channels = channelsDict;
+                                Dictionary<string, int> resultDict = new Dictionary<string, int>();
+                                foreach(KeyValuePair<string, object> kvp in channelsDict){
+                                    resultDict.Add(kvp.Key, Convert.ToInt32(kvp.Value));
+                                }
+                                pnMessageCountsResult.Channels = resultDict;
                             }
                         }
                     }

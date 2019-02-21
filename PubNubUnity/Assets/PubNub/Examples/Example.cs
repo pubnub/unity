@@ -42,6 +42,7 @@ namespace PubNubExample
         UnityEngine.UI.Button ButtonAuditPushChannelProvisions;
         UnityEngine.UI.Button ButtonRemoveAllPushNotifications;
         UnityEngine.UI.Button ButtonRemovePushNotificationsFromChannels;
+        UnityEngine.UI.Button ButtonMessageCounts;
 
         string deviceId = "aaa";
         PNPushType pnPushType = PNPushType.GCM;
@@ -313,6 +314,10 @@ namespace PubNubExample
             RemoveChannelsFromPush(listChannels, pubnub, deviceId, pnPushType);
         }
 
+        void ButtonMessageCountsHandler(){
+            MessageCounts(listChannels, pubnub);
+        }
+
         void SubscribeHandler(){
             Dictionary<string, string> dict = new Dictionary<string, string>();
             dict.Add  ("k1", "v1");
@@ -376,6 +381,8 @@ namespace PubNubExample
             ButtonRemoveAllPushNotifications.onClick.AddListener(ButtonRemoveAllPushNotificationsHandler);
             ButtonRemovePushNotificationsFromChannels = GameObject.Find("ButtonRemovePushNotificationsFromChannels").GetComponent<UnityEngine.UI.Button>();
             ButtonRemovePushNotificationsFromChannels.onClick.AddListener(ButtonRemovePushNotificationsFromChannelsHandler);
+            ButtonMessageCounts = GameObject.Find("ButtonMessageCounts").GetComponent<UnityEngine.UI.Button>();
+            ButtonMessageCounts.onClick.AddListener(ButtonMessageCountsHandler);
         }
 
     	// Use this for initialization
@@ -391,12 +398,13 @@ namespace PubNubExample
             pnConfiguration.SubscribeKey = "demo";
             pnConfiguration.PublishKey = "demo";
             pnConfiguration.SecretKey = "demo";
-            pnConfiguration.Secure = true;
+            pnConfiguration.Secure = false;
             pnConfiguration.CipherKey = "enigma";
             pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
             pnConfiguration.PresenceTimeout = 60;    
             pnConfiguration.PresenceInterval= 30;
             pnConfiguration.AuthKey = "authKey";
+            pnConfiguration.Origin = "balancer1g.bronze.aws-pdx-1.ps.pn";
             //pnConfiguration.FilterExpression = "such=wow";
             pnConfiguration.HeartbeatNotificationOption = PNHeartbeatNotificationOption.All;
 
@@ -407,14 +415,22 @@ namespace PubNubExample
 
             listChannelGroups = new List<string> (){cg1, cg2};
             listChannels = new List<string> (){ch1, ch2};
-            pubnub.MessageCounts().ChannelTimetokens(new List<string>{"15499825804610610","15499925804610615"}).Channels(listChannels).Timetoken("1549982652").Async((result, status) =>{
-                if(status.Error){
-                    Debug.Log (string.Format("In Example, MessageCounts Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
-                } else {
-                    Debug.Log(result);
-                }
-            });
+            
         }
+
+        void MessageCounts(List<string> listChannels, PubNub pubnub){
+            pubnub.MessageCounts().ChannelTimetokens(new List<string>{"15499825804610610","15499925804610615"}).Channels(listChannels).Timetoken("1549982652").Async((result, status) =>{
+                    if(status.Error){
+                        Debug.Log (string.Format("In Example, MessageCounts Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
+                    } else {
+                        Debug.Log(string.Format("MessageCounts," + result.Channels.Count));
+                        foreach(KeyValuePair<string, int> kvp in result.Channels){
+                            Display(string.Format("MessageCounts:-> {0}:{1}", kvp.Key, kvp.Value));
+                        }                        
+                    }
+                });
+        }
+
         Dictionary<string, Dictionary<string, object>> messageList = new Dictionary<string, Dictionary<string, object>>();
  
 
