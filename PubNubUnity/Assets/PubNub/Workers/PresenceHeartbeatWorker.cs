@@ -112,7 +112,7 @@ namespace PubNubAPI
                     channelsJsonState = State;
                     allNonPresenceChannelsOrChannelGroupsCount = ((ChannelGroups.Length>0)?ChannelGroups.Split(',').Count():0) + ((Channels.Length>0)?Channels.Split(',').Count():0);
                     #if (ENABLE_PUBNUB_LOGGING)                
-                    Debug.Log("allNonPresenceChannelsOrChannelGroupsCount:"+ allNonPresenceChannelsOrChannelGroupsCount);
+                    this.PubNubInstance.PNLog.WriteToLog(string.Format ("allNonPresenceChannelsOrChannelGroupsCount: {0}", allNonPresenceChannelsOrChannelGroupsCount), PNLoggingMethod.LevelInfo);
                     #endif
                     channels = Channels;
                     channelGroups = ChannelGroups;
