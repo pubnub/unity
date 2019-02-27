@@ -398,13 +398,13 @@ namespace PubNubExample
             pnConfiguration.SubscribeKey = "demo";
             pnConfiguration.PublishKey = "demo";
             pnConfiguration.SecretKey = "demo";
-            pnConfiguration.Secure = false;
+            //pnConfiguration.Secure = false;
             pnConfiguration.CipherKey = "enigma";
             pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
             pnConfiguration.PresenceTimeout = 60;    
             pnConfiguration.PresenceInterval= 30;
             pnConfiguration.AuthKey = "authKey";
-            pnConfiguration.Origin = "balancer1g.bronze.aws-pdx-1.ps.pn";
+            //pnConfiguration.Origin = "balancer1g.bronze.aws-pdx-1.ps.pn";
             //pnConfiguration.FilterExpression = "such=wow";
             pnConfiguration.HeartbeatNotificationOption = PNHeartbeatNotificationOption.All;
 
