@@ -11,7 +11,7 @@ namespace PubNubAPI.Tests
     {
         #if DEBUG
         [Test]
-        public void TestBuildLeaveRequestMultiChannelAuthSSL ()
+        public void TestBuildMessageCountsRequestMultiChannelAuthSSL ()
         {
             string[] channels = { "test", "test2" };
             string[] channelsTimetoken = { "15499825804610610", "15499925804610615" };
@@ -20,7 +20,7 @@ namespace PubNubAPI.Tests
         }
 
         [Test]
-        public void TestBuildLeaveRequestMultiChannelTTAuthSSL ()
+        public void TestBuildMessageCountsRequestMultiChannelTTAuthSSL ()
         {
             string[] channels = { "test", "test2" };
             string[] channelsTimetoken = { };
@@ -29,7 +29,7 @@ namespace PubNubAPI.Tests
         }
 
         [Test]
-        public void TestBuildLeaveRequestMultiChannelCTAuthSSL ()
+        public void TestBuildMessageCountsRequestMultiChannelCTAuthSSL ()
         {
             string[] channels = { "test", "test2" };
             string[] channelsTimetoken = { "15499825804610610", "15499925804610615" };
@@ -38,7 +38,7 @@ namespace PubNubAPI.Tests
         }
 
         [Test]
-        public void TestBuildLeaveRequestMultiChannelAuthSSLQP ()
+        public void TestBuildMessageCountsRequestMultiChannelAuthSSLQP ()
         {
             string[] channels = { "test", "test2" };
             string[] channelsTimetoken = { "15499825804610610", "15499925804610615" };
@@ -47,7 +47,7 @@ namespace PubNubAPI.Tests
         }
 
         [Test]
-        public void TestBuildLeaveRequestMultiChannelTTAuthSSLQP ()
+        public void TestBuildMessageCountsRequestMultiChannelTTAuthSSLQP ()
         {
             string[] channels = { "test", "test2" };
             string[] channelsTimetoken = { };
@@ -56,7 +56,7 @@ namespace PubNubAPI.Tests
         }
 
         [Test]
-        public void TestBuildLeaveRequestMultiChannelCTAuthSSLQP ()
+        public void TestBuildMessageCountsRequestMultiChannelCTAuthSSLQP ()
         {
             string[] channels = { "test", "test2" };
             string[] channelsTimetoken = { "15499825804610610", "15499925804610615" };
@@ -109,7 +109,7 @@ namespace PubNubAPI.Tests
             string expected = string.Format ("http{0}://{1}/v3/history/sub-key/{2}/message-counts/{3}?timetoken={4}&channelsTimetoken={5}{6}&uuid={7}&pnsdk={8}{9}",
                 ssl?"s":"", pnConfiguration.Origin, EditorCommon.SubscribeKey, chStr, timetoken,
                 channelsTimetokenStr, authKeyString,
-                uuid, Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNLeaveOperation, false, true),
+                uuid, Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNMessageCountsOperation, false, true),
                 queryParamString
             );
             string received = uri.OriginalString;
