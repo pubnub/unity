@@ -3348,12 +3348,10 @@ namespace PubNubAPI.Tests
 
 
 		#endregion
-		//[UnityTest]
+		[UnityTest]
 		public IEnumerator TestMessageCounts() {
 
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
-			pnConfiguration.Secure = false;
-			pnConfiguration.Origin = "balancer1g.bronze.aws-pdx-1.ps.pn";
 			pnConfiguration.ConcurrentNonSubscribeWorkers = 5;
 			System.Random r = new System.Random ();
 			pnConfiguration.UUID = "UnityTestMessageCountsUUID_" + r.Next (100);
@@ -3391,10 +3389,10 @@ namespace PubNubAPI.Tests
 					Assert.True(timetokenMatch);
 					Assert.True(statusError);
 					Assert.True(statusCodeMatch, status.StatusCode.ToString());
-					Debug.Log(status.ErrorData + "" + status.StatusCode);
+					//Debug.Log(status.ErrorData + "" + status.StatusCode);
 					tresult = statusCodeMatch && statusError && timetokenMatch;
 				});
-				yield return new WaitForSeconds (10);
+				yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 
 				Assert.True(tresult, string.Format("test didnt return {0}", i));
 			}
@@ -3420,7 +3418,7 @@ namespace PubNubAPI.Tests
 					Assert.True(statusCodeMatch, status.StatusCode.ToString());
 					tresult = statusCodeMatch && statusError && timetokenMatch;
 				});
-				yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+				yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 
 				Assert.True(tresult, string.Format("test didnt return {0}", i));
 			}
@@ -3442,12 +3440,46 @@ namespace PubNubAPI.Tests
 				if(!status.Error){
 					
 					if((result.Channels != null)){
-						Debug.Log(string.Format("MessageCounts," + result.Channels.Count));
+						Debug.Log(string.Format("MessageCounts, {0}", result.Channels.Count));
                         foreach(KeyValuePair<string, int> kvp in result.Channels){
+							Debug.Log(string.Format("==kvp.Key {0}, kvp.Value {1} ", kvp.Key, kvp.Value));
                             if(kvp.Key.Equals(channel)){
+								tresult = true;
+								Debug.Log(string.Format("kvp.Key {0}, kvp.Value {1} ", kvp.Key, kvp.Value));
 								Assert.Equals(2, kvp.Value);
 							}
                             if(kvp.Key.Equals(channel2)){
+								tresult = true;
+								Debug.Log(string.Format("kvp.Key {0}, kvp.Value {1} ", kvp.Key, kvp.Value));
+								Assert.Equals(3, kvp.Value);
+							}
+                        }   
+					} else {
+						Debug.Log("(result.Channels == null) && !(result.Channels.Count.Equals(1))" + result.Channels.Count);
+					}
+                } 
+			});
+			yield return new WaitForSeconds (3);
+			Assert.True(tresult, "MessageCounts test didnt return 2");
+
+			tresult = false;
+			pubnub.MessageCounts().Channels(channelList2).Timetoken(timetoken2.ToString()).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Debug.Log("status.Error.Equals(false)"+status.Error.Equals(false));
+				if(!status.Error){
+					
+					if((result.Channels != null)){
+						Debug.Log(string.Format("MessageCounts, {0}", result.Channels.Count));
+                        foreach(KeyValuePair<string, int> kvp in result.Channels){
+							Debug.Log(string.Format("==kvp.Key {0}, kvp.Value {1} ", kvp.Key, kvp.Value));
+                            if(kvp.Key.Equals(channel)){
+								tresult = true;
+								Debug.Log(string.Format("kvp.Key {0}, kvp.Value {1} ", kvp.Key, kvp.Value));
+								Assert.Equals(0, kvp.Value);
+							}
+                            if(kvp.Key.Equals(channel2)){
+								tresult = true;
+								Debug.Log(string.Format("kvp.Key {0}, kvp.Value {1} ", kvp.Key, kvp.Value));
 								Assert.Equals(3, kvp.Value);
 							}
                         }   

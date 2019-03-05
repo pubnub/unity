@@ -398,14 +398,11 @@ namespace PubNubExample
             pnConfiguration.SubscribeKey = "demo";
             pnConfiguration.PublishKey = "demo";
             pnConfiguration.SecretKey = "demo";
-            //pnConfiguration.Secure = false;
             pnConfiguration.CipherKey = "enigma";
             pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
             pnConfiguration.PresenceTimeout = 60;    
             pnConfiguration.PresenceInterval= 30;
             pnConfiguration.AuthKey = "authKey";
-            //pnConfiguration.Origin = "balancer1g.bronze.aws-pdx-1.ps.pn";
-            //pnConfiguration.FilterExpression = "such=wow";
             pnConfiguration.HeartbeatNotificationOption = PNHeartbeatNotificationOption.All;
 
             //TODO: remove
@@ -419,7 +416,8 @@ namespace PubNubExample
         }
 
         void MessageCounts(List<string> listChannels, PubNub pubnub){
-            pubnub.MessageCounts().ChannelTimetokens(new List<string>{"15499825804610610","15499925804610615"}).Channels(listChannels).Timetoken("1549982652").Async((result, status) =>{
+            //pubnub.MessageCounts().ChannelTimetokens(new List<string>{"15499825804610610","15499925804610615"}).Channels(listChannels).Timetoken("1549982652").Async((result, status) =>{
+            pubnub.MessageCounts().Channels(listChannels).Timetoken("1549982652").Async((result, status) =>{    
                     if(status.Error){
                         Debug.Log (string.Format("In Example, MessageCounts Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                     } else {
@@ -429,6 +427,16 @@ namespace PubNubExample
                         }                        
                     }
                 });
+            pubnub.MessageCounts().Channels(listChannels).ChannelTimetokens(new List<string>{"1551795013294","155179501329433"}).Async((result, status) =>{    
+                    if(status.Error){
+                        Debug.Log (string.Format("In Example, MessageCounts Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
+                    } else {
+                        Debug.Log(string.Format("MessageCounts," + result.Channels.Count));
+                        foreach(KeyValuePair<string, int> kvp in result.Channels){
+                            Display(string.Format("MessageCounts:-> {0}:{1}", kvp.Key, kvp.Value));
+                        }                        
+                    }
+                });    
         }
 
         Dictionary<string, Dictionary<string, object>> messageList = new Dictionary<string, Dictionary<string, object>>();

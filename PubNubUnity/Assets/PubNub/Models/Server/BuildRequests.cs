@@ -186,7 +186,7 @@ namespace PubNubAPI
             StringBuilder parameterBuilder = new StringBuilder ();
 
             parameterBuilder.AppendFormat ("?timetoken={0}", timetoken);
-            parameterBuilder.AppendFormat ("&channelsTimetoken={0}", string.Join(",", channelsTimetoken));
+            parameterBuilder.AppendFormat ("&channelsTimetoken={0}", (channelsTimetoken!=null)?string.Join(",", channelsTimetoken):"");
 
             List<string> url = new List<string> ();
 
@@ -602,8 +602,12 @@ namespace PubNubAPI
                         url.AppendFormat("&l_push={0}", latency.MobilePush);
                     }
                     break;
-                case PNOperationType.PNFetchMessagesOperation:
                 case PNOperationType.PNMessageCountsOperation:
+                    if(latency.MessageCounts > 0){
+                        url.AppendFormat("&l_mc={0}", latency.MessageCounts);
+                    }
+                    break;
+                case PNOperationType.PNFetchMessagesOperation:
                 case PNOperationType.PNHistoryOperation:
                     if(latency.History > 0){
                         url.AppendFormat("&l_hist={0}", latency.History);

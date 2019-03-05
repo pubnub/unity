@@ -53,12 +53,12 @@ namespace PubNubAPI
             requestState.OperationType = base.OperationType;
 
             #if (ENABLE_PUBNUB_LOGGING)
-            this.PubNubInstance.PNLog.WriteToLog(string.Format ("MessageCountsRequestBuilder: \nChannel {0} \nChannelTimetokens: {1} \nTimetokenToUse:{2}", string.Join(",", this.ChannelsToUse.ToArray()), string.Join(",", this.ChannelTimetokensToUse.ToArray()), this.TimetokenToUse), PNLoggingMethod.LevelInfo);
+            this.PubNubInstance.PNLog.WriteToLog(string.Format ("MessageCountsRequestBuilder: \nChannel {0} \nChannelTimetokens: {1} \nTimetokenToUse:{2}", string.Join(",", this.ChannelsToUse.ToArray()), (ChannelTimetokensToUse!=null)?string.Join(",", this.ChannelTimetokensToUse.ToArray()):"", this.TimetokenToUse), PNLoggingMethod.LevelInfo);
             #endif
             
             Uri request = BuildRequests.BuildMessageCountsRequest(
                 ChannelsToUse.ToArray(),
-                ChannelTimetokensToUse.ToArray(),
+                (ChannelTimetokensToUse!=null)?ChannelTimetokensToUse.ToArray():null,
                 TimetokenToUse,
                 this.PubNubInstance,
                 this.QueryParams
