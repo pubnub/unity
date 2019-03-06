@@ -15,7 +15,6 @@ namespace PubNubAPI
         private string TimetokenToUse {get; set;}
 
         private List<string> ChannelTimetokensToUse {get; set;}
-        private bool IncludeTimetokenInHistory;
 
         public MessageCountsRequestBuilder Channels(List<string> channelNames){
             ChannelsToUse = channelNames;
