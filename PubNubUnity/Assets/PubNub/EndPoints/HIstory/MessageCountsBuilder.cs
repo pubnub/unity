@@ -14,8 +14,8 @@ namespace PubNubAPI
             return this;
         }
 
-        public MessageCountsBuilder ChannelTimetokens(List<string> channelsTimetoken){
-            pubBuilder.ChannelTimetokens(channelsTimetoken);
+        public MessageCountsBuilder ChannelsTimetoken(List<string> channelsTimetoken){
+            pubBuilder.ChannelsTimetoken(channelsTimetoken);
             return this;
         }
 

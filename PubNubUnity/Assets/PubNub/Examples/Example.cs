@@ -427,7 +427,7 @@ namespace PubNubExample
                         }                        
                     }
                 });
-            pubnub.MessageCounts().Channels(listChannels).ChannelTimetokens(new List<string>{"1551795013294","155179501329433"}).Async((result, status) =>{    
+            pubnub.MessageCounts().Channels(listChannels).ChannelsTimetoken(new List<string>{"1551795013294","155179501329433"}).Async((result, status) =>{    
                     if(status.Error){
                         Debug.Log (string.Format("In Example, MessageCounts Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                     } else {

@@ -3434,7 +3434,7 @@ namespace PubNubAPI.Tests
 			Assert.True(!timetoken3.Equals(0));
 
 			tresult = false;
-			pubnub.MessageCounts().Channels(channelList2).ChannelTimetokens(new List<string>{timetoken2.ToString(), timetoken3.ToString()}).Async((result, status) => {
+			pubnub.MessageCounts().Channels(channelList2).ChannelsTimetoken(new List<string>{timetoken2.ToString(), timetoken3.ToString()}).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Debug.Log("status.Error.Equals(false)"+status.Error.Equals(false));
 				if(!status.Error){

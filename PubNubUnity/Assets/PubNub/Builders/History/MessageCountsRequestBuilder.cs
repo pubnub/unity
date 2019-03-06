@@ -22,7 +22,7 @@ namespace PubNubAPI
             return this;
         }
 
-        public MessageCountsRequestBuilder ChannelTimetokens(List<string> channelTimetoken){
+        public MessageCountsRequestBuilder ChannelsTimetoken(List<string> channelTimetoken){
             ChannelTimetokensToUse = channelTimetoken;
             return this;
         }
