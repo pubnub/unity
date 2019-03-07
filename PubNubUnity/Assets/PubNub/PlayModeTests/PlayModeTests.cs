@@ -3343,6 +3343,155 @@ namespace PubNubAPI.Tests
 			pubnub2.CleanUp();
 		}
 		#endregion
+
+		#region "MessageCountsTests"
+
+
+		#endregion
+		[UnityTest]
+		public IEnumerator TestMessageCounts() {
+
+			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
+			pnConfiguration.ConcurrentNonSubscribeWorkers = 5;
+			System.Random r = new System.Random ();
+			pnConfiguration.UUID = "UnityTestMessageCountsUUID_" + r.Next (100);
+			string channel = "UnityPublishAndMessageCountsChannel_" + r.Next (100);
+			string channel2 = "UnityPublishAndMessageCountsChannel2_" + r.Next (100);
+			string payload = string.Format("payload {0}", pnConfiguration.UUID);
+
+			PubNub pubnub = new PubNub(pnConfiguration);
+
+			List<string> channelList2 = new List<string>();
+			channelList2.Add(channel);
+			channelList2.Add(channel2);
+			bool tresult = false;
+
+			long timetoken1 = 0;
+			pubnub.Time().Async((result, status) => {
+				timetoken1 = result.TimeToken;
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			
+			Assert.True(!timetoken1.Equals(0));
+
+			List<string> payloadList = new List<string>();
+			for(int i=0; i<5; i++){
+				payloadList.Add(string.Format("{0}, seq: {1}", payload, i));
+			}
+			
+			for(int i=0; i<2; i++){
+				tresult = false;
+				
+				pubnub.Publish().Channel(channel).Message(payloadList[i]).Async((result, status) => {
+					bool timetokenMatch = !result.Timetoken.Equals(0);
+					bool statusError = status.Error.Equals(false);
+					bool statusCodeMatch = status.StatusCode.Equals(0);
+					Assert.True(timetokenMatch);
+					Assert.True(statusError);
+					Assert.True(statusCodeMatch, status.StatusCode.ToString());
+					//Debug.Log(status.ErrorData + "" + status.StatusCode);
+					tresult = statusCodeMatch && statusError && timetokenMatch;
+				});
+				yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+
+				Assert.True(tresult, string.Format("test didnt return {0}", i));
+			}
+
+			tresult = false;
+
+			long timetoken2 = 0;
+			pubnub.Time().Async((result, status) => {
+				timetoken2 = result.TimeToken;
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			
+			Assert.True(!timetoken2.Equals(0));
+
+			for(int i=2; i<5; i++){
+				tresult = false;
+				pubnub.Publish().Channel(channel2).Message(payloadList[i]).Async((result, status) => {
+					bool timetokenMatch = !result.Timetoken.Equals(0);
+					bool statusError = status.Error.Equals(false);
+					bool statusCodeMatch = status.StatusCode.Equals(0);
+					Assert.True(timetokenMatch);
+					Assert.True(statusError);
+					Assert.True(statusCodeMatch, status.StatusCode.ToString());
+					tresult = statusCodeMatch && statusError && timetokenMatch;
+				});
+				yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+
+				Assert.True(tresult, string.Format("test didnt return {0}", i));
+			}
+
+			tresult = false;
+
+			long timetoken3 = 0;
+			pubnub.Time().Async((result, status) => {
+				timetoken3 = result.TimeToken;
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			
+			Assert.True(!timetoken3.Equals(0));
+
+			tresult = false;
+			pubnub.MessageCounts().Channels(channelList2).ChannelsTimetoken(new List<string>{timetoken2.ToString(), timetoken3.ToString()}).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Debug.Log("status.Error.Equals(false)"+status.Error.Equals(false));
+				if(!status.Error){
+					
+					if((result.Channels != null)){
+						Debug.Log(string.Format("MessageCounts, {0}", result.Channels.Count));
+                        foreach(KeyValuePair<string, int> kvp in result.Channels){
+							Debug.Log(string.Format("==kvp.Key {0}, kvp.Value {1} ", kvp.Key, kvp.Value));
+                            if(kvp.Key.Equals(channel)){
+								tresult = true;
+								Debug.Log(string.Format("kvp.Key {0}, kvp.Value {1} ", kvp.Key, kvp.Value));
+								Assert.Equals(2, kvp.Value);
+							}
+                            if(kvp.Key.Equals(channel2)){
+								tresult = true;
+								Debug.Log(string.Format("kvp.Key {0}, kvp.Value {1} ", kvp.Key, kvp.Value));
+								Assert.Equals(3, kvp.Value);
+							}
+                        }   
+					} else {
+						Debug.Log("(result.Channels == null) && !(result.Channels.Count.Equals(1))" + result.Channels.Count);
+					}
+                } 
+			});
+			yield return new WaitForSeconds (3);
+			Assert.True(tresult, "MessageCounts test didnt return 2");
+
+			tresult = false;
+			pubnub.MessageCounts().Channels(channelList2).Timetoken(timetoken2.ToString()).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Debug.Log("status.Error.Equals(false)"+status.Error.Equals(false));
+				if(!status.Error){
+					
+					if((result.Channels != null)){
+						Debug.Log(string.Format("MessageCounts, {0}", result.Channels.Count));
+                        foreach(KeyValuePair<string, int> kvp in result.Channels){
+							Debug.Log(string.Format("==kvp.Key {0}, kvp.Value {1} ", kvp.Key, kvp.Value));
+                            if(kvp.Key.Equals(channel)){
+								tresult = true;
+								Debug.Log(string.Format("kvp.Key {0}, kvp.Value {1} ", kvp.Key, kvp.Value));
+								Assert.Equals(0, kvp.Value);
+							}
+                            if(kvp.Key.Equals(channel2)){
+								tresult = true;
+								Debug.Log(string.Format("kvp.Key {0}, kvp.Value {1} ", kvp.Key, kvp.Value));
+								Assert.Equals(3, kvp.Value);
+							}
+                        }   
+					} else {
+						Debug.Log("(result.Channels == null) && !(result.Channels.Count.Equals(1))" + result.Channels.Count);
+					}
+                } 
+			});
+			yield return new WaitForSeconds (3);
+			Assert.True(tresult, "MessageCounts test didnt return 2");
+			pubnub.CleanUp();
+		}
 		#endif
 	}
 }

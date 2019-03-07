@@ -181,6 +181,25 @@ namespace PubNubAPI
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNDeleteMessagesOperation, parameterBuilder.ToString(), pnInstance, queryParams);
         }
 
+        public static Uri BuildMessageCountsRequest (string[] channels, string[] channelsTimetoken, string timetoken, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        {
+            StringBuilder parameterBuilder = new StringBuilder ();
+
+            parameterBuilder.AppendFormat ("?timetoken={0}", timetoken);
+            parameterBuilder.AppendFormat ("&channelsTimetoken={0}", (channelsTimetoken!=null)?string.Join(",", channelsTimetoken):"");
+
+            List<string> url = new List<string> ();
+
+            url.Add ("v3");
+            url.Add ("history");
+            url.Add ("sub-key");
+            url.Add (pnInstance.PNConfig.SubscribeKey);
+            url.Add ("message-counts");
+            url.Add (Utility.EncodeUricomponent(string.Join(",", channels), PNOperationType.PNMessageCountsOperation, true, false));
+
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNMessageCountsOperation, parameterBuilder.ToString(), pnInstance, queryParams);
+        }
+
         public static Uri BuildFetchRequest (string[] channels, long start, long end, uint count, bool reverse, bool includeToken, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
         {
             StringBuilder parameterBuilder = new StringBuilder ();
@@ -583,6 +602,11 @@ namespace PubNubAPI
                         url.AppendFormat("&l_push={0}", latency.MobilePush);
                     }
                     break;
+                case PNOperationType.PNMessageCountsOperation:
+                    if(latency.MessageCounts > 0){
+                        url.AppendFormat("&l_mc={0}", latency.MessageCounts);
+                    }
+                    break;
                 case PNOperationType.PNFetchMessagesOperation:
                 case PNOperationType.PNHistoryOperation:
                     if(latency.History > 0){
@@ -785,6 +809,7 @@ namespace PubNubAPI
                 break;
 
             case PNOperationType.PNHistoryOperation:
+            case PNOperationType.PNMessageCountsOperation:
             case PNOperationType.PNFetchMessagesOperation:
                 url.Append (parameters);
                 url = AppendAuthKeyToURL(url, authenticationKey, type);

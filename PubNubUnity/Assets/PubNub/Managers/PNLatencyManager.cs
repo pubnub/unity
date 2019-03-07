@@ -34,6 +34,11 @@ namespace PubNubAPI
             get{return history;}
             set{history = value;}
         }
+        private float messageCounts; //l_mc
+        public float MessageCounts{
+            get{return messageCounts;}
+            set{messageCounts = value;}
+        }
         private float mobilePush; //l_push
         public float MobilePush{
             get{return mobilePush;}
@@ -45,6 +50,7 @@ namespace PubNubAPI
         private SafeDictionary<long, float> PresenceLatency = new SafeDictionary<long, float>(); 
         private SafeDictionary<long, float> ChannelGroupsLatency = new SafeDictionary<long, float>(); 
         private SafeDictionary<long, float> HistoryLatency = new SafeDictionary<long, float>(); 
+        private SafeDictionary<long, float> MessageCountsLatency = new SafeDictionary<long, float>(); 
         private SafeDictionary<long, float> MobilePushLatency = new SafeDictionary<long, float>(); 
 
         private static readonly DateTime epoch = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Local);
@@ -85,6 +91,7 @@ namespace PubNubAPI
             UpdateLatency(ref PresenceLatency, t, ref presence, "Presence");
             UpdateLatency(ref MobilePushLatency, t, ref mobilePush, "MobilePush");
             UpdateLatency(ref HistoryLatency, t, ref history, "History");
+            UpdateLatency(ref MessageCountsLatency, t, ref messageCounts, "MessageCounts");
             UpdateLatency(ref ChannelGroupsLatency, t, ref channelGroups, "ChannelGroups");
         }
 
@@ -127,6 +134,9 @@ namespace PubNubAPI
                 case PNOperationType.PNPushNotificationEnabledChannelsOperation:
                 case PNOperationType.PNRemovePushNotificationsFromChannelsOperation:
                     MobilePushLatency.Add(DateTime.UtcNow.Ticks, latency);
+                    break;
+                case PNOperationType.PNMessageCountsOperation:
+                    MessageCountsLatency.Add(DateTime.UtcNow.Ticks, latency);
                     break;
                 case PNOperationType.PNFetchMessagesOperation:
                 case PNOperationType.PNHistoryOperation:

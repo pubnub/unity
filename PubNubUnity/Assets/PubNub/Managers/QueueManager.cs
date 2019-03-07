@@ -137,6 +137,11 @@ namespace PubNubAPI
                             fetchMessagesRequestBuilder.RaiseRunRequest(this);
 
                             break;
+                        case PNOperationType.PNMessageCountsOperation:
+                            MessageCountsRequestBuilder messageCountsRequestBuilder = operationParams as MessageCountsRequestBuilder;
+                            messageCountsRequestBuilder.RaiseRunRequest(this);
+
+                            break;
                         case PNOperationType.PNDeleteMessagesOperation:
                             DeleteMessagesRequestBuilder deleteMessagesRequestBuilder = operationParams as DeleteMessagesRequestBuilder;
                             deleteMessagesRequestBuilder.RaiseRunRequest(this);

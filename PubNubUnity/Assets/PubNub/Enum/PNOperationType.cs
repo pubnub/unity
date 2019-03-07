@@ -15,6 +15,7 @@ namespace PubNubAPI
         PNHistoryOperation,
         PNDeleteMessagesOperation,
         PNFetchMessagesOperation,
+        PNMessageCountsOperation,
 
         PNWhereNowOperation,
 
