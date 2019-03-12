@@ -3,6 +3,7 @@ using PubNubAPI;
 using NUnit.Framework;
 using System.Text;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PubNubAPI.Tests
 {
@@ -14,7 +15,7 @@ namespace PubNubAPI.Tests
         public void TestBuildMessageCountsRequestMultiChannelAuthSSL ()
         {
             string[] channels = { "test", "test2" };
-            string[] channelsTimetoken = { "15499825804610610", "15499925804610615" };
+            long[] channelsTimetoken = { 15499825804610610, 15499925804610615 };
             string timetoken = "15499825804610609";
             TestMessageCountsBuildRequestCommon (channels, channelsTimetoken, timetoken, true, "authKey", false);
         }
@@ -23,7 +24,7 @@ namespace PubNubAPI.Tests
         public void TestBuildMessageCountsRequestMultiChannelTTAuthSSL ()
         {
             string[] channels = { "test", "test2" };
-            string[] channelsTimetoken = { };
+            long[] channelsTimetoken = { };
             string timetoken = "15499825804610609";
             TestMessageCountsBuildRequestCommon (channels, channelsTimetoken, timetoken, true, "authKey", false);
         }
@@ -32,7 +33,7 @@ namespace PubNubAPI.Tests
         public void TestBuildMessageCountsRequestMultiChannelCTAuthSSL ()
         {
             string[] channels = { "test", "test2" };
-            string[] channelsTimetoken = { "15499825804610610", "15499925804610615" };
+            long[] channelsTimetoken = { 15499825804610610, 15499925804610615 };
             string timetoken = "";
             TestMessageCountsBuildRequestCommon (channels, channelsTimetoken, timetoken, true, "authKey", false);
         }
@@ -41,7 +42,7 @@ namespace PubNubAPI.Tests
         public void TestBuildMessageCountsRequestMultiChannelAuthSSLQP ()
         {
             string[] channels = { "test", "test2" };
-            string[] channelsTimetoken = { "15499825804610610", "15499925804610615" };
+            long[] channelsTimetoken = { 15499825804610610, 15499925804610615 };
             string timetoken = "15499825804610609";
             TestMessageCountsBuildRequestCommon (channels, channelsTimetoken, timetoken, true, "authKey", true);
         }
@@ -50,7 +51,7 @@ namespace PubNubAPI.Tests
         public void TestBuildMessageCountsRequestMultiChannelTTAuthSSLQP ()
         {
             string[] channels = { "test", "test2" };
-            string[] channelsTimetoken = { };
+            long[] channelsTimetoken = { };
             string timetoken = "15499825804610609";
             TestMessageCountsBuildRequestCommon (channels, channelsTimetoken, timetoken, true, "authKey", true);
         }
@@ -59,12 +60,12 @@ namespace PubNubAPI.Tests
         public void TestBuildMessageCountsRequestMultiChannelCTAuthSSLQP ()
         {
             string[] channels = { "test", "test2" };
-            string[] channelsTimetoken = { "15499825804610610", "15499925804610615" };
+            long[] channelsTimetoken = { 15499825804610610, 15499925804610615 };
             string timetoken = "";
             TestMessageCountsBuildRequestCommon (channels, channelsTimetoken, timetoken, true, "authKey", true);
         }
 
-        public void TestMessageCountsBuildRequestCommon(string[] channels, string[] channelsTimetoken, string timetoken, bool ssl, string authKey, bool sendQueryParams)
+        public void TestMessageCountsBuildRequestCommon(string[] channels, long[] channelsTimetoken, string timetoken, bool ssl, string authKey, bool sendQueryParams)
         {
             Dictionary<string,string> queryParams = new Dictionary<string, string>();
             string queryParamString = "";
@@ -100,10 +101,10 @@ namespace PubNubAPI.Tests
             }
 
             if(channelsTimetoken != null){
-                channelsTimetokenStr = string.Join(",", channelsTimetoken);
+                channelsTimetokenStr = String.Join(",", channelsTimetoken.Select(p=>p.ToString()).ToArray());
             }
 
-            Uri uri = BuildRequests.BuildMessageCountsRequest (channels, channelsTimetoken, timetoken, pnUnity, queryParams);
+            Uri uri = BuildRequests.BuildMessageCountsRequest (channels, channelsTimetokenStr, timetoken, pnUnity, queryParams);
 
             //https://ps.pndsn.com/v3/history/sub-key/demo/message-counts/test,test2?timetoken=15499825804610609&channelsTimetoken=15499825804610610,15499925804610615&auth=authKey&uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.1.1 
             string expected = string.Format ("http{0}://{1}/v3/history/sub-key/{2}/message-counts/{3}?timetoken={4}&channelsTimetoken={5}{6}&uuid={7}&pnsdk={8}{9}",

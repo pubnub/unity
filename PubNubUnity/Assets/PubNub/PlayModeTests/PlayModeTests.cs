@@ -3365,7 +3365,14 @@ namespace PubNubAPI.Tests
 			channelList2.Add(channel);
 			channelList2.Add(channel2);
 			bool tresult = false;
+			pubnub.MessageCounts().Channels(channelList2).ChannelsTimetoken(new List<long>{10, 11, 12}).Async((result, status) => {
+				tresult = true;
+				Assert.True(status.Error.Equals(true));
 
+			});
+			yield return new WaitForSeconds (1);
+			
+			tresult = false;
 			long timetoken1 = 0;
 			pubnub.Time().Async((result, status) => {
 				timetoken1 = result.TimeToken;
@@ -3434,7 +3441,7 @@ namespace PubNubAPI.Tests
 			Assert.True(!timetoken3.Equals(0));
 
 			tresult = false;
-			pubnub.MessageCounts().Channels(channelList2).ChannelsTimetoken(new List<string>{timetoken2.ToString(), timetoken3.ToString()}).Async((result, status) => {
+			pubnub.MessageCounts().Channels(channelList2).ChannelsTimetoken(new List<long>{timetoken2, timetoken3}).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Debug.Log("status.Error.Equals(false)"+status.Error.Equals(false));
 				if(!status.Error){
@@ -3463,7 +3470,7 @@ namespace PubNubAPI.Tests
 			Assert.True(tresult, "MessageCounts test didnt return 2");
 
 			tresult = false;
-			pubnub.MessageCounts().Channels(channelList2).Timetoken(timetoken2.ToString()).Async((result, status) => {
+			pubnub.MessageCounts().Channels(channelList2).ChannelsTimetoken(new List<long>{timetoken2}).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Debug.Log("status.Error.Equals(false)"+status.Error.Equals(false));
 				if(!status.Error){

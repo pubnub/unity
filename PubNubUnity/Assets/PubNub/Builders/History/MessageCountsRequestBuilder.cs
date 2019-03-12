@@ -14,14 +14,14 @@ namespace PubNubAPI
 
         private string TimetokenToUse {get; set;}
 
-        private List<string> ChannelTimetokensToUse {get; set;}
+        private List<long> ChannelTimetokensToUse {get; set;}
 
         public MessageCountsRequestBuilder Channels(List<string> channelNames){
             ChannelsToUse = channelNames;
             return this;
         }
 
-        public MessageCountsRequestBuilder ChannelsTimetoken(List<string> channelTimetoken){
+        public MessageCountsRequestBuilder ChannelsTimetoken(List<long> channelTimetoken){
             ChannelTimetokensToUse = channelTimetoken;
             return this;
         }
@@ -37,12 +37,26 @@ namespace PubNubAPI
         {
             this.Callback = callback;
             if((this.ChannelsToUse == null) || ((this.ChannelsToUse != null) && (this.ChannelsToUse.Count <= 0))){
-                PNStatus pnStatus = base.CreateErrorResponseFromMessage("HistoryChannel is null or empty", null, PNStatusCategory.PNBadRequestCategory);
+                PNStatus pnStatus = base.CreateErrorResponseFromMessage("Channel is null or empty", null, PNStatusCategory.PNBadRequestCategory);
                 Callback(null, pnStatus);
 
                 return;
             }
 
+            if(((this.ChannelTimetokensToUse == null) || ((this.ChannelTimetokensToUse != null) && (this.ChannelTimetokensToUse.Count <= 0))) && (string.IsNullOrEmpty(TimetokenToUse))){
+                PNStatus pnStatus = base.CreateErrorResponseFromMessage("Channel Timetoken is null or empty", null, PNStatusCategory.PNBadRequestCategory);
+                Callback(null, pnStatus);
+
+                return;
+            }
+
+            if ((ChannelTimetokensToUse.Count > 1) && (ChannelTimetokensToUse.Count() != ChannelsToUse.Count())) {
+                PNStatus pnStatus = base.CreateErrorResponseFromMessage("Length of Channels Timetoken and Channels do not match", null, PNStatusCategory.PNBadRequestCategory);
+                Callback(null, pnStatus);
+
+                return;
+            }
+		
             base.Async(this);
         }
         #endregion
@@ -51,14 +65,28 @@ namespace PubNubAPI
             RequestState requestState = new RequestState ();
             requestState.OperationType = base.OperationType;
 
+            string TimetokenToUseString = "";
+            string ChannelsTimetokenToUseString = "";
+            if ((ChannelTimetokensToUse != null) && (ChannelTimetokensToUse.Count == 1)) {
+                TimetokenToUseString = ChannelTimetokensToUse[0].ToString();
+                ChannelsTimetokenToUseString = "";
+            } else if (ChannelTimetokensToUse != null){
+                TimetokenToUseString = "";
+                ChannelsTimetokenToUseString = String.Join(",", ChannelTimetokensToUse.Select(p=>p.ToString()).ToArray());
+            } else {
+                // TODO: Remove in next major version bump
+                TimetokenToUseString = TimetokenToUse;
+                ChannelsTimetokenToUseString = "";
+            }
+
             #if (ENABLE_PUBNUB_LOGGING)
-            this.PubNubInstance.PNLog.WriteToLog(string.Format ("MessageCountsRequestBuilder: \nChannel {0} \nChannelTimetokens: {1} \nTimetokenToUse:{2}", string.Join(",", this.ChannelsToUse.ToArray()), (ChannelTimetokensToUse!=null)?string.Join(",", this.ChannelTimetokensToUse.ToArray()):"", this.TimetokenToUse), PNLoggingMethod.LevelInfo);
+            this.PubNubInstance.PNLog.WriteToLog(string.Format ("MessageCountsRequestBuilder: \nChannel {0} \nChannelTimetokens: {1} \nTimetokenToUse:{2}", string.Join(",", this.ChannelsToUse.ToArray()), ChannelsTimetokenToUseString, ChannelsTimetokenToUseString), PNLoggingMethod.LevelInfo);
             #endif
-            
+
             Uri request = BuildRequests.BuildMessageCountsRequest(
                 ChannelsToUse.ToArray(),
-                (ChannelTimetokensToUse!=null)?ChannelTimetokensToUse.ToArray():null,
-                TimetokenToUse,
+                ChannelsTimetokenToUseString, 
+                TimetokenToUseString,
                 this.PubNubInstance,
                 this.QueryParams
             );

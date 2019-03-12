@@ -14,11 +14,12 @@ namespace PubNubAPI
             return this;
         }
 
-        public MessageCountsBuilder ChannelsTimetoken(List<string> channelsTimetoken){
+        public MessageCountsBuilder ChannelsTimetoken(List<long> channelsTimetoken){
             pubBuilder.ChannelsTimetoken(channelsTimetoken);
             return this;
         }
 
+        [Obsolete("Use ChannelsTimetoken instead, pass one value in ChannelsTimetoken to achieve the same results.")]    
         public MessageCountsBuilder Timetoken(string timetoken){
             pubBuilder.Timetoken(timetoken);
             return this;

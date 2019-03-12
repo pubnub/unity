@@ -417,7 +417,7 @@ namespace PubNubExample
 
         void MessageCounts(List<string> listChannels, PubNub pubnub){
             //pubnub.MessageCounts().ChannelTimetokens(new List<string>{"15499825804610610","15499925804610615"}).Channels(listChannels).Timetoken("1549982652").Async((result, status) =>{
-            pubnub.MessageCounts().Channels(listChannels).Timetoken("1549982652").Async((result, status) =>{    
+            pubnub.MessageCounts().Channels(listChannels).ChannelsTimetoken(new List<long>{1549982652}).Async((result, status) =>{    
                     if(status.Error){
                         Debug.Log (string.Format("In Example, MessageCounts Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                     } else {
@@ -427,7 +427,7 @@ namespace PubNubExample
                         }                        
                     }
                 });
-            pubnub.MessageCounts().Channels(listChannels).ChannelsTimetoken(new List<string>{"1551795013294","155179501329433"}).Async((result, status) =>{    
+            pubnub.MessageCounts().Channels(listChannels).ChannelsTimetoken(new List<long>{1551795013294,155179501329433}).Async((result, status) =>{    
                     if(status.Error){
                         Debug.Log (string.Format("In Example, MessageCounts Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                     } else {
