@@ -181,12 +181,12 @@ namespace PubNubAPI
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNDeleteMessagesOperation, parameterBuilder.ToString(), pnInstance, queryParams);
         }
 
-        public static Uri BuildMessageCountsRequest (string[] channels, string[] channelsTimetoken, string timetoken, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        public static Uri BuildMessageCountsRequest (string[] channels, string channelsTimetoken, string timetoken, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
         {
             StringBuilder parameterBuilder = new StringBuilder ();
 
             parameterBuilder.AppendFormat ("?timetoken={0}", timetoken);
-            parameterBuilder.AppendFormat ("&channelsTimetoken={0}", (channelsTimetoken!=null)?string.Join(",", channelsTimetoken):"");
+            parameterBuilder.AppendFormat ("&channelsTimetoken={0}", channelsTimetoken);
 
             List<string> url = new List<string> ();
 
