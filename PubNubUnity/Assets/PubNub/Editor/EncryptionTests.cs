@@ -618,7 +618,11 @@ namespace PubNubAPI.Tests
             //encrypt
 
             var ex = Assert.Throws<ArgumentNullException>(() => pubnubCrypto.Encrypt (message)); // True (("").Equals (encrypted));
+            #if (UNITY_2019_1_OR_NEWER)
+            Assert.That(ex.Message.Contains("Value cannot be null."),ex.Message, null);
+            #else
             Assert.That(ex.Message.Contains("Argument cannot be null."),ex.Message, null);
+            #endif
         }
 
         /// <summary>
@@ -636,7 +640,11 @@ namespace PubNubAPI.Tests
             //decrypt
             var ex = Assert.Throws<ArgumentNullException>(() => pubnubCrypto.Decrypt (message)); 
 
-            Assert.That(ex.Message.Contains("Argument cannot be null."), ex.Message, null);
+            #if (UNITY_2019_1_OR_NEWER)
+            Assert.That(ex.Message.Contains("Value cannot be null."),ex.Message, null);
+            #else
+            Assert.That(ex.Message.Contains("Argument cannot be null."),ex.Message, null);
+            #endif
         }
 
         /// <summary>
