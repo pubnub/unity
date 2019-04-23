@@ -21,7 +21,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 
 rc0=$?
 echo "Unit test logs"
-#cat $(pwd)/editor1.log
+cat $(pwd)/editor1.log
 cat $(pwd)/test1.xml
 
 # returning license
