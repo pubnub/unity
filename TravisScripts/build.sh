@@ -16,8 +16,8 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 	-runTests \
 	-testResults $(pwd)/test1.xml \
 	-testPlatform editmode \
-	-username ${UNITYCI_USER_NAME} \
-	-password ${UNITYCI_PASS} \
+	-username "${UNITYCI_USER_NAME}" \
+	-password "${UNITYCI_PASS}" \
 	-serial ${UNITYCI_SERIAL}
 
 rc0=$?
