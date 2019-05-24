@@ -129,12 +129,12 @@ namespace PubNubAPI
             }
             set{
                 presenceTimeout = value;
-                if(presenceTimeout < minPresenceTimeout){
-                    presenceTimeout = minPresenceTimeout;
+                if(presenceTimeout < minPresenceTimeout){                    
                     #if (ENABLE_PUBNUB_LOGGING)
-                    string logText = string.Format("PresenceTimeout value less than the min recommended timeout value of {0}, setting value to {0}", minPresenceTimeout);
+                    string logText = string.Format("PresenceTimeout value less than the min recommended value of {0}, setting value to {0}", minPresenceTimeout); 
                     UnityEngine.Debug.Log (string.Format("\n{0} {1}, {2}: {3}\n", DateTime.Now.ToShortDateString(), DateTime.Now.ToLongTimeString(), TimeZone.CurrentTimeZone.StandardName, logText, minPresenceTimeout));
                     #endif
+                    presenceTimeout = minPresenceTimeout;
                 }
                 PresenceInterval = calPresenceInterval(presenceTimeout);
             }

@@ -729,7 +729,7 @@ namespace PubNubAPI
             string uuid = pnInstance.PNConfig.UUID;
             bool ssl = pnInstance.PNConfig.Secure;
             string origin = pnInstance.PNConfig.Origin;
-            int pubnubPresenceHeartbeatInSeconds = pnInstance.PNConfig.PresenceInterval;
+            int pubnubPresenceHeartbeatInSeconds = pnInstance.PNConfig.PresenceTimeout;
             string authenticationKey = pnInstance.PNConfig.AuthKey;
             string pnsdkVersion = pnInstance.Version;
 
