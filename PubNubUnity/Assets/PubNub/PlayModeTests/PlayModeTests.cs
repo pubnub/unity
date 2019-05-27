@@ -324,16 +324,16 @@ namespace PubNubAPI.Tests
 			pubnub.AddChannelsToChannelGroup().ChannelGroup(channelGroup).Channels(channelList).Async((result, status) => {
                 Debug.Log ("in AddChannelsToChannelGroup");
             });
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 
 			pubnub.Subscribe ().Channels(channelList2).ChannelGroups(channelGroupList).Execute();
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Dictionary<string, object> state = new Dictionary<string, object>();
 			state.Add("k", "v");
 			pubnub.SetPresenceState().Channels(channelList).ChannelGroups(channelGroupList).State(state).Async ((result, status) => {
                 
             });
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			bool testReturn = false;
 			pubnub.HereNow().IncludeState(true).IncludeUUIDs(false).Async((result, status) => {
 					Debug.Log("status.Error:" + status.Error);
@@ -344,7 +344,7 @@ namespace PubNubAPI.Tests
 					testReturn = !status.Error && matchResult;
                 });
 
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeForAsyncResponse);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(testReturn, "test didn't return");
 			pubnub.CleanUp();
 		}
