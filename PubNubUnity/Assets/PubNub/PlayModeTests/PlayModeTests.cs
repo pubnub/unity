@@ -37,7 +37,10 @@ namespace PubNubAPI.Tests
 		public IEnumerator TestWhereNow() {
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			PubNub pubnub = new PubNub(pnConfiguration);
-			string whereNowChannel = "UnityTestWhereNowChannel";
+			System.Random r = new System.Random ();
+
+			string whereNowChannel = "UnityTestWhereNowChannel"+ r.Next (100);
+
 			pubnub.Subscribe ().Channels(new List<string> (){whereNowChannel}).WithPresence().Execute();
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			bool testReturn = false;
@@ -233,10 +236,12 @@ namespace PubNubAPI.Tests
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			pnConfiguration.UUID = "UnityTestHereNowUUID";
 			PubNub pubnub = new PubNub(pnConfiguration);
-			string hereNowChannel = "UnityTestHereNowChannel6";
-			string hereNowChannel2 = "UnityTestHereNowChannel7";
-			string hereNowChannel3 = "UnityTestHereNowChannel8";
-			string channelGroup = "channelGroup4";
+			System.Random r = new System.Random ();
+
+			string hereNowChannel = "UnityTestHereNowChannel6"+ r.Next (100);
+			string hereNowChannel2 = "UnityTestHereNowChannel7"+ r.Next (100);
+			string hereNowChannel3 = "UnityTestHereNowChannel8"+ r.Next (100);
+			string channelGroup = "channelGroup4"+ r.Next (100);
 			List<string> channelList = new List<string>();
 			channelList.Add(hereNowChannel);
 			channelList.Add(hereNowChannel2);
@@ -272,10 +277,13 @@ namespace PubNubAPI.Tests
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			pnConfiguration.UUID = "UnityTestHereNowUUID";
 			PubNub pubnub = new PubNub(pnConfiguration);
-			string hereNowChannel = "UnityTestHereNowChannel9";
-			string hereNowChannel2 = "UnityTestHereNowChannel10";
-			string hereNowChannel3 = "UnityTestHereNowChannel11";
-			string channelGroup = "channelGroup5";
+			System.Random r = new System.Random ();
+
+			string hereNowChannel = "UnityTestHereNowChannel6"+ r.Next (100);
+			string hereNowChannel2 = "UnityTestHereNowChannel7"+ r.Next (100);
+			string hereNowChannel3 = "UnityTestHereNowChannel8"+ r.Next (100);
+
+			string channelGroup = "channelGroup5"+ r.Next (100);
 			List<string> channelList = new List<string>();
 			channelList.Add(hereNowChannel);
 			channelList.Add(hereNowChannel2);
@@ -310,10 +318,12 @@ namespace PubNubAPI.Tests
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			pnConfiguration.UUID = "UnityTestHereNowUUID";
 			PubNub pubnub = new PubNub(pnConfiguration);
-			string hereNowChannel = "UnityTestHereNowChannel12";
-			string hereNowChannel2 = "UnityTestHereNowChannel13";
-			string hereNowChannel3 = "UnityTestHereNowChannel14";
-			string channelGroup = "channelGroup6";
+			System.Random r = new System.Random ();
+
+			string hereNowChannel = "UnityTestHereNowChannel6"+ r.Next (100);
+			string hereNowChannel2 = "UnityTestHereNowChannel7"+ r.Next (100);
+			string hereNowChannel3 = "UnityTestHereNowChannel8"+ r.Next (100);
+			string channelGroup = "channelGroup6"+ r.Next (100);
 			List<string> channelList = new List<string>();
 			channelList.Add(hereNowChannel);
 			channelList.Add(hereNowChannel2);
@@ -344,7 +354,7 @@ namespace PubNubAPI.Tests
 					testReturn = !status.Error && matchResult;
                 });
 
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
 			Assert.True(testReturn, "test didn't return");
 			pubnub.CleanUp();
 		}
@@ -354,10 +364,12 @@ namespace PubNubAPI.Tests
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			pnConfiguration.UUID = "UnityTestHereNowUUID";
 			PubNub pubnub = new PubNub(pnConfiguration);
-			string hereNowChannel = "UnityTestHereNowChannel15";
-			string hereNowChannel2 = "UnityTestHereNowChannel16";
-			string hereNowChannel3 = "UnityTestHereNowChannel17";
-			string channelGroup = "channelGroup7";
+			System.Random r = new System.Random ();
+
+			string hereNowChannel = "UnityTestHereNowChannel6"+ r.Next (100);
+			string hereNowChannel2 = "UnityTestHereNowChannel7"+ r.Next (100);
+			string hereNowChannel3 = "UnityTestHereNowChannel8"+ r.Next (100);
+			string channelGroup = "channelGroup6"+ r.Next (100);
 			List<string> channelList = new List<string>();
 			channelList.Add(hereNowChannel);
 			channelList.Add(hereNowChannel2);
