@@ -316,9 +316,9 @@ namespace PubNubAPI.Tests
 		[UnityTest]
 		public IEnumerator TestGlobalHereNowWithoutUUIDWithState() {
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
-			pnConfiguration.UUID = "UnityTestHereNowUUID";
-			PubNub pubnub = new PubNub(pnConfiguration);
 			System.Random r = new System.Random ();
+			pnConfiguration.UUID = "UnityTestHereNowUUID"+ r.Next (100);
+			PubNub pubnub = new PubNub(pnConfiguration);			
 
 			string hereNowChannel = "UnityTestHereNowChannel6"+ r.Next (100);
 			string hereNowChannel2 = "UnityTestHereNowChannel7"+ r.Next (100);
