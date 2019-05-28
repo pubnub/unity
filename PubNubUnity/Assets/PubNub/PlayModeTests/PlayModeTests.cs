@@ -313,7 +313,7 @@ namespace PubNubAPI.Tests
 			pubnub.CleanUp();
 		}
 
-		[UnityTest]
+		//[UnityTest]
 		public IEnumerator TestGlobalHereNowWithoutUUIDWithState() {
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random ();
