@@ -11,13 +11,13 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
 	-batchmode \
 	-logFile $(pwd)/editor1.log \
-	-projectPath $(pwd)/${UNITYCI_PROJECT_NAME} \
+	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
 	-runTests \
 	-testResults $(pwd)/test1.xml \
 	-testPlatform editmode \
 	-username "${UNITYCI_NEW_USER}" \
 	-password "${UNITYCI_NEW_PASS}" \
-	-serial ${UNITYCI_NEW_SERIAL} \
+	-serial "${UNITYCI_NEW_SERIAL}" \
 	-silent-crashes 
 
 rc0=$?
@@ -37,13 +37,13 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} playmode"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
 	-batchmode \
 	-logFile $(pwd)/editor2.log \
-	-projectPath $(pwd)/${UNITYCI_PROJECT_NAME} \
+	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
 	-runTests \
 	-testResults $(pwd)/test2.xml \
 	-testPlatform playmode \
-	-username ${UNITYCI_NEW_USER} \
-	-password ${UNITYCI_NEW_PASS} \
-	-serial ${UNITYCI_NEW_SERIAL} \
+	-username "${UNITYCI_NEW_USER}" \
+	-password "${UNITYCI_NEW_PASS}" \
+	-serial "${UNITYCI_NEW_SERIAL}" \
 	-silent-crashes
 
 rc1=$?
