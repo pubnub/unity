@@ -9,7 +9,6 @@
 echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
-	-quit \
 	-batchmode \
 	-logFile $(pwd)/editor1.log \
 	-projectPath $(pwd)/${UNITYCI_PROJECT_NAME} \
@@ -19,7 +18,6 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 	-username "${UNITYCI_NEW_USER}" \
 	-password "${UNITYCI_NEW_PASS}" \
 	-serial ${UNITYCI_NEW_SERIAL} \
-	-noUpm \
 	-silent-crashes 
 
 rc0=$?
@@ -46,7 +44,6 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} playmode"
 	-username ${UNITYCI_NEW_USER} \
 	-password ${UNITYCI_NEW_PASS} \
 	-serial ${UNITYCI_NEW_SERIAL} \
-	-noUpm \
 	-silent-crashes
 
 rc1=$?
