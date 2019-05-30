@@ -19,7 +19,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 	-password "${UNITYCI_NEW_PASS}" \
 	-serial "${UNITYCI_NEW_SERIAL}" \
 	-silent-crashes \
-	-nographics
+	-accept-apiupdate
 
 rc0=$?
 echo "Unit test logs"
