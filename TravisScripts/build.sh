@@ -19,7 +19,8 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 	-password "${UNITYCI_NEW_PASS}" \
 	-serial "${UNITYCI_NEW_SERIAL}" \
 	-silent-crashes \
-	-accept-apiupdate
+	-accept-apiupdate \
+	-noUpm
 
 rc0=$?
 echo "Unit test logs"
@@ -46,7 +47,8 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} playmode"
 	-password "${UNITYCI_NEW_PASS}" \
 	-serial "${UNITYCI_NEW_SERIAL}" \
 	-silent-crashes \
-	-nographics
+	-nographics \
+	-noUpm	
 
 rc1=$?
 echo "Unit test logs 2"
