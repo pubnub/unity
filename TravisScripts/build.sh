@@ -18,7 +18,8 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 	-username "${UNITYCI_NEW_USER}" \
 	-password "${UNITYCI_NEW_PASS}" \
 	-serial "${UNITYCI_NEW_SERIAL}" \
-	-silent-crashes 
+	-silent-crashes \
+	-nographics
 
 rc0=$?
 echo "Unit test logs"
@@ -44,7 +45,8 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} playmode"
 	-username "${UNITYCI_NEW_USER}" \
 	-password "${UNITYCI_NEW_PASS}" \
 	-serial "${UNITYCI_NEW_SERIAL}" \
-	-silent-crashes
+	-silent-crashes \
+	-nographics
 
 rc1=$?
 echo "Unit test logs 2"
@@ -67,7 +69,8 @@ echo "creating exportPackage"
 	-exportPackage "Assets" "${UNITYCI_PACKAGE_NAME}.unitypackage" \
 	-username ${UNITYCI_USER_NAME} \
 	-password ${UNITYCI_PASS} \
-	-serial ${UNITYCI_SERIAL}
+	-serial ${UNITYCI_SERIAL} \
+	-nographics
 
 # returning license
 echo "returning license"
