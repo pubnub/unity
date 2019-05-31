@@ -44,7 +44,7 @@ mkdir ~/Library/Unity
 mkdir ~/Library/Unity/Certificates
 
 cp "./TravisScripts/CACerts.pem" ~/Library/Unity/Certificates/
-cp "./TravisScripts/rest-certificate.pem" ~/Library/Unity/
+#cp "./TravisScripts/rest-certificate.pem" ~/Library/Unity/
 
 
 #echo === Done ===
