@@ -619,8 +619,10 @@ namespace PubNubAPI.Tests
 
             var ex = Assert.Throws<ArgumentNullException>(() => pubnubCrypto.Encrypt (message)); // True (("").Equals (encrypted));
             #if UNITY_2019_1_OR_NEWER
+            UnityEngine.Debug.Log ("UNITY_2019_1_OR_NEWER:" + ex.Message);
             Assert.That(ex.Message.Contains("Value cannot be null."),ex.Message, null);
             #else
+            UnityEngine.Debug.Log ("!UNITY_2019_1_OR_NEWER:" + ex.Message);
             Assert.That(ex.Message.Contains("Argument cannot be null."),ex.Message, null);
             #endif
         }
