@@ -17,10 +17,10 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 	-testPlatform editmode \
 	-username "${UNITYCI_NEW_USER}" \
 	-password "${UNITYCI_NEW_PASS}" \
-	-serial "${UNITYCI_NEW_SERIAL}" \
-	-silent-crashes \
-	-accept-apiupdate \
-	-noUpm
+	-serial "${UNITYCI_NEW_SERIAL}" 
+	# -silent-crashes \
+	# -accept-apiupdate \
+	# -noUpm
 
 rc0=$?
 echo "Unit test logs"
@@ -45,10 +45,10 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} playmode"
 	-testPlatform playmode \
 	-username "${UNITYCI_NEW_USER}" \
 	-password "${UNITYCI_NEW_PASS}" \
-	-serial "${UNITYCI_NEW_SERIAL}" \
-	-silent-crashes \
-	-nographics \
-	-noUpm	
+	-serial "${UNITYCI_NEW_SERIAL}" 
+	# -silent-crashes \
+	# -nographics \
+	# -noUpm	
 
 rc1=$?
 echo "Unit test logs 2"
@@ -72,7 +72,7 @@ echo "creating exportPackage"
 	-username ${UNITYCI_USER_NAME} \
 	-password ${UNITYCI_PASS} \
 	-serial ${UNITYCI_SERIAL} \
-	-nographics
+	# -nographics
 
 # returning license
 echo "returning license"
