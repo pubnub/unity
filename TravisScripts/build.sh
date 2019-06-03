@@ -65,6 +65,7 @@ if [ $rc1 -ne 0 ]; then { echo "Failed unit tests playmode"; exit $rc1; } fi
 
 echo "creating exportPackage"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
+	-quit \
 	-batchmode \
 	-logFile $(pwd)/exportPackage.log \
 	-projectPath $(pwd)/${UNITYCI_PROJECT_NAME} \
