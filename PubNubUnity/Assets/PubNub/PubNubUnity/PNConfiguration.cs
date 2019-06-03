@@ -122,7 +122,7 @@ namespace PubNubAPI
         }
 
         private int presenceTimeout = 0;
-        private int minPresenceTimeout = 20;
+        private readonly int minPresenceTimeout = 20;
         public int PresenceTimeout { 
             get{
                 return presenceTimeout;
