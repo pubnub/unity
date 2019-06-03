@@ -231,7 +231,7 @@ namespace PubNubAPI.Tests
 			pubnub.CleanUp();
 		}
 
-		[UnityTest]
+		//[UnityTest]
 		public IEnumerator TestGlobalHereNow() {
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			pnConfiguration.UUID = "UnityTestHereNowUUID";

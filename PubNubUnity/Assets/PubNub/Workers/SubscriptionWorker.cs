@@ -762,7 +762,7 @@ namespace PubNubAPI
                 (pnPresenceEventDict.ContainsKey("uuid"))?pnPresenceEventDict["uuid"].ToString():"",
                 occupancy,
                 timetoken,
-                (pnPresenceEventDict.ContainsKey("state"))?pnPresenceEventDict["state"]:null,
+                (pnPresenceEventDict.ContainsKey("data"))?pnPresenceEventDict["data"]:null,
                 Utility.CheckKeyAndConvertObjToStringArr((pnPresenceEventDict.ContainsKey("join"))?pnPresenceEventDict["join"]:null),
                 Utility.CheckKeyAndConvertObjToStringArr((pnPresenceEventDict.ContainsKey("leave"))?pnPresenceEventDict["leave"]:null),
                 Utility.CheckKeyAndConvertObjToStringArr((pnPresenceEventDict.ContainsKey("timeout"))?pnPresenceEventDict["timeout"]:null),
