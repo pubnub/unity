@@ -5,7 +5,10 @@ changelog:
       - 
         text: "Presence Timeout cannot be lower than 20"
         type: improvement
-    date: May 27, 19  
+      - 
+        text: "PNPresenceEventResult.State property not populated in callback"
+        type: bug
+    date: Jun 4, 19  
     version: v4.2.1  
   - 
     changes: 
