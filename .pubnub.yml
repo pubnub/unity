@@ -3,6 +3,16 @@ changelog:
   - 
     changes: 
       - 
+        text: "Presence Timeout cannot be lower than 20"
+        type: improvement
+      - 
+        text: "PNPresenceEventResult.State property not populated in callback"
+        type: bug
+    date: Jun 4, 19  
+    version: v4.2.1  
+  - 
+    changes: 
+      - 
         text: "Message Counts simplification (Breaking changes from the previous version)."
         type: improvement
     date: Mar 13, 19  
@@ -362,6 +372,7 @@ supported-platforms:
       - "Unity 5.5.1"
       - "Unity 2017.3.*"
       - "Unity 2018.*"
+      - "Unity 2019.*"
     platforms: 
       - "iOS player, will require iOS 7.0 or higher."
       - "Android, OS 2.3.1 or later; ARMv7 (Cortex) CPU with NEON support or Atom CPU; OpenGL ES 2.0 or later."
@@ -372,4 +383,4 @@ supported-platforms:
       - "Ubuntu 12.04+, with Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support."
       - "Mac OS X 10.8+, with Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support."
     version: "PubNub Unity SDK"
-version: v4.2.0
+version: v4.2.1

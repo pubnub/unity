@@ -117,9 +117,40 @@ namespace PubNubAPI
             get {return reconnectionPolicy;}
             set {reconnectionPolicy = value;}
         }
-        public int PresenceTimeout { get; set;}
+        private int calPresenceInterval(int presenceTimeout){
+            return (presenceTimeout/2)-1;
+        }
+
+        private int presenceTimeout = 0;
+        private readonly int minPresenceTimeout = 20;
+        public int PresenceTimeout { 
+            get{
+                return presenceTimeout;
+            }
+            set{
+                presenceTimeout = value;
+                if(presenceTimeout < minPresenceTimeout){                    
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    string logText = string.Format("PresenceTimeout value less than the min recommended value of {0}, setting value to {0}", minPresenceTimeout); 
+                    UnityEngine.Debug.Log (string.Format("\n{0} {1}, {2}: {3}\n", DateTime.Now.ToShortDateString(), DateTime.Now.ToLongTimeString(), TimeZone.CurrentTimeZone.StandardName, logText, minPresenceTimeout));
+                    #endif
+                    presenceTimeout = minPresenceTimeout;
+                }
+                PresenceInterval = calPresenceInterval(presenceTimeout);
+            }
+        }
+
+        private int presenceInterval = 0;
+        
         //In seconds, How often the client should announce it's existence via heartbeating.
-        public int PresenceInterval { get; set;}
+        public int PresenceInterval { 
+            get{
+                return presenceInterval;
+            }
+            set{
+                presenceInterval = value;
+            }
+        }
 
         private int maximumReconnectionRetries = 50;
         public int MaximumReconnectionRetries

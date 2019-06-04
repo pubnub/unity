@@ -55,9 +55,9 @@ namespace PubNubAPI.Tests
 		public static bool SslOn = true;
 		public static bool CipherOn = false;
 		public static string Origin = "ps.pndsn.com";
-        public static string PublishKey = "pub-c-34a8af78-0bb3-40cb-b0c4-be413d9a6b19";
-        public static string SubscribeKey = "sub-c-b3fd9fce-af5b-11e7-8d62-62090b44bf58";
-        public static string SecretKey = "sec-c-ZTVlNDIxNTAtMDUxOC00YjA3LWFiYzktZTBlMjljZjc3NGQx";
+        public static string PublishKey = "pub-c-c1648ded-d156-4a2d-9dbb-a23262945fe2";
+        public static string SubscribeKey = "sub-c-c14b8948-7dfe-11e9-aee4-2e27e4d79cf8";
+        public static string SecretKey = "sec-c-OGI5YmJiMmUtMjIwNS00NjkzLTkxZmYtMjE1N2I2MDhlNDM5";
         public static string cg1 = "channelGroup1";
         public static string cg2 = "channelGroup2";
         public static string ch1 = "channel1";

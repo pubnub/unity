@@ -11,13 +11,16 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
 	-batchmode \
 	-logFile $(pwd)/editor1.log \
-	-projectPath $(pwd)/${UNITYCI_PROJECT_NAME} \
+	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
 	-runTests \
 	-testResults $(pwd)/test1.xml \
 	-testPlatform editmode \
-	-username ${UNITYCI_USER_NAME} \
-	-password ${UNITYCI_PASS} \
-	-serial ${UNITYCI_SERIAL}
+	-username "${UNITYCI_NEW_USER}" \
+	-password "${UNITYCI_NEW_PASS}" \
+	-serial "${UNITYCI_NEW_SERIAL}" 
+	# -silent-crashes \
+	# -accept-apiupdate \
+	# -noUpm
 
 rc0=$?
 echo "Unit test logs"
@@ -36,13 +39,16 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} playmode"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
 	-batchmode \
 	-logFile $(pwd)/editor2.log \
-	-projectPath $(pwd)/${UNITYCI_PROJECT_NAME} \
+	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
 	-runTests \
 	-testResults $(pwd)/test2.xml \
 	-testPlatform playmode \
-	-username ${UNITYCI_USER_NAME} \
-	-password ${UNITYCI_PASS} \
-	-serial ${UNITYCI_SERIAL}
+	-username "${UNITYCI_NEW_USER}" \
+	-password "${UNITYCI_NEW_PASS}" \
+	-serial "${UNITYCI_NEW_SERIAL}" 
+	# -silent-crashes \
+	# -nographics \
+	# -noUpm	
 
 rc1=$?
 echo "Unit test logs 2"
@@ -66,7 +72,8 @@ echo "creating exportPackage"
 	-exportPackage "Assets" "${UNITYCI_PACKAGE_NAME}.unitypackage" \
 	-username ${UNITYCI_USER_NAME} \
 	-password ${UNITYCI_PASS} \
-	-serial ${UNITYCI_SERIAL}
+	-serial ${UNITYCI_SERIAL} \
+	# -nographics
 
 # returning license
 echo "returning license"

@@ -1,5 +1,5 @@
-$source = "https://netstorage.unity3d.com/unity/a9f86dcd79df/Windows64EditorInstaller/UnitySetup64-2017.3.0f3.exe"
+$source = "https://download.unity3d.com/download_unity/292b93d75a2c/Windows64EditorInstaller/UnitySetup64.exe"
 $destination = ".\UnitySetup64.exe"
 Invoke-WebRequest $source -OutFile $destination
 Start-Process -FilePath ".\UnitySetup64.exe" -Wait -ArgumentList ('/S', '/Q')
-Write-Host "$(date) UnitySetup64-2017.3.0f3 Installed"-ForegroundColor green
+Write-Host "$(date) UnitySetup64-2019.1 Installed"-ForegroundColor green
