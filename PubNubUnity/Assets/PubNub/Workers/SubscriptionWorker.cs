@@ -9,10 +9,10 @@ namespace PubNubAPI
     
     public class SubscribeEventEventArgs : EventArgs
     {
-        public PNStatus Status;
-        public PNPresenceEventResult PresenceEventResult;
-        public PNMessageResult MessageResult;
-        public PNSignalEventResult SignalEventResult;
+        public PNStatus Status { get; set;}
+        public PNPresenceEventResult PresenceEventResult { get; set;}
+        public PNMessageResult MessageResult { get; set;}
+        public PNSignalEventResult SignalEventResult { get; set;}
     }   
 
     public class SubscriptionWorker<U>

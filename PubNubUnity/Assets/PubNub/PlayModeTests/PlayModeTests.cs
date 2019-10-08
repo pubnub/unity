@@ -1000,6 +1000,40 @@ namespace PubNubAPI.Tests
 
 		}
 
+		[UnityTest]
+		public IEnumerator TestSignalsAndSubscribe() {
+			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
+			System.Random r = new System.Random ();
+			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next (100);
+			string channel = "UnityTestSignalChannel_"  + r.Next (100);
+			string payload = string.Format("Signal {0}", r.Next (100));
+
+			PubNub pubnub = new PubNub(pnConfiguration);
+			List<string> channelList2 = new List<string>();
+			channelList2.Add(channel);
+			bool tresult = false;
+
+			pubnub.SubscribeCallback += (sender, e) => { 
+				SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
+				if (mea.SignalEventResult != null) {					
+					tresult = mea.SignalEventResult.Channel.Equals(channel) && mea.SignalEventResult.Payload.ToString().Equals(payload);
+					Debug.Log("Signal tresult:" + tresult + channel + payload);
+				}
+			};
+			pubnub.Subscribe ().Channels(channelList2).Execute();
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+
+			pubnub.Signal().Channel(channel).Message(payload).Async((result, status) => {
+				Assert.True(!result.Timetoken.Equals(0));
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "test didn't return");
+			pubnub.CleanUp();
+
+		}
+
 		// [UnityTest]
 		// public IEnumerator TestDeleteMessagesBuildRequestsSecretKeyError(){
         //     PNConfiguration pnConfiguration = new PNConfiguration ();

@@ -226,7 +226,13 @@ namespace PubNubAPI
             return pnUnity.RemovePushNotificationsFromChannels();            
         }
 
-        public void AddListener(Action<PNStatus> statusCallback, Action<PNMessageResult> messageCallback, Action<PNPresenceEventResult> presenceCallback, Action<PNSignalEventResult> signalCallback = null)
+        public void AddListener(Action<PNStatus> statusCallback, Action<PNMessageResult> messageCallback, Action<PNPresenceEventResult> presenceCallback)
+        {
+            PubNubUnityInitializationAfterCleanup();
+            pnUnity.AddListener(statusCallback, messageCallback, presenceCallback, null);
+        }
+
+        public void AddListener(Action<PNStatus> statusCallback, Action<PNMessageResult> messageCallback, Action<PNPresenceEventResult> presenceCallback, Action<PNSignalEventResult> signalCallback)
         {
             PubNubUnityInitializationAfterCleanup();
             pnUnity.AddListener(statusCallback, messageCallback, presenceCallback, signalCallback);
