@@ -55,7 +55,7 @@ namespace PubNubAPI.Tests
 
             Uri uri = BuildRequests.BuildSignalRequest (channel, originalMessage, pnUnity, queryParams);
 
-            https://ps.pndsn.com/signal/demo/demo/0/UnityUnitTests_69/0/%22Test%20signal%22?uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.2.1 
+            https://ps.pndsn.com/signal/demo/demo/0/UnityUnitTests_69/0/%22Test%20signal%22?uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
             string expected = string.Format ("http{0}://{1}/signal/{2}/{3}/{4}/{5}/0/{6}?uuid={7}&pnsdk={8}{9}",
                 ssl?"s":"", 
                 pnConfiguration.Origin, 

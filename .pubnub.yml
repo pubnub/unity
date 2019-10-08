@@ -3,6 +3,13 @@ changelog:
   - 
     changes: 
       - 
+        text: "Signals"
+        type: improvement
+    date: Oct 10, 19  
+    version: v4.3.0  
+  - 
+    changes: 
+      - 
         text: "Presence Timeout cannot be lower than 20"
         type: improvement
       - 
