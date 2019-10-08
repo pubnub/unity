@@ -80,6 +80,11 @@ namespace PubNubAPI
                             publishBuilder.RaiseRunRequest(this);
 
                             break;
+                        case PNOperationType.PNSignalOperation:
+                            SignalRequestBuilder signalBuilder  = operationParams as SignalRequestBuilder;
+                            signalBuilder.RaiseRunRequest(this);
+
+                            break;
                         case PNOperationType.PNHereNowOperation:
                             HereNowRequestBuilder hereNowBuilder  = operationParams as HereNowRequestBuilder;
                             hereNowBuilder.RaiseRunRequest(this);

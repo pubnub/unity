@@ -156,6 +156,11 @@ namespace PubNubAPI
             return pnUnity.Fire();
         }
 
+        public SignalBuilder Signal(){
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.Signal();
+        }
+
         public UnsubscribeBuilder Unsubscribe(){
             PubNubUnityInitializationAfterCleanup();
             return pnUnity.Unsubscribe();
@@ -221,10 +226,10 @@ namespace PubNubAPI
             return pnUnity.RemovePushNotificationsFromChannels();            
         }
 
-        public void AddListener(Action<PNStatus> callback, Action<PNMessageResult> callback2, Action<PNPresenceEventResult> callback3)
+        public void AddListener(Action<PNStatus> statusCallback, Action<PNMessageResult> messageCallback, Action<PNPresenceEventResult> presenceCallback, Action<PNSignalEventResult> signalCallback = null)
         {
             PubNubUnityInitializationAfterCleanup();
-            pnUnity.AddListener(callback, callback2, callback3);
+            pnUnity.AddListener(statusCallback, messageCallback, presenceCallback, signalCallback);
         }
 
         public static long TranslateDateTimeToPubnubUnixNanoSeconds (DateTime dotNetUTCDateTime)

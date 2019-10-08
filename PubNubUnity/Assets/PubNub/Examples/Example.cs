@@ -44,6 +44,8 @@ namespace PubNubExample
         UnityEngine.UI.Button ButtonRemovePushNotificationsFromChannels;
         UnityEngine.UI.Button ButtonMessageCounts;
 
+        UnityEngine.UI.Button ButtonSignal;
+
         string deviceId = "aaa";
         PNPushType pnPushType = PNPushType.GCM;
 
@@ -318,6 +320,17 @@ namespace PubNubExample
             MessageCounts(listChannels, pubnub);
         }
 
+        void ButtonSignalHandler(){
+            pubnub.Signal().Channel("channel1").Message("test signal").Async((result, status) => {
+                    if(status.Error){
+                        PrintStatus(status);
+                    } else {
+                        Debug.Log (string.Format("DateTime {0}, In signal Example, Timetoken: {1}", DateTime.UtcNow , result.Timetoken));
+                        Display(string.Format("Published: {0}", result.Timetoken));
+                    }
+                });
+        }
+
         void SubscribeHandler(){
             Dictionary<string, string> dict = new Dictionary<string, string>();
             dict.Add  ("k1", "v1");
@@ -383,6 +396,8 @@ namespace PubNubExample
             ButtonRemovePushNotificationsFromChannels.onClick.AddListener(ButtonRemovePushNotificationsFromChannelsHandler);
             ButtonMessageCounts = GameObject.Find("ButtonMessageCounts").GetComponent<UnityEngine.UI.Button>();
             ButtonMessageCounts.onClick.AddListener(ButtonMessageCountsHandler);
+            ButtonSignal = GameObject.Find("ButtonSignal").GetComponent<UnityEngine.UI.Button>();
+            ButtonSignal.onClick.AddListener(ButtonSignalHandler);
         }
 
     	// Use this for initialization
@@ -570,6 +585,10 @@ namespace PubNubExample
                 }
                 if(mea.PresenceEventResult != null){
                     Debug.Log ("In Example, SubscribeCallback in presence" + mea.PresenceEventResult.Channel + mea.PresenceEventResult.Occupancy + mea.PresenceEventResult.Event + mea.PresenceEventResult.State);
+                }
+                if(mea.SignalEventResult != null){
+                    Debug.Log ("In Example, SubscribeCallback in SignalEventResult" + mea.SignalEventResult.Channel + mea.SignalEventResult.Payload);
+                    Display(string.Format("SubscribeCallback SignalEventResult: {0}", pubnub.JsonLibrary.SerializeToJsonString(mea.SignalEventResult.Payload)));
                 }
         }
 

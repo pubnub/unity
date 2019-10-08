@@ -59,7 +59,7 @@ namespace PubNubAPI
 
         }
 
-        public void AddListener(Action<PNStatus> callback, Action<PNMessageResult> callback2, Action<PNPresenceEventResult> callback3)
+        public void AddListener(Action<PNStatus> statusCallback, Action<PNMessageResult> messageCallback, Action<PNPresenceEventResult> presenceCallback, Action<PNSignalEventResult> signalCallback)
         {
             SubscribeCallback += (object sender, EventArgs e) => {
                 SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
@@ -70,13 +70,16 @@ namespace PubNubAPI
                 
                 if(mea!=null){
                     if(mea.Status != null){
-                        callback(mea.Status);
+                        statusCallback(mea.Status);
                     }
                     if(mea.MessageResult != null){
-                        callback2(mea.MessageResult);
+                        messageCallback(mea.MessageResult);
                     }
                     if(mea.PresenceEventResult != null){
-                        callback3(mea.PresenceEventResult);
+                        presenceCallback(mea.PresenceEventResult);
+                    }
+                    if(mea.MessageResult != null){
+                        signalCallback(mea.SignalEventResult);
                     }
                 }
             };
@@ -154,6 +157,14 @@ namespace PubNubAPI
             #endif
             
             return new FireBuilder (this, publishMessageCounter.NextValue());
+        }
+        
+        public SignalBuilder Signal(){
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("SignalBuilder", PNLoggingMethod.LevelInfo);
+            #endif
+            
+            return new SignalBuilder (this);
         }
         
         public UnsubscribeBuilder Unsubscribe(){

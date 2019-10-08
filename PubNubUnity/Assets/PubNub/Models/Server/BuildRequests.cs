@@ -158,6 +158,20 @@ namespace PubNubAPI
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNPublishOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         }
 
+        public static Uri BuildSignalRequest (string channel, string message, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        {
+            List<string> url = new List<string> ();
+            url.Add ("signal");
+            url.Add (pnInstance.PNConfig.PublishKey);
+            url.Add (pnInstance.PNConfig.SubscribeKey);
+            url.Add ("0");
+            url.Add (channel);
+            url.Add ("0");
+            url.Add (message);
+
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNSignalOperation, "", pnInstance, queryParams);
+        }
+
         public static Uri BuildDeleteMessagesRequest (string channel, long start, long end, PubNubUnity pnInstance, Dictionary<string, string> queryParams){
             StringBuilder parameterBuilder = new StringBuilder ();
             if (start != -1) {
@@ -758,6 +772,7 @@ namespace PubNubAPI
             case PNOperationType.PNPresenceHeartbeatOperation:
             case PNOperationType.PNGetStateOperation:
             case PNOperationType.PNPublishOperation:
+            case PNOperationType.PNSignalOperation:
 
                 url = AppendUUIDToURL(url, uuid, true);
                 url.Append (parameters);

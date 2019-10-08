@@ -12,6 +12,7 @@ namespace PubNubAPI
         public PNStatus Status;
         public PNPresenceEventResult PresenceEventResult;
         public PNMessageResult MessageResult;
+        public PNSignalEventResult SignalEventResult;
     }   
 
     public class SubscriptionWorker<U>
@@ -427,7 +428,7 @@ namespace PubNubAPI
             }
         }
 
-        private void  SubscribePresenceHanlder (CustomEventArgs cea)
+        private void SubscribePresenceHanlder (CustomEventArgs cea)
         {
             #if (ENABLE_PUBNUB_LOGGING)
             this.PubNubInstance.PNLog.WriteToLog("WebRequestCompleteHandler FireEvent", PNLoggingMethod.LevelInfo);
@@ -530,6 +531,16 @@ namespace PubNubAPI
                 CreatePNPresenceEventResult(subscribeMessage, out subMessageResult);
                 mea.PresenceEventResult = subMessageResult;
                 PubNubInstance.RaiseEvent (mea);
+            } else if (subscribeMessage.MessageType.Equals(1)) {  
+                PNSignalEventResult subSignalEventResult; 
+                CreatePNSignalEventResult(subscribeMessage, out subSignalEventResult);
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PubNubInstance.PNLog.WriteToLog("Raising Signal event ", PNLoggingMethod.LevelInfo);
+                #endif            
+                
+                mea.SignalEventResult = subSignalEventResult;
+                PubNubInstance.RaiseEvent (mea);
+  
             } else {
                 PNMessageResult subMessageResult; 
                 CreatePNMessageResult(subscribeMessage, out subMessageResult);
@@ -583,7 +594,8 @@ namespace PubNubAPI
                     "originatingTimetoken region: {9},\n" +
                     "publishMetadata tt: {10},\n" +
                     "publishMetadata region: {11},\n" +
-                    "userMetadata {12} \n",
+                    "userMetadata: {12} \n",
+                    "messageType: {13} \n",
                     subscribeMessage.Shard,
                     subscribeMessage.SubscriptionMatch,
                     subscribeMessage.Channel,
@@ -596,7 +608,8 @@ namespace PubNubAPI
                     (subscribeMessage.OriginatingTimetoken != null) ? subscribeMessage.OriginatingTimetoken.Region : "",
                     (subscribeMessage.PublishTimetokenMetadata != null) ? subscribeMessage.PublishTimetokenMetadata.Timetoken.ToString() : "",
                     (subscribeMessage.PublishTimetokenMetadata  != null) ? subscribeMessage.PublishTimetokenMetadata.Region : "",
-                    (subscribeMessage.UserMetadata != null) ? subscribeMessage.UserMetadata.ToString() : "null"),
+                    (subscribeMessage.UserMetadata != null) ? subscribeMessage.UserMetadata.ToString() : "null"
+                    subscribeMessage.MessageType),
                     PNLoggingMethod.LevelInfo);
                 #endif
 
@@ -739,6 +752,22 @@ namespace PubNubAPI
             );
 
         }
+
+        internal void CreatePNSignalEventResult(SubscribeMessage subscribeMessage, out PNSignalEventResult messageResult)
+        {
+            long timetoken = (subscribeMessage.PublishTimetokenMetadata != null) ? subscribeMessage.PublishTimetokenMetadata.Timetoken : 0;
+            long originatingTimetoken = (subscribeMessage.OriginatingTimetoken != null) ? subscribeMessage.OriginatingTimetoken.Timetoken : 0;
+            messageResult = new PNSignalEventResult (
+                subscribeMessage.SubscriptionMatch.Replace(Utility.PresenceChannelSuffix, ""), 
+                subscribeMessage.Channel.Replace(Utility.PresenceChannelSuffix, ""), 
+                subscribeMessage.Payload, 
+                timetoken,
+                originatingTimetoken,
+                subscribeMessage.UserMetadata,
+                subscribeMessage.IssuingClientId
+            );
+
+        }        
 
         internal PNPresenceEvent CreatePNPresenceEvent (object payload)
         {
