@@ -19,8 +19,22 @@ namespace PubNubAPI.Tests
             TestFetchMessagesBuildRequestCommon (false, false, false, "authKey", startTime, endTime, 25, false);
         }
 
+        [Test]
+        public void TestBuildFetchMessagesRequestWithMeta ()
+        {
+            long startTime = 14498416434364941;
+            long endTime = 14498416799269095;
+
+            TestFetchMessagesBuildRequestCommon (false, false, false, "authKey", startTime, endTime, 25, false, true);
+        }
+
         public void TestFetchMessagesBuildRequestCommon(bool ssl, bool reverse, bool includeTimetoken, 
             string authKey, long startTime, long endTime, int count, bool sendQueryParams){
+                TestFetchMessagesBuildRequestCommon (false, false, false, "authKey", startTime, endTime, 25, false, false);
+        }
+
+        public void TestFetchMessagesBuildRequestCommon(bool ssl, bool reverse, bool includeTimetoken, 
+            string authKey, long startTime, long endTime, int count, bool sendQueryParams, bool withMeta){
             string[] channels = new[] {"history_channel", "history_channel2"};
             string uuid = "customuuid";
             Dictionary<string,string> queryParams = new Dictionary<string, string>();
@@ -65,19 +79,19 @@ namespace PubNubAPI.Tests
             }
 
             Uri uri = BuildRequests.BuildFetchRequest (channels, startTime, endTime, (uint)count, reverse, 
-                includeTimetoken, pnUnity, queryParams
+                includeTimetoken, pnUnity, queryParams, withMeta
             );
 
             if (count == -1) {
                 count = 100;
             }
             //http://ps.pndsn.com/v3/history/sub-key/demo/channel/history_channel,history_channel2?max=90&start=14498416434364941&end=14498416799269095&auth=authKey&uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.1.1 
-            string expected = string.Format ("http{0}://{1}/v3/history/sub-key/{2}/channel/{3}?max={4}{5}{6}{7}{8}{9}&uuid={10}&pnsdk={11}{12}",
+            string expected = string.Format ("http{0}://{1}/v3/history/sub-key/{2}/channel/{3}?max={4}{5}{6}{7}{8}{13}{9}&uuid={10}&pnsdk={11}{12}",
                 ssl?"s":"", pnConfiguration.Origin, EditorCommon.SubscribeKey, string.Join(",", channels), count,
                 includeTimetoken?"&include_token=true":"", reverse?"&reverse=true":"",
                 startTimeString, endTimeString, authKeyString, uuid, 
                 Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNHistoryOperation, false, true),
-                queryParamString
+                queryParamString, withMeta?"&include_meta=true":""
             );
             string received = uri.OriginalString;
             EditorCommon.LogAndCompare (expected, received);

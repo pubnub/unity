@@ -1027,13 +1027,92 @@ namespace PubNubAPI.Tests
             TestBuildDetailedHistoryRequestCommon (true, true, true, "", startTime, endTime, -1, true);
         }
 
+        [Test]
+        public void TestBuildDetailedHistoryRequestSSLReverseNoAuthNoCountWithMeta ()
+        {
+            long startTime = 14498416434364941;
+            long endTime = 14498416799269095;
+
+            TestBuildDetailedHistoryRequestCommon (false, false, true, "", startTime, endTime, -1, false, true);
+        }
+
+        [Test]
+        public void TestBuildDetailedHistoryRequestWithMeta ()
+        {
+            long startTime = 14498416434364941;
+            long endTime = 14498416799269095;
+
+            TestBuildDetailedHistoryRequestCommon (false, false, false, "authKey", startTime, endTime, 90, false, true);
+        }
+
+        [Test]
+        public void TestBuildDetailedHistoryRequestSSLWithMeta ()
+        {
+            long startTime = 14498416434364941;
+            long endTime = 14498416799269095;
+
+            TestBuildDetailedHistoryRequestCommon (true, false, false, "authKey", startTime, endTime, 90, false, true);
+        }
+
+        [Test]
+        public void TestBuildDetailedHistoryRequestIncludeTTWithMeta ()
+        {
+            long startTime = 14498416434364941;
+            long endTime = 14498416799269095;
+
+            TestBuildDetailedHistoryRequestCommon (false, true, false, "authKey", startTime, endTime, 90, false, true);
+        }
+
+        [Test]
+        public void TestBuildDetailedHistoryRequestSSLReverseWithMeta ()
+        {
+            long startTime = 14498416434364941;
+            long endTime = 14498416799269095;
+
+            TestBuildDetailedHistoryRequestCommon (false, false, true, "authKey", startTime, endTime, 90, false, true);
+        }
+
+        [Test]
+        public void TestBuildDetailedHistoryRequestIncludeTTSSLWithMeta ()
+        {
+            long startTime = 14498416434364941;
+            long endTime = 14498416799269095;
+
+            TestBuildDetailedHistoryRequestCommon (true, true, false, "authKey", startTime, endTime, 90, false, true);
+        }
+
+        [Test]
+        public void TestBuildDetailedHistoryRequestSSLReverseSSLWithMeta ()
+        {
+            long startTime = 14498416434364941;
+            long endTime = 14498416799269095;
+
+            TestBuildDetailedHistoryRequestCommon (true, false, true, "authKey", startTime, endTime, 90, false, true);
+        }
+
+        [Test]
+        public void TestBuildDetailedHistoryRequestIncludeTTReverseSSLWithMeta ()
+        {
+            long startTime = 14498416434364941;
+            long endTime = 14498416799269095;
+
+            TestBuildDetailedHistoryRequestCommon (true, true, true, "authKey", startTime, endTime, 90, false, true);
+        }
+
+
         public void TestBuildDetailedHistoryRequestCommon(bool ssl, bool reverse, bool includeTimetoken, 
             string authKey, long startTime, long endTime, int count){
                 TestBuildDetailedHistoryRequestCommon(ssl, reverse, includeTimetoken, authKey, startTime, endTime, count, false);
         }
 
+
         public void TestBuildDetailedHistoryRequestCommon(bool ssl, bool reverse, bool includeTimetoken, 
             string authKey, long startTime, long endTime, int count, bool sendQueryParams){
+                TestBuildDetailedHistoryRequestCommon(ssl, reverse, includeTimetoken, authKey, startTime, endTime, count, sendQueryParams, false);
+        }
+        
+        public void TestBuildDetailedHistoryRequestCommon(bool ssl, bool reverse, bool includeTimetoken, 
+            string authKey, long startTime, long endTime, int count, bool sendQueryParams, bool withMeta){
             string channel = "history_channel";
             string uuid = "customuuid";
             Dictionary<string,string> queryParams = new Dictionary<string, string>();
@@ -1078,7 +1157,7 @@ namespace PubNubAPI.Tests
             }
 
             Uri uri = BuildRequests.BuildHistoryRequest (channel, startTime, endTime, (uint)count, reverse, 
-                includeTimetoken, pnUnity, queryParams
+                includeTimetoken, pnUnity, queryParams, withMeta
             );
 
             if (count == -1) {
@@ -1087,12 +1166,12 @@ namespace PubNubAPI.Tests
             //Received:http://ps.pndsn.com/v2/history/sub-key/demo/channel/history_channel?count=90&reverse=true&start=14498416434364941&end=14498416799269095&auth=authKey&uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX/3.6.9.0
             //Received:https://ps.pndsn.com/v2/history/sub-key/demo/channel/history_channel?count=90&include_token=true&start=14498416434364941&end=14498416799269095&auth=authKey&uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX/3.6.9.0
             //http://ps.pndsn.com/v2/history/sub-key/demo/channel/publish_channel?count=90&start=14498416434364941&end=14498416799269095&auth=authKey&uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX/3.6.9.0
-            string expected = string.Format ("http{0}://{1}/v2/history/sub-key/{2}/channel/{3}?count={4}{5}{6}{7}{8}{9}&uuid={10}&pnsdk={11}{12}",
+            string expected = string.Format ("http{0}://{1}/v2/history/sub-key/{2}/channel/{3}?count={4}{5}{6}{7}{8}{13}{9}&uuid={10}&pnsdk={11}{12}",
                 ssl?"s":"", pnConfiguration.Origin, EditorCommon.SubscribeKey, channel, count,
                 includeTimetoken?"&include_token=true":"", reverse?"&reverse=true":"",
                 startTimeString, endTimeString,    authKeyString, uuid, 
                 Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNHistoryOperation, false, true),
-                queryParamString
+                queryParamString, withMeta?"&include_meta=true":""
             );
             string received = uri.OriginalString;
             EditorCommon.LogAndCompare (expected, received);

@@ -214,7 +214,7 @@ namespace PubNubAPI
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNMessageCountsOperation, parameterBuilder.ToString(), pnInstance, queryParams);
         }
 
-        public static Uri BuildFetchRequest (string[] channels, long start, long end, uint count, bool reverse, bool includeToken, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        public static Uri BuildFetchRequest (string[] channels, long start, long end, uint count, bool reverse, bool includeToken, PubNubUnity pnInstance, Dictionary<string, string> queryParams, bool withMeta)
         {
             StringBuilder parameterBuilder = new StringBuilder ();
 
@@ -231,6 +231,9 @@ namespace PubNubAPI
             if (end != -1) {
                 parameterBuilder.AppendFormat ("&end={0}", end.ToString ().ToLowerInvariant ());
             }
+            if (withMeta) {
+                parameterBuilder.AppendFormat ("&include_meta={0}", withMeta.ToString ().ToLowerInvariant ());
+            }
 
             List<string> url = new List<string> ();
 
@@ -244,7 +247,7 @@ namespace PubNubAPI
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNFetchMessagesOperation, parameterBuilder.ToString(), pnInstance, queryParams);
         }
 
-        public static Uri BuildHistoryRequest (string channel, long start, long end, uint count, bool reverse, bool includeToken, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        public static Uri BuildHistoryRequest (string channel, long start, long end, uint count, bool reverse, bool includeToken, PubNubUnity pnInstance, Dictionary<string, string> queryParams, bool withMeta)
         {
             StringBuilder parameterBuilder = new StringBuilder ();
 
@@ -261,6 +264,10 @@ namespace PubNubAPI
             if (end != -1) {
                 parameterBuilder.AppendFormat ("&end={0}", end.ToString ().ToLowerInvariant ());
             }
+            if (withMeta) {
+                parameterBuilder.AppendFormat ("&include_meta={0}", withMeta.ToString ().ToLowerInvariant ());
+            }
+
             List<string> url = new List<string> ();
 
             url.Add ("v2");

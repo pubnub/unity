@@ -27,6 +27,7 @@ namespace PubNubAPI
             }
         }
         
+        private bool IncludeMetaInHistory;
         private bool ReverseHistory;
         private bool IncludeTimetokenInHistory;
         public HistoryRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNHistoryOperation){
@@ -62,6 +63,12 @@ namespace PubNubAPI
             HistoryCount = historyCount;
             return this;
         }
+        public HistoryRequestBuilder IncludeMeta(bool withMeta){
+            IncludeMetaInHistory = withMeta;
+            return this;
+        }
+        
+ 
 
         #region IPubNubBuilder implementation
 
@@ -96,7 +103,8 @@ namespace PubNubAPI
                 this.ReverseHistory,
                 this.IncludeTimetokenInHistory,
                 this.PubNubInstance,
-                this.QueryParams
+                this.QueryParams,
+                this.IncludeMetaInHistory
             );
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }

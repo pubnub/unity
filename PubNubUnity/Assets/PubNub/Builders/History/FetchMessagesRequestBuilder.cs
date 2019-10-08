@@ -29,6 +29,8 @@ namespace PubNubAPI
                 }
             }
         }
+
+        private bool IncludeMetaInHistory;
         
         private bool ReverseHistory;
         private bool IncludeTimetokenInHistory;
@@ -59,6 +61,11 @@ namespace PubNubAPI
 
         public FetchMessagesRequestBuilder Count(ushort historyCount){
             HistoryCount = historyCount;
+            return this;
+        }
+
+        public FetchMessagesRequestBuilder IncludeMeta(bool withMeta){
+            IncludeMetaInHistory = withMeta;
             return this;
         }
         
@@ -96,7 +103,8 @@ namespace PubNubAPI
                 this.ReverseHistory,
                 this.IncludeTimetokenInHistory,
                 this.PubNubInstance,
-                this.QueryParams
+                this.QueryParams,
+                this.IncludeMetaInHistory
             );
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
 
