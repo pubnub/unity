@@ -5,6 +5,9 @@ changelog:
       - 
         text: "Signals"
         type: improvement
+      - 
+        text: "IncludeMeta in History and Fetch"
+        type: improvement
     date: Oct 10, 19  
     version: v4.3.0  
   - 
@@ -357,6 +360,10 @@ features:
     - STORAGE-START-END
     - STORAGE-COUNT
     - STORAGE-DELETE-MESSAGES
+    - STORAGE-FETCH-MESSAGES
+    - STORAGE-MESSAGE-COUNT
+    - STORAGE-HISTORY-WITH-META
+    - STORAGE-FETCH-WITH-META
   subscribe: 
     - SUBSCRIBE-CHANNELS
     - SUBSCRIBE-CHANNEL-GROUPS
@@ -367,9 +374,13 @@ features:
     - SUBSCRIBE-FILTER-EXPRESSION
     - SUBSCRIBE-PUBSUB-V2
     - SUBSCRIBE-PUBLISHER-UUID
-    - REQUEST-MESSAGE-COUNT-EXCEEDED
+    - SUBSCRIBE-SIGNAL-LISTENER
   time: 
     - TIME-TIME
+  signal:
+    - SIGNAL-SEND
+  notify:
+    - REQUEST-MESSAGE-COUNT-EXCEEDED   
 name: unity
 schema: 1
 scm: github.com/pubnub/unity
