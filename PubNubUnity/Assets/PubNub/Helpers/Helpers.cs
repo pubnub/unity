@@ -510,7 +510,7 @@ namespace PubNubAPI
                 "publishMetadata region: {11},\n" +
                 "userMetadata {12} \n" +
                 "log {13} \n",
-                "messageType {14}\n"
+                "messageType {14}\n",
                  
                 shard,
                 subscriptionMatch,

@@ -153,7 +153,7 @@ namespace PubNubExample
         }
         void ButtonHistoryHandler(){
             
-            pubnub.History ().Channel("channel1").IncludeTimetoken(true).Async ((result, status) => {
+            pubnub.History ().Channel("channel1").IncludeTimetoken(true).IncludeMeta(true).Async ((result, status) => {
                 
                 if(status.Error){
                     Debug.Log (string.Format("In Example, History Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
@@ -235,7 +235,10 @@ namespace PubNubExample
             Dictionary<string, string> dict = new Dictionary<string, string>();
             dict.Add  ("k1", "v1");
 
-            pubnub.Publish().Channel("channel1").Message("test message" + DateTime.Now.Ticks.ToString()).QueryParam(dict).Async((result, status) => {    
+            Dictionary<string, string> meta = new Dictionary<string, string>();
+            meta.Add  ("k1", "v1");
+
+            pubnub.Publish().Channel("channel1").Meta(meta).Message("test message" + DateTime.Now.Ticks.ToString()).QueryParam(dict).Async((result, status) => {    
                     Debug.Log ("in Publish");
                     if(!status.Error){
                         Debug.Log (string.Format("DateTime {0}, In Publish Example, Timetoken: {1}", DateTime.UtcNow , result.Timetoken));
@@ -656,7 +659,7 @@ namespace PubNubExample
         }
 
         void FetchMessages(PubNub pubnub, List<string> listChannels){
-            pubnub.FetchMessages().Channels(listChannels).Async ((result, status) => {
+            pubnub.FetchMessages().Channels(listChannels).IncludeMeta(true).Async ((result, status) => {
             //pubnub.FetchMessages().Channels(new List<string>{"channel2"}).Async ((result, status) => {    
                 if(status.Error){
                     Debug.Log (string.Format("In Example, FetchMessages Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));

@@ -77,7 +77,7 @@ namespace PubNubAPI.Tests
             if(useCipher){
                 pnConfiguration.CipherKey = "enigma";
             }
-            pnConfiguration.LogVerbosity = PNLogVerbosity.NONE; 
+            pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
             pnConfiguration.PresenceTimeout = 60;
             pnConfiguration.PresenceInterval= 30;
             pnConfiguration.Secure = SslOn;

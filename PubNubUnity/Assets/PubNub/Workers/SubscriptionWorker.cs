@@ -608,7 +608,7 @@ namespace PubNubAPI
                     (subscribeMessage.OriginatingTimetoken != null) ? subscribeMessage.OriginatingTimetoken.Region : "",
                     (subscribeMessage.PublishTimetokenMetadata != null) ? subscribeMessage.PublishTimetokenMetadata.Timetoken.ToString() : "",
                     (subscribeMessage.PublishTimetokenMetadata  != null) ? subscribeMessage.PublishTimetokenMetadata.Region : "",
-                    (subscribeMessage.UserMetadata != null) ? subscribeMessage.UserMetadata.ToString() : "null"
+                    (subscribeMessage.UserMetadata != null) ? subscribeMessage.UserMetadata.ToString() : "null",
                     subscribeMessage.MessageType),
                     PNLoggingMethod.LevelInfo);
                 #endif

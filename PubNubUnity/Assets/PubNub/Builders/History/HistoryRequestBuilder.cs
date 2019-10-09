@@ -63,8 +63,8 @@ namespace PubNubAPI
             HistoryCount = historyCount;
             return this;
         }
-        public HistoryRequestBuilder IncludeMeta(bool withMeta){
-            IncludeMetaInHistory = withMeta;
+        public HistoryRequestBuilder IncludeMeta(bool includeMeta){
+            IncludeMetaInHistory = includeMeta;
             return this;
         }
         
@@ -172,12 +172,20 @@ namespace PubNubAPI
             #endif                            
 
             object t;
-            historyMessage.TryGetValue("timetoken", out t);
-            pnHistoryItemResult.Timetoken = Utility.ValidateTimetoken(t.ToString(), false);
-            #if (ENABLE_PUBNUB_LOGGING)
-            this.PubNubInstance.PNLog.WriteToLog(string.Format ("ExtractMessageWithTimetokens: t {0}", t), PNLoggingMethod.LevelInfo);
-            #endif                            
+            if(historyMessage.TryGetValue("timetoken", out t)){
+                pnHistoryItemResult.Timetoken = Utility.ValidateTimetoken(t.ToString(), false);
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PubNubInstance.PNLog.WriteToLog(string.Format ("ExtractMessageWithTimetokens: t {0}", t), PNLoggingMethod.LevelInfo);
+                #endif       
+            }              
             
+            object m;
+            if(historyMessage.TryGetValue("meta", out m)){
+                pnHistoryItemResult.Meta = m;
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PubNubInstance.PNLog.WriteToLog(string.Format ("ExtractMessageWithTimetokens: m {0}", m), PNLoggingMethod.LevelInfo);
+                #endif           
+            }            
         }
 
         private void ExtractMessage( object element, string cipherKey, out PNHistoryItemResult pnHistoryItemResult){
@@ -210,7 +218,7 @@ namespace PubNubAPI
                     #endif                     
                     PNHistoryItemResult pnHistoryItemResult;
 
-                    if(this.IncludeTimetokenInHistory){
+                    if((this.IncludeTimetokenInHistory) || (this.IncludeMetaInHistory)){
                         ExtractMessageWithTimetokens(element, this.PubNubInstance.PNConfig.CipherKey, out pnHistoryItemResult);
                     } else {
                         ExtractMessage(element, this.PubNubInstance.PNConfig.CipherKey, out pnHistoryItemResult);

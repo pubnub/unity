@@ -1513,6 +1513,7 @@ namespace PubNubAPI.Tests
 				Assert.True(!result.Timetoken.Equals(0));
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				Assert.True(!result.Timetoken.Equals(0));
 			});
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
 			Assert.True(tresult, "test didn't return");
@@ -1612,6 +1613,145 @@ namespace PubNubAPI.Tests
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
 			Assert.True(tresult, "test didnt return 2");
 			
+			pubnub.CleanUp();
+		}
+
+		[UnityTest]
+		public IEnumerator TestPublishHistoryAndFetchWithMetaAndTT(){
+			return PublishHistoryAndFetchWithMetaCommon(true, true);
+		}
+
+		[UnityTest]
+		public IEnumerator TestPublishHistoryAndFetchWithMetaWithoutTT(){
+			return PublishHistoryAndFetchWithMetaCommon(true, false);
+		}
+		
+		[UnityTest]
+		public IEnumerator TestPublishHistoryAndFetchWithTTWithoutMeta(){
+			return PublishHistoryAndFetchWithMetaCommon(false, true);
+		}
+
+		[UnityTest]
+		public IEnumerator TestPublishHistoryAndFetchWithoutMetaAndTT(){
+			return PublishHistoryAndFetchWithMetaCommon(false, false);
+		}
+		
+		public IEnumerator PublishHistoryAndFetchWithMetaCommon(bool withMeta, bool withTimetoken) {
+			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
+			System.Random r = new System.Random ();
+			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next (100);
+			string channel = "UnityPublishAndHistoryChannel" + r.Next (100);;
+			string payload = string.Format("payload {0}", pnConfiguration.UUID);
+
+			PubNub pubnub = new PubNub(pnConfiguration);
+
+			List<string> channelList2 = new List<string>();
+			channelList2.Add(channel);
+			bool tresult = false;
+			Dictionary<string, string> metaDict = new Dictionary<string, string>();
+            metaDict.Add("region", "east");
+			long retTT =0;
+
+			pubnub.Publish().Channel(channel).Meta(metaDict).Message(payload).Async((result, status) => {
+				bool timetokenMatch = !result.Timetoken.Equals(0);
+				bool statusError = status.Error.Equals(false);
+				bool statusCodeMatch = status.StatusCode.Equals(0);
+				retTT = result.Timetoken;
+				Assert.True(timetokenMatch);
+				Assert.True(statusError);
+				Assert.True(statusCodeMatch, status.StatusCode.ToString());
+				tresult = statusCodeMatch && statusError && timetokenMatch;
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			Assert.True(tresult, "test didnt return 1");
+
+			tresult = false;
+			bool tresultMeta = false;
+			bool tresultTimetoken = false;
+			pubnub.History().Channel(channel).IncludeMeta(withMeta).IncludeTimetoken(withTimetoken).Count(1).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				if(!status.Error){
+
+					if((result.Messages!=null) && (result.Messages.Count>0)){
+						PNHistoryItemResult pnHistoryItemResult = result.Messages[0] as PNHistoryItemResult;
+						Debug.Log("result.Messages[0]" + result.Messages[0].ToString());
+						if(pnHistoryItemResult != null){
+							tresult = pnHistoryItemResult.Entry.ToString().Contains(payload);
+
+							if(withMeta){
+								Dictionary<string, object> metaDataDict = pnHistoryItemResult.Meta as Dictionary<string, object>;
+								object region;
+								metaDataDict.TryGetValue("region", out region);
+								tresultMeta = region.ToString().Equals("east");
+							} else {
+								tresultMeta = true;
+							}
+							if(withTimetoken){
+								tresultTimetoken = retTT.Equals(pnHistoryItemResult.Timetoken);
+							} else {
+								tresultTimetoken = true;
+							}
+						} else {
+							tresult = false;
+							tresultMeta = false;
+						}						
+					} else {
+						tresult = false;
+					}
+					
+                }
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			Assert.True(tresult, "test didnt return 2");
+			Assert.True(tresultMeta, "test meta didnt return");
+			Assert.True(tresultTimetoken, "tresultTimetoken didnt return");
+			
+			tresult = false;
+			tresultMeta = false;
+			pubnub.FetchMessages().Channels(channelList2).IncludeMeta(withMeta).Async((result, status) => {
+				if(!status.Error){
+					if(result.Channels != null){
+						Dictionary<string, List<PNMessageResult>> fetchResult = result.Channels as Dictionary<string, List<PNMessageResult>>;
+						Debug.Log("fetchResult.Count:" + fetchResult.Count);
+						foreach(KeyValuePair<string, List<PNMessageResult>> kvp in fetchResult){
+							Debug.Log("Channel:" + kvp.Key);
+							if(kvp.Key.Equals(channel)){
+								
+								foreach(PNMessageResult msg in kvp.Value){
+									Debug.Log("msg.Channel:" + msg.Channel);
+									Debug.Log("msg.Payload.ToString():" + msg.Payload.ToString());
+									if(msg.Channel.Equals(channel) && (msg.Payload.ToString().Equals(payload))){
+										tresult = true;
+									}
+									if(withMeta){
+										Dictionary<string, object> metaDataDict = msg.UserMetadata as Dictionary<string, object>;
+										object region;
+										if(metaDataDict!=null){
+											metaDataDict.TryGetValue("region", out region);
+											tresultMeta = region.ToString().Equals("east");
+										} else {
+											Debug.Log("metaDataDict null" + msg.UserMetadata);
+										}
+									} else {
+										tresultMeta = true;
+									}
+
+								}
+								if(!tresult && !tresultMeta){
+									break;
+								}
+							}							
+						}
+					}
+
+                } 
+
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			Assert.True(tresult, "test didnt return for fetch");
+			Assert.True(tresultMeta, "test meta didnt return for fetch");
+
+
 			pubnub.CleanUp();
 		}
 

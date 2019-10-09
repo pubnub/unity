@@ -39,8 +39,8 @@ namespace PubNubAPI
             return this;
         }
 
-        public FetchBuilder IncludeMeta(bool withMeta){
-            pubBuilder.IncludeMeta(withMeta);
+        public FetchBuilder IncludeMeta(bool includeMeta){
+            pubBuilder.IncludeMeta(includeMeta);
             return this;
         }
 
