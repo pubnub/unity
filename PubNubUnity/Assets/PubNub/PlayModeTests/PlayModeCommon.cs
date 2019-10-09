@@ -55,9 +55,9 @@ namespace PubNubAPI.Tests
 		public static bool SslOn = true;
 		public static bool CipherOn = false;
 		public static string Origin = "ps.pndsn.com";
-        public static string PublishKey = "pub-c-c1648ded-d156-4a2d-9dbb-a23262945fe2";
-        public static string SubscribeKey = "sub-c-c14b8948-7dfe-11e9-aee4-2e27e4d79cf8";
-        public static string SecretKey = "sec-c-OGI5YmJiMmUtMjIwNS00NjkzLTkxZmYtMjE1N2I2MDhlNDM5";
+        public static string PublishKey = "pub-c-3ed95c83-12e6-4cda-9d69-c47ba2abb57e"; //"pub-c-cdea0ef1-c571-4b72-b43f-ff1dc8aa4c5d";
+        public static string SubscribeKey = "sub-c-26a73b0a-c3f2-11e9-8b24-569e8a5c3af3"; //"sub-c-4757f09c-c3f2-11e9-9d00-8a58a5558306";
+        public static string SecretKey = "";//"sec-c-YTYxNzVjYzctNDY2MS00N2NmLTg2NjYtNGRlNWY1NjMxMDBm";
         public static string cg1 = "channelGroup1";
         public static string cg2 = "channelGroup2";
         public static string ch1 = "channel1";
@@ -77,7 +77,7 @@ namespace PubNubAPI.Tests
             if(useCipher){
                 pnConfiguration.CipherKey = "enigma";
             }
-            pnConfiguration.LogVerbosity = PNLogVerbosity.NONE; 
+            pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
             pnConfiguration.PresenceTimeout = 60;
             pnConfiguration.PresenceInterval= 30;
             pnConfiguration.Secure = SslOn;

@@ -27,6 +27,7 @@ namespace PubNubAPI
             }
         }
         
+        private bool IncludeMetaInHistory;
         private bool ReverseHistory;
         private bool IncludeTimetokenInHistory;
         public HistoryRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNHistoryOperation){
@@ -62,6 +63,12 @@ namespace PubNubAPI
             HistoryCount = historyCount;
             return this;
         }
+        public HistoryRequestBuilder IncludeMeta(bool includeMeta){
+            IncludeMetaInHistory = includeMeta;
+            return this;
+        }
+        
+ 
 
         #region IPubNubBuilder implementation
 
@@ -96,7 +103,8 @@ namespace PubNubAPI
                 this.ReverseHistory,
                 this.IncludeTimetokenInHistory,
                 this.PubNubInstance,
-                this.QueryParams
+                this.QueryParams,
+                this.IncludeMetaInHistory
             );
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }
@@ -164,12 +172,20 @@ namespace PubNubAPI
             #endif                            
 
             object t;
-            historyMessage.TryGetValue("timetoken", out t);
-            pnHistoryItemResult.Timetoken = Utility.ValidateTimetoken(t.ToString(), false);
-            #if (ENABLE_PUBNUB_LOGGING)
-            this.PubNubInstance.PNLog.WriteToLog(string.Format ("ExtractMessageWithTimetokens: t {0}", t), PNLoggingMethod.LevelInfo);
-            #endif                            
+            if(historyMessage.TryGetValue("timetoken", out t)){
+                pnHistoryItemResult.Timetoken = Utility.ValidateTimetoken(t.ToString(), false);
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PubNubInstance.PNLog.WriteToLog(string.Format ("ExtractMessageWithTimetokens: t {0}", t), PNLoggingMethod.LevelInfo);
+                #endif       
+            }              
             
+            object m;
+            if(historyMessage.TryGetValue("meta", out m)){
+                pnHistoryItemResult.Meta = m;
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PubNubInstance.PNLog.WriteToLog(string.Format ("ExtractMessageWithTimetokens: m {0}", m), PNLoggingMethod.LevelInfo);
+                #endif           
+            }            
         }
 
         private void ExtractMessage( object element, string cipherKey, out PNHistoryItemResult pnHistoryItemResult){
@@ -202,7 +218,7 @@ namespace PubNubAPI
                     #endif                     
                     PNHistoryItemResult pnHistoryItemResult;
 
-                    if(this.IncludeTimetokenInHistory){
+                    if((this.IncludeTimetokenInHistory) || (this.IncludeMetaInHistory)){
                         ExtractMessageWithTimetokens(element, this.PubNubInstance.PNConfig.CipherKey, out pnHistoryItemResult);
                     } else {
                         ExtractMessage(element, this.PubNubInstance.PNConfig.CipherKey, out pnHistoryItemResult);

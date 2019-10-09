@@ -8,6 +8,7 @@ namespace PubNubAPI
         private string b { get; set;} //JSON subscriptionMatch
         private string c { get; set;} //JSON channel
         private object d { get; set;} //JSON payload
+        private int e { get; set;} //JSON Message Type (1: Signal, 2: MessageObjects, 3: MessageActions)
         private string f { get; set;} //JSON flags
         private string i { get; set;} //JSON issuingClientId
         private string k { get; set;} //JSON subscribeKey
@@ -18,13 +19,14 @@ namespace PubNubAPI
 
         internal SubscribeMessage(string shard, string subscriptionMatch, string channel, object payload,
             string flags, string issuingClientId, string subscribeKey, long sequenceNumber, TimetokenMetadata originatingTimetoken,
-            TimetokenMetadata publishMetadata, object userMetadata
+            TimetokenMetadata publishMetadata, object userMetadata, int messageType
         )
         {
             this.a = shard;
             this.b = subscriptionMatch;
             this.c = channel;
             this.d = payload;
+            this.e = messageType;
             this.f = flags;
             this.i = issuingClientId;
             this.k = subscribeKey;
@@ -49,6 +51,12 @@ namespace PubNubAPI
         public string Channel{
             get{
                 return c;
+            }
+        }
+
+        public int MessageType{
+            get{
+                return e;
             }
         }
 
