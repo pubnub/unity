@@ -465,7 +465,7 @@ namespace PubNubAPI
                 string shard = (dict.Contains ("a")) ? dict ["a"].ToString () : "";
                 string subscriptionMatch = (dict.Contains ("b")) ? dict ["b"].ToString () : "";
                 string channel = (dict.Contains ("c")) ? dict ["c"].ToString () : "";
-                object payload = (dict.Contains ("d")) ? (object)dict ["d"] : null;
+                object payload = (dict.Contains ("d")) ? (object)dict ["d"] : null;                
                 string flags = (dict.Contains ("f")) ? dict ["f"].ToString () : "";
                 string issuingClientId = (dict.Contains ("i")) ? dict ["i"].ToString () : "";
                 string subscribeKey = (dict.Contains ("k")) ? dict ["k"].ToString () : "";
@@ -476,6 +476,9 @@ namespace PubNubAPI
                 TimetokenMetadata originatingTimetoken = (dict.Contains ("o")) ? Helpers.CreateTimetokenMetadata (dict ["o"], "Originating TT: ", pnLog) : null;
                 TimetokenMetadata publishMetadata = (dict.Contains ("p")) ? Helpers.CreateTimetokenMetadata (dict ["p"], "Publish TT: ", pnLog) : null;
                 object userMetadata = (dict.Contains ("u")) ? (object)dict ["u"] : null;
+ 
+                int messageType;
+                Utility.TryCheckKeyAndParseInt(dict, "messageType", "e", out log, out messageType);
 
                 SubscribeMessage subscribeMessage = new SubscribeMessage (
                     shard,
@@ -488,7 +491,8 @@ namespace PubNubAPI
                     sequenceNumber,
                     originatingTimetoken,
                     publishMetadata,
-                    userMetadata
+                    userMetadata,
+                    messageType
                 );
                 #if (ENABLE_PUBNUB_LOGGING)
                 pnLog.WriteToLog (string.Format ("AddToSubscribeMessageList: \n" +
@@ -506,6 +510,7 @@ namespace PubNubAPI
                 "publishMetadata region: {11},\n" +
                 "userMetadata {12} \n" +
                 "log {13} \n",
+                "messageType {14}\n",
                  
                 shard,
                 subscriptionMatch,
@@ -520,7 +525,8 @@ namespace PubNubAPI
                 (publishMetadata != null) ? publishMetadata.Timetoken.ToString () : "",
                 (publishMetadata != null) ? publishMetadata.Region : "",
                 (userMetadata != null) ? userMetadata.ToString () : "null",
-                log), 
+                log, 
+                messageType), 
                 PNLoggingMethod.LevelInfo);
                 #endif
 

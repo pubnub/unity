@@ -42,6 +42,10 @@ namespace PubNubAPI
             pubBuilder.Count(historyCount);
             return this;
         }
+        public HistoryBuilder IncludeMeta(bool includeMeta){
+            pubBuilder.IncludeMeta(includeMeta);
+            return this;
+        }
 
         public HistoryBuilder QueryParam(Dictionary<string, string> queryParam){
             pubBuilder.QueryParam(queryParam);

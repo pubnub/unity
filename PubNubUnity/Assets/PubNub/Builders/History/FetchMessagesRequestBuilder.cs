@@ -29,6 +29,8 @@ namespace PubNubAPI
                 }
             }
         }
+
+        private bool IncludeMetaInHistory;
         
         private bool ReverseHistory;
         private bool IncludeTimetokenInHistory;
@@ -59,6 +61,11 @@ namespace PubNubAPI
 
         public FetchMessagesRequestBuilder Count(ushort historyCount){
             HistoryCount = historyCount;
+            return this;
+        }
+
+        public FetchMessagesRequestBuilder IncludeMeta(bool includeMeta){
+            IncludeMetaInHistory = includeMeta;
             return this;
         }
         
@@ -96,7 +103,8 @@ namespace PubNubAPI
                 this.ReverseHistory,
                 this.IncludeTimetokenInHistory,
                 this.PubNubInstance,
-                this.QueryParams
+                this.QueryParams,
+                this.IncludeMetaInHistory
             );
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
 
@@ -135,6 +143,7 @@ namespace PubNubAPI
                 pnFetchMessagesResult = null;
                 pnStatus = base.CreateErrorResponseFromException(ex, requestState, PNStatusCategory.PNUnknownCategory);
             }
+
             Callback(pnFetchMessagesResult, pnStatus);
         }
         
@@ -164,6 +173,14 @@ namespace PubNubAPI
                             object objPayload;
                             messageDataDict.TryGetValue("message", out objPayload);
                             
+                            object meta;
+                            
+                            if(messageDataDict.TryGetValue("meta", out meta)){
+                                #if (ENABLE_PUBNUB_LOGGING)
+                                this.PubNubInstance.PNLog.WriteToLog(string.Format ("CreateFetchMessagesResult: meta {0}.", meta.ToString()), PNLoggingMethod.LevelInfo);
+                                #endif
+                            }
+                            
                             object objTimetoken;
                             messageDataDict.TryGetValue("timetoken", out objTimetoken);
                             long timetoken;
@@ -183,10 +200,14 @@ namespace PubNubAPI
                                 objPayload,
                                 timetoken,
                                 timetoken,
-                                null,
+                                meta,
                                 ""
                             );
                             lstMessageResult.Add(pnMessageResult);
+                            #if (ENABLE_PUBNUB_LOGGING)
+                            this.PubNubInstance.PNLog.WriteToLog(string.Format ("CreateFetchMessagesResult: pnMessageResult {0}.", pnMessageResult.ToString()), PNLoggingMethod.LevelInfo);
+                            #endif
+
                         }
                     }
                     channelsResult.Add(channelName, lstMessageResult);

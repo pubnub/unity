@@ -39,6 +39,11 @@ namespace PubNubAPI
             return this;
         }
 
+        public FetchBuilder IncludeMeta(bool includeMeta){
+            pubBuilder.IncludeMeta(includeMeta);
+            return this;
+        }
+
         public FetchBuilder QueryParam(Dictionary<string, string> queryParam){
             pubBuilder.QueryParam(queryParam);
             return this;

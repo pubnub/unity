@@ -3,6 +3,16 @@ changelog:
   - 
     changes: 
       - 
+        text: "Signals"
+        type: improvement
+      - 
+        text: "IncludeMeta in History and Fetch"
+        type: improvement
+    date: Oct 10, 19  
+    version: v4.3.0  
+  - 
+    changes: 
+      - 
         text: "Presence Timeout cannot be lower than 20"
         type: improvement
       - 
@@ -350,6 +360,10 @@ features:
     - STORAGE-START-END
     - STORAGE-COUNT
     - STORAGE-DELETE-MESSAGES
+    - STORAGE-FETCH-MESSAGES
+    - STORAGE-MESSAGE-COUNT
+    - STORAGE-HISTORY-WITH-META
+    - STORAGE-FETCH-WITH-META
   subscribe: 
     - SUBSCRIBE-CHANNELS
     - SUBSCRIBE-CHANNEL-GROUPS
@@ -360,9 +374,13 @@ features:
     - SUBSCRIBE-FILTER-EXPRESSION
     - SUBSCRIBE-PUBSUB-V2
     - SUBSCRIBE-PUBLISHER-UUID
-    - REQUEST-MESSAGE-COUNT-EXCEEDED
+    - SUBSCRIBE-SIGNAL-LISTENER
   time: 
     - TIME-TIME
+  signal:
+    - SIGNAL-SEND
+  notify:
+    - REQUEST-MESSAGE-COUNT-EXCEEDED   
 name: unity
 schema: 1
 scm: github.com/pubnub/unity
@@ -383,4 +401,4 @@ supported-platforms:
       - "Ubuntu 12.04+, with Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support."
       - "Mac OS X 10.8+, with Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support."
     version: "PubNub Unity SDK"
-version: v4.2.1
+version: v4.3.0

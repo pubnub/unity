@@ -34,7 +34,9 @@ namespace PubNubAPI
         PNRemoveAllPushNotificationsOperation,
         PNTimeOperation,
 
-        PNHereNowOperation
+        PNHereNowOperation,
+
+        PNSignalOperation
     }
 
 }
