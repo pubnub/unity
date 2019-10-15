@@ -630,6 +630,7 @@ namespace PubNubAPI
                     break;
                 case PNOperationType.PNFetchMessagesOperation:
                 case PNOperationType.PNHistoryOperation:
+                case PNOperationType.PNHistoryWithActionsOperation:
                     if(latency.History > 0){
                         url.AppendFormat("&l_hist={0}", latency.History);
                     }
@@ -643,6 +644,36 @@ namespace PubNubAPI
                         url.AppendFormat("&l_cg={0}", latency.ChannelGroups);
                     }
                     break;
+                case PNOperationType.PNSignalOperation:
+                    if(latency.Signal > 0){
+                        url.AppendFormat("&l_sig={0}", latency.Signal);
+                    }
+                    break;
+                case PNOperationType.PNGetMessageActionsOperation:
+                case PNOperationType.PNAddMessageActionsOperation:
+                case PNOperationType.PNRemoveMessageActionsOperation:
+                    if(latency.MessageActions > 0){
+                        url.AppendFormat("&l_msga={0}", latency.Signal);
+                    }
+                    break;    
+                case PNOperationType.PNCreateUserOperation:
+                case PNOperationType.PNGetUsersOperation:
+                case PNOperationType.PNGetUserOperation:
+                case PNOperationType.PNUpdateUserOperation:
+                case PNOperationType.PNDeleteUserOperation:
+                case PNOperationType.PNGetSpaceOperation:
+                case PNOperationType.PNGetSpacesOperation:
+                case PNOperationType.PNCreateSpaceOperation:
+                case PNOperationType.PNDeleteSpaceOperation:
+                case PNOperationType.PNUpdateSpaceOperation:
+                case PNOperationType.PNGetMembershipsOperation:
+                case PNOperationType.PNGetMembersOperation:
+                case PNOperationType.PNManageMembershipsOperation:
+                case PNOperationType.PNManageMembersOperation:
+                    if(latency.Objects > 0){
+                        url.AppendFormat("&l_obj={0}", latency.Signal);
+                    }
+                    break;    
                 default:
                     break;    
                     
