@@ -39,11 +39,26 @@ namespace PubNubAPI
             dictionary.TryGetValue(keyName, out objMessage);
             
             if(objMessage != null){
+                UnityEngine.Debug.Log(objMessage);
                 return objMessage.ToString();
             } else {
+                UnityEngine.Debug.Log("objMessage null");
                 return "";
             }
         }
+       
+        public static Dictionary<string, object> ReadDictionaryFromResponseDictionary(Dictionary<string, object> dictionary, string keyName){
+            object objMessage;
+            if(dictionary.TryGetValue(keyName, out objMessage)){
+                if(objMessage != null){
+                    return objMessage as Dictionary<string, object>;
+                } else {
+                    return null;
+                }
+            }
+            
+            return null;
+        } 
 
         //TODO Handle exception
         public static bool TryCheckKeyAndParseLong(IDictionary dict, string what, string key, out string log, out long sequenceNumber){

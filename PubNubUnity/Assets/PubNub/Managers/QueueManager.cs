@@ -160,8 +160,63 @@ namespace PubNubAPI
                         case PNOperationType.PNRemoveGroupOperation:
                             DeleteChannelGroupRequestBuilder removeGroupRequestBuilder = operationParams as DeleteChannelGroupRequestBuilder;
                             removeGroupRequestBuilder.RaiseRunRequest(this);
-
                             break;
+                        case PNOperationType.PNCreateUserOperation:
+                            CreateUserRequestBuilder createUserBuilder = operationParams as CreateUserRequestBuilder;
+                            createUserBuilder.RaiseRunRequest(this);
+                            break;
+                        // case PNOperationType.PNGetUsersOperation:
+                        //     CreateUserBuilder createUserBuilder = operationParams as CreateUserBuilder;
+                        //     createUserBuilder.RaiseRunRequest(this);
+                        //     break;
+                        // case PNOperationType.PNGetUserOperation:
+                        //     CreateUserBuilder createUserBuilder = operationParams as CreateUserBuilder;
+                        //     createUserBuilder.RaiseRunRequest(this);
+                        //     break;
+                        // case PNOperationType.PNUpdateUserOperation:
+                        //     CreateUserBuilder createUserBuilder = operationParams as CreateUserBuilder;
+                        //     createUserBuilder.RaiseRunRequest(this);
+                        //     break;
+                        // case PNOperationType.PNDeleteUserOperation:
+                        //     CreateUserBuilder createUserBuilder = operationParams as CreateUserBuilder;
+                        //     createUserBuilder.RaiseRunRequest(this);
+                        //     break;
+                        // case PNOperationType.PNGetSpaceOperation:
+                        //     CreateUserBuilder createUserBuilder = operationParams as CreateUserBuilder;
+                        //     createUserBuilder.RaiseRunRequest(this);
+                        //     break;
+                        // case PNOperationType.PNGetSpacesOperation:
+                        //     CreateUserBuilder createUserBuilder = operationParams as CreateUserBuilder;
+                        //     createUserBuilder.RaiseRunRequest(this);
+                        //     break;
+                        // case PNOperationType.PNCreateSpaceOperation:
+                        //     CreateUserBuilder createUserBuilder = operationParams as CreateUserBuilder;
+                        //     createUserBuilder.RaiseRunRequest(this);
+                        //     break;                                                                                    
+                        // case PNOperationType.PNDeleteSpaceOperation:
+                        //     CreateUserBuilder createUserBuilder = operationParams as CreateUserBuilder;
+                        //     createUserBuilder.RaiseRunRequest(this);
+                        //     break;
+                        // case PNOperationType.PNUpdateSpaceOperation:
+                        //     CreateUserBuilder createUserBuilder = operationParams as CreateUserBuilder;
+                        //     createUserBuilder.RaiseRunRequest(this);
+                        //     break;
+                        // case PNOperationType.PNGetMembershipsOperation:
+                        //     CreateUserBuilder createUserBuilder = operationParams as CreateUserBuilder;
+                        //     createUserBuilder.RaiseRunRequest(this);
+                        //     break;
+                        // case PNOperationType.PNGetMembersOperation:
+                        //     CreateUserBuilder createUserBuilder = operationParams as CreateUserBuilder;
+                        //     createUserBuilder.RaiseRunRequest(this);
+                        //     break;
+                        // case PNOperationType.PNManageMembershipsOperation:
+                        //     CreateUserBuilder createUserBuilder = operationParams as CreateUserBuilder;
+                        //     createUserBuilder.RaiseRunRequest(this);
+                        //     break;                                                                                    
+                        // case PNOperationType.PNManageMembersOperation:
+                        //     CreateUserBuilder createUserBuilder = operationParams as CreateUserBuilder;
+                        //     createUserBuilder.RaiseRunRequest(this);
+                        //     break;                         
                         default:
                         break;
                     }

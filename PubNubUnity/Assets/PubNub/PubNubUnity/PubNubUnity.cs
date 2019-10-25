@@ -269,6 +269,14 @@ namespace PubNubAPI
             
             return new RemoveChannelsFromPushBuilder(this);
         }
+
+        public CreateUserBuilder CreateUser(){
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("CreateUser", PNLoggingMethod.LevelInfo);
+            #endif
+            
+            return new CreateUserBuilder(this);
+        }
     }
 }
 

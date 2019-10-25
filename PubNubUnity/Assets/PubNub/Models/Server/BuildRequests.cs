@@ -172,6 +172,21 @@ namespace PubNubAPI
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNSignalOperation, "", pnInstance, queryParams);
         }
 
+        public static Uri BuildObjcetsCreateUserRequest (string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        {
+            ///v1/objects/%s/users
+            StringBuilder parameterBuilder = new StringBuilder ();
+            parameterBuilder.AppendFormat ("&include={0}", include);
+
+            List<string> url = new List<string> ();
+            url.Add ("v1");
+            url.Add ("objects");
+            url.Add (pnInstance.PNConfig.SubscribeKey);
+            url.Add ("users");
+
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNSignalOperation, "", pnInstance, queryParams);
+        }
+
         public static Uri BuildDeleteMessagesRequest (string channel, long start, long end, PubNubUnity pnInstance, Dictionary<string, string> queryParams){
             StringBuilder parameterBuilder = new StringBuilder ();
             if (start != -1) {

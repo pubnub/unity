@@ -226,6 +226,11 @@ namespace PubNubAPI
             return pnUnity.RemovePushNotificationsFromChannels();            
         }
 
+        public CreateUserBuilder CreateUser(){            
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.CreateUser();            
+        }
+
         public void AddListener(Action<PNStatus> statusCallback, Action<PNMessageResult> messageCallback, Action<PNPresenceEventResult> presenceCallback)
         {
             PubNubUnityInitializationAfterCleanup();
