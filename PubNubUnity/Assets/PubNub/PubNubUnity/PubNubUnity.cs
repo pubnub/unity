@@ -277,6 +277,41 @@ namespace PubNubAPI
             
             return new CreateUserBuilder(this);
         }
+        public UpdateUserBuilder UpdateUser(){
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("UpdateUser", PNLoggingMethod.LevelInfo);
+            #endif
+            
+            return new UpdateUserBuilder(this);
+        }
+        public DeleteUserBuilder DeleteUser(){
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("DeleteUser", PNLoggingMethod.LevelInfo);
+            #endif
+            
+            return new DeleteUserBuilder(this);
+        }
+        public GetUserBuilder GetUser(){
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("GetUser", PNLoggingMethod.LevelInfo);
+            #endif
+            
+            return new GetUserBuilder(this);
+        }
+        public GetUsersBuilder GetUsers(){
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("GetUsers", PNLoggingMethod.LevelInfo);
+            #endif
+            
+            return new GetUsersBuilder(this);
+        }
+        public CreateSpaceBuilder CreateSpace(){
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("CreateSpace", PNLoggingMethod.LevelInfo);
+            #endif
+            
+            return new CreateSpaceBuilder(this);
+        }
     }
 }
 

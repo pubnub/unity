@@ -231,6 +231,31 @@ namespace PubNubAPI
             return pnUnity.CreateUser();            
         }
 
+        public UpdateUserBuilder UpdateUser(){            
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.UpdateUser();            
+        }
+
+        public DeleteUserBuilder DeleteUser(){            
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.DeleteUser();            
+        }
+
+        public GetUserBuilder GetUser(){            
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.GetUser();            
+        }
+
+        public GetUsersBuilder GetUsers(){            
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.GetUsers();            
+        }
+
+        public CreateSpaceBuilder CreateSpace(){            
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.CreateSpace();            
+        }
+
         public void AddListener(Action<PNStatus> statusCallback, Action<PNMessageResult> messageCallback, Action<PNPresenceEventResult> presenceCallback)
         {
             PubNubUnityInitializationAfterCleanup();

@@ -1035,7 +1035,7 @@ namespace PubNubAPI.Tests
 		}
 
 		[UnityTest]
-		public IEnumerator TestCreateUser() {
+		public IEnumerator TestUserCRUD() {
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random ();
 			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next (1000);
@@ -1066,10 +1066,118 @@ namespace PubNubAPI.Tests
 
 			});
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "CreateUser didn't return");
+
+			tresult = false;
+			
+			pubnub.GetUser().ID(id).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				Assert.AreEqual(name, result.Name);
+				Assert.AreEqual(email, result.Email);
+				Assert.AreEqual(externalID, result.ExternalID);
+				Assert.AreEqual(profileURL, result.ProfileURL);
+				Assert.AreEqual(id, result.ID);
+				Assert.AreEqual(result.Updated, result.Created);
+				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
+				Assert.True(result.Custom == null);
+				tresult = true;
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "GetUser didn't return");
+
+			tresult = false;
+
+			int ran2 = r.Next (1000);
+			string name2 = string.Format("name {0}", ran2);
+			string email2 = string.Format("email {0}", ran2);
+			string externalID2 = string.Format("externalID {0}", ran2);
+			string profileURL2 = string.Format("profileURL {0}", ran2);
+			tresult = false;
+
+			pubnub.UpdateUser().Email(email2).ExternalID(externalID2).Name(name2).ID(id).Include(include).ProfileURL(profileURL2).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				Assert.AreEqual(name2, result.Name);
+				Assert.AreEqual(email2, result.Email);
+				Assert.AreEqual(externalID2, result.ExternalID);
+				Assert.AreEqual(profileURL2, result.ProfileURL);
+				Assert.AreEqual(id, result.ID);
+				Assert.AreNotEqual(result.Updated, result.Created);
+				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
+				Assert.True(result.Custom == null);
+				tresult = true;
+
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "UpdateUser didn't return");
+
+			
+			pubnub.GetUsers().Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				if(result.Data != null){
+					foreach(PNUserResult pnUserResult in result.Data){
+						if(pnUserResult.ID.Equals(id)){
+							Assert.AreEqual(name2, pnUserResult.Name);
+							Assert.AreEqual(email2, pnUserResult.Email);
+							Assert.AreEqual(externalID2, pnUserResult.ExternalID);
+							Assert.AreEqual(profileURL2, pnUserResult.ProfileURL);
+							Assert.AreNotEqual(pnUserResult.Updated, pnUserResult.Created);
+							Assert.True(!string.IsNullOrEmpty(pnUserResult.ETag), pnUserResult.ETag);
+							Assert.True(pnUserResult.Custom == null);
+							tresult = true;
+						}
+					}
+				}
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "GetUsers didn't return");
+
+			tresult = false;
+
+			pubnub.DeleteUser().ID(id).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				tresult = true;
+
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "DeleteUser didn't return");
+
+			pubnub.CleanUp();
+		}
+
+		[UnityTest]
+		public IEnumerator TestCreateSpace() {
+			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
+			System.Random r = new System.Random ();
+			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next (1000);
+			int ran = r.Next (1000);
+			string id = "id"  + ran;
+			string name = string.Format("name {0}", ran);
+			string description = string.Format("description {0}", ran);
+
+			PNUserSpaceInclude[] include = new PNUserSpaceInclude[]{PNUserSpaceInclude.PNUserSpaceCustom};
+
+			PubNub pubnub = new PubNub(pnConfiguration);
+			bool tresult = false;
+
+			pubnub.CreateSpace().Description(description).Name(name).ID(id).Include(include).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				Assert.AreEqual(name, result.Name);
+				Assert.AreEqual(description, result.Description);
+				Assert.AreEqual(id, result.ID);
+				Assert.AreEqual(result.Updated, result.Created);
+				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
+				Assert.True(result.Custom == null);
+				tresult = true;
+
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "test didn't return");
 			pubnub.CleanUp();
-
-
 		}
 
 		// [UnityTest]

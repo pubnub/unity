@@ -5,59 +5,47 @@ using UnityEngine;
 
 namespace PubNubAPI
 {
-    public class CreateUserRequestBuilder: PubNubNonSubBuilder<CreateUserRequestBuilder, PNUserResult>, IPubNubNonSubscribeBuilder<CreateUserRequestBuilder, PNUserResult>
+    public class CreateSpaceRequestBuilder: PubNubNonSubBuilder<CreateSpaceRequestBuilder, PNSpaceResult>, IPubNubNonSubscribeBuilder<CreateSpaceRequestBuilder, PNSpaceResult>
     {        
-        private PNUserSpaceInclude[] CreateUserInclude { get; set;}
-        private string CreateUserID { get; set;}
-        private string CreateUserName { get; set;}
-        private string CreateUserExternalID { get; set;}
-        private string CreateUserProfileURL { get; set;}
-        private string CreateUserEmail { get; set;}
-        private Dictionary<string, object> CreateUserCustom { get; set;}
+        private PNUserSpaceInclude[] CreateSpaceInclude { get; set;}
+        private string CreateSpaceID { get; set;}
+        private string CreateSpaceName { get; set;}
+        private string CreateSpaceDescription { get; set;}
+        private Dictionary<string, object> CreateSpaceCustom { get; set;}
         
-        public CreateUserRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNCreateUserOperation){
+        public CreateSpaceRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNCreateSpaceOperation){
         }
 
         #region IPubNubBuilder implementation
-        public void Async(Action<PNUserResult, PNStatus> callback)
+        public void Async(Action<PNSpaceResult, PNStatus> callback)
         {
             this.Callback = callback;
             base.Async(this);
         }
         #endregion
 
-        public CreateUserRequestBuilder Include(PNUserSpaceInclude[] include){
-            CreateUserInclude = include;
+        public CreateSpaceRequestBuilder Include(PNUserSpaceInclude[] include){
+            CreateSpaceInclude = include;
             return this;
         }
 
-        public CreateUserRequestBuilder ID(string id){
-            CreateUserID = id;
+        public CreateSpaceRequestBuilder ID(string id){
+            CreateSpaceID = id;
             return this;
         }
 
-        public CreateUserRequestBuilder Name(string name){
-            CreateUserName = name;
+        public CreateSpaceRequestBuilder Name(string name){
+            CreateSpaceName = name;
             return this;
         }
 
-        public CreateUserRequestBuilder ExternalID(string externalID){
-            CreateUserExternalID = externalID;
+        public CreateSpaceRequestBuilder Description(string description){
+            CreateSpaceDescription = description;
             return this;
         }
 
-        public CreateUserRequestBuilder ProfileURL(string profileURL){
-            CreateUserProfileURL = profileURL;
-            return this;
-        }
-
-        public CreateUserRequestBuilder Email(string email){
-            CreateUserEmail = email;
-            return this;
-        }
-
-        public CreateUserRequestBuilder Custom(Dictionary<string, object> custom){
-            CreateUserCustom = custom;
+        public CreateSpaceRequestBuilder Custom(Dictionary<string, object> custom){
+            CreateSpaceCustom = custom;
             return this;
         }   
 
@@ -67,12 +55,10 @@ namespace PubNubAPI
             requestState.httpMethod = HTTPMethod.Post;
 
             var cub = new { 
-                id = CreateUserID, 
-                email = CreateUserEmail,
-                name = CreateUserName,
-                profileUrl = CreateUserProfileURL,
-                externalId = CreateUserExternalID,
-                custom = CreateUserCustom,
+                id = CreateSpaceID, 
+                name = CreateSpaceName,
+                description = CreateSpaceDescription,
+                custom = CreateSpaceCustom,
             };
 
             string jsonUserBody = Helpers.JsonEncodePublishMsg (cub, "", this.PubNubInstance.JsonLibrary, this.PubNubInstance.PNLog);
@@ -86,7 +72,7 @@ namespace PubNubAPI
                 .Select(x => x.ToString())
                 .ToArray();
 
-            Uri request = BuildRequests.BuildObjectsCreateUserRequest(
+            Uri request = BuildRequests.BuildObjectsCreateSpaceRequest(
                     string.Join(",", includeString),
                     this.PubNubInstance,
                     this.QueryParams
@@ -96,8 +82,8 @@ namespace PubNubAPI
 
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             object[] c = deSerializedResult as object[];
-            //{"status":200,"data":{"id":"id17","name":"name 17","externalId":null,"profileUrl":null,"email":"email 17","created":"2019-10-25T10:52:58.366074Z","updated":"2019-10-25T10:52:58.366074Z","eTag":"AdnSjuyx7KmDngE"}}
-            PNUserResult pnUserResult = new PNUserResult();
+            // {"status":200,"data":{"id":"id935","name":"name 935","description":"description 935","created":"2019-10-28T09:44:53.003174Z","updated":"2019-10-28T09:44:53.003174Z","eTag":"Ab/nhqOsxJr2PQ"}}
+            PNSpaceResult pnUserResult = new PNSpaceResult();
             PNStatus pnStatus = new PNStatus();
 
             try{
@@ -108,12 +94,10 @@ namespace PubNubAPI
                     dictionary.TryGetValue("data", out objData);
                     if(objData!=null){
                         Dictionary<string, object> objDataDict = objData as Dictionary<string, object>;
-                        if(objDataDict != null){
+                        if(objDataDict!=null){
                             pnUserResult.ID = Utility.ReadMessageFromResponseDictionary(objDataDict, "id");
                             pnUserResult.Name = Utility.ReadMessageFromResponseDictionary(objDataDict, "name");
-                            pnUserResult.ExternalID = Utility.ReadMessageFromResponseDictionary(objDataDict, "externalId");
-                            pnUserResult.ProfileURL = Utility.ReadMessageFromResponseDictionary(objDataDict, "profileUrl");
-                            pnUserResult.Email = Utility.ReadMessageFromResponseDictionary(objDataDict, "email");
+                            pnUserResult.Description = Utility.ReadMessageFromResponseDictionary(objDataDict, "description");
                             pnUserResult.Created = Utility.ReadMessageFromResponseDictionary(objDataDict, "created");
                             pnUserResult.Updated = Utility.ReadMessageFromResponseDictionary(objDataDict, "updated");
                             pnUserResult.ETag = Utility.ReadMessageFromResponseDictionary(objDataDict, "eTag");
@@ -126,7 +110,7 @@ namespace PubNubAPI
                     }  else {
                         pnUserResult = null;
                         pnStatus = base.CreateErrorResponseFromException(new PubNubException("objData null"), requestState, PNStatusCategory.PNUnknownCategory);
-                    }                      
+                    }  
                 }
             } catch (Exception ex){
                 pnUserResult = null;

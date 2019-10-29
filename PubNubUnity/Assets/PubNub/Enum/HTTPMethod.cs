@@ -6,7 +6,8 @@ namespace PubNubAPI
     {
         Get,
         Post,
-        Delete
+        Delete,
+        Patch
     }
 }
 

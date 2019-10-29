@@ -5,17 +5,17 @@ using UnityEngine;
 
 namespace PubNubAPI
 {
-    public class CreateUserRequestBuilder: PubNubNonSubBuilder<CreateUserRequestBuilder, PNUserResult>, IPubNubNonSubscribeBuilder<CreateUserRequestBuilder, PNUserResult>
+    public class UpdateUserRequestBuilder: PubNubNonSubBuilder<UpdateUserRequestBuilder, PNUserResult>, IPubNubNonSubscribeBuilder<UpdateUserRequestBuilder, PNUserResult>
     {        
-        private PNUserSpaceInclude[] CreateUserInclude { get; set;}
-        private string CreateUserID { get; set;}
-        private string CreateUserName { get; set;}
-        private string CreateUserExternalID { get; set;}
-        private string CreateUserProfileURL { get; set;}
-        private string CreateUserEmail { get; set;}
-        private Dictionary<string, object> CreateUserCustom { get; set;}
+        private PNUserSpaceInclude[] UpdateUserInclude { get; set;}
+        private string UpdateUserID { get; set;}
+        private string UpdateUserName { get; set;}
+        private string UpdateUserExternalID { get; set;}
+        private string UpdateUserProfileURL { get; set;}
+        private string UpdateUserEmail { get; set;}
+        private Dictionary<string, object> UpdateUserCustom { get; set;}
         
-        public CreateUserRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNCreateUserOperation){
+        public UpdateUserRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNUpdateUserOperation){
         }
 
         #region IPubNubBuilder implementation
@@ -26,53 +26,53 @@ namespace PubNubAPI
         }
         #endregion
 
-        public CreateUserRequestBuilder Include(PNUserSpaceInclude[] include){
-            CreateUserInclude = include;
+        public UpdateUserRequestBuilder Include(PNUserSpaceInclude[] include){
+            UpdateUserInclude = include;
             return this;
         }
 
-        public CreateUserRequestBuilder ID(string id){
-            CreateUserID = id;
+        public UpdateUserRequestBuilder ID(string id){
+            UpdateUserID = id;
             return this;
         }
 
-        public CreateUserRequestBuilder Name(string name){
-            CreateUserName = name;
+        public UpdateUserRequestBuilder Name(string name){
+            UpdateUserName = name;
             return this;
         }
 
-        public CreateUserRequestBuilder ExternalID(string externalID){
-            CreateUserExternalID = externalID;
+        public UpdateUserRequestBuilder ExternalID(string externalID){
+            UpdateUserExternalID = externalID;
             return this;
         }
 
-        public CreateUserRequestBuilder ProfileURL(string profileURL){
-            CreateUserProfileURL = profileURL;
+        public UpdateUserRequestBuilder ProfileURL(string profileURL){
+            UpdateUserProfileURL = profileURL;
             return this;
         }
 
-        public CreateUserRequestBuilder Email(string email){
-            CreateUserEmail = email;
+        public UpdateUserRequestBuilder Email(string email){
+            UpdateUserEmail = email;
             return this;
         }
 
-        public CreateUserRequestBuilder Custom(Dictionary<string, object> custom){
-            CreateUserCustom = custom;
+        public UpdateUserRequestBuilder Custom(Dictionary<string, object> custom){
+            UpdateUserCustom = custom;
             return this;
         }   
 
         protected override void RunWebRequest(QueueManager qm){
             RequestState requestState = new RequestState ();
             requestState.OperationType = OperationType;
-            requestState.httpMethod = HTTPMethod.Post;
+            requestState.httpMethod = HTTPMethod.Patch;
 
             var cub = new { 
-                id = CreateUserID, 
-                email = CreateUserEmail,
-                name = CreateUserName,
-                profileUrl = CreateUserProfileURL,
-                externalId = CreateUserExternalID,
-                custom = CreateUserCustom,
+                id = UpdateUserID, 
+                email = UpdateUserEmail,
+                name = UpdateUserName,
+                profileUrl = UpdateUserProfileURL,
+                externalId = UpdateUserExternalID,
+                custom = UpdateUserCustom,
             };
 
             string jsonUserBody = Helpers.JsonEncodePublishMsg (cub, "", this.PubNubInstance.JsonLibrary, this.PubNubInstance.PNLog);
@@ -86,7 +86,8 @@ namespace PubNubAPI
                 .Select(x => x.ToString())
                 .ToArray();
 
-            Uri request = BuildRequests.BuildObjectsCreateUserRequest(
+            Uri request = BuildRequests.BuildObjectsUpdateUserRequest(
+                    UpdateUserID,
                     string.Join(",", includeString),
                     this.PubNubInstance,
                     this.QueryParams

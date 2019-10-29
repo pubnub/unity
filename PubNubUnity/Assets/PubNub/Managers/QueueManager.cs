@@ -165,22 +165,22 @@ namespace PubNubAPI
                             CreateUserRequestBuilder createUserBuilder = operationParams as CreateUserRequestBuilder;
                             createUserBuilder.RaiseRunRequest(this);
                             break;
-                        // case PNOperationType.PNGetUsersOperation:
-                        //     CreateUserBuilder createUserBuilder = operationParams as CreateUserBuilder;
-                        //     createUserBuilder.RaiseRunRequest(this);
-                        //     break;
-                        // case PNOperationType.PNGetUserOperation:
-                        //     CreateUserBuilder createUserBuilder = operationParams as CreateUserBuilder;
-                        //     createUserBuilder.RaiseRunRequest(this);
-                        //     break;
-                        // case PNOperationType.PNUpdateUserOperation:
-                        //     CreateUserBuilder createUserBuilder = operationParams as CreateUserBuilder;
-                        //     createUserBuilder.RaiseRunRequest(this);
-                        //     break;
-                        // case PNOperationType.PNDeleteUserOperation:
-                        //     CreateUserBuilder createUserBuilder = operationParams as CreateUserBuilder;
-                        //     createUserBuilder.RaiseRunRequest(this);
-                        //     break;
+                        case PNOperationType.PNGetUsersOperation:
+                            GetUsersRequestBuilder getUsersRequestBuilder = operationParams as GetUsersRequestBuilder;
+                            getUsersRequestBuilder.RaiseRunRequest(this);
+                            break;
+                        case PNOperationType.PNGetUserOperation:
+                            GetUserRequestBuilder getUserRequestBuilder = operationParams as GetUserRequestBuilder;
+                            getUserRequestBuilder.RaiseRunRequest(this);
+                            break;
+                        case PNOperationType.PNUpdateUserOperation:
+                            UpdateUserRequestBuilder updateUserRequestBuilder = operationParams as UpdateUserRequestBuilder;
+                            updateUserRequestBuilder.RaiseRunRequest(this);
+                            break;
+                        case PNOperationType.PNDeleteUserOperation:
+                            DeleteUserRequestBuilder deleteUserBuilder = operationParams as DeleteUserRequestBuilder;
+                            deleteUserBuilder.RaiseRunRequest(this);
+                            break;
                         // case PNOperationType.PNGetSpaceOperation:
                         //     CreateUserBuilder createUserBuilder = operationParams as CreateUserBuilder;
                         //     createUserBuilder.RaiseRunRequest(this);
@@ -190,8 +190,8 @@ namespace PubNubAPI
                         //     createUserBuilder.RaiseRunRequest(this);
                         //     break;
                         // case PNOperationType.PNCreateSpaceOperation:
-                        //     CreateUserBuilder createUserBuilder = operationParams as CreateUserBuilder;
-                        //     createUserBuilder.RaiseRunRequest(this);
+                        //     CreateSpaceRequestBuilder createSpaceRequestBuilder = operationParams as CreateSpaceRequestBuilder;
+                        //     createSpaceRequestBuilder.RaiseRunRequest(this);
                         //     break;                                                                                    
                         // case PNOperationType.PNDeleteSpaceOperation:
                         //     CreateUserBuilder createUserBuilder = operationParams as CreateUserBuilder;

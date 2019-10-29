@@ -540,7 +540,7 @@ namespace PubNubAPI
                 
                 mea.SignalEventResult = subSignalEventResult;
                 PubNubInstance.RaiseEvent (mea);
-  
+            } else if (subscribeMessage.MessageType.Equals(2)) {  
             } else {
                 PNMessageResult subMessageResult; 
                 CreatePNMessageResult(subscribeMessage, out subMessageResult);
