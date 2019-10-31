@@ -85,16 +85,16 @@ namespace PubNubAPI
                         foreach (object data in objArr){
                             Dictionary<string, object> objDataDict = data as Dictionary<string, object>;
                             if(objDataDict!=null){
-                                PNUserResult pnUserResult = new PNUserResult();
-                                pnUserResult.ID = Utility.ReadMessageFromResponseDictionary(objDataDict, "id");
-                                pnUserResult.Name = Utility.ReadMessageFromResponseDictionary(objDataDict, "name");
-                                pnUserResult.ExternalID = Utility.ReadMessageFromResponseDictionary(objDataDict, "externalId");
-                                pnUserResult.ProfileURL = Utility.ReadMessageFromResponseDictionary(objDataDict, "profileUrl");
-                                pnUserResult.Email = Utility.ReadMessageFromResponseDictionary(objDataDict, "email");
-                                pnUserResult.Created = Utility.ReadMessageFromResponseDictionary(objDataDict, "created");
-                                pnUserResult.Updated = Utility.ReadMessageFromResponseDictionary(objDataDict, "updated");
-                                pnUserResult.ETag = Utility.ReadMessageFromResponseDictionary(objDataDict, "eTag");
-                                pnUserResult.Custom = Utility.ReadDictionaryFromResponseDictionary(objDataDict, "custom");
+                                PNUserResult pnUserResult = ObjectsHelpers.ExtractUser(objDataDict);                                
+                                // pnUserResult.ID = Utility.ReadMessageFromResponseDictionary(objDataDict, "id");
+                                // pnUserResult.Name = Utility.ReadMessageFromResponseDictionary(objDataDict, "name");
+                                // pnUserResult.ExternalID = Utility.ReadMessageFromResponseDictionary(objDataDict, "externalId");
+                                // pnUserResult.ProfileURL = Utility.ReadMessageFromResponseDictionary(objDataDict, "profileUrl");
+                                // pnUserResult.Email = Utility.ReadMessageFromResponseDictionary(objDataDict, "email");
+                                // pnUserResult.Created = Utility.ReadMessageFromResponseDictionary(objDataDict, "created");
+                                // pnUserResult.Updated = Utility.ReadMessageFromResponseDictionary(objDataDict, "updated");
+                                // pnUserResult.ETag = Utility.ReadMessageFromResponseDictionary(objDataDict, "eTag");
+                                // pnUserResult.Custom = Utility.ReadDictionaryFromResponseDictionary(objDataDict, "custom");
                                 pnUserResultList.Data.Add(pnUserResult);
                             }  else {
                                 pnUserResultList = null;

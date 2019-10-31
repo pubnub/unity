@@ -13,6 +13,9 @@ namespace PubNubAPI
         public PNPresenceEventResult PresenceEventResult { get; set;}
         public PNMessageResult MessageResult { get; set;}
         public PNSignalEventResult SignalEventResult { get; set;}
+        public PNUserEventResult UserEventResult { get; set;}
+        public PNSpaceEventResult SpaceEventResult { get; set;}
+        public PNMembershipEventResult MembershipEventResult { get; set;}
     }   
 
     public class SubscriptionWorker<U>
@@ -541,6 +544,14 @@ namespace PubNubAPI
                 mea.SignalEventResult = subSignalEventResult;
                 PubNubInstance.RaiseEvent (mea);
             } else if (subscribeMessage.MessageType.Equals(2)) {  
+                // PNUserEventResult subSignalEventResult; 
+                // CreatePNSignalEventResult(subscribeMessage, out subSignalEventResult);
+                // #if (ENABLE_PUBNUB_LOGGING)
+                // this.PubNubInstance.PNLog.WriteToLog("Raising Signal event ", PNLoggingMethod.LevelInfo);
+                // #endif            
+                
+                // mea.ObjectsEventResult = subSignalEventResult;
+                // PubNubInstance.RaiseEvent (mea);                
             } else {
                 PNMessageResult subMessageResult; 
                 CreatePNMessageResult(subscribeMessage, out subMessageResult);

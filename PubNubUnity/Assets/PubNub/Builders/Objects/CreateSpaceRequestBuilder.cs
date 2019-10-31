@@ -83,7 +83,7 @@ namespace PubNubAPI
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             object[] c = deSerializedResult as object[];
             // {"status":200,"data":{"id":"id935","name":"name 935","description":"description 935","created":"2019-10-28T09:44:53.003174Z","updated":"2019-10-28T09:44:53.003174Z","eTag":"Ab/nhqOsxJr2PQ"}}
-            PNSpaceResult pnUserResult = new PNSpaceResult();
+            PNSpaceResult pnSpaceResult = new PNSpaceResult();
             PNStatus pnStatus = new PNStatus();
 
             try{
@@ -95,28 +95,21 @@ namespace PubNubAPI
                     if(objData!=null){
                         Dictionary<string, object> objDataDict = objData as Dictionary<string, object>;
                         if(objDataDict!=null){
-                            pnUserResult.ID = Utility.ReadMessageFromResponseDictionary(objDataDict, "id");
-                            pnUserResult.Name = Utility.ReadMessageFromResponseDictionary(objDataDict, "name");
-                            pnUserResult.Description = Utility.ReadMessageFromResponseDictionary(objDataDict, "description");
-                            pnUserResult.Created = Utility.ReadMessageFromResponseDictionary(objDataDict, "created");
-                            pnUserResult.Updated = Utility.ReadMessageFromResponseDictionary(objDataDict, "updated");
-                            pnUserResult.ETag = Utility.ReadMessageFromResponseDictionary(objDataDict, "eTag");
-                            pnUserResult.Custom = Utility.ReadDictionaryFromResponseDictionary(objDataDict, "custom");
-
+                            pnSpaceResult = ObjectsHelpers.ExtractSpace(objDataDict);
                         }  else {
-                            pnUserResult = null;
+                            pnSpaceResult = null;
                             pnStatus = base.CreateErrorResponseFromException(new PubNubException("objDataDict null"), requestState, PNStatusCategory.PNUnknownCategory);
                         }  
                     }  else {
-                        pnUserResult = null;
+                        pnSpaceResult = null;
                         pnStatus = base.CreateErrorResponseFromException(new PubNubException("objData null"), requestState, PNStatusCategory.PNUnknownCategory);
                     }  
                 }
             } catch (Exception ex){
-                pnUserResult = null;
+                pnSpaceResult = null;
                 pnStatus = base.CreateErrorResponseFromException(ex, requestState, PNStatusCategory.PNUnknownCategory);
             }
-            Callback(pnUserResult, pnStatus);
+            Callback(pnSpaceResult, pnStatus);
 
         }
 

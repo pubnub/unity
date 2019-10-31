@@ -64,15 +64,16 @@ namespace PubNubAPI
                     if(dictionary.TryGetValue("data", out objData)){
                         Dictionary<string, object> objDataDict = objData as Dictionary<string, object>;
                         if(objDataDict!=null){
-                            pnUserResult.ID = Utility.ReadMessageFromResponseDictionary(objDataDict, "id");
-                            pnUserResult.Name = Utility.ReadMessageFromResponseDictionary(objDataDict, "name");
-                            pnUserResult.ExternalID = Utility.ReadMessageFromResponseDictionary(objDataDict, "externalId");
-                            pnUserResult.ProfileURL = Utility.ReadMessageFromResponseDictionary(objDataDict, "profileUrl");
-                            pnUserResult.Email = Utility.ReadMessageFromResponseDictionary(objDataDict, "email");
-                            pnUserResult.Created = Utility.ReadMessageFromResponseDictionary(objDataDict, "created");
-                            pnUserResult.Updated = Utility.ReadMessageFromResponseDictionary(objDataDict, "updated");
-                            pnUserResult.ETag = Utility.ReadMessageFromResponseDictionary(objDataDict, "eTag");
-                            pnUserResult.Custom = Utility.ReadDictionaryFromResponseDictionary(objDataDict, "custom");
+                            pnUserResult = ObjectsHelpers.ExtractUser(objDataDict);
+                            // pnUserResult.ID = Utility.ReadMessageFromResponseDictionary(objDataDict, "id");
+                            // pnUserResult.Name = Utility.ReadMessageFromResponseDictionary(objDataDict, "name");
+                            // pnUserResult.ExternalID = Utility.ReadMessageFromResponseDictionary(objDataDict, "externalId");
+                            // pnUserResult.ProfileURL = Utility.ReadMessageFromResponseDictionary(objDataDict, "profileUrl");
+                            // pnUserResult.Email = Utility.ReadMessageFromResponseDictionary(objDataDict, "email");
+                            // pnUserResult.Created = Utility.ReadMessageFromResponseDictionary(objDataDict, "created");
+                            // pnUserResult.Updated = Utility.ReadMessageFromResponseDictionary(objDataDict, "updated");
+                            // pnUserResult.ETag = Utility.ReadMessageFromResponseDictionary(objDataDict, "eTag");
+                            // pnUserResult.Custom = Utility.ReadDictionaryFromResponseDictionary(objDataDict, "custom");
                         } else {
                             pnUserResult = null;
                             pnStatus = base.CreateErrorResponseFromException(new PubNubException("objDataDict not present"), requestState, PNStatusCategory.PNUnknownCategory);
