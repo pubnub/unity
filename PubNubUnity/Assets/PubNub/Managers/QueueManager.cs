@@ -201,14 +201,14 @@ namespace PubNubAPI
                         //     CreateUserBuilder createUserBuilder = operationParams as CreateUserBuilder;
                         //     createUserBuilder.RaiseRunRequest(this);
                         //     break;
-                        // case PNOperationType.PNGetMembershipsOperation:
-                        //     CreateUserBuilder createUserBuilder = operationParams as CreateUserBuilder;
-                        //     createUserBuilder.RaiseRunRequest(this);
-                        //     break;
-                        // case PNOperationType.PNGetMembersOperation:
-                        //     CreateUserBuilder createUserBuilder = operationParams as CreateUserBuilder;
-                        //     createUserBuilder.RaiseRunRequest(this);
-                        //     break;
+                        case PNOperationType.PNGetMembershipsOperation:
+                            GetMembershipsRequestBuilder getMembershipsRequestBuilder = operationParams as GetMembershipsRequestBuilder;
+                            getMembershipsRequestBuilder.RaiseRunRequest(this);
+                            break;
+                        case PNOperationType.PNGetMembersOperation:
+                            GetMembersRequestBuilder getMembersRequestBuilder = operationParams as GetMembersRequestBuilder;
+                            getMembersRequestBuilder.RaiseRunRequest(this);
+                            break;
                         // case PNOperationType.PNManageMembershipsOperation:
                         //     CreateUserBuilder createUserBuilder = operationParams as CreateUserBuilder;
                         //     createUserBuilder.RaiseRunRequest(this);
