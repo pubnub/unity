@@ -27,6 +27,20 @@ ExportedObj/
 *.booproj
 */.vs/
 *.pdb
+/PubNubUnity/Library/metadata/*
+/PubNubUnity/Library/PackageCache/*
+/PubNubUnity/Library/ShaderCache/*
+/PubNubUnity/Library/*.log
+/PubNubUnity/Library/ScriptAssemblies/*
+/PubNubUnity/Logs/*
+/PubNubUnity/Library/*.asset
+/PubNubUnity/Library/*.txt
+/PubNubUnity/Library/*.prefs
+/PubNubUnity/Library/*.dwlt
+/PubNubUnity/Library/*.db
+/PubNubUnity/Assets/*.meta
+/PubNubUnity/Library/*
+/PubNubUnity/Packages/*
 
 # Unity3D generated meta files
 *.pidb.meta

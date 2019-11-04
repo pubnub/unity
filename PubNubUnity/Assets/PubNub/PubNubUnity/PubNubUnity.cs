@@ -312,6 +312,42 @@ namespace PubNubAPI
             
             return new CreateSpaceBuilder(this);
         }
+
+        public UpdateSpaceBuilder UpdateSpace()
+        {
+#if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("UpdateSpace", PNLoggingMethod.LevelInfo);
+#endif
+
+            return new UpdateSpaceBuilder(this);
+        }
+
+        public DeleteSpaceBuilder DeleteSpace()
+        {
+#if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("DeleteSpace", PNLoggingMethod.LevelInfo);
+#endif
+
+            return new DeleteSpaceBuilder(this);
+        }
+
+        public GetSpaceBuilder GetSpace()
+        {
+#if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("GetSpace", PNLoggingMethod.LevelInfo);
+#endif
+
+            return new GetSpaceBuilder(this);
+        }
+
+        public GetSpacesBuilder GetSpaces()
+        {
+#if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("GetSpaces", PNLoggingMethod.LevelInfo);
+#endif
+
+            return new GetSpacesBuilder(this);
+        }
     }
 }
 
