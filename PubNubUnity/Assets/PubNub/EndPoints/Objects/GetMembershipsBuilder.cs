@@ -44,7 +44,7 @@ namespace PubNubAPI
             return this;
         }
 
-        public void Async(Action<PNGetMembershipsResult, PNStatus> callback)
+        public void Async(Action<PNMembershipsResult, PNStatus> callback)
         {
             getMembershipsBuilder.Async(callback);
         }

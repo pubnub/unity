@@ -5,21 +5,20 @@ using UnityEngine;
 
 namespace PubNubAPI
 {
-    public class GetMembershipsRequestBuilder: PubNubNonSubBuilder<GetMembershipsRequestBuilder, PNGetMembershipsResult>, IPubNubNonSubscribeBuilder<GetMembershipsRequestBuilder, PNGetMembershipsResult>
+    public class GetMembershipsRequestBuilder: PubNubNonSubBuilder<GetMembershipsRequestBuilder, PNMembershipsResult>, IPubNubNonSubscribeBuilder<GetMembershipsRequestBuilder, PNMembershipsResult>
     {    
         private string GetMembershipsUserID { get; set;}    
         private int GetMembershipsLimit { get; set;}
         private string GetMembershipsEnd { get; set;}
         private string GetMembershipsStart { get; set;}
         private bool GetMembershipsCount { get; set;}
-        private PNMembershipsInclude[] CreateSpaceInclude { get; set;}
-        private Dictionary<string, object> GetUserCustom { get; set;}
+        private PNMembershipsInclude[] GetMembershipsInclude { get; set;}
         
         public GetMembershipsRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNGetMembershipsOperation){
         }
 
         #region IPubNubBuilder implementation
-        public void Async(Action<PNGetMembershipsResult, PNStatus> callback)
+        public void Async(Action<PNMembershipsResult, PNStatus> callback)
         {
             this.Callback = callback;
             base.Async(this);
@@ -32,7 +31,7 @@ namespace PubNubAPI
         }
 
         public GetMembershipsRequestBuilder Include(PNMembershipsInclude[] include){
-            CreateSpaceInclude = include;
+            GetMembershipsInclude = include;
             return this;
         }
         public GetMembershipsRequestBuilder Limit(int limit){
@@ -56,10 +55,7 @@ namespace PubNubAPI
             RequestState requestState = new RequestState ();
             requestState.OperationType = OperationType;
 
-            string[] includeString = Enum.GetValues(typeof(PNMembershipsInclude))
-                .Cast<int>()
-                .Select(x => x.ToString())
-                .ToArray();
+            string[] includeString = (GetMembershipsInclude==null) ? new string[]{} : GetMembershipsInclude.Select(a=>a.ToString()).ToArray(); 
 
             Uri request = BuildRequests.BuildObjectsGetMembershipsRequest(
                     GetMembershipsUserID,
@@ -77,7 +73,7 @@ namespace PubNubAPI
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             object[] c = deSerializedResult as object[];
             
-            PNGetMembershipsResult pnGetMembershipsResult = new PNGetMembershipsResult();
+            PNMembershipsResult pnGetMembershipsResult = new PNMembershipsResult();
             pnGetMembershipsResult.Data = new List<PNMemberships>();
             PNStatus pnStatus = new PNStatus();
 
@@ -92,13 +88,7 @@ namespace PubNubAPI
                         foreach (object data in objArr){
                             Dictionary<string, object> objDataDict = data as Dictionary<string, object>;
                             if(objDataDict!=null){
-                                PNMemberships pnMemberships = new PNMemberships();
-                                pnMemberships.ID = Utility.ReadMessageFromResponseDictionary(objDataDict, "id");
-                                pnMemberships.Space = ObjectsHelpers.ExtractSpace(Utility.ReadDictionaryFromResponseDictionary(objDataDict, "space"));
-                                pnMemberships.Created = Utility.ReadMessageFromResponseDictionary(objDataDict, "created");
-                                pnMemberships.Updated = Utility.ReadMessageFromResponseDictionary(objDataDict, "updated");
-                                pnMemberships.ETag = Utility.ReadMessageFromResponseDictionary(objDataDict, "eTag");
-                                pnMemberships.Custom = Utility.ReadDictionaryFromResponseDictionary(objDataDict, "custom");
+                                PNMemberships pnMemberships = ObjectsHelpers.ExtractMemberships(objDataDict);
                                 pnGetMembershipsResult.Data.Add(pnMemberships);
                             }  else {
                                 pnGetMembershipsResult = null;

@@ -5,21 +5,20 @@ using UnityEngine;
 
 namespace PubNubAPI
 {
-    public class GetMembersRequestBuilder: PubNubNonSubBuilder<GetMembersRequestBuilder, PNGetMembersResult>, IPubNubNonSubscribeBuilder<GetMembersRequestBuilder, PNGetMembersResult>
+    public class GetMembersRequestBuilder: PubNubNonSubBuilder<GetMembersRequestBuilder, PNMembersResult>, IPubNubNonSubscribeBuilder<GetMembersRequestBuilder, PNMembersResult>
     {        
         private string GetMembersSpaceID { get; set;}
         private int GetMembersLimit { get; set;}
         private string GetMembersEnd { get; set;}
         private string GetMembersStart { get; set;}
         private bool GetMembersCount { get; set;}
-        private PNMembersInclude[] CreateSpaceInclude { get; set;}
-        private Dictionary<string, object> GetUserCustom { get; set;}
+        private PNMembersInclude[] GetMembersInclude { get; set;}
         
         public GetMembersRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNGetMembersOperation){
         }
 
         #region IPubNubBuilder implementation
-        public void Async(Action<PNGetMembersResult, PNStatus> callback)
+        public void Async(Action<PNMembersResult, PNStatus> callback)
         {
             this.Callback = callback;
             base.Async(this);
@@ -32,7 +31,7 @@ namespace PubNubAPI
         }
 
         public GetMembersRequestBuilder Include(PNMembersInclude[] include){
-            CreateSpaceInclude = include;
+            GetMembersInclude = include;
             return this;
         }
         public GetMembersRequestBuilder Limit(int limit){
@@ -56,10 +55,7 @@ namespace PubNubAPI
             RequestState requestState = new RequestState ();
             requestState.OperationType = OperationType;
 
-            string[] includeString = Enum.GetValues(typeof(PNMembersInclude))
-                .Cast<int>()
-                .Select(x => x.ToString())
-                .ToArray();
+            string[] includeString = (GetMembersInclude==null) ? new string[]{} : GetMembersInclude.Select(a=>a.ToString()).ToArray(); 
 
             Uri request = BuildRequests.BuildObjectsGetMembersRequest(
                     GetMembersSpaceID,
@@ -77,7 +73,7 @@ namespace PubNubAPI
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             object[] c = deSerializedResult as object[];
             
-            PNGetMembersResult pnGetMembersResult = new PNGetMembersResult();
+            PNMembersResult pnGetMembersResult = new PNMembersResult();
             pnGetMembersResult.Data = new List<PNMembers>();
             PNStatus pnStatus = new PNStatus();
 
@@ -92,13 +88,7 @@ namespace PubNubAPI
                         foreach (object data in objArr){
                             Dictionary<string, object> objDataDict = data as Dictionary<string, object>;
                             if(objDataDict!=null){
-                                PNMembers pnMembers = new PNMembers();
-                                pnMembers.ID = Utility.ReadMessageFromResponseDictionary(objDataDict, "id");
-                                pnMembers.User = ObjectsHelpers.ExtractUser(Utility.ReadDictionaryFromResponseDictionary(objDataDict, "user"));
-                                pnMembers.Created = Utility.ReadMessageFromResponseDictionary(objDataDict, "created");
-                                pnMembers.Updated = Utility.ReadMessageFromResponseDictionary(objDataDict, "updated");
-                                pnMembers.ETag = Utility.ReadMessageFromResponseDictionary(objDataDict, "eTag");
-                                pnMembers.Custom = Utility.ReadDictionaryFromResponseDictionary(objDataDict, "custom");
+                                PNMembers pnMembers = ObjectsHelpers.ExtractMembers(objDataDict);
                                 pnGetMembersResult.Data.Add(pnMembers);
                             }  else {
                                 pnGetMembersResult = null;

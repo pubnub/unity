@@ -43,7 +43,7 @@ namespace PubNubAPI
             return this;
         }
 
-        public void Async(Action<PNGetMembersResult, PNStatus> callback)
+        public void Async(Action<PNMembersResult, PNStatus> callback)
         {
             getMembersBuilder.Async(callback);
         }

@@ -31,14 +31,8 @@ namespace PubNubAPI
             requestState.OperationType = OperationType;
             requestState.httpMethod = HTTPMethod.Delete;
 
-            string[] includeString = Enum.GetValues(typeof(PNUserSpaceInclude))
-                .Cast<int>()
-                .Select(x => x.ToString())
-                .ToArray();
-
             Uri request = BuildRequests.BuildObjectsDeleteUserRequest(
                     DeleteUserID,
-                    string.Join(",", includeString),
                     this.PubNubInstance,
                     this.QueryParams
                 );
