@@ -1149,7 +1149,7 @@ namespace PubNubAPI.Tests
 		}
 
 		[UnityTest]
-		public IEnumerator TestCreateSpace() {
+		public IEnumerator TestSpaceCRUD() {
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random ();
 			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next (1000);
@@ -1176,7 +1176,76 @@ namespace PubNubAPI.Tests
 
 			});
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(tresult, "test didn't return");
+			Assert.True(tresult, "CreateSpace didn't return");
+			tresult = false;
+			
+			pubnub.GetSpace().ID(id).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				Assert.AreEqual(name, result.Name);
+				Assert.AreEqual(description, result.Description);
+				Assert.AreEqual(id, result.ID);
+				Assert.AreEqual(result.Updated, result.Created);
+				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
+				Assert.True(result.Custom == null);
+				tresult = true;
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "GetSpace didn't return");
+
+			tresult = false;
+
+			int ran2 = r.Next (1000);
+			string name2 = string.Format("name {0}", ran2);
+			string description2 = string.Format("description {0}", ran2);
+			tresult = false;
+
+			pubnub.UpdateSpace().Description(description2).Name(name2).ID(id).Include(include).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				Assert.AreEqual(name2, result.Name);
+				Assert.AreEqual(description2, result.Description);
+				Assert.AreEqual(id, result.ID);
+				Assert.AreNotEqual(result.Updated, result.Created);
+				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
+				Assert.True(result.Custom == null);
+				tresult = true;
+
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "UpdateSpace didn't return");
+
+			
+			pubnub.GetSpaces().Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				if(result.Data != null){
+					foreach(PNSpaceResult pnSpaceResult in result.Data){
+						if(pnSpaceResult.ID.Equals(id)){
+							Assert.AreEqual(name2, pnSpaceResult.Name);
+							Assert.AreEqual(description2, pnSpaceResult.Description);
+							Assert.AreNotEqual(pnSpaceResult.Updated, pnSpaceResult.Created);
+							Assert.True(!string.IsNullOrEmpty(pnSpaceResult.ETag), pnSpaceResult.ETag);
+							Assert.True(pnSpaceResult.Custom == null);
+							tresult = true;
+						}
+					}
+				}
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "GetSpaces didn't return");
+
+			tresult = false;
+
+			pubnub.DeleteSpace().ID(id).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				tresult = true;
+
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "DeleteSpace didn't return");
+
 			pubnub.CleanUp();
 		}
 
