@@ -81,7 +81,7 @@ namespace PubNubAPI
             {
                 Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
 
-                if (dictionary != null && pnSpaceResultList != null)
+                if (dictionary != null)
                 {
                     object objData;
                     dictionary.TryGetValue("data", out objData);
@@ -98,7 +98,6 @@ namespace PubNubAPI
                             }
                             else
                             {
-                                pnSpaceResultList = null;
                                 pnStatus = base.CreateErrorResponseFromException(new PubNubException("objDataDict null"), requestState, PNStatusCategory.PNUnknownCategory);
                             }
                         }
