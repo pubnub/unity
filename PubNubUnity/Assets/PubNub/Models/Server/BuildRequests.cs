@@ -248,11 +248,10 @@ namespace PubNubAPI
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNDeleteUserOperation, "", pnInstance, queryParams);
         }
 
-        public static Uri BuildObjectsDeleteSpaceRequest(string id, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        public static Uri BuildObjectsDeleteSpaceRequest(string id, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
         {
             ///v1/objects/%s/spaces/%s
             StringBuilder parameterBuilder = new StringBuilder();
-            parameterBuilder.AppendFormat("&include={0}", include);
 
             List<string> url = new List<string>();
             url.Add("v1");

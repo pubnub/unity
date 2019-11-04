@@ -6,7 +6,7 @@ namespace PubNubAPI
 {    public class GetSpaceRequestBuilder : PubNubNonSubBuilder<GetSpaceRequestBuilder, PNSpaceResult>, IPubNubNonSubscribeBuilder<GetSpaceRequestBuilder, PNSpaceResult>
     {
         private string GetSpaceID { get; set; }
-        private PNUserSpaceInclude[] CreateSpaceInclude { get; set; }
+        private PNUserSpaceInclude[] GetSpaceInclude { get; set; }
         public GetSpaceRequestBuilder(PubNubUnity pn) : base(pn, PNOperationType.PNGetSpaceOperation)
         {
         }
@@ -21,7 +21,7 @@ namespace PubNubAPI
 
         public GetSpaceRequestBuilder Include(PNUserSpaceInclude[] include)
         {
-            CreateSpaceInclude = include;
+            GetSpaceInclude = include;
             return this;
         }
 
@@ -36,15 +36,7 @@ namespace PubNubAPI
             RequestState requestState = new RequestState();
             requestState.OperationType = OperationType;
 
-            string[] includeString = Enum.GetValues(typeof(PNUserSpaceInclude))
-                .Cast<int>()
-                .Select(x => x.ToString())
-                .ToArray();
-            //TODO: Need to refactor
-            if (includeString != null && includeString.Length == 1 && includeString[0] == "0")
-            {
-                includeString[0] = "custom";
-            }
+            string[] includeString = (GetSpaceInclude==null) ? new string[]{} : GetSpaceInclude.Select(a=>a.ToString()).ToArray();
 
             Uri request = BuildRequests.BuildObjectsGetSpaceRequest(
                     GetSpaceID,

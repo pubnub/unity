@@ -69,15 +69,12 @@ namespace PubNubAPI
             };
 
             string jsonUserBody = Helpers.JsonEncodePublishMsg(cub, "", this.PubNubInstance.JsonLibrary, this.PubNubInstance.PNLog);
-#if (ENABLE_PUBNUB_LOGGING)
+            #if (ENABLE_PUBNUB_LOGGING)
             this.PubNubInstance.PNLog.WriteToLog(string.Format("jsonUserBody: {0}", jsonUserBody), PNLoggingMethod.LevelInfo);
-#endif
+            #endif
             requestState.POSTData = jsonUserBody;
 
-            string[] includeString = Enum.GetValues(typeof(PNUserSpaceInclude))
-                .Cast<int>()
-                .Select(x => x.ToString())
-                .ToArray();
+            string[] includeString = (UpdateSpaceInclude==null) ? new string[]{} : UpdateSpaceInclude.Select(a=>a.ToString()).ToArray();
 
             Uri request = BuildRequests.BuildObjectsUpdateSpaceRequest(
                     UpdateSpaceID,
@@ -106,13 +103,14 @@ namespace PubNubAPI
                         Dictionary<string, object> objDataDict = objData as Dictionary<string, object>;
                         if (objDataDict != null)
                         {
-                            pnSpaceResult.ID = Utility.ReadMessageFromResponseDictionary(objDataDict, "id");
-                            pnSpaceResult.Name = Utility.ReadMessageFromResponseDictionary(objDataDict, "name");
-                            pnSpaceResult.Description = Utility.ReadMessageFromResponseDictionary(objDataDict, "description");
-                            pnSpaceResult.Created = Utility.ReadMessageFromResponseDictionary(objDataDict, "created");
-                            pnSpaceResult.Updated = Utility.ReadMessageFromResponseDictionary(objDataDict, "updated");
-                            pnSpaceResult.ETag = Utility.ReadMessageFromResponseDictionary(objDataDict, "eTag");
-                            pnSpaceResult.Custom = Utility.ReadDictionaryFromResponseDictionary(objDataDict, "custom");
+                            pnSpaceResult = ObjectsHelpers.ExtractSpace(objDataDict);
+                            // pnSpaceResult.ID = Utility.ReadMessageFromResponseDictionary(objDataDict, "id");
+                            // pnSpaceResult.Name = Utility.ReadMessageFromResponseDictionary(objDataDict, "name");
+                            // pnSpaceResult.Description = Utility.ReadMessageFromResponseDictionary(objDataDict, "description");
+                            // pnSpaceResult.Created = Utility.ReadMessageFromResponseDictionary(objDataDict, "created");
+                            // pnSpaceResult.Updated = Utility.ReadMessageFromResponseDictionary(objDataDict, "updated");
+                            // pnSpaceResult.ETag = Utility.ReadMessageFromResponseDictionary(objDataDict, "eTag");
+                            // pnSpaceResult.Custom = Utility.ReadDictionaryFromResponseDictionary(objDataDict, "custom");
 
                         }
                         else

@@ -10,7 +10,7 @@ namespace PubNubAPI
         private string GetSpacesEnd { get; set; }
         private string GetSpacesStart { get; set; }
         private bool GetSpacesCount { get; set; }
-        private PNUserSpaceInclude[] CreateSpaceInclude { get; set; }
+        private PNUserSpaceInclude[] GetSpacesInclude { get; set; }
         public GetSpacesRequestBuilder(PubNubUnity pn) : base(pn, PNOperationType.PNGetSpacesOperation)
         {
         }
@@ -25,7 +25,7 @@ namespace PubNubAPI
 
         public GetSpacesRequestBuilder Include(PNUserSpaceInclude[] include)
         {
-            CreateSpaceInclude = include;
+            GetSpacesInclude = include;
             return this;
         }
         public GetSpacesRequestBuilder Limit(int limit)
@@ -54,10 +54,7 @@ namespace PubNubAPI
             RequestState requestState = new RequestState();
             requestState.OperationType = OperationType;
 
-            string[] includeString = Enum.GetValues(typeof(PNUserSpaceInclude))
-                .Cast<int>()
-                .Select(x => x.ToString())
-                .ToArray();
+            string[] includeString = (GetSpacesInclude==null) ? new string[]{} : GetSpacesInclude.Select(a=>a.ToString()).ToArray();
 
             Uri request = BuildRequests.BuildObjectsGetSpacesRequest(
                     GetSpacesLimit,
