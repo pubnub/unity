@@ -81,10 +81,7 @@ namespace PubNubAPI
             #endif
             requestState.POSTData = jsonUserBody;
 
-            string[] includeString = Enum.GetValues(typeof(PNUserSpaceInclude))
-                .Cast<int>()
-                .Select(x => x.ToString())
-                .ToArray();
+            string[] includeString = (UpdateUserInclude==null) ? new string[]{} : UpdateUserInclude.Select(a=>a.ToString()).ToArray();          
 
             Uri request = BuildRequests.BuildObjectsUpdateUserRequest(
                     UpdateUserID,
@@ -110,16 +107,7 @@ namespace PubNubAPI
                     if(objData!=null){
                         Dictionary<string, object> objDataDict = objData as Dictionary<string, object>;
                         if(objDataDict != null){
-                            pnUserResult.ID = Utility.ReadMessageFromResponseDictionary(objDataDict, "id");
-                            pnUserResult.Name = Utility.ReadMessageFromResponseDictionary(objDataDict, "name");
-                            pnUserResult.ExternalID = Utility.ReadMessageFromResponseDictionary(objDataDict, "externalId");
-                            pnUserResult.ProfileURL = Utility.ReadMessageFromResponseDictionary(objDataDict, "profileUrl");
-                            pnUserResult.Email = Utility.ReadMessageFromResponseDictionary(objDataDict, "email");
-                            pnUserResult.Created = Utility.ReadMessageFromResponseDictionary(objDataDict, "created");
-                            pnUserResult.Updated = Utility.ReadMessageFromResponseDictionary(objDataDict, "updated");
-                            pnUserResult.ETag = Utility.ReadMessageFromResponseDictionary(objDataDict, "eTag");
-                            pnUserResult.Custom = Utility.ReadDictionaryFromResponseDictionary(objDataDict, "custom");
-
+                            pnUserResult = ObjectsHelpers.ExtractUser(objDataDict);
                         }  else {
                             pnUserResult = null;
                             pnStatus = base.CreateErrorResponseFromException(new PubNubException("objDataDict null"), requestState, PNStatusCategory.PNUnknownCategory);

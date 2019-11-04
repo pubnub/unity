@@ -37,5 +37,29 @@ namespace PubNubAPI
             return pnSpaceResult;
         }
 
+        public static PNMembers ExtractMembers(Dictionary<string, object> objDataDict){
+            PNMembers pnMembers = new PNMembers();
+            pnMembers.ID = Utility.ReadMessageFromResponseDictionary(objDataDict, "id");
+            pnMembers.User = ObjectsHelpers.ExtractUser(Utility.ReadDictionaryFromResponseDictionary(objDataDict, "user"));
+            pnMembers.Created = Utility.ReadMessageFromResponseDictionary(objDataDict, "created");
+            pnMembers.Updated = Utility.ReadMessageFromResponseDictionary(objDataDict, "updated");
+            pnMembers.ETag = Utility.ReadMessageFromResponseDictionary(objDataDict, "eTag");
+            pnMembers.Custom = Utility.ReadDictionaryFromResponseDictionary(objDataDict, "custom");
+
+            return pnMembers;
+        }
+
+        public static PNMemberships ExtractMemberships(Dictionary<string, object> objDataDict){
+            PNMemberships pnMemberships = new PNMemberships();
+            pnMemberships.ID = Utility.ReadMessageFromResponseDictionary(objDataDict, "id");
+            pnMemberships.Space = ObjectsHelpers.ExtractSpace(Utility.ReadDictionaryFromResponseDictionary(objDataDict, "space"));
+            pnMemberships.Created = Utility.ReadMessageFromResponseDictionary(objDataDict, "created");
+            pnMemberships.Updated = Utility.ReadMessageFromResponseDictionary(objDataDict, "updated");
+            pnMemberships.ETag = Utility.ReadMessageFromResponseDictionary(objDataDict, "eTag");
+            pnMemberships.Custom = Utility.ReadDictionaryFromResponseDictionary(objDataDict, "custom");
+            
+            return pnMemberships;
+        }
+
     }
 }

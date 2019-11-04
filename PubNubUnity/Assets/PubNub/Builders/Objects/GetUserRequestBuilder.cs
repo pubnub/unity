@@ -8,7 +8,7 @@ namespace PubNubAPI
     public class GetUserRequestBuilder: PubNubNonSubBuilder<GetUserRequestBuilder, PNUserResult>, IPubNubNonSubscribeBuilder<GetUserRequestBuilder, PNUserResult>
     {        
         private string GetUserID { get; set;}
-        private PNUserSpaceInclude[] CreateSpaceInclude { get; set;}
+        private PNUserSpaceInclude[] GetUserInclude { get; set;}
         private Dictionary<string, object> GetUserCustom { get; set;}
         
         public GetUserRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNGetUserOperation){
@@ -23,7 +23,7 @@ namespace PubNubAPI
         #endregion
 
         public GetUserRequestBuilder Include(PNUserSpaceInclude[] include){
-            CreateSpaceInclude = include;
+            GetUserInclude = include;
             return this;
         }
 
@@ -36,10 +36,7 @@ namespace PubNubAPI
             RequestState requestState = new RequestState ();
             requestState.OperationType = OperationType;
 
-            string[] includeString = Enum.GetValues(typeof(PNUserSpaceInclude))
-                .Cast<int>()
-                .Select(x => x.ToString())
-                .ToArray();
+            string[] includeString = (GetUserInclude==null) ? new string[]{} : GetUserInclude.Select(a=>a.ToString()).ToArray();
 
             Uri request = BuildRequests.BuildObjectsGetUserRequest(
                     GetUserID,
@@ -65,15 +62,6 @@ namespace PubNubAPI
                         Dictionary<string, object> objDataDict = objData as Dictionary<string, object>;
                         if(objDataDict!=null){
                             pnUserResult = ObjectsHelpers.ExtractUser(objDataDict);
-                            // pnUserResult.ID = Utility.ReadMessageFromResponseDictionary(objDataDict, "id");
-                            // pnUserResult.Name = Utility.ReadMessageFromResponseDictionary(objDataDict, "name");
-                            // pnUserResult.ExternalID = Utility.ReadMessageFromResponseDictionary(objDataDict, "externalId");
-                            // pnUserResult.ProfileURL = Utility.ReadMessageFromResponseDictionary(objDataDict, "profileUrl");
-                            // pnUserResult.Email = Utility.ReadMessageFromResponseDictionary(objDataDict, "email");
-                            // pnUserResult.Created = Utility.ReadMessageFromResponseDictionary(objDataDict, "created");
-                            // pnUserResult.Updated = Utility.ReadMessageFromResponseDictionary(objDataDict, "updated");
-                            // pnUserResult.ETag = Utility.ReadMessageFromResponseDictionary(objDataDict, "eTag");
-                            // pnUserResult.Custom = Utility.ReadDictionaryFromResponseDictionary(objDataDict, "custom");
                         } else {
                             pnUserResult = null;
                             pnStatus = base.CreateErrorResponseFromException(new PubNubException("objDataDict not present"), requestState, PNStatusCategory.PNUnknownCategory);
