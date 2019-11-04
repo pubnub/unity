@@ -74,7 +74,7 @@ namespace PubNubAPI
             #endif
             requestState.POSTData = jsonUserBody;
 
-            string[] includeString = (UpdateSpaceInclude==null) ? new string[]{} : UpdateSpaceInclude.Select(a=>a.ToString()).ToArray();
+            string[] includeString = (UpdateSpaceInclude==null) ? new string[]{} : UpdateSpaceInclude.Select(a=>a.GetDescription().ToString()).ToArray();
 
             Uri request = BuildRequests.BuildObjectsUpdateSpaceRequest(
                     UpdateSpaceID,

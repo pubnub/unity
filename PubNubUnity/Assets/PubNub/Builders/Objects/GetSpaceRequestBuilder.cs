@@ -36,7 +36,7 @@ namespace PubNubAPI
             RequestState requestState = new RequestState();
             requestState.OperationType = OperationType;
 
-            string[] includeString = (GetSpaceInclude==null) ? new string[]{} : GetSpaceInclude.Select(a=>a.ToString()).ToArray();
+            string[] includeString = (GetSpaceInclude==null) ? new string[]{} : GetSpaceInclude.Select(a=>a.GetDescription().ToString()).ToArray();
 
             Uri request = BuildRequests.BuildObjectsGetSpaceRequest(
                     GetSpaceID,

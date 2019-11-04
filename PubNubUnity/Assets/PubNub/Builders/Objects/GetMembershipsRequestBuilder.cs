@@ -55,7 +55,7 @@ namespace PubNubAPI
             RequestState requestState = new RequestState ();
             requestState.OperationType = OperationType;
 
-            string[] includeString = (GetMembershipsInclude==null) ? new string[]{} : GetMembershipsInclude.Select(a=>a.ToString()).ToArray(); 
+            string[] includeString = (GetMembershipsInclude==null) ? new string[]{} : GetMembershipsInclude.Select(a=>a.GetDescription().ToString()).ToArray(); 
 
             Uri request = BuildRequests.BuildObjectsGetMembershipsRequest(
                     GetMembershipsUserID,

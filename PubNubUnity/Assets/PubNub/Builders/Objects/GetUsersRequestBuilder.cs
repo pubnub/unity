@@ -50,7 +50,7 @@ namespace PubNubAPI
             RequestState requestState = new RequestState ();
             requestState.OperationType = OperationType;
 
-            string[] includeString = (GetUsersInclude==null) ? new string[]{} : GetUsersInclude.Select(a=>a.ToString()).ToArray();      
+            string[] includeString = (GetUsersInclude==null) ? new string[]{} : GetUsersInclude.Select(a=>a.GetDescription().ToString()).ToArray();      
 
             Uri request = BuildRequests.BuildObjectsGetUsersRequest(
                     GetUsersLimit,

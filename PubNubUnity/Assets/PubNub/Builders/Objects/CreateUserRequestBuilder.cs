@@ -81,7 +81,7 @@ namespace PubNubAPI
             #endif
             requestState.POSTData = jsonUserBody;
 
-            string[] includeString = (CreateUserInclude==null) ? new string[]{} : CreateUserInclude.Select(a=>a.ToString()).ToArray();
+            string[] includeString = (CreateUserInclude==null) ? new string[]{} : CreateUserInclude.Select(a=>a.GetDescription().ToString()).ToArray();
 
             Uri request = BuildRequests.BuildObjectsCreateUserRequest(
                     string.Join(",", includeString),

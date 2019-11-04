@@ -91,7 +91,7 @@ namespace PubNubAPI
             #endif
             requestState.POSTData = jsonUserBody;
 
-            string[] includeString = (ManagerMembershipsInclude==null) ? new string[]{} : ManagerMembershipsInclude.Select(a=>a.ToString()).ToArray();
+            string[] includeString = (ManagerMembershipsInclude==null) ? new string[]{} : ManagerMembershipsInclude.Select(a=>a.GetDescription().ToString()).ToArray();
 
             Uri request = BuildRequests.BuildObjectsManageMembershipsRequest(
                     ManageMembershipsUserID,

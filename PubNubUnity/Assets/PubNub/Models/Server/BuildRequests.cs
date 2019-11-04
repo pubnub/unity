@@ -184,7 +184,7 @@ namespace PubNubAPI
             url.Add (pnInstance.PNConfig.SubscribeKey);
             url.Add ("users");
 
-            return BuildRestApiRequest<Uri> (url, PNOperationType.PNCreateUserOperation, "", pnInstance, queryParams);
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNCreateUserOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         }
         public static Uri BuildObjectsCreateSpaceRequest (string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
         {
@@ -198,7 +198,7 @@ namespace PubNubAPI
             url.Add (pnInstance.PNConfig.SubscribeKey);
             url.Add ("spaces");
 
-            return BuildRestApiRequest<Uri> (url, PNOperationType.PNCreateSpaceOperation, "", pnInstance, queryParams);
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNCreateSpaceOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         } 
 
         public static Uri BuildObjectsUpdateUserRequest (string id, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
@@ -214,7 +214,7 @@ namespace PubNubAPI
             url.Add ("users");
             url.Add (id);
 
-            return BuildRestApiRequest<Uri> (url, PNOperationType.PNUpdateUserOperation, "", pnInstance, queryParams);
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNUpdateUserOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         }
 
         public static Uri BuildObjectsUpdateSpaceRequest(string id, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
@@ -230,7 +230,7 @@ namespace PubNubAPI
             url.Add("spaces");
             url.Add(id);
 
-            return BuildRestApiRequest<Uri>(url, PNOperationType.PNUpdateSpaceOperation, "", pnInstance, queryParams);
+            return BuildRestApiRequest<Uri>(url, PNOperationType.PNUpdateSpaceOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         }
 
         public static Uri BuildObjectsDeleteUserRequest (string id, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
@@ -245,7 +245,7 @@ namespace PubNubAPI
             url.Add ("users");
             url.Add (id);
 
-            return BuildRestApiRequest<Uri> (url, PNOperationType.PNDeleteUserOperation, "", pnInstance, queryParams);
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNDeleteUserOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         }
 
         public static Uri BuildObjectsDeleteSpaceRequest(string id, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
@@ -260,7 +260,7 @@ namespace PubNubAPI
             url.Add("spaces");
             url.Add(id);
 
-            return BuildRestApiRequest<Uri>(url, PNOperationType.PNDeleteSpaceOperation, "", pnInstance, queryParams);
+            return BuildRestApiRequest<Uri>(url, PNOperationType.PNDeleteSpaceOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         }
 
         public static Uri BuildObjectsGetUserRequest (string id, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
@@ -276,7 +276,7 @@ namespace PubNubAPI
             url.Add ("users");
             url.Add (id);
 
-            return BuildRestApiRequest<Uri> (url, PNOperationType.PNGetUserOperation, "", pnInstance, queryParams);
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNGetUserOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         }
 
         public static Uri BuildObjectsGetSpaceRequest(string id, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
@@ -292,7 +292,7 @@ namespace PubNubAPI
             url.Add("spaces");
             url.Add(id);
 
-            return BuildRestApiRequest<Uri>(url, PNOperationType.PNGetSpaceOperation, "", pnInstance, queryParams);
+            return BuildRestApiRequest<Uri>(url, PNOperationType.PNGetSpaceOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         }
 
         public static Uri BuildObjectsGetUsersRequest (int limit, string start, string end, bool count, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
@@ -317,7 +317,7 @@ namespace PubNubAPI
             url.Add (pnInstance.PNConfig.SubscribeKey);
             url.Add ("users");
 
-            return BuildRestApiRequest<Uri> (url, PNOperationType.PNGetUsersOperation, "", pnInstance, queryParams);
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNGetUsersOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         }
 
         public static Uri BuildObjectsGetSpacesRequest(int limit, string start, string end, bool count, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
@@ -345,7 +345,7 @@ namespace PubNubAPI
             url.Add(pnInstance.PNConfig.SubscribeKey);
             url.Add("spaces");
 
-            return BuildRestApiRequest<Uri>(url, PNOperationType.PNGetSpacesOperation, "", pnInstance, queryParams);
+            return BuildRestApiRequest<Uri>(url, PNOperationType.PNGetSpacesOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         }
 
         public static Uri BuildObjectsGetMembersRequest (string spaceID, int limit, string start, string end, bool count, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
@@ -372,7 +372,7 @@ namespace PubNubAPI
             url.Add (spaceID);
             url.Add ("users");
 
-            return BuildRestApiRequest<Uri> (url, PNOperationType.PNGetMembersOperation, "", pnInstance, queryParams);
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNGetMembersOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         }  
 
         public static Uri BuildObjectsManageMembersRequest (string spaceID, int limit, string start, string end, bool count, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
@@ -399,7 +399,7 @@ namespace PubNubAPI
             url.Add (spaceID);
             url.Add ("users");
 
-            return BuildRestApiRequest<Uri> (url, PNOperationType.PNManageMembersOperation, "", pnInstance, queryParams);
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNManageMembersOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         }  
         public static Uri BuildObjectsManageMembershipsRequest (string userID, int limit, string start, string end, bool count, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
         {
@@ -425,7 +425,7 @@ namespace PubNubAPI
             url.Add (userID);
             url.Add ("users");
 
-            return BuildRestApiRequest<Uri> (url, PNOperationType.PNManageMembershipsOperation, "", pnInstance, queryParams);
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNManageMembershipsOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         }  
         public static Uri BuildObjectsGetMembershipsRequest (string userID, int limit, string start, string end, bool count, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
         {
@@ -451,7 +451,7 @@ namespace PubNubAPI
             url.Add (userID);
             url.Add ("spaces");
 
-            return BuildRestApiRequest<Uri> (url, PNOperationType.PNGetMembershipsOperation, "", pnInstance, queryParams);
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNGetMembershipsOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         }  
 
         public static Uri BuildDeleteMessagesRequest (string channel, long start, long end, PubNubUnity pnInstance, Dictionary<string, string> queryParams){
@@ -1095,6 +1095,18 @@ namespace PubNubAPI
             case PNOperationType.PNSignalOperation:
             case PNOperationType.PNCreateUserOperation:
             case PNOperationType.PNCreateSpaceOperation:
+            case PNOperationType.PNGetUserOperation:
+            case PNOperationType.PNGetSpaceOperation:
+            case PNOperationType.PNGetUsersOperation:
+            case PNOperationType.PNGetSpacesOperation:
+            case PNOperationType.PNManageMembershipsOperation:
+            case PNOperationType.PNManageMembersOperation:
+            case PNOperationType.PNGetMembershipsOperation:
+            case PNOperationType.PNGetMembersOperation:
+            case PNOperationType.PNDeleteSpaceOperation:
+            case PNOperationType.PNDeleteUserOperation:
+            case PNOperationType.PNUpdateSpaceOperation:
+            case PNOperationType.PNUpdateUserOperation:
 
                 url = AppendUUIDToURL(url, uuid, true);
                 url.Append (parameters);

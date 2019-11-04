@@ -9,6 +9,20 @@ namespace PubNubAPI
         PNUserSpaceCustom
     }
 
+    public static class PNUserSpaceIncludeExtensions
+    {
+        public static string GetDescription(this PNUserSpaceInclude @this)
+        {
+            switch (@this)
+            {
+                case PNUserSpaceInclude.PNUserSpaceCustom:
+                    return "custom";
+                default:
+                    return "custom";    
+            }
+        }
+    }
+
     // PNMembershipsInclude is used as an enum to catgorize the available Memberships include types
     public enum PNMembershipsInclude
     {
@@ -21,6 +35,25 @@ namespace PubNubAPI
 
     }
 
+    public static class PNMembershipsIncludeExtensions
+    {
+        public static string GetDescription(this PNMembershipsInclude @this)
+        {
+            switch (@this)
+            {
+                case PNMembershipsInclude.PNMembershipsCustom:
+                    return "custom";
+                case PNMembershipsInclude.PNMembershipsSpace:
+                    return "space";
+                case PNMembershipsInclude.PNMembershipsSpaceCustom:
+                    return "space.custom";
+                default:
+                    return "custom";    
+            }
+        }
+    }
+
+
     // PNMembersInclude is used as an enum to catgorize the available Members include types
     public enum PNMembersInclude
     {
@@ -32,4 +65,22 @@ namespace PubNubAPI
         PNMembersUserCustom,
 
     }
+
+    public static class PNMembersIncludeExtensions
+    {
+        public static string GetDescription(this PNMembersInclude @this)
+        {
+            switch (@this)
+            {
+                case PNMembersInclude.PNMembersCustom:
+                    return "custom";
+                case PNMembersInclude.PNMembersUser:
+                    return "user";
+                case PNMembersInclude.PNMembersUserCustom:
+                    return "user.custom";
+                default:
+                    return "custom";    
+            }
+        }
+    }    
 }

@@ -36,8 +36,8 @@ namespace PubNubAPI
             RequestState requestState = new RequestState ();
             requestState.OperationType = OperationType;
 
-            string[] includeString = (GetUserInclude==null) ? new string[]{} : GetUserInclude.Select(a=>a.ToString()).ToArray();
-
+            string[] includeString = (GetUserInclude==null) ? new string[]{} : GetUserInclude.Select(a=>a.GetDescription().ToString()).ToArray();
+Debug.Log("includeString ====> " + string.Join(",", includeString));
             Uri request = BuildRequests.BuildObjectsGetUserRequest(
                     GetUserID,
                     string.Join(",", includeString),

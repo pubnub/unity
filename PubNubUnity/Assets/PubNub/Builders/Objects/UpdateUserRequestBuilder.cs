@@ -81,7 +81,7 @@ namespace PubNubAPI
             #endif
             requestState.POSTData = jsonUserBody;
 
-            string[] includeString = (UpdateUserInclude==null) ? new string[]{} : UpdateUserInclude.Select(a=>a.ToString()).ToArray();          
+            string[] includeString = (UpdateUserInclude==null) ? new string[]{} : UpdateUserInclude.Select(a=>a.GetDescription().ToString()).ToArray();          
 
             Uri request = BuildRequests.BuildObjectsUpdateUserRequest(
                     UpdateUserID,

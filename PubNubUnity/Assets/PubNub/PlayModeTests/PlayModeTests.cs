@@ -1035,6 +1035,81 @@ namespace PubNubAPI.Tests
 		}
 
 		[UnityTest]
+		public IEnumerator TestMembersAndMemberships() {
+			//Create user 1
+			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
+			System.Random r = new System.Random ();
+			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next (1000);
+			int ran = r.Next (1000);
+			string id = "id"  + ran;
+			string name = string.Format("name {0}", ran);
+			string email = string.Format("email {0}", ran);
+			string externalID = string.Format("externalID {0}", ran);
+			string profileURL = string.Format("profileURL {0}", ran);
+
+			PNUserSpaceInclude[] include = new PNUserSpaceInclude[]{PNUserSpaceInclude.PNUserSpaceCustom};
+
+			PubNub pubnub = new PubNub(pnConfiguration);
+			bool tresult = false;
+
+			Dictionary<string, object> userCustom = new Dictionary<string, object>();
+			userCustom.Add("uck1", "ucv1");
+			userCustom.Add("uck2", "ucv2");
+
+			pubnub.CreateUser().Email(email).ExternalID(externalID).Name(name).ID(id).Include(include).Custom(userCustom).ProfileURL(profileURL).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				Assert.AreEqual(name, result.Name);
+				Assert.AreEqual(email, result.Email);
+				Assert.AreEqual(externalID, result.ExternalID);
+				Assert.AreEqual(profileURL, result.ProfileURL);
+				Assert.AreEqual(id, result.ID);
+				Assert.AreEqual(result.Updated, result.Created);
+				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
+				Assert.True("ucv1" == result.Custom["uck1"].ToString());
+				Assert.True("ucv2" == result.Custom["uck2"].ToString());
+				tresult = true;
+
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "CreateUser didn't return");
+
+			tresult = false;
+			
+			pubnub.GetUser().ID(id).Include(include).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				Assert.AreEqual(name, result.Name);
+				Assert.AreEqual(email, result.Email);
+				Assert.AreEqual(externalID, result.ExternalID);
+				Assert.AreEqual(profileURL, result.ProfileURL);
+				Assert.AreEqual(id, result.ID);
+				Assert.AreEqual(result.Updated, result.Created);
+				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
+				Assert.True("ucv1" == result.Custom["uck1"].ToString());
+				Assert.True("ucv2" == result.Custom["uck2"].ToString());
+				tresult = true;
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "GetUser didn't return");
+			//Create user 2
+			//Create space 1
+			//Create space 2
+			//Add Space Memberships
+			//Update Space Memberships
+			//Get Space Memberships
+			//Remove Space Memberships
+			//Add user memberships
+			//Update user memberships
+			//Get members
+			//Remove user memberships
+			//delete user 1
+			//delete space 1
+			//delete user 1
+			//delete space 1
+		}
+
+		[UnityTest]
 		public IEnumerator TestUserCRUD() {
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random ();
