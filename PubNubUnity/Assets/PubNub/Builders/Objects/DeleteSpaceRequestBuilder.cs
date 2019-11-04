@@ -7,8 +7,6 @@ namespace PubNubAPI
     public class DeleteSpaceRequestBuilder : PubNubNonSubBuilder<DeleteSpaceRequestBuilder, PNDeleteSpaceResult>, IPubNubNonSubscribeBuilder<DeleteSpaceRequestBuilder, PNDeleteSpaceResult>
     {
         private string DeleteSpaceID { get; set; }
-        private Dictionary<string, object> DeleteSpaceCustom { get; set; }
-
         public DeleteSpaceRequestBuilder(PubNubUnity pn) : base(pn, PNOperationType.PNDeleteSpaceOperation)
         {
         }
@@ -49,8 +47,6 @@ namespace PubNubAPI
 
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState)
         {
-            object[] c = deSerializedResult as object[];
-            // {"status":200,"data":null}
             PNDeleteSpaceResult pnSpaceResult = new PNDeleteSpaceResult();
             PNStatus pnStatus = new PNStatus();
 

@@ -5,6 +5,6 @@ namespace PubNubAPI
 {
     public class PNGetSpacesResult
     {
-        public List<PNSpaceResult> Data;
+        public List<PNSpaceResult> Data { get; set; }
     }
 }

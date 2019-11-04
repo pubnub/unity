@@ -90,8 +90,6 @@ namespace PubNubAPI
 
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState)
         {
-            object[] c = deSerializedResult as object[];
-            //{"status":200,"data":{"id":"id17","name":"name 17","externalId":null,"profileUrl":null,"email":"email 17","created":"2019-10-25T10:52:58.366074Z","updated":"2019-10-25T10:52:58.366074Z","eTag":"AdnSjuyx7KmDngE"}}
             PNSpaceResult pnSpaceResult = new PNSpaceResult();
             PNStatus pnStatus = new PNStatus();
 

@@ -11,8 +11,6 @@ namespace PubNubAPI
         private string GetSpacesStart { get; set; }
         private bool GetSpacesCount { get; set; }
         private PNUserSpaceInclude[] CreateSpaceInclude { get; set; }
-        private Dictionary<string, object> GetSpaceCustom { get; set; }
-
         public GetSpacesRequestBuilder(PubNubUnity pn) : base(pn, PNOperationType.PNGetSpacesOperation)
         {
         }
@@ -75,8 +73,6 @@ namespace PubNubAPI
 
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState)
         {
-            object[] c = deSerializedResult as object[];
-
             PNGetSpacesResult pnSpaceResultList = new PNGetSpacesResult();
             pnSpaceResultList.Data = new List<PNSpaceResult>();
             PNStatus pnStatus = new PNStatus();
@@ -98,15 +94,6 @@ namespace PubNubAPI
                             if (objDataDict != null)
                             {
                                 PNSpaceResult pnSpaceResult = ObjectsHelpers.ExtractSpace(objDataDict);
-                                // pnUserResult.ID = Utility.ReadMessageFromResponseDictionary(objDataDict, "id");
-                                // pnUserResult.Name = Utility.ReadMessageFromResponseDictionary(objDataDict, "name");
-                                // pnUserResult.ExternalID = Utility.ReadMessageFromResponseDictionary(objDataDict, "externalId");
-                                // pnUserResult.ProfileURL = Utility.ReadMessageFromResponseDictionary(objDataDict, "profileUrl");
-                                // pnUserResult.Email = Utility.ReadMessageFromResponseDictionary(objDataDict, "email");
-                                // pnUserResult.Created = Utility.ReadMessageFromResponseDictionary(objDataDict, "created");
-                                // pnUserResult.Updated = Utility.ReadMessageFromResponseDictionary(objDataDict, "updated");
-                                // pnUserResult.ETag = Utility.ReadMessageFromResponseDictionary(objDataDict, "eTag");
-                                // pnUserResult.Custom = Utility.ReadDictionaryFromResponseDictionary(objDataDict, "custom");
                                 pnSpaceResultList.Data.Add(pnSpaceResult);
                             }
                             else

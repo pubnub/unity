@@ -7,8 +7,6 @@ namespace PubNubAPI
     {
         private string GetSpaceID { get; set; }
         private PNUserSpaceInclude[] CreateSpaceInclude { get; set; }
-        private Dictionary<string, object> GetSpaceCustom { get; set; }
-
         public GetSpaceRequestBuilder(PubNubUnity pn) : base(pn, PNOperationType.PNGetSpaceOperation)
         {
         }
@@ -59,8 +57,6 @@ namespace PubNubAPI
 
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState)
         {
-            object[] c = deSerializedResult as object[];
-            //  {"status":200,"data":{"id":"id777","name":"name 777","externalId":"externalID 777","profileUrl":"profileURL 777","email":"email 777","created":"2019-10-29T12:46:23.464847Z","updated":"2019-10-29T12:46:23.464847Z","eTag":"Ac/04uPhkaiiuwE"}}
             PNSpaceResult pnSpaceResult = new PNSpaceResult();
             PNStatus pnStatus = new PNStatus();
 
@@ -77,15 +73,6 @@ namespace PubNubAPI
                         if (objDataDict != null)
                         {
                             pnSpaceResult = ObjectsHelpers.ExtractSpace(objDataDict);
-                            // pnUserResult.ID = Utility.ReadMessageFromResponseDictionary(objDataDict, "id");
-                            // pnUserResult.Name = Utility.ReadMessageFromResponseDictionary(objDataDict, "name");
-                            // pnUserResult.ExternalID = Utility.ReadMessageFromResponseDictionary(objDataDict, "externalId");
-                            // pnUserResult.ProfileURL = Utility.ReadMessageFromResponseDictionary(objDataDict, "profileUrl");
-                            // pnUserResult.Email = Utility.ReadMessageFromResponseDictionary(objDataDict, "email");
-                            // pnUserResult.Created = Utility.ReadMessageFromResponseDictionary(objDataDict, "created");
-                            // pnUserResult.Updated = Utility.ReadMessageFromResponseDictionary(objDataDict, "updated");
-                            // pnUserResult.ETag = Utility.ReadMessageFromResponseDictionary(objDataDict, "eTag");
-                            // pnUserResult.Custom = Utility.ReadDictionaryFromResponseDictionary(objDataDict, "custom");
                         }
                         else
                         {
