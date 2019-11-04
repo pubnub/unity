@@ -215,8 +215,23 @@ namespace PubNubAPI
             url.Add (id);
 
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNUpdateUserOperation, "", pnInstance, queryParams);
-        }    
+        }
 
+        public static Uri BuildObjectsUpdateSpaceRequest(string id, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        {
+            ///v1/objects/%s/spaces/%s
+            StringBuilder parameterBuilder = new StringBuilder();
+            parameterBuilder.AppendFormat("&include={0}", include);
+
+            List<string> url = new List<string>();
+            url.Add("v1");
+            url.Add("objects");
+            url.Add(pnInstance.PNConfig.SubscribeKey);
+            url.Add("spaces");
+            url.Add(id);
+
+            return BuildRestApiRequest<Uri>(url, PNOperationType.PNUpdateSpaceOperation, "", pnInstance, queryParams);
+        }
 
         public static Uri BuildObjectsDeleteUserRequest (string id, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
         {
@@ -231,7 +246,23 @@ namespace PubNubAPI
             url.Add (id);
 
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNDeleteUserOperation, "", pnInstance, queryParams);
-        }    
+        }
+
+        public static Uri BuildObjectsDeleteSpaceRequest(string id, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        {
+            ///v1/objects/%s/spaces/%s
+            StringBuilder parameterBuilder = new StringBuilder();
+            parameterBuilder.AppendFormat("&include={0}", include);
+
+            List<string> url = new List<string>();
+            url.Add("v1");
+            url.Add("objects");
+            url.Add(pnInstance.PNConfig.SubscribeKey);
+            url.Add("spaces");
+            url.Add(id);
+
+            return BuildRestApiRequest<Uri>(url, PNOperationType.PNDeleteSpaceOperation, "", pnInstance, queryParams);
+        }
 
         public static Uri BuildObjectsGetUserRequest (string id, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
         {
@@ -247,7 +278,23 @@ namespace PubNubAPI
             url.Add (id);
 
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNGetUserOperation, "", pnInstance, queryParams);
-        }  
+        }
+
+        public static Uri BuildObjectsGetSpaceRequest(string id, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        {
+            ///v1/objects/%s/spaces/%s
+            StringBuilder parameterBuilder = new StringBuilder();
+            parameterBuilder.AppendFormat("&include={0}", include);
+
+            List<string> url = new List<string>();
+            url.Add("v1");
+            url.Add("objects");
+            url.Add(pnInstance.PNConfig.SubscribeKey);
+            url.Add("spaces");
+            url.Add(id);
+
+            return BuildRestApiRequest<Uri>(url, PNOperationType.PNGetSpaceOperation, "", pnInstance, queryParams);
+        }
 
         public static Uri BuildObjectsGetUsersRequest (int limit, string start, string end, bool count, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
         {
@@ -272,7 +319,35 @@ namespace PubNubAPI
             url.Add ("users");
 
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNGetUsersOperation, "", pnInstance, queryParams);
-        }  
+        }
+
+        public static Uri BuildObjectsGetSpacesRequest(int limit, string start, string end, bool count, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        {
+            ///v1/objects/%s/spaces
+            StringBuilder parameterBuilder = new StringBuilder();
+            parameterBuilder.AppendFormat("&include={0}", include);
+            parameterBuilder.Append((count) ? "&count=1" : "&count=0");
+            if (limit >= 0)
+            {
+                parameterBuilder.AppendFormat("&limit={0}", limit.ToString());
+            }
+            if (!string.IsNullOrEmpty(start))
+            {
+                parameterBuilder.AppendFormat("&start={0}", start);
+            }
+            if (!string.IsNullOrEmpty(end))
+            {
+                parameterBuilder.AppendFormat("&end={0}", end);
+            }
+
+            List<string> url = new List<string>();
+            url.Add("v1");
+            url.Add("objects");
+            url.Add(pnInstance.PNConfig.SubscribeKey);
+            url.Add("spaces");
+
+            return BuildRestApiRequest<Uri>(url, PNOperationType.PNGetSpacesOperation, "", pnInstance, queryParams);
+        }
 
         public static Uri BuildObjectsGetMembersRequest (string spaceID, int limit, string start, string end, bool count, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
         {

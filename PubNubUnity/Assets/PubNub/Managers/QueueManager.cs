@@ -181,26 +181,26 @@ namespace PubNubAPI
                             DeleteUserRequestBuilder deleteUserBuilder = operationParams as DeleteUserRequestBuilder;
                             deleteUserBuilder.RaiseRunRequest(this);
                             break;
-                        // case PNOperationType.PNGetSpaceOperation:
-                        //     CreateUserBuilder createUserBuilder = operationParams as CreateUserBuilder;
-                        //     createUserBuilder.RaiseRunRequest(this);
-                        //     break;
-                        // case PNOperationType.PNGetSpacesOperation:
-                        //     CreateUserBuilder createUserBuilder = operationParams as CreateUserBuilder;
-                        //     createUserBuilder.RaiseRunRequest(this);
-                        //     break;
-                        // case PNOperationType.PNCreateSpaceOperation:
-                        //     CreateSpaceRequestBuilder createSpaceRequestBuilder = operationParams as CreateSpaceRequestBuilder;
-                        //     createSpaceRequestBuilder.RaiseRunRequest(this);
-                        //     break;                                                                                    
-                        // case PNOperationType.PNDeleteSpaceOperation:
-                        //     CreateUserBuilder createUserBuilder = operationParams as CreateUserBuilder;
-                        //     createUserBuilder.RaiseRunRequest(this);
-                        //     break;
-                        // case PNOperationType.PNUpdateSpaceOperation:
-                        //     CreateUserBuilder createUserBuilder = operationParams as CreateUserBuilder;
-                        //     createUserBuilder.RaiseRunRequest(this);
-                        //     break;
+                        case PNOperationType.PNCreateSpaceOperation:
+                            CreateSpaceRequestBuilder createSpaceRequestBuilder = operationParams as CreateSpaceRequestBuilder;
+                            createSpaceRequestBuilder.RaiseRunRequest(this);
+                            break;
+                        case PNOperationType.PNUpdateSpaceOperation:
+                            UpdateSpaceRequestBuilder updateSpaceBuilder = operationParams as UpdateSpaceRequestBuilder;
+                            updateSpaceBuilder.RaiseRunRequest(this);
+                            break;
+                        case PNOperationType.PNDeleteSpaceOperation:
+                            DeleteSpaceRequestBuilder deleteSpaceBuilder = operationParams as DeleteSpaceRequestBuilder;
+                            deleteSpaceBuilder.RaiseRunRequest(this);
+                            break;
+                        case PNOperationType.PNGetSpaceOperation:
+                            GetSpaceRequestBuilder getSpaceBuilder = operationParams as GetSpaceRequestBuilder;
+                            getSpaceBuilder.RaiseRunRequest(this);
+                            break;
+                        case PNOperationType.PNGetSpacesOperation:
+                            GetSpacesRequestBuilder getSpacesBuilder = operationParams as GetSpacesRequestBuilder;
+                            getSpacesBuilder.RaiseRunRequest(this);
+                            break;
                         case PNOperationType.PNGetMembershipsOperation:
                             GetMembershipsRequestBuilder getMembershipsRequestBuilder = operationParams as GetMembershipsRequestBuilder;
                             getMembershipsRequestBuilder.RaiseRunRequest(this);
