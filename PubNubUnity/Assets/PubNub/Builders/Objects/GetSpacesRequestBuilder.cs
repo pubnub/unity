@@ -81,7 +81,7 @@ namespace PubNubAPI
             {
                 Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
 
-                if (dictionary != null)
+                if (dictionary != null && pnSpaceResultList != null)
                 {
                     object objData;
                     dictionary.TryGetValue("data", out objData);
