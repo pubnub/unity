@@ -6,11 +6,19 @@ using UnityEngine;
 namespace PubNubAPI
 {
     public class PNMembersInput{
-        string ID;
-        Dictionary<string, object> Custom;
+        public string ID;
+        public Dictionary<string, object> Custom;
     }
     public class PNMembersRemove{
-        string ID;
+        public string ID;
+    }
+
+    class PNMembersInputForJSON{
+        public string id;
+        public Dictionary<string, object> custom;
+    }
+    class PNMembersRemoveForJSON{
+        public string id;
     }
     public class ManageMembersRequestBuilder: PubNubNonSubBuilder<ManageMembersRequestBuilder, PNMembersResult>, IPubNubNonSubscribeBuilder<ManageMembersRequestBuilder, PNMembersResult>
     {        
@@ -78,12 +86,12 @@ namespace PubNubAPI
         protected override void RunWebRequest(QueueManager qm){
             RequestState requestState = new RequestState ();
             requestState.OperationType = OperationType;
-            requestState.httpMethod = HTTPMethod.Post;
+            requestState.httpMethod = HTTPMethod.Patch;
 
             var cub = new { 
-                add = ManageMembersAdd.ToArray(), 
-                update = ManageMembersUpdate.ToArray(),
-                remove = ManageMembersRemove.ToArray(),
+                add = ObjectsHelpers.ConvertPNMembersInputForJSON(ManageMembersAdd),
+                update = ObjectsHelpers.ConvertPNMembersInputForJSON(ManageMembersUpdate),
+                remove = ObjectsHelpers.ConvertPNMembersRemoveForJSON(ManageMembersRemove),
             };
 
             string jsonUserBody = Helpers.JsonEncodePublishMsg (cub, "", this.PubNubInstance.JsonLibrary, this.PubNubInstance.PNLog);

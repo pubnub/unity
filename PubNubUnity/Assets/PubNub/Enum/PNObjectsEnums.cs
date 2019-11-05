@@ -2,6 +2,67 @@ using System;
 
 namespace PubNubAPI
 {
+    public enum PNObjectsEvent
+    {
+        // PNObjectsEventCreate is the enum when the event `create` occurs
+        PNObjectsEventCreate,
+        // PNObjectsEventUpdate is the enum when the event `update` occurs
+        PNObjectsEventUpdate,
+        // PNObjectsEventDelete is the enum when the event `delete` occurs
+        PNObjectsEventDelete,
+
+        PNObjectsNoneEvent,
+    }
+
+    public static class PNObjectsEventExtensions
+    {
+        public static string GetDescription(this PNObjectsEvent @this)
+        {
+            switch (@this)
+            {
+                case PNObjectsEvent.PNObjectsEventCreate:
+                    return "create";
+                case PNObjectsEvent.PNObjectsEventUpdate:
+                    return "update";
+                case PNObjectsEvent.PNObjectsEventDelete:
+                    return "delete";
+                default:
+                    return "";    
+            }
+        }
+    }
+
+    public enum PNObjectsEventType
+    {
+        // PNObjectsUserEvent is the enum when the event of type `user` occurs
+        PNObjectsUserEvent,
+        // PNObjectsSpaceEvent is the enum when the event of type `space` occurs
+        PNObjectsSpaceEvent,
+        // PNObjectsMembershipEvent is the enum when the event of type `membership` occurs
+        PNObjectsMembershipEvent,
+        // PNObjectsNoneEvent is used for error handling
+        PNObjectsNoneEvent
+
+    }
+
+    public static class PNObjectsEventTypeExtensions
+    {
+        public static string GetDescription(this PNObjectsEventType @this)
+        {
+            switch (@this)
+            {
+                case PNObjectsEventType.PNObjectsUserEvent:
+                    return "user";
+                case PNObjectsEventType.PNObjectsSpaceEvent:
+                    return "space";
+                case PNObjectsEventType.PNObjectsMembershipEvent:
+                    return "membership";
+                default:
+                    return "none";    
+            }
+        }
+    }
+
     // PNUserSpaceInclude is used as an enum to catgorize the available User and Space include types
     public enum PNUserSpaceInclude 
     {

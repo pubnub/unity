@@ -1038,14 +1038,27 @@ namespace PubNubAPI.Tests
 		public IEnumerator TestMembersAndMemberships() {
 			//Create user 1
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
+			pnConfiguration.SecretKey = "";
 			System.Random r = new System.Random ();
-			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next (1000);
-			int ran = r.Next (1000);
-			string id = "id"  + ran;
-			string name = string.Format("name {0}", ran);
-			string email = string.Format("email {0}", ran);
-			string externalID = string.Format("externalID {0}", ran);
-			string profileURL = string.Format("profileURL {0}", ran);
+			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next (10000);
+			int ran = r.Next (10000);
+			int ran2 = r.Next (10000);
+			string userid = "userid"  + ran;
+			string name = string.Format("user name {0}", ran);
+			string email = string.Format("user email {0}", ran);
+			string externalID = string.Format("user externalID {0}", ran);
+			string profileURL = string.Format("user profileURL {0}", ran);
+			string spaceid = "spaceid"  + ran;
+			string spacename = string.Format("space name {0}", ran);
+			string spacedesc = string.Format("space desc {0}", ran);
+			string userid2 = "userid"  + ran2;
+			string name2 = string.Format("user name {0}", ran2);
+			string email2 = string.Format("user email {0}", ran2);
+			string externalID2 = string.Format("user externalID {0}", ran2);
+			string profileURL2 = string.Format("user profileURL {0}", ran2);
+			string spaceid2 = "spaceid"  + ran2;
+			string spacename2 = string.Format("space name {0}", ran2);
+			string spacedesc2 = string.Format("space desc {0}", ran2);
 
 			PNUserSpaceInclude[] include = new PNUserSpaceInclude[]{PNUserSpaceInclude.PNUserSpaceCustom};
 
@@ -1053,21 +1066,33 @@ namespace PubNubAPI.Tests
 			bool tresult = false;
 
 			Dictionary<string, object> userCustom = new Dictionary<string, object>();
-			userCustom.Add("uck1", "ucv1");
-			userCustom.Add("uck2", "ucv2");
+			userCustom.Add("usercustomkey1", "ucv1");
+			userCustom.Add("usercustomkey2", "ucv2");
 
-			pubnub.CreateUser().Email(email).ExternalID(externalID).Name(name).ID(id).Include(include).Custom(userCustom).ProfileURL(profileURL).Async((result, status) => {
+			Dictionary<string, object> userCustom2 = new Dictionary<string, object>();
+			userCustom2.Add("usercustomkey21", "ucv21");
+			userCustom2.Add("usercustomkey22", "ucv22");
+
+			Dictionary<string, object> spaceCustom = new Dictionary<string, object>();
+			spaceCustom.Add("spacecustomkey1", "scv1");
+			spaceCustom.Add("spacecustomkey2", "scv2");
+
+			Dictionary<string, object> spaceCustom2 = new Dictionary<string, object>();
+			spaceCustom2.Add("spacecustomkey21", "scv21");
+			spaceCustom2.Add("spacecustomkey22", "scv22");
+
+			pubnub.CreateUser().Email(email).ExternalID(externalID).Name(name).ID(userid).Include(include).Custom(userCustom).ProfileURL(profileURL).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				Assert.AreEqual(name, result.Name);
 				Assert.AreEqual(email, result.Email);
 				Assert.AreEqual(externalID, result.ExternalID);
 				Assert.AreEqual(profileURL, result.ProfileURL);
-				Assert.AreEqual(id, result.ID);
+				Assert.AreEqual(userid, result.ID);
 				Assert.AreEqual(result.Updated, result.Created);
 				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
-				Assert.True("ucv1" == result.Custom["uck1"].ToString());
-				Assert.True("ucv2" == result.Custom["uck2"].ToString());
+				Assert.True("ucv1" == result.Custom["usercustomkey1"].ToString());
+				Assert.True("ucv2" == result.Custom["usercustomkey2"].ToString());
 				tresult = true;
 
 			});
@@ -1076,38 +1101,469 @@ namespace PubNubAPI.Tests
 
 			tresult = false;
 			
-			pubnub.GetUser().ID(id).Include(include).Async((result, status) => {
+			pubnub.GetUser().ID(userid).Include(include).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				Assert.AreEqual(name, result.Name);
 				Assert.AreEqual(email, result.Email);
 				Assert.AreEqual(externalID, result.ExternalID);
 				Assert.AreEqual(profileURL, result.ProfileURL);
-				Assert.AreEqual(id, result.ID);
+				Assert.AreEqual(userid, result.ID);
 				Assert.AreEqual(result.Updated, result.Created);
 				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
-				Assert.True("ucv1" == result.Custom["uck1"].ToString());
-				Assert.True("ucv2" == result.Custom["uck2"].ToString());
+				Assert.True("ucv1" == result.Custom["usercustomkey1"].ToString());
+				Assert.True("ucv2" == result.Custom["usercustomkey2"].ToString());
 				tresult = true;
 			});
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "GetUser didn't return");
+
+			tresult = false;
 			//Create user 2
+
+			pubnub.CreateUser().Email(email2).ExternalID(externalID2).Name(name2).ID(userid2).Include(include).Custom(userCustom2).ProfileURL(profileURL2).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				Assert.AreEqual(name2, result.Name);
+				Assert.AreEqual(email2, result.Email);
+				Assert.AreEqual(externalID2, result.ExternalID);
+				Assert.AreEqual(profileURL2, result.ProfileURL);
+				Assert.AreEqual(userid2, result.ID);
+				Assert.AreEqual(result.Updated, result.Created);
+				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
+				Assert.True("ucv21" == result.Custom["usercustomkey21"].ToString());
+				Assert.True("ucv22" == result.Custom["usercustomkey22"].ToString());
+				tresult = true;
+
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "CreateUser didn't return");
+
+			tresult = false;
 			//Create space 1
+
+			pubnub.CreateSpace().Name(spacename).ID(spaceid).Include(include).Custom(spaceCustom).Description(spacedesc).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				Assert.AreEqual(spacename, result.Name);
+				Assert.AreEqual(spacedesc, result.Description);
+				Assert.AreEqual(spaceid, result.ID);
+				Assert.AreEqual(result.Updated, result.Created);
+				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
+				Assert.True("scv1" == result.Custom["spacecustomkey1"].ToString());
+				Assert.True("scv2" == result.Custom["spacecustomkey2"].ToString());
+				tresult = true;
+
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "CreateSpace didn't return");
+
+			tresult = false;
+			
+			pubnub.GetSpace().ID(spaceid).Include(include).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				Assert.AreEqual(spacename, result.Name);
+				Assert.AreEqual(spacedesc, result.Description);
+				Assert.AreEqual(spaceid, result.ID);
+				Assert.AreEqual(result.Updated, result.Created);
+				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
+				Assert.True("scv1" == result.Custom["spacecustomkey1"].ToString());
+				Assert.True("scv2" == result.Custom["spacecustomkey2"].ToString());
+				tresult = true;
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "GetSpace didn't return");
+
+			tresult = false;
+
 			//Create space 2
+			pubnub.CreateSpace().Name(spacename2).ID(spaceid2).Include(include).Custom(spaceCustom2).Description(spacedesc2).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				Assert.AreEqual(spacename2, result.Name);
+				Assert.AreEqual(spacedesc2, result.Description);
+				Assert.AreEqual(spaceid2, result.ID);
+				Assert.AreEqual(result.Updated, result.Created);
+				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
+				Assert.True("scv21" == result.Custom["spacecustomkey21"].ToString());
+				Assert.True("scv22" == result.Custom["spacecustomkey22"].ToString());
+				tresult = true;
+
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "CreateSpace didn't return");
+
+			PNMembersInput input = new PNMembersInput();
+			input.ID = userid;
+			Dictionary<string, object> membersCustom2 = new Dictionary<string, object>();
+			membersCustom2.Add("memberscustomkey21", "mcv21");
+			membersCustom2.Add("memberscustomkey22", "mcv22");
+
+			input.Custom = membersCustom2;
+			int limit = 100;
+			bool count = true;
+			tresult = false;
+
+			PNMembersInclude[] inclSm = new PNMembersInclude[]{PNMembersInclude.PNMembersCustom, PNMembersInclude.PNMembersUser, PNMembersInclude.PNMembersUserCustom};		
+			PNMembershipsInclude[] inclMem= new PNMembershipsInclude[]{PNMembershipsInclude.PNMembershipsCustom, PNMembershipsInclude.PNMembershipsSpace, PNMembershipsInclude.PNMembershipsSpaceCustom};		
+			
 			//Add Space Memberships
+			pubnub.ManageMembers().SpaceID(spaceid).Add(new List<PNMembersInput>{input}).Update(new List<PNMembersInput>{}).Remove(new List<PNMembersRemove>{}).Include(inclSm).Limit(limit).Count(count).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				bool bFound = false;
+				Debug.Log("Looking for " + userid);
+				foreach (PNMembers mem in result.Data){
+					
+					Debug.Log("Found mem " + mem.User.ID);
+					if(mem.User.ID.Equals(userid)){
+						Assert.AreEqual(name, mem.User.Name);
+						Assert.AreEqual(email, mem.User.Email);
+						Assert.AreEqual(externalID, mem.User.ExternalID);
+						Assert.AreEqual(profileURL, mem.User.ProfileURL);
+						Assert.AreEqual(userid, mem.User.ID);
+						Assert.AreEqual(mem.User.Updated, mem.User.Created);
+						Assert.True(!string.IsNullOrEmpty(mem.User.ETag), mem.User.ETag);
+						Assert.True("ucv1" == mem.User.Custom["usercustomkey1"].ToString());
+						Assert.True("ucv2" == mem.User.Custom["usercustomkey2"].ToString());
+						Assert.True("mcv21" == mem.Custom["memberscustomkey21"].ToString());
+						Assert.True("mcv22" == mem.Custom["memberscustomkey22"].ToString());
+
+						bFound = true;
+						break;
+					}
+
+				}
+				tresult = bFound;
+
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "ManageMembers didn't return");
+
 			//Update Space Memberships
+			PNMembersInput inputUp = new PNMembersInput();
+			inputUp.ID = userid;
+			Dictionary<string, object> membersCustomUp = new Dictionary<string, object>();
+			membersCustomUp.Add("memberscustomkeyup21", "mcvup21");
+			membersCustomUp.Add("memberscustomkeyup22", "mcvup22");
+
+			inputUp.Custom = membersCustomUp;
+
+			tresult = false;
+			pubnub.ManageMembers().SpaceID(spaceid).Add(new List<PNMembersInput>{}).Update(new List<PNMembersInput>{inputUp}).Remove(new List<PNMembersRemove>{}).Include(inclSm).Limit(limit).Count(count).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				bool bFound = false;
+				Debug.Log("Looking for " + userid);
+				foreach (PNMembers mem in result.Data){
+					
+					Debug.Log("Found mem " + mem.User.ID);
+					if(mem.User.ID.Equals(userid)){
+						Assert.AreEqual(name, mem.User.Name);
+						Assert.AreEqual(email, mem.User.Email);
+						Assert.AreEqual(externalID, mem.User.ExternalID);
+						Assert.AreEqual(profileURL, mem.User.ProfileURL);
+						Assert.AreEqual(userid, mem.User.ID);
+						Assert.AreEqual(mem.User.Updated, mem.User.Created);
+						Assert.True(!string.IsNullOrEmpty(mem.User.ETag), mem.User.ETag);
+						Assert.True("ucv1" == mem.User.Custom["usercustomkey1"].ToString());
+						Assert.True("ucv2" == mem.User.Custom["usercustomkey2"].ToString());
+						Assert.True("mcvup21" == mem.Custom["memberscustomkeyup21"].ToString());
+						Assert.True("mcvup22" == mem.Custom["memberscustomkeyup22"].ToString());
+
+						bFound = true;
+						break;
+					}
+
+				}
+				tresult = bFound;
+
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "ManageMembers Update didn't return");
+
 			//Get Space Memberships
+			tresult = false;
+			pubnub.GetMemberships().UserID(userid).Include(inclMem).Limit(limit).Count(count).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+
+				bool bFound = false;
+				Debug.Log("Looking for " + spaceid);
+				foreach (PNMemberships mem in result.Data){
+					
+					Debug.Log("Found mem " + mem.Space.ID);
+					if(mem.Space.ID.Equals(spaceid)){
+						Assert.AreEqual(spacename, mem.Space.Name);
+						Assert.AreEqual(spacedesc, mem.Space.Description);
+						Assert.AreEqual(spaceid, mem.Space.ID);
+						Assert.AreEqual(mem.Space.Updated, mem.Space.Created);
+						Assert.True(!string.IsNullOrEmpty(mem.Space.ETag), mem.Space.ETag);
+						foreach(KeyValuePair<string, object> kvp in mem.Space.Custom){
+							Debug.Log(kvp.Key + kvp.Value);
+						}
+						Assert.True("scv1" == mem.Space.Custom["spacecustomkey1"].ToString());
+						Assert.True("scv2" == mem.Space.Custom["spacecustomkey2"].ToString());
+						Assert.True("mcvup21" == mem.Custom["memberscustomkeyup21"].ToString());
+						Assert.True("mcvup22" == mem.Custom["memberscustomkeyup22"].ToString());
+
+						bFound = true;
+						break;
+					}
+
+				}
+
+				tresult = bFound;
+			});
+
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "GetMemberships didn't return");
+
 			//Remove Space Memberships
+			PNMembersRemove inputRm = new PNMembersRemove();
+			inputRm.ID = userid;
+
+			tresult = false;
+			pubnub.ManageMembers().SpaceID(spaceid).Add(new List<PNMembersInput>{}).Update(new List<PNMembersInput>{}).Remove(new List<PNMembersRemove>{inputRm}).Include(inclSm).Limit(limit).Count(count).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				bool bFound = true;
+				Debug.Log("Looking for " + userid);
+				foreach (PNMembers mem in result.Data){
+					
+					Debug.Log("Found mem " + mem.User.ID);
+					if(mem.User.ID.Equals(userid)){
+						Assert.AreEqual(name, mem.User.Name);
+						Assert.AreEqual(email, mem.User.Email);
+						Assert.AreEqual(externalID, mem.User.ExternalID);
+						Assert.AreEqual(profileURL, mem.User.ProfileURL);
+						Assert.AreEqual(userid, mem.User.ID);
+						Assert.AreEqual(mem.User.Updated, mem.User.Created);
+						Assert.True(!string.IsNullOrEmpty(mem.User.ETag), mem.User.ETag);
+						Assert.True("ucv1" == mem.User.Custom["usercustomkey1"].ToString());
+						Assert.True("ucv2" == mem.User.Custom["usercustomkey2"].ToString());
+						Assert.True("mcv21" == mem.Custom["memberscustomkey21"].ToString());
+						Assert.True("mcv22" == mem.Custom["memberscustomkey22"].ToString());
+
+						bFound = false;
+						break;
+					}
+
+				}
+				tresult = bFound;
+
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "ManageMembers Remove didn't return");
+
 			//Add user memberships
+			PNMembersInput inputMemberships = new PNMembersInput();
+			inputMemberships.ID = spaceid2;
+			Dictionary<string, object> membershipCustom2 = new Dictionary<string, object>();
+			membershipCustom2.Add("mememberscustomkey21", "memcv21");
+			membershipCustom2.Add("mememberscustomkey22", "memcv22");
+
+			inputMemberships.Custom = membershipCustom2;
+			tresult = false;
+
+			pubnub.ManageMemberships().UserID(userid2).Add(new List<PNMembersInput>{inputMemberships}).Update(new List<PNMembersInput>{}).Remove(new List<PNMembersRemove>{}).Include(inclMem).Limit(limit).Count(count).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				bool bFound = false;
+				Debug.Log("Looking for " + spaceid2);
+				foreach (PNMemberships mem in result.Data){
+					
+					Debug.Log("Found mem " + mem.Space.ID);
+					if(mem.Space.ID.Equals(spaceid2)){
+						Assert.AreEqual(spacename2, mem.Space.Name);
+						Assert.AreEqual(spacedesc2, mem.Space.Description);
+						Assert.AreEqual(spaceid2, mem.Space.ID);
+						Assert.AreEqual(mem.Space.Updated, mem.Space.Created);
+						Assert.True(!string.IsNullOrEmpty(mem.Space.ETag), mem.Space.ETag);
+						foreach(KeyValuePair<string, object> kvp in mem.Space.Custom){
+							Debug.Log(kvp.Key + kvp.Value);
+						}
+						Assert.True("scv21" == mem.Space.Custom["spacecustomkey21"].ToString());
+						Assert.True("scv22" == mem.Space.Custom["spacecustomkey22"].ToString());
+						Assert.True("memcv21" == mem.Custom["mememberscustomkey21"].ToString());
+						Assert.True("memcv22" == mem.Custom["mememberscustomkey22"].ToString());
+
+						bFound = true;
+						break;
+					}
+
+				}
+
+				tresult = bFound;
+
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "ManageMemberships didn't return");
+
 			//Update user memberships
+			PNMembersInput inputMembershipsUp = new PNMembersInput();
+			inputMembershipsUp.ID = spaceid2;
+			Dictionary<string, object> membershipCustomUp= new Dictionary<string, object>();
+			membershipCustomUp.Add("mememberscustomkeyup21", "memcvup21");
+			membershipCustomUp.Add("mememberscustomkeyup22", "memcvup22");
+
+			inputMembershipsUp.Custom = membershipCustomUp;
+
+			tresult = false;
+
+			pubnub.ManageMemberships().UserID(userid2).Add(new List<PNMembersInput>{}).Update(new List<PNMembersInput>{inputMembershipsUp}).Remove(new List<PNMembersRemove>{}).Include(inclMem).Limit(limit).Count(count).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				bool bFound = false;
+				Debug.Log("Looking for " + spaceid2);
+				foreach (PNMemberships mem in result.Data){
+					
+					Debug.Log("Found mem " + mem.Space.ID);
+					if(mem.Space.ID.Equals(spaceid2)){
+						Assert.AreEqual(spacename2, mem.Space.Name);
+						Assert.AreEqual(spacedesc2, mem.Space.Description);
+						Assert.AreEqual(spaceid2, mem.Space.ID);
+						Assert.AreEqual(mem.Space.Updated, mem.Space.Created);
+						Assert.True(!string.IsNullOrEmpty(mem.Space.ETag), mem.Space.ETag);
+						foreach(KeyValuePair<string, object> kvp in mem.Space.Custom){
+							Debug.Log(kvp.Key + kvp.Value);
+						}
+						Assert.True("scv21" == mem.Space.Custom["spacecustomkey21"].ToString());
+						Assert.True("scv22" == mem.Space.Custom["spacecustomkey22"].ToString());
+						Assert.True("memcvup21" == mem.Custom["mememberscustomkeyup21"].ToString());
+						Assert.True("memcvup22" == mem.Custom["mememberscustomkeyup22"].ToString());
+
+						bFound = true;
+						break;
+					}
+
+				}
+
+				tresult = bFound;
+
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "ManageMemberships Update didn't return");
+
 			//Get members
+			tresult = false;
+			pubnub.GetMembers().SpaceID(spaceid2).Include(inclSm).Limit(limit).Count(count).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				bool bFound = false;
+				Debug.Log("Looking for " + userid2);
+				foreach (PNMembers mem in result.Data){
+					
+					Debug.Log("Found mem " + mem.User.ID);
+					if(mem.User.ID.Equals(userid2)){
+						Assert.AreEqual(name2, mem.User.Name);
+						Assert.AreEqual(email2, mem.User.Email);
+						Assert.AreEqual(externalID2, mem.User.ExternalID);
+						Assert.AreEqual(profileURL2, mem.User.ProfileURL);
+						Assert.AreEqual(userid2, mem.User.ID);
+						Assert.AreEqual(mem.User.Updated, mem.User.Created);
+						Assert.True(!string.IsNullOrEmpty(mem.User.ETag), mem.User.ETag);
+						Assert.True("ucv21" == mem.User.Custom["usercustomkey21"].ToString());
+						Assert.True("ucv22" == mem.User.Custom["usercustomkey22"].ToString());
+						Assert.True("memcvup21" == mem.Custom["mememberscustomkeyup21"].ToString());
+						Assert.True("memcvup22" == mem.Custom["mememberscustomkeyup22"].ToString());
+
+						bFound = true;
+						break;
+					}
+
+				}
+				tresult = bFound;				
+			});
+
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "GetMembers didn't return");
+
 			//Remove user memberships
+			PNMembersRemove inputMembershipsRm = new PNMembersRemove();
+			inputMembershipsRm.ID = spaceid2;
+
+			tresult = false;
+
+			pubnub.ManageMemberships().UserID(userid2).Add(new List<PNMembersInput>{}).Update(new List<PNMembersInput>{}).Remove(new List<PNMembersRemove>{inputMembershipsRm}).Include(inclMem).Limit(limit).Count(count).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				bool bFound = true;
+				Debug.Log("Looking for " + spaceid2);
+				foreach (PNMemberships mem in result.Data){
+					
+					Debug.Log("Found mem " + mem.Space.ID);
+					if(mem.Space.ID.Equals(spaceid2)){
+						Assert.AreEqual(spacename2, mem.Space.Name);
+						Assert.AreEqual(spacedesc2, mem.Space.Description);
+						Assert.AreEqual(spaceid2, mem.Space.ID);
+						Assert.AreEqual(mem.Space.Updated, mem.Space.Created);
+						Assert.True(!string.IsNullOrEmpty(mem.Space.ETag), mem.Space.ETag);
+						foreach(KeyValuePair<string, object> kvp in mem.Space.Custom){
+							Debug.Log(kvp.Key + kvp.Value);
+						}
+						Assert.True("scv21" == mem.Space.Custom["spacecustomkey21"].ToString());
+						Assert.True("scv22" == mem.Space.Custom["spacecustomkey22"].ToString());
+						Assert.True("memcv21" == mem.Custom["mememberscustomkey21"].ToString());
+						Assert.True("memcv22" == mem.Custom["mememberscustomkey22"].ToString());
+
+						bFound = false;
+						break;
+					}
+
+				}
+
+				tresult = bFound;
+
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "ManageMemberships Remove didn't return");
+
 			//delete user 1
+			tresult = false;
+
+			pubnub.DeleteUser().ID(userid).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				tresult = true;
+
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "DeleteUser didn't return");			
 			//delete space 1
+			pubnub.DeleteSpace().ID(spaceid).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				tresult = true;
+
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "DeleteSpace didn't return");				
 			//delete user 1
+			pubnub.DeleteUser().ID(userid2).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				tresult = true;
+
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "DeleteUser didn't return");				
 			//delete space 1
+			pubnub.DeleteSpace().ID(spaceid2).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				tresult = true;
+
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "DeleteSpace didn't return");				
 		}
+
+		// [UnityTest]
+		// public IEnumerator TestObjectListeners() {
+
+		// }
 
 		[UnityTest]
 		public IEnumerator TestUserCRUD() {

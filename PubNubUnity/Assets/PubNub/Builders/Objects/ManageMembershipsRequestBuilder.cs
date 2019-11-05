@@ -5,13 +5,6 @@ using UnityEngine;
 
 namespace PubNubAPI
 {
-    public class PNMembershipsInput{
-        string ID;
-        Dictionary<string, object> Custom;
-    }
-    public class PNMembershipsRemove{
-        string ID;
-    }
     public class ManageMembershipsRequestBuilder: PubNubNonSubBuilder<ManageMembershipsRequestBuilder, PNMembershipsResult>, IPubNubNonSubscribeBuilder<ManageMembershipsRequestBuilder, PNMembershipsResult>
     {        
         private string ManageMembershipsUserID { get; set;}
@@ -20,9 +13,9 @@ namespace PubNubAPI
         private string ManageMembershipsStart { get; set;}
         private bool ManageMembershipsCount { get; set;}
         private PNMembershipsInclude[] ManagerMembershipsInclude { get; set;}
-        private List<PNMembershipsInput> ManageMembershipsAdd { get; set;}
-        private List<PNMembershipsInput> ManageMembershipsUpdate { get; set;}
-        private List<PNMembershipsRemove> ManageMembershipsRemove { get; set;}
+        private List<PNMembersInput> ManageMembershipsAdd { get; set;}
+        private List<PNMembersInput> ManageMembershipsUpdate { get; set;}
+        private List<PNMembersRemove> ManageMembershipsRemove { get; set;}
         
         public ManageMembershipsRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNManageMembershipsOperation){
         }
@@ -61,15 +54,15 @@ namespace PubNubAPI
             ManageMembershipsCount = count;
             return this;
         }
-        public ManageMembershipsRequestBuilder Add(List<PNMembershipsInput> add){
+        public ManageMembershipsRequestBuilder Add(List<PNMembersInput> add){
             ManageMembershipsAdd = add;
             return this;
         }
-        public ManageMembershipsRequestBuilder Update(List<PNMembershipsInput> update){
+        public ManageMembershipsRequestBuilder Update(List<PNMembersInput> update){
             ManageMembershipsUpdate = update;
             return this;
         }
-        public ManageMembershipsRequestBuilder Remove(List<PNMembershipsRemove> remove){
+        public ManageMembershipsRequestBuilder Remove(List<PNMembersRemove> remove){
             ManageMembershipsRemove = remove;
             return this;
         }
@@ -77,12 +70,12 @@ namespace PubNubAPI
         protected override void RunWebRequest(QueueManager qm){
             RequestState requestState = new RequestState ();
             requestState.OperationType = OperationType;
-            requestState.httpMethod = HTTPMethod.Post;
+            requestState.httpMethod = HTTPMethod.Patch;
 
             var cub = new { 
-                add = ManageMembershipsAdd.ToArray(), 
-                update = ManageMembershipsUpdate.ToArray(),
-                remove = ManageMembershipsRemove.ToArray(),
+                add = ObjectsHelpers.ConvertPNMembersInputForJSON(ManageMembershipsAdd),
+                update = ObjectsHelpers.ConvertPNMembersInputForJSON(ManageMembershipsUpdate),
+                remove = ObjectsHelpers.ConvertPNMembersRemoveForJSON(ManageMembershipsRemove),
             };
 
             string jsonUserBody = Helpers.JsonEncodePublishMsg (cub, "", this.PubNubInstance.JsonLibrary, this.PubNubInstance.PNLog);

@@ -301,7 +301,7 @@ namespace PubNubAPI
             StringBuilder parameterBuilder = new StringBuilder ();
             parameterBuilder.AppendFormat ("&include={0}", include);
             parameterBuilder.Append ((count) ? "&count=1" : "&count=0");
-            if (limit >= 0) {
+            if (limit > 0) {
                 parameterBuilder.AppendFormat ("&limit={0}", limit.ToString());
             }
             if (!string.IsNullOrEmpty(start)) {
@@ -326,7 +326,7 @@ namespace PubNubAPI
             StringBuilder parameterBuilder = new StringBuilder();
             parameterBuilder.AppendFormat("&include={0}", include);
             parameterBuilder.Append((count) ? "&count=1" : "&count=0");
-            if (limit >= 0)
+            if (limit > 0)
             {
                 parameterBuilder.AppendFormat("&limit={0}", limit.ToString());
             }
@@ -354,7 +354,7 @@ namespace PubNubAPI
             StringBuilder parameterBuilder = new StringBuilder ();
             parameterBuilder.AppendFormat ("&include={0}", include);
             parameterBuilder.Append ((count) ? "&count=1" : "&count=0");
-            if (limit >= 0) {
+            if (limit > 0) {
                 parameterBuilder.AppendFormat ("&limit={0}", limit.ToString());
             }
             if (!string.IsNullOrEmpty(start)) {
@@ -381,7 +381,7 @@ namespace PubNubAPI
             StringBuilder parameterBuilder = new StringBuilder ();
             parameterBuilder.AppendFormat ("&include={0}", include);
             parameterBuilder.Append ((count) ? "&count=1" : "&count=0");
-            if (limit >= 0) {
+            if (limit > 0) {
                 parameterBuilder.AppendFormat ("&limit={0}", limit.ToString());
             }
             if (!string.IsNullOrEmpty(start)) {
@@ -407,7 +407,7 @@ namespace PubNubAPI
             StringBuilder parameterBuilder = new StringBuilder ();
             parameterBuilder.AppendFormat ("&include={0}", include);
             parameterBuilder.Append ((count) ? "&count=1" : "&count=0");
-            if (limit >= 0) {
+            if (limit > 0) {
                 parameterBuilder.AppendFormat ("&limit={0}", limit.ToString());
             }
             if (!string.IsNullOrEmpty(start)) {
@@ -421,9 +421,9 @@ namespace PubNubAPI
             url.Add ("v1");
             url.Add ("objects");
             url.Add (pnInstance.PNConfig.SubscribeKey);
-            url.Add ("spaces");
-            url.Add (userID);
             url.Add ("users");
+            url.Add (userID);
+            url.Add ("spaces");
 
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNManageMembershipsOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         }  
@@ -433,7 +433,7 @@ namespace PubNubAPI
             StringBuilder parameterBuilder = new StringBuilder ();
             parameterBuilder.AppendFormat ("&include={0}", include);
             parameterBuilder.Append ((count) ? "&count=1" : "&count=0");
-            if (limit >= 0) {
+            if (limit > 0) {
                 parameterBuilder.AppendFormat ("&limit={0}", limit.ToString());
             }
             if (!string.IsNullOrEmpty(start)) {
