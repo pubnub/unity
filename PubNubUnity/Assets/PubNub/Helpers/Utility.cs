@@ -39,10 +39,8 @@ namespace PubNubAPI
             dictionary.TryGetValue(keyName, out objMessage);
             
             if(objMessage != null){
-                UnityEngine.Debug.Log(objMessage);
                 return objMessage.ToString();
             } else {
-                UnityEngine.Debug.Log("objMessage null");
                 return "";
             }
         }

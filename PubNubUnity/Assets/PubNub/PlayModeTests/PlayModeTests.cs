@@ -1532,6 +1532,7 @@ namespace PubNubAPI.Tests
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "DeleteUser didn't return");			
 			//delete space 1
+			tresult = false;
 			pubnub.DeleteSpace().ID(spaceid).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
@@ -1541,6 +1542,7 @@ namespace PubNubAPI.Tests
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "DeleteSpace didn't return");				
 			//delete user 1
+			tresult = false;
 			pubnub.DeleteUser().ID(userid2).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
@@ -1550,6 +1552,7 @@ namespace PubNubAPI.Tests
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "DeleteUser didn't return");				
 			//delete space 1
+			tresult = false;
 			pubnub.DeleteSpace().ID(spaceid2).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
@@ -1557,13 +1560,309 @@ namespace PubNubAPI.Tests
 
 			});
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(tresult, "DeleteSpace didn't return");				
+			Assert.True(tresult, "DeleteSpace didn't return");	
+
+			pubnub.CleanUp();			
 		}
 
-		// [UnityTest]
-		// public IEnumerator TestObjectListeners() {
+		[UnityTest]
+		public IEnumerator TestObjectListeners() {
+			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
+			System.Random r = new System.Random ();
+			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next (100);
+			int ran = r.Next (10000);
+			string userid = "userid"  + ran;
+			string name = string.Format("user name {0}", ran);
+			string email = string.Format("user email {0}", ran);
+			string externalID = string.Format("user externalID {0}", ran);
+			string profileURL = string.Format("user profileURL {0}", ran);
+			string spaceid = "spaceid"  + ran;
+			string spacename = string.Format("space name {0}", ran);
+			string spacedesc = string.Format("space desc {0}", ran);
 
-		// }
+			int ran2 = r.Next (1000);
+			string name2 = string.Format("name {0}", ran2);
+			string email2 = string.Format("email {0}", ran2);
+			string externalID2 = string.Format("externalID {0}", ran2);
+			string profileURL2 = string.Format("profileURL {0}", ran2);			
+			string spacename2 = string.Format("space name {0}", ran2);
+			string spacedesc2 = string.Format("space desc {0}", ran2);
+			
+			PubNub pubnubSub = new PubNub(pnConfiguration);
+			PubNub pubnubObjects = new PubNub(pnConfiguration);
+			List<string> channelList2 = new List<string>();
+			channelList2.Add(spaceid);
+			channelList2.Add(userid);
+
+			bool userUpdate = false;
+			bool spaceUpdate = false;
+			bool userDelete = false;
+			bool spaceDelete = false;
+			bool addUserToSpace = false;
+			bool updateUserMem = false;
+			bool removeUserFromSpace = false;
+
+			pubnubSub.SubscribeCallback += (sender, e) => { 
+				SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
+				if (mea.UserEventResult != null) {					
+					userUpdate = mea.UserEventResult.Channel.Equals(userid) && mea.UserEventResult.UserID.Equals(userid) && mea.UserEventResult.ObjectsEvent.Equals(PNObjectsEvent.PNObjectsEventUpdate);
+					userDelete = mea.UserEventResult.Channel.Equals(userid) && mea.UserEventResult.UserID.Equals(userid) && mea.UserEventResult.ObjectsEvent.Equals(PNObjectsEvent.PNObjectsEventDelete);
+					Debug.Log(mea.UserEventResult.Name);
+					Debug.Log(mea.UserEventResult.Email);
+					Debug.Log(mea.UserEventResult.ExternalID);
+					Debug.Log(mea.UserEventResult.ProfileURL);
+					Debug.Log(mea.UserEventResult.UserID);
+					Debug.Log(mea.UserEventResult.ETag);
+					Debug.Log(mea.UserEventResult.ObjectsEvent);
+				} else if (mea.SpaceEventResult != null) {					
+					spaceUpdate = mea.SpaceEventResult.Channel.Equals(spaceid) && mea.SpaceEventResult.SpaceID.Equals(spaceid) && mea.SpaceEventResult.ObjectsEvent.Equals(PNObjectsEvent.PNObjectsEventUpdate);
+					spaceDelete = mea.SpaceEventResult.Channel.Equals(spaceid) && mea.SpaceEventResult.SpaceID.Equals(spaceid) && mea.SpaceEventResult.ObjectsEvent.Equals(PNObjectsEvent.PNObjectsEventDelete);
+					Debug.Log(mea.SpaceEventResult.Name);
+					Debug.Log(mea.SpaceEventResult.Description);
+					Debug.Log(mea.SpaceEventResult.SpaceID);
+					Debug.Log(mea.SpaceEventResult.ETag);
+					Debug.Log(mea.SpaceEventResult.ObjectsEvent);
+				} else if (mea.MembershipEventResult != null) {					
+					addUserToSpace = mea.MembershipEventResult.SpaceID.Equals(spaceid) && mea.MembershipEventResult.UserID.Equals(userid) && mea.MembershipEventResult.ObjectsEvent.Equals(PNObjectsEvent.PNObjectsEventCreate);
+					updateUserMem = mea.MembershipEventResult.SpaceID.Equals(spaceid) && mea.MembershipEventResult.UserID.Equals(userid) && mea.MembershipEventResult.ObjectsEvent.Equals(PNObjectsEvent.PNObjectsEventUpdate);
+					removeUserFromSpace = mea.MembershipEventResult.SpaceID.Equals(spaceid) && mea.MembershipEventResult.UserID.Equals(userid) && mea.MembershipEventResult.ObjectsEvent.Equals(PNObjectsEvent.PNObjectsEventDelete);
+					Debug.Log(mea.MembershipEventResult.UserID);
+					Debug.Log(mea.MembershipEventResult.Description);
+					Debug.Log(mea.MembershipEventResult.SpaceID);
+					Debug.Log(mea.MembershipEventResult.ObjectsEvent);
+				}
+			};
+			pubnubSub.Subscribe ().Channels(channelList2).Execute();
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+
+			bool tresult = false;
+			//Create User
+			pubnubObjects.CreateUser().Email(email).ExternalID(externalID).Name(name).ID(userid).ProfileURL(profileURL).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				Assert.AreEqual(name, result.Name);
+				Assert.AreEqual(email, result.Email);
+				Assert.AreEqual(externalID, result.ExternalID);
+				Assert.AreEqual(profileURL, result.ProfileURL);
+				Assert.AreEqual(userid, result.ID);
+				Assert.AreEqual(result.Updated, result.Created);
+				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
+				Assert.True(result.Custom == null);
+				tresult = true;
+
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "CreateUser didn't return");			
+
+			//Update User
+			tresult = false;
+
+			pubnubObjects.UpdateUser().Email(email2).ExternalID(externalID2).Name(name2).ID(userid).ProfileURL(profileURL2).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				Assert.AreEqual(name2, result.Name);
+				Assert.AreEqual(email2, result.Email);
+				Assert.AreEqual(externalID2, result.ExternalID);
+				Assert.AreEqual(profileURL2, result.ProfileURL);
+				Assert.AreEqual(userid, result.ID);
+				Assert.AreNotEqual(result.Updated, result.Created);
+				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
+				Assert.True(result.Custom == null);
+				tresult = true;
+
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "UpdateUser didn't return");
+
+			Assert.True(userUpdate, "userUpdate didn't return");
+			//Create Space
+			tresult = false;
+
+			pubnubObjects.CreateSpace().Description(spacedesc).Name(spacename).ID(spaceid).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				Assert.AreEqual(spacename, result.Name);
+				Assert.AreEqual(spacedesc, result.Description);
+				Assert.AreEqual(spaceid, result.ID);
+				Assert.AreEqual(result.Updated, result.Created);
+				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
+				Assert.True(result.Custom == null);
+				tresult = true;
+
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "CreateSpace didn't return");
+
+			tresult = false;
+			//Update Space
+
+			pubnubObjects.UpdateSpace().Description(spacedesc2).Name(spacename2).ID(spaceid).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				Assert.AreEqual(spacename2, result.Name);
+				Assert.AreEqual(spacedesc2, result.Description);
+				Assert.AreEqual(spaceid, result.ID);
+				Assert.AreNotEqual(result.Updated, result.Created);
+				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
+				Assert.True(result.Custom == null);
+				tresult = true;
+
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "UpdateSpace didn't return");
+
+			Assert.True(spaceUpdate, "spaceUpdate didn't return");
+
+			//Add user to space
+			PNMembersInput input = new PNMembersInput();
+			input.ID = userid;
+			Dictionary<string, object> membersCustom2 = new Dictionary<string, object>();
+			membersCustom2.Add("memberscustomkey21", "mcv21");
+			membersCustom2.Add("memberscustomkey22", "mcv22");
+
+			input.Custom = membersCustom2;
+			int limit = 100;
+			bool count = true;
+			tresult = false;
+
+			PNMembersInclude[] inclSm = new PNMembersInclude[]{PNMembersInclude.PNMembersCustom, PNMembersInclude.PNMembersUser, PNMembersInclude.PNMembersUserCustom};		
+			PNMembershipsInclude[] inclMem= new PNMembershipsInclude[]{PNMembershipsInclude.PNMembershipsCustom, PNMembershipsInclude.PNMembershipsSpace, PNMembershipsInclude.PNMembershipsSpaceCustom};		
+			
+			//Add Space Memberships
+			pubnubObjects.ManageMembers().SpaceID(spaceid).Add(new List<PNMembersInput>{input}).Update(new List<PNMembersInput>{}).Remove(new List<PNMembersRemove>{}).Include(inclSm).Limit(limit).Count(count).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				Debug.Log("Looking for " + userid);
+				bool bFound = false;
+				foreach (PNMembers mem in result.Data){
+					
+					Debug.Log("Found mem " + mem.User.ID);
+					if(mem.User.ID.Equals(userid)){
+						Assert.AreEqual(name2, mem.User.Name);
+						Assert.AreEqual(email2, mem.User.Email);
+						Assert.AreEqual(externalID2, mem.User.ExternalID);
+						Assert.AreEqual(profileURL2, mem.User.ProfileURL);
+						Assert.AreEqual(userid, mem.User.ID);
+						//Assert.AreEqual(mem.User.Updated, mem.User.Created);
+						Assert.True(!string.IsNullOrEmpty(mem.User.ETag), mem.User.ETag);
+						Assert.True("mcv21" == mem.Custom["memberscustomkey21"].ToString());
+						Assert.True("mcv22" == mem.Custom["memberscustomkey22"].ToString());
+
+						bFound = true;
+						break;
+					}
+
+				}
+				tresult = bFound;
+
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "ManageMembers didn't return");
+
+			Assert.True(addUserToSpace, "addUserToSpace didn't return");				
+			
+			//Update user membership
+
+			PNMembersInput inputMembershipsUp = new PNMembersInput();
+			inputMembershipsUp.ID = spaceid;
+			Dictionary<string, object> membershipCustomUp= new Dictionary<string, object>();
+			membershipCustomUp.Add("mememberscustomkeyup21", "memcvup21");
+			membershipCustomUp.Add("mememberscustomkeyup22", "memcvup22");
+
+			inputMembershipsUp.Custom = membershipCustomUp;
+
+			tresult = false;
+
+			pubnubObjects.ManageMemberships().UserID(userid).Add(new List<PNMembersInput>{}).Update(new List<PNMembersInput>{inputMembershipsUp}).Remove(new List<PNMembersRemove>{}).Include(inclMem).Limit(limit).Count(count).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				bool bFound = false;
+				Debug.Log("Looking for " + spaceid);
+				foreach (PNMemberships mem in result.Data){
+					
+					Debug.Log("Found mem " + mem.Space.ID);
+					if(mem.Space.ID.Equals(spaceid)){
+						Assert.AreEqual(spacename2, mem.Space.Name);
+						Assert.AreEqual(spacedesc2, mem.Space.Description);
+						Assert.AreEqual(spaceid, mem.Space.ID);
+						Assert.True(!string.IsNullOrEmpty(mem.Space.ETag), mem.Space.ETag);
+						Assert.True("memcvup21" == mem.Custom["mememberscustomkeyup21"].ToString());
+						Assert.True("memcvup22" == mem.Custom["mememberscustomkeyup22"].ToString());
+
+						bFound = true;
+						break;
+					}
+
+				}
+
+				tresult = bFound;
+
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "ManageMemberships Update didn't return");
+
+			Assert.True(updateUserMem, "updateUserMem didn't return");	
+
+			//Remove user from space
+			PNMembersRemove inputMembershipsRm = new PNMembersRemove();
+			inputMembershipsRm.ID = spaceid;
+
+			tresult = false;
+
+			pubnubObjects.ManageMemberships().UserID(userid).Add(new List<PNMembersInput>{}).Update(new List<PNMembersInput>{}).Remove(new List<PNMembersRemove>{inputMembershipsRm}).Include(inclMem).Limit(limit).Count(count).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				bool bFound = true;
+				Debug.Log("Looking for " + spaceid);
+				foreach (PNMemberships mem in result.Data){
+					
+					Debug.Log("Found mem " + mem.Space.ID);
+					if(mem.Space.ID.Equals(spaceid)){
+						Assert.AreEqual(spacename2, mem.Space.Name);
+						Assert.AreEqual(spacedesc2, mem.Space.Description);
+						Assert.AreEqual(spaceid, mem.Space.ID);
+						Assert.AreEqual(mem.Space.Updated, mem.Space.Created);
+						Assert.True(!string.IsNullOrEmpty(mem.Space.ETag), mem.Space.ETag);
+
+						bFound = false;
+						break;
+					}
+
+				}
+
+				tresult = bFound;
+
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "ManageMemberships Remove didn't return");
+
+			Assert.True(removeUserFromSpace, "removeUserFromSpace didn't return");	
+
+			//delete user 1
+			tresult = false;
+			pubnubObjects.DeleteUser().ID(userid).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				tresult = true;
+
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "DeleteUser didn't return");	
+			Assert.True(userDelete, "userDelete didn't return");			
+			//delete space 1
+			tresult = false;
+			pubnubObjects.DeleteSpace().ID(spaceid).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				tresult = true;
+
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresult, "DeleteSpace didn't return");	
+			Assert.True(spaceDelete, "spaceDelete didn't return");
+			pubnubSub.CleanUp();
+			pubnubObjects.CleanUp();
+		}
 
 		[UnityTest]
 		public IEnumerator TestUserCRUD() {
