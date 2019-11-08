@@ -47,16 +47,14 @@ namespace PubNubAPI
     {
         public static string GetDescription(this PNObjectsEventType @this)
         {
-            switch (@this)
-            {
-                case PNObjectsEventType.PNObjectsUserEvent:
-                    return "user";
-                case PNObjectsEventType.PNObjectsSpaceEvent:
-                    return "space";
-                case PNObjectsEventType.PNObjectsMembershipEvent:
-                    return "membership";
-                default:
-                    return "none";    
+            if (@this.Equals(PNObjectsEventType.PNObjectsUserEvent)){
+                return "user";
+            } else if (@this.Equals(PNObjectsEventType.PNObjectsSpaceEvent)){
+                return "space";
+            } else if (@this.Equals(PNObjectsEventType.PNObjectsMembershipEvent)){
+                return "membership";
+            } else {
+                return "none";  
             }
         }
     }
@@ -72,12 +70,10 @@ namespace PubNubAPI
     {
         public static string GetDescription(this PNUserSpaceInclude @this)
         {
-            switch (@this)
-            {
-                case PNUserSpaceInclude.PNUserSpaceCustom:
-                    return "custom";
-                default:
-                    return "custom";    
+            if (@this.Equals(PNUserSpaceInclude.PNUserSpaceCustom)){
+                return "custom";
+            } else {
+                return "custom";  
             }
         }
     }
@@ -98,16 +94,14 @@ namespace PubNubAPI
     {
         public static string GetDescription(this PNMembershipsInclude @this)
         {
-            switch (@this)
-            {
-                case PNMembershipsInclude.PNMembershipsCustom:
-                    return "custom";
-                case PNMembershipsInclude.PNMembershipsSpace:
-                    return "space";
-                case PNMembershipsInclude.PNMembershipsSpaceCustom:
-                    return "space.custom";
-                default:
-                    return "custom";    
+            if (@this.Equals(PNMembershipsInclude.PNMembershipsCustom)){
+                return "custom";
+            } else if (@this.Equals(PNMembershipsInclude.PNMembershipsSpace)){
+                return "space";
+            } else if (@this.Equals(PNMembershipsInclude.PNMembershipsSpaceCustom)){
+                return "space.custom";
+            } else {
+                return "custom";  
             }
         }
     }
@@ -129,16 +123,14 @@ namespace PubNubAPI
     {
         public static string GetDescription(this PNMembersInclude @this)
         {
-            switch (@this)
-            {
-                case PNMembersInclude.PNMembersCustom:
-                    return "custom";
-                case PNMembersInclude.PNMembersUser:
-                    return "user";
-                case PNMembersInclude.PNMembersUserCustom:
-                    return "user.custom";
-                default:
-                    return "custom";    
+            if (@this.Equals(PNMembersInclude.PNMembersCustom)){
+                return "custom";
+            } else if (@this.Equals(PNMembersInclude.PNMembersUser)){
+                return "user";
+            } else if (@this.Equals(PNMembersInclude.PNMembersUserCustom)){
+                return "user.custom";
+            } else {
+                return "custom";  
             }
         }
     }    
