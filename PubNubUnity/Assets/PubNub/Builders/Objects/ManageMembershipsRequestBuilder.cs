@@ -100,8 +100,6 @@ namespace PubNubAPI
         }
 
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
-            object[] c = deSerializedResult as object[];
-            
             PNMembershipsResult pnManageMembershipsResult = new PNMembershipsResult();
             pnManageMembershipsResult.Data = new List<PNMemberships>();
             PNStatus pnStatus = new PNStatus();
@@ -120,7 +118,6 @@ namespace PubNubAPI
                                 PNMemberships pnMemberships = ObjectsHelpers.ExtractMemberships(objDataDict);
                                 pnManageMembershipsResult.Data.Add(pnMemberships);
                             }  else {
-                                pnManageMembershipsResult = null;
                                 pnStatus = base.CreateErrorResponseFromException(new PubNubException("objDataDict null"), requestState, PNStatusCategory.PNUnknownCategory);
                             }  
                         }

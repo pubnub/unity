@@ -9,7 +9,6 @@ namespace PubNubAPI
     {        
         private string GetUserID { get; set;}
         private PNUserSpaceInclude[] GetUserInclude { get; set;}
-        private Dictionary<string, object> GetUserCustom { get; set;}
         
         public GetUserRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNGetUserOperation){
         }
@@ -48,8 +47,6 @@ namespace PubNubAPI
         }
 
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
-            object[] c = deSerializedResult as object[];
-            //  {"status":200,"data":{"id":"id777","name":"name 777","externalId":"externalID 777","profileUrl":"profileURL 777","email":"email 777","created":"2019-10-29T12:46:23.464847Z","updated":"2019-10-29T12:46:23.464847Z","eTag":"Ac/04uPhkaiiuwE"}}
             PNUserResult pnUserResult = new PNUserResult();
             PNStatus pnStatus = new PNStatus();
 

@@ -5,10 +5,10 @@ namespace PubNubAPI
 {
     public class PNMembersResult
     {
-        public List<PNMembers> Data;
-        public int TotalCount;
-        public string Next;
-        public string Prev;
+        public List<PNMembers> Data {get; set;}
+        public int TotalCount {get; set;}
+        public string Next {get; set;}
+        public string Prev {get; set;}
     }
 
     public class PNMembers

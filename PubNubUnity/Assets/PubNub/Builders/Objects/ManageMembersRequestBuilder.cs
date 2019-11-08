@@ -6,11 +6,11 @@ using UnityEngine;
 namespace PubNubAPI
 {
     public class PNMembersInput{
-        public string ID;
-        public Dictionary<string, object> Custom;
+        public string ID {get; set;}
+        public Dictionary<string, object> Custom {get; set;}
     }
     public class PNMembersRemove{
-        public string ID;
+        public string ID {get; set;}
     }
 
     class PNMembersInputForJSON{
@@ -116,8 +116,6 @@ namespace PubNubAPI
         }
 
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
-            object[] c = deSerializedResult as object[];
-            
             PNMembersResult pnManageMembersResult = new PNMembersResult();
             pnManageMembersResult.Data = new List<PNMembers>();
             PNStatus pnStatus = new PNStatus();
@@ -136,7 +134,6 @@ namespace PubNubAPI
                                 PNMembers pnMembers = ObjectsHelpers.ExtractMembers(objDataDict);
                                 pnManageMembersResult.Data.Add(pnMembers);
                             }  else {
-                                pnManageMembersResult = null;
                                 pnStatus = base.CreateErrorResponseFromException(new PubNubException("objDataDict null"), requestState, PNStatusCategory.PNUnknownCategory);
                             }  
                         }

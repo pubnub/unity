@@ -8,7 +8,6 @@ namespace PubNubAPI
     public class DeleteUserRequestBuilder: PubNubNonSubBuilder<DeleteUserRequestBuilder, PNDeleteUserResult>, IPubNubNonSubscribeBuilder<DeleteUserRequestBuilder, PNDeleteUserResult>
     {        
         private string DeleteUserID { get; set;}
-        private Dictionary<string, object> DeleteUserCustom { get; set;}
         
         public DeleteUserRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNDeleteUserOperation){
         }
@@ -40,8 +39,6 @@ namespace PubNubAPI
         }
 
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
-            object[] c = deSerializedResult as object[];
-            // {"status":200,"data":null}
             PNDeleteUserResult pnUserResult = new PNDeleteUserResult();
             PNStatus pnStatus = new PNStatus();
 

@@ -12,7 +12,6 @@ namespace PubNubAPI
         private string GetUsersStart { get; set;}
         private bool GetUsersCount { get; set;}
         private PNUserSpaceInclude[] GetUsersInclude { get; set;}
-        private Dictionary<string, object> GetUserCustom { get; set;}
         
         public GetUsersRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNGetUsersOperation){
         }
@@ -65,8 +64,6 @@ namespace PubNubAPI
         }
 
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
-            object[] c = deSerializedResult as object[];
-            
             PNGetUsersResult pnUserResultList = new PNGetUsersResult();
             pnUserResultList.Data = new List<PNUserResult>();
             PNStatus pnStatus = new PNStatus();
@@ -85,7 +82,6 @@ namespace PubNubAPI
                                 PNUserResult pnUserResult = ObjectsHelpers.ExtractUser(objDataDict);                                
                                 pnUserResultList.Data.Add(pnUserResult);
                             }  else {
-                                pnUserResultList = null;
                                 pnStatus = base.CreateErrorResponseFromException(new PubNubException("objDataDict null"), requestState, PNStatusCategory.PNUnknownCategory);
                             }  
                         }

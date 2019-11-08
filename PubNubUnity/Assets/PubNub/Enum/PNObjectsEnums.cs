@@ -18,16 +18,14 @@ namespace PubNubAPI
     {
         public static string GetDescription(this PNObjectsEvent @this)
         {
-            switch (@this)
-            {
-                case PNObjectsEvent.PNObjectsEventCreate:
-                    return "create";
-                case PNObjectsEvent.PNObjectsEventUpdate:
-                    return "update";
-                case PNObjectsEvent.PNObjectsEventDelete:
-                    return "delete";
-                default:
-                    return "";    
+            if (@this.Equals(PNObjectsEvent.PNObjectsEventCreate)){
+                return "create";
+            } else if (@this.Equals(PNObjectsEvent.PNObjectsEventUpdate)){
+                return "update";
+            } else if (@this.Equals(PNObjectsEvent.PNObjectsEventDelete)){
+                return "delete";
+            } else {
+                return "";  
             }
         }
     }

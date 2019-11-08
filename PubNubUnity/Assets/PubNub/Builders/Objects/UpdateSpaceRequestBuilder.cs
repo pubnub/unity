@@ -104,14 +104,6 @@ namespace PubNubAPI
                         if (objDataDict != null)
                         {
                             pnSpaceResult = ObjectsHelpers.ExtractSpace(objDataDict);
-                            // pnSpaceResult.ID = Utility.ReadMessageFromResponseDictionary(objDataDict, "id");
-                            // pnSpaceResult.Name = Utility.ReadMessageFromResponseDictionary(objDataDict, "name");
-                            // pnSpaceResult.Description = Utility.ReadMessageFromResponseDictionary(objDataDict, "description");
-                            // pnSpaceResult.Created = Utility.ReadMessageFromResponseDictionary(objDataDict, "created");
-                            // pnSpaceResult.Updated = Utility.ReadMessageFromResponseDictionary(objDataDict, "updated");
-                            // pnSpaceResult.ETag = Utility.ReadMessageFromResponseDictionary(objDataDict, "eTag");
-                            // pnSpaceResult.Custom = Utility.ReadDictionaryFromResponseDictionary(objDataDict, "custom");
-
                         }
                         else
                         {
