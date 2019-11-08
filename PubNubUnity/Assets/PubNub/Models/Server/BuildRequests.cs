@@ -176,7 +176,9 @@ namespace PubNubAPI
         {
             ///v1/objects/%s/users
             StringBuilder parameterBuilder = new StringBuilder ();
-            parameterBuilder.AppendFormat ("&include={0}", include);
+            if(!string.IsNullOrEmpty(include)){
+                parameterBuilder.AppendFormat ("&include={0}", include);
+            }
 
             List<string> url = new List<string> ();
             url.Add ("v1");
@@ -190,7 +192,9 @@ namespace PubNubAPI
         {
             ///v1/objects/%s/spaces
             StringBuilder parameterBuilder = new StringBuilder ();
-            parameterBuilder.AppendFormat ("&include={0}", include);
+            if(!string.IsNullOrEmpty(include)){
+                parameterBuilder.AppendFormat ("&include={0}", include);
+            } 
 
             List<string> url = new List<string> ();
             url.Add ("v1");
@@ -205,7 +209,9 @@ namespace PubNubAPI
         {
             ///v1/objects/%s/users/%s
             StringBuilder parameterBuilder = new StringBuilder ();
-            parameterBuilder.AppendFormat ("&include={0}", include);
+            if(!string.IsNullOrEmpty(include)){
+                parameterBuilder.AppendFormat ("&include={0}", include);
+            }
 
             List<string> url = new List<string> ();
             url.Add ("v1");
@@ -221,7 +227,9 @@ namespace PubNubAPI
         {
             ///v1/objects/%s/spaces/%s
             StringBuilder parameterBuilder = new StringBuilder();
-            parameterBuilder.AppendFormat("&include={0}", include);
+            if(!string.IsNullOrEmpty(include)){
+                parameterBuilder.AppendFormat("&include={0}", include);
+            }
 
             List<string> url = new List<string>();
             url.Add("v1");
@@ -267,7 +275,9 @@ namespace PubNubAPI
         {
             ///v1/objects/%s/users/%s
             StringBuilder parameterBuilder = new StringBuilder ();
-            parameterBuilder.AppendFormat ("&include={0}", include);
+            if(!string.IsNullOrEmpty(include)){
+                parameterBuilder.AppendFormat ("&include={0}", include);
+            }
 
             List<string> url = new List<string> ();
             url.Add ("v1");
@@ -283,7 +293,9 @@ namespace PubNubAPI
         {
             ///v1/objects/%s/spaces/%s
             StringBuilder parameterBuilder = new StringBuilder();
-            parameterBuilder.AppendFormat("&include={0}", include);
+            if(!string.IsNullOrEmpty(include)){
+                parameterBuilder.AppendFormat("&include={0}", include);
+            }
 
             List<string> url = new List<string>();
             url.Add("v1");
@@ -299,7 +311,9 @@ namespace PubNubAPI
         {
             ///v1/objects/%s/users
             StringBuilder parameterBuilder = new StringBuilder ();
-            parameterBuilder.AppendFormat ("&include={0}", include);
+            if(!string.IsNullOrEmpty(include)){
+                parameterBuilder.AppendFormat ("&include={0}", include);
+            }
             parameterBuilder.Append ((count) ? "&count=1" : "&count=0");
             if (limit > 0) {
                 parameterBuilder.AppendFormat ("&limit={0}", limit.ToString());
@@ -324,7 +338,9 @@ namespace PubNubAPI
         {
             ///v1/objects/%s/spaces
             StringBuilder parameterBuilder = new StringBuilder();
-            parameterBuilder.AppendFormat("&include={0}", include);
+            if(!string.IsNullOrEmpty(include)){
+                parameterBuilder.AppendFormat("&include={0}", include);
+            }
             parameterBuilder.Append((count) ? "&count=1" : "&count=0");
             if (limit > 0)
             {
@@ -352,7 +368,9 @@ namespace PubNubAPI
         {
             ///v1/objects/%s/spaces/%s/users
             StringBuilder parameterBuilder = new StringBuilder ();
-            parameterBuilder.AppendFormat ("&include={0}", include);
+            if(!string.IsNullOrEmpty(include)){
+                parameterBuilder.AppendFormat ("&include={0}", include);
+            }
             parameterBuilder.Append ((count) ? "&count=1" : "&count=0");
             if (limit > 0) {
                 parameterBuilder.AppendFormat ("&limit={0}", limit.ToString());
@@ -379,7 +397,9 @@ namespace PubNubAPI
         {
             ///v1/objects/%s/spaces/%s/users
             StringBuilder parameterBuilder = new StringBuilder ();
-            parameterBuilder.AppendFormat ("&include={0}", include);
+            if(!string.IsNullOrEmpty(include)){
+                parameterBuilder.AppendFormat ("&include={0}", include);
+            }
             parameterBuilder.Append ((count) ? "&count=1" : "&count=0");
             if (limit > 0) {
                 parameterBuilder.AppendFormat ("&limit={0}", limit.ToString());
@@ -405,7 +425,9 @@ namespace PubNubAPI
         {
             ///v1/objects/%s/users/%s/spaces
             StringBuilder parameterBuilder = new StringBuilder ();
-            parameterBuilder.AppendFormat ("&include={0}", include);
+            if(!string.IsNullOrEmpty(include)){
+                parameterBuilder.AppendFormat ("&include={0}", include);
+            }
             parameterBuilder.Append ((count) ? "&count=1" : "&count=0");
             if (limit > 0) {
                 parameterBuilder.AppendFormat ("&limit={0}", limit.ToString());
@@ -431,7 +453,9 @@ namespace PubNubAPI
         {
             ///v1/objects/%s/users/%s/spaces
             StringBuilder parameterBuilder = new StringBuilder ();
-            parameterBuilder.AppendFormat ("&include={0}", include);
+            if(!string.IsNullOrEmpty(include)){
+                parameterBuilder.AppendFormat ("&include={0}", include);
+            }
             parameterBuilder.Append ((count) ? "&count=1" : "&count=0");
             if (limit > 0) {
                 parameterBuilder.AppendFormat ("&limit={0}", limit.ToString());

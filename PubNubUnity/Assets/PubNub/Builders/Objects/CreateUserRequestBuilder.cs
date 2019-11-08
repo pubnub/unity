@@ -97,7 +97,10 @@ namespace PubNubAPI
             PNUserResult pnUserResult = new PNUserResult();
             PNStatus pnStatus = new PNStatus();
 
+            Debug.Log("=======>" + deSerializedResult.ToString());
+
             try{
+                Debug.Log("=======> dictionary");
                 Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
                 
                 if(dictionary != null) {
@@ -107,16 +110,22 @@ namespace PubNubAPI
                         Dictionary<string, object> objDataDict = objData as Dictionary<string, object>;
                         if(objDataDict != null){
                             pnUserResult = ObjectsHelpers.ExtractUser(objDataDict);
+                            Debug.Log("=======> pnUserResult" + pnUserResult);
                         }  else {
                             pnUserResult = null;
                             pnStatus = base.CreateErrorResponseFromException(new PubNubException("objDataDict null"), requestState, PNStatusCategory.PNUnknownCategory);
                         }  
                     }  else {
+                        Debug.Log("=======> objData null");
                         pnUserResult = null;
                         pnStatus = base.CreateErrorResponseFromException(new PubNubException("objData null"), requestState, PNStatusCategory.PNUnknownCategory);
                     }                      
+                } else {
+                    Debug.Log("=======> dictionary null");
                 }
             } catch (Exception ex){
+                Debug.Log("=======>" + ex.ToString());
+
                 pnUserResult = null;
                 pnStatus = base.CreateErrorResponseFromException(ex, requestState, PNStatusCategory.PNUnknownCategory);
             }
