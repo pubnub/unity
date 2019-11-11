@@ -288,7 +288,7 @@ namespace PubNubAPI
                 unityWebRequestWrapper.CurrentUnityWebRequest.SetRequestHeader("Content-Type","application/json"); 
                 
                 #if (ENABLE_PUBNUB_LOGGING)
-                this.PNLog.WriteToLog (string.Format ("POST Data : {1} \nURL:{0}", unityWebRequestWrapper.URL, unityWebRequestWrapper.CurrentRequestState.POSTData), PNLoggingMethod.LevelInfo);
+                this.PNLog.WriteToLog (string.Format ("PATCH Data : {1} \nURL:{0}", unityWebRequestWrapper.URL, unityWebRequestWrapper.CurrentRequestState.POSTData), PNLoggingMethod.LevelInfo);
                 #endif
                 
             } else if(unityWebRequestWrapper.CurrentRequestState.httpMethod.Equals(HTTPMethod.Delete)) {
