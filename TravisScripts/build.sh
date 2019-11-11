@@ -34,8 +34,12 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
   -batchmode \
+  -runEditorTests \
+  -noUpm \
+  -nographics \
+  -buildTarget OSXUniversal
   -projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
-  -testResults $(pwd)/test1.xml \
+  -editorTestsResultFile $(pwd)/test1.xml \
   -username "${UNITYCI_NEW_USER}" \
   -password "${UNITYCI_NEW_PASS}" \
   -serial "${UNITYCI_NEW_SERIAL}" 
