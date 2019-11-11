@@ -13,7 +13,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
 	-runEditorTests \
 	-testResults $(pwd)/test.xml \
-	-editorTestsResultFile $(pwd)/test1.xml
+	-editorTestsResultFile $(pwd)/test1.xml \
 	-testPlatform editmode \
 	-username "${UNITYCI_NEW_USER}" \
 	-password "${UNITYCI_NEW_PASS}" \
