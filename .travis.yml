@@ -5,20 +5,31 @@ notifications:
     on_success: never
     on_failure: change
 
-install:
-- sudo -E sh ./TravisScripts/install.sh
-script:
-- sudo -E sh ./TravisScripts/build.sh
-deploy:
-   provider: releases
-   api_key:
-     secure: ${s}
-   file: $(pwd)/${UNITYCI_PROJECT_NAME}/${UNITYCI_PACKAGE_NAME}.unitypackage
-   skip_cleanup: true
-   on:
-     repo: pubnub/unity
-     #branch: master
-     tags: true
+jobs:
+  include:
+    - stage: Install Unity 
+      install:
+        - sudo -E sh ./TravisScripts/install.sh
+    - stage: Run Unit Tests    
+      script:
+        - sudo -E sh ./TravisScripts/unit-tests.sh
+    - stage: Run Integration Tests    
+      script:
+        - sudo -E sh ./TravisScripts/integration-tests.sh
+    - stage: Export Package  
+      script:
+        - sudo -E sh ./TravisScripts/export-package.sh
+    - stage: Deploy
+      deploy:
+        provider: releases
+        api_key:
+          secure: ${s}
+        file: $(pwd)/${UNITYCI_PROJECT_NAME}/${UNITYCI_PACKAGE_NAME}.unitypackage
+        skip_cleanup: true
+        on:
+          repo: pubnub/unity
+          #branch: master
+          tags: true
 env:
   global:
   - UNITYCI_PACKAGE_NAME="PubNub"  
