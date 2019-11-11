@@ -19,72 +19,9 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 	-password "${UNITYCI_NEW_PASS}" \
 	-serial "${UNITYCI_NEW_SERIAL}" 
 
-
-# /Applications/Unity/Unity.app/Contents/MacOS/Unity \
-#   --args buildName $UNITY_BUILD_APK_NAME \
-#   -batchmode \
-#   -nographics \
-#   -silent-crashes \
-#   -logFile \
-#   -projectPath "$PROJECT_PATH" \
-#   -buildTarget "Android" \
-#   -username "$UNITYEMAIL" \
-#   -password "$UNITYPASSWORD" \
-#   -serial "$UNITYKEY" \
-#   -executeMethod "Infrastructure.EditorHelpers.Builder.BuildDevForAndroid" |
-#   tee "$LOG_FILE"
-
-# /Applications/Unity/Unity.app/Contents/MacOS/Unity \
-#   -batchmode \
-#   -nographics \
-#   -silent-crashes \
-#   -projectPath "$PROJECT_PATH" \
-#   -buildTarget "Android" \
-#   -username "$UNITYEMAIL" \
-#   -password "$UNITYPASSWORD" \
-#   -serial "$UNITYKEY" \
-#   -runEditorTests  
-
-# /Applications/Unity/Unity.app/Contents/MacOS/Unity \
-#   -batchmode \
-#   -runEditorTests \
-#   -noUpm \
-#   -nographics \
-#   -buildTarget OSXUniversal
-#   -projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
-#   -editorTestsResultFile $(pwd)/test1.xml \
-#   -username "${UNITYCI_NEW_USER}" \
-#   -password "${UNITYCI_NEW_PASS}" \
-#   -serial "${UNITYCI_NEW_SERIAL}" 
-
-# /Applications/Unity/Unity.app/Contents/MacOS/Unity \
-#   -batchmode \
-#   -nographics \
-#   -silent-crashes \
-#   -projectPath "$PROJECT_PATH" \
-#   -buildTarget "Android" \
-#   -username "$UNITYEMAIL" \
-#   -password "$UNITYPASSWORD" \
-#   -serial "$UNITYKEY" \
-#   -runEditorTests
-  
-# /Applications/Unity/Unity.app/Contents/MacOS/Unity \
-# 	-batchmode \
-# 	-logFile $(pwd)/editor1.log \
-# 	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
-# 	-runTests \
-# 	-testResults $(pwd)/test1.xml \
-# 	-testPlatform editmode \
-# 	-username "${UNITYCI_NEW_USER}" \
-# 	-password "${UNITYCI_NEW_PASS}" \
-# 	-serial "${UNITYCI_NEW_SERIAL}" 
-# 	# -silent-crashes \
-# 	# -accept-apiupdate \
-# 	# -noUpm
-
 rc0=$?
 echo "Unit test logs"
-cat $(pwd)/editor1.log
+#cat $(pwd)/editor1.log
 cat $(pwd)/test1.xml
 
 # returning license
@@ -106,9 +43,6 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} playmode"
 	-username "${UNITYCI_NEW_USER}" \
 	-password "${UNITYCI_NEW_PASS}" \
 	-serial "${UNITYCI_NEW_SERIAL}" 
-	# -silent-crashes \
-	# -nographics \
-	# -noUpm	
 
 rc1=$?
 echo "Unit test logs 2"
@@ -133,7 +67,6 @@ echo "creating exportPackage"
 	-username ${UNITYCI_USER_NAME} \
 	-password ${UNITYCI_PASS} \
 	-serial ${UNITYCI_SERIAL} \
-	# -nographics
 
 # returning license
 echo "returning license"
