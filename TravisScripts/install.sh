@@ -25,7 +25,7 @@ echo 'Downloading Unity pkg:'
 #curl --retry 5 -o Unity.pkg https://download.unity3d.com/download_unity/ffa3a7a2dd7d/MacEditorInstaller/Unity.pkg
 #2018.2.21
 #curl --retry 5 -o Unity.pkg https://download.unity3d.com/download_unity/a122f5dc316d/MacEditorInstaller/Unity.pkg
-curl --retry 5 -o Unity.pkg https://download.unity3d.com/download_unity/a122f5dc316d/MacEditorInstaller/Unity.pkg
+curl --retry 5 -o Unity.pkg https://download.unity3d.com/download_unity/f2970305fe1c/MacEditorInstaller/Unity.pkg
 if [ $? -ne 0 ]; then { echo "Unity Download failed"; exit $?; } fi
 
 #echo 'Downloading StandardAssets pkg:'
