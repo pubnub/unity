@@ -7,6 +7,16 @@
 
 ## Run the editor unit tests
 echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
+/Applications/Unity/Unity.app/Contents/MacOS/Unity \
+	-batchmode \
+	-logFile $(pwd)/editor.log \
+	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
+	-runEditorTests \
+	-testResults $(pwd)/test.xml \
+	-testPlatform editmode \
+	-username "${UNITYCI_NEW_USER}" \
+	-password "${UNITYCI_NEW_PASS}" \
+	-serial "${UNITYCI_NEW_SERIAL}" 
 # /Applications/Unity/Unity.app/Contents/MacOS/Unity \
 #   --args buildName $UNITY_BUILD_APK_NAME \
 #   -batchmode \
@@ -32,17 +42,17 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 #   -serial "$UNITYKEY" \
 #   -runEditorTests  
 
-/Applications/Unity/Unity.app/Contents/MacOS/Unity \
-  -batchmode \
-  -runEditorTests \
-  -noUpm \
-  -nographics \
-  -buildTarget OSXUniversal
-  -projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
-  -editorTestsResultFile $(pwd)/test1.xml \
-  -username "${UNITYCI_NEW_USER}" \
-  -password "${UNITYCI_NEW_PASS}" \
-  -serial "${UNITYCI_NEW_SERIAL}" 
+# /Applications/Unity/Unity.app/Contents/MacOS/Unity \
+#   -batchmode \
+#   -runEditorTests \
+#   -noUpm \
+#   -nographics \
+#   -buildTarget OSXUniversal
+#   -projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
+#   -editorTestsResultFile $(pwd)/test1.xml \
+#   -username "${UNITYCI_NEW_USER}" \
+#   -password "${UNITYCI_NEW_PASS}" \
+#   -serial "${UNITYCI_NEW_SERIAL}" 
 
 # /Applications/Unity/Unity.app/Contents/MacOS/Unity \
 #   -batchmode \
@@ -71,7 +81,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 
 rc0=$?
 echo "Unit test logs"
-cat $(pwd)/editor1.log
+#cat $(pwd)/editor1.log
 cat $(pwd)/test1.xml
 
 # returning license
