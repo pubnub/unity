@@ -30,4 +30,4 @@ echo "returning license"
 
 #exit if tests failed
 #if [ $rc0 -ne 0 ]; then { echo "Failed unit tests editmode"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc0; } fi	
-if [ $rc1 -ne 0 ]; then { echo "Failed unit tests editmode"; exit $rc1; } fi	
+if [ $rc0 -ne 0 ]; then { echo "Failed unit tests editmode"; exit $rc0; } fi	
