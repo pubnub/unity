@@ -55,7 +55,7 @@ namespace PubNubAPI.Tests
 					Assert.Fail("result.Channels null");
 				}
              });
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeForAsyncResponse);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
 			Assert.True(testReturn, "test didn't return");
 			pubnub.CleanUp();
 		}
@@ -75,7 +75,7 @@ namespace PubNubAPI.Tests
 			}
 
 			pubnub.Subscribe ().Channels(channelList).Execute();
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			bool testReturn = false;
 			foreach(string ch in channelList){
 				Debug.Log("ch:" + ch);
@@ -87,7 +87,7 @@ namespace PubNubAPI.Tests
 					testReturn = !status.Error && matchResult;
                 });
 
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeForAsyncResponse);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls4);
 			Assert.True(testReturn, "test didn't return");
 			pubnub.CleanUp();
 		}
@@ -104,7 +104,7 @@ namespace PubNubAPI.Tests
 			channelList.Add(hereNowChannel2);
 
 			pubnub.Subscribe ().Channels(channelList).Execute();
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			bool testReturn = false;
 			pubnub.HereNow().Channels(channelList).IncludeState(true).IncludeUUIDs(true).Async((result, status) => {
 					Debug.Log("status.Error:" + status.Error);
@@ -113,7 +113,7 @@ namespace PubNubAPI.Tests
                     testReturn = !status.Error && matchResult;
                 });
 
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeForAsyncResponse);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls4);
 			Assert.True(testReturn, "test didn't return");
 			pubnub.CleanUp();
 		}
@@ -140,7 +140,7 @@ namespace PubNubAPI.Tests
 			}
 
 			pubnub.Subscribe ().ChannelGroups(channelGroupList).Execute();
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			bool testReturn = false;
 			foreach(string ch in channelList){
 				Debug.Log("ch:" + ch);
@@ -175,10 +175,10 @@ namespace PubNubAPI.Tests
 			pubnub.AddChannelsToChannelGroup().ChannelGroup(channelGroup).Channels(channelList).Async((result, status) => {
                 Debug.Log ("in AddChannelsToChannelGroup");
             });
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls1);
 
 			pubnub.Subscribe ().ChannelGroups(channelGroupList).Execute();
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			bool testReturn = false;
 			pubnub.HereNow().ChannelGroups(channelGroupList).IncludeState(true).IncludeUUIDs(true).Async((result, status) => {
 					Debug.Log("status.Error:" + status.Error);
@@ -188,7 +188,7 @@ namespace PubNubAPI.Tests
                     testReturn = !status.Error && matchResult;
                 });
 
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeForAsyncResponse);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls4);
 			Assert.True(testReturn, "test didn't return");
 			pubnub.CleanUp();
 		}
@@ -215,7 +215,7 @@ namespace PubNubAPI.Tests
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 
 			pubnub.Subscribe ().Channels(channelList2).ChannelGroups(channelGroupList).Execute();
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			bool testReturn = false;
 			pubnub.HereNow().Channels(channelList2).ChannelGroups(channelGroupList).IncludeState(true).IncludeUUIDs(true).Async((result, status) => {
 					Debug.Log("status.Error:" + status.Error);
@@ -226,7 +226,7 @@ namespace PubNubAPI.Tests
                     testReturn = !status.Error && matchResult;
                 });
 
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeForAsyncResponse);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls4);
 			Assert.True(testReturn, "test didn't return");
 			pubnub.CleanUp();
 		}
@@ -255,7 +255,7 @@ namespace PubNubAPI.Tests
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 
 			pubnub.Subscribe ().Channels(channelList2).ChannelGroups(channelGroupList).Execute();
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls1);
 			bool testReturn = false;
 			pubnub.HereNow().IncludeState(true).IncludeUUIDs(true).Async((result, status) => {
 					Debug.Log("status.Error:" + status.Error);
@@ -308,7 +308,7 @@ namespace PubNubAPI.Tests
                     testReturn = !status.Error && matchResult;
                 });
 
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeForAsyncResponse);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
 			Assert.True(testReturn, "test didn't return");
 			pubnub.CleanUp();
 		}
@@ -334,10 +334,10 @@ namespace PubNubAPI.Tests
 			pubnub.AddChannelsToChannelGroup().ChannelGroup(channelGroup).Channels(channelList).Async((result, status) => {
                 Debug.Log ("in AddChannelsToChannelGroup");
             });
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 
 			pubnub.Subscribe ().Channels(channelList2).ChannelGroups(channelGroupList).Execute();
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls1);
 			Dictionary<string, object> state = new Dictionary<string, object>();
 			state.Add("k", "v");
 			pubnub.SetPresenceState().Channels(channelList).ChannelGroups(channelGroupList).State(state).Async ((result, status) => {
@@ -354,7 +354,7 @@ namespace PubNubAPI.Tests
 					testReturn = !status.Error && matchResult;
                 });
 
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(testReturn, "test didn't return");
 			pubnub.CleanUp();
 		}
@@ -383,7 +383,7 @@ namespace PubNubAPI.Tests
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 
 			pubnub.Subscribe ().Channels(channelList2).ChannelGroups(channelGroupList).Execute();
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls1);
 			Dictionary<string, object> state = new Dictionary<string, object>();
 			state.Add("k", "v");
 			pubnub.SetPresenceState().Channels(channelList).ChannelGroups(channelGroupList).State(state).Async ((result, status) => {
@@ -573,7 +573,7 @@ namespace PubNubAPI.Tests
 				} 
 			};
 			pubnub.Subscribe ().Channels(channelList2).Execute();
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "test didn't return");
 			pubnub.CleanUp();
 
@@ -699,14 +699,14 @@ namespace PubNubAPI.Tests
 			
 			pubnub2.Subscribe ().Channels(channelList2).Execute();
 			//yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
-			yield return new WaitForSeconds (7);			
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);			
 			
 			Assert.True(tJoinResult, "join test didn't return");
 			pubnub2.Unsubscribe().Channels(channelList2).Async((result, status) => {
 					Debug.Log("status.Error:" + status.Error);
 					Assert.True(!status.Error);
 				});
-			yield return new WaitForSeconds (7);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tLeaveResult, "leave test didn't return");
 			pubnub.CleanUp();
 			pubnub2.CleanUp();
@@ -736,7 +736,7 @@ namespace PubNubAPI.Tests
 				}
 			};
 			pubnub.Subscribe ().Channels(channelList2).Execute();
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls1);
 			foreach(KeyValuePair<string, bool> kvp in payload){
 				pubnub.Publish().Channel(publishChannel).Message(kvp.Key).Async((result, status) => {
 					Assert.True(!result.Timetoken.Equals(0));
@@ -744,7 +744,7 @@ namespace PubNubAPI.Tests
 					Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				});
 			}
-			yield return new WaitForSeconds (20);
+			yield return new WaitForSeconds (5);
 			bool tresult = false;
 			foreach(KeyValuePair<string, bool> kvp in payload){
 				if(!kvp.Value){
@@ -974,7 +974,7 @@ namespace PubNubAPI.Tests
 			pubnub.Time().Async((result, status) => {
 				timetoken = result.TimeToken;
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(!timetoken.Equals(0));
 
 			pubnub.Publish().Channel(channel).Message(payload).Async((result, status) => {
@@ -994,7 +994,7 @@ namespace PubNubAPI.Tests
 				} 
 			};
 			pubnub.Subscribe ().Channels(channelList2).SetTimeToken(timetoken).Execute();
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "test didn't return");
 			pubnub.CleanUp();
 
@@ -1115,7 +1115,7 @@ namespace PubNubAPI.Tests
 				Assert.True("ucv2" == result.Custom["usercustomkey2"].ToString());
 				tresult = true;
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "GetUser didn't return");
 
 			tresult = false;
@@ -2123,7 +2123,7 @@ namespace PubNubAPI.Tests
 						Assert.Fail("AddChannelsToChannelGroup failed");
 					}
 				});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "test didn't return1");
 			tresult = false;
 
@@ -2143,7 +2143,7 @@ namespace PubNubAPI.Tests
 					}
 					
 				});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "test didn't return2");
 			tresult = false;
 			string payload = string.Format("payload {0}", pnConfiguration.UUID);
@@ -2177,7 +2177,7 @@ namespace PubNubAPI.Tests
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "test didn't return 3");
 			tresult = false;
 
@@ -2203,7 +2203,7 @@ namespace PubNubAPI.Tests
                     }
                 }
             });
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "test didn't return 4");
 
 			/*tresult = false;
@@ -2345,7 +2345,7 @@ namespace PubNubAPI.Tests
 						Assert.Fail("AddChannelsToChannelGroup failed");
 					}
 				});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "test didn't return1");
 			tresult = false;
 
@@ -2364,7 +2364,7 @@ namespace PubNubAPI.Tests
 						Assert.Fail("AddChannelsToChannelGroup failed");
 					}
 				});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "test didn't return2");
 			tresult = false;
 
@@ -2378,7 +2378,7 @@ namespace PubNubAPI.Tests
                     }
 
                 });
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "test didn't return 8");
 
 			tresult = false;
@@ -2400,7 +2400,7 @@ namespace PubNubAPI.Tests
 					tresult = true;
 					
 				});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "test didn't return 9");
 
 			tresult = false;
@@ -2409,7 +2409,7 @@ namespace PubNubAPI.Tests
                         tresult = result.Message.Equals("OK");
                     }
                 });
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "test didn't return 10");
 			
 			pubnub.CleanUp();
@@ -2550,7 +2550,7 @@ namespace PubNubAPI.Tests
 				} 
 			};
 			pubnub.Subscribe ().Channels(channelList2).Execute();
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls1);
 
 			Dictionary<string, string> metaDict = new Dictionary<string, string>();
             metaDict.Add("region", "east");
@@ -2561,7 +2561,7 @@ namespace PubNubAPI.Tests
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				Assert.True(!result.Timetoken.Equals(0));
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "test didn't return");
 			pubnub.CleanUp();
 		}
@@ -2596,7 +2596,7 @@ namespace PubNubAPI.Tests
 				} 
 			};
 			pubnub.Subscribe ().Channels(channelList2).Execute();
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls1);
 
 			Dictionary<string, string> metaDict = new Dictionary<string, string>();
             metaDict.Add("region", "east1");
@@ -2606,7 +2606,7 @@ namespace PubNubAPI.Tests
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(!tresult, "subscribe returned");
 			pubnub.CleanUp();
 		}
@@ -2634,7 +2634,7 @@ namespace PubNubAPI.Tests
 				Assert.True(statusCodeMatch, status.StatusCode.ToString());
 				tresult = statusCodeMatch && statusError && timetokenMatch;
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "test didnt return 1");
 
 			tresult = false;
@@ -2656,7 +2656,7 @@ namespace PubNubAPI.Tests
 					
                 }
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "test didnt return 2");
 			
 			pubnub.CleanUp();
@@ -2708,7 +2708,7 @@ namespace PubNubAPI.Tests
 				Assert.True(statusCodeMatch, status.StatusCode.ToString());
 				tresult = statusCodeMatch && statusError && timetokenMatch;
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "test didnt return 1");
 
 			tresult = false;
@@ -2747,7 +2747,7 @@ namespace PubNubAPI.Tests
 					
                 }
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "test didnt return 2");
 			Assert.True(tresultMeta, "test meta didnt return");
 			Assert.True(tresultTimetoken, "tresultTimetoken didnt return");
@@ -2793,7 +2793,7 @@ namespace PubNubAPI.Tests
                 } 
 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "test didnt return for fetch");
 			Assert.True(tresultMeta, "test meta didnt return for fetch");
 
@@ -2824,7 +2824,7 @@ namespace PubNubAPI.Tests
 				Assert.True(statusCodeMatch, status.StatusCode.ToString());
 				tresult = statusCodeMatch && statusError && timetokenMatch;
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "test didnt return 1");
 
 			tresult = false;
@@ -2846,7 +2846,7 @@ namespace PubNubAPI.Tests
 					
                 }
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "test didnt return 2");
 			
 			pubnub.CleanUp();
@@ -2875,7 +2875,7 @@ namespace PubNubAPI.Tests
 				
 			});
 
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "test didn't return 10");
 			
 			pubnub.CleanUp();
@@ -2901,7 +2901,7 @@ namespace PubNubAPI.Tests
 				tresult = statusCodeMatch && statusError;
 			});
 
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "test didn't return 10");
 			
 			pubnub.CleanUp();
@@ -2930,7 +2930,7 @@ namespace PubNubAPI.Tests
 				Assert.True(statusCodeMatch, status.StatusCode.ToString());
 				tresult = statusCodeMatch && statusError && timetokenMatch;
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "test didnt return 1");
 
 			tresult = false;
@@ -2952,7 +2952,7 @@ namespace PubNubAPI.Tests
 					
                 }
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "test didnt return 2");
 			
 			pubnub.CleanUp();
@@ -3047,7 +3047,7 @@ namespace PubNubAPI.Tests
 				} 
 			};
 			pubnub.Subscribe ().Channels(channelList2).Execute();
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tJoinResult, "subscribe didn't get a join");
 
 			whatToTest = "";
@@ -3061,7 +3061,7 @@ namespace PubNubAPI.Tests
 				Assert.True(statusCodeMatch, status.StatusCode.ToString());
 				tresult = statusCodeMatch && statusError && timetokenMatch;
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 
 			Assert.True(tresult, "Subcribe didn't get a message");
 
@@ -3070,7 +3070,7 @@ namespace PubNubAPI.Tests
 			whatToTest = "join2";
 
 			pubnub2.Subscribe ().Channels(channelList2).Execute();
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tJoinResult, "subscribe2 didn't get a join");
 
 			whatToTest = "leave";
@@ -3080,7 +3080,7 @@ namespace PubNubAPI.Tests
 					Debug.Log("status.Error:" + status.Error);
 					tresult = !status.Error;
 				});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "unsubscribe didn't return");
 			Assert.True(tLeaveResult, "subscribe didn't get a leave");
 			
