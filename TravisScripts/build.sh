@@ -13,10 +13,13 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
 	-runEditorTests \
 	-testResults $(pwd)/test.xml \
+	-editorTestsResultFile $(pwd)/test1.xml
 	-testPlatform editmode \
 	-username "${UNITYCI_NEW_USER}" \
 	-password "${UNITYCI_NEW_PASS}" \
 	-serial "${UNITYCI_NEW_SERIAL}" 
+
+
 # /Applications/Unity/Unity.app/Contents/MacOS/Unity \
 #   --args buildName $UNITY_BUILD_APK_NAME \
 #   -batchmode \
@@ -81,7 +84,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 
 rc0=$?
 echo "Unit test logs"
-#cat $(pwd)/editor1.log
+cat $(pwd)/editor1.log
 cat $(pwd)/test1.xml
 
 # returning license
