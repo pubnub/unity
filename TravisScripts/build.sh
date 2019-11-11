@@ -33,8 +33,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 #   -runEditorTests  
 
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
-  -batchmode \
-  -nographics \ 
+  -batchmode \ 
   -silent-crashes \ 
   -runEditorTests \
   -logFile $(pwd)/editor1.log \
