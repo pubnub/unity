@@ -11,11 +11,7 @@ jobs:
       install:
         - sudo -E sh ./TravisScripts/install.sh
       script:
-        - sudo -E sh ./TravisScripts/unit-tests.sh
-      script:
-        - sudo -E sh ./TravisScripts/integration-tests.sh
-      script:
-        - sudo -E sh ./TravisScripts/export-package.sh
+        - sudo -E sh ./TravisScripts/build.sh
       deploy:
         provider: releases
         api_key:
