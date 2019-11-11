@@ -19,7 +19,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 	-password "${UNITYCI_NEW_PASS}" \
 	-serial "${UNITYCI_NEW_SERIAL}" 
 
-#rc0=$?
+rc0=$?
 echo "Unit test logs"
 #cat $(pwd)/editor1.log
 cat $(pwd)/test1.xml
@@ -30,7 +30,7 @@ echo "returning license"
 
 #exit if tests failed
 #if [ $rc0 -ne 0 ]; then { echo "Failed unit tests editmode"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc0; } fi	
-if [ $rc1 -ne 0 ]; then { echo "Failed unit tests editmode"; exit $rc1; } fi	
+if [ $rc0 -ne 0 ]; then { echo "Failed unit tests editmode"; exit $rc0; } fi	
 
 echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} playmode"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
