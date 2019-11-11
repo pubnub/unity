@@ -1881,9 +1881,12 @@ namespace PubNubAPI.Tests
 			PubNub pubnub = new PubNub(pnConfiguration);
 			bool tresult = false;
 
+			Debug.Log(pnConfiguration.SubscribeKey);
+
 			pubnub.CreateUser().Email(email).ExternalID(externalID).Name(name).ID(id).Include(include).ProfileURL(profileURL).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				Debug.Log("status.StatusCode" + status.StatusCode);
 				Assert.AreEqual(name, result.Name);
 				Assert.AreEqual(email, result.Email);
 				Assert.AreEqual(externalID, result.ExternalID);
