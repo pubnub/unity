@@ -7,19 +7,15 @@ notifications:
 
 jobs:
   include:
-    - stage: Install Unity 
+    - stage: Install Unity/Run Tests/Export/Deploy
       install:
         - sudo -E sh ./TravisScripts/install.sh
-    - stage: Run Unit Tests    
       script:
         - sudo -E sh ./TravisScripts/unit-tests.sh
-    - stage: Run Integration Tests    
       script:
         - sudo -E sh ./TravisScripts/integration-tests.sh
-    - stage: Export Package  
       script:
         - sudo -E sh ./TravisScripts/export-package.sh
-    - stage: Deploy
       deploy:
         provider: releases
         api_key:
