@@ -7,24 +7,35 @@
 
 ## Run the editor unit tests
 echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
-
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
-	-batchmode \
-	-logFile $(pwd)/editor1.log \
-	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
-	-runTests \
-	-testResults $(pwd)/test1.xml \
-	-testPlatform editmode \
-	-username "${UNITYCI_NEW_USER}" \
-	-password "${UNITYCI_NEW_PASS}" \
-	-serial "${UNITYCI_NEW_SERIAL}" 
-	# -silent-crashes \
-	# -accept-apiupdate \
-	# -noUpm
+  -batchmode \
+  -nographics \
+  -silent-crashes \
+  -logFile $(pwd)/editor1.log \
+  -projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
+  -testResults $(pwd)/test1.xml \
+  -testPlatform editmode \
+  -username "${UNITYCI_NEW_USER}" \
+  -password "${UNITYCI_NEW_PASS}" \
+  -serial "${UNITYCI_NEW_SERIAL}" 
+  
+# /Applications/Unity/Unity.app/Contents/MacOS/Unity \
+# 	-batchmode \
+# 	-logFile $(pwd)/editor1.log \
+# 	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
+# 	-runTests \
+# 	-testResults $(pwd)/test1.xml \
+# 	-testPlatform editmode \
+# 	-username "${UNITYCI_NEW_USER}" \
+# 	-password "${UNITYCI_NEW_PASS}" \
+# 	-serial "${UNITYCI_NEW_SERIAL}" 
+# 	# -silent-crashes \
+# 	# -accept-apiupdate \
+# 	# -noUpm
 
 rc0=$?
 echo "Unit test logs"
-#cat $(pwd)/editor1.log
+cat $(pwd)/editor1.log
 cat $(pwd)/test1.xml
 
 # returning license
