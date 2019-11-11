@@ -10,7 +10,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
   -batchmode \
   -nographics \
-  -runTests \
+  -runEditorTests \
   -logFile $(pwd)/editor1.log \
   -projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
   -testResults $(pwd)/test1.xml \
@@ -18,6 +18,17 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
   -username "${UNITYCI_NEW_USER}" \
   -password "${UNITYCI_NEW_PASS}" \
   -serial "${UNITYCI_NEW_SERIAL}" 
+
+# /Applications/Unity/Unity.app/Contents/MacOS/Unity \
+#   -batchmode \
+#   -nographics \
+#   -silent-crashes \
+#   -projectPath "$PROJECT_PATH" \
+#   -buildTarget "Android" \
+#   -username "$UNITYEMAIL" \
+#   -password "$UNITYPASSWORD" \
+#   -serial "$UNITYKEY" \
+#   -runEditorTests
   
 # /Applications/Unity/Unity.app/Contents/MacOS/Unity \
 # 	-batchmode \
@@ -51,7 +62,7 @@ echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} playmode"
 	-batchmode \
 	-logFile $(pwd)/editor2.log \
 	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
-	-runTests \
+	-runEditorTests \
 	-testResults $(pwd)/test2.xml \
 	-testPlatform playmode \
 	-username "${UNITYCI_NEW_USER}" \
