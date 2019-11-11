@@ -1096,7 +1096,7 @@ namespace PubNubAPI.Tests
 				tresult = true;
 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "CreateUser didn't return");
 
 			tresult = false;
@@ -1115,7 +1115,7 @@ namespace PubNubAPI.Tests
 				Assert.True("ucv2" == result.Custom["usercustomkey2"].ToString());
 				tresult = true;
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "GetUser didn't return");
 
 			tresult = false;
@@ -1136,7 +1136,7 @@ namespace PubNubAPI.Tests
 				tresult = true;
 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "CreateUser didn't return");
 
 			tresult = false;
@@ -1155,7 +1155,7 @@ namespace PubNubAPI.Tests
 				tresult = true;
 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "CreateSpace didn't return");
 
 			tresult = false;
@@ -1172,7 +1172,7 @@ namespace PubNubAPI.Tests
 				Assert.True("scv2" == result.Custom["spacecustomkey2"].ToString());
 				tresult = true;
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "GetSpace didn't return");
 
 			tresult = false;
@@ -1191,7 +1191,7 @@ namespace PubNubAPI.Tests
 				tresult = true;
 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "CreateSpace didn't return");
 
 			PNMembersInput input = new PNMembersInput();
@@ -1238,7 +1238,7 @@ namespace PubNubAPI.Tests
 				tresult = bFound;
 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "ManageMembers didn't return");
 
 			//Update Space Memberships
@@ -1280,7 +1280,7 @@ namespace PubNubAPI.Tests
 				tresult = bFound;
 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "ManageMembers Update didn't return");
 
 			//Get Space Memberships
@@ -1317,7 +1317,7 @@ namespace PubNubAPI.Tests
 				tresult = bFound;
 			});
 
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "GetMemberships didn't return");
 
 			//Remove Space Memberships
@@ -1354,7 +1354,7 @@ namespace PubNubAPI.Tests
 				tresult = bFound;
 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "ManageMembers Remove didn't return");
 
 			//Add user memberships
@@ -1398,7 +1398,7 @@ namespace PubNubAPI.Tests
 				tresult = bFound;
 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "ManageMemberships didn't return");
 
 			//Update user memberships
@@ -1443,7 +1443,7 @@ namespace PubNubAPI.Tests
 				tresult = bFound;
 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "ManageMemberships Update didn't return");
 
 			//Get members
@@ -1477,7 +1477,7 @@ namespace PubNubAPI.Tests
 				tresult = bFound;				
 			});
 
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "GetMembers didn't return");
 
 			//Remove user memberships
@@ -1517,7 +1517,7 @@ namespace PubNubAPI.Tests
 				tresult = bFound;
 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "ManageMemberships Remove didn't return");
 
 			//delete user 1
@@ -1529,7 +1529,7 @@ namespace PubNubAPI.Tests
 				tresult = true;
 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "DeleteUser didn't return");			
 			//delete space 1
 			tresult = false;
@@ -1539,7 +1539,7 @@ namespace PubNubAPI.Tests
 				tresult = true;
 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "DeleteSpace didn't return");				
 			//delete user 1
 			tresult = false;
@@ -1549,7 +1549,7 @@ namespace PubNubAPI.Tests
 				tresult = true;
 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "DeleteUser didn't return");				
 			//delete space 1
 			tresult = false;
@@ -1559,7 +1559,7 @@ namespace PubNubAPI.Tests
 				tresult = true;
 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "DeleteSpace didn't return");	
 
 			pubnub.CleanUp();			
@@ -1633,7 +1633,7 @@ namespace PubNubAPI.Tests
 				}
 			};
 			pubnubSub.Subscribe ().Channels(channelList2).Execute();
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 
 			bool tresult = false;
 			//Create User
@@ -1651,7 +1651,7 @@ namespace PubNubAPI.Tests
 				tresult = true;
 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "CreateUser didn't return");			
 
 			//Update User
@@ -1671,7 +1671,7 @@ namespace PubNubAPI.Tests
 				tresult = true;
 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "UpdateUser didn't return");
 
 			Assert.True(userUpdate, "userUpdate didn't return");
@@ -1690,7 +1690,7 @@ namespace PubNubAPI.Tests
 				tresult = true;
 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "CreateSpace didn't return");
 
 			tresult = false;
@@ -1708,7 +1708,7 @@ namespace PubNubAPI.Tests
 				tresult = true;
 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "UpdateSpace didn't return");
 
 			Assert.True(spaceUpdate, "spaceUpdate didn't return");
@@ -1756,7 +1756,7 @@ namespace PubNubAPI.Tests
 				tresult = bFound;
 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "ManageMembers didn't return");
 
 			Assert.True(addUserToSpace, "addUserToSpace didn't return");				
@@ -1798,7 +1798,7 @@ namespace PubNubAPI.Tests
 				tresult = bFound;
 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "ManageMemberships Update didn't return");
 
 			Assert.True(updateUserMem, "updateUserMem didn't return");	
@@ -1833,7 +1833,7 @@ namespace PubNubAPI.Tests
 				tresult = bFound;
 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "ManageMemberships Remove didn't return");
 
 			Assert.True(removeUserFromSpace, "removeUserFromSpace didn't return");	
@@ -1846,7 +1846,7 @@ namespace PubNubAPI.Tests
 				tresult = true;
 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "DeleteUser didn't return");	
 			Assert.True(userDelete, "userDelete didn't return");			
 			//delete space 1
@@ -1857,7 +1857,7 @@ namespace PubNubAPI.Tests
 				tresult = true;
 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "DeleteSpace didn't return");	
 			Assert.True(spaceDelete, "spaceDelete didn't return");
 			pubnubSub.CleanUp();
@@ -1895,7 +1895,7 @@ namespace PubNubAPI.Tests
 				tresult = true;
 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "CreateUser didn't return");
 
 			tresult = false;
@@ -1913,7 +1913,7 @@ namespace PubNubAPI.Tests
 				Assert.True(result.Custom == null);
 				tresult = true;
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "GetUser didn't return");
 
 			tresult = false;
@@ -1939,7 +1939,7 @@ namespace PubNubAPI.Tests
 				tresult = true;
 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "UpdateUser didn't return");
 
 			
@@ -1961,7 +1961,7 @@ namespace PubNubAPI.Tests
 					}
 				}
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "GetUsers didn't return");
 
 			tresult = false;
@@ -1972,7 +1972,7 @@ namespace PubNubAPI.Tests
 				tresult = true;
 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "DeleteUser didn't return");
 
 			pubnub.CleanUp();
@@ -2005,7 +2005,7 @@ namespace PubNubAPI.Tests
 				tresult = true;
 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "CreateSpace didn't return");
 			tresult = false;
 			
@@ -2020,7 +2020,7 @@ namespace PubNubAPI.Tests
 				Assert.True(result.Custom == null);
 				tresult = true;
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "GetSpace didn't return");
 
 			tresult = false;
@@ -2042,7 +2042,7 @@ namespace PubNubAPI.Tests
 				tresult = true;
 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "UpdateSpace didn't return");
 
 			
@@ -2062,7 +2062,7 @@ namespace PubNubAPI.Tests
 					}
 				}
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "GetSpaces didn't return");
 
 			tresult = false;
@@ -2073,7 +2073,7 @@ namespace PubNubAPI.Tests
 				tresult = true;
 
 			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "DeleteSpace didn't return");
 
 			pubnub.CleanUp();
