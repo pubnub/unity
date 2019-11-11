@@ -518,7 +518,7 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLWasmStreaming: 0
   scriptingDefineSymbols:
-    1: 
+    1: ENABLE_PUBNUB_LOGGING
   platformArchitecture: {}
   scriptingBackend: {}
   il2cppCompilerConfiguration: {}
