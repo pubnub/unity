@@ -28,10 +28,10 @@ ExportedObj/
 */.vs/
 *.pdb
 /PubNubUnity/Library/metadata/*
-/PubNubUnity/Library/PackageCache/*
+/PubNubUnity/Library/PackageCache/*.meta
 /PubNubUnity/Library/ShaderCache/*
 /PubNubUnity/Library/*.log
-/PubNubUnity/Library/ScriptAssemblies/*
+/PubNubUnity/Library/ScriptAssemblies/*.meta
 /PubNubUnity/Logs/*
 /PubNubUnity/Library/*.asset
 /PubNubUnity/Library/*.txt
@@ -39,8 +39,8 @@ ExportedObj/
 /PubNubUnity/Library/*.dwlt
 /PubNubUnity/Library/*.db
 /PubNubUnity/Assets/*.meta
-/PubNubUnity/Library/*
-/PubNubUnity/Packages/*
+/PubNubUnity/Library/*.meta
+/PubNubUnity/Packages/*.meta
 
 # Unity3D generated meta files
 *.pidb.meta

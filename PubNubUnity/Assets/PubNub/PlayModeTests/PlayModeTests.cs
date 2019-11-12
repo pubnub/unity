@@ -13,7 +13,7 @@ namespace PubNubAPI.Tests
 	public class PlayModeTests {
 		#if !UNITY_WSA_10_0
 		#region "Time"
-		[UnityTest]
+		//[UnityTest]
 		public IEnumerator TestTime() {
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 
@@ -62,7 +62,7 @@ namespace PubNubAPI.Tests
 		#endregion
 
 		#region "HereNow"
-		[UnityTest]
+		//[UnityTest]
 		public IEnumerator TestHereNowChannel() {
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			pnConfiguration.UUID = "UnityTestHereNowUUID";
@@ -118,7 +118,7 @@ namespace PubNubAPI.Tests
 			pubnub.CleanUp();
 		}
 
-		[UnityTest]
+		//[UnityTest]
 		public IEnumerator TestHereNowChannelGroup() {
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			pnConfiguration.UUID = "UnityTestHereNowUUID";
