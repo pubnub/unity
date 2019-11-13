@@ -37,7 +37,6 @@ namespace PubNubAPI
     public static class Helpers
     {
         #region "Helpers"
-
         public static bool CheckRequestTimeoutMessageInError(CustomEventArgs cea){
             if (cea.IsError && cea.Message.ToString().Contains ("The request timed out.")) {
                 return true;

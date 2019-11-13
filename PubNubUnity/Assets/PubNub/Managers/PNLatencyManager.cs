@@ -45,6 +45,22 @@ namespace PubNubAPI
             set{mobilePush = value;}
         }
 
+        private float signal; //l_sig
+        public float Signal{
+            get{return signal;}
+            set{signal = value;}
+        }
+
+        private float messageActions; //l_msga
+        public float MessageActions{
+            get{return messageActions;}
+            set{messageActions = value;}
+        } 
+        private float objects; //l_obj
+        public float Objects{
+            get{return objects;}
+            set{objects = value;}
+        }
         private SafeDictionary<long, float> TimeLatency = new SafeDictionary<long, float>(); 
         private SafeDictionary<long, float> PublishLatency = new SafeDictionary<long, float>(); 
         private SafeDictionary<long, float> PresenceLatency = new SafeDictionary<long, float>(); 
@@ -52,6 +68,10 @@ namespace PubNubAPI
         private SafeDictionary<long, float> HistoryLatency = new SafeDictionary<long, float>(); 
         private SafeDictionary<long, float> MessageCountsLatency = new SafeDictionary<long, float>(); 
         private SafeDictionary<long, float> MobilePushLatency = new SafeDictionary<long, float>(); 
+
+        private SafeDictionary<long, float> SignalLatency = new SafeDictionary<long, float>();
+        private SafeDictionary<long, float> MessageActionsLatency = new SafeDictionary<long, float>();
+        private SafeDictionary<long, float> ObjectsLatency = new SafeDictionary<long, float>();
 
         private static readonly DateTime epoch = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Local);
         private bool RunUpdateLatencyLoop;
@@ -93,6 +113,9 @@ namespace PubNubAPI
             UpdateLatency(ref HistoryLatency, t, ref history, "History");
             UpdateLatency(ref MessageCountsLatency, t, ref messageCounts, "MessageCounts");
             UpdateLatency(ref ChannelGroupsLatency, t, ref channelGroups, "ChannelGroups");
+            UpdateLatency(ref SignalLatency, t, ref signal, "Signal");
+            UpdateLatency(ref MessageActionsLatency, t, ref messageActions, "MessageActions");
+            UpdateLatency(ref ObjectsLatency, t, ref objects, "Objects");
         }
 
         void UpdateLatency(ref SafeDictionary<long, float> dict, long t, ref float f, string name){
@@ -122,6 +145,9 @@ namespace PubNubAPI
                 case PNOperationType.PNPublishOperation:
                     PublishLatency.Add(DateTime.UtcNow.Ticks, latency);
                     break;
+                case PNOperationType.PNSignalOperation:
+                    SignalLatency.Add(DateTime.UtcNow.Ticks, latency);
+                    break;
                 case PNOperationType.PNWhereNowOperation:
                 case PNOperationType.PNHereNowOperation:
                 case PNOperationType.PNLeaveOperation:
@@ -140,8 +166,30 @@ namespace PubNubAPI
                     break;
                 case PNOperationType.PNFetchMessagesOperation:
                 case PNOperationType.PNHistoryOperation:
+                case PNOperationType.PNHistoryWithActionsOperation:
                     HistoryLatency.Add(DateTime.UtcNow.Ticks, latency);
                     break;
+                case PNOperationType.PNGetMessageActionsOperation:
+                case PNOperationType.PNAddMessageActionsOperation:
+                case PNOperationType.PNRemoveMessageActionsOperation:
+                    MessageActionsLatency.Add(DateTime.UtcNow.Ticks, latency);
+                    break;    
+                case PNOperationType.PNCreateUserOperation:
+                case PNOperationType.PNGetUsersOperation:
+                case PNOperationType.PNGetUserOperation:
+                case PNOperationType.PNUpdateUserOperation:
+                case PNOperationType.PNDeleteUserOperation:
+                case PNOperationType.PNGetSpaceOperation:
+                case PNOperationType.PNGetSpacesOperation:
+                case PNOperationType.PNCreateSpaceOperation:
+                case PNOperationType.PNDeleteSpaceOperation:
+                case PNOperationType.PNUpdateSpaceOperation:
+                case PNOperationType.PNGetMembershipsOperation:
+                case PNOperationType.PNGetMembersOperation:
+                case PNOperationType.PNManageMembershipsOperation:
+                case PNOperationType.PNManageMembersOperation:
+                    ObjectsLatency.Add(DateTime.UtcNow.Ticks, latency);
+                    break;    
                 case PNOperationType.PNAddChannelsToGroupOperation:
                 case PNOperationType.PNChannelGroupsOperation:
                 case PNOperationType.PNChannelsForGroupOperation:

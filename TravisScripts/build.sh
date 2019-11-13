@@ -7,20 +7,17 @@
 
 ## Run the editor unit tests
 echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
-
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
 	-batchmode \
-	-logFile $(pwd)/editor1.log \
+	-logFile $(pwd)/editor.log \
 	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
-	-runTests \
-	-testResults $(pwd)/test1.xml \
+	-runEditorTests \
+	-testResults $(pwd)/test.xml \
+	-editorTestsResultFile $(pwd)/test1.xml \
 	-testPlatform editmode \
 	-username "${UNITYCI_NEW_USER}" \
 	-password "${UNITYCI_NEW_PASS}" \
 	-serial "${UNITYCI_NEW_SERIAL}" 
-	# -silent-crashes \
-	# -accept-apiupdate \
-	# -noUpm
 
 rc0=$?
 echo "Unit test logs"
@@ -33,22 +30,19 @@ echo "returning license"
 
 #exit if tests failed
 #if [ $rc0 -ne 0 ]; then { echo "Failed unit tests editmode"; /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense; exit $rc0; } fi	
-if [ $rc1 -ne 0 ]; then { echo "Failed unit tests editmode"; exit $rc1; } fi	
+if [ $rc0 -ne 0 ]; then { echo "Failed unit tests editmode"; exit $rc0; } fi	
 
 echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} playmode"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
 	-batchmode \
 	-logFile $(pwd)/editor2.log \
 	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
-	-runTests \
+	-runEditorTests \
 	-testResults $(pwd)/test2.xml \
 	-testPlatform playmode \
 	-username "${UNITYCI_NEW_USER}" \
 	-password "${UNITYCI_NEW_PASS}" \
 	-serial "${UNITYCI_NEW_SERIAL}" 
-	# -silent-crashes \
-	# -nographics \
-	# -noUpm	
 
 rc1=$?
 echo "Unit test logs 2"
@@ -73,7 +67,6 @@ echo "creating exportPackage"
 	-username ${UNITYCI_USER_NAME} \
 	-password ${UNITYCI_PASS} \
 	-serial ${UNITYCI_SERIAL} \
-	# -nographics
 
 # returning license
 echo "returning license"
