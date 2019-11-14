@@ -59,7 +59,7 @@ namespace PubNubAPI
 
         }
 
-        public void AddListener(Action<PNStatus> statusCallback, Action<PNMessageResult> messageCallback, Action<PNPresenceEventResult> presenceCallback, Action<PNSignalEventResult> signalCallback)
+        public void AddListener(Action<PNStatus> statusCallback, Action<PNMessageResult> messageCallback, Action<PNPresenceEventResult> presenceCallback, Action<PNSignalEventResult> signalCallback, Action<PNUserEventResult> userCallback, Action<PNSpaceEventResult> spaceCallback, Action<PNMembershipEventResult> membershipCallback)
         {
             SubscribeCallback += (object sender, EventArgs e) => {
                 SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
@@ -80,6 +80,15 @@ namespace PubNubAPI
                     }
                     if(mea.MessageResult != null){
                         signalCallback(mea.SignalEventResult);
+                    }
+                    if(mea.UserEventResult != null){
+                        userCallback(mea.UserEventResult);
+                    }
+                    if(mea.SpaceEventResult != null){
+                        spaceCallback(mea.SpaceEventResult);
+                    }
+                    if(mea.MembershipEventResult != null){
+                        membershipCallback(mea.MembershipEventResult);
                     }
                 }
             };
@@ -269,6 +278,121 @@ namespace PubNubAPI
             
             return new RemoveChannelsFromPushBuilder(this);
         }
+
+        public CreateUserBuilder CreateUser(){
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("CreateUser", PNLoggingMethod.LevelInfo);
+            #endif
+            
+            return new CreateUserBuilder(this);
+        }
+        public UpdateUserBuilder UpdateUser(){
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("UpdateUser", PNLoggingMethod.LevelInfo);
+            #endif
+            
+            return new UpdateUserBuilder(this);
+        }
+        public DeleteUserBuilder DeleteUser(){
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("DeleteUser", PNLoggingMethod.LevelInfo);
+            #endif
+            
+            return new DeleteUserBuilder(this);
+        }
+        public GetUserBuilder GetUser(){
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("GetUser", PNLoggingMethod.LevelInfo);
+            #endif
+            
+            return new GetUserBuilder(this);
+        }
+        public GetUsersBuilder GetUsers(){
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("GetUsers", PNLoggingMethod.LevelInfo);
+            #endif
+            
+            return new GetUsersBuilder(this);
+        }
+        public CreateSpaceBuilder CreateSpace(){
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("CreateSpace", PNLoggingMethod.LevelInfo);
+            #endif
+            
+            return new CreateSpaceBuilder(this);
+        }
+
+        public UpdateSpaceBuilder UpdateSpace()
+        {
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("UpdateSpace", PNLoggingMethod.LevelInfo);
+            #endif
+
+            return new UpdateSpaceBuilder(this);
+        }
+
+        public DeleteSpaceBuilder DeleteSpace()
+        {
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("DeleteSpace", PNLoggingMethod.LevelInfo);
+            #endif
+
+            return new DeleteSpaceBuilder(this);
+        }
+
+        public GetSpaceBuilder GetSpace()
+        {
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("GetSpace", PNLoggingMethod.LevelInfo);
+            #endif
+
+            return new GetSpaceBuilder(this);
+        }
+
+        public GetSpacesBuilder GetSpaces()
+        {
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("GetSpaces", PNLoggingMethod.LevelInfo);
+            #endif
+
+            return new GetSpacesBuilder(this);
+        }
+
+        public GetMembersBuilder GetMembers()
+        {
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("GetMembers", PNLoggingMethod.LevelInfo);
+            #endif
+
+            return new GetMembersBuilder(this);
+        }
+
+        public GetMembershipsBuilder GetMemberships()
+        {
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("GetMemberships", PNLoggingMethod.LevelInfo);
+            #endif
+
+            return new GetMembershipsBuilder(this);
+        }
+
+        public ManageMembersBuilder ManageMembers()
+        {
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("ManageMembers", PNLoggingMethod.LevelInfo);
+            #endif
+
+            return new ManageMembersBuilder(this);
+        }
+
+        public ManageMembershipsBuilder ManageMemberships()
+        {
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("ManageMemberships", PNLoggingMethod.LevelInfo);
+            #endif
+
+            return new ManageMembershipsBuilder(this);
+        }                                
     }
 }
 

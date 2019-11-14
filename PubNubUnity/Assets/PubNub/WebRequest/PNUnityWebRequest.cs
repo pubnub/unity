@@ -280,6 +280,17 @@ namespace PubNubAPI
                 this.PNLog.WriteToLog (string.Format ("POST Data : {1} \nURL:{0}", unityWebRequestWrapper.URL, unityWebRequestWrapper.CurrentRequestState.POSTData), PNLoggingMethod.LevelInfo);
                 #endif
                 
+            } else if(unityWebRequestWrapper.CurrentRequestState.httpMethod.Equals(HTTPMethod.Patch)){
+                unityWebRequestWrapper.CurrentUnityWebRequest = new UnityWebRequest(unityWebRequestWrapper.URL);
+                unityWebRequestWrapper.CurrentUnityWebRequest.uploadHandler   = new UploadHandlerRaw(Encoding.UTF8.GetBytes(unityWebRequestWrapper.CurrentRequestState.POSTData));
+                unityWebRequestWrapper.CurrentUnityWebRequest.downloadHandler = new DownloadHandlerBuffer();
+                unityWebRequestWrapper.CurrentUnityWebRequest.method = "PATCH";
+                unityWebRequestWrapper.CurrentUnityWebRequest.SetRequestHeader("Content-Type","application/json"); 
+                
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PNLog.WriteToLog (string.Format ("PATCH Data : {1} \nURL:{0}", unityWebRequestWrapper.URL, unityWebRequestWrapper.CurrentRequestState.POSTData), PNLoggingMethod.LevelInfo);
+                #endif
+                
             } else if(unityWebRequestWrapper.CurrentRequestState.httpMethod.Equals(HTTPMethod.Delete)) {
                 unityWebRequestWrapper.CurrentUnityWebRequest = new UnityWebRequest(unityWebRequestWrapper.URL);
                 unityWebRequestWrapper.CurrentUnityWebRequest.downloadHandler = new DownloadHandlerBuffer();

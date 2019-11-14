@@ -226,16 +226,97 @@ namespace PubNubAPI
             return pnUnity.RemovePushNotificationsFromChannels();            
         }
 
+        public CreateUserBuilder CreateUser(){            
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.CreateUser();            
+        }
+
+        public UpdateUserBuilder UpdateUser(){            
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.UpdateUser();            
+        }
+
+        public DeleteUserBuilder DeleteUser(){            
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.DeleteUser();            
+        }
+
+        public GetUserBuilder GetUser(){            
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.GetUser();            
+        }
+
+        public GetUsersBuilder GetUsers(){            
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.GetUsers();            
+        }
+
+        public CreateSpaceBuilder CreateSpace(){            
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.CreateSpace();            
+        }
+
+        public UpdateSpaceBuilder UpdateSpace()
+        {
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.UpdateSpace();
+        }
+
+        public DeleteSpaceBuilder DeleteSpace()
+        {
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.DeleteSpace();
+        }
+
+        public GetSpaceBuilder GetSpace()
+        {
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.GetSpace();
+        }
+
+        public GetSpacesBuilder GetSpaces()
+        {
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.GetSpaces();
+        }
+
+        public GetMembersBuilder GetMembers()
+        {
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.GetMembers();
+        }
+        public GetMembershipsBuilder GetMemberships()
+        {
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.GetMemberships();
+        }
+        public ManageMembersBuilder ManageMembers()
+        {
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.ManageMembers();
+        }
+        public ManageMembershipsBuilder ManageMemberships()
+        {
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.ManageMemberships();
+        }
+
         public void AddListener(Action<PNStatus> statusCallback, Action<PNMessageResult> messageCallback, Action<PNPresenceEventResult> presenceCallback)
         {
             PubNubUnityInitializationAfterCleanup();
-            pnUnity.AddListener(statusCallback, messageCallback, presenceCallback, null);
+            pnUnity.AddListener(statusCallback, messageCallback, presenceCallback, null, null, null, null);
         }
 
         public void AddListener(Action<PNStatus> statusCallback, Action<PNMessageResult> messageCallback, Action<PNPresenceEventResult> presenceCallback, Action<PNSignalEventResult> signalCallback)
         {
             PubNubUnityInitializationAfterCleanup();
-            pnUnity.AddListener(statusCallback, messageCallback, presenceCallback, signalCallback);
+            pnUnity.AddListener(statusCallback, messageCallback, presenceCallback, signalCallback, null, null, null);
+        }
+
+        public void AddListener(Action<PNStatus> statusCallback, Action<PNMessageResult> messageCallback, Action<PNPresenceEventResult> presenceCallback, Action<PNSignalEventResult> signalCallback, Action<PNUserEventResult> userCallback, Action<PNSpaceEventResult> spaceCallback, Action<PNMembershipEventResult> membershipCallback)
+        {
+            PubNubUnityInitializationAfterCleanup();
+            pnUnity.AddListener(statusCallback, messageCallback, presenceCallback, signalCallback, userCallback, spaceCallback, membershipCallback);
         }
 
         public static long TranslateDateTimeToPubnubUnixNanoSeconds (DateTime dotNetUTCDateTime)
