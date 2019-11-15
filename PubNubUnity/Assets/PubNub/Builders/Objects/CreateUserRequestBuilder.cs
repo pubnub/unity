@@ -95,10 +95,7 @@ namespace PubNubAPI
             PNUserResult pnUserResult = new PNUserResult();
             PNStatus pnStatus = new PNStatus();
 
-            Debug.Log("=======>" + deSerializedResult.ToString());
-
             try{
-                Debug.Log("=======> dictionary");
                 Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
                 
                 if(dictionary != null) {
@@ -108,24 +105,26 @@ namespace PubNubAPI
                         Dictionary<string, object> objDataDict = objData as Dictionary<string, object>;
                         if(objDataDict != null){
                             pnUserResult = ObjectsHelpers.ExtractUser(objDataDict);
-                            Debug.Log("=======> pnUserResult" + pnUserResult);
                         }  else {
                             pnUserResult = null;
                             pnStatus = base.CreateErrorResponseFromException(new PubNubException("objDataDict null"), requestState, PNStatusCategory.PNUnknownCategory);
                         }  
                     }  else {
-                        Debug.Log("=======> objData null");
                         pnUserResult = null;
                         pnStatus = base.CreateErrorResponseFromException(new PubNubException("objData null"), requestState, PNStatusCategory.PNUnknownCategory);
                     }                      
-                } else {
-                    Debug.Log("=======> dictionary null");
+                } 
+                #if (ENABLE_PUBNUB_LOGGING)
+                else {
+                    this.PubNubInstance.PNLog.WriteToLog ("dictionary null", PNLoggingMethod.LevelInfo);
                 }
+                #endif
             } catch (Exception ex){
-                Debug.Log("=======>" + ex.ToString());
-
                 pnUserResult = null;
                 pnStatus = base.CreateErrorResponseFromException(ex, requestState, PNStatusCategory.PNUnknownCategory);
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PubNubInstance.PNLog.WriteToLog (string.Format ("ex: {0}", ex.ToString()), PNLoggingMethod.LevelError);
+                #endif
             }
             Callback(pnUserResult, pnStatus);
 

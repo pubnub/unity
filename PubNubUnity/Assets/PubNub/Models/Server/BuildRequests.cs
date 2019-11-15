@@ -172,6 +172,65 @@ namespace PubNubAPI
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNSignalOperation, "", pnInstance, queryParams);
         }
 
+        public static Uri BuildAddMessageActionsRequest (string channel, string messageTimetoken, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        {
+            ///v1/message-actions/%s/channel/%s/message/%s
+            List<string> url = new List<string> ();
+            url.Add ("v1");
+            url.Add ("message-actions");
+            url.Add (pnInstance.PNConfig.SubscribeKey);
+            url.Add ("channel");
+            url.Add (channel);
+            url.Add ("message");
+            url.Add (messageTimetoken);
+
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNAddMessageActionsOperation, "", pnInstance, queryParams);
+        }
+
+        public static Uri BuildRemoveMessageActionsRequest (string channel, string messageTimetoken, string actionTimetoken, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        {
+            ///v1/message-actions/%s/channel/%s/message/%s/action/%s
+
+            List<string> url = new List<string> ();
+            url.Add ("v1");
+            url.Add ("message-actions");
+            url.Add (pnInstance.PNConfig.SubscribeKey);
+            url.Add ("channel");
+            url.Add (channel);
+            url.Add ("message");
+            url.Add (messageTimetoken);
+            url.Add ("action");
+            url.Add (actionTimetoken);
+
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNRemoveMessageActionsOperation, "", pnInstance, queryParams);
+        }
+
+        public static Uri BuildGetMessageActionsRequest (string channel, string start, string end, int limit, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        {
+            ///v1/message-actions/%s/channel/%s
+            StringBuilder parameterBuilder = new StringBuilder ();
+            if (limit > 0) {
+                parameterBuilder.AppendFormat ("&limit={0}", limit.ToString());
+            }
+            if (!string.IsNullOrEmpty(start)) {
+                parameterBuilder.AppendFormat ("&start={0}", start);
+            }
+            if (!string.IsNullOrEmpty(end)) {
+                parameterBuilder.AppendFormat ("&end={0}", end);
+            }
+
+            List<string> url = new List<string> ();
+            url.Add ("v1");
+            url.Add ("message-actions");
+            url.Add (pnInstance.PNConfig.SubscribeKey);
+            url.Add ("channel");
+            url.Add (channel);
+
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNGetMessageActionsOperation, parameterBuilder.ToString (), pnInstance, queryParams);
+        }
+
+
+
         public static Uri BuildObjectsCreateUserRequest (string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
         {
             ///v1/objects/%s/users
@@ -1131,6 +1190,9 @@ namespace PubNubAPI
             case PNOperationType.PNDeleteUserOperation:
             case PNOperationType.PNUpdateSpaceOperation:
             case PNOperationType.PNUpdateUserOperation:
+            case PNOperationType.PNAddMessageActionsOperation:
+            case PNOperationType.PNGetMessageActionsOperation:
+            case PNOperationType.PNRemoveMessageActionsOperation:
 
                 url = AppendUUIDToURL(url, uuid, true);
                 url.Append (parameters);
