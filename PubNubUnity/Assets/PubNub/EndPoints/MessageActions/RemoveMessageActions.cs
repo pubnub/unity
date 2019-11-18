@@ -17,12 +17,12 @@ namespace PubNubAPI
             removeMessageActionsBuilder.Channel(channel);
             return this;
         }
-        public RemoveMessageActionsBuilder MessageTimetoken(string messageTimetoken){
+        public RemoveMessageActionsBuilder MessageTimetoken(long messageTimetoken){
             removeMessageActionsBuilder.MessageTimetoken(messageTimetoken);
             return this;
         }
 
-        public RemoveMessageActionsBuilder ActionTimetoken(string actionTimetoken){
+        public RemoveMessageActionsBuilder ActionTimetoken(long actionTimetoken){
             removeMessageActionsBuilder.ActionTimetoken(actionTimetoken);
             return this;
         }

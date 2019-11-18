@@ -14,7 +14,7 @@ namespace PubNubAPI
     public class AddMessageActionsRequestBuilder: PubNubNonSubBuilder<AddMessageActionsRequestBuilder, PNMessageActionsResult>, IPubNubNonSubscribeBuilder<AddMessageActionsRequestBuilder, PNMessageActionsResult>
     {        
         private string AddMessageActionsChannel { get; set;}
-        private string AddMessageActionsMessageTimetoken { get; set;}
+        private long AddMessageActionsMessageTimetoken { get; set;}
         private MessageActionAdd MessageActionAdd { get; set;}
         public AddMessageActionsRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNAddMessageActionsOperation){
         }
@@ -37,7 +37,7 @@ namespace PubNubAPI
             return this;
         }
 
-        public AddMessageActionsRequestBuilder MessageTimetoken(string messageTimetoken){
+        public AddMessageActionsRequestBuilder MessageTimetoken(long messageTimetoken){
             AddMessageActionsMessageTimetoken = messageTimetoken;
             return this;
         }
@@ -65,7 +65,7 @@ namespace PubNubAPI
 
             Uri request = BuildRequests.BuildAddMessageActionsRequest(
                     AddMessageActionsChannel,
-                    AddMessageActionsMessageTimetoken,
+                    AddMessageActionsMessageTimetoken.ToString(),
                     this.PubNubInstance,
                     this.QueryParams
                 );
@@ -76,10 +76,7 @@ namespace PubNubAPI
             PNMessageActionsResult pnMessageActionsResult = new PNMessageActionsResult();
             PNStatus pnStatus = new PNStatus();
 
-            Debug.Log("=======>" + deSerializedResult.ToString());
-
             try{
-                Debug.Log("=======> dictionary");
                 Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
                 
                 if(dictionary != null) {
@@ -89,13 +86,11 @@ namespace PubNubAPI
                         Dictionary<string, object> objDataDict = objData as Dictionary<string, object>;
                         if(objDataDict != null){
                             pnMessageActionsResult = MessageActionsHelpers.ExtractMessageAction(objDataDict);
-                            Debug.Log("=======> pnUserResult" + pnMessageActionsResult);
                         }  else {
                             pnMessageActionsResult = null;
                             pnStatus = base.CreateErrorResponseFromException(new PubNubException("objDataDict null"), requestState, PNStatusCategory.PNUnknownCategory);
                         }  
                     }  else {
-                        Debug.Log("=======> objData null");
                         pnMessageActionsResult = null;
                         pnStatus = base.CreateErrorResponseFromException(new PubNubException("objData null"), requestState, PNStatusCategory.PNUnknownCategory);
                     }                      
@@ -107,8 +102,6 @@ namespace PubNubAPI
                 #endif
 
             } catch (Exception ex){
-                Debug.Log("=======>" + ex.ToString());
-
                 pnMessageActionsResult = null;
                 pnStatus = base.CreateErrorResponseFromException(ex, requestState, PNStatusCategory.PNUnknownCategory);
             }

@@ -17,7 +17,7 @@ namespace PubNubAPI
             return this;
         }
 
-        public AddMessageActionsBuilder MessageTimetoken(string messageTimetoken){
+        public AddMessageActionsBuilder MessageTimetoken(long messageTimetoken){
             addMessageActionsBuilder.MessageTimetoken(messageTimetoken);
             return this;
         }

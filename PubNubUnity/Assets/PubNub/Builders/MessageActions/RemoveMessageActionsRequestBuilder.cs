@@ -7,9 +7,9 @@ namespace PubNubAPI
 {
     public class RemoveMessageActionsRequestBuilder: PubNubNonSubBuilder<RemoveMessageActionsRequestBuilder, PNRemoveMessageActionsResult>, IPubNubNonSubscribeBuilder<RemoveMessageActionsRequestBuilder, PNRemoveMessageActionsResult>
     {        
-        private string  RemoveMessageActionsActionTimetoken { get; set;}
+        private long  RemoveMessageActionsActionTimetoken { get; set;}
         private string  RemoveMessageActionsChannel { get; set;}
-        private string  RemoveMessageActionsMessageTimetoken { get; set;}
+        private long  RemoveMessageActionsMessageTimetoken { get; set;}
 
         public RemoveMessageActionsRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNRemoveMessageActionsOperation){
         }
@@ -27,11 +27,11 @@ namespace PubNubAPI
              RemoveMessageActionsChannel = channel;
             return this;
         }
-        public RemoveMessageActionsRequestBuilder MessageTimetoken(string messageTimetoken){
+        public RemoveMessageActionsRequestBuilder MessageTimetoken(long messageTimetoken){
              RemoveMessageActionsMessageTimetoken = messageTimetoken;
             return this;
         }
-        public RemoveMessageActionsRequestBuilder ActionTimetoken(string actionTimetoken){
+        public RemoveMessageActionsRequestBuilder ActionTimetoken(long actionTimetoken){
              RemoveMessageActionsActionTimetoken = actionTimetoken;
             return this;
         }
@@ -42,8 +42,8 @@ namespace PubNubAPI
 
             Uri request = BuildRequests.BuildRemoveMessageActionsRequest(
                      RemoveMessageActionsChannel,
-                     RemoveMessageActionsMessageTimetoken,
-                     RemoveMessageActionsActionTimetoken,
+                     RemoveMessageActionsMessageTimetoken.ToString(),
+                     RemoveMessageActionsActionTimetoken.ToString(),
                     this.PubNubInstance,
                     this.QueryParams
                 );

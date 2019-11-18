@@ -9,8 +9,8 @@ namespace PubNubAPI
     {        
         private string GetMessageActionsChannel { get; set;}
         private int GetMessageActionsLimit { get; set;}
-        private string GetMessageActionsEnd { get; set;}
-        private string GetMessageActionsStart { get; set;}
+        private long GetMessageActionsEnd { get; set;}
+        private long GetMessageActionsStart { get; set;}
         public GetMessageActionsRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNGetMessageActionsOperation){
         }
 
@@ -31,11 +31,11 @@ namespace PubNubAPI
             return this;
         }
 
-        public GetMessageActionsRequestBuilder Start(string start){
+        public GetMessageActionsRequestBuilder Start(long start){
             GetMessageActionsStart = start;
             return this;
         }
-        public GetMessageActionsRequestBuilder End(string end){
+        public GetMessageActionsRequestBuilder End(long end){
             GetMessageActionsEnd = end;
             return this;
         }

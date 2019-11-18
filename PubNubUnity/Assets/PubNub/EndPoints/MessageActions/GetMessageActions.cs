@@ -20,11 +20,11 @@ namespace PubNubAPI
             getMessageActionsBuilder.Limit(limit);
             return this;
         }
-        public GetMessageActionsBuilder Start(string start){
+        public GetMessageActionsBuilder Start(long start){
             getMessageActionsBuilder.Start(start);
             return this;
         }
-        public GetMessageActionsBuilder End(string end){
+        public GetMessageActionsBuilder End(long end){
             getMessageActionsBuilder.End(end);
             return this;
         }

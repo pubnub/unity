@@ -1035,6 +1035,206 @@ namespace PubNubAPI.Tests
 		}
 
 		[UnityTest]
+		public IEnumerator TestMessageActions() {
+			yield return TestMessageActionsCommon(false);
+		}
+
+		public IEnumerator TestMessageActionsWithMessageActions() {
+			yield return TestMessageActionsCommon(true);
+		}
+
+		public IEnumerator TestMessageActionsCommon(bool withMessageActions) {
+			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
+			System.Random r = new System.Random ();
+			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next (100);
+			int ran = r.Next (10000);
+			string channel = "message_actions_channel_"  + ran;
+			string message = "message_actions_message_"  + ran;
+			
+			PubNub pubnubSub = new PubNub(pnConfiguration);
+			PNConfiguration pnConfiguration2 = PlayModeCommon.SetPNConfig(false);
+			pnConfiguration2.UUID = "UnityTestConnectedUUID_" + r.Next (100);
+			PubNub pubnubMA = new PubNub(pnConfiguration2);
+			List<string> channelList2 = new List<string>();
+			channelList2.Add(channel);
+
+			bool maAdd = false;
+			bool maDelete = false;
+			long messageTimetoken = 0;
+			long messageActionTimetoken = 0;
+
+			// Add MessageActionsEvent listener
+			pubnubSub.SubscribeCallback += (sender, e) => { 
+				SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
+				if (mea.MessageActionsEventResult != null) {					
+					maAdd = mea.MessageActionsEventResult.Channel.Equals(channel) && mea.MessageActionsEventResult.Data.UUID.Equals(pnConfiguration2.UUID) && mea.MessageActionsEventResult.MessageActionsEvent.Equals(PNMessageActionsEvent.PNMessageActionsEventAdded);
+					maDelete = mea.MessageActionsEventResult.Channel.Equals(channel) && mea.MessageActionsEventResult.Data.UUID.Equals(pnConfiguration2.UUID) && mea.MessageActionsEventResult.MessageActionsEvent.Equals(PNMessageActionsEvent.PNMessageActionsEventRemoved);
+					Debug.Log(mea.MessageActionsEventResult.Channel);
+					if(mea.MessageActionsEventResult.Data!=null){
+						Debug.Log(mea.MessageActionsEventResult.Data.ActionTimetoken);
+						Debug.Log(mea.MessageActionsEventResult.Data.ActionType);
+						Debug.Log(mea.MessageActionsEventResult.Data.ActionValue);
+						Debug.Log(mea.MessageActionsEventResult.Data.MessageTimetoken);
+						Debug.Log(mea.MessageActionsEventResult.Data.UUID);
+					}
+					Debug.Log(mea.MessageActionsEventResult.MessageActionsEvent);
+					Debug.Log(mea.MessageActionsEventResult.Subscription);
+				} 
+			};
+			// Subscribe to MessageActionsEvent
+			pubnubSub.Subscribe ().Channels(channelList2).Execute();
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);			
+			
+			// Publish with meta
+			Dictionary<string, string> metaDict = new Dictionary<string, string>();
+            metaDict.Add("region", "east");
+
+			bool testPubReturn = false;
+			pubnubSub.Publish().Channel(channel).Message(message).Meta(metaDict).Async((result, status) => {
+				// Read tt
+				messageTimetoken = result.Timetoken;
+				Assert.True(!result.Timetoken.Equals(0));
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				testPubReturn = true;
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			Assert.True(testPubReturn, "test didn't return");
+
+			MessageActionAdd maa = new MessageActionAdd();
+			maa.ActionType = "reaction";
+			maa.ActionValue = "smiley_face";
+
+			bool testAMAReturn = false;
+			
+			// Add message actions
+			pubnubMA.AddMessageActions().Channel(channel).MessageAction(maa).MessageTimetoken(messageTimetoken).Async((result, status) => {
+				// Read MA TT
+				Debug.Log("result.ActionTimetoken: " + result.ActionTimetoken);
+				Debug.Log("result.ActionType: " + result.ActionType);
+				Debug.Log("result.ActionValue: " + result.ActionValue);
+				Debug.Log("result.MessageTimetoken: " + result.MessageTimetoken);
+				Debug.Log("result.UUID: " + result.UUID);
+
+				messageActionTimetoken = result.ActionTimetoken;
+				Assert.True(maa.ActionType.Equals(result.ActionType));
+				Assert.True(maa.ActionValue.Equals(result.ActionValue));
+				Assert.True(messageTimetoken.Equals(result.MessageTimetoken));
+				Assert.True(pnConfiguration2.UUID.Equals(result.UUID));
+				testAMAReturn = true;
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			Assert.True(testAMAReturn, "test didn't return");			
+			
+			bool testGMAReturn = false;
+			// Get message actions CH only
+			pubnubMA.GetMessageActions().Channel(channel).Async((result, status) => {
+				testGMAReturn = MatchGMA(result, maa.ActionType, maa.ActionValue, messageActionTimetoken, messageTimetoken, pnConfiguration2.UUID);
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			Assert.True(testGMAReturn, "test didn't return");			
+			
+			// Get message actions start
+			testGMAReturn = false;
+			pubnubMA.GetMessageActions().Channel(channel).Start(messageActionTimetoken+1).Async((result, status) => {
+				testGMAReturn = MatchGMA(result, maa.ActionType, maa.ActionValue, messageActionTimetoken, messageTimetoken, pnConfiguration2.UUID);
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			Assert.True(testGMAReturn, "start test didn't return");		
+
+			// Get message actions start end
+			testGMAReturn = false;
+			pubnubMA.GetMessageActions().Channel(channel).Start(messageActionTimetoken+1).End(messageActionTimetoken).Async((result, status) => {
+				testGMAReturn = MatchGMA(result, maa.ActionType, maa.ActionValue, messageActionTimetoken, messageTimetoken, pnConfiguration2.UUID);
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			Assert.True(testGMAReturn, "start end test didn't return");		
+
+			// Get message actions ch limit
+			testGMAReturn = false;
+			pubnubMA.GetMessageActions().Channel(channel).Limit(1).Async((result, status) => {
+				testGMAReturn = MatchGMA(result, maa.ActionType, maa.ActionValue, messageActionTimetoken, messageTimetoken, pnConfiguration2.UUID);
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			Assert.True(testGMAReturn, "limit test didn't return");		
+
+			// Fetch With Meta and Message Actions
+			// tresult = false;
+			// tresultMeta = false;
+			// pubnubMA.FetchMessages().Channels(channelList2). .MessageAction(withMeta).Async((result, status) => {
+			// 	if(!status.Error){
+			// 		if(result.Channels != null){
+			// 			Dictionary<string, List<PNMessageResult>> fetchResult = result.Channels as Dictionary<string, List<PNMessageResult>>;
+			// 			Debug.Log("fetchResult.Count:" + fetchResult.Count);
+			// 			foreach(KeyValuePair<string, List<PNMessageResult>> kvp in fetchResult){
+			// 				Debug.Log("Channel:" + kvp.Key);
+			// 				if(kvp.Key.Equals(channel)){
+								
+			// 					foreach(PNMessageResult msg in kvp.Value){
+			// 						Debug.Log("msg.Channel:" + msg.Channel);
+			// 						Debug.Log("msg.Payload.ToString():" + msg.Payload.ToString());
+			// 						if(msg.Channel.Equals(channel) && (msg.Payload.ToString().Equals(payload))){
+			// 							tresult = true;
+			// 						}
+			// 						if(withMeta){
+			// 							Dictionary<string, object> metaDataDict = msg.UserMetadata as Dictionary<string, object>;
+			// 							object region;
+			// 							if(metaDataDict!=null){
+			// 								metaDataDict.TryGetValue("region", out region);
+			// 								tresultMeta = region.ToString().Equals("east");
+			// 							} else {
+			// 								Debug.Log("metaDataDict null" + msg.UserMetadata);
+			// 							}
+			// 						} else {
+			// 							tresultMeta = true;
+			// 						}
+
+			// 					}
+			// 					if(!tresult && !tresultMeta){
+			// 						break;
+			// 					}
+			// 				}							
+			// 			}
+			// 		}
+
+            //     } 
+
+			// });
+			// yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			// Assert.True(tresult, "test didnt return for fetch");
+			// Assert.True(tresultMeta, "test meta didnt return for fetch");
+
+			// Remove message Actions
+			bool testRMAReturn = false;
+			pubnubMA.RemoveMessageActions().ActionTimetoken(messageActionTimetoken).Channel(channel).MessageTimetoken(messageTimetoken).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				testRMAReturn = true;
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			Assert.True(testRMAReturn, "remove test didn't return");		
+			pubnubSub.CleanUp();
+		}
+
+		public bool MatchGMA(PNGetMessageActionsResult result, string ActionType, string ActionValue, long messageActionTimetoken, long messageTimetoken, string UUID){
+			if((result.Data != null) && (result.Data.Count >0)){
+				Debug.Log("result.ActionTimetoken: " + result.Data[0].ActionTimetoken);
+				Debug.Log("result.ActionType: " + result.Data[0].ActionType);
+				Debug.Log("result.ActionValue: " + result.Data[0].ActionValue);
+				Debug.Log("result.MessageTimetoken: " + result.Data[0].MessageTimetoken);
+				Debug.Log("result.UUID: " + result.Data[0].UUID);
+				Assert.True(ActionType.Equals(result.Data[0].ActionType));
+				Assert.True(ActionValue.Equals(result.Data[0].ActionValue));
+				Assert.True(messageTimetoken.Equals(result.Data[0].MessageTimetoken));
+				Assert.True(messageActionTimetoken.Equals(result.Data[0].ActionTimetoken));
+				Assert.True(UUID.Equals(result.Data[0].UUID));
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		[UnityTest]
 		public IEnumerator TestMembersAndMemberships() {
 			//Create user 1
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);

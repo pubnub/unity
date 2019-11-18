@@ -205,18 +205,18 @@ namespace PubNubAPI
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNRemoveMessageActionsOperation, "", pnInstance, queryParams);
         }
 
-        public static Uri BuildGetMessageActionsRequest (string channel, string start, string end, int limit, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        public static Uri BuildGetMessageActionsRequest (string channel, long start, long end, int limit, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
         {
             ///v1/message-actions/%s/channel/%s
             StringBuilder parameterBuilder = new StringBuilder ();
             if (limit > 0) {
                 parameterBuilder.AppendFormat ("&limit={0}", limit.ToString());
             }
-            if (!string.IsNullOrEmpty(start)) {
-                parameterBuilder.AppendFormat ("&start={0}", start);
+            if (start > 0 ) {
+                parameterBuilder.AppendFormat ("&start={0}", start.ToString());
             }
-            if (!string.IsNullOrEmpty(end)) {
-                parameterBuilder.AppendFormat ("&end={0}", end);
+            if (end > 0) {
+                parameterBuilder.AppendFormat ("&end={0}", end.ToString());
             }
 
             List<string> url = new List<string> ();

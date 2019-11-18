@@ -20,10 +20,18 @@ namespace PubNubAPI
 
         public static PNMessageActionsResult ExtractMessageAction(Dictionary<string, object> objDataDict){
             PNMessageActionsResult pnMessageActionsResult = new PNMessageActionsResult();
-            pnMessageActionsResult.ActionTimetoken = Utility.ReadMessageFromResponseDictionary(objDataDict, "actionTimetoken");
+            long actionTimetoken;
+            string log;
+            Utility.TryCheckKeyAndParseLong(objDataDict, "actionTimetoken", "actionTimetoken", out log, out actionTimetoken);
+
+            pnMessageActionsResult.ActionTimetoken = actionTimetoken;
             pnMessageActionsResult.ActionType = Utility.ReadMessageFromResponseDictionary(objDataDict, "type");
             pnMessageActionsResult.ActionValue = Utility.ReadMessageFromResponseDictionary(objDataDict, "value");
-            pnMessageActionsResult.MessageTimetoken = Utility.ReadMessageFromResponseDictionary(objDataDict, "messageTimetoken");
+            
+            long messageTimetoken;
+            Utility.TryCheckKeyAndParseLong(objDataDict, "messageTimetoken", "messageTimetoken", out log, out messageTimetoken);
+            pnMessageActionsResult.MessageTimetoken = messageTimetoken;
+            pnMessageActionsResult.UUID = Utility.ReadMessageFromResponseDictionary(objDataDict, "uuid");
 
             return pnMessageActionsResult;
         }
