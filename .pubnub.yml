@@ -3,6 +3,16 @@ changelog:
   - 
     changes: 
       - 
+        text: "Message Actions"
+        type: improvement
+      - 
+        text: "Fetch with Message Actions"
+        type: improvement
+    date: Nov 21, 19  
+    version: v4.5.0  
+  - 
+    changes: 
+      - 
         text: "Objects"
         type: improvement
     date: Nov 8, 19  
@@ -432,4 +442,4 @@ supported-platforms:
       - "Ubuntu 12.04+, with Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support."
       - "Mac OS X 10.8+, with Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support."
     version: "PubNub Unity SDK"
-version: v4.4.0
+version: v4.5.0
