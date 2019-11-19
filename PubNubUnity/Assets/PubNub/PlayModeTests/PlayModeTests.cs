@@ -1036,14 +1036,6 @@ namespace PubNubAPI.Tests
 
 		[UnityTest]
 		public IEnumerator TestMessageActions() {
-			yield return TestMessageActionsCommon(false);
-		}
-
-		public IEnumerator TestMessageActionsWithMessageActions() {
-			yield return TestMessageActionsCommon(true);
-		}
-
-		public IEnumerator TestMessageActionsCommon(bool withMessageActions) {
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random ();
 			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next (100);
@@ -1158,51 +1150,20 @@ namespace PubNubAPI.Tests
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(testGMAReturn, "limit test didn't return");		
 
-			// Fetch With Meta and Message Actions
-			// tresult = false;
-			// tresultMeta = false;
-			// pubnubMA.FetchMessages().Channels(channelList2). .MessageAction(withMeta).Async((result, status) => {
-			// 	if(!status.Error){
-			// 		if(result.Channels != null){
-			// 			Dictionary<string, List<PNMessageResult>> fetchResult = result.Channels as Dictionary<string, List<PNMessageResult>>;
-			// 			Debug.Log("fetchResult.Count:" + fetchResult.Count);
-			// 			foreach(KeyValuePair<string, List<PNMessageResult>> kvp in fetchResult){
-			// 				Debug.Log("Channel:" + kvp.Key);
-			// 				if(kvp.Key.Equals(channel)){
-								
-			// 					foreach(PNMessageResult msg in kvp.Value){
-			// 						Debug.Log("msg.Channel:" + msg.Channel);
-			// 						Debug.Log("msg.Payload.ToString():" + msg.Payload.ToString());
-			// 						if(msg.Channel.Equals(channel) && (msg.Payload.ToString().Equals(payload))){
-			// 							tresult = true;
-			// 						}
-			// 						if(withMeta){
-			// 							Dictionary<string, object> metaDataDict = msg.UserMetadata as Dictionary<string, object>;
-			// 							object region;
-			// 							if(metaDataDict!=null){
-			// 								metaDataDict.TryGetValue("region", out region);
-			// 								tresultMeta = region.ToString().Equals("east");
-			// 							} else {
-			// 								Debug.Log("metaDataDict null" + msg.UserMetadata);
-			// 							}
-			// 						} else {
-			// 							tresultMeta = true;
-			// 						}
+			// Fetch With Message Actions
+			bool tresultMA = false;
 
-			// 					}
-			// 					if(!tresult && !tresultMeta){
-			// 						break;
-			// 					}
-			// 				}							
-			// 			}
-			// 		}
+			pubnubMA.FetchMessages().Channels(channelList2).IncludeMessageActions(true).Async((result, status) => {
+				if(!status.Error){
+					if(result.Channels != null){
+						tresultMA = MatchFetchMA(result, pnConfiguration2.UUID, messageActionTimetoken, message, channel, maa.ActionType, maa.ActionValue);
+					}
 
-            //     } 
+                } 
 
-			// });
-			// yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
-			// Assert.True(tresult, "test didnt return for fetch");
-			// Assert.True(tresultMeta, "test meta didnt return for fetch");
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			Assert.True(tresultMA, "test didnt return for fetch");
 
 			// Remove message Actions
 			bool testRMAReturn = false;
@@ -1214,6 +1175,53 @@ namespace PubNubAPI.Tests
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(testRMAReturn, "remove test didn't return");		
 			pubnubSub.CleanUp();
+		}
+
+		public bool MatchFetchMA(PNFetchMessagesResult result, string uuid, long messageActionTimetoken, string message, string channel, string actionType1, string actionValue1){
+			Dictionary<string, List<PNMessageResult>> fetchResult = result.Channels as Dictionary<string, List<PNMessageResult>>;
+			Debug.Log("fetchResult.Count:" + fetchResult.Count);
+			foreach(KeyValuePair<string, List<PNMessageResult>> kvp in fetchResult){
+				Debug.Log("Channel:" + kvp.Key);
+				if(kvp.Key.Equals(channel)){
+					
+					foreach(PNMessageResult msg in kvp.Value){
+						Debug.Log("msg.Channel:" + msg.Channel);
+						Debug.Log("msg.Payload.ToString():" + msg.Payload.ToString());
+						if(msg.Channel.Equals(channel) && (msg.Payload.ToString().Equals(message))){
+							
+							if(msg.MessageActions != null){
+								Debug.Log("msg.MessageActions:" + msg.MessageActions.Count);
+								foreach (KeyValuePair<string, PNHistoryMessageActionsTypeValues> kvpActionTypes in msg.MessageActions){
+									string actionType = kvpActionTypes.Key;
+									Debug.Log("actionType:" + actionType);
+									PNHistoryMessageActionsTypeValues pnHistoryMessageActionsTypeValues = kvpActionTypes.Value;
+									foreach (KeyValuePair<string, List<PNHistoryMessageActionsTypeValueAttributes>> kvpActionValues in pnHistoryMessageActionsTypeValues.MessageActionsTypeValues){
+										string actionValue = kvpActionValues.Key;
+										Debug.Log("actionValue:" + actionValue);
+										foreach (PNHistoryMessageActionsTypeValueAttributes p in kvpActionValues.Value){
+											string UUID = p.UUID;
+											Debug.Log("UUID:" + UUID);
+											Debug.Log("UUID:" + uuid);
+											long actionTimetoken = p.ActionTimetoken;
+											Debug.Log("actionTimetoken:" + actionTimetoken);
+											Debug.Log("messageActionTimetoken:" + messageActionTimetoken);
+											Debug.Log(actionType.Equals(actionType1));
+											Debug.Log(actionValue.Equals(actionValue1));
+											Debug.Log(UUID.Equals(uuid));
+											Debug.Log(actionTimetoken.Equals(messageActionTimetoken));
+											if(actionType.Equals(actionType1) && actionValue.Equals(actionValue1) && UUID.Equals(uuid) && actionTimetoken.Equals(messageActionTimetoken)){
+												Debug.Log("MatchFetchMA: true");
+												return true;
+											}
+										}
+									}
+								}
+							}																					
+						}
+					}
+				}							
+			}
+			return false;
 		}
 
 		public bool MatchGMA(PNGetMessageActionsResult result, string ActionType, string ActionValue, long messageActionTimetoken, long messageTimetoken, string UUID){

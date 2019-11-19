@@ -579,7 +579,7 @@ namespace PubNubAPI
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNMessageCountsOperation, parameterBuilder.ToString(), pnInstance, queryParams);
         }
 
-        public static Uri BuildFetchRequest (string[] channels, long start, long end, uint count, bool reverse, bool includeToken, PubNubUnity pnInstance, Dictionary<string, string> queryParams, bool withMeta)
+        public static Uri BuildFetchRequest (string[] channels, long start, long end, uint count, bool reverse, bool includeToken, PubNubUnity pnInstance, Dictionary<string, string> queryParams, bool withMeta, bool withMessageActions)
         {
             StringBuilder parameterBuilder = new StringBuilder ();
 
@@ -599,16 +599,20 @@ namespace PubNubAPI
             if (withMeta) {
                 parameterBuilder.AppendFormat ("&include_meta={0}", withMeta.ToString ().ToLowerInvariant ());
             }
-
             List<string> url = new List<string> ();
-
+            
             url.Add ("v3");
-            url.Add ("history");
+            if(withMessageActions){
+                url.Add ("history-with-actions");
+            } else {
+                url.Add ("history");
+            }
+            
             url.Add ("sub-key");
             url.Add (pnInstance.PNConfig.SubscribeKey);
             url.Add ("channel");
             url.Add (Utility.EncodeUricomponent(string.Join(",", channels), PNOperationType.PNFetchMessagesOperation, true, false));
-
+            
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNFetchMessagesOperation, parameterBuilder.ToString(), pnInstance, queryParams);
         }
 
