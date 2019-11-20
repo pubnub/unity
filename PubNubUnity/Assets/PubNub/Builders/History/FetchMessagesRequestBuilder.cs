@@ -217,14 +217,7 @@ namespace PubNubAPI
                                 ""
                             );
 
-                            try{
-                                pnMessageResult.MessageActions = MessageActionsHelpers.ExtractMessageActions(messageDataDict); 
-                            } catch (Exception ex){
-                                #if (ENABLE_PUBNUB_LOGGING)
-                                this.PubNubInstance.PNLog.WriteToLog(string.Format ("ExtractMessageActions Exception {0}.", ex.ToString()), PNLoggingMethod.LevelError);
-                                #endif
-                            }
-
+                            pnMessageResult.MessageActions = MessageActionsHelpers.ExtractMessageActions(messageDataDict); 
                             lstMessageResult.Add(pnMessageResult);
                             #if (ENABLE_PUBNUB_LOGGING)
                             this.PubNubInstance.PNLog.WriteToLog(string.Format ("CreateFetchMessagesResult: pnMessageResult {0}.", pnMessageResult.ToString()), PNLoggingMethod.LevelInfo);

@@ -78,7 +78,6 @@ namespace PubNubAPI
                             }  
                         }
                     }  else {
-                        pnGetMessageActionsResult = null;
                         pnStatus = base.CreateErrorResponseFromException(new PubNubException("objData null"), requestState, PNStatusCategory.PNUnknownCategory);
                     } 
                     object objMore;
