@@ -79,6 +79,13 @@ namespace PubNubAPI
             return pnMembers;
         }
 
+        public static void ExtractPagingParamsAndTotalCount(Dictionary<string, object> dictionary, string totalCountName, string nextName, string prevName, out int totalCount, out string next, out string prev){
+            next = Utility.ReadMessageFromResponseDictionary(dictionary, nextName);
+            prev = Utility.ReadMessageFromResponseDictionary(dictionary, prevName);
+            string log;
+            Utility.TryCheckKeyAndParseInt(dictionary, totalCountName, totalCountName, out log, out totalCount);
+        }
+
         public static PNMemberships ExtractMemberships(Dictionary<string, object> objDataDict){
             PNMemberships pnMemberships = new PNMemberships();
             pnMemberships.ID = Utility.ReadMessageFromResponseDictionary(objDataDict, "id");

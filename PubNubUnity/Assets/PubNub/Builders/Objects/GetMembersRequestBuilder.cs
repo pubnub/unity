@@ -95,7 +95,15 @@ namespace PubNubAPI
                     }  else {
                         pnGetMembersResult = null;
                         pnStatus = base.CreateErrorResponseFromException(new PubNubException("objData null"), requestState, PNStatusCategory.PNUnknownCategory);
-                    }  
+                    } 
+                    int totalCount;
+                    string next;
+                    string prev;
+                    ObjectsHelpers.ExtractPagingParamsAndTotalCount(dictionary, "totalCount", "next", "prev", out totalCount, out next, out prev);
+                    pnGetMembersResult.Next = next;
+                    pnGetMembersResult.Prev = prev;
+                    pnGetMembersResult.TotalCount = totalCount;
+ 
                 }
             } catch (Exception ex){
                 pnGetMembersResult = null;

@@ -1424,6 +1424,10 @@ namespace PubNubAPI.Tests
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				bool bFound = false;
 				Debug.Log("Looking for " + userid);
+				Debug.Log("result.Next:" + result.Next);
+				Debug.Log("result.Prev:" + result.Prev);
+				Debug.Log("result.TotalCount:" + result.TotalCount);
+				Assert.True(result.TotalCount>0);
 				foreach (PNMembers mem in result.Data){
 					
 					Debug.Log("Found mem " + mem.User.ID);
@@ -1434,6 +1438,7 @@ namespace PubNubAPI.Tests
 						Assert.AreEqual(profileURL, mem.User.ProfileURL);
 						Assert.AreEqual(userid, mem.User.ID);
 						Assert.AreEqual(mem.User.Updated, mem.User.Created);
+						
 						Assert.True(!string.IsNullOrEmpty(mem.User.ETag), mem.User.ETag);
 						Assert.True("ucv1" == mem.User.Custom["usercustomkey1"].ToString());
 						Assert.True("ucv2" == mem.User.Custom["usercustomkey2"].ToString());
@@ -1501,6 +1506,11 @@ namespace PubNubAPI.Tests
 
 				bool bFound = false;
 				Debug.Log("Looking for " + spaceid);
+				Debug.Log("result.Next:" + result.Next);
+				Debug.Log("result.Prev:" + result.Prev);
+				Debug.Log("result.TotalCount:" + result.TotalCount);
+				Assert.True(result.TotalCount>0);
+
 				foreach (PNMemberships mem in result.Data){
 					
 					Debug.Log("Found mem " + mem.Space.ID);
@@ -1582,6 +1592,11 @@ namespace PubNubAPI.Tests
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				bool bFound = false;
 				Debug.Log("Looking for " + spaceid2);
+				Debug.Log("result.Next:" + result.Next);
+				Debug.Log("result.Prev:" + result.Prev);
+				Debug.Log("result.TotalCount:" + result.TotalCount);
+				Assert.True(result.TotalCount>0);
+
 				foreach (PNMemberships mem in result.Data){
 					
 					Debug.Log("Found mem " + mem.Space.ID);
@@ -1663,6 +1678,11 @@ namespace PubNubAPI.Tests
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				bool bFound = false;
 				Debug.Log("Looking for " + userid2);
+				Debug.Log("result.Next:" + result.Next);
+				Debug.Log("result.Prev:" + result.Prev);
+				Debug.Log("result.TotalCount:" + result.TotalCount);
+				Assert.True(result.TotalCount>0);
+
 				foreach (PNMembers mem in result.Data){
 					
 					Debug.Log("Found mem " + mem.User.ID);
@@ -2157,6 +2177,11 @@ namespace PubNubAPI.Tests
 			pubnub.GetUsers().Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				Debug.Log("result.Next:" + result.Next);
+				Debug.Log("result.Prev:" + result.Prev);
+				Debug.Log("result.TotalCount:" + result.TotalCount);
+				//Assert.True(result.TotalCount>0);
+
 				if(result.Data != null){
 					foreach(PNUserResult pnUserResult in result.Data){
 						if(pnUserResult.ID.Equals(id)){
@@ -2260,6 +2285,11 @@ namespace PubNubAPI.Tests
 			pubnub.GetSpaces().Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				Debug.Log("result.Next:" + result.Next);
+				Debug.Log("result.Prev:" + result.Prev);
+				Debug.Log("result.TotalCount:" + result.TotalCount);
+				//Assert.True(result.TotalCount>0);
+
 				if(result.Data != null){
 					foreach(PNSpaceResult pnSpaceResult in result.Data){
 						if(pnSpaceResult.ID.Equals(id)){

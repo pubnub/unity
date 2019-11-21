@@ -104,6 +104,13 @@ namespace PubNubAPI
                         pnSpaceResultList = null;
                         pnStatus = base.CreateErrorResponseFromException(new PubNubException("objData null"), requestState, PNStatusCategory.PNUnknownCategory);
                     }
+                    int totalCount;
+                    string next;
+                    string prev;
+                    ObjectsHelpers.ExtractPagingParamsAndTotalCount(dictionary, "totalCount", "next", "prev", out totalCount, out next, out prev);
+                    pnSpaceResultList.Next = next;
+                    pnSpaceResultList.Prev = prev;
+                    pnSpaceResultList.TotalCount = totalCount;                    
                 }
             }
             catch (Exception ex)
