@@ -300,23 +300,43 @@ namespace PubNubAPI
             PubNubUnityInitializationAfterCleanup();
             return pnUnity.ManageMemberships();
         }
-
+        public AddMessageActionsBuilder AddMessageActions()
+        {
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.AddMessageActions();
+        }
+        public RemoveMessageActionsBuilder RemoveMessageActions()
+        {
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.RemoveMessageActions();
+        }
+        public GetMessageActionsBuilder GetMessageActions()
+        {
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.GetMessageActions();
+        }
         public void AddListener(Action<PNStatus> statusCallback, Action<PNMessageResult> messageCallback, Action<PNPresenceEventResult> presenceCallback)
         {
             PubNubUnityInitializationAfterCleanup();
-            pnUnity.AddListener(statusCallback, messageCallback, presenceCallback, null, null, null, null);
+            pnUnity.AddListener(statusCallback, messageCallback, presenceCallback, null, null, null, null, null);
         }
 
         public void AddListener(Action<PNStatus> statusCallback, Action<PNMessageResult> messageCallback, Action<PNPresenceEventResult> presenceCallback, Action<PNSignalEventResult> signalCallback)
         {
             PubNubUnityInitializationAfterCleanup();
-            pnUnity.AddListener(statusCallback, messageCallback, presenceCallback, signalCallback, null, null, null);
+            pnUnity.AddListener(statusCallback, messageCallback, presenceCallback, signalCallback, null, null, null, null);
         }
 
         public void AddListener(Action<PNStatus> statusCallback, Action<PNMessageResult> messageCallback, Action<PNPresenceEventResult> presenceCallback, Action<PNSignalEventResult> signalCallback, Action<PNUserEventResult> userCallback, Action<PNSpaceEventResult> spaceCallback, Action<PNMembershipEventResult> membershipCallback)
         {
             PubNubUnityInitializationAfterCleanup();
-            pnUnity.AddListener(statusCallback, messageCallback, presenceCallback, signalCallback, userCallback, spaceCallback, membershipCallback);
+            pnUnity.AddListener(statusCallback, messageCallback, presenceCallback, signalCallback, userCallback, spaceCallback, membershipCallback, null);
+        }
+
+        public void AddListener(Action<PNStatus> statusCallback, Action<PNMessageResult> messageCallback, Action<PNPresenceEventResult> presenceCallback, Action<PNSignalEventResult> signalCallback, Action<PNUserEventResult> userCallback, Action<PNSpaceEventResult> spaceCallback, Action<PNMembershipEventResult> membershipCallback, Action<PNMessageActionsEventResult> messageActionsCallback)
+        {
+            PubNubUnityInitializationAfterCleanup();
+            pnUnity.AddListener(statusCallback, messageCallback, presenceCallback, signalCallback, userCallback, spaceCallback, membershipCallback, messageActionsCallback);
         }
 
         public static long TranslateDateTimeToPubnubUnixNanoSeconds (DateTime dotNetUTCDateTime)

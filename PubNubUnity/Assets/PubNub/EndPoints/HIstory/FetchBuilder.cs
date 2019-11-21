@@ -44,6 +44,11 @@ namespace PubNubAPI
             return this;
         }
 
+        public FetchBuilder IncludeMessageActions(bool includeMessageActions){
+            pubBuilder.IncludeMessageActions(includeMessageActions);
+            return this;
+        }
+
         public FetchBuilder QueryParam(Dictionary<string, string> queryParam){
             pubBuilder.QueryParam(queryParam);
             return this;
