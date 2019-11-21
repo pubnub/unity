@@ -60,11 +60,9 @@ namespace PubNubAPI
                         if(objDataDict!=null){
                             pnUserResult = ObjectsHelpers.ExtractUser(objDataDict);
                         } else {
-                            pnUserResult = null;
                             pnStatus = base.CreateErrorResponseFromException(new PubNubException("objDataDict not present"), requestState, PNStatusCategory.PNUnknownCategory);
                         }
                     } else {
-                        pnUserResult = null;
                         pnStatus = base.CreateErrorResponseFromException(new PubNubException("Data not present"), requestState, PNStatusCategory.PNUnknownCategory);
                     }
                 }

@@ -101,7 +101,6 @@ namespace PubNubAPI
                     }
                     else
                     {
-                        pnSpaceResultList = null;
                         pnStatus = base.CreateErrorResponseFromException(new PubNubException("objData null"), requestState, PNStatusCategory.PNUnknownCategory);
                     }
                     int totalCount;

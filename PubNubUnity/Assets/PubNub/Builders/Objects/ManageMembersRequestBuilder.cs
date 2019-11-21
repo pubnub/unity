@@ -138,7 +138,6 @@ namespace PubNubAPI
                             }  
                         }
                     }  else {
-                        pnManageMembersResult = null;
                         pnStatus = base.CreateErrorResponseFromException(new PubNubException("objData null"), requestState, PNStatusCategory.PNUnknownCategory);
                     }
                     int totalCount;
