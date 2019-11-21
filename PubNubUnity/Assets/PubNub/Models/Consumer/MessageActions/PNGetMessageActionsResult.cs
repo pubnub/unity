@@ -12,8 +12,8 @@ namespace PubNubAPI
     public class PNGetMessageActionsMore
     {
         public string URL { get; set;}
-        public string Start { get; set;}
-        public string End { get; set;}
+        public long Start { get; set;}
+        public long End { get; set;}
         public int Limit { get; set;}
 
     }

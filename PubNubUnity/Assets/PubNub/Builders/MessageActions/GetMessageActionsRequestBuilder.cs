@@ -84,12 +84,19 @@ namespace PubNubAPI
                     dictionary.TryGetValue("more", out objMore);
                     if(objMore!=null){
                         Dictionary<string, object> objMoreDict = objMore as Dictionary<string, object>;
-                        pnGetMessageActionsResult.More.Start =  Utility.ReadMessageFromResponseDictionary(objMoreDict, "start");
-                        int limit;
                         string log;
+                        long start;
+                        Utility.TryCheckKeyAndParseLong(objMoreDict, "start", "start", out log, out start);
+                        pnGetMessageActionsResult.More.Start =  start;
+
+                        int limit;
                         Utility.TryCheckKeyAndParseInt(objMoreDict, "limit", "limit", out log, out limit);
                         pnGetMessageActionsResult.More.Limit =  limit;
-                        pnGetMessageActionsResult.More.End =  Utility.ReadMessageFromResponseDictionary(objMoreDict, "end");
+
+                        long end;
+                        Utility.TryCheckKeyAndParseLong(objMoreDict, "end", "end", out log, out end);
+                        pnGetMessageActionsResult.More.End =  start;
+                        
                         pnGetMessageActionsResult.More.URL =  Utility.ReadMessageFromResponseDictionary(objMoreDict, "url");
                     }
                 }
