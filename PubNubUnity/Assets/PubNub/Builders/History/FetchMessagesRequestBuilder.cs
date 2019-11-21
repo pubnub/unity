@@ -31,11 +31,17 @@ namespace PubNubAPI
         }
 
         private bool IncludeMetaInHistory;
+        private bool IncludeMessageActionsInHistory;
         
         private bool ReverseHistory;
         private bool IncludeTimetokenInHistory;
         public FetchMessagesRequestBuilder IncludeTimetoken(bool include){
             IncludeTimetokenInHistory = include;
+            return this;
+        }
+
+        public FetchMessagesRequestBuilder IncludeMessageActions(bool includeMessageActions){
+            IncludeMessageActionsInHistory = includeMessageActions;
             return this;
         }
 
@@ -81,6 +87,12 @@ namespace PubNubAPI
                 return;
             }
 
+            if ((this.IncludeMessageActionsInHistory) && (this.ChannelsToUse.Count > 1)) {
+                PNStatus pnStatus = base.CreateErrorResponseFromMessage("Only one channel is supported when WithMessageActions is true", null, PNStatusCategory.PNBadRequestCategory);
+                Callback(null, pnStatus);
+
+                return;
+	        }
             base.Async(this);
         }
         #endregion
@@ -92,20 +104,20 @@ namespace PubNubAPI
             #if (ENABLE_PUBNUB_LOGGING)
             this.PubNubInstance.PNLog.WriteToLog(string.Format ("FetchMessagesRequestBuilder: \nChannel {0} \nStartTime: {1} \nthis.EndTime:{2} \nthis.HistoryCount:{3} \nthis.ReverseHistory:{4}", string.Join(",", this.ChannelsToUse.ToArray()), this.StartTime, this.EndTime, this.HistoryCount, this.ReverseHistory), PNLoggingMethod.LevelInfo);
             #endif
-            
-            //TODO: start=0&end=0
 
-            Uri request = BuildRequests.BuildFetchRequest(
-                ChannelsToUse.ToArray(),
-                this.StartTime,
-                this.EndTime,
-                this.HistoryCount,
-                this.ReverseHistory,
-                this.IncludeTimetokenInHistory,
-                this.PubNubInstance,
-                this.QueryParams,
-                this.IncludeMetaInHistory
-            );
+            Uri request =  BuildRequests.BuildFetchRequest(
+                    ChannelsToUse.ToArray(),
+                    this.StartTime,
+                    this.EndTime,
+                    this.HistoryCount,
+                    this.ReverseHistory,
+                    this.IncludeTimetokenInHistory,
+                    this.PubNubInstance,
+                    this.QueryParams,
+                    this.IncludeMetaInHistory,
+                    this.IncludeMessageActionsInHistory
+                );
+            
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
 
         }
@@ -189,6 +201,7 @@ namespace PubNubAPI
                                 this.PubNubInstance.PNLog.WriteToLog(string.Format ("CreateFetchMessagesResult: timetoken {0}.", timetoken.ToString()), PNLoggingMethod.LevelInfo);
                                 #endif
                             }
+
                             if(!string.IsNullOrEmpty(this.PubNubInstance.PNConfig.CipherKey) && (this.PubNubInstance.PNConfig.CipherKey.Length > 0)){
                                 //TODO: handle exception
                                 objPayload = Helpers.DecodeMessage(this.PubNubInstance.PNConfig.CipherKey, objPayload, OperationType, this.PubNubInstance);
@@ -203,6 +216,8 @@ namespace PubNubAPI
                                 meta,
                                 ""
                             );
+
+                            pnMessageResult.MessageActions = MessageActionsHelpers.ExtractMessageActions(messageDataDict); 
                             lstMessageResult.Add(pnMessageResult);
                             #if (ENABLE_PUBNUB_LOGGING)
                             this.PubNubInstance.PNLog.WriteToLog(string.Format ("CreateFetchMessagesResult: pnMessageResult {0}.", pnMessageResult.ToString()), PNLoggingMethod.LevelInfo);

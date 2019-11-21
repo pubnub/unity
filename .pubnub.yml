@@ -3,6 +3,16 @@ changelog:
   - 
     changes: 
       - 
+        text: "Message Actions"
+        type: improvement
+      - 
+        text: "Fetch with Message Actions"
+        type: improvement
+    date: Nov 21, 19  
+    version: v4.5.0  
+  - 
+    changes: 
+      - 
         text: "Objects"
         type: improvement
     date: Nov 8, 19  
@@ -371,6 +381,7 @@ features:
     - STORAGE-MESSAGE-COUNT
     - STORAGE-HISTORY-WITH-META
     - STORAGE-FETCH-WITH-META
+    - STORAGE-FETCH-WITH-MESSAGE-ACTIONS
   subscribe: 
     - SUBSCRIBE-CHANNELS
     - SUBSCRIBE-CHANNEL-GROUPS
@@ -382,6 +393,29 @@ features:
     - SUBSCRIBE-PUBSUB-V2
     - SUBSCRIBE-PUBLISHER-UUID
     - SUBSCRIBE-SIGNAL-LISTENER
+    - SUBSCRIBE-MEMBERSHIP-LISTENER
+    - SUBSCRIBE-SPACE-LISTENER
+    - SUBSCRIBE-USER-LISTENER
+    - SUBSCRIBE-MESSAGE-ACTIONS-LISTENER
+  objects:
+    - OBJECTS-GET-USERS
+    - OBJECTS-GET-USER
+    - OBJECTS-CREATE-USER
+    - OBJECTS-UPDATE-USER
+    - OBJECTS-DELETE-USER
+    - OBJECTS-GET-SPACES
+    - OBJECTS-CREATE-SPACE
+    - OBJECTS-GET-SPACE
+    - OBJECTS-UPDATE-SPACE
+    - OBJECTS-DELETE-SPACE
+    - OBJECTS-GET-MEMBERSHIPS
+    - OBJECTS-MANAGE-MEMBERSHIPS
+    - OBJECTS-GET-MEMBERS
+    - OBJECTS-MANAGE-MEMBERS
+  message-actions:
+    - MESSAGE-ACTIONS-GET
+    - MESSAGE-ACTIONS-ADD
+    - MESSAGE-ACTIONS-REMOVE    
   time: 
     - TIME-TIME
   signal:
@@ -408,4 +442,4 @@ supported-platforms:
       - "Ubuntu 12.04+, with Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support."
       - "Mac OS X 10.8+, with Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support."
     version: "PubNub Unity SDK"
-version: v4.4.0
+version: v4.5.0

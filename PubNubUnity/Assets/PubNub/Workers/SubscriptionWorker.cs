@@ -16,6 +16,7 @@ namespace PubNubAPI
         public PNUserEventResult UserEventResult { get; set;}
         public PNSpaceEventResult SpaceEventResult { get; set;}
         public PNMembershipEventResult MembershipEventResult { get; set;}
+        public PNMessageActionsEventResult MessageActionsEventResult { get; set;}
     }   
 
     public class SubscriptionWorker<U>
@@ -534,7 +535,7 @@ namespace PubNubAPI
                 CreatePNPresenceEventResult(subscribeMessage, out subMessageResult);
                 mea.PresenceEventResult = subMessageResult;
                 PubNubInstance.RaiseEvent (mea);
-            } else if (subscribeMessage.MessageType.Equals(1)) {  
+            } else if ((PNMessageTypes)subscribeMessage.MessageType == PNMessageTypes.Signal) {  
                 PNSignalEventResult subSignalEventResult; 
                 CreatePNSignalEventResult(subscribeMessage, out subSignalEventResult);
                 #if (ENABLE_PUBNUB_LOGGING)
@@ -543,7 +544,7 @@ namespace PubNubAPI
                 
                 mea.SignalEventResult = subSignalEventResult;
                 PubNubInstance.RaiseEvent (mea);
-            } else if (subscribeMessage.MessageType.Equals(2)) {  
+            } else if ((PNMessageTypes)subscribeMessage.MessageType == PNMessageTypes.Objects) {  
                 PNUserEventResult pnUserEventResult;
                 PNSpaceEventResult pnSpaceEventResult;
                 PNMembershipEventResult pnMembershipEventResult; 
@@ -570,6 +571,16 @@ namespace PubNubAPI
                     this.PubNubInstance.PNLog.WriteToLog("Raising Membership event ", PNLoggingMethod.LevelInfo);
                     #endif
                     mea.MembershipEventResult = pnMembershipEventResult;
+                    PubNubInstance.RaiseEvent (mea);
+                }
+            } else if ((PNMessageTypes)subscribeMessage.MessageType == PNMessageTypes.MessageActions) {  
+                PNMessageActionsEventResult pnMessageActionsEventResult;
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PubNubInstance.PNLog.WriteToLog("Raising Message Actions event ", PNLoggingMethod.LevelInfo);
+                #endif
+                CreateMessageActionsEventResult(subscribeMessage, out pnMessageActionsEventResult);
+                if(pnMessageActionsEventResult!= null) {
+                    mea.MessageActionsEventResult = pnMessageActionsEventResult;
                     PubNubInstance.RaiseEvent (mea);
                 }
             } else {
@@ -800,6 +811,27 @@ namespace PubNubAPI
 
         }    
 
+        internal void CreateMessageActionsEventResult(SubscribeMessage subscribeMessage, out PNMessageActionsEventResult pnMessageActionsEventResult){
+            pnMessageActionsEventResult = null;
+            
+            object payload = subscribeMessage.Payload;
+            Dictionary<string, object> pnMessageActionsEventDict = payload as Dictionary<string, object>;
+            string messageActionsEvent = Utility.ReadMessageFromResponseDictionary(pnMessageActionsEventDict, "event");
+            Dictionary<string, object> data = Utility.ReadDictionaryFromResponseDictionary(pnMessageActionsEventDict, "data");
+            if(data != null){
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PubNubInstance.PNLog.WriteToLog(string.Format("PNMessageActionsEventResult"), PNLoggingMethod.LevelInfo);
+                #endif  
+
+                pnMessageActionsEventResult = new PNMessageActionsEventResult();
+                pnMessageActionsEventResult.MessageActionsEvent = MessageActionsHelpers.GetPNMessageActionsEventFromString(messageActionsEvent);
+                pnMessageActionsEventResult.Data = MessageActionsHelpers.ExtractMessageAction(data);
+                pnMessageActionsEventResult.Channel = subscribeMessage.Channel.Replace(Utility.PresenceChannelSuffix, "");
+                pnMessageActionsEventResult.Subscription = subscribeMessage.SubscriptionMatch.Replace(Utility.PresenceChannelSuffix, "");
+
+            }
+        }
+
         internal void CreateObjectsEventResult(SubscribeMessage subscribeMessage, out PNUserEventResult pnUserEventResult, out PNSpaceEventResult pnSpaceEventResult, out PNMembershipEventResult pnMembershipEventResult){
             pnUserEventResult = null;
             pnSpaceEventResult = null;
@@ -844,8 +876,6 @@ namespace PubNubAPI
                     pnUserEventResult.Name = name;
                     pnUserEventResult.ExternalID = externalID;
                     pnUserEventResult.ProfileURL = profileURL;
-
-                    this.PubNubInstance.PNLog.WriteToLog ("pnUserEventResult.UserID" +pnUserEventResult.UserID, PNLoggingMethod.LevelInfo);
 
                 } else if (objectsEventType.Equals(PNObjectsEventType.PNObjectsSpaceEvent.GetDescription().ToString())){
                     #if (ENABLE_PUBNUB_LOGGING)

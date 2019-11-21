@@ -49,7 +49,7 @@ namespace PubNubAPI
 	    PNGetMembershipsOperation,		
 	    PNGetMembersOperation,		
 	    PNManageMembershipsOperation,		
-	    PNManageMembersOperation,
+	    PNManageMembersOperation
     }
 
 }

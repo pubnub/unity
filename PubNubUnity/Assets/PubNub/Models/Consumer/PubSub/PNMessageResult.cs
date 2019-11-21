@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace PubNubAPI
 {
@@ -12,6 +13,8 @@ namespace PubNubAPI
         public object UserMetadata { get; set;} 
         public string IssuingClientId { get; set;} 
 
+        public Dictionary<string, PNHistoryMessageActionsTypeValues> MessageActions { get; set;} 
+
         public PNMessageResult(string subscribedChannel, string actualchannel, object payload,
             long timetoken, long originatingTimetoken, object userMetadata, string issuingClientId){
             this.Subscription = subscribedChannel;// change to channel group
@@ -22,6 +25,15 @@ namespace PubNubAPI
             this.UserMetadata = userMetadata;
             this.IssuingClientId = issuingClientId;
         }
-    }   
+    }  
+
+    public class PNHistoryMessageActionsTypeValues { 
+        public Dictionary<string, List<PNHistoryMessageActionsTypeValueAttributes>> MessageActionsTypeValues { get; set;}
+    }
+
+    public class PNHistoryMessageActionsTypeValueAttributes{
+        public string UUID { get; set;}
+        public long ActionTimetoken { get; set;}
+    }
 }
 

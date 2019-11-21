@@ -59,7 +59,7 @@ namespace PubNubAPI
 
         }
 
-        public void AddListener(Action<PNStatus> statusCallback, Action<PNMessageResult> messageCallback, Action<PNPresenceEventResult> presenceCallback, Action<PNSignalEventResult> signalCallback, Action<PNUserEventResult> userCallback, Action<PNSpaceEventResult> spaceCallback, Action<PNMembershipEventResult> membershipCallback)
+        public void AddListener(Action<PNStatus> statusCallback, Action<PNMessageResult> messageCallback, Action<PNPresenceEventResult> presenceCallback, Action<PNSignalEventResult> signalCallback, Action<PNUserEventResult> userCallback, Action<PNSpaceEventResult> spaceCallback, Action<PNMembershipEventResult> membershipCallback, Action<PNMessageActionsEventResult> messageActionsCallback)
         {
             SubscribeCallback += (object sender, EventArgs e) => {
                 SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
@@ -90,6 +90,10 @@ namespace PubNubAPI
                     if(mea.MembershipEventResult != null){
                         membershipCallback(mea.MembershipEventResult);
                     }
+                    if(mea.MessageActionsEventResult != null){
+                        messageActionsCallback(mea.MessageActionsEventResult);
+                    }
+
                 }
             };
         }
@@ -392,6 +396,30 @@ namespace PubNubAPI
             #endif
 
             return new ManageMembershipsBuilder(this);
+        }                                
+        public AddMessageActionsBuilder AddMessageActions()
+        {
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("AddMessageActions", PNLoggingMethod.LevelInfo);
+            #endif
+
+            return new AddMessageActionsBuilder(this);
+        }                                
+        public RemoveMessageActionsBuilder RemoveMessageActions()
+        {
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("RemoveMessageActions", PNLoggingMethod.LevelInfo);
+            #endif
+
+            return new RemoveMessageActionsBuilder(this);
+        }                                
+        public GetMessageActionsBuilder GetMessageActions()
+        {
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("GetMessageActions", PNLoggingMethod.LevelInfo);
+            #endif
+
+            return new GetMessageActionsBuilder(this);
         }                                
     }
 }

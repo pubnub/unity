@@ -217,6 +217,18 @@ namespace PubNubAPI
                             ManageMembersRequestBuilder manageMembersRequestBuilder = operationParams as ManageMembersRequestBuilder;
                             manageMembersRequestBuilder.RaiseRunRequest(this);
                             break;                         
+                        case PNOperationType.PNAddMessageActionsOperation:
+                            AddMessageActionsRequestBuilder addMessageActionsRequestBuilder = operationParams as AddMessageActionsRequestBuilder;
+                            addMessageActionsRequestBuilder.RaiseRunRequest(this);
+                            break;                         
+                        case PNOperationType.PNRemoveMessageActionsOperation:
+                            RemoveMessageActionsRequestBuilder removeMessageActionsRequestBuilder = operationParams as RemoveMessageActionsRequestBuilder;
+                            removeMessageActionsRequestBuilder.RaiseRunRequest(this);
+                            break;                         
+                        case PNOperationType.PNGetMessageActionsOperation:
+                            GetMessageActionsRequestBuilder getMessageActionsRequestBuilder = operationParams as GetMessageActionsRequestBuilder;
+                            getMessageActionsRequestBuilder.RaiseRunRequest(this);
+                            break;                         
                         default:
                         break;
                     }
