@@ -93,10 +93,18 @@ namespace PubNubAPI
                             }  
                         }
                     }  else {
-                        pnGetMembershipsResult = null;
                         pnStatus = base.CreateErrorResponseFromException(new PubNubException("objData null"), requestState, PNStatusCategory.PNUnknownCategory);
                     }  
+                    int totalCount;
+                    string next;
+                    string prev;
+                    ObjectsHelpers.ExtractPagingParamsAndTotalCount(dictionary, "totalCount", "next", "prev", out totalCount, out next, out prev);
+                    pnGetMembershipsResult.Next = next;
+                    pnGetMembershipsResult.Prev = prev;
+                    pnGetMembershipsResult.TotalCount = totalCount;
+
                 }
+
             } catch (Exception ex){
                 pnGetMembershipsResult = null;
                 pnStatus = base.CreateErrorResponseFromException(ex, requestState, PNStatusCategory.PNUnknownCategory);
