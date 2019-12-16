@@ -26,6 +26,17 @@ namespace PubNubAPI
         public ListPushProvisionsBuilder(PubNubUnity pn){
             pubBuilder = new ListPushProvisionsRequestBuilder(pn);
         }
+
+        public ListPushProvisionsBuilder Topic(string topic) {
+            pubBuilder.Topic(topic);
+            return this;
+        }
+
+        public ListPushProvisionsBuilder Environment(PNPushEnvironment environment) {
+            pubBuilder.Environment(environment);
+            return this;
+        }
+
         public void Async(Action<PNPushListProvisionsResult, PNStatus> callback)
         {
             pubBuilder.Async(callback);

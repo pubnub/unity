@@ -13,10 +13,17 @@ namespace PubNubAPI
         #region "Build Requests"
         public static Uri BuildRegisterDevicePushRequest(string channel, PNPushType pushType, string pushToken, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
         {
+            return BuildRegisterDevicePushRequest(channel, pushType, pushToken, pnInstance, queryParams, "", PNPushEnvironment.None);
+        }
+
+        public static Uri BuildRegisterDevicePushRequest(string channel, PNPushType pushType, string pushToken, PubNubUnity pnInstance, Dictionary<string, string> queryParams, string topic, PNPushEnvironment env)
+        {
             StringBuilder parameterBuilder = new StringBuilder();
 
             parameterBuilder.AppendFormat("?add={0}", Utility.EncodeUricomponent(channel, PNOperationType.PNAddPushNotificationsOnChannelsOperation, true, false));
             parameterBuilder.AppendFormat("&type={0}", pushType.ToString().ToLowerInvariant());
+            PushHelpers.SetTopic(topic, ref parameterBuilder);            
+            PushHelpers.SetEnvironment(env, ref parameterBuilder);    
 
             // Build URL
             List<string> url = new List<string>();
@@ -29,13 +36,19 @@ namespace PubNubAPI
 
             return BuildRestApiRequest<Uri>(url, PNOperationType.PNAddPushNotificationsOnChannelsOperation, parameterBuilder.ToString(), pnInstance, queryParams);
         }
-
         public static Uri BuildRemoveChannelPushRequest(string channel, PNPushType pushType, string pushToken, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        {
+            return BuildRemoveChannelPushRequest(channel, pushType, pushToken, pnInstance, queryParams, "", PNPushEnvironment.None);
+        }
+
+        public static Uri BuildRemoveChannelPushRequest(string channel, PNPushType pushType, string pushToken, PubNubUnity pnInstance, Dictionary<string, string> queryParams, string topic, PNPushEnvironment env)
         {
             StringBuilder parameterBuilder = new StringBuilder();
 
             parameterBuilder.AppendFormat("?remove={0}", Utility.EncodeUricomponent(channel, PNOperationType.PNRemoveChannelsFromGroupOperation, true, false));
             parameterBuilder.AppendFormat("&type={0}", pushType.ToString().ToLowerInvariant());
+            PushHelpers.SetTopic(topic, ref parameterBuilder);            
+            PushHelpers.SetEnvironment(env, ref parameterBuilder);    
 
             // Build URL
             List<string> url = new List<string>();
@@ -48,12 +61,18 @@ namespace PubNubAPI
 
             return BuildRestApiRequest<Uri>(url, PNOperationType.PNRemoveChannelsFromGroupOperation, parameterBuilder.ToString(), pnInstance, queryParams);
         }
+        public static Uri BuildRemoveAllDevicePushRequest(PNPushType pushType, string pushToken, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        {
+            return BuildRemoveAllDevicePushRequest(pushType, pushToken, pnInstance, queryParams, "", PNPushEnvironment.None);
+        }
 
-        internal static Uri BuildRemoveAllDevicePushRequest(PNPushType pushType, string pushToken, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        public static Uri BuildRemoveAllDevicePushRequest(PNPushType pushType, string pushToken, PubNubUnity pnInstance, Dictionary<string, string> queryParams, string topic, PNPushEnvironment env)
         {
             StringBuilder parameterBuilder = new StringBuilder();
 
             parameterBuilder.AppendFormat("?type={0}", pushType.ToString().ToLowerInvariant());
+            PushHelpers.SetTopic(topic, ref parameterBuilder);            
+            PushHelpers.SetEnvironment(env, ref parameterBuilder);    
 
             // Build URL
             List<string> url = new List<string>();
@@ -67,12 +86,18 @@ namespace PubNubAPI
 
             return BuildRestApiRequest<Uri>(url, PNOperationType.PNRemoveChannelsFromGroupOperation, parameterBuilder.ToString(), pnInstance, queryParams);
         }
-
         public static Uri BuildGetChannelsPushRequest(PNPushType pushType, string pushToken, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        {
+            return BuildGetChannelsPushRequest(pushType, pushToken, pnInstance, queryParams, "", PNPushEnvironment.None);
+        }
+
+        public static Uri BuildGetChannelsPushRequest(PNPushType pushType, string pushToken, PubNubUnity pnInstance, Dictionary<string, string> queryParams, string topic, PNPushEnvironment env)
         {
             StringBuilder parameterBuilder = new StringBuilder();
 
             parameterBuilder.AppendFormat("?type={0}", pushType.ToString().ToLowerInvariant());
+            PushHelpers.SetTopic(topic, ref parameterBuilder);            
+            PushHelpers.SetEnvironment(env, ref parameterBuilder);    
 
             // Build URL
             List<string> url = new List<string>();

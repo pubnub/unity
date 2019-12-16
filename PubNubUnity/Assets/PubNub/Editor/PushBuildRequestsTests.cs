@@ -513,7 +513,7 @@ namespace PubNubAPI.Tests
                 authKeyString = string.Format ("&auth={0}", pnConfiguration.AuthKey);
             }
 
-            Uri uri = BuildRequests.BuildUnregisterDevicePushRequest (pushType, pushToken, pnUnity, queryParams);
+            Uri uri = BuildRequests.BuildRemoveAllDevicePushRequest (pushType, pushToken, pnUnity, queryParams);
             //[1, "Removed Device"]
             //https://ps.pndsn.com/v1/push/sub-key/demo-36/devices/pushToken/remove?type=wns&uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
             string expected = string.Format ("http{0}://{1}/v1/push/sub-key/{2}/devices/{3}/remove?type={4}&uuid={5}{6}&pnsdk={7}{8}",

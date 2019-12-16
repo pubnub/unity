@@ -26,6 +26,17 @@ namespace PubNubAPI
         public RemoveAllPushChannelsForDeviceBuilder(PubNubUnity pn){
             pubBuilder = new RemoveAllPushChannelsForDeviceRequestBuilder(pn);
         }
+
+        public RemoveAllPushChannelsForDeviceBuilder Topic(string topic) {
+            pubBuilder.Topic(topic);
+            return this;
+        }
+
+        public RemoveAllPushChannelsForDeviceBuilder Environment(PNPushEnvironment environment) {
+            pubBuilder.Environment(environment);
+            return this;
+        }
+
         public void Async(Action<PNPushRemoveAllChannelsResult, PNStatus> callback)
         {
             pubBuilder.Async(callback);
