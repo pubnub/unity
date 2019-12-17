@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.Serialization;
 
 namespace PubNubAPI
 {
@@ -14,8 +15,10 @@ namespace PubNubAPI
     public enum PNPushEnvironment
     {
         //PNPushEnvironmentDevelopment for production
+        [EnumMember(Value = "production")]
         Production,
         //PNPushEnvironmentDevelopment for development
+        [EnumMember(Value = "development")]
         Development,
         //PNPushEnvironmentNone is for backward compatibility
         None
