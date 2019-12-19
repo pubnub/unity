@@ -93,6 +93,16 @@ namespace PubNubAPI.Tests
         }
 
         public void TestBuildRegisterDevicePushRequestCommon(bool ssl, string authKey, string pushToken, PNPushType pushType, bool sendQueryParams){
+            TestBuildRegisterDevicePushRequestCommon(ssl, authKey, pushToken, pushType, sendQueryParams, false);
+        }
+
+        [Test]
+        public void TestBuildRegisterDevicePushRequestAPNS2 ()
+        {
+            TestBuildRegisterDevicePushRequestCommon (false, "authKey", "pushToken", PNPushType.APNS2, true, true);
+        }
+ 
+        public void TestBuildRegisterDevicePushRequestCommon(bool ssl, string authKey, string pushToken, PNPushType pushType, bool sendQueryParams, bool withAPNS2){            
             string channel = "push_channel";
             string uuid = "customuuid";
             Dictionary<string,string> queryParams = new Dictionary<string, string>();
@@ -103,7 +113,6 @@ namespace PubNubAPI.Tests
             } else {
                 queryParams = null;
             }
-
 
             PNConfiguration pnConfiguration = new PNConfiguration ();
             pnConfiguration.Origin = EditorCommon.Origin;
@@ -128,12 +137,14 @@ namespace PubNubAPI.Tests
 
             //[1, "Modified Channels"]
             //https://ps.pndsn.com/v1/push/sub-key/demo-36/devices/pushToken?add=push_channel&type=apns&uuid=customuuid&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
-            string expected = string.Format ("http{0}://{1}/v1/push/sub-key/{2}/devices/{3}?add={4}&type={5}&uuid={6}{7}&pnsdk={8}{9}",
+            string expected = string.Format ("http{0}://{1}/{10}/push/sub-key/{2}/{11}/{3}?add={4}&type={5}&uuid={6}{7}&pnsdk={8}{9}",
                 ssl?"s":"", pnConfiguration.Origin, EditorCommon.SubscribeKey, pushToken, 
                 Utility.EncodeUricomponent(channel, PNOperationType.PNAddPushNotificationsOnChannelsOperation, true, false), pushType.ToString().ToLower(),
                 uuid, authKeyString, 
                 Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNAddPushNotificationsOnChannelsOperation, false, true),
-                queryParamString
+                queryParamString,
+                (withAPNS2)?"v2":"v1",
+                (withAPNS2)?"devices-apns2":"devices"
             );
             string received = uri.OriginalString;
             UnityEngine.Debug.Log("exp:"+expected);

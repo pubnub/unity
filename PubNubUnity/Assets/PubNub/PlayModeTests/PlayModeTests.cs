@@ -759,6 +759,188 @@ namespace PubNubAPI.Tests
 			pubnub.CleanUp();
 		}
 
+		[UnityTest]
+		public IEnumerator TestPublishCreatePushPayload() {
+			string publishChannel = "UnityTestPushPayloadHelperChannel";
+			CreatePushPayloadHelper cpph = new CreatePushPayloadHelper();
+			PNAPSData aps = new PNAPSData();
+            aps.Alert = "alert";
+            aps.Badge = 1;
+            aps.Sound = "ding";
+            aps.Custom = new Dictionary<string, object>(){
+                {"aps_key1", "aps_value1"},
+                {"aps_key2", "aps_value2"},
+            };
+
+            PNAPNSData apns = new PNAPNSData();
+            apns.APS = aps;
+            apns.Custom = new Dictionary<string, object>(){
+                {"apns_key1", "apns_value1"},
+                {"apns_key2", "apns_value2"},
+            };
+
+            PNAPNS2Data apns2One = new PNAPNS2Data();
+            apns2One.CollapseID = "invitations";
+		    apns2One.Expiration = "2019-12-13T22:06:09Z";
+		    apns2One.Version = "v1";
+            apns2One.Targets = new List<PNPushTarget>(){
+                new PNPushTarget(){
+                    Environment = PNPushEnvironment.Development,
+                    Topic = "com.meetings.chat.app",
+                    ExcludeDevices = new List<string>(){
+                        "device1",
+                        "device2",
+                    }
+                }
+            };
+
+            PNAPNS2Data apns2Two = new PNAPNS2Data();
+            apns2Two.CollapseID = "invitations";
+		    apns2Two.Expiration = "2019-12-15T22:06:09Z";
+		    apns2Two.Version = "v2";
+            apns2Two.Targets = new List<PNPushTarget>(){
+                new PNPushTarget(){
+                    Environment = PNPushEnvironment.Production,
+                    Topic = "com.meetings.chat.app",
+                    ExcludeDevices = new List<string>(){
+                        "device3",
+                        "device4",
+                    }
+                }
+            };
+
+            List<PNAPNS2Data> apns2 = new List<PNAPNS2Data>(){
+                apns2One,
+                apns2Two,
+            };
+
+            PNMPNSData mpns = new PNMPNSData();
+            mpns.Custom = new Dictionary<string, object>(){
+                {"mpns_key1", "mpns_value1"},
+                {"mpns_key2", "mpns_value2"},
+            };
+            mpns.Title = "title";
+            mpns.Type = "type";
+            mpns.Count = 1;
+            mpns.BackTitle = "BackTitle";
+            mpns.BackContent = "BackContent";
+
+            PNFCMData fcm = new PNFCMData();
+            fcm.Custom = new Dictionary<string, object>(){
+                {"fcm_key1", "fcm_value1"},
+                {"fcm_key2", "fcm_value2"},
+            };
+            fcm.Data = new PNFCMDataFields(){
+                Summary = "summary",
+                Custom = new Dictionary<string, object>(){
+                    {"fcm_data_key1", "fcm_data_value1"},
+                    {"fcm_data_key2", "fcm_data_value2"},
+                }
+            };
+
+            Dictionary<string, object> commonPayload = new Dictionary<string, object>();
+            commonPayload = new Dictionary<string, object>(){
+                {"common_key1", "common_value1"},
+                {"common_key2", "common_value2"},
+            };
+
+			Dictionary<string, object> payload = cpph.SetAPNSPayload(apns, apns2).SetMPNSPayload(mpns).SetFCMPayload(fcm).SetCommonPayload(commonPayload).BuildPayload();
+			
+			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
+			pnConfiguration.UUID = "UnityTestPublishUUID";
+			PubNub pubnub = new PubNub(pnConfiguration);
+			List<string> channelList2 = new List<string>();
+			channelList2.Add(publishChannel);
+			bool testReturn = false;
+			pubnub.SubscribeCallback += (sender, e) => { 
+				SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
+				if(!mea.Status.Category.Equals(PNStatusCategory.PNConnectedCategory)){
+					Assert.True(mea.MessageResult.Channel.Equals(publishChannel));
+					Dictionary<string, object> result = mea.MessageResult.Payload as Dictionary<string, object>;
+					if(result != null){
+						Dictionary<string, object> resAPNS = result["pn_apns"] as Dictionary<string, object>;
+						if(resAPNS != null){
+							Dictionary<string, object> resAPS = resAPNS["aps"] as Dictionary<string, object>;
+							Assert.IsTrue(aps.Alert.ToString().Equals(resAPS["alert"].ToString()));
+							Assert.IsTrue (aps.Badge.ToString().Equals(resAPS["badge"].ToString()));
+							Assert.IsTrue (aps.Sound.ToString().Equals(resAPS["sound"].ToString()));
+							Assert.IsTrue (aps.Custom["aps_key1"].ToString().Equals(resAPS["aps_key1"].ToString()));
+							Assert.IsTrue (aps.Custom["aps_key2"].ToString().Equals(resAPS["aps_key2"].ToString()));
+							Assert.IsTrue (apns.Custom["apns_key1"].ToString().Equals(resAPNS["apns_key1"].ToString()));
+							Assert.IsTrue (apns.Custom["apns_key2"].ToString().Equals(resAPNS["apns_key2"].ToString()));
+						} else {
+							Assert.Fail("apns null");
+						}
+						Debug.Log("PAYLOAD20:" + result["pn_push"].ToString() + result["pn_push"].GetType());	
+						Dictionary<string, object>[] resAPNS2 = result["pn_push"] as Dictionary<string, object>[];
+						if(resAPNS2 != null){
+							Assert.IsTrue (apns2One.CollapseID.Equals(resAPNS2[0]["collapseId"].ToString()));
+							Assert.IsTrue (apns2Two.CollapseID.Equals(resAPNS2[1]["collapseId"].ToString()));
+							Assert.IsTrue (apns2One.Expiration.Equals(resAPNS2[0]["expiration"].ToString()));
+							Assert.IsTrue (apns2Two.Expiration.Equals(resAPNS2[1]["expiration"].ToString()));
+							Assert.IsTrue (apns2One.Version.Equals(resAPNS2[0]["version"].ToString()));
+							Assert.IsTrue (apns2Two.Version.Equals(resAPNS2[1]["version"].ToString()));
+							// Dictionary<string, object> resTargets1  = resAPNS2[1]["targets"] as Dictionary<string, object>;
+							// Dictionary<string, object> resTargets0  = resAPNS2[0]["targets"] as Dictionary<string, object>;
+							// Assert.IsTrue (apns2One.Targets[0].Environment.ToString().Equals(resTargets0["environment"].ToString()));
+							// Assert.IsTrue (apns2One.Targets[0].Topic.ToString().Equals(resTargets0["topic"].ToString()));
+							// Assert.IsTrue (apns2Two.Targets[0].Environment.ToString().Equals(resTargets1["environment"].ToString()));
+							// Assert.IsTrue (apns2Two.Targets[0].Topic.ToString().Equals(resTargets1["topic"].ToString()));
+							// List<string> resExcludeDev0  = resTargets0["exclude_devices"] as List<string>;
+							// Assert.IsTrue (apns2One.Targets[0].ExcludeDevices[0].ToString().Equals(resExcludeDev0[0].ToString()));
+							// Assert.IsTrue (apns2One.Targets[0].ExcludeDevices[1].ToString().Equals(resExcludeDev0[1].ToString()));
+							// List<string> resExcludeDev1  = resTargets1["exclude_devices"] as List<string>;
+							// Assert.IsTrue (apns2Two.Targets[0].ExcludeDevices[0].ToString().Equals(resExcludeDev1[0].ToString()));
+							// Assert.IsTrue (apns2Two.Targets[0].ExcludeDevices[1].ToString().Equals(resExcludeDev1[1].ToString()));
+						} else {
+							Assert.Fail("apns2 null");
+						}
+								
+						Dictionary<string, object> resMPNS = result["pn_mpns"] as Dictionary<string, object>;
+						if(resMPNS != null){
+							Assert.IsTrue (mpns.Title.ToString().Equals(resMPNS["title"].ToString()));
+							Assert.IsTrue (mpns.BackContent.ToString().Equals(resMPNS["back_content"].ToString()));
+							Assert.IsTrue (mpns.BackTitle.ToString().Equals(resMPNS["back_title"].ToString()));
+							Assert.IsTrue (mpns.Count.ToString().Equals(resMPNS["count"].ToString()));
+							Assert.IsTrue (mpns.Type.ToString().Equals(resMPNS["type"].ToString()));
+							Assert.IsTrue (mpns.Custom["mpns_key1"].ToString().Equals(resMPNS["mpns_key1"].ToString()));
+							Assert.IsTrue (mpns.Custom["mpns_key2"].ToString().Equals(resMPNS["mpns_key2"].ToString()));
+						} else {
+							Assert.Fail("mpns null");
+						}
+
+						Assert.IsTrue (commonPayload["common_key1"].ToString().Equals(result["common_key1"].ToString()));
+						Assert.IsTrue (commonPayload["common_key2"].ToString().Equals(result["common_key2"].ToString()));
+
+						Dictionary<string, object> resFCM = result["pn_gcm"] as Dictionary<string, object>;
+						if(resFCM != null){
+							Assert.IsTrue (fcm.Custom["fcm_key1"].ToString().Equals(resFCM["fcm_key1"].ToString()));
+							Assert.IsTrue (fcm.Custom["fcm_key2"].ToString().Equals(resFCM["fcm_key2"].ToString()));
+							Dictionary<string, object> resFCMData = resFCM["data"] as Dictionary<string, object>;
+							Assert.IsTrue (fcm.Data.Summary.ToString().Equals(resFCMData["summary"].ToString()));
+							Assert.IsTrue (fcm.Data.Custom["fcm_data_key1"].ToString().Equals(resFCMData["fcm_data_key1"].ToString()));
+							Assert.IsTrue (fcm.Data.Custom["fcm_data_key2"].ToString().Equals(resFCMData["fcm_data_key2"].ToString()));
+							
+						} else {
+							Assert.Fail("fcm null");
+						}
+					}
+					testReturn = true;
+				}
+			};
+			pubnub.Subscribe ().Channels(channelList2).Execute();
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
+			
+			pubnub.Publish().Channel(publishChannel).Message(payload).Async((result, status) => {
+				Assert.True(!result.Timetoken.Equals(0));
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+			});
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			Assert.True(testReturn, "test didn't return");
+			pubnub.CleanUp();			
+		}
+
 		public IEnumerator DoPublishTestProcsssing(object payload, string publishChannel){
 			Debug.Log("PAYLOAD:"+payload.ToString());
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
