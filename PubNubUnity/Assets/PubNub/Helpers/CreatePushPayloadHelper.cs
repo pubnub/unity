@@ -50,7 +50,7 @@ namespace PubNubAPI
 
             Dictionary<string, object> fcm = BuildFCMPayload();
             if(fcm != null){
-                response.Add("pn_fcm", fcm);
+                response.Add("pn_gcm", fcm);
             }
 
             if((CommonPayload != null) && (CommonPayload.Count>0)){

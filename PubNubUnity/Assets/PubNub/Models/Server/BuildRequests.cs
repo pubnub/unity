@@ -27,11 +27,17 @@ namespace PubNubAPI
 
             // Build URL
             List<string> url = new List<string>();
-            url.Add("v1");
+            string version = "v1";
+            string devices = "devices";
+            if(pushType.Equals(PNPushType.APNS2)){
+                version = "v2";
+                devices = "devices-apns2";
+            } 
+            url.Add(version);           
             url.Add("push");
             url.Add("sub-key");
             url.Add(pnInstance.PNConfig.SubscribeKey);
-            url.Add("devices");
+            url.Add(devices);
             url.Add(pushToken);
 
             return BuildRestApiRequest<Uri>(url, PNOperationType.PNAddPushNotificationsOnChannelsOperation, parameterBuilder.ToString(), pnInstance, queryParams);
@@ -52,11 +58,18 @@ namespace PubNubAPI
 
             // Build URL
             List<string> url = new List<string>();
-            url.Add("v1");
+            string version = "v1";
+            string devices = "devices";
+            if(pushType.Equals(PNPushType.APNS2)){
+                version = "v2";
+                devices = "devices-apns2";
+            } 
+
+            url.Add(version);
             url.Add("push");
             url.Add("sub-key");
             url.Add(pnInstance.PNConfig.SubscribeKey);
-            url.Add("devices");
+            url.Add(devices);
             url.Add(pushToken);
 
             return BuildRestApiRequest<Uri>(url, PNOperationType.PNRemoveChannelsFromGroupOperation, parameterBuilder.ToString(), pnInstance, queryParams);
@@ -76,11 +89,18 @@ namespace PubNubAPI
 
             // Build URL
             List<string> url = new List<string>();
-            url.Add("v1");
+            string version = "v1";
+            string devices = "devices";
+            if(pushType.Equals(PNPushType.APNS2)){
+                version = "v2";
+                devices = "devices-apns2";
+            } 
+ 
+            url.Add(version);
             url.Add("push");
             url.Add("sub-key");
             url.Add(pnInstance.PNConfig.SubscribeKey);
-            url.Add("devices");
+            url.Add(devices);
             url.Add(pushToken);
             url.Add("remove");
 
@@ -101,11 +121,18 @@ namespace PubNubAPI
 
             // Build URL
             List<string> url = new List<string>();
-            url.Add("v1");
+            string version = "v1";
+            string devices = "devices";
+            if(pushType.Equals(PNPushType.APNS2)){
+                version = "v2";
+                devices = "devices-apns2";
+            } 
+
+            url.Add(version);
             url.Add("push");
             url.Add("sub-key");
             url.Add(pnInstance.PNConfig.SubscribeKey);
-            url.Add("devices");
+            url.Add(devices);
             url.Add(pushToken);
 
             return BuildRestApiRequest<Uri>(url, PNOperationType.PNPushNotificationEnabledChannelsOperation, parameterBuilder.ToString(), pnInstance, queryParams);
