@@ -3,6 +3,16 @@ changelog:
   - 
     changes: 
       - 
+        text: "APNS2"
+        type: improvement
+      - 
+        text: "Push payload helper class"
+        type: improvement
+    date: Dec 24, 19  
+    version: v4.7.0  
+  - 
+    changes: 
+      - 
         text: "Message Actions added missing TotalCount, Next, Prev for Get Users/Spaces, Manage/Get Members/Memberships"
         type: improvement
       - 
@@ -359,6 +369,7 @@ features:
   others: 
     - TELEMETRY
     - QUERY-PARAM
+    - CREATE-PUSH-PAYLOAD    
   presence: 
     - PRESENCE-HERE-NOW
     - PRESENCE-WHERE-NOW
@@ -381,6 +392,10 @@ features:
     - PUSH-REMOVE-DEVICE-FROM-CHANNELS
     - PUSH-LIST-CHANNELS-FROM-DEVICE
     - PUSH-REMOVE-DEVICE
+    - PUSH-TYPE-APNS
+    - PUSH-TYPE-APNS2
+    - PUSH-TYPE-FCM
+    - PUSH-TYPE-MPNS    
   storage: 
     - STORAGE-REVERSE
     - STORAGE-INCLUDE-TIMETOKEN
@@ -452,4 +467,4 @@ supported-platforms:
       - "Ubuntu 12.04+, with Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support."
       - "Mac OS X 10.8+, with Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support."
     version: "PubNub Unity SDK"
-version: v4.6.0
+version: v4.7.0
