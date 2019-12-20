@@ -153,12 +153,6 @@ namespace PubNubAPI
                             target["topic"] = pnPushTarget.Topic;
                             target["environment"] = pnPushTarget.Environment;
                             target["exclude_devices"] = pnPushTarget.ExcludeDevices;
-                            // if(pnPushTarget.ExcludeDevices != null){
-                            //     List<string> lstExcludeDevices = new List<string>();
-                            //     foreach(string excludeDevices in pnPushTarget.ExcludeDevices){
-                            //         lstExcludeDevices.Add(excludeDevices);
-                            //     }
-                            // }
                             lstTargets.Add(target);
                         }
                         apns2Data["targets"] = lstTargets;
