@@ -22,8 +22,6 @@ namespace PubNubAPI
 
             parameterBuilder.AppendFormat("?add={0}", Utility.EncodeUricomponent(channel, PNOperationType.PNAddPushNotificationsOnChannelsOperation, true, false));
             parameterBuilder.AppendFormat("&type={0}", pushType.ToString().ToLowerInvariant());
-            PushHelpers.SetTopic(topic, ref parameterBuilder);            
-            PushHelpers.SetEnvironment(env, ref parameterBuilder);    
 
             // Build URL
             List<string> url = new List<string>();
@@ -32,6 +30,8 @@ namespace PubNubAPI
             if(pushType.Equals(PNPushType.APNS2)){
                 version = "v2";
                 devices = "devices-apns2";
+                PushHelpers.SetTopic(topic, ref parameterBuilder);            
+                PushHelpers.SetEnvironment(env, ref parameterBuilder);    
             } 
             url.Add(version);           
             url.Add("push");
@@ -53,8 +53,6 @@ namespace PubNubAPI
 
             parameterBuilder.AppendFormat("?remove={0}", Utility.EncodeUricomponent(channel, PNOperationType.PNRemoveChannelsFromGroupOperation, true, false));
             parameterBuilder.AppendFormat("&type={0}", pushType.ToString().ToLowerInvariant());
-            PushHelpers.SetTopic(topic, ref parameterBuilder);            
-            PushHelpers.SetEnvironment(env, ref parameterBuilder);    
 
             // Build URL
             List<string> url = new List<string>();
@@ -63,6 +61,8 @@ namespace PubNubAPI
             if(pushType.Equals(PNPushType.APNS2)){
                 version = "v2";
                 devices = "devices-apns2";
+                PushHelpers.SetTopic(topic, ref parameterBuilder);            
+                PushHelpers.SetEnvironment(env, ref parameterBuilder);    
             } 
 
             url.Add(version);
@@ -84,8 +84,6 @@ namespace PubNubAPI
             StringBuilder parameterBuilder = new StringBuilder();
 
             parameterBuilder.AppendFormat("?type={0}", pushType.ToString().ToLowerInvariant());
-            PushHelpers.SetTopic(topic, ref parameterBuilder);            
-            PushHelpers.SetEnvironment(env, ref parameterBuilder);    
 
             // Build URL
             List<string> url = new List<string>();
@@ -94,6 +92,8 @@ namespace PubNubAPI
             if(pushType.Equals(PNPushType.APNS2)){
                 version = "v2";
                 devices = "devices-apns2";
+                PushHelpers.SetTopic(topic, ref parameterBuilder);            
+                PushHelpers.SetEnvironment(env, ref parameterBuilder);    
             } 
  
             url.Add(version);
@@ -116,8 +116,6 @@ namespace PubNubAPI
             StringBuilder parameterBuilder = new StringBuilder();
 
             parameterBuilder.AppendFormat("?type={0}", pushType.ToString().ToLowerInvariant());
-            PushHelpers.SetTopic(topic, ref parameterBuilder);            
-            PushHelpers.SetEnvironment(env, ref parameterBuilder);    
 
             // Build URL
             List<string> url = new List<string>();
@@ -126,6 +124,8 @@ namespace PubNubAPI
             if(pushType.Equals(PNPushType.APNS2)){
                 version = "v2";
                 devices = "devices-apns2";
+                PushHelpers.SetTopic(topic, ref parameterBuilder);            
+                PushHelpers.SetEnvironment(env, ref parameterBuilder);    
             } 
 
             url.Add(version);

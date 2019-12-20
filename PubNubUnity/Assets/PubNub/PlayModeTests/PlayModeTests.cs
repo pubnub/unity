@@ -750,7 +750,6 @@ namespace PubNubAPI.Tests
 			bool tresult = false;
 			foreach(KeyValuePair<string, bool> kvp in payload){
 				if(!kvp.Value){
-					Debug.Log("=======>>>>>>>>" + kvp.Key);
 					tresult = true;
 				}
 			}
@@ -880,18 +879,20 @@ namespace PubNubAPI.Tests
 							Assert.IsTrue (apns2Two.Expiration.Equals(resAPNS2[1]["expiration"].ToString()));
 							Assert.IsTrue (apns2One.Version.Equals(resAPNS2[0]["version"].ToString()));
 							Assert.IsTrue (apns2Two.Version.Equals(resAPNS2[1]["version"].ToString()));
-							// Dictionary<string, object> resTargets1  = resAPNS2[1]["targets"] as Dictionary<string, object>;
-							// Dictionary<string, object> resTargets0  = resAPNS2[0]["targets"] as Dictionary<string, object>;
-							// Assert.IsTrue (apns2One.Targets[0].Environment.ToString().Equals(resTargets0["environment"].ToString()));
-							// Assert.IsTrue (apns2One.Targets[0].Topic.ToString().Equals(resTargets0["topic"].ToString()));
-							// Assert.IsTrue (apns2Two.Targets[0].Environment.ToString().Equals(resTargets1["environment"].ToString()));
-							// Assert.IsTrue (apns2Two.Targets[0].Topic.ToString().Equals(resTargets1["topic"].ToString()));
-							// List<string> resExcludeDev0  = resTargets0["exclude_devices"] as List<string>;
-							// Assert.IsTrue (apns2One.Targets[0].ExcludeDevices[0].ToString().Equals(resExcludeDev0[0].ToString()));
-							// Assert.IsTrue (apns2One.Targets[0].ExcludeDevices[1].ToString().Equals(resExcludeDev0[1].ToString()));
-							// List<string> resExcludeDev1  = resTargets1["exclude_devices"] as List<string>;
-							// Assert.IsTrue (apns2Two.Targets[0].ExcludeDevices[0].ToString().Equals(resExcludeDev1[0].ToString()));
-							// Assert.IsTrue (apns2Two.Targets[0].ExcludeDevices[1].ToString().Equals(resExcludeDev1[1].ToString()));
+							object[] o1 = resAPNS2[0]["targets"] as object[];
+							Dictionary<string, object> resTargets0 = o1[0] as Dictionary<string, object>;
+							object[] o2 = resAPNS2[1]["targets"] as object[];
+							Dictionary<string, object> resTargets1 = o2[0] as Dictionary<string, object>;
+							Assert.IsTrue (apns2One.Targets[0].Environment.ToString().Equals(resTargets0["environment"].ToString()));
+							Assert.IsTrue (apns2One.Targets[0].Topic.ToString().Equals(resTargets0["topic"].ToString()));
+							Assert.IsTrue (apns2Two.Targets[0].Environment.ToString().Equals(resTargets1["environment"].ToString()));
+							Assert.IsTrue (apns2Two.Targets[0].Topic.ToString().Equals(resTargets1["topic"].ToString()));
+							string[] resExcludeDev0  = resTargets0["exclude_devices"] as string[];
+							Assert.IsTrue (apns2One.Targets[0].ExcludeDevices[0].ToString().Equals(resExcludeDev0[0].ToString()));
+							Assert.IsTrue (apns2One.Targets[0].ExcludeDevices[1].ToString().Equals(resExcludeDev0[1].ToString()));
+							string[] resExcludeDev1  = resTargets1["exclude_devices"] as string[];
+							Assert.IsTrue (apns2Two.Targets[0].ExcludeDevices[0].ToString().Equals(resExcludeDev1[0].ToString()));
+							Assert.IsTrue (apns2Two.Targets[0].ExcludeDevices[1].ToString().Equals(resExcludeDev1[1].ToString()));
 						} else {
 							Assert.Fail("apns2 null");
 						}

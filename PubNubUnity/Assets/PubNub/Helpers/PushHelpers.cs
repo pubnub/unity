@@ -8,7 +8,7 @@ namespace PubNubAPI
     {
         public static void SetTopic (string topic, ref StringBuilder parameterBuilder)
         {
-            if(string.IsNullOrEmpty(topic)){
+            if(!string.IsNullOrEmpty(topic)){
                 parameterBuilder.AppendFormat("&topic={0}", topic);
             }
         }
