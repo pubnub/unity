@@ -71,13 +71,27 @@ namespace PubNubAPI
             RequestState requestState = new RequestState ();
             requestState.OperationType = OperationType;
             
-            Uri request = BuildRequests.BuildRegisterDevicePushRequest(
-                string.Join(",", ChannelsToUse.ToArray()), 
-                PushType, 
-                DeviceIDForPush,
-                this.PubNubInstance,
-                this.QueryParams
-            );
+            Uri request;
+            if(PushType.Equals(PNPushType.APNS2)){
+                request = BuildRequests.BuildRegisterDevicePushRequest(
+                    string.Join(",", ChannelsToUse.ToArray()), 
+                    PushType, 
+                    DeviceIDForPush,
+                    this.PubNubInstance,
+                    this.QueryParams,
+                    TopicForPush,
+                    EnvironmentForPush
+                );
+            } else {
+                request = BuildRequests.BuildRegisterDevicePushRequest(
+                    string.Join(",", ChannelsToUse.ToArray()), 
+                    PushType, 
+                    DeviceIDForPush,
+                    this.PubNubInstance,
+                    this.QueryParams
+                );
+            }
+
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this);
         }
 

@@ -87,7 +87,6 @@ namespace PubNubExample
         }
         void ButtonDeleteHistoryHandler(){
             pubnub.DeleteMessages().Channel("channel1").Start(15078932998876451).End(15078933628583256).Async((result, status) => {
-            //pubnub.DeleteMessages().Channel("channel1").Async((result, status) => {                
                 Debug.Log ("in DeleteMessages");
                 if(!status.Error){
                     Debug.Log (string.Format("DateTime {0}, In DeleteMessages Example, Timetoken: {1}", DateTime.UtcNow , result.Message));
@@ -306,6 +305,15 @@ namespace PubNubExample
                         Display(string.Format("AddPushNotificationsOnChannels: {0}", result.Message));
                     }
                 });
+            pubnub.AddPushNotificationsOnChannels().Channels(listChannels).DeviceID(deviceId).PushType(PNPushType.APNS2).Topic("a").Async((result, status) => {
+                    Debug.Log ("in AddPushNotificationsOnChannels");
+                    if(status.Error){
+                        Debug.Log (string.Format("In Example, AddPushNotificationsOnChannels Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
+                    } else {
+                        Debug.Log (string.Format("DateTime {0}, In AddPushNotificationsOnChannels, result: {1}", DateTime.UtcNow, result.Message));
+                        Display(string.Format("AddPushNotificationsOnChannels: {0}", result.Message));
+                    }
+                });    
         }
         void ButtonAuditPushChannelProvisionsHandler(){
             AuditPushChannelProvisions(pubnub, deviceId, pnPushType);
@@ -434,7 +442,6 @@ namespace PubNubExample
         }
 
         void MessageCounts(List<string> listChannels, PubNub pubnub){
-            //pubnub.MessageCounts().ChannelTimetokens(new List<string>{"15499825804610610","15499925804610615"}).Channels(listChannels).Timetoken("1549982652").Async((result, status) =>{
             pubnub.MessageCounts().Channels(listChannels).ChannelsTimetoken(new List<long>{1549982652}).Async((result, status) =>{    
                     if(status.Error){
                         Debug.Log (string.Format("In Example, MessageCounts Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
@@ -515,11 +522,10 @@ namespace PubNubExample
         void FetchRecursive(long start, List<string> listChannels){
 
             pubnub.FetchMessages().Channels(listChannels).Start(start).Async ((result, status) => {
-            //pubnub.FetchMessages().Channels(new List<string>{"channel2"}).Async ((result, status) => {    
                 if(status.Error){
                     Debug.Log (string.Format("In Example, FetchMessages Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                 } else {
-                    Debug.Log (string.Format("In FetchMessages, result: "));//,result.EndTimetoken, result.Messages[0].ToString()));
+                    Debug.Log (string.Format("In FetchMessages, result: "));
                     foreach(KeyValuePair<string, List<PNMessageResult>> kvp in result.Channels){
                         Debug.Log("kvp channelname" + kvp.Key);
                         foreach(PNMessageResult pnMessageResut in kvp.Value){
@@ -549,8 +555,6 @@ namespace PubNubExample
                 }
             });
         }
-
-
 
         void SubscribeCallbackHandler(object sender, EventArgs e){
             Debug.Log("SubscribeCallbackHandler Event handler");
@@ -582,8 +586,6 @@ namespace PubNubExample
                 }
                 if(mea.MessageResult != null){
                     Debug.Log ("In Example, SubscribeCallback in message" + mea.MessageResult.Channel + mea.MessageResult.Payload);
-                    //var a = mea.MessageResult.Payload as Dictionary<string, string>;
-                    //var b = a["a"];
                     Display(string.Format("SubscribeCallback Result: {0}", pubnub.JsonLibrary.SerializeToJsonString(mea.MessageResult.Payload)));
                 }
                 if(mea.PresenceEventResult != null){
@@ -605,6 +607,16 @@ namespace PubNubExample
                         Display(string.Format("RemovePushNotificationsFromChannels: {0}", result.Message));
                     }
                 });
+            pubnub.RemovePushNotificationsFromChannels().Channels(listChannels).DeviceID(deviceId).PushType(PNPushType.APNS2).Topic("a").Async((result, status) => {
+                    Debug.Log ("in RemovePushNotificationsFromChannels");
+                    if(status.Error){
+                        Debug.Log (string.Format("In Example, RemovePushNotificationsFromChannels Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
+                    } else {
+                        Debug.Log (string.Format("DateTime {0}, In RemovePushNotificationsFromChannels, result: {1}", DateTime.UtcNow, result.Message));
+                        Display(string.Format("RemovePushNotificationsFromChannels: {0}", result.Message));
+                    }
+                });    
+               
         }
 
         void AuditPushChannelProvisions(PubNub pubnub, string deviceId, PNPushType pnPushType){
@@ -618,6 +630,17 @@ namespace PubNubExample
                     }
 
                 });
+            pubnub.AuditPushChannelProvisions().DeviceID(deviceId).PushType(pnPushType).PushType(PNPushType.APNS2).Topic("a").Async((result, status) => {
+                    Debug.Log ("in AuditPushChannelProvisions");
+                    if(status.Error){
+                        Debug.Log (string.Format("In Example, AuditPushChannelProvisions Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
+                    } else {
+                        Debug.Log (string.Format("DateTime {0}, In AuditPushChannelProvisions, result: {1}", DateTime.UtcNow, (result.Channels!=null)?string.Join(",", result.Channels.ToArray()):""));
+                        Display(string.Format("AuditPushChannelProvisions: {0}", (result.Channels!=null)?string.Join(",", result.Channels.ToArray()):""));
+                    }
+
+                });                
+                
         }
 
         void RemoveAllPushNotificationsFromChannels(PubNub pubnub, string deviceId, PNPushType pnPushType){
@@ -631,6 +654,17 @@ namespace PubNubExample
                     }
 
                 });
+            pubnub.RemoveAllPushNotifications().DeviceID(deviceId).PushType(PNPushType.APNS2).Topic("a").Async((result, status) => {
+                    Debug.Log ("in RemoveAllPushNotificationsFromChannels");
+                    if(status.Error){
+                        Debug.Log (string.Format("In Example, RemoveAllPushNotificationsFromChannels Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
+                    } else {
+                        Debug.Log (string.Format("DateTime {0}, In RemoveAllPushNotificationsFromChannels, result: {1}", DateTime.UtcNow, result.Message));
+                        Display(string.Format("RemoveAllPushNotificationsFromChannels: {0}", result.Message));
+                    }
+
+                });                
+            
         }
 
         void RemoveChannelsFromCG(PubNub pubnub, string cg, List<string> listChannelsRemove){
@@ -660,7 +694,6 @@ namespace PubNubExample
 
         void FetchMessages(PubNub pubnub, List<string> listChannels){
             pubnub.FetchMessages().Channels(listChannels).IncludeMeta(true).Async ((result, status) => {
-            //pubnub.FetchMessages().Channels(new List<string>{"channel2"}).Async ((result, status) => {    
                 if(status.Error){
                     Debug.Log (string.Format("In Example, FetchMessages Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                 } else {
@@ -745,22 +778,14 @@ namespace PubNubExample
                     (s.ClientRequest != null) ? s.ClientRequest.ToString() : "null"
                     ));
 
-                    //Display (s.Category.ToString());
             }
         }
 
         void Display(string textToDisplay){
             TextContent.text  = string.Format("{0}\n{1}", TextContent.text, textToDisplay);
-            //UnityEngine.UI.Text txtRef = (UnityEngine.UI.Text)GameObject.Find("CountText").GetComponent<Text>;
-            //Debug.Log("TextContent.text 2:" + TextContent.text);
-            //TextScroll 
-            //Canvas.
-            //Debug.Log("transform:" + transform.Find("TextContent").name);
         }
 
-        //public string stringToEdit = "Hello World";
         void OnGUI() {
-            //stringToEdit = GUI.TextField(new Rect(10, 10, 600, 600), stringToEdit, 600);
             
         }
 
