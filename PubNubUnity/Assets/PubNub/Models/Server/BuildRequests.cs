@@ -13,6 +13,11 @@ namespace PubNubAPI
         #region "Build Requests"
         public static Uri BuildRegisterDevicePushRequest(string channel, PNPushType pushType, string pushToken, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
         {
+            return BuildRegisterDevicePushRequest(channel, pushType, pushToken, pnInstance, queryParams, "", PNPushEnvironment.None);
+        }
+
+        public static Uri BuildRegisterDevicePushRequest(string channel, PNPushType pushType, string pushToken, PubNubUnity pnInstance, Dictionary<string, string> queryParams, string topic, PNPushEnvironment env)
+        {
             StringBuilder parameterBuilder = new StringBuilder();
 
             parameterBuilder.AppendFormat("?add={0}", Utility.EncodeUricomponent(channel, PNOperationType.PNAddPushNotificationsOnChannelsOperation, true, false));
@@ -20,17 +25,29 @@ namespace PubNubAPI
 
             // Build URL
             List<string> url = new List<string>();
-            url.Add("v1");
+            string version = "v1";
+            string devices = "devices";
+            if(pushType.Equals(PNPushType.APNS2)){
+                version = "v2";
+                devices = "devices-apns2";
+                PushHelpers.SetTopic(topic, ref parameterBuilder);            
+                PushHelpers.SetEnvironment(env, ref parameterBuilder);    
+            } 
+            url.Add(version);           
             url.Add("push");
             url.Add("sub-key");
             url.Add(pnInstance.PNConfig.SubscribeKey);
-            url.Add("devices");
+            url.Add(devices);
             url.Add(pushToken);
 
             return BuildRestApiRequest<Uri>(url, PNOperationType.PNAddPushNotificationsOnChannelsOperation, parameterBuilder.ToString(), pnInstance, queryParams);
         }
-
         public static Uri BuildRemoveChannelPushRequest(string channel, PNPushType pushType, string pushToken, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        {
+            return BuildRemoveChannelPushRequest(channel, pushType, pushToken, pnInstance, queryParams, "", PNPushEnvironment.None);
+        }
+
+        public static Uri BuildRemoveChannelPushRequest(string channel, PNPushType pushType, string pushToken, PubNubUnity pnInstance, Dictionary<string, string> queryParams, string topic, PNPushEnvironment env)
         {
             StringBuilder parameterBuilder = new StringBuilder();
 
@@ -39,17 +56,30 @@ namespace PubNubAPI
 
             // Build URL
             List<string> url = new List<string>();
-            url.Add("v1");
+            string version = "v1";
+            string devices = "devices";
+            if(pushType.Equals(PNPushType.APNS2)){
+                version = "v2";
+                devices = "devices-apns2";
+                PushHelpers.SetTopic(topic, ref parameterBuilder);            
+                PushHelpers.SetEnvironment(env, ref parameterBuilder);    
+            } 
+
+            url.Add(version);
             url.Add("push");
             url.Add("sub-key");
             url.Add(pnInstance.PNConfig.SubscribeKey);
-            url.Add("devices");
+            url.Add(devices);
             url.Add(pushToken);
 
             return BuildRestApiRequest<Uri>(url, PNOperationType.PNRemoveChannelsFromGroupOperation, parameterBuilder.ToString(), pnInstance, queryParams);
         }
+        public static Uri BuildRemoveAllDevicePushRequest(PNPushType pushType, string pushToken, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        {
+            return BuildRemoveAllDevicePushRequest(pushType, pushToken, pnInstance, queryParams, "", PNPushEnvironment.None);
+        }
 
-        internal static Uri BuildRemoveAllDevicePushRequest(PNPushType pushType, string pushToken, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        public static Uri BuildRemoveAllDevicePushRequest(PNPushType pushType, string pushToken, PubNubUnity pnInstance, Dictionary<string, string> queryParams, string topic, PNPushEnvironment env)
         {
             StringBuilder parameterBuilder = new StringBuilder();
 
@@ -57,18 +87,31 @@ namespace PubNubAPI
 
             // Build URL
             List<string> url = new List<string>();
-            url.Add("v1");
+            string version = "v1";
+            string devices = "devices";
+            if(pushType.Equals(PNPushType.APNS2)){
+                version = "v2";
+                devices = "devices-apns2";
+                PushHelpers.SetTopic(topic, ref parameterBuilder);            
+                PushHelpers.SetEnvironment(env, ref parameterBuilder);    
+            } 
+ 
+            url.Add(version);
             url.Add("push");
             url.Add("sub-key");
             url.Add(pnInstance.PNConfig.SubscribeKey);
-            url.Add("devices");
+            url.Add(devices);
             url.Add(pushToken);
             url.Add("remove");
 
             return BuildRestApiRequest<Uri>(url, PNOperationType.PNRemoveChannelsFromGroupOperation, parameterBuilder.ToString(), pnInstance, queryParams);
         }
-
         public static Uri BuildGetChannelsPushRequest(PNPushType pushType, string pushToken, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        {
+            return BuildGetChannelsPushRequest(pushType, pushToken, pnInstance, queryParams, "", PNPushEnvironment.None);
+        }
+
+        public static Uri BuildGetChannelsPushRequest(PNPushType pushType, string pushToken, PubNubUnity pnInstance, Dictionary<string, string> queryParams, string topic, PNPushEnvironment env)
         {
             StringBuilder parameterBuilder = new StringBuilder();
 
@@ -76,11 +119,20 @@ namespace PubNubAPI
 
             // Build URL
             List<string> url = new List<string>();
-            url.Add("v1");
+            string version = "v1";
+            string devices = "devices";
+            if(pushType.Equals(PNPushType.APNS2)){
+                version = "v2";
+                devices = "devices-apns2";
+                PushHelpers.SetTopic(topic, ref parameterBuilder);            
+                PushHelpers.SetEnvironment(env, ref parameterBuilder);    
+            } 
+
+            url.Add(version);
             url.Add("push");
             url.Add("sub-key");
             url.Add(pnInstance.PNConfig.SubscribeKey);
-            url.Add("devices");
+            url.Add(devices);
             url.Add(pushToken);
 
             return BuildRestApiRequest<Uri>(url, PNOperationType.PNPushNotificationEnabledChannelsOperation, parameterBuilder.ToString(), pnInstance, queryParams);

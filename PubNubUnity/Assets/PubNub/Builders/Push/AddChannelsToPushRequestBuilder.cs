@@ -10,6 +10,16 @@ namespace PubNubAPI
         public AddChannelsToPushRequestBuilder(PubNubUnity pn):base(pn, PNOperationType.PNAddPushNotificationsOnChannelsOperation){
         }
         private string DeviceIDForPush{ get; set;}
+        private string TopicForPush{ get; set;}
+        private PNPushEnvironment EnvironmentForPush{ get; set;}
+        public void Topic(string topic){
+            TopicForPush = topic;
+        }
+
+        public void Environment(PNPushEnvironment environment){
+            EnvironmentForPush = environment;
+        }
+
         public void Channels(List<string> channelNames){
             ChannelsToUse = channelNames;
         }
@@ -45,6 +55,14 @@ namespace PubNubAPI
                 #endif               
                 PushType = PNPushType.GCM;
             }
+
+            if (PushType.Equals(PNPushType.APNS2) && (string.IsNullOrEmpty(TopicForPush))) {
+                PNStatus pnStatus = base.CreateErrorResponseFromMessage(CommonText.APNS2TopicEmpty, null, PNStatusCategory.PNBadRequestCategory);
+                Callback(null, pnStatus);
+
+                return;
+            }
+
             base.Async(this);
         }
         #endregion

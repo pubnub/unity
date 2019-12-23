@@ -10,7 +10,15 @@ namespace PubNubAPI
         public RemoveChannelsFromPushRequestBuilder(PubNubUnity pn):base(pn, PNOperationType.PNRemovePushNotificationsFromChannelsOperation){
 
         }
+        private string TopicForPush{ get; set;}
+        private PNPushEnvironment EnvironmentForPush{ get; set;}
+        public void Topic(string topic){
+            TopicForPush = topic;
+        }
 
+        public void Environment(PNPushEnvironment environment){
+            EnvironmentForPush = environment;
+        }   
         private string DeviceIDForPush{ get; set;}
         public void Channels(List<string> channelNames){
             ChannelsToUse = channelNames;
@@ -41,6 +49,13 @@ namespace PubNubAPI
                 return;
             }
        
+            if (PushType.Equals(PNPushType.APNS2) && (string.IsNullOrEmpty(TopicForPush))) {
+                PNStatus pnStatus = base.CreateErrorResponseFromMessage(CommonText.APNS2TopicEmpty, null, PNStatusCategory.PNBadRequestCategory);
+                Callback(null, pnStatus);
+
+                return;
+            }
+
             base.Async(this);
         }
         #endregion

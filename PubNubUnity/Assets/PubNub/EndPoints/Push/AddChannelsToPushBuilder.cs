@@ -28,6 +28,16 @@ namespace PubNubAPI
             return this;
         }
 
+        public AddChannelsToPushBuilder Topic(string topic) {
+            pubBuilder.Topic(topic);
+            return this;
+        }
+
+        public AddChannelsToPushBuilder Environment(PNPushEnvironment environment) {
+            pubBuilder.Environment(environment);
+            return this;
+        }
+
         public AddChannelsToPushBuilder(PubNubUnity pn){
             pubBuilder = new AddChannelsToPushRequestBuilder(pn);
         }
