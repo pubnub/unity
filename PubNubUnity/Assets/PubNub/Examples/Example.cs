@@ -46,7 +46,7 @@ namespace PubNubExample
 
         UnityEngine.UI.Button ButtonSignal;
 
-        string deviceId = "aaa";
+        string deviceId = "ababababababababababababababababababababababababababababababababababababababababababababab";
         PNPushType pnPushType = PNPushType.GCM;
 
         void Awake(){

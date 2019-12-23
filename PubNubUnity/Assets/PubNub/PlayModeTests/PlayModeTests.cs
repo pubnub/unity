@@ -2839,6 +2839,142 @@ namespace PubNubAPI.Tests
 
 		}
 
+		[UnityTest]
+		public IEnumerator TestPushAPNS2() {
+			return TestPushCommon(PNPushType.APNS2);
+		}
+
+		[UnityTest]
+		public IEnumerator TestPushGCM() {
+			return TestPushCommon(PNPushType.GCM);
+		}
+
+		public IEnumerator TestPushCommon(PNPushType pnPushType) {
+			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
+			PubNub pubnub = new PubNub(pnConfiguration);
+			System.Random r = new System.Random ();
+			pnConfiguration.UUID = "UnityTestCGUUID_" + r.Next (100);
+			string channel = "UnityTestWithPushChannel";
+			string channel2 = "UnityTestWithPushChannel2";
+			List<string> listChannels = new List<string>();
+			listChannels.Add(channel);
+			listChannels.Add(channel2);
+			
+			string deviceId = "ababababababababababababababababababababababababababababababababababababababababababababab";
+			bool tresult = false;
+
+			// AddPushNotificationsOnChannels
+			if(pnPushType.Equals(PNPushType.APNS2)){
+				pubnub.AddPushNotificationsOnChannels().Channels(listChannels).DeviceID(deviceId).PushType(pnPushType).Topic("a").Async((result, status) => {
+						Debug.Log ("in AddPushNotificationsOnChannels");
+						if(status.Error){
+							Debug.Log (string.Format("In Example, AddPushNotificationsOnChannels Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
+						} else {
+							tresult = result.Message.Contains("Modified Channels");
+							Debug.Log (string.Format("DateTime {0}, In AddPushNotificationsOnChannels, result: {1}", DateTime.UtcNow, result.Message));
+						}
+						
+					}); 
+			} else {
+				pubnub.AddPushNotificationsOnChannels().Channels(listChannels).DeviceID(deviceId).PushType(pnPushType).Async((result, status) => {
+                    Debug.Log ("in AddPushNotificationsOnChannels");
+                    if(status.Error){
+                        Debug.Log (string.Format("In Example, AddPushNotificationsOnChannels Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
+                    } else {
+						tresult = result.Message.Contains("Modified Channels");
+                        Debug.Log (string.Format("DateTime {0}, In AddPushNotificationsOnChannels, result: {1}", DateTime.UtcNow, result.Message));
+                    }					
+                });
+			}
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			Assert.True(tresult, "AddPushNotificationsOnChannels didn't return");
+			tresult = false;
+
+			// AuditPushChannelProvisions
+			if(pnPushType.Equals(PNPushType.APNS2)){
+				pubnub.AuditPushChannelProvisions().DeviceID(deviceId).PushType(pnPushType).Topic("a").Async((result, status) => {
+						Debug.Log ("in AuditPushChannelProvisions");
+						if(status.Error){
+							Debug.Log (string.Format("In Example, AuditPushChannelProvisions Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
+						} else {
+							tresult = true;
+							Debug.Log (string.Format("DateTime {0}, In AuditPushChannelProvisions, result: {1}", DateTime.UtcNow, result));
+						}
+					}); 
+			} else {
+				pubnub.AuditPushChannelProvisions().DeviceID(deviceId).PushType(pnPushType).Async((result, status) => {
+                    Debug.Log ("in AuditPushChannelProvisions");
+                    if(status.Error){
+                        Debug.Log (string.Format("In Example, AuditPushChannelProvisions Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
+                    } else {
+						tresult = true;
+                        Debug.Log (string.Format("DateTime {0}, In AuditPushChannelProvisions, result: {1}", DateTime.UtcNow, result));
+                    }
+					
+                });
+			}
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			Assert.True(tresult, "AuditPushChannelProvisions didn't return");
+			tresult = false;
+
+			// RemovePushNotificationsFromChannels
+			if(pnPushType.Equals(PNPushType.APNS2)){
+				pubnub.RemovePushNotificationsFromChannels().Channels(new List<string>{channel}).DeviceID(deviceId).PushType(pnPushType).Topic("a").Async((result, status) => {
+						Debug.Log ("in RemovePushNotificationsFromChannels");
+						if(status.Error){
+							Debug.Log (string.Format("In Example, RemovePushNotificationsFromChannels Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
+						} else {
+							tresult = result.Message.Contains("Modified Channels");
+							Debug.Log (string.Format("DateTime {0}, In RemovePushNotificationsFromChannels, result: {1}", DateTime.UtcNow, result.Message));
+						}
+						
+					}); 
+			} else {
+				pubnub.RemovePushNotificationsFromChannels().Channels(new List<string>{channel}).DeviceID(deviceId).PushType(pnPushType).Async((result, status) => {
+                    Debug.Log ("in RemovePushNotificationsFromChannels");
+                    if(status.Error){
+                        Debug.Log (string.Format("In Example, RemovePushNotificationsFromChannels Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
+                    } else {
+						tresult = result.Message.Contains("Modified Channels");
+                        Debug.Log (string.Format("DateTime {0}, In RemovePushNotificationsFromChannels, result: {1}", DateTime.UtcNow, result.Message));
+                    }
+					
+                });
+			}
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			Assert.True(tresult, "RemovePushNotificationsFromChannels didn't return");
+			tresult = false;
+
+			// RemoveAllPushNotifications
+			if(pnPushType.Equals(PNPushType.APNS2)){
+				pubnub.RemoveAllPushNotifications().DeviceID(deviceId).PushType(pnPushType).Topic("a").Async((result, status) => {
+						Debug.Log ("in RemoveAllPushNotifications");
+						if(status.Error){
+							Debug.Log (string.Format("In Example, RemoveAllPushNotifications Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
+						} else {
+							tresult = result.Message.Contains("Removed Device");
+							Debug.Log (string.Format("DateTime {0}, In RemoveAllPushNotifications, result: {1}", DateTime.UtcNow, result.Message));
+						}
+						
+					}); 
+			} else {
+				pubnub.RemoveAllPushNotifications().DeviceID(deviceId).PushType(pnPushType).Async((result, status) => {
+                    Debug.Log ("in RemoveAllPushNotifications");
+                    if(status.Error){
+                        Debug.Log (string.Format("In Example, RemoveAllPushNotifications Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
+                    } else {
+						tresult = result.Message.Contains("Removed Device");
+                        Debug.Log (string.Format("DateTime {0}, In RemoveAllPushNotifications, result: {1}", DateTime.UtcNow, result.Message));
+                    }
+					
+                });
+			}
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
+			Assert.True(tresult, "RemoveAllPushNotifications didn't return");
+			tresult = false;
+						
+		}
+
 		//[UnityTest]
 		// public IEnumerator TestPush() {
 		// 	PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
