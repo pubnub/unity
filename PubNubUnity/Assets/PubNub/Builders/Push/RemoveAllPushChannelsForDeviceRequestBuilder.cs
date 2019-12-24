@@ -9,7 +9,15 @@ namespace PubNubAPI
     {      
         public RemoveAllPushChannelsForDeviceRequestBuilder(PubNubUnity pn):base(pn, PNOperationType.PNRemoveAllPushNotificationsOperation){
         }
+        private string TopicForPush{ get; set;}
+        private PNPushEnvironment EnvironmentForPush{ get; set;}
+        public void Topic(string topic){
+            TopicForPush = topic;
+        }
 
+        public void Environment(PNPushEnvironment environment){
+            EnvironmentForPush = environment;
+        }
         private string DeviceIDForPush{ get; set;}
 
         public void DeviceId(string deviceIdForPush){
@@ -36,6 +44,14 @@ namespace PubNubAPI
                 #endif               
                 PushType = PNPushType.GCM;
             }
+            
+            if (PushType.Equals(PNPushType.APNS2) && (string.IsNullOrEmpty(TopicForPush))) {
+                PNStatus pnStatus = base.CreateErrorResponseFromMessage(CommonText.APNS2TopicEmpty, null, PNStatusCategory.PNBadRequestCategory);
+                Callback(null, pnStatus);
+
+                return;
+            }
+
             base.Async(this);
         }
         #endregion
@@ -44,12 +60,24 @@ namespace PubNubAPI
             RequestState requestState = new RequestState ();
             requestState.OperationType = OperationType;
             
-            Uri request = BuildRequests.BuildRemoveAllDevicePushRequest(
-                PushType, 
-                DeviceIDForPush,
-                this.PubNubInstance,
-                this.QueryParams
-            );
+            Uri request;
+            if(PushType.Equals(PNPushType.APNS2)){
+                request = BuildRequests.BuildRemoveAllDevicePushRequest(
+                    PushType, 
+                    DeviceIDForPush,
+                    this.PubNubInstance,
+                    this.QueryParams,
+                    TopicForPush,
+                    EnvironmentForPush
+                );
+            } else {
+                request = BuildRequests.BuildRemoveAllDevicePushRequest(
+                    PushType, 
+                    DeviceIDForPush,
+                    this.PubNubInstance,
+                    this.QueryParams
+                );
+            }    
 
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this);
         }

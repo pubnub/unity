@@ -30,6 +30,16 @@ namespace PubNubAPI
         public RemoveChannelsFromPushBuilder(PubNubUnity pn){
             pubBuilder = new RemoveChannelsFromPushRequestBuilder(pn);
         }
+
+        public RemoveChannelsFromPushBuilder Topic(string topic) {
+            pubBuilder.Topic(topic);
+            return this;
+        }
+
+        public RemoveChannelsFromPushBuilder Environment(PNPushEnvironment environment) {
+            pubBuilder.Environment(environment);
+            return this;
+        }
         
         public void Async(Action<PNPushRemoveChannelResult, PNStatus> callback)
         {
