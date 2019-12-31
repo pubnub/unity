@@ -12,6 +12,7 @@ namespace PubNubAPI
         private string GetMembershipsEnd { get; set;}
         private string GetMembershipsStart { get; set;}
         private bool GetMembershipsCount { get; set;}
+        private string GetMembershipsFilter { get; set;}
         private PNMembershipsInclude[] GetMembershipsInclude { get; set;}
         
         public GetMembershipsRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNGetMembershipsOperation){
@@ -47,6 +48,10 @@ namespace PubNubAPI
             GetMembershipsEnd = end;
             return this;
         }
+        public GetMembershipsRequestBuilder Filter(string filter){
+            GetMembershipsFilter = filter;
+            return this;
+        }
         public GetMembershipsRequestBuilder Count(bool count){
             GetMembershipsCount = count;
             return this;
@@ -65,7 +70,8 @@ namespace PubNubAPI
                     GetMembershipsCount,
                     string.Join(",", includeString),
                     this.PubNubInstance,
-                    this.QueryParams
+                    this.QueryParams,
+                    GetMembershipsFilter
                 );
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }

@@ -1032,6 +1032,8 @@ namespace PubNubAPI.Tests
                 queryParams = null;
             }
 
+            string filter = "";
+
             PNConfiguration pnConfiguration = new PNConfiguration ();
             pnConfiguration.Origin = EditorCommon.Origin;
             pnConfiguration.SubscribeKey = EditorCommon.SubscribeKey;
@@ -1052,7 +1054,7 @@ namespace PubNubAPI.Tests
                 incl = "";
             }
 
-            Uri uri = BuildRequests.BuildObjectsGetUsersRequest (limit, start, end, count, incl, pnUnity, queryParams);
+            Uri uri = BuildRequests.BuildObjectsGetUsersRequest (limit, start, end, count, incl, pnUnity, queryParams, filter);
 
             //https://ps.pndsn.com/v1/objects/demo/spaces/UnityUnitTests_86?uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
             string expected = string.Format ("http{0}://{1}/v1/objects/{2}/users?uuid={3}{7}{10}{4}{8}{9}&pnsdk={5}{6}",
@@ -1490,7 +1492,9 @@ namespace PubNubAPI.Tests
                 incl = "";
             }
 
-            Uri uri = BuildRequests.BuildObjectsGetSpacesRequest (limit, start, end, count, incl, pnUnity, queryParams);
+            string filter = "";
+
+            Uri uri = BuildRequests.BuildObjectsGetSpacesRequest (limit, start, end, count, incl, pnUnity, queryParams, filter);
 
             //https://ps.pndsn.com/v1/objects/demo/spaces/UnityUnitTests_86?uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
             string expected = string.Format ("http{0}://{1}/v1/objects/{2}/spaces?uuid={3}{7}{10}{4}{8}{9}&pnsdk={5}{6}",
@@ -1929,7 +1933,9 @@ namespace PubNubAPI.Tests
             }
             string ch = "ch";
 
-            Uri uri = BuildRequests.BuildObjectsGetMembersRequest (ch, limit, start, end, count, incl, pnUnity, queryParams);
+            string filter = "";
+
+            Uri uri = BuildRequests.BuildObjectsGetMembersRequest (ch, limit, start, end, count, incl, pnUnity, queryParams, filter);
 
             //https://ps.pndsn.com/v1/objects/demo/spaces/UnityUnitTests_86?uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
             string expected = string.Format ("http{0}://{1}/v1/objects/{2}/spaces/{11}/users?uuid={3}{7}{10}{4}{8}{9}&pnsdk={5}{6}",
@@ -2368,8 +2374,9 @@ namespace PubNubAPI.Tests
                 incl = "";
             }
             string ch = "ch";
+            string filter = "";
 
-            Uri uri = BuildRequests.BuildObjectsGetMembershipsRequest (ch, limit, start, end, count, incl, pnUnity, queryParams);
+            Uri uri = BuildRequests.BuildObjectsGetMembershipsRequest (ch, limit, start, end, count, incl, pnUnity, queryParams, filter);
 
             //https://ps.pndsn.com/v1/objects/demo/spaces/UnityUnitTests_86?uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
             string expected = string.Format ("http{0}://{1}/v1/objects/{2}/users/{11}/spaces?uuid={3}{7}{10}{4}{8}{9}&pnsdk={5}{6}",

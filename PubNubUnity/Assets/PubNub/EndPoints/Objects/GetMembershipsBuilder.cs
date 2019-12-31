@@ -35,6 +35,12 @@ namespace PubNubAPI
             getMembershipsBuilder.End(end);
             return this;
         }
+        public GetMembershipsBuilder Filter(string filter)
+        {
+            getMembershipsBuilder.Filter(filter);
+            return this;
+        }
+
         public GetMembershipsBuilder Count(bool count){
             getMembershipsBuilder.Count(count);
             return this;

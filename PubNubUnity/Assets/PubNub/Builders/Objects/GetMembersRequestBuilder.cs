@@ -11,6 +11,7 @@ namespace PubNubAPI
         private int GetMembersLimit { get; set;}
         private string GetMembersEnd { get; set;}
         private string GetMembersStart { get; set;}
+        private string GetMembersFilter { get; set;}
         private bool GetMembersCount { get; set;}
         private PNMembersInclude[] GetMembersInclude { get; set;}
         
@@ -47,6 +48,10 @@ namespace PubNubAPI
             GetMembersEnd = end;
             return this;
         }
+        public GetMembersRequestBuilder Filter(string filter){
+            GetMembersFilter = filter;
+            return this;
+        } 
         public GetMembersRequestBuilder Count(bool count){
             GetMembersCount = count;
             return this;
@@ -65,7 +70,8 @@ namespace PubNubAPI
                     GetMembersCount,
                     string.Join(",", includeString),
                     this.PubNubInstance,
-                    this.QueryParams
+                    this.QueryParams,
+                    GetMembersFilter
                 );
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }
