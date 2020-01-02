@@ -1898,7 +1898,7 @@ namespace PubNubAPI.Tests
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls4);
 			Assert.True(tresult, "ManageMemberships Update didn't return");
 			
-			string filterMembers = string.Format("user.name == '{0}'", name);
+			string filterMembers = string.Format("user.name == '{0}'", name2);
 
 			//Get members with Filter
 			tresult = false;
