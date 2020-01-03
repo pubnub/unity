@@ -9,6 +9,7 @@ namespace PubNubAPI
         private int GetSpacesLimit { get; set; }
         private string GetSpacesEnd { get; set; }
         private string GetSpacesStart { get; set; }
+        private string GetSpacesFilter { get; set; }        
         private bool GetSpacesCount { get; set; }
         private PNUserSpaceInclude[] GetSpacesInclude { get; set; }
         public GetSpacesRequestBuilder(PubNubUnity pn) : base(pn, PNOperationType.PNGetSpacesOperation)
@@ -44,6 +45,10 @@ namespace PubNubAPI
             GetSpacesEnd = end;
             return this;
         }
+        public GetSpacesRequestBuilder Filter(string filter){
+            GetSpacesFilter = filter;
+            return this;
+        }        
         public GetSpacesRequestBuilder Count(bool count)
         {
             GetSpacesCount = count;
@@ -63,7 +68,8 @@ namespace PubNubAPI
                     GetSpacesCount,
                     string.Join(",", includeString),
                     this.PubNubInstance,
-                    this.QueryParams
+                    this.QueryParams,
+                    GetSpacesFilter
                 );
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this);
         }
