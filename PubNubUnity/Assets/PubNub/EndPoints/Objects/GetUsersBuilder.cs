@@ -30,6 +30,12 @@ namespace PubNubAPI
             getUsersBuilder.End(end);
             return this;
         }
+        public GetUsersBuilder Filter(string filter)
+        {
+            getUsersBuilder.Filter(filter);
+            return this;
+        }
+
         public GetUsersBuilder Count(bool count){
             getUsersBuilder.Count(count);
             return this;
