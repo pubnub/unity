@@ -9,6 +9,7 @@ namespace PubNubAPI
         public PNConfiguration ()
         {
             Secure = true;
+            StoreTokensOnGrant = true;
         }
 
         private ushort concurrentNonSubscribeWorkers = 1;
@@ -45,6 +46,8 @@ namespace PubNubAPI
         public PNLogVerbosity LogVerbosity { get; set;}
         public string AuthKey { get; set;}
         public bool Secure { get; set;}
+
+        public bool StoreTokensOnGrant { get; set;}
 
         private int messageQueueOverflowCount =100;
         public int MessageQueueOverflowCount
@@ -121,7 +124,7 @@ namespace PubNubAPI
             return (presenceTimeout/2)-1;
         }
 
-        private int presenceTimeout = 0;
+        private int presenceTimeout = 300;
         private readonly int minPresenceTimeout = 20;
         public int PresenceTimeout { 
             get{

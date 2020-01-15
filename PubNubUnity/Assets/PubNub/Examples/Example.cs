@@ -14,7 +14,7 @@ namespace PubNubExample
         string cg1 = "channelGroup1";
         string cg2 = "channelGroup2";
         string ch1 = "channel1";
-        string ch2 = "channel2";        
+        string ch2 = "channel1-pnpres";        
         UnityEngine.UI.Text TextContent;
         UnityEngine.UI.Button ButtonClear;
         UnityEngine.UI.Button ButtonReset;

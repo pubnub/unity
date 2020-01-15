@@ -1233,6 +1233,7 @@ namespace PubNubAPI
             case PNOperationType.PNLeaveOperation:
             case PNOperationType.PNSubscribeOperation:
             case PNOperationType.PNPresenceOperation:
+            case PNOperationType.PNPresenceHeartbeatOperation:
 
                 url = AppendUUIDToURL(url, uuid, true);
                 url.Append(parameters);
@@ -1242,7 +1243,7 @@ namespace PubNubAPI
                 url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
                 break;
 
-            case PNOperationType.PNPresenceHeartbeatOperation:
+            
             case PNOperationType.PNGetStateOperation:
             case PNOperationType.PNPublishOperation:
             case PNOperationType.PNSignalOperation:
