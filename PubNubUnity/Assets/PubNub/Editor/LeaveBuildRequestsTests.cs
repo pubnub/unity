@@ -250,11 +250,12 @@ namespace PubNubAPI.Tests
             Uri uri = BuildRequests.BuildLeaveRequest (ch, cg, pnUnity, queryParams);
 
             //https://ps.pndsn.com/v2/presence/sub_key/demo-36/channel/test/leave?uuid=customuuid&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
-            string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/channel/{3}/leave?uuid={4}{7}{5}&pnsdk={6}{8}",
+            string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/channel/{3}/leave?uuid={4}{7}{5}{9}&pnsdk={6}{8}",
                 ssl?"s":"", pnConfiguration.Origin, EditorCommon.SubscribeKey, chStr,
                 uuid, authKeyString, Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNLeaveOperation, false, true),
                 cgStr,
-                queryParamString
+                queryParamString,
+                (pnConfiguration.PresenceTimeout > 0)?string.Format("&heartbeat={0}", pnConfiguration.PresenceTimeout) : ""
             );
             string received = uri.OriginalString;
             EditorCommon.LogAndCompare (expected, received);
