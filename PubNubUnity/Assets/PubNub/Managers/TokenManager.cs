@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using PeterO.Cbor;
-using System.IO;
+using System.Collections;
 
 namespace PubNubAPI
 {       
@@ -32,31 +32,31 @@ namespace PubNubAPI
         PNSpaces
     }
 
-    public struct ChannelPermissions{
-        bool Read;
-        bool Write;
-        bool Delete;
+    public class ChannelPermissions : ResourcePermission{
+        //public bool Read;
+        public bool Write;
+        public bool Delete;
     }
 
-    public struct GroupPermissions{
-        bool Read;
-        bool Manage;
+    public class GroupPermissions : ResourcePermission{
+        //public bool Read;
+        public bool Manage;
     }
 
-    public struct UserSpacePermissions{
-        bool Read;
-        bool Write;
-        bool Manage;
-        bool Delete;
-        bool Create;
+    public class UserSpacePermissions : ResourcePermission{
+        //public bool Read;
+        public bool Write;
+        public bool Manage;
+        public bool Delete;
+        public bool Create;
     }
 
-    public struct ResourcePermissions{
-        bool Read;
-        bool Write;
-        bool Manage;
-        bool Delete;
-        bool Create;
+    public class ResourcePermission{
+        public bool Read;
+        // public bool Write;
+        // public bool Manage;
+        // public bool Delete;
+        // public bool Create;
     }
 
     public class GrantResources{
@@ -76,25 +76,20 @@ namespace PubNubAPI
         public int TTL; //ttl
     }
 
-    public class ChannelPermissionsWithToken{
+    public class ChannelPermissionsWithToken : ResourcePermissionsWithTokenBase{
 	  public ChannelPermissions Permissions {get; set;}
-      public Int64 BitMaskPerms {get; set;}
-      public string Token {get; set;}
-      public Int64 Timestamp {get; set;}
-      public int TTL {get; set;}
+
     }
 
-    public class GroupPermissionsWithToken{
+    public class GroupPermissionsWithToken: ResourcePermissionsWithTokenBase{
 	  public GroupPermissions Permissions {get; set;}
-      public Int64 BitMaskPerms {get; set;}
-      public string Token {get; set;}
-      public Int64 Timestamp {get; set;}
-      public int TTL {get; set;}
-
     }
 
-    public class UserSpacePermissionsWithToken{
+    public class UserSpacePermissionsWithToken: ResourcePermissionsWithTokenBase{
 	  public UserSpacePermissions Permissions {get; set;}
+    }
+
+    public class ResourcePermissionsWithTokenBase{
       public Int64 BitMaskPerms {get; set;}
       public string Token {get; set;}
       public Int64 Timestamp {get; set;}
@@ -115,24 +110,15 @@ namespace PubNubAPI
 
     public class TokenManager
     {
-        private GrantResourcesWithPermissions tokens;
+        private GrantResourcesWithPermissions Tokens;
         private PubNubUnity PubNubInstance { get; set;}
         public TokenManager(PubNubUnity pn){
-            tokens = new GrantResourcesWithPermissions(){
-                Channels = new Dictionary<string, ChannelPermissionsWithToken>(),
-                Groups = new Dictionary<string, GroupPermissionsWithToken>(),
-                Users = new Dictionary<string, UserSpacePermissionsWithToken>(),
-                Spaces = new Dictionary<string, UserSpacePermissionsWithToken>(),
-                ChannelsPattern = new Dictionary<string, ChannelPermissionsWithToken>(),
-                GroupsPattern = new Dictionary<string, GroupPermissionsWithToken>(),
-                UsersPattern = new Dictionary<string, UserSpacePermissionsWithToken>(),
-                SpacesPattern = new Dictionary<string, UserSpacePermissionsWithToken>(),
-            };
+            Tokens = InitGrantResourcesWithPermissions();
             PubNubInstance = pn;
         }
 
         public void CleanUp() {
-            tokens = null; 
+            Tokens = null; 
         }
         
         public string SetAuthParan(string resourceID, PNResourceType resourceType){
@@ -143,11 +129,11 @@ namespace PubNubAPI
         }
 
         public GrantResourcesWithPermissions GetAllTokens(){
-            return tokens;
+            return Tokens;
         }
-        
-        public GrantResourcesWithPermissions GetTokensByResource(PNResourceType resourceType){
-            GrantResourcesWithPermissions grantResourcesWithPermissions = new GrantResourcesWithPermissions(){
+
+        public GrantResourcesWithPermissions InitGrantResourcesWithPermissions(){
+            return new GrantResourcesWithPermissions(){
                 Channels = new Dictionary<string, ChannelPermissionsWithToken>(),
                 Groups = new Dictionary<string, GroupPermissionsWithToken>(),
                 Users = new Dictionary<string, UserSpacePermissionsWithToken>(),
@@ -157,23 +143,27 @@ namespace PubNubAPI
                 UsersPattern = new Dictionary<string, UserSpacePermissionsWithToken>(),
                 SpacesPattern = new Dictionary<string, UserSpacePermissionsWithToken>(),
             };
+        }
+        
+        public GrantResourcesWithPermissions GetTokensByResource(PNResourceType resourceType){
+            GrantResourcesWithPermissions grantResourcesWithPermissions = InitGrantResourcesWithPermissions();
 
             switch(resourceType) {
                 case PNResourceType.PNChannels:
-                grantResourcesWithPermissions.Channels = tokens.Channels;
-                grantResourcesWithPermissions.ChannelsPattern = tokens.ChannelsPattern;
+                grantResourcesWithPermissions.Channels = Tokens.Channels;
+                grantResourcesWithPermissions.ChannelsPattern = Tokens.ChannelsPattern;
                 break;
                 case PNResourceType.PNGroups:
-                grantResourcesWithPermissions.Groups = tokens.Groups;
-                grantResourcesWithPermissions.GroupsPattern = tokens.GroupsPattern;
+                grantResourcesWithPermissions.Groups = Tokens.Groups;
+                grantResourcesWithPermissions.GroupsPattern = Tokens.GroupsPattern;
                 break;
                 case PNResourceType.PNSpaces:
-                grantResourcesWithPermissions.Spaces = tokens.Spaces;
-                grantResourcesWithPermissions.SpacesPattern = tokens.SpacesPattern;
+                grantResourcesWithPermissions.Spaces = Tokens.Spaces;
+                grantResourcesWithPermissions.SpacesPattern = Tokens.SpacesPattern;
                 break;
                 case PNResourceType.PNUsers:
-                grantResourcesWithPermissions.Users = tokens.Users;
-                grantResourcesWithPermissions.UsersPattern = tokens.UsersPattern;
+                grantResourcesWithPermissions.Users = Tokens.Users;
+                grantResourcesWithPermissions.UsersPattern = Tokens.UsersPattern;
                 break;
             }
 
@@ -186,38 +176,38 @@ namespace PubNubAPI
             switch(resourceType) {
                 case PNResourceType.PNChannels:
                 ChannelPermissionsWithToken channelPermissionsWithToken;
-                if(tokens.Channels.TryGetValue(resourceID, out channelPermissionsWithToken)){
+                if(Tokens.Channels.TryGetValue(resourceID, out channelPermissionsWithToken)){
                     return channelPermissionsWithToken.Token;
                 }
-                if ((tokens.ChannelsPattern != null) && (tokens.ChannelsPattern.Count > 0)){
-                    return tokens.ChannelsPattern.First().Value.Token;
+                if ((Tokens.ChannelsPattern != null) && (Tokens.ChannelsPattern.Count > 0)){
+                    return Tokens.ChannelsPattern.First().Value.Token;
                 }
                 return "";
                 case PNResourceType.PNGroups:
                 GroupPermissionsWithToken groupPermissionsWithToken;
-                if(tokens.Groups.TryGetValue(resourceID, out groupPermissionsWithToken)){
+                if(Tokens.Groups.TryGetValue(resourceID, out groupPermissionsWithToken)){
                     return groupPermissionsWithToken.Token;
                 }
-                if ((tokens.GroupsPattern != null) && (tokens.GroupsPattern.Count > 0)){
-                    return tokens.GroupsPattern.First().Value.Token;
+                if ((Tokens.GroupsPattern != null) && (Tokens.GroupsPattern.Count > 0)){
+                    return Tokens.GroupsPattern.First().Value.Token;
                 }
                 return "";
                 case PNResourceType.PNSpaces:
                 UserSpacePermissionsWithToken spacePermissionsWithToken;
-                if(tokens.Spaces.TryGetValue(resourceID, out spacePermissionsWithToken)){
+                if(Tokens.Spaces.TryGetValue(resourceID, out spacePermissionsWithToken)){
                     return spacePermissionsWithToken.Token;
                 }
-                if ((tokens.SpacesPattern != null) && (tokens.SpacesPattern.Count > 0)){
-                    return tokens.SpacesPattern.First().Value.Token;
+                if ((Tokens.SpacesPattern != null) && (Tokens.SpacesPattern.Count > 0)){
+                    return Tokens.SpacesPattern.First().Value.Token;
                 }
                 return "";
                 case PNResourceType.PNUsers:
                 UserSpacePermissionsWithToken userPermissionsWithToken;
-                if(tokens.Users.TryGetValue(resourceID, out userPermissionsWithToken)){
+                if(Tokens.Users.TryGetValue(resourceID, out userPermissionsWithToken)){
                     return userPermissionsWithToken.Token;
                 }
-                if ((tokens.UsersPattern != null) && (tokens.UsersPattern.Count > 0)){
-                    return tokens.UsersPattern.First().Value.Token;
+                if ((Tokens.UsersPattern != null) && (Tokens.UsersPattern.Count > 0)){
+                    return Tokens.UsersPattern.First().Value.Token;
                 }
                 return "";
             }
@@ -232,9 +222,188 @@ namespace PubNubAPI
         }
 
         public void StoreToken(string token){  
-            if ((PubNubInstance.PNConfig.StoreTokensOnGrant) && (PubNubInstance.PNConfig.SecretKey == "")) {
-                PNGrantTokenDecoded cborObject = GetPermissions(token);
+            if ((PubNubInstance.PNConfig.StoreTokensOnGrant) && (PubNubInstance.PNConfig.SecretKey == "")) {                
+                try
+                {
+                    PNGrantTokenDecoded pnGrantTokenDecoded = GetPermissions(token);
+                    ParseGrantResources(pnGrantTokenDecoded.Resources, token, pnGrantTokenDecoded.Timestamp, pnGrantTokenDecoded.TTL, false);
+                    //clear all Users/Spaces pattern maps (by design, store last token only for patterns)
+                    Tokens.SpacesPattern = new Dictionary<string, UserSpacePermissionsWithToken>();
+                    Tokens.UsersPattern  = new Dictionary<string, UserSpacePermissionsWithToken>();
+                    ParseGrantResources(pnGrantTokenDecoded.Patterns, token, pnGrantTokenDecoded.Timestamp, pnGrantTokenDecoded.TTL, true);
+                } catch (Exception ex) {
+                    Debug.Log(ex.ToString()); 
+                }
             }
+        }
+
+        public ResourcePermission ParseGrantPrems(int b, PNResourceType pnResourceType){
+            UserSpacePermissions rp = new UserSpacePermissions(){
+                Read = false,
+                Write = false,
+                Manage = false,
+                Delete = false,
+                Create = false,                
+            };
+            string bits = Convert.ToString(b, 2);
+            Debug.Log("binary==>"+bits);
+
+            for (int i = 0; i < bits.Length; i++)
+            {
+                Debug.Log(string.Format("{0}-{1}", i, bits[i]));
+                switch(i) {
+                    case 0:
+                    rp.Read = (bits[i] == '1');
+                    break;
+                    case 1:
+                    rp.Write = (bits[i] == '1');
+                    break;
+                    case 2:
+                    rp.Manage = (bits[i] == '1');
+                    break;
+                    case 3:
+                    rp.Delete = (bits[i] == '1');
+                    break;
+                    case 4:
+                    rp.Create = (bits[i] == '1');
+                    break;
+                }
+            }
+            Debug.Log("ResourcePermissions Read ==> "  + rp.Read);
+            Debug.Log("ResourcePermissions Write ==> "  + rp.Write);
+            Debug.Log("ResourcePermissions Manage ==> "  + rp.Manage);
+            Debug.Log("ResourcePermissions Delete ==> "  + rp.Delete);
+            Debug.Log("ResourcePermissions Create ==> "  + rp.Create);
+            
+            
+            return rp;
+
+        }
+
+        public void FillGrantResourcesWithPermissions(Dictionary<string, int> resDict, string token, long timetoken, int ttl, bool isPattern, PNResourceType pnResourceType){
+            if((resDict != null) && (resDict.Count > 0)){
+                foreach(KeyValuePair<string, int> kvp in resDict){
+                    switch(pnResourceType){
+                        case PNResourceType.PNChannels:
+                        ChannelPermissionsWithToken channelPermissionsWithToken = new ChannelPermissionsWithToken(){
+                                BitMaskPerms = kvp.Value,
+                                Token = token,
+                                Timestamp = timetoken,
+                                TTL = ttl,
+                                Permissions = ParseGrantPrems(kvp.Value, pnResourceType) as ChannelPermissions,
+                            };
+                        if(isPattern){
+                            Tokens.ChannelsPattern[kvp.Key] = channelPermissionsWithToken; 
+                        } else {
+                            Tokens.Channels[kvp.Key] = channelPermissionsWithToken;
+                        }
+
+                        break;
+                        case PNResourceType.PNGroups:
+                        GroupPermissionsWithToken groupPermissionsWithToken = new GroupPermissionsWithToken(){
+                                BitMaskPerms = kvp.Value,
+                                Token = token,
+                                Timestamp = timetoken,
+                                TTL = ttl,
+                                Permissions = ParseGrantPrems(kvp.Value, pnResourceType) as GroupPermissions,
+                            };
+                        if(isPattern){
+                            Tokens.GroupsPattern[kvp.Key] = groupPermissionsWithToken; 
+                        } else {
+                            Tokens.Groups[kvp.Key] = groupPermissionsWithToken;
+                        }                    
+                        break;
+                        case PNResourceType.PNSpaces:
+                        UserSpacePermissionsWithToken spacePermissionsWithToken = new UserSpacePermissionsWithToken(){
+                                BitMaskPerms = kvp.Value,
+                                Token = token,
+                                Timestamp = timetoken,
+                                TTL = ttl,
+                                Permissions = ParseGrantPrems(kvp.Value, pnResourceType) as UserSpacePermissions,
+                            };
+                        if(isPattern){
+                            Tokens.SpacesPattern[kvp.Key] = spacePermissionsWithToken; 
+                        } else {
+                            Tokens.Spaces[kvp.Key] = spacePermissionsWithToken;
+                        }                    
+                        break;
+                        case PNResourceType.PNUsers:
+                        UserSpacePermissionsWithToken userPermissionsWithToken = new UserSpacePermissionsWithToken(){
+                                BitMaskPerms = kvp.Value,
+                                Token = token,
+                                Timestamp = timetoken,
+                                TTL = ttl,
+                                Permissions = ParseGrantPrems(kvp.Value, pnResourceType) as UserSpacePermissions,
+                            };
+                        if(isPattern){
+                            Tokens.UsersPattern[kvp.Key] = userPermissionsWithToken; 
+                        } else {
+                            Tokens.Users[kvp.Key] = userPermissionsWithToken;
+                        }                    
+                        break;
+                    }
+                }
+            }
+        }
+
+        public void ParseGrantResources(GrantResources res, string token, long timetoken, int ttl, bool isPattern){
+            FillGrantResourcesWithPermissions(res.Channels, token, timetoken, ttl, isPattern, PNResourceType.PNChannels);
+            FillGrantResourcesWithPermissions(res.Groups, token, timetoken, ttl, isPattern, PNResourceType.PNGroups);
+            FillGrantResourcesWithPermissions(res.Users, token, timetoken, ttl, isPattern, PNResourceType.PNUsers);
+            FillGrantResourcesWithPermissions(res.Spaces, token, timetoken, ttl, isPattern, PNResourceType.PNSpaces);
+            // GrantResourcesWithPermissions g = InitGrantResourcesWithPermissions();
+            
+            // Debug.Log("ParseGrantResources");
+            
+            // //if(!isPattern){                
+                
+            //     foreach(KeyValuePair<string, int> kvp in res.Channels){
+            //         Debug.Log("ParseGrantResources Channels");
+            //         //ChannelPermissions rp = ParseGrantPrems(kvp.Value, PNResourceType.PNChannels) as ChannelPermissions;
+            //         // ChannelPermissions cp = new ChannelPermissions(){
+            //         //          Read = rp.Read,
+            //         //          Write = rp.Write,
+            //         //          Delete = rp.Delete, 
+            //         //      };
+            //         g.Channels[kvp.Key] = new ChannelPermissionsWithToken(){
+            //                 BitMaskPerms = kvp.Value,
+            //                 Token = token,
+            //                 Timestamp = timetoken,
+            //                 TTL = ttl,
+            //                 Permissions = ParseGrantPrems(kvp.Value, PNResourceType.PNChannels) as ChannelPermissions,
+            //             };
+            //         Debug.Log(g.Channels[kvp.Key].Permissions.Delete);    
+            //         Debug.Log(g.Channels[kvp.Key].Permissions.Read);    
+            //         Debug.Log(g.Channels[kvp.Key].Permissions.Write);    
+            //     }
+
+            //     g.Users = new Dictionary<string, UserSpacePermissionsWithToken>();
+            //     foreach(KeyValuePair<string, int> kvp in res.Users){
+            //         Debug.Log("ParseGrantResources Users");
+            //         //ResourcePermissionsBase rp = ParseGrantPrems(kvp.Value, PNResourceType.PNUsers) as ResourcePermissions;
+            //         // UserSpacePermissions cp = new UserSpacePermissions(){
+            //         //          Read = rp.Read,
+            //         //          Write = rp.Write,
+            //         //          Manage = rp.Manage,
+            //         //          Delete = rp.Delete,
+            //         //          Create = rp.Create,
+            //         //      };
+            //         g.Users[kvp.Key] = new UserSpacePermissionsWithToken(){
+            //                 BitMaskPerms = kvp.Value,
+            //                 Token = token,
+            //                 Timestamp = timetoken,
+            //                 TTL = ttl,
+            //                 Permissions = ParseGrantPrems(kvp.Value, PNResourceType.PNUsers) as UserSpacePermissions,
+            //             };
+            //         Debug.Log(g.Users[kvp.Key].Permissions.Create);    
+            //         Debug.Log(g.Users[kvp.Key].Permissions.Read);    
+            //         Debug.Log(g.Users[kvp.Key].Permissions.Write);    
+            //         Debug.Log(g.Users[kvp.Key].Permissions.Manage);    
+            //         Debug.Log(g.Users[kvp.Key].Permissions.Delete);    
+
+            //     }
+            //     return g;
+            //}
         }
 
         public PNGrantTokenDecoded GetPermissions(string token){
@@ -263,15 +432,15 @@ namespace PubNubAPI
             //using (var stream = new MemoryStream(decryptedBytes)) {
                 // Read the CBOR object from the stream
                 //var cbor = CBORObject.Read(stream);
-                var cbor = CBORObject.DecodeFromBytes(decryptedBytes);
+            var cbor = CBORObject.DecodeFromBytes(decryptedBytes);
 
                 //Debug.Log(cbor.GetAllTags().ToString());
                 // foreach (CBORObject obj in cbor.Values){
                 //     Debug.Log(obj.ToString());
                 // }
-                Debug.Log(cbor.ToJSONString());
+                //Debug.Log(cbor.ToJSONString());
                 //foreach (CBORObject obj in cbor.Values){
-                ParseCBOR(cbor, "", ref pnGrantTokenDecoded); 
+            ParseCBOR(cbor, "", ref pnGrantTokenDecoded); 
                 
                 // var d = cbor.ToObject<Dictionary<string, object>>();
                 // foreach(KeyValuePair<string, object> kvp in d){
@@ -285,8 +454,8 @@ namespace PubNubAPI
                 // Debug.Log(cborObject.v);
                 // Debug.Log(cborObject.res.spc["s-1707983"].ToString());
                 //cborObject = cbor.ToObject<PNGrantTokenDecoded>();
-                
-                return pnGrantTokenDecoded;
+           
+            return pnGrantTokenDecoded;
             //}
         }
 
@@ -332,7 +501,6 @@ namespace PubNubAPI
         }
 
         public void FillGrantToken(string parent, string key, object val, Type type, ref PNGrantTokenDecoded pnGrantTokenDecoded){            
-            Debug.Log("parent-p:" + parent);
             int i = 0;
             long l = 0;
             string s = "";
@@ -359,7 +527,7 @@ namespace PubNubAPI
                 pnGrantTokenDecoded.Version = i;
                 break;
                 case "t":
-                pnGrantTokenDecoded.Timestamp = l;
+                pnGrantTokenDecoded.Timestamp = i;
                 break;
                 case "ttl":
                 pnGrantTokenDecoded.TTL = i;
@@ -397,7 +565,7 @@ namespace PubNubAPI
                     pnGrantTokenDecoded.Patterns.Groups[key] = i;
                     break;
                     default:
-                    Debug.Log("No match parent: " + parent);
+                    Debug.Log("No match on parent: " + parent);
                     break;
                 }
                 break;
