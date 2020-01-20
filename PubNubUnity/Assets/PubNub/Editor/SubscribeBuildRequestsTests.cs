@@ -1162,9 +1162,9 @@ namespace PubNubAPI.Tests
             }                   
 
             string phb = "";
-            if (presenceHeartbeat != 0) {
-                phb = string.Format("&heartbeat={0}", presenceHeartbeat);
-            }
+            // if (presenceHeartbeat != 0) {
+            //     phb = string.Format("&heartbeat={0}", presenceHeartbeat);
+            // }
 
             string chStr = ",";
             string ch = "";
@@ -1187,7 +1187,7 @@ namespace PubNubAPI.Tests
                 
             //http://ps.pndsn.com/v2/subscribe/demo-36/test/0?uuid=customuuid&tt=21221&state={"k":"v"}&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
             //http://ps.pndsn.com/v2/subscribe/demo-36/test/0?uuid=customuuid&tt=0&filter-expr=(region%20%3D%3D%20%22east%22)&channel-group=cg&auth=authKey&pnsdk=PubNub-CSharp-UnityOSX/3.7
-            string expected = string.Format ("http{0}://{1}/v2/subscribe/{2}/{3}/0?uuid={5}{4}{10}{11}{6}{7}{12}{8}{13}&pnsdk={9}{14}",
+            string expected = string.Format ("http{0}://{1}/v2/subscribe/{2}/{3}/0?uuid={5}{4}{10}{11}{6}{7}{12}{8}{13}{15}&pnsdk={9}{14}",
                 ssl?"s":"", pnConfiguration.Origin, pnConfiguration.SubscribeKey, 
                 chStr, 
                 ttStr,
@@ -1200,7 +1200,8 @@ namespace PubNubAPI.Tests
                 reg,
                 cgStr,
                 phb,
-                queryParamString
+                queryParamString,
+                (pnConfiguration.PresenceTimeout > 0)?string.Format("&heartbeat={0}", pnConfiguration.PresenceTimeout) : ""
             );
             string received = uri.OriginalString;
             EditorCommon.LogAndCompare (expected, received);

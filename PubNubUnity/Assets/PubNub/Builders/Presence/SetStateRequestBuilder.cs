@@ -61,7 +61,7 @@ namespace PubNubAPI
 
         protected override void RunWebRequest(QueueManager qm){
             RequestState requestState = new RequestState ();
-            requestState.OperationType = PNOperationType.PNWhereNowOperation;
+            requestState.OperationType = PNOperationType.PNSetStateOperation;
 
             string channels = "";
             if((ChannelsToUse != null) && (ChannelsToUse.Count>0)){
