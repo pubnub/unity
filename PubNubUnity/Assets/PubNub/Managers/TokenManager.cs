@@ -98,14 +98,14 @@ namespace PubNubAPI
     }
 
     public class GrantResourcesWithPermissions{
-        public Dictionary<string, ChannelPermissionsWithToken> Channels { get; set; }
-        public Dictionary<string, GroupPermissionsWithToken> Groups { get; set; }
-        public Dictionary<string, UserSpacePermissionsWithToken> Users { get; set; }
-        public Dictionary<string, UserSpacePermissionsWithToken> Spaces { get; set; }
-        public Dictionary<string, ChannelPermissionsWithToken> ChannelsPattern { get; set; }
-        public Dictionary<string, GroupPermissionsWithToken> GroupsPattern { get; set; }
-        public Dictionary<string, UserSpacePermissionsWithToken> UsersPattern { get; set; }
-        public Dictionary<string, UserSpacePermissionsWithToken> SpacesPattern { get; set; }
+        public SafeDictionary<string, ChannelPermissionsWithToken> Channels { get; set; }
+        public SafeDictionary<string, GroupPermissionsWithToken> Groups { get; set; }
+        public SafeDictionary<string, UserSpacePermissionsWithToken> Users { get; set; }
+        public SafeDictionary<string, UserSpacePermissionsWithToken> Spaces { get; set; }
+        public SafeDictionary<string, ChannelPermissionsWithToken> ChannelsPattern { get; set; }
+        public SafeDictionary<string, GroupPermissionsWithToken> GroupsPattern { get; set; }
+        public SafeDictionary<string, UserSpacePermissionsWithToken> UsersPattern { get; set; }
+        public SafeDictionary<string, UserSpacePermissionsWithToken> SpacesPattern { get; set; }
     }
 
     public class TokenManager
@@ -134,14 +134,14 @@ namespace PubNubAPI
 
         public GrantResourcesWithPermissions InitGrantResourcesWithPermissions(){
             return new GrantResourcesWithPermissions(){
-                Channels = new Dictionary<string, ChannelPermissionsWithToken>(),
-                Groups = new Dictionary<string, GroupPermissionsWithToken>(),
-                Users = new Dictionary<string, UserSpacePermissionsWithToken>(),
-                Spaces = new Dictionary<string, UserSpacePermissionsWithToken>(),
-                ChannelsPattern = new Dictionary<string, ChannelPermissionsWithToken>(),
-                GroupsPattern = new Dictionary<string, GroupPermissionsWithToken>(),
-                UsersPattern = new Dictionary<string, UserSpacePermissionsWithToken>(),
-                SpacesPattern = new Dictionary<string, UserSpacePermissionsWithToken>(),
+                Channels = new SafeDictionary<string, ChannelPermissionsWithToken>(),
+                Groups = new SafeDictionary<string, GroupPermissionsWithToken>(),
+                Users = new SafeDictionary<string, UserSpacePermissionsWithToken>(),
+                Spaces = new SafeDictionary<string, UserSpacePermissionsWithToken>(),
+                ChannelsPattern = new SafeDictionary<string, ChannelPermissionsWithToken>(),
+                GroupsPattern = new SafeDictionary<string, GroupPermissionsWithToken>(),
+                UsersPattern = new SafeDictionary<string, UserSpacePermissionsWithToken>(),
+                SpacesPattern = new SafeDictionary<string, UserSpacePermissionsWithToken>(),
             };
         }
         
@@ -228,8 +228,8 @@ namespace PubNubAPI
                     PNGrantTokenDecoded pnGrantTokenDecoded = GetPermissions(token);
                     ParseGrantResources(pnGrantTokenDecoded.Resources, token, pnGrantTokenDecoded.Timestamp, pnGrantTokenDecoded.TTL, false);
                     //clear all Users/Spaces pattern maps (by design, store last token only for patterns)
-                    Tokens.SpacesPattern = new Dictionary<string, UserSpacePermissionsWithToken>();
-                    Tokens.UsersPattern  = new Dictionary<string, UserSpacePermissionsWithToken>();
+                    Tokens.SpacesPattern = new SafeDictionary<string, UserSpacePermissionsWithToken>();
+                    Tokens.UsersPattern  = new SafeDictionary<string, UserSpacePermissionsWithToken>();
                     ParseGrantResources(pnGrantTokenDecoded.Patterns, token, pnGrantTokenDecoded.Timestamp, pnGrantTokenDecoded.TTL, true);
                 } catch (Exception ex) {
                     Debug.Log(ex.ToString()); 
@@ -283,6 +283,7 @@ namespace PubNubAPI
         public void FillGrantResourcesWithPermissions(Dictionary<string, int> resDict, string token, long timetoken, int ttl, bool isPattern, PNResourceType pnResourceType){
             if((resDict != null) && (resDict.Count > 0)){
                 foreach(KeyValuePair<string, int> kvp in resDict){
+                    Debug.Log("FillGrantResourcesWithPermissions ==>" + kvp.Key);
                     switch(pnResourceType){
                         case PNResourceType.PNChannels:
                         ChannelPermissionsWithToken channelPermissionsWithToken = new ChannelPermissionsWithToken(){
@@ -377,7 +378,7 @@ namespace PubNubAPI
             //         Debug.Log(g.Channels[kvp.Key].Permissions.Write);    
             //     }
 
-            //     g.Users = new Dictionary<string, UserSpacePermissionsWithToken>();
+            //     g.Users = new SafeDictionary<string, UserSpacePermissionsWithToken>();
             //     foreach(KeyValuePair<string, int> kvp in res.Users){
             //         Debug.Log("ParseGrantResources Users");
             //         //ResourcePermissionsBase rp = ParseGrantPrems(kvp.Value, PNResourceType.PNUsers) as ResourcePermissions;
@@ -500,7 +501,17 @@ namespace PubNubAPI
             }
         }
 
+        public string ReplaceBoundaryQuotes(string key){
+            if(key.ElementAt(0).Equals('"') && key.ElementAt(key.Length-1).Equals('"')){
+                key = key.Remove(key.Length-1, 1).Remove(0, 1);
+            }
+            return key;
+        }
+
         public void FillGrantToken(string parent, string key, object val, Type type, ref PNGrantTokenDecoded pnGrantTokenDecoded){            
+            Debug.Log("FillGrantToken: " + key);
+            key = ReplaceBoundaryQuotes(key);
+            Debug.Log("FillGrantToken after: " + key);
             int i = 0;
             long l = 0;
             string s = "";

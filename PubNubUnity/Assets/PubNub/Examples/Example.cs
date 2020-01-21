@@ -126,7 +126,7 @@ namespace PubNubExample
         void ButtonSetPresenceStateHandler(){
             Dictionary<string, object> state = new Dictionary<string, object>();
             state.Add  ("k1", "v1");
-            pubnub.SetPresenceState().Channels(listChannels).ChannelGroups(listChannelGroups).State(state).Async ((result, status) => {
+            pubnub.SetPresenceState().Channels(new List<string> (){ch1}).State(state).Async ((result, status) => {
                 if(status.Error){
                     Debug.Log (string.Format("In Example, SetPresenceState Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                 } else {
@@ -191,7 +191,7 @@ namespace PubNubExample
         void ButtonHereNowHandler(){
             Dictionary<string,string> dict = new Dictionary<string, string>();
             dict.Add("d","f");
-            pubnub.HereNow().Channels(listChannels).ChannelGroups(listChannelGroups).IncludeState(true).IncludeUUIDs(true).QueryParam(dict).Async((result, status) => {
+            pubnub.HereNow().Channels(new List<string>{ch1}).IncludeState(true).IncludeUUIDs(true).QueryParam(dict).Async((result, status) => {
                     Debug.Log ("in HereNow1");
                     if(status.Error){
                         PrintStatus(status);
@@ -347,7 +347,7 @@ namespace PubNubExample
             dict.Add  ("k1", "v1");
             pubnub.SubscribeCallback += SubscribeCallbackHandler;
 
-            pubnub.Subscribe ().Channels(new List<string> (){ch1}).WithPresence().QueryParam(dict).Execute();
+            pubnub.Subscribe().Channels(new List<string> (){ch1}).QueryParam(dict).Execute();
         }
 
         void AddComponents(){
@@ -424,10 +424,13 @@ namespace PubNubExample
             pnConfiguration.SubscribeKey = "demo";
             pnConfiguration.PublishKey = "demo";
             pnConfiguration.SecretKey = "demo";
+        pnConfiguration.PublishKey = "pub-c-3ed95c83-12e6-4cda-9d69-c47ba2abb57e"; 
+        pnConfiguration.SubscribeKey = "sub-c-26a73b0a-c3f2-11e9-8b24-569e8a5c3af3"; 
+
             pnConfiguration.CipherKey = "enigma";
             pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
-            pnConfiguration.PresenceTimeout = 19;    
-            pnConfiguration.PresenceInterval= 12;
+            // pnConfiguration.PresenceTimeout = 19;    
+            // pnConfiguration.PresenceInterval= 12;
             pnConfiguration.AuthKey = "authKey";
             pnConfiguration.HeartbeatNotificationOption = PNHeartbeatNotificationOption.All;
 
