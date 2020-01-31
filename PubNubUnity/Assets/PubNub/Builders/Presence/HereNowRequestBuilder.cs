@@ -201,6 +201,7 @@ namespace PubNubAPI
                                 }
                             } else {
                                 Dictionary<string, object>[] dictUuidsState = uuids as Dictionary<string, object>[];
+                                if(dictUuidsState != null){
                                 foreach (Dictionary<string, object> objUuidsState in dictUuidsState){
                                     PNHereNowOccupantData occupantData = new PNHereNowOccupantData();
                                     
@@ -220,10 +221,9 @@ namespace PubNubAPI
                                         occupantData.State = objUuidsState;
                                     }
                                     channelData.Occupants.Add(occupantData);
+                                    }
                                 }
-                            }
-                            
-
+                            }                            
                         }
                     }
                     channelsResult.Add(channelName, channelData);
