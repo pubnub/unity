@@ -315,6 +315,13 @@ namespace PubNubAPI
             PubNubUnityInitializationAfterCleanup();
             return pnUnity.GetMessageActions();
         }
+
+        public GrantTokenBuilder GrantToken()
+        {
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.GrantToken();
+        }
+
         public void AddListener(Action<PNStatus> statusCallback, Action<PNMessageResult> messageCallback, Action<PNPresenceEventResult> presenceCallback)
         {
             PubNubUnityInitializationAfterCleanup();

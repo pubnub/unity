@@ -1429,9 +1429,22 @@ namespace PubNubAPI.Tests
 
 		[UnityTest]
 		public IEnumerator TestMembersAndMemberships() {
+			yield return TestMembersAndMembershipsCommon(false);
+		}
+
+		[UnityTest]
+		public IEnumerator TestMembersAndMembershipsWithPAM() {
+			yield return TestMembersAndMembershipsCommon(true);
+		}
+
+		public IEnumerator TestMembersAndMembershipsCommon(bool withPAM) {
 			//Create user 1
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			pnConfiguration.SecretKey = "";
+			if(withPAM){
+				pnConfiguration = PlayModeCommon.SetPAMPNConfig(false);
+			}
+			
 			System.Random r = new System.Random ();
 			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next (10000);
 			int ran = r.Next (10000);
@@ -1456,6 +1469,22 @@ namespace PubNubAPI.Tests
 			PNUserSpaceInclude[] include = new PNUserSpaceInclude[]{PNUserSpaceInclude.PNUserSpaceCustom};
 
 			PubNub pubnub = new PubNub(pnConfiguration);
+
+			var resUsers = new Dictionary<string, int>(){
+				{userid, 31},
+				{userid2, 31},
+			};
+
+			var resSpaces = new Dictionary<string, int>(){
+				{spaceid, 31},
+				{spaceid2, 31},
+			};
+
+			pubnub.GrantToken().SetParams(resUsers, resSpaces, new Dictionary<string, int>(), new Dictionary<string, int>(), 3).Async((result, status) => {
+				Debug.Log("GrantToken response");
+			});
+			
+
 			bool tresult = false;
 
 			Dictionary<string, object> userCustom = new Dictionary<string, object>();
@@ -2087,6 +2116,7 @@ namespace PubNubAPI.Tests
 			string spacedesc2 = string.Format("space desc {0}", ran2);
 			
 			PubNub pubnubSub = new PubNub(pnConfiguration);
+
 			PubNub pubnubObjects = new PubNub(pnConfiguration);
 			List<string> channelList2 = new List<string>();
 			channelList2.Add(spaceid);

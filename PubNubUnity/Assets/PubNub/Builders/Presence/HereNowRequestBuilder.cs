@@ -201,25 +201,27 @@ namespace PubNubAPI
                                 }
                             } else {
                                 Dictionary<string, object>[] dictUuidsState = uuids as Dictionary<string, object>[];
-                                foreach (Dictionary<string, object> objUuidsState in dictUuidsState){
-                                    PNHereNowOccupantData occupantData = new PNHereNowOccupantData();
-                                    
-                                    object objUuid;
-                                    bool bUuid = false;
-                                    if(objUuidsState.TryGetValue("uuid", out objUuid)){
-                                        bUuid= true;
-                                        occupantData.UUID = objUuid.ToString();
+                                if(dictUuidsState != null){
+                                    foreach (Dictionary<string, object> objUuidsState in dictUuidsState){
+                                        PNHereNowOccupantData occupantData = new PNHereNowOccupantData();
+                                        
+                                        object objUuid;
+                                        bool bUuid = false;
+                                        if(objUuidsState.TryGetValue("uuid", out objUuid)){
+                                            bUuid= true;
+                                            occupantData.UUID = objUuid.ToString();
+                                        }
+                                        object objState;
+                                        bool bState = false;
+                                        if(objUuidsState.TryGetValue("state", out objState)){
+                                            bState = true;
+                                            occupantData.State = objState;
+                                        }
+                                        if(!bState && !bUuid){
+                                            occupantData.State = objUuidsState;
+                                        }
+                                        channelData.Occupants.Add(occupantData);
                                     }
-                                    object objState;
-                                    bool bState = false;
-                                    if(objUuidsState.TryGetValue("state", out objState)){
-                                        bState = true;
-                                        occupantData.State = objState;
-                                    }
-                                    if(!bState && !bUuid){
-                                        occupantData.State = objUuidsState;
-                                    }
-                                    channelData.Occupants.Add(occupantData);
                                 }
                             }
                             

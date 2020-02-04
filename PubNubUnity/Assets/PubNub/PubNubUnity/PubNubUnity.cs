@@ -371,6 +371,15 @@ namespace PubNubAPI
             return new GetMembersBuilder(this);
         }
 
+        public GrantTokenBuilder GrantToken()
+        {
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("GrantToken", PNLoggingMethod.LevelInfo);
+            #endif
+
+            return new GrantTokenBuilder(this);
+        }
+
         public GetMembershipsBuilder GetMemberships()
         {
             #if (ENABLE_PUBNUB_LOGGING)

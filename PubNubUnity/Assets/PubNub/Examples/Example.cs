@@ -3,6 +3,7 @@ using System.Collections;
 using PubNubAPI;
 using System.Collections.Generic;
 using System;
+using System.Text;
 
 namespace PubNubExample
 {
@@ -14,7 +15,7 @@ namespace PubNubExample
         string cg1 = "channelGroup1";
         string cg2 = "channelGroup2";
         string ch1 = "channel1";
-        string ch2 = "channel1-pnpres";        
+        string ch2 = "channel2";        
         UnityEngine.UI.Text TextContent;
         UnityEngine.UI.Button ButtonClear;
         UnityEngine.UI.Button ButtonReset;
@@ -191,7 +192,7 @@ namespace PubNubExample
         void ButtonHereNowHandler(){
             Dictionary<string,string> dict = new Dictionary<string, string>();
             dict.Add("d","f");
-            pubnub.HereNow().Channels(new List<string>{ch1}).IncludeState(true).IncludeUUIDs(true).QueryParam(dict).Async((result, status) => {
+            pubnub.HereNow().IncludeState(true).IncludeUUIDs(true).QueryParam(dict).Async((result, status) => {
                     Debug.Log ("in HereNow1");
                     if(status.Error){
                         PrintStatus(status);
@@ -429,8 +430,8 @@ namespace PubNubExample
 
             pnConfiguration.CipherKey = "enigma";
             pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
-            // pnConfiguration.PresenceTimeout = 19;    
-            // pnConfiguration.PresenceInterval= 12;
+            pnConfiguration.PresenceTimeout = 120;    
+            pnConfiguration.PresenceInterval= 60;
             pnConfiguration.AuthKey = "authKey";
             pnConfiguration.HeartbeatNotificationOption = PNHeartbeatNotificationOption.All;
 
@@ -567,15 +568,15 @@ namespace PubNubExample
                     switch (mea.Status.Category){
                         case PNStatusCategory.PNConnectedCategory:
                         PrintStatus(mea.Status);
-                        pubnub.Publish().Channel("my_channel").Message("Hello from the PubNub Unity SDK").Ttl(10).UsePost(true).Async((result, status) => {
-                            if(!status.Error){
-                                Debug.Log (string.Format("DateTime {0}, In Publish Example, Timetoken: {1}", DateTime.UtcNow , result.Timetoken));
-                            } else {
-                                Debug.Log (status.Error);
-                                Debug.Log (status.ErrorData.Info);
-                            }
+                        // pubnub.Publish().Channel("my_channel").Message("Hello from the PubNub Unity SDK").Ttl(10).UsePost(true).Async((result, status) => {
+                        //     if(!status.Error){
+                        //         Debug.Log (string.Format("DateTime {0}, In Publish Example, Timetoken: {1}", DateTime.UtcNow , result.Timetoken));
+                        //     } else {
+                        //         Debug.Log (status.Error);
+                        //         Debug.Log (status.ErrorData.Info);
+                        //     }
 
-                        });
+                        // });
                         
                         break;
                         case PNStatusCategory.PNUnexpectedDisconnectCategory:
@@ -721,25 +722,33 @@ namespace PubNubExample
                     if(kvp.Value != null){
                         PNHereNowChannelData hereNowChannelData = kvp.Value as PNHereNowChannelData;
                         if(hereNowChannelData != null){
-                            Debug.Log ("in HereNow channelName: " + hereNowChannelData.ChannelName);
+                            StringBuilder sb = new StringBuilder();
+                            sb.Append("in HereNow channelName: " + hereNowChannelData.ChannelName);
                             Display(string.Format("channelName: {0}", hereNowChannelData.ChannelName));
-                            Debug.Log ("in HereNow channel occupancy: " + hereNowChannelData.Occupancy.ToString());
+                            sb.Append("in HereNow channel occupancy: " + hereNowChannelData.Occupancy.ToString());
                             Display(string.Format("channelName: {0}", hereNowChannelData.Occupancy));
                             List<PNHereNowOccupantData> hereNowOccupantData = hereNowChannelData.Occupants as List<PNHereNowOccupantData>;
                             if(hereNowOccupantData != null){
                                 foreach(PNHereNowOccupantData pnHereNowOccupantData in hereNowOccupantData){
                                     if(pnHereNowOccupantData.State != null){
-                                        Debug.Log ("in HereNow channel State: " + pnHereNowOccupantData.State.ToString());
+                                        sb.Append ("in HereNow channel State: " + pnHereNowOccupantData.State.ToString());
+                                        Dictionary<string, object> state = pnHereNowOccupantData.State as Dictionary<string, object>;
+                                        foreach (KeyValuePair<string, object> kvpState in state){
+                                            sb.Append (kvp.Key);
+                                            sb.Append ("=====>");
+                                            sb.Append (kvp.Value.ToString());
+                                        }
                                         Display(string.Format("State: {0}", pnHereNowOccupantData.State.ToString()));
                                     }
                                     if(pnHereNowOccupantData.UUID != null){
-                                        Debug.Log ("in HereNow channel UUID: " + pnHereNowOccupantData.UUID.ToString());
+                                        sb.Append ("in HereNow channel UUID: " + pnHereNowOccupantData.UUID.ToString());
                                         Display(string.Format("UUID: {0}", pnHereNowOccupantData.UUID.ToString()));
                                     }
                                 }
                             } else {
-                                Debug.Log ("in HereNow hereNowOccupantData null"); 
+                                sb.Append ("in HereNow hereNowOccupantData null"); 
                             }
+                            Debug.Log(sb.ToString());
                         } else {
                             Debug.Log ("in HereNow hereNowChannelData null"); 
                         }

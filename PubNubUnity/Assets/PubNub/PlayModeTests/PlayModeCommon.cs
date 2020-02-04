@@ -3,7 +3,7 @@ using PubNubAPI;
 using System.Xml;
 using System.Collections.Generic;
 using System;
-//using System.Reflection;
+
 
 namespace PubNubAPI.Tests
 {
@@ -58,6 +58,11 @@ namespace PubNubAPI.Tests
         public static string PublishKey = "pub-c-3ed95c83-12e6-4cda-9d69-c47ba2abb57e"; 
         public static string SubscribeKey = "sub-c-26a73b0a-c3f2-11e9-8b24-569e8a5c3af3"; 
         public static string SecretKey = "";
+
+        public static string PublishKeyPAM = "pub-c-cdea0ef1-c571-4b72-b43f-ff1dc8aa4c5d"; 
+        public static string SubscribeKeyPAM = "sub-c-4757f09c-c3f2-11e9-9d00-8a58a5558306"; 
+        public static string SecretKeyPAM = "sec-c-YTYxNzVjYzctNDY2MS00N2NmLTg2NjYtNGRlNWY1NjMxMDBm";
+
         public static string cg1 = "channelGroup1";
         public static string cg2 = "channelGroup2";
         public static string ch1 = "channel1";
@@ -71,20 +76,36 @@ namespace PubNubAPI.Tests
         public static int WaitTimeBetweenCalls4 = 4;   
         public static int WaitTimeBetweenCalls5 = 4;       
 
+        public static PNConfiguration SetPAMPNConfig(bool useCipher){
+            return SetPNConfig(useCipher, true);
+        }
 
         public static PNConfiguration SetPNConfig(bool useCipher){
+            return SetPNConfig(useCipher, false);
+        }
+
+        public static PNConfiguration SetPNConfig(bool useCipher, bool withPAM){
             PNConfiguration pnConfiguration = new PNConfiguration ();
             pnConfiguration.Origin = Origin;
             pnConfiguration.SubscribeKey = SubscribeKey;
             pnConfiguration.PublishKey = PublishKey;
+            if(withPAM){
+                pnConfiguration.SubscribeKey = SubscribeKeyPAM;
+                pnConfiguration.PublishKey = PublishKeyPAM;
+                pnConfiguration.SecretKey = SecretKeyPAM;
+            }
+
             if(useCipher){
                 pnConfiguration.CipherKey = "enigma";
             }
+            
             pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
             pnConfiguration.PresenceTimeout = 60;
             pnConfiguration.PresenceInterval= 30;
             pnConfiguration.Secure = SslOn;
             return pnConfiguration;
         }
+
+        
     }
 }

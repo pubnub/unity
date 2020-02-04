@@ -610,6 +610,62 @@ namespace PubNubAPI.Tests
             }
         }
 
+        [Test]
+        public void TestV2Signature ()
+        {
+            UnityEngine.Debug.Log ("TestV2Signature");
+            string expected = "v2.TcZdUURiXAnxJgN4OLPczxzH4MQO87l-yKfE4fyUHGc";
+	        string httpMethod = "GET";
+            string pubKey = "pub-c-03f156ea-a2e9-4c35-a733-9535824be897";
+            string secKey = "sec-c-MmUxNTZjMmYtNzFkNS00OAkzLWE2YjctNmQ4YzE5NWNmZDA3";
+            string path = "/v1/objects/sub-c-d7da9e59-c997-11e9-a139-dab2c75acd6f/spaces/pandu-ut-sid/users";
+            string query = "l_obj=0.4545555556&l_pam=1.145&pnsdk=PubNubCSharp4.0.34.0&requestid=19e1dee9-2f87-45d6-97e5-3f4d3f9779a2&timestamp=1568724043&uuid=mytestuuid";
+
+            var sig = GrantTokenBuilder.CreateV2Signature(httpMethod, path, query, pubKey, "", secKey, "");
+            Assert.True (expected.Equals(sig));
+
+        }
+        
+        [Test]
+        public void TestV2SignaturePOST ()
+        {
+            UnityEngine.Debug.Log ("TestV2Signature POST");
+            string expected = "v2.k80LsDMD-sImA8rCBj-ntRKhZ8mSjHY8Ivngt9W3Yc4";
+	        string httpMethod = "POST";
+            string pubKey = "demo";
+            string secKey = "wMfbo9G0xVUG8yfTfYw5qIdfJkTd7A";
+            string path = "/v3/pam/demo/grant";
+            string query = "PoundsSterling=%C2%A313.37&timestamp=123456789";
+            string body = @"{
+  ""ttl"": 1440,
+  ""permissions"": {
+    ""resources"" : {
+      ""channels"": {
+        ""inbox-jay"": 3
+      },
+      ""groups"": {},
+      ""users"": {},
+      ""spaces"": {}
+    },
+    ""patterns"" : {
+      ""channels"": {},
+      ""groups"": {},
+      ""users"": {},
+      ""spaces"": {}
+    },
+    ""meta"": {
+      ""user-id"": ""jay@example.com"",
+      ""contains-unicode"": ""The 💩 test.""
+    }
+  }
+}";
+
+            var sig = GrantTokenBuilder.CreateV2Signature(httpMethod, path, query, pubKey, "", secKey, body);
+            Assert.True (expected.Equals(sig));
+
+        }
+        
+
         #endif
     }
 }

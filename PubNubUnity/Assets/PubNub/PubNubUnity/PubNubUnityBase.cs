@@ -48,6 +48,7 @@ namespace PubNubAPI
         internal SubscriptionWorker<SubscribeEnvelope> SubWorker { get; set;}
         internal bool localGobj;
         public readonly PNLatencyManager latency;
+        public readonly TokenManager tokenManager;
         public PNLatencyManager Latency{
             get {return latency;}
         }
