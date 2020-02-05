@@ -1434,7 +1434,61 @@ namespace PubNubAPI.Tests
 
 		[UnityTest]
 		public IEnumerator TestMembersAndMembershipsWithPAM() {
-			yield return TestMembersAndMembershipsCommon(true);
+			//yield return TestMembersAndMembershipsCommon(true);
+			bool withPAM = true;
+			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
+			pnConfiguration.SecretKey = "";
+			if(withPAM){
+				pnConfiguration = PlayModeCommon.SetPAMPNConfig(false);
+			}
+			
+			System.Random r = new System.Random ();
+			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next (10000);
+			int ran = r.Next (10000);
+			int ran2 = r.Next (10000);
+			string userid = "userid"  + ran;
+			string name = string.Format("user name {0}", ran);
+			string email = string.Format("user email {0}", ran);
+			string externalID = string.Format("user externalID {0}", ran);
+			string profileURL = string.Format("user profileURL {0}", ran);
+			string spaceid = "spaceid"  + ran;
+			string spacename = string.Format("space name {0}", ran);
+			string spacedesc = string.Format("space desc {0}", ran);
+			string userid2 = "userid"  + ran2;
+			string name2 = string.Format("user name {0}", ran2);
+			string email2 = string.Format("user email {0}", ran2);
+			string externalID2 = string.Format("user externalID {0}", ran2);
+			string profileURL2 = string.Format("user profileURL {0}", ran2);
+			string spaceid2 = "spaceid"  + ran2;
+			string spacename2 = string.Format("space name {0}", ran2);
+			string spacedesc2 = string.Format("space desc {0}", ran2);
+
+			PNUserSpaceInclude[] include = new PNUserSpaceInclude[]{PNUserSpaceInclude.PNUserSpaceCustom};
+
+			PubNub pn = new PubNub(pnConfiguration);
+
+			var resUsers = new Dictionary<string, int>(){
+				{userid, 31},
+				{userid2, 31},
+			};
+
+			var resSpaces = new Dictionary<string, int>(){
+				{spaceid, 31},
+				{spaceid2, 31},
+			};
+
+			pn.GrantToken().SetParams(resUsers, resSpaces, new Dictionary<string, int>(), new Dictionary<string, int>(), 3).Async((result, status) => {
+				Debug.Log("GrantToken response" + result.Token);
+			});
+
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls4);
+
+			pn.GetTokens();
+
+			string g4 = pn.GetToken(userid, PNResourceType.PNUsers);
+			
+            Debug.Log("GetToken response" + g4);
+
 		}
 
 		public IEnumerator TestMembersAndMembershipsCommon(bool withPAM) {
@@ -1483,6 +1537,8 @@ namespace PubNubAPI.Tests
 			pubnub.GrantToken().SetParams(resUsers, resSpaces, new Dictionary<string, int>(), new Dictionary<string, int>(), 3).Async((result, status) => {
 				Debug.Log("GrantToken response");
 			});
+
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls4);
 			
 
 			bool tresult = false;

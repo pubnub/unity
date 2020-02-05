@@ -40,8 +40,9 @@ namespace PubNubAPI
             base.PNLog.WriteToLog (string.Format("Init with UUID {0}", base.PNConfig.UUID), PNLoggingMethod.LevelInfo);
             #endif
             SubscriptionInstance = new Subscription (this);
-            SubWorker = new SubscriptionWorker<SubscribeEnvelope>(this); 
+            SubWorker = new SubscriptionWorker<SubscribeEnvelope>(this);             
             base.QManager.PubNubInstance = this;
+            base.tokenManager = new TokenManager(this);
 
             //TODO test
             PNConfig.UUIDChanged += (sender, e) =>{

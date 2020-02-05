@@ -88,12 +88,14 @@ namespace PubNubAPI.Tests
             pnConfiguration.StoreTokensOnGrant = true;
             pnConfiguration.SecretKey = "";
 
+            PubNub pn = new PubNub(pnConfiguration);
+
             //Debug.Log("Token: " + token);
-            TokenManager tm = new TokenManager(pnUnity);
-            tm.StoreTokens(new List<string>{t1, t2, t3, t4});
+            //TokenManager tm = new TokenManager(pnUnity);
+            pn.StoreTokens(new List<string>{t1, t2, t3, t4});
             //tm.StoreToken(t3);
 
-            GrantResourcesWithPermissions g = tm.GetAllTokens();
+            GrantResourcesWithPermissions g = pn.GetTokens();
             Assert.IsTrue(g.Channels.Count.Equals(0));
             Assert.IsTrue(g.Groups.Count.Equals(0));
             Assert.IsTrue(g.ChannelsPattern.Count.Equals(0));
@@ -140,7 +142,7 @@ namespace PubNubAPI.Tests
             Assert.IsTrue(g.UsersPattern["^.*"].Token.Equals(t4));
             Assert.IsTrue(g.SpacesPattern["^.*"].Token.Equals(t4));
 
-            GrantResourcesWithPermissions g2 = tm.GetTokensByResource(PNResourceType.PNUsers);
+            GrantResourcesWithPermissions g2 = pn.GetTokensByResource(PNResourceType.PNUsers);
             Assert.IsTrue(g2.Users["testuser_16669"].BitMaskPerms.Equals(31));
             Assert.IsTrue(g2.Users["testuser_16669"].TTL.Equals(3));
             Assert.IsTrue(g2.Users["testuser_16669"].Timestamp.Equals(1568805412));
@@ -154,7 +156,7 @@ namespace PubNubAPI.Tests
             Assert.IsTrue(g2.Users["u-1974107"].Token.Equals(t2));
             Assert.IsTrue(g2.UsersPattern["^.*"].Token.Equals(t4));
 
-            GrantResourcesWithPermissions g3 = tm.GetTokensByResource(PNResourceType.PNSpaces);
+            GrantResourcesWithPermissions g3 = pn.GetTokensByResource(PNResourceType.PNSpaces);
             Assert.IsTrue(g3.Spaces["testspace_15011"].BitMaskPerms.Equals(31));
             Assert.IsTrue(g3.Spaces["testspace_15011"].TTL.Equals(3));
             Assert.IsTrue(g3.Spaces["testspace_15011"].Timestamp.Equals(1568805412));
@@ -168,17 +170,18 @@ namespace PubNubAPI.Tests
             Assert.IsTrue(g3.Spaces["s-1707983"].Token.Equals(t1));
             Assert.IsTrue(g3.SpacesPattern["^.*"].Token.Equals(t4));   
 
-            string g4 = tm.GetToken("testspace_15011", PNResourceType.PNSpaces);
+            string g4 = pn.GetToken("testspace_15011", PNResourceType.PNSpaces);
+            Debug.Log("g4" + g4);
             Assert.IsTrue(g4.Equals(t3));
-            string g5 = tm.GetToken("testuser_16669", PNResourceType.PNUsers);
+            string g5 = pn.GetToken("testuser_16669", PNResourceType.PNUsers);
             Assert.IsTrue(g5.Equals(t3));
-            string g6 = tm.GetToken("^.*", PNResourceType.PNSpaces);
+            string g6 = pn.GetToken("^.*", PNResourceType.PNSpaces);
             Assert.IsTrue(g6.Equals(t4));
-            string g7 = tm.GetToken("^.*", PNResourceType.PNUsers);
+            string g7 = pn.GetToken("^.*", PNResourceType.PNUsers);
             Assert.IsTrue(g7.Equals(t4));
-            string g8 = tm.GetToken("NONEXISTENT", PNResourceType.PNSpaces);
+            string g8 = pn.GetToken("NONEXISTENT", PNResourceType.PNSpaces);
             Assert.IsTrue(g8.Equals(t4));
-            string g9 = tm.GetToken("NONEXISTENT", PNResourceType.PNUsers);
+            string g9 = pn.GetToken("NONEXISTENT", PNResourceType.PNUsers);
             Assert.IsTrue(g9.Equals(t4));
 
         }

@@ -70,6 +70,7 @@ namespace PubNubAPI
                 body
             );
             RequestState requestState = new RequestState ();
+            requestState.OperationType = PNOperationType.PNGrantTokenOperation;
             requestState.URL = request.OriginalString; 
             requestState.Timeout = base.PubNubInstance.PNConfig.NonSubscribeTimeout;
             requestState.Pause = 0;
@@ -82,9 +83,42 @@ namespace PubNubAPI
 
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             PNGrantTokenResult pnGrantTokenResult = new PNGrantTokenResult();
-            PNStatus pnStatus = new PNStatus();
-            Debug.Log("deSerializedResult===>" + deSerializedResult.ToString());
-            this.PubNubInstance.tokenManager.StoreToken(pnGrantTokenResult.Token);
+            PNStatus pnStatus = new PNStatus();            
+
+            try{
+                Dictionary<string, object> dictionary = deSerializedResult as Dictionary<string, object>;
+                
+                if(dictionary != null) {
+                    object objData;
+                    dictionary.TryGetValue("data", out objData);
+                    if(objData!=null){
+                        Dictionary<string, object> dataDictionary = objData as Dictionary<string, object>;
+                        if(dataDictionary!=null){
+                            dataDictionary.TryGetValue("token", out objData);
+                            pnGrantTokenResult.Token = objData.ToString();
+                            this.PubNubInstance.TokenMgr.StoreToken(pnGrantTokenResult.Token);
+                        } else {
+                            pnGrantTokenResult = null;
+                            pnStatus = base.CreateErrorResponseFromException(new PubNubException("dataDictionary null"), requestState, PNStatusCategory.PNUnknownCategory);
+
+                        }
+                    }  else {
+                        pnGrantTokenResult = null;
+                        pnStatus = base.CreateErrorResponseFromException(new PubNubException("objData null"), requestState, PNStatusCategory.PNUnknownCategory);
+                    }                      
+                } 
+                #if (ENABLE_PUBNUB_LOGGING)
+                else {
+                    this.PubNubInstance.PNLog.WriteToLog ("dictionary null", PNLoggingMethod.LevelInfo);
+                }
+                #endif
+            } catch (Exception ex){
+                pnGrantTokenResult = null;
+                pnStatus = base.CreateErrorResponseFromException(ex, requestState, PNStatusCategory.PNUnknownCategory);
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PubNubInstance.PNLog.WriteToLog (string.Format ("ex: {0}", ex.ToString()), PNLoggingMethod.LevelError);
+                #endif
+            }          
             Callback(pnGrantTokenResult, pnStatus);
         }
 

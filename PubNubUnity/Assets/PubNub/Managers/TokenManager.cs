@@ -129,6 +129,30 @@ namespace PubNubAPI
         }
 
         public GrantResourcesWithPermissions GetAllTokens(){
+            foreach(KeyValuePair<string, ChannelPermissionsWithToken> kvp in Tokens.Channels){
+                Debug.Log(string.Format("Channels: key {0}, val {1}", kvp.Key, kvp.Value));
+            }
+            foreach(KeyValuePair<string, GroupPermissionsWithToken> kvp in Tokens.Groups){
+                Debug.Log(string.Format("Groups: key {0}, val {1}", kvp.Key, kvp.Value));
+            }
+            foreach(KeyValuePair<string, UserSpacePermissionsWithToken> kvp in Tokens.Spaces){
+                Debug.Log(string.Format("Spaces: key {0}, val {1}", kvp.Key, kvp.Value));
+            }
+            foreach(KeyValuePair<string, UserSpacePermissionsWithToken> kvp in Tokens.Users){
+                Debug.Log(string.Format("Users: key {0}, val {1}", kvp.Key, kvp.Value));
+            }
+            foreach(KeyValuePair<string, ChannelPermissionsWithToken> kvp in Tokens.ChannelsPattern){
+                Debug.Log(string.Format("ChannelsPattern: key {0}, val {1}", kvp.Key, kvp.Value));
+            }
+            foreach(KeyValuePair<string, GroupPermissionsWithToken> kvp in Tokens.GroupsPattern){
+                Debug.Log(string.Format("GroupsPattern: key {0}, val {1}", kvp.Key, kvp.Value));
+            }
+            foreach(KeyValuePair<string, UserSpacePermissionsWithToken> kvp in Tokens.SpacesPattern){
+                Debug.Log(string.Format("SpacesPattern: key {0}, val {1}", kvp.Key, kvp.Value));
+            }
+            foreach(KeyValuePair<string, UserSpacePermissionsWithToken> kvp in Tokens.UsersPattern){
+                Debug.Log(string.Format("UsersPattern: key {0}, val {1}", kvp.Key, kvp.Value));
+            }
             return Tokens;
         }
 
@@ -194,7 +218,7 @@ namespace PubNubAPI
                 return "";
                 case PNResourceType.PNSpaces:
                 UserSpacePermissionsWithToken spacePermissionsWithToken;
-                if(Tokens.Spaces.TryGetValue(resourceID, out spacePermissionsWithToken)){
+                if(Tokens.Spaces.TryGetValue(resourceID, out spacePermissionsWithToken)){                    
                     return spacePermissionsWithToken.Token;
                 }
                 if ((Tokens.SpacesPattern != null) && (Tokens.SpacesPattern.Count > 0)){
