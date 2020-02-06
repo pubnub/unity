@@ -78,6 +78,28 @@ namespace PubNubAPI.Tests
 			
 		// 	pubnub.CleanUp();
 		// }
+		
+		[UnityTest]
+		public IEnumerator TestHereNowEmptyChannel()
+        {
+			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
+			pnConfiguration.UUID = "UnityTestHereNowUUID";
+			PubNub pubnub = new PubNub(pnConfiguration);
+			string hereNowChannel = "EmptyChannel";
+			List<string> channelList = new List<string>() { hereNowChannel };
+			bool testReturn = false;
+
+			pubnub.HereNow().Channels(channelList).IncludeState(true).IncludeUUIDs(true).Async((result, status) =>
+			{
+				Debug.Log("status.Error:" + status.Error);
+				Assert.True(!status.Error);
+				bool matchResult = MatchHereNowresult(pubnub, result, channelList, pnConfiguration.UUID, true, false, false, 0, false, null);// Check occupancy-> It should be empty
+				testReturn = !status.Error && matchResult;
+			});
+			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls4);
+			Assert.True(testReturn, "test didn't return");
+			pubnub.CleanUp();
+		}
 
 		[UnityTest]
 		public IEnumerator TestHereNowChannels() {

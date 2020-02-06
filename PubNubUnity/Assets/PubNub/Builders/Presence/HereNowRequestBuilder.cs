@@ -222,10 +222,10 @@ namespace PubNubAPI
                                         }
                                         channelData.Occupants.Add(occupantData);
                                     }
+                                    channelData.Occupants.Add(occupantData);
+                                    }
                                 }
                             }
-                            
-
                         }
                     }
                     channelsResult.Add(channelName, channelData);

@@ -475,7 +475,7 @@ namespace PubNubAPI.Tests
 
             //https://ps.pndsn.com/v2/presence/sub_key/demo-36/channel/user_state_channel/heartbeat?uuid=customuuid&state={"k":"v"}&auth=authKey&pnsdk=PubNub-CSharp-UnityIOS/3.6.9.0
 
-            string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/channel/{3}/heartbeat?uuid={4}{5}{6}{9}{7}&pnsdk={8}",
+            string expected = string.Format ("http{0}://{1}/v2/presence/sub_key/{2}/channel/{3}/heartbeat?uuid={4}{5}{6}{9}{7}{10}&pnsdk={8}",
                 ssl?"s":"", EditorCommon.Origin, 
                 EditorCommon.SubscribeKey, 
                 chStr, 
@@ -484,7 +484,8 @@ namespace PubNubAPI.Tests
                 Utility.EncodeUricomponent(userState, PNOperationType.PNSubscribeOperation, false, false),
                 authKeyString, 
                 Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNSubscribeOperation, false, true),
-                cgStr
+                cgStr,
+                (pnConfiguration.PresenceTimeout > 0)?string.Format("&heartbeat={0}", pnConfiguration.PresenceTimeout) : ""
             );
             string received = uri.OriginalString;
             EditorCommon.LogAndCompare (expected, received);

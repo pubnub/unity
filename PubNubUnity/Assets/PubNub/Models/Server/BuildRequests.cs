@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Linq;
@@ -1242,8 +1242,6 @@ namespace PubNubAPI
                 url = AppendPresenceHeartbeatToURL(url, pubnubPresenceHeartbeatInSeconds);
                 url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
                 break;
-
-            
             case PNOperationType.PNGetStateOperation:
             case PNOperationType.PNPublishOperation:
             case PNOperationType.PNSignalOperation:
