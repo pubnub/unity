@@ -88,6 +88,7 @@ namespace PubNubAPI
                     this.PubNubInstance,
                     this.QueryParams
                 );
+            request = ObjectsHelpers.AppendTokenToURL(this.PubNubInstance.tokenManager, request.OriginalString, CreateUserID, PNResourceType.PNUsers, OperationType);
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }
 

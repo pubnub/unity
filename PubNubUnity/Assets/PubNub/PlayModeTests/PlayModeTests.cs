@@ -1456,60 +1456,87 @@ namespace PubNubAPI.Tests
 
 		[UnityTest]
 		public IEnumerator TestMembersAndMembershipsWithPAM() {
-			//yield return TestMembersAndMembershipsCommon(true);
-			bool withPAM = true;
-			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
-			pnConfiguration.SecretKey = "";
-			if(withPAM){
-				pnConfiguration = PlayModeCommon.SetPAMPNConfig(false);
-			}
+			yield return TestMembersAndMembershipsCommon(true);
+			// bool withPAM = true;
+			// PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
+			// pnConfiguration.SecretKey = "";
+			// PNConfiguration pnConfigurationPAM = new PNConfiguration();
+			// if(withPAM){
+			// 	pnConfigurationPAM = PlayModeCommon.SetPAMPNConfig(false);
+			// }
 			
-			System.Random r = new System.Random ();
-			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next (10000);
-			int ran = r.Next (10000);
-			int ran2 = r.Next (10000);
-			string userid = "userid"  + ran;
-			string name = string.Format("user name {0}", ran);
-			string email = string.Format("user email {0}", ran);
-			string externalID = string.Format("user externalID {0}", ran);
-			string profileURL = string.Format("user profileURL {0}", ran);
-			string spaceid = "spaceid"  + ran;
-			string spacename = string.Format("space name {0}", ran);
-			string spacedesc = string.Format("space desc {0}", ran);
-			string userid2 = "userid"  + ran2;
-			string name2 = string.Format("user name {0}", ran2);
-			string email2 = string.Format("user email {0}", ran2);
-			string externalID2 = string.Format("user externalID {0}", ran2);
-			string profileURL2 = string.Format("user profileURL {0}", ran2);
-			string spaceid2 = "spaceid"  + ran2;
-			string spacename2 = string.Format("space name {0}", ran2);
-			string spacedesc2 = string.Format("space desc {0}", ran2);
+			// System.Random r = new System.Random ();
+			// pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next (10000);
+			// int ran = r.Next (10000);
+			// int ran2 = r.Next (10000);
+			// string userid = "userid"  + ran;
+			// string name = string.Format("user name {0}", ran);
+			// string email = string.Format("user email {0}", ran);
+			// string externalID = string.Format("user externalID {0}", ran);
+			// string profileURL = string.Format("user profileURL {0}", ran);
+			// string spaceid = "spaceid"  + ran;
+			// string spacename = string.Format("space name {0}", ran);
+			// string spacedesc = string.Format("space desc {0}", ran);
+			// string userid2 = "userid"  + ran2;
+			// string name2 = string.Format("user name {0}", ran2);
+			// string email2 = string.Format("user email {0}", ran2);
+			// string externalID2 = string.Format("user externalID {0}", ran2);
+			// string profileURL2 = string.Format("user profileURL {0}", ran2);
+			// string spaceid2 = "spaceid"  + ran2;
+			// string spacename2 = string.Format("space name {0}", ran2);
+			// string spacedesc2 = string.Format("space desc {0}", ran2);
 
-			PNUserSpaceInclude[] include = new PNUserSpaceInclude[]{PNUserSpaceInclude.PNUserSpaceCustom};
+			// PNUserSpaceInclude[] include = new PNUserSpaceInclude[]{PNUserSpaceInclude.PNUserSpaceCustom};
 
-			PubNub pn = new PubNub(pnConfiguration);
+			// PubNub pnPAM = new PubNub(pnConfigurationPAM);
 
-			var resUsers = new Dictionary<string, int>(){
-				{userid, 31},
-				{userid2, 31},
-			};
+			// var resUsers = new Dictionary<string, int>(){
+			// 	{userid, 31},
+			// 	{userid2, 31},
+			// };
 
-			var resSpaces = new Dictionary<string, int>(){
-				{spaceid, 31},
-				{spaceid2, 31},
-			};
+			// var resSpaces = new Dictionary<string, int>(){
+			// 	{spaceid, 31},
+			// 	{spaceid2, 31},
+			// };
 
-			pn.GrantToken().SetParams(resUsers, resSpaces, new Dictionary<string, int>(), new Dictionary<string, int>(), 3).Async((result, status) => {
-				Debug.Log("GrantToken response" + result.Token);
-			});
+			// string token = "";
 
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls4);
+			// pnPAM.GrantToken().SetParams(resUsers, resSpaces, new Dictionary<string, int>(), new Dictionary<string, int>(), 3).Async((result, status) => {
+			// 	Debug.Log("GrantToken response:::" + result.Token);
+			// 	token = result.Token;
+			// });
 
-			pn.GetTokens();
+			// yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls4);
 
-			string g4 = pn.GetToken(userid, PNResourceType.PNUsers);
+			// //pn.StoreToken(token);
+
+			// // GrantResourcesWithPermissions g = pn.GetTokens();
+			// // Debug.Log("Users");
+			// // foreach(KeyValuePair<string, UserSpacePermissionsWithToken> kvp in g.Users){
+            // //     Debug.Log(kvp.Key + "===>" + kvp.Value);
+            // //     UserSpacePermissionsWithToken u;
+                
+            // //     if(g.Users.TryGetValue(kvp.Key, out u)){
+            // //         Debug.Log(kvp.Key + "=======>" + u.Token);
+            // //     }
+            // //     //Debug.Log(kvp.Key + ">=======>" + g.Users["testuser_16669"].Token);    
+            // // }
+			// // Debug.Log("Spaces");
+			// // foreach(KeyValuePair<string, UserSpacePermissionsWithToken> kvp in g.Spaces){
+            // //     Debug.Log(kvp.Key + "===>" + kvp.Value);
+            // //     UserSpacePermissionsWithToken u;
+                
+            // //     if(g.Users.TryGetValue(kvp.Key, out u)){
+            // //         Debug.Log(kvp.Key + "=======>" + u.Token);
+            // //     }
+            // //     //Debug.Log(kvp.Key + ">=======>" + g.Users["testuser_16669"].Token);    
+            // // }
+
+			// string g4 = pnPAM.GetToken(userid, PNResourceType.PNUsers);
 			
-            Debug.Log("GetToken response" + g4);
+            // Debug.Log("GetToken response" + g4);
+			// Assert.AreEqual(token, g4);
 
 		}
 
@@ -1517,10 +1544,7 @@ namespace PubNubAPI.Tests
 			//Create user 1
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			pnConfiguration.SecretKey = "";
-			if(withPAM){
-				pnConfiguration = PlayModeCommon.SetPAMPNConfig(false);
-			}
-			
+
 			System.Random r = new System.Random ();
 			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next (10000);
 			int ran = r.Next (10000);
@@ -1555,13 +1579,23 @@ namespace PubNubAPI.Tests
 				{spaceid, 31},
 				{spaceid2, 31},
 			};
+			string token = "";
 
-			pubnub.GrantToken().SetParams(resUsers, resSpaces, new Dictionary<string, int>(), new Dictionary<string, int>(), 3).Async((result, status) => {
-				Debug.Log("GrantToken response");
-			});
+			if(withPAM){
+				PNConfiguration pnConfigurationPAM = PlayModeCommon.SetPAMPNConfig(false);
+				PubNub pnPAM = new PubNub(pnConfigurationPAM);
+				pnPAM.GrantToken().SetParams(resUsers, resSpaces, new Dictionary<string, int>(), new Dictionary<string, int>(), 3).Async((result, status) => {
+					Debug.Log("GrantToken response:::" + result.Token);
+					token = result.Token;
+				});
 
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls4);
-			
+				yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls4);
+				string g4 = pnPAM.GetToken(userid, PNResourceType.PNUsers);
+				
+				Debug.Log("GetToken response" + g4);
+				Assert.AreEqual(token, g4);
+				pubnub.SetToken(token);
+			}
 
 			bool tresult = false;
 

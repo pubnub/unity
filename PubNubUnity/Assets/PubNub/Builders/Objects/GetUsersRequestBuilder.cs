@@ -66,6 +66,7 @@ namespace PubNubAPI
                     this.QueryParams,
                     GetUsersFilter
                 );
+            request = ObjectsHelpers.AppendTokenToURL(this.PubNubInstance.tokenManager, request.OriginalString, "", PNResourceType.PNUsers, OperationType);    
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }
 

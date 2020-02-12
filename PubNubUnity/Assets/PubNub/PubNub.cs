@@ -324,13 +324,13 @@ namespace PubNubAPI
             return pnUnity.GrantToken();
         }
 
-        public void StoreToken(string token)
+        public void SetToken(string token)
         {
             PubNubUnityInitializationAfterCleanup();
             pnUnity.TokenMgr.StoreToken(token);
         }
 
-        public void StoreTokens(List<string> tokens)
+        public void SetTokens(List<string> tokens)
         {
             PubNubUnityInitializationAfterCleanup();
             pnUnity.TokenMgr.StoreTokens(tokens);

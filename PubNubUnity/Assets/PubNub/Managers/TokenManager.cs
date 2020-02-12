@@ -246,7 +246,8 @@ namespace PubNubAPI
         }
 
         public void StoreToken(string token){  
-            if ((PubNubInstance.PNConfig.StoreTokensOnGrant) && (PubNubInstance.PNConfig.SecretKey == "")) {                
+            //if ((PubNubInstance.PNConfig.StoreTokensOnGrant) && (PubNubInstance.PNConfig.SecretKey == "")) {                
+            if (PubNubInstance.PNConfig.StoreTokensOnGrant) {
                 try
                 {
                     PNGrantTokenDecoded pnGrantTokenDecoded = GetPermissions(token);

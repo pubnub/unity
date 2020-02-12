@@ -92,7 +92,7 @@ namespace PubNubAPI.Tests
 
             //Debug.Log("Token: " + token);
             //TokenManager tm = new TokenManager(pnUnity);
-            pn.StoreTokens(new List<string>{t1, t2, t3, t4});
+            pn.SetTokens(new List<string>{t1, t2, t3, t4});
             //tm.StoreToken(t3);
 
             GrantResourcesWithPermissions g = pn.GetTokens();

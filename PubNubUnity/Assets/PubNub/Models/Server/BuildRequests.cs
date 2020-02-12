@@ -1,7 +1,6 @@
 using System;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Linq;
 using System.Collections.Generic;
 
 namespace PubNubAPI
@@ -1265,7 +1264,7 @@ namespace PubNubAPI
 
                 url = AppendUUIDToURL(url, uuid, true);
                 url.Append (parameters);
-                url = AppendAuthKeyToURL(url, authenticationKey, type);
+                //url = AppendAuthKeyToURL(url, authenticationKey, type);
                 url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
                 break;
 
