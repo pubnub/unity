@@ -1543,7 +1543,11 @@ namespace PubNubAPI.Tests
 		public IEnumerator TestMembersAndMembershipsCommon(bool withPAM) {
 			//Create user 1
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
-			pnConfiguration.SecretKey = "";
+			PubNub pnPAM = new PubNub(pnConfiguration);
+			if(withPAM){
+				pnConfiguration = PlayModeCommon.SetPAMPNConfig(false);
+				pnPAM = new PubNub(pnConfiguration);
+			}
 
 			System.Random r = new System.Random ();
 			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next (10000);
@@ -1568,8 +1572,6 @@ namespace PubNubAPI.Tests
 
 			PNUserSpaceInclude[] include = new PNUserSpaceInclude[]{PNUserSpaceInclude.PNUserSpaceCustom};
 
-			PubNub pubnub = new PubNub(pnConfiguration);
-
 			var resUsers = new Dictionary<string, int>(){
 				{userid, 31},
 				{userid2, 31},
@@ -1582,8 +1584,8 @@ namespace PubNubAPI.Tests
 			string token = "";
 
 			if(withPAM){
-				PNConfiguration pnConfigurationPAM = PlayModeCommon.SetPAMPNConfig(false);
-				PubNub pnPAM = new PubNub(pnConfigurationPAM);
+				//PNConfiguration pnConfigurationPAM = PlayModeCommon.SetPAMPNConfig(false);
+				
 				pnPAM.GrantToken().SetParams(resUsers, resSpaces, new Dictionary<string, int>(), new Dictionary<string, int>(), 3).Async((result, status) => {
 					Debug.Log("GrantToken response:::" + result.Token);
 					token = result.Token;
@@ -1594,6 +1596,12 @@ namespace PubNubAPI.Tests
 				
 				Debug.Log("GetToken response" + g4);
 				Assert.AreEqual(token, g4);
+				
+			}
+
+			pnConfiguration.SecretKey = "";
+			PubNub pubnub = new PubNub(pnConfiguration);
+			if(!string.IsNullOrEmpty(token)){
 				pubnub.SetToken(token);
 			}
 
