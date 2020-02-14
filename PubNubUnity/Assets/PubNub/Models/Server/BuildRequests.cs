@@ -1244,6 +1244,10 @@ namespace PubNubAPI
             case PNOperationType.PNGetStateOperation:
             case PNOperationType.PNPublishOperation:
             case PNOperationType.PNSignalOperation:
+            case PNOperationType.PNAddMessageActionsOperation:
+            case PNOperationType.PNGetMessageActionsOperation:
+            case PNOperationType.PNRemoveMessageActionsOperation:
+
                 url = AppendUUIDToURL(url, uuid, true);
                 url.Append (parameters);
                 url = AppendAuthKeyToURL(url, authenticationKey, type);
@@ -1266,15 +1270,6 @@ namespace PubNubAPI
             case PNOperationType.PNUpdateUserOperation:
                 url = AppendUUIDToURL(url, uuid, true);
                 url.Append (parameters);
-                url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
-                break;
-            case PNOperationType.PNAddMessageActionsOperation:
-            case PNOperationType.PNGetMessageActionsOperation:
-            case PNOperationType.PNRemoveMessageActionsOperation:
-
-                url = AppendUUIDToURL(url, uuid, true);
-                url.Append (parameters);
-                url = AppendAuthKeyToURL(url, authenticationKey, type);
                 url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
                 break;
 

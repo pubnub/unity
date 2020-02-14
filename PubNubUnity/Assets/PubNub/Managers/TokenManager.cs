@@ -32,19 +32,19 @@ namespace PubNubAPI
     }
 
     public class ChannelPermissions : ResourcePermission{
-        public bool Write;
-        public bool Delete;
+        public bool Write {get; set;}
+        public bool Delete {get; set;}
     }
 
     public class GroupPermissions : ResourcePermission{
-        public bool Manage;
+        public bool Manage {get; set;}
     }
 
     public class UserSpacePermissions : ResourcePermission{
-        public bool Write;
-        public bool Manage;
-        public bool Delete;
-        public bool Create;
+        public bool Write {get; set;}
+        public bool Manage {get; set;}
+        public bool Delete {get; set;}
+        public bool Create {get; set;}
     }
 
     public class ResourcePermission{
@@ -52,20 +52,31 @@ namespace PubNubAPI
     }
 
     public class GrantResources{
-        public Dictionary<string, int> Channels; // chan; 
-        public Dictionary<string, int> Groups; //grp; 
-        public Dictionary<string, int> Users; //usr;
-        public Dictionary<string, int> Spaces; //spc
+        //chan
+        public Dictionary<string, int> Channels; 
+        //grp
+        public Dictionary<string, int> Groups;  
+        //usr
+        public Dictionary<string, int> Users; 
+        //spc
+        public Dictionary<string, int> Spaces; 
     }
 
     public class PNGrantTokenDecoded{
-        public GrantResources Resources; //res
-        public GrantResources Patterns; //pat;
-        public Dictionary<string, object> Meta; //meta;
-        public byte[] Signature; //sig;
-        public int Version; //v;
-        public long Timestamp; //t;
-        public int TTL; //ttl
+        //res
+        public GrantResources Resources; 
+        //pat
+        public GrantResources Patterns; 
+        //meta
+        public Dictionary<string, object> Meta; 
+        //sig
+        public byte[] Signature; 
+        //v
+        public int Version; 
+        //t
+        public long Timestamp; 
+        //ttl
+        public int TTL; 
     }
 
     public class ChannelPermissionsWithToken : ResourcePermissionsWithTokenBase{
@@ -159,7 +170,7 @@ namespace PubNubAPI
         }
 
         public GrantResourcesWithPermissions InitGrantResourcesWithPermissions(){
-            return new GrantResourcesWithPermissions(){
+            return new GrantResourcesWithPermissions {
                 Channels = new SafeDictionary<string, ChannelPermissionsWithToken>(),
                 Groups = new SafeDictionary<string, GroupPermissionsWithToken>(),
                 Users = new SafeDictionary<string, UserSpacePermissionsWithToken>(),
@@ -190,6 +201,12 @@ namespace PubNubAPI
                 case PNResourceType.PNUsers:
                 grantResourcesWithPermissions.Users = Tokens.Users;
                 grantResourcesWithPermissions.UsersPattern = Tokens.UsersPattern;
+                break;
+                default:
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PubNubInstance.PNLog.WriteToLog (string.Format("No match on GetTokensByResource: {0}", resourceType), PNLoggingMethod.LevelInfo);
+                #endif
+
                 break;
             }
 
@@ -236,6 +253,13 @@ namespace PubNubAPI
                     return Tokens.UsersPattern.First().Value.Token;
                 }
                 return "";
+                default:
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PubNubInstance.PNLog.WriteToLog (string.Format("No match on GetToken: {0}", resourceType), PNLoggingMethod.LevelInfo);
+                #endif
+
+                break;
+
             }
             return "";
         }
@@ -258,6 +282,7 @@ namespace PubNubAPI
                     Tokens.UsersPattern  = new SafeDictionary<string, UserSpacePermissionsWithToken>();
                     ParseGrantResources(pnGrantTokenDecoded.Patterns, token, pnGrantTokenDecoded.Timestamp, pnGrantTokenDecoded.TTL, true);
                 } catch (Exception ex) {
+                    //Logging the exception when the debug symbol is set.
                     #if (ENABLE_PUBNUB_LOGGING)
                     this.PubNubInstance.PNLog.WriteToLog (ex.ToString(), PNLoggingMethod.LevelError); 
                     #endif
@@ -266,7 +291,7 @@ namespace PubNubAPI
         }
 
         public ResourcePermission ParseGrantPrems(int b, PNResourceType pnResourceType){
-            UserSpacePermissions rp = new UserSpacePermissions(){
+            UserSpacePermissions rp = new UserSpacePermissions {
                 Read = false,
                 Write = false,
                 Manage = false,
@@ -299,6 +324,13 @@ namespace PubNubAPI
                     case 4:
                     rp.Create = (bits[i] == '1');
                     break;
+                    default:
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    this.PubNubInstance.PNLog.WriteToLog (string.Format("No match on ParseGrantPrems: {0}", i), PNLoggingMethod.LevelInfo);
+                    #endif
+
+                    break;
+
                 }
             }
             #if (ENABLE_PUBNUB_LOGGING)
@@ -323,7 +355,7 @@ namespace PubNubAPI
 
                     switch(pnResourceType){
                         case PNResourceType.PNChannels:
-                        ChannelPermissionsWithToken channelPermissionsWithToken = new ChannelPermissionsWithToken(){
+                        ChannelPermissionsWithToken channelPermissionsWithToken = new ChannelPermissionsWithToken {
                                 BitMaskPerms = kvp.Value,
                                 Token = token,
                                 Timestamp = timetoken,
@@ -338,7 +370,7 @@ namespace PubNubAPI
 
                         break;
                         case PNResourceType.PNGroups:
-                        GroupPermissionsWithToken groupPermissionsWithToken = new GroupPermissionsWithToken(){
+                        GroupPermissionsWithToken groupPermissionsWithToken = new GroupPermissionsWithToken {
                                 BitMaskPerms = kvp.Value,
                                 Token = token,
                                 Timestamp = timetoken,
@@ -352,7 +384,7 @@ namespace PubNubAPI
                         }                    
                         break;
                         case PNResourceType.PNSpaces:
-                        UserSpacePermissionsWithToken spacePermissionsWithToken = new UserSpacePermissionsWithToken(){
+                        UserSpacePermissionsWithToken spacePermissionsWithToken = new UserSpacePermissionsWithToken {
                                 BitMaskPerms = kvp.Value,
                                 Token = token,
                                 Timestamp = timetoken,
@@ -366,7 +398,7 @@ namespace PubNubAPI
                         }                    
                         break;
                         case PNResourceType.PNUsers:
-                        UserSpacePermissionsWithToken userPermissionsWithToken = new UserSpacePermissionsWithToken(){
+                        UserSpacePermissionsWithToken userPermissionsWithToken = new UserSpacePermissionsWithToken {
                                 BitMaskPerms = kvp.Value,
                                 Token = token,
                                 Timestamp = timetoken,
@@ -379,6 +411,13 @@ namespace PubNubAPI
                             Tokens.Users[kvp.Key] = userPermissionsWithToken;
                         }                    
                         break;
+                        default:
+                        #if (ENABLE_PUBNUB_LOGGING)
+                        this.PubNubInstance.PNLog.WriteToLog (string.Format("No match on FillGrantResourcesWithPermissions: {0}", pnResourceType), PNLoggingMethod.LevelInfo);
+                        #endif
+
+                        break;
+
                     }
                 }
             }
