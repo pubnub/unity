@@ -1776,8 +1776,6 @@ namespace PubNubAPI.Tests
 						}
 						Assert.True("scv1" == mem.Space.Custom["spacecustomkey1"].ToString());
 						Assert.True("scv2" == mem.Space.Custom["spacecustomkey2"].ToString());
-						Assert.True("mcvup21" == mem.Custom["memberscustomkeyup21"].ToString());
-						Assert.True("mcvup22" == mem.Custom["memberscustomkeyup22"].ToString());
 						if(withPAM){
 							Assert.True("mcv21" == mem.Custom["memberscustomkey21"].ToString());
 							Assert.True("mcv22" == mem.Custom["memberscustomkey22"].ToString());
@@ -1828,8 +1826,13 @@ namespace PubNubAPI.Tests
 						}
 						Assert.True("scv1" == mem.Space.Custom["spacecustomkey1"].ToString());
 						Assert.True("scv2" == mem.Space.Custom["spacecustomkey2"].ToString());
-						Assert.True("mcvup21" == mem.Custom["memberscustomkeyup21"].ToString());
-						Assert.True("mcvup22" == mem.Custom["memberscustomkeyup22"].ToString());
+						if(withPAM){
+							Assert.True("mcv21" == mem.Custom["memberscustomkey21"].ToString());
+							Assert.True("mcv22" == mem.Custom["memberscustomkey22"].ToString());
+						} else {
+							Assert.True("mcvup21" == mem.Custom["memberscustomkeyup21"].ToString());
+							Assert.True("mcvup22" == mem.Custom["memberscustomkeyup22"].ToString());
+						}
 
 						bFound = true;
 						break;
