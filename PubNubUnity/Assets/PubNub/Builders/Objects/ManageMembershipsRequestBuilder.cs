@@ -96,7 +96,7 @@ namespace PubNubAPI
                     this.PubNubInstance,
                     this.QueryParams
                 );
-            request = ObjectsHelpers.AppendTokenToURL(this.PubNubInstance, request.OriginalString, ManageMembershipsUserID, PNResourceType.PNUsers, OperationType);    
+            request = this.PubNubInstance.TokenMgr.AppendTokenToURL( request.OriginalString, ManageMembershipsUserID, PNResourceType.PNUsers, OperationType);    
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }
 

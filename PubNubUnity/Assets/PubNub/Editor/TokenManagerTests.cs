@@ -90,10 +90,7 @@ namespace PubNubAPI.Tests
 
             PubNub pn = new PubNub(pnConfiguration);
 
-            //Debug.Log("Token: " + token);
-            //TokenManager tm = new TokenManager(pnUnity);
             pn.SetTokens(new List<string>{t1, t2, t3, t4});
-            //tm.StoreToken(t3);
 
             GrantResourcesWithPermissions g = pn.GetTokens();
             Assert.IsTrue(g.Channels.Count.Equals(0));
@@ -107,7 +104,6 @@ namespace PubNubAPI.Tests
                 if(g.Users.TryGetValue(kvp.Key, out u)){
                     Debug.Log(kvp.Key + "=======>" + u.Token);
                 }
-                //Debug.Log(kvp.Key + ">=======>" + g.Users["testuser_16669"].Token);    
             }
             UserSpacePermissionsWithToken u1;
             if(g.Users.TryGetValue("testuser_16669", out u1)){

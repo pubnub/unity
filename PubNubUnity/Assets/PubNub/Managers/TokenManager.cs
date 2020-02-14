@@ -1,9 +1,8 @@
 using System;
-using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using PeterO.Cbor;
-using System.Collections;
+using System.Text;
 
 namespace PubNubAPI
 {       
@@ -33,18 +32,15 @@ namespace PubNubAPI
     }
 
     public class ChannelPermissions : ResourcePermission{
-        //public bool Read;
         public bool Write;
         public bool Delete;
     }
 
     public class GroupPermissions : ResourcePermission{
-        //public bool Read;
         public bool Manage;
     }
 
     public class UserSpacePermissions : ResourcePermission{
-        //public bool Read;
         public bool Write;
         public bool Manage;
         public bool Delete;
@@ -53,10 +49,6 @@ namespace PubNubAPI
 
     public class ResourcePermission{
         public bool Read;
-        // public bool Write;
-        // public bool Manage;
-        // public bool Delete;
-        // public bool Create;
     }
 
     public class GrantResources{
@@ -121,38 +113,48 @@ namespace PubNubAPI
             Tokens = null; 
         }
         
-        public string SetAuthParan(string resourceID, PNResourceType resourceType){
-            string authParam = "auth";
+        internal Uri AppendTokenToURL(string request, string resourceID, PNResourceType resourceType, PNOperationType type){
             string token = GetToken(resourceID, resourceType);
-            return string.Format("{0}={1}", authParam, token);
-
+            StringBuilder uriBuilder = new StringBuilder(request);
+            if(!string.IsNullOrEmpty(token)){                
+                uriBuilder.AppendFormat ("&auth={0}", Utility.EncodeUricomponent (token, type, false, false));
+            } else {
+                if (!string.IsNullOrEmpty (this.PubNubInstance.PNConfig.AuthKey)) {
+                    uriBuilder.AppendFormat ("&auth={0}", Utility.EncodeUricomponent (this.PubNubInstance.PNConfig.AuthKey, type, false, false));
+                }
+            }
+            
+            return new Uri (uriBuilder.ToString ());
         }
 
         public GrantResourcesWithPermissions GetAllTokens(){
+            #if (ENABLE_PUBNUB_LOGGING)
             foreach(KeyValuePair<string, ChannelPermissionsWithToken> kvp in Tokens.Channels){
-                Debug.Log(string.Format("Channels: key {0}, val {1}", kvp.Key, kvp.Value));
+                this.PubNubInstance.PNLog.WriteToLog (string.Format("Channels: key {0}, val {1}", kvp.Key, kvp.Value), PNLoggingMethod.LevelInfo);
             }
             foreach(KeyValuePair<string, GroupPermissionsWithToken> kvp in Tokens.Groups){
-                Debug.Log(string.Format("Groups: key {0}, val {1}", kvp.Key, kvp.Value));
+                this.PubNubInstance.PNLog.WriteToLog  (string.Format("Groups: key {0}, val {1}", kvp.Key, kvp.Value), PNLoggingMethod.LevelInfo);
             }
             foreach(KeyValuePair<string, UserSpacePermissionsWithToken> kvp in Tokens.Spaces){
-                Debug.Log(string.Format("Spaces: key {0}, val {1}", kvp.Key, kvp.Value));
+                this.PubNubInstance.PNLog.WriteToLog  (string.Format("Spaces: key {0}, val {1}", kvp.Key, kvp.Value), PNLoggingMethod.LevelInfo);
             }
             foreach(KeyValuePair<string, UserSpacePermissionsWithToken> kvp in Tokens.Users){
-                Debug.Log(string.Format("Users: key {0}, val {1}", kvp.Key, kvp.Value));
+                this.PubNubInstance.PNLog.WriteToLog  (string.Format("Users: key {0}, val {1}", kvp.Key, kvp.Value), PNLoggingMethod.LevelInfo);
             }
             foreach(KeyValuePair<string, ChannelPermissionsWithToken> kvp in Tokens.ChannelsPattern){
-                Debug.Log(string.Format("ChannelsPattern: key {0}, val {1}", kvp.Key, kvp.Value));
+                this.PubNubInstance.PNLog.WriteToLog  (string.Format("ChannelsPattern: key {0}, val {1}", kvp.Key, kvp.Value), PNLoggingMethod.LevelInfo);
             }
             foreach(KeyValuePair<string, GroupPermissionsWithToken> kvp in Tokens.GroupsPattern){
-                Debug.Log(string.Format("GroupsPattern: key {0}, val {1}", kvp.Key, kvp.Value));
+                this.PubNubInstance.PNLog.WriteToLog  (string.Format("GroupsPattern: key {0}, val {1}", kvp.Key, kvp.Value), PNLoggingMethod.LevelInfo);
             }
             foreach(KeyValuePair<string, UserSpacePermissionsWithToken> kvp in Tokens.SpacesPattern){
-                Debug.Log(string.Format("SpacesPattern: key {0}, val {1}", kvp.Key, kvp.Value));
+                this.PubNubInstance.PNLog.WriteToLog  (string.Format("SpacesPattern: key {0}, val {1}", kvp.Key, kvp.Value), PNLoggingMethod.LevelInfo);
             }
             foreach(KeyValuePair<string, UserSpacePermissionsWithToken> kvp in Tokens.UsersPattern){
-                Debug.Log(string.Format("UsersPattern: key {0}, val {1}", kvp.Key, kvp.Value));
+                this.PubNubInstance.PNLog.WriteToLog  (string.Format("UsersPattern: key {0}, val {1}", kvp.Key, kvp.Value), PNLoggingMethod.LevelInfo);
             }
+            #endif
+  
             return Tokens;
         }
 
@@ -246,7 +248,6 @@ namespace PubNubAPI
         }
 
         public void StoreToken(string token){  
-            //if ((PubNubInstance.PNConfig.StoreTokensOnGrant) && (PubNubInstance.PNConfig.SecretKey == "")) {                
             if (PubNubInstance.PNConfig.StoreTokensOnGrant) {
                 try
                 {
@@ -257,7 +258,9 @@ namespace PubNubAPI
                     Tokens.UsersPattern  = new SafeDictionary<string, UserSpacePermissionsWithToken>();
                     ParseGrantResources(pnGrantTokenDecoded.Patterns, token, pnGrantTokenDecoded.Timestamp, pnGrantTokenDecoded.TTL, true);
                 } catch (Exception ex) {
-                    Debug.Log(ex.ToString()); 
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    this.PubNubInstance.PNLog.WriteToLog (ex.ToString(), PNLoggingMethod.LevelError); 
+                    #endif
                 }
             }
         }
@@ -271,11 +274,15 @@ namespace PubNubAPI
                 Create = false,                
             };
             string bits = Convert.ToString(b, 2);
-            Debug.Log("binary==>"+bits);
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PubNubInstance.PNLog.WriteToLog ("binary==>"+bits, PNLoggingMethod.LevelInfo);
+            #endif
 
             for (int i = 0; i < bits.Length; i++)
             {
-                Debug.Log(string.Format("{0}-{1}", i, bits[i]));
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PubNubInstance.PNLog.WriteToLog (string.Format("{0}-{1}", i, bits[i]), PNLoggingMethod.LevelInfo);
+                #endif
                 switch(i) {
                     case 0:
                     rp.Read = (bits[i] == '1');
@@ -294,13 +301,15 @@ namespace PubNubAPI
                     break;
                 }
             }
-            Debug.Log("ResourcePermissions Read ==> "  + rp.Read);
-            Debug.Log("ResourcePermissions Write ==> "  + rp.Write);
-            Debug.Log("ResourcePermissions Manage ==> "  + rp.Manage);
-            Debug.Log("ResourcePermissions Delete ==> "  + rp.Delete);
-            Debug.Log("ResourcePermissions Create ==> "  + rp.Create);
-            
-            
+            #if (ENABLE_PUBNUB_LOGGING)
+            StringBuilder sbLog = new StringBuilder();
+            sbLog.AppendFormat("ResourcePermissions Read ==> {0}", rp.Read);
+            sbLog.AppendFormat("ResourcePermissions Write ==> {0}", rp.Write);
+            sbLog.AppendFormat("ResourcePermissions Manage ==> {0}", rp.Manage);
+            sbLog.AppendFormat("ResourcePermissions Delete ==> {0}", rp.Delete);
+            sbLog.AppendFormat("ResourcePermissions Create ==> {0}", rp.Create);
+            this.PubNubInstance.PNLog.WriteToLog(sbLog.ToString(), PNLoggingMethod.LevelInfo);
+            #endif
             return rp;
 
         }
@@ -308,7 +317,10 @@ namespace PubNubAPI
         public void FillGrantResourcesWithPermissions(Dictionary<string, int> resDict, string token, long timetoken, int ttl, bool isPattern, PNResourceType pnResourceType){
             if((resDict != null) && (resDict.Count > 0)){
                 foreach(KeyValuePair<string, int> kvp in resDict){
-                    Debug.Log("FillGrantResourcesWithPermissions ==>" + kvp.Key);
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    this.PubNubInstance.PNLog.WriteToLog (string.Format("FillGrantResourcesWithPermissions ==> {0}", kvp.Key), PNLoggingMethod.LevelInfo);
+                    #endif
+
                     switch(pnResourceType){
                         case PNResourceType.PNChannels:
                         ChannelPermissionsWithToken channelPermissionsWithToken = new ChannelPermissionsWithToken(){
@@ -377,59 +389,6 @@ namespace PubNubAPI
             FillGrantResourcesWithPermissions(res.Groups, token, timetoken, ttl, isPattern, PNResourceType.PNGroups);
             FillGrantResourcesWithPermissions(res.Users, token, timetoken, ttl, isPattern, PNResourceType.PNUsers);
             FillGrantResourcesWithPermissions(res.Spaces, token, timetoken, ttl, isPattern, PNResourceType.PNSpaces);
-            // GrantResourcesWithPermissions g = InitGrantResourcesWithPermissions();
-            
-            // Debug.Log("ParseGrantResources");
-            
-            // //if(!isPattern){                
-                
-            //     foreach(KeyValuePair<string, int> kvp in res.Channels){
-            //         Debug.Log("ParseGrantResources Channels");
-            //         //ChannelPermissions rp = ParseGrantPrems(kvp.Value, PNResourceType.PNChannels) as ChannelPermissions;
-            //         // ChannelPermissions cp = new ChannelPermissions(){
-            //         //          Read = rp.Read,
-            //         //          Write = rp.Write,
-            //         //          Delete = rp.Delete, 
-            //         //      };
-            //         g.Channels[kvp.Key] = new ChannelPermissionsWithToken(){
-            //                 BitMaskPerms = kvp.Value,
-            //                 Token = token,
-            //                 Timestamp = timetoken,
-            //                 TTL = ttl,
-            //                 Permissions = ParseGrantPrems(kvp.Value, PNResourceType.PNChannels) as ChannelPermissions,
-            //             };
-            //         Debug.Log(g.Channels[kvp.Key].Permissions.Delete);    
-            //         Debug.Log(g.Channels[kvp.Key].Permissions.Read);    
-            //         Debug.Log(g.Channels[kvp.Key].Permissions.Write);    
-            //     }
-
-            //     g.Users = new SafeDictionary<string, UserSpacePermissionsWithToken>();
-            //     foreach(KeyValuePair<string, int> kvp in res.Users){
-            //         Debug.Log("ParseGrantResources Users");
-            //         //ResourcePermissionsBase rp = ParseGrantPrems(kvp.Value, PNResourceType.PNUsers) as ResourcePermissions;
-            //         // UserSpacePermissions cp = new UserSpacePermissions(){
-            //         //          Read = rp.Read,
-            //         //          Write = rp.Write,
-            //         //          Manage = rp.Manage,
-            //         //          Delete = rp.Delete,
-            //         //          Create = rp.Create,
-            //         //      };
-            //         g.Users[kvp.Key] = new UserSpacePermissionsWithToken(){
-            //                 BitMaskPerms = kvp.Value,
-            //                 Token = token,
-            //                 Timestamp = timetoken,
-            //                 TTL = ttl,
-            //                 Permissions = ParseGrantPrems(kvp.Value, PNResourceType.PNUsers) as UserSpacePermissions,
-            //             };
-            //         Debug.Log(g.Users[kvp.Key].Permissions.Create);    
-            //         Debug.Log(g.Users[kvp.Key].Permissions.Read);    
-            //         Debug.Log(g.Users[kvp.Key].Permissions.Write);    
-            //         Debug.Log(g.Users[kvp.Key].Permissions.Manage);    
-            //         Debug.Log(g.Users[kvp.Key].Permissions.Delete);    
-
-            //     }
-            //     return g;
-            //}
         }
 
         public PNGrantTokenDecoded GetPermissions(string token){
@@ -438,7 +397,9 @@ namespace PubNubAPI
             if (i != 0) {
                 token += new String('=', 4-i);
             }
-            Debug.Log(token);
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PubNubInstance.PNLog.WriteToLog (token, PNLoggingMethod.LevelInfo);
+            #endif
             PNGrantTokenDecoded pnGrantTokenDecoded = new PNGrantTokenDecoded();
             pnGrantTokenDecoded.Patterns = new GrantResources(){
                 Channels = new Dictionary<string, int>(),
@@ -455,75 +416,57 @@ namespace PubNubAPI
             pnGrantTokenDecoded.Meta = new Dictionary<string, object>();
 
             byte[] decryptedBytes = Convert.FromBase64CharArray (token.ToCharArray (), 0, token.Length);
-            //using (var stream = new MemoryStream(decryptedBytes)) {
-                // Read the CBOR object from the stream
-                //var cbor = CBORObject.Read(stream);
             var cbor = CBORObject.DecodeFromBytes(decryptedBytes);
 
-                //Debug.Log(cbor.GetAllTags().ToString());
-                // foreach (CBORObject obj in cbor.Values){
-                //     Debug.Log(obj.ToString());
-                // }
-                //Debug.Log(cbor.ToJSONString());
-                //foreach (CBORObject obj in cbor.Values){
             ParseCBOR(cbor, "", ref pnGrantTokenDecoded); 
-                
-                // var d = cbor.ToObject<Dictionary<string, object>>();
-                // foreach(KeyValuePair<string, object> kvp in d){
-                //     Debug.Log(kvp.Key.ToString());
-                //     Debug.Log(kvp.Value.ToString());
-                // }
-                
-                //Debug.Log(s);
-                // Debug.Log(cborObject.ttl);
-                // Debug.Log(cborObject.sig);
-                // Debug.Log(cborObject.v);
-                // Debug.Log(cborObject.res.spc["s-1707983"].ToString());
-                //cborObject = cbor.ToObject<PNGrantTokenDecoded>();
-           
+
             return pnGrantTokenDecoded;
-            //}
         }
 
         public void ParseCBOR(CBORObject cbor, string parent, ref PNGrantTokenDecoded pnGrantTokenDecoded){
             foreach (KeyValuePair<CBORObject, CBORObject> kvp in cbor.Entries){
                 if(kvp.Key.Type.ToString().Equals("ByteString")){
-                    //Debug.Log(string.Format("Key {0}-{1}", System.Text.Encoding.ASCII.GetString(kvp.Key.GetByteString()), kvp.Value));
                     string key = System.Text.Encoding.ASCII.GetString(kvp.Key.GetByteString());
                     ParseCBORValue(key, parent, kvp, ref pnGrantTokenDecoded);
                 } else if(kvp.Key.Type.ToString().Equals("TextString")) {
-                    Debug.Log(string.Format("TextString Key {0}-{1}-{2}", kvp.Key.ToString(), kvp.Value.ToString(), kvp.Value.Type));
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    this.PubNubInstance.PNLog.WriteToLog (string.Format("TextString Key {0}-{1}-{2}", kvp.Key.ToString(), kvp.Value.ToString(), kvp.Value.Type), PNLoggingMethod.LevelInfo);
+                    #endif
                     ParseCBORValue(kvp.Key.ToString(), parent, kvp, ref pnGrantTokenDecoded);
-                    //FillGrantToken(parent, kvp.Key.ToString(), kvp.Value, typeof(string), ref pnGrantTokenDecoded);
-                } else {
-                    Debug.Log(string.Format("Others Key {0}-{1}-{2}-{3}", kvp.Key, kvp.Key.Type, kvp.Value, kvp.Value.Type));
+                } 
+                #if (ENABLE_PUBNUB_LOGGING)
+                else {
+                    this.PubNubInstance.PNLog.WriteToLog (string.Format("Others Key {0}-{1}-{2}-{3}", kvp.Key, kvp.Key.Type, kvp.Value, kvp.Value.Type), PNLoggingMethod.LevelError);
                 }
+                #endif
                 
-                //byte[] dataV = FromHex(obj.Value.ToString());    
-                //byte[] dataK = FromHex(obj.Key.ToString());    
-                //Debug.Log(string.Format("{0}-{1}", obj.Key.ToString(), obj.Value));
-                //Debug.Log(string.Format("{0}-{1}", "dataK", System.Text.Encoding.ASCII.GetString(dataV)));
             }
         }
 
         public void ParseCBORValue(string key, string parent, KeyValuePair<CBORObject, CBORObject> kvp, ref PNGrantTokenDecoded pnGrantTokenDecoded){
             if(kvp.Value.Type.ToString().Equals("Map")){
-                Debug.Log(string.Format("Map Key {0}", key));
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PubNubInstance.PNLog.WriteToLog (string.Format("Map Key {0}", key), PNLoggingMethod.LevelInfo);
+                #endif
                 var p = string.Format("{0}{1}{2}", parent, string.IsNullOrEmpty(parent)?"":":", key);
                 ParseCBOR(kvp.Value, p, ref pnGrantTokenDecoded);
-            // } else if(kvp.Key.Type.ToString().Equals("TextString")){
-            //     Debug.Log(string.Format("TextString Key1 {0}-{1}", key, kvp.Value.ToString()));
-            //     FillGrantToken(parent, key, kvp.Value, typeof(string), ref pnGrantTokenDecoded);
             } else if(kvp.Value.Type.ToString().Equals("ByteString")){ 
                 string val = System.Text.Encoding.ASCII.GetString(kvp.Value.GetByteString());
-                Debug.Log(string.Format("ByteString Value {0}-{1}", key, val));
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PubNubInstance.PNLog.WriteToLog  (string.Format("ByteString Value {0}-{1}", key, val), PNLoggingMethod.LevelInfo);
+                #endif
                 FillGrantToken(parent, key, kvp.Value, typeof(string), ref pnGrantTokenDecoded);
-            } else if(kvp.Value.Type.ToString().Equals("Integer")){                            
-                Debug.Log(string.Format("Integer Value {0}-{1}", key, kvp.Value));
+            } else if(kvp.Value.Type.ToString().Equals("Integer")){      
+                #if (ENABLE_PUBNUB_LOGGING)                      
+                this.PubNubInstance.PNLog.WriteToLog  (string.Format("Integer Value {0}-{1}", key, kvp.Value), PNLoggingMethod.LevelInfo);
+                #endif
                 FillGrantToken(parent, key, kvp.Value, typeof(int), ref pnGrantTokenDecoded);
-            } else {
-                Debug.Log(string.Format("Others Key Value {0}-{1}-{2}-{3}", kvp.Key.Type, kvp.Value.Type, key, kvp.Value));
+            } 
+            #if (ENABLE_PUBNUB_LOGGING)
+            else {
+                this.PubNubInstance.PNLog.WriteToLog  (string.Format("Others Key Value {0}-{1}-{2}-{3}", kvp.Key.Type, kvp.Value.Type, key, kvp.Value), PNLoggingMethod.LevelError);                
             }
+            #endif
         }
 
         public string ReplaceBoundaryQuotes(string key){
@@ -534,9 +477,13 @@ namespace PubNubAPI
         }
 
         public void FillGrantToken(string parent, string key, object val, Type type, ref PNGrantTokenDecoded pnGrantTokenDecoded){            
-            Debug.Log("FillGrantToken: " + key);
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PubNubInstance.PNLog.WriteToLog (string.Format("FillGrantToken: {0}", key), PNLoggingMethod.LevelInfo);
+            #endif
             key = ReplaceBoundaryQuotes(key);
-            Debug.Log("FillGrantToken after: " + key);
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PubNubInstance.PNLog.WriteToLog (string.Format("FillGrantToken after: {0}", key), PNLoggingMethod.LevelInfo);
+            #endif
             int i = 0;
             long l = 0;
             string s = "";
@@ -555,7 +502,9 @@ namespace PubNubAPI
                 s = val.ToString();
                 break;
                 default:
-                Debug.Log("typeName:" + type.Name);
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PubNubInstance.PNLog.WriteToLog (string.Format("typeName: {0}", type.Name), PNLoggingMethod.LevelInfo);
+                #endif
                 break;
             }
             switch(key){
@@ -601,23 +550,14 @@ namespace PubNubAPI
                     pnGrantTokenDecoded.Patterns.Groups[key] = i;
                     break;
                     default:
-                    Debug.Log("No match on parent: " + parent);
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    this.PubNubInstance.PNLog.WriteToLog (string.Format("No match on parent: {0}", parent), PNLoggingMethod.LevelInfo);
+                    #endif
                     break;
                 }
                 break;
             }
         }
 
-
-        // public static byte[] FromHex(string hex)
-        // {
-        //     hex = hex.Replace("-", "");
-        //     byte[] raw = new byte[hex.Length / 2];
-        //     for (int i = 0; i < raw.Length; i++)
-        //     {
-        //         raw[i] = Convert.ToByte(hex.Substring(i * 2, 2), 16);
-        //     }
-        //     return raw;
-        // }
     }
 }

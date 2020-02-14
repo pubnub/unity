@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace PubNubAPI
 {
@@ -114,20 +112,6 @@ namespace PubNubAPI
                 pnMembersRemoveForJSONList.Add(pnMembersRemoveForJSON);
             }
             return pnMembersRemoveForJSONList.ToArray();
-        }
-
-        internal static Uri AppendTokenToURL(PubNubUnity pnInstance, string request, string resourceID, PNResourceType resourceType, PNOperationType type){
-            string token = pnInstance.TokenMgr.GetToken(resourceID, resourceType);
-            StringBuilder uriBuilder = new StringBuilder(request);
-            if(!string.IsNullOrEmpty(token)){                
-                uriBuilder.AppendFormat ("&auth={0}", Utility.EncodeUricomponent (token, type, false, false));
-            } else {
-                if (!string.IsNullOrEmpty (pnInstance.PNConfig.AuthKey)) {
-                    uriBuilder.AppendFormat ("&auth={0}", Utility.EncodeUricomponent (pnInstance.PNConfig.AuthKey, type, false, false));
-                }
-            }
-            
-            return new Uri (uriBuilder.ToString ());
         }
 
     }
