@@ -48,35 +48,35 @@ namespace PubNubAPI
     }
 
     public class ResourcePermission{
-        public bool Read;
+        public bool Read {get; set;}
     }
 
     public class GrantResources{
         //chan
-        public Dictionary<string, int> Channels; 
+        public Dictionary<string, int> Channels {get; set;}
         //grp
-        public Dictionary<string, int> Groups;  
+        public Dictionary<string, int> Groups {get; set;}
         //usr
-        public Dictionary<string, int> Users; 
+        public Dictionary<string, int> Users {get; set;}
         //spc
-        public Dictionary<string, int> Spaces; 
+        public Dictionary<string, int> Spaces {get; set;}
     }
 
     public class PNGrantTokenDecoded{
         //res
-        public GrantResources Resources; 
+        public GrantResources Resources {get; set;}
         //pat
-        public GrantResources Patterns; 
+        public GrantResources Patterns {get; set;}
         //meta
-        public Dictionary<string, object> Meta; 
+        public Dictionary<string, object> Meta {get; set;}
         //sig
-        public byte[] Signature; 
+        public byte[] Signature {get; set;}
         //v
-        public int Version; 
+        public int Version {get; set;}
         //t
-        public long Timestamp; 
+        public long Timestamp {get; set;}
         //ttl
-        public int TTL; 
+        public int TTL {get; set;} 
     }
 
     public class ChannelPermissionsWithToken : ResourcePermissionsWithTokenBase{
@@ -440,13 +440,13 @@ namespace PubNubAPI
             this.PubNubInstance.PNLog.WriteToLog (token, PNLoggingMethod.LevelInfo);
             #endif
             PNGrantTokenDecoded pnGrantTokenDecoded = new PNGrantTokenDecoded();
-            pnGrantTokenDecoded.Patterns = new GrantResources(){
+            pnGrantTokenDecoded.Patterns = new GrantResources {
                 Channels = new Dictionary<string, int>(),
                 Groups = new Dictionary<string, int>(),
                 Users = new Dictionary<string, int>(),
                 Spaces = new Dictionary<string, int>()
             };
-            pnGrantTokenDecoded.Resources = new GrantResources(){
+            pnGrantTokenDecoded.Resources = new GrantResources {
                 Channels = new Dictionary<string, int>(),
                 Groups = new Dictionary<string, int>(),
                 Users = new Dictionary<string, int>(),
@@ -489,9 +489,9 @@ namespace PubNubAPI
                 #endif
                 var p = string.Format("{0}{1}{2}", parent, string.IsNullOrEmpty(parent)?"":":", key);
                 ParseCBOR(kvp.Value, p, ref pnGrantTokenDecoded);
-            } else if(kvp.Value.Type.ToString().Equals("ByteString")){ 
-                string val = System.Text.Encoding.ASCII.GetString(kvp.Value.GetByteString());
+            } else if(kvp.Value.Type.ToString().Equals("ByteString")){                 
                 #if (ENABLE_PUBNUB_LOGGING)
+                string val = System.Text.Encoding.ASCII.GetString(kvp.Value.GetByteString());
                 this.PubNubInstance.PNLog.WriteToLog  (string.Format("ByteString Value {0}-{1}", key, val), PNLoggingMethod.LevelInfo);
                 #endif
                 FillGrantToken(parent, key, kvp.Value, typeof(string), ref pnGrantTokenDecoded);
@@ -525,7 +525,6 @@ namespace PubNubAPI
             #endif
             int i = 0;
             long l = 0;
-            string s = "";
             switch(type.Name){
                 case "Int32":
                 if (!int.TryParse (val.ToString(), out i)) {
@@ -538,7 +537,7 @@ namespace PubNubAPI
                 }                
                 break;
                 case "String":
-                s = val.ToString();
+                // do nothing s = val.ToString();
                 break;
                 default:
                 #if (ENABLE_PUBNUB_LOGGING)
