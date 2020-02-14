@@ -537,7 +537,7 @@ namespace PubNubAPI
                 }                
                 break;
                 case "String":
-                // do nothing s = val.ToString();
+                // do nothing 
                 break;
                 default:
                 #if (ENABLE_PUBNUB_LOGGING)
