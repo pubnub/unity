@@ -40,8 +40,9 @@ namespace PubNubAPI
             base.PNLog.WriteToLog (string.Format("Init with UUID {0}", base.PNConfig.UUID), PNLoggingMethod.LevelInfo);
             #endif
             SubscriptionInstance = new Subscription (this);
-            SubWorker = new SubscriptionWorker<SubscribeEnvelope>(this); 
+            SubWorker = new SubscriptionWorker<SubscribeEnvelope>(this);             
             base.QManager.PubNubInstance = this;
+            base.tokenManager = new TokenManager(this);
 
             //TODO test
             PNConfig.UUIDChanged += (sender, e) =>{
@@ -369,6 +370,15 @@ namespace PubNubAPI
             #endif
 
             return new GetMembersBuilder(this);
+        }
+
+        public GrantTokenBuilder GrantToken()
+        {
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("GrantToken", PNLoggingMethod.LevelInfo);
+            #endif
+
+            return new GrantTokenBuilder(this);
         }
 
         public GetMembershipsBuilder GetMemberships()

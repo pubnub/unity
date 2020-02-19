@@ -7,7 +7,7 @@ namespace PubNubAPI
     public class PubNubUnityBase
     {
         protected Counter publishMessageCounter;
-        private const string build = "4.7.3";
+        private const string build = "4.8.0";
         private string pnsdkVersion = string.Format ("PubNub-CSharp-Unity/{0}", build);
 
         public string Version {
@@ -48,8 +48,13 @@ namespace PubNubAPI
         internal SubscriptionWorker<SubscribeEnvelope> SubWorker { get; set;}
         internal bool localGobj;
         public readonly PNLatencyManager latency;
+        internal TokenManager tokenManager;
         public PNLatencyManager Latency{
             get {return latency;}
+        }
+
+        public TokenManager TokenMgr{
+            get {return tokenManager;}
         }
 
 

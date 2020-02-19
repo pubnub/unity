@@ -9,6 +9,7 @@ namespace PubNubAPI
         public PNConfiguration ()
         {
             Secure = true;
+            StoreTokensOnGrant = true;
         }
 
         private ushort concurrentNonSubscribeWorkers = 1;
@@ -45,6 +46,8 @@ namespace PubNubAPI
         public PNLogVerbosity LogVerbosity { get; set;}
         public string AuthKey { get; set;}
         public bool Secure { get; set;}
+
+        public bool StoreTokensOnGrant { get; set;}
 
         private int messageQueueOverflowCount =100;
         public int MessageQueueOverflowCount
