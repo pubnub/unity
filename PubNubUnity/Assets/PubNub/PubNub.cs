@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace PubNubAPI
 {
@@ -315,6 +316,50 @@ namespace PubNubAPI
             PubNubUnityInitializationAfterCleanup();
             return pnUnity.GetMessageActions();
         }
+
+        // Only used for an integration test
+        internal GrantTokenBuilder GrantToken()
+        {
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.GrantToken();
+        }
+
+        public void SetToken(string token)
+        {
+            PubNubUnityInitializationAfterCleanup();
+            pnUnity.TokenMgr.StoreToken(token);
+        }
+
+        public void SetTokens(List<string> tokens)
+        {
+            PubNubUnityInitializationAfterCleanup();
+            pnUnity.TokenMgr.StoreTokens(tokens);
+        }
+
+        public GrantResourcesWithPermissions GetTokens()
+        {
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.TokenMgr.GetAllTokens();
+        }
+
+        public GrantResourcesWithPermissions GetTokensByResource(PNResourceType resourceType)
+        {
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.TokenMgr.GetTokensByResource(resourceType);
+        }
+
+        public string GetToken(string resourceID, PNResourceType resourceType)
+        {
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.TokenMgr.GetToken(resourceID, resourceType);
+        }
+
+        public void ResetTokenManager(List<string> tokens)
+        {
+            PubNubUnityInitializationAfterCleanup();
+            pnUnity.TokenMgr.CleanUp();
+        }
+
         public void AddListener(Action<PNStatus> statusCallback, Action<PNMessageResult> messageCallback, Action<PNPresenceEventResult> presenceCallback)
         {
             PubNubUnityInitializationAfterCleanup();

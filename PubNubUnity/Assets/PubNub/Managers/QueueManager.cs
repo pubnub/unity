@@ -229,6 +229,10 @@ namespace PubNubAPI
                             GetMessageActionsRequestBuilder getMessageActionsRequestBuilder = operationParams as GetMessageActionsRequestBuilder;
                             getMessageActionsRequestBuilder.RaiseRunRequest(this);
                             break;                         
+                        case PNOperationType.PNGrantTokenOperation:
+                            GrantTokenBuilder grantTokenBuilder = operationParams as GrantTokenBuilder;
+                            grantTokenBuilder.RaiseRunRequest(this);
+                            break;                         
                         default:
                         break;
                     }

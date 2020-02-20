@@ -3,6 +3,13 @@ changelog:
   - 
     changes: 
       - 
+        text: "Token Management System - Client end"
+        type: improvement
+    date: Feb 18, 19  
+    version: v4.8.0
+  - 
+    changes: 
+      - 
         text: "HereNow Deserialization Error fix"
         type: improvement
     date: Feb 5, 19  
@@ -385,6 +392,8 @@ changelog:
     date: ~
     version: v3.6.8.1
 features: 
+  access: 
+    - ACCESS-TOKEN-MANAGEMENT
   channel-groups: 
     - CHANNEL-GROUPS-ADD-CHANNELS
     - CHANNEL-GROUPS-REMOVE-CHANNELS
@@ -492,4 +501,4 @@ supported-platforms:
       - "Ubuntu 12.04+, with Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support."
       - "Mac OS X 10.8+, with Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support."
     version: "PubNub Unity SDK"
-version: v4.7.3
+version: v4.8.0

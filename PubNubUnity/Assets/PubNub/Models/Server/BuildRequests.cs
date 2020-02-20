@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Linq;
 using System.Collections.Generic;
 
 namespace PubNubAPI
@@ -1234,6 +1233,7 @@ namespace PubNubAPI
             case PNOperationType.PNSubscribeOperation:
             case PNOperationType.PNPresenceOperation:
             case PNOperationType.PNPresenceHeartbeatOperation:
+
                 url = AppendUUIDToURL(url, uuid, true);
                 url.Append(parameters);
                 url = AppendAuthKeyToURL(url, authenticationKey, type);
@@ -1244,6 +1244,16 @@ namespace PubNubAPI
             case PNOperationType.PNGetStateOperation:
             case PNOperationType.PNPublishOperation:
             case PNOperationType.PNSignalOperation:
+            case PNOperationType.PNAddMessageActionsOperation:
+            case PNOperationType.PNGetMessageActionsOperation:
+            case PNOperationType.PNRemoveMessageActionsOperation:
+
+                url = AppendUUIDToURL(url, uuid, true);
+                url.Append (parameters);
+                url = AppendAuthKeyToURL(url, authenticationKey, type);
+                url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
+                break;
+
             case PNOperationType.PNCreateUserOperation:
             case PNOperationType.PNCreateSpaceOperation:
             case PNOperationType.PNGetUserOperation:
@@ -1258,13 +1268,8 @@ namespace PubNubAPI
             case PNOperationType.PNDeleteUserOperation:
             case PNOperationType.PNUpdateSpaceOperation:
             case PNOperationType.PNUpdateUserOperation:
-            case PNOperationType.PNAddMessageActionsOperation:
-            case PNOperationType.PNGetMessageActionsOperation:
-            case PNOperationType.PNRemoveMessageActionsOperation:
-
                 url = AppendUUIDToURL(url, uuid, true);
                 url.Append (parameters);
-                url = AppendAuthKeyToURL(url, authenticationKey, type);
                 url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
                 break;
 

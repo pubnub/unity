@@ -71,6 +71,7 @@ namespace PubNubAPI
                     this.QueryParams,
                     GetSpacesFilter
                 );
+            request = this.PubNubInstance.TokenMgr.AppendTokenToURL( request.OriginalString, "", PNResourceType.PNSpaces, OperationType);    
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this);
         }
 
