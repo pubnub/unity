@@ -79,7 +79,7 @@ namespace PubNubAPI
                     if(mea.PresenceEventResult != null){
                         presenceCallback(mea.PresenceEventResult);
                     }
-                    if(mea.MessageResult != null){
+                    if(mea.SignalEventResult != null){
                         signalCallback(mea.SignalEventResult);
                     }
                     if(mea.UserEventResult != null){
