@@ -38,6 +38,11 @@ namespace PubNubAPI
             getSpacesBuilder.Filter(filter);
             return this;
         }
+        public GetSpacesBuilder Sort(string[] sortBy)
+        {
+            getSpacesBuilder.Sort(sortBy);
+            return this;
+        }
         public GetSpacesBuilder Count(bool count)
         {
             getSpacesBuilder.Count(count);

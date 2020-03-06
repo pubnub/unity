@@ -417,7 +417,7 @@ namespace PubNubAPI
             return BuildRestApiRequest<Uri>(url, PNOperationType.PNGetSpaceOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         }
 
-        public static Uri BuildObjectsGetUsersRequest (int limit, string start, string end, bool count, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams, string filter)
+        public static Uri BuildObjectsGetUsersRequest (int limit, string start, string end, bool count, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams, string filter, string sortBy)
         {
             ///v1/objects/%s/users
             StringBuilder parameterBuilder = new StringBuilder ();
@@ -437,6 +437,10 @@ namespace PubNubAPI
             if (!string.IsNullOrEmpty(filter)) {
                 parameterBuilder.AppendFormat ("&filter={0}", Utility.EncodeUricomponent(filter, PNOperationType.PNGetUsersOperation, false, false));
             }
+            if (!string.IsNullOrEmpty(sortBy))
+            {
+                parameterBuilder.AppendFormat("&sort={0}", sortBy);
+            }
 
             List<string> url = new List<string> ();
             url.Add ("v1");
@@ -447,7 +451,7 @@ namespace PubNubAPI
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNGetUsersOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         }
 
-        public static Uri BuildObjectsGetSpacesRequest(int limit, string start, string end, bool count, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams, string filter)
+        public static Uri BuildObjectsGetSpacesRequest(int limit, string start, string end, bool count, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams, string filter, string sortBy)
         {
             ///v1/objects/%s/spaces
             StringBuilder parameterBuilder = new StringBuilder();
@@ -470,7 +474,10 @@ namespace PubNubAPI
             if (!string.IsNullOrEmpty(filter)) {
                 parameterBuilder.AppendFormat ("&filter={0}", Utility.EncodeUricomponent(filter, PNOperationType.PNGetSpacesOperation, false, false));
             }
- 
+            if (!string.IsNullOrEmpty(sortBy))
+            {
+                parameterBuilder.AppendFormat("&sort={0}", sortBy);
+            } 
 
             List<string> url = new List<string>();
             url.Add("v1");
@@ -481,7 +488,7 @@ namespace PubNubAPI
             return BuildRestApiRequest<Uri>(url, PNOperationType.PNGetSpacesOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         }
 
-        public static Uri BuildObjectsGetMembersRequest (string spaceID, int limit, string start, string end, bool count, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams, string filter)
+        public static Uri BuildObjectsGetMembersRequest (string spaceID, int limit, string start, string end, bool count, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams, string filter, string sortBy)
         {
             ///v1/objects/%s/spaces/%s/users
             StringBuilder parameterBuilder = new StringBuilder ();
@@ -501,7 +508,9 @@ namespace PubNubAPI
             if (!string.IsNullOrEmpty(filter)) {
                 parameterBuilder.AppendFormat ("&filter={0}", Utility.EncodeUricomponent(filter, PNOperationType.PNGetMembersOperation, false, false));
             }
-
+            if (!string.IsNullOrEmpty(sortBy)){
+                parameterBuilder.AppendFormat("&sort={0}", sortBy);
+            }
 
             List<string> url = new List<string> ();
             url.Add ("v1");
@@ -512,9 +521,9 @@ namespace PubNubAPI
             url.Add ("users");
 
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNGetMembersOperation, parameterBuilder.ToString (), pnInstance, queryParams);
-        }  
+        } 
 
-        public static Uri BuildObjectsManageMembersRequest (string spaceID, int limit, string start, string end, bool count, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        public static Uri BuildObjectsManageMembersRequest (string spaceID, int limit, string start, string end, bool count, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams, string sortBy)
         {
             ///v1/objects/%s/spaces/%s/users
             StringBuilder parameterBuilder = new StringBuilder ();
@@ -531,6 +540,9 @@ namespace PubNubAPI
             if (!string.IsNullOrEmpty(end)) {
                 parameterBuilder.AppendFormat ("&end={0}", end);
             }
+            if (!string.IsNullOrEmpty(sortBy)){
+                parameterBuilder.AppendFormat("&sort={0}", sortBy);
+            }
 
             List<string> url = new List<string> ();
             url.Add ("v1");
@@ -541,8 +553,9 @@ namespace PubNubAPI
             url.Add ("users");
 
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNManageMembersOperation, parameterBuilder.ToString (), pnInstance, queryParams);
-        }  
-        public static Uri BuildObjectsManageMembershipsRequest (string userID, int limit, string start, string end, bool count, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        } 
+
+        public static Uri BuildObjectsManageMembershipsRequest(string userID, int limit, string start, string end, bool count, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams, string sortBy)
         {
             ///v1/objects/%s/users/%s/spaces
             StringBuilder parameterBuilder = new StringBuilder ();
@@ -559,6 +572,9 @@ namespace PubNubAPI
             if (!string.IsNullOrEmpty(end)) {
                 parameterBuilder.AppendFormat ("&end={0}", end);
             }
+            if (!string.IsNullOrEmpty(sortBy)){
+                parameterBuilder.AppendFormat("&sort={0}", sortBy);
+            }
 
             List<string> url = new List<string> ();
             url.Add ("v1");
@@ -570,7 +586,7 @@ namespace PubNubAPI
 
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNManageMembershipsOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         }  
-        public static Uri BuildObjectsGetMembershipsRequest (string userID, int limit, string start, string end, bool count, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams, string filter)
+        public static Uri BuildObjectsGetMembershipsRequest(string userID, int limit, string start, string end, bool count, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams, string filter, string sortBy)
         {
             ///v1/objects/%s/users/%s/spaces
             StringBuilder parameterBuilder = new StringBuilder ();
@@ -590,6 +606,9 @@ namespace PubNubAPI
             if (!string.IsNullOrEmpty(filter)) {
                 parameterBuilder.AppendFormat ("&filter={0}", Utility.EncodeUricomponent(filter, PNOperationType.PNGetMembershipsOperation, false, false));
             }
+            if (!string.IsNullOrEmpty(sortBy)){
+                parameterBuilder.AppendFormat("&sort={0}", sortBy);
+            }
 
             List<string> url = new List<string> ();
             url.Add ("v1");
@@ -600,7 +619,7 @@ namespace PubNubAPI
             url.Add ("spaces");
 
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNGetMembershipsOperation, parameterBuilder.ToString (), pnInstance, queryParams);
-        }  
+        } 
 
         public static Uri BuildDeleteMessagesRequest (string channel, long start, long end, PubNubUnity pnInstance, Dictionary<string, string> queryParams){
             StringBuilder parameterBuilder = new StringBuilder ();

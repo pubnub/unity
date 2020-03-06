@@ -3,6 +3,13 @@ changelog:
   - 
     changes: 
       - 
+        text: "Objects Sorting"
+        type: improvement
+    date: Mar 6, 20  
+    version: v4.8.2
+  - 
+    changes: 
+      - 
         text: "Token Management System - Client end"
         type: improvement
     date: Feb 18, 19  

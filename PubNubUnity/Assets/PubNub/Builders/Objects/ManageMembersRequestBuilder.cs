@@ -31,7 +31,7 @@ namespace PubNubAPI
         private List<PNMembersInput> ManageMembersAdd { get; set;}
         private List<PNMembersInput> ManageMembersUpdate { get; set;}
         private List<PNMembersRemove> ManageMembersRemove { get; set;}
- 
+        private string[] SortBy { get; set; } 
         
         public ManageMembersRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNManageMembersOperation){
         }
@@ -82,7 +82,10 @@ namespace PubNubAPI
             ManageMembersRemove = remove;
             return this;
         }
-
+        public ManageMembersRequestBuilder Sort(string[] sortBy){
+            SortBy = sortBy;
+            return this;
+        }
         protected override void RunWebRequest(QueueManager qm){
             RequestState requestState = new RequestState ();
             requestState.OperationType = OperationType;
@@ -100,7 +103,8 @@ namespace PubNubAPI
             #endif
             requestState.POSTData = jsonUserBody;
 
-            string[] includeString = (ManageMembersInclude==null) ? new string[]{} : ManageMembersInclude.Select(a=>a.GetDescription().ToString()).ToArray();    
+            string[] includeString = (ManageMembersInclude==null) ? new string[]{} : ManageMembersInclude.Select(a=>a.GetDescription().ToString()).ToArray();
+            string[] sortFields = (SortBy == null) ? new string[] { } : SortBy;
 
             Uri request = BuildRequests.BuildObjectsManageMembersRequest(
                     ManageMembersSpaceID,
@@ -110,7 +114,8 @@ namespace PubNubAPI
                     ManageMembersCount,
                     string.Join(",", includeString),
                     this.PubNubInstance,
-                    this.QueryParams
+                    this.QueryParams,
+                    string.Join(",", sortFields)
                 );
             request = this.PubNubInstance.TokenMgr.AppendTokenToURL( request.OriginalString, ManageMembersSpaceID, PNResourceType.PNSpaces, OperationType);    
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
