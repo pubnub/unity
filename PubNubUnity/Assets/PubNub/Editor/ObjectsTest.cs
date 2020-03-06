@@ -1032,7 +1032,7 @@ namespace PubNubAPI.Tests
         [Test]
         public void TestObjectsGetUsersRequestWithSortQueryParam65()
         {
-            TestObjectsGetUsersCommon(true, true, true, 0, "", "", false, true, true);
+            TestObjectsGetUsersCommon(true, true, true, 0, "", "", false, false, true);
         }
 
         public void TestObjectsGetUsersCommon(bool ssl, bool sendQueryParams, bool withIncl,  int limit, string start, string end, bool count, bool withFilter, bool withSort){
@@ -1487,13 +1487,13 @@ namespace PubNubAPI.Tests
         [Test]
         public void TestObjectsGetSpacesRequestWithFilterQueryParam64 ()
         {
-            TestObjectsGetSpacesCommon (true, true, true, 0, "", "", false, true);
+            TestObjectsGetSpacesCommon (true, true, true, 0, "", "", false, true, false);
         }
         
         [Test]
         public void TestObjectsGetSpacesRequestWithSortQueryParam65()
         {
-            TestObjectsGetSpacesCommon(true, true, true, 0, "", "", false, true,true);
+            TestObjectsGetSpacesCommon(true, true, true, 0, "", "", false, false, true);
         }
 
         public void TestObjectsGetSpacesCommon(bool ssl, bool sendQueryParams, bool withIncl,  int limit, string start, string end, bool count){
