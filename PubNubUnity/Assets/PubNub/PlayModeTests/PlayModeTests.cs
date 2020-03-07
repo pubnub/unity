@@ -1886,14 +1886,12 @@ namespace PubNubAPI.Tests
 			pubnub.GetMemberships().UserID(userid).Include(inclMem).Sort(sort).Limit(1).Count(count).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
-
 				bool bFound = false;
 				Debug.Log("Looking for " + spaceid);
 				Debug.Log("result.Next:" + result.Next);
 				Debug.Log("result.Prev:" + result.Prev);
 				Debug.Log("result.TotalCount:" + result.TotalCount);
 				Assert.True(result.TotalCount > 0);
-
 				foreach (PNMemberships mem in result.Data)
 				{
 					Debug.Log("Found mem " + mem.Space.ID);
@@ -1910,8 +1908,14 @@ namespace PubNubAPI.Tests
 						}
 						Assert.True("scv1" == mem.Space.Custom["spacecustomkey1"].ToString());
 						Assert.True("scv2" == mem.Space.Custom["spacecustomkey2"].ToString());
-						Assert.True("mcvup21" == mem.Custom["memberscustomkeyup21"].ToString());
-						Assert.True("mcvup22" == mem.Custom["memberscustomkeyup22"].ToString());
+						if (withPAM){
+							Assert.True("mcv21" == mem.Custom["memberscustomkey21"].ToString());
+							Assert.True("mcv22" == mem.Custom["memberscustomkey22"].ToString());
+						}
+						else{
+							Assert.True("mcvup21" == mem.Custom["memberscustomkeyup21"].ToString());
+							Assert.True("mcvup22" == mem.Custom["memberscustomkeyup22"].ToString());
+						}
 						bFound = true;
 						break;
 					}
@@ -1920,7 +1924,6 @@ namespace PubNubAPI.Tests
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls4);
 			Assert.True(tresult, "GetMemberships Sort didn't return");
-
 			//Remove Space Memberships
 			PNMembersRemove inputRm = new PNMembersRemove();
 			inputRm.ID = userid;
