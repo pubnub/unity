@@ -70,28 +70,28 @@ namespace PubNubAPI
                 #endif
                 
                 if(mea!=null){
-                    if(mea.Status != null){
+                    if(mea.Status != null && statusCallback != null){
                         statusCallback(mea.Status);
                     }
-                    if(mea.MessageResult != null){
+                    if(mea.MessageResult != null && messageCallback != null){
                         messageCallback(mea.MessageResult);
                     }
-                    if(mea.PresenceEventResult != null){
+                    if(mea.PresenceEventResult != null && presenceCallback != null){
                         presenceCallback(mea.PresenceEventResult);
                     }
-                    if(mea.MessageResult != null){
+                    if(mea.SignalEventResult != null && signalCallback != null){
                         signalCallback(mea.SignalEventResult);
                     }
-                    if(mea.UserEventResult != null){
+                    if(mea.UserEventResult != null && userCallback != null){
                         userCallback(mea.UserEventResult);
                     }
-                    if(mea.SpaceEventResult != null){
+                    if(mea.SpaceEventResult != null && spaceCallback != null){
                         spaceCallback(mea.SpaceEventResult);
                     }
-                    if(mea.MembershipEventResult != null){
+                    if(mea.MembershipEventResult != null && membershipCallback != null){
                         membershipCallback(mea.MembershipEventResult);
                     }
-                    if(mea.MessageActionsEventResult != null){
+                    if(mea.MessageActionsEventResult != null && messageActionsCallback != null){
                         messageActionsCallback(mea.MessageActionsEventResult);
                     }
 

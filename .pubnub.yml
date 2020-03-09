@@ -3,6 +3,13 @@ changelog:
   - 
     changes: 
       - 
+        text: "Correct null check for signal callback"
+        type: bug
+    date: Mar 10, 19  
+    version: v4.8.1
+  - 
+    changes: 
+      - 
         text: "Token Management System - Client end"
         type: improvement
     date: Feb 18, 19  
