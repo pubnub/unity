@@ -1489,7 +1489,6 @@ namespace PubNubAPI.Tests
 			string spacename2 = string.Format("space name {0}", ran2);
 			string spacedesc2 = string.Format("space desc {0}", ran2);
 			
-			string[] sort = new string[] { "updated:desc" };
 			PNUserSpaceInclude[] include = new PNUserSpaceInclude[]{PNUserSpaceInclude.PNUserSpaceCustom};
 
 			var resUsers = new Dictionary<string, int>(){
@@ -1749,41 +1748,6 @@ namespace PubNubAPI.Tests
 				yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls4);
 				Assert.True(tresult, "ManageMembers Update didn't return");
 
-				// Sort feature test for ManageMembers
-				tresult = false;
-				pubnub.ManageMembers().SpaceID(spaceid).Sort(sort).Limit(1).Add(new List<PNMembersInput> { }).Update(new List<PNMembersInput> { inputUp }).Remove(new List<PNMembersRemove> { }).Include(inclSm).Limit(limit).Count(count).Async((result, status) => {
-					Assert.True(status.Error.Equals(false));
-					Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
-					bool bFound = false;
-					Debug.Log("Looking for " + userid);
-					foreach (PNMembers mem in result.Data)
-					{
-						Debug.Log("Found mem " + mem.User.ID);
-						if (mem.User.ID.Equals(userid))
-						{
-							Assert.AreEqual(name, mem.User.Name);
-							Assert.AreEqual(email, mem.User.Email);
-							Assert.AreEqual(externalID, mem.User.ExternalID);
-							Assert.AreEqual(profileURL, mem.User.ProfileURL);
-							Assert.AreEqual(userid, mem.User.ID);
-							Assert.AreEqual(mem.User.Updated, mem.User.Created);
-							Assert.True(!string.IsNullOrEmpty(mem.User.ETag), mem.User.ETag);
-							Assert.True("ucv1" == mem.User.Custom["usercustomkey1"].ToString());
-							Assert.True("ucv2" == mem.User.Custom["usercustomkey2"].ToString());
-							Assert.True("mcvup21" == mem.Custom["memberscustomkeyup21"].ToString());
-							Assert.True("mcvup22" == mem.Custom["memberscustomkeyup22"].ToString());
-							bFound = true;
-							break;
-						}
-
-					}
-					tresult = bFound;
-				});
-				yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls4);
-				Assert.True(tresult, "ManageMembers Sort didn't return");
-
-			}
-
 			//Get Space Memberships
 			tresult = false;
 			pubnub.GetMemberships().UserID(userid).Include(inclMem).Limit(limit).Count(count).Async((result, status) => {
@@ -1881,49 +1845,6 @@ namespace PubNubAPI.Tests
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls4);
 			Assert.True(tresult, "GetMembershipsFilter didn't return");
 
-			// Sort feature test for GetMemberships
-			tresult = false;
-			pubnub.GetMemberships().UserID(userid).Include(inclMem).Sort(sort).Limit(1).Count(count).Async((result, status) => {
-				Assert.True(status.Error.Equals(false));
-				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
-				bool bFound = false;
-				Debug.Log("Looking for " + spaceid);
-				Debug.Log("result.Next:" + result.Next);
-				Debug.Log("result.Prev:" + result.Prev);
-				Debug.Log("result.TotalCount:" + result.TotalCount);
-				Assert.True(result.TotalCount > 0);
-				foreach (PNMemberships mem in result.Data)
-				{
-					Debug.Log("Found mem " + mem.Space.ID);
-					if (mem.Space.ID.Equals(spaceid))
-					{
-						Assert.AreEqual(spacename, mem.Space.Name);
-						Assert.AreEqual(spacedesc, mem.Space.Description);
-						Assert.AreEqual(spaceid, mem.Space.ID);
-						Assert.AreEqual(mem.Space.Updated, mem.Space.Created);
-						Assert.True(!string.IsNullOrEmpty(mem.Space.ETag), mem.Space.ETag);
-						foreach (KeyValuePair<string, object> kvp in mem.Space.Custom)
-						{
-							Debug.Log(kvp.Key + kvp.Value);
-						}
-						Assert.True("scv1" == mem.Space.Custom["spacecustomkey1"].ToString());
-						Assert.True("scv2" == mem.Space.Custom["spacecustomkey2"].ToString());
-						if (withPAM){
-							Assert.True("mcv21" == mem.Custom["memberscustomkey21"].ToString());
-							Assert.True("mcv22" == mem.Custom["memberscustomkey22"].ToString());
-						}
-						else{
-							Assert.True("mcvup21" == mem.Custom["memberscustomkeyup21"].ToString());
-							Assert.True("mcvup22" == mem.Custom["memberscustomkeyup22"].ToString());
-						}
-						bFound = true;
-						break;
-					}
-				}
-				tresult = bFound;
-			});
-			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls4);
-			Assert.True(tresult, "GetMemberships Sort didn't return");
 			//Remove Space Memberships
 			PNMembersRemove inputRm = new PNMembersRemove();
 			inputRm.ID = userid;
@@ -2055,43 +1976,6 @@ namespace PubNubAPI.Tests
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls4);
 			Assert.True(tresult, "ManageMemberships Update didn't return");
 			
-			// Sort feature test for ManageMemberships
-			tresult = false;
-
-			pubnub.ManageMemberships().UserID(userid2).Sort(sort).Limit(1).Add(new List<PNMembersInput> { }).Update(new List<PNMembersInput> { inputMembershipsUp }).Remove(new List<PNMembersRemove> { }).Include(inclMem).Limit(limit).Count(count).Async((result, status) => {
-				Assert.True(status.Error.Equals(false));
-				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
-				bool bFound = false;
-				Debug.Log("Looking for " + spaceid2);
-				foreach (PNMemberships mem in result.Data)
-				{
-
-					Debug.Log("Found mem " + mem.Space.ID);
-					if (mem.Space.ID.Equals(spaceid2))
-					{
-						Assert.AreEqual(spacename2, mem.Space.Name);
-						Assert.AreEqual(spacedesc2, mem.Space.Description);
-						Assert.AreEqual(spaceid2, mem.Space.ID);
-						Assert.AreEqual(mem.Space.Updated, mem.Space.Created);
-						Assert.True(!string.IsNullOrEmpty(mem.Space.ETag), mem.Space.ETag);
-						foreach (KeyValuePair<string, object> kvp in mem.Space.Custom)
-						{
-							Debug.Log(kvp.Key + kvp.Value);
-						}
-						Assert.True("scv21" == mem.Space.Custom["spacecustomkey21"].ToString());
-						Assert.True("scv22" == mem.Space.Custom["spacecustomkey22"].ToString());
-						Assert.True("memcvup21" == mem.Custom["mememberscustomkeyup21"].ToString());
-						Assert.True("memcvup22" == mem.Custom["mememberscustomkeyup22"].ToString());
-
-						bFound = true;
-						break;
-					}
-				}
-				tresult = bFound;
-			});
-			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls4);
-			Assert.True(tresult, "ManageMemberships Sort didn't return");
-
 			string filterMembers = string.Format("user.name == '{0}'", name2);
 
 			//Get members with Filter
@@ -2132,42 +2016,6 @@ namespace PubNubAPI.Tests
 
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "GetMembersFilter didn't return");
-
-			//Sort feature test for GetMembers
-			tresult = false;
-			pubnub.GetMembers().SpaceID(spaceid2).Include(inclSm).Sort(sort).Limit(1).Count(count).Async((result, status) => {
-				Assert.True(status.Error.Equals(false));
-				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
-				bool bFound = false;
-				Debug.Log("Looking for " + userid2);
-				Debug.Log("result.Next:" + result.Next);
-				Debug.Log("result.Prev:" + result.Prev);
-				Debug.Log("result.TotalCount:" + result.TotalCount);
-				Assert.True(result.TotalCount > 0);
-				foreach (PNMembers mem in result.Data)
-				{
-					Debug.Log("Found mem " + mem.User.ID);
-					if (mem.User.ID.Equals(userid2))
-					{
-						Assert.AreEqual(name2, mem.User.Name);
-						Assert.AreEqual(email2, mem.User.Email);
-						Assert.AreEqual(externalID2, mem.User.ExternalID);
-						Assert.AreEqual(profileURL2, mem.User.ProfileURL);
-						Assert.AreEqual(userid2, mem.User.ID);
-						Assert.AreEqual(mem.User.Updated, mem.User.Created);
-						Assert.True(!string.IsNullOrEmpty(mem.User.ETag), mem.User.ETag);
-						Assert.True("ucv21" == mem.User.Custom["usercustomkey21"].ToString());
-						Assert.True("ucv22" == mem.User.Custom["usercustomkey22"].ToString());
-						Assert.True("memcvup21" == mem.Custom["mememberscustomkeyup21"].ToString());
-						Assert.True("memcvup22" == mem.Custom["mememberscustomkeyup22"].ToString());
-						bFound = true;
-						break;
-					}
-				}
-				tresult = bFound;
-			});
-			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(tresult, "GetMembers Sort didn't return");
 
 			//Get members
 			tresult = false;
@@ -2606,7 +2454,7 @@ namespace PubNubAPI.Tests
 			string profileURL = string.Format("profileURL {0}", ran);
 
 			string filter = string.Format("name like '{0}*'", name);
-			string[] sort = new string[] { "created:desc" };
+
 			PNUserSpaceInclude[] include = new PNUserSpaceInclude[]{PNUserSpaceInclude.PNUserSpaceCustom};
 
 			PubNub pubnub = new PubNub(pnConfiguration);
@@ -2725,37 +2573,6 @@ namespace PubNubAPI.Tests
 			});
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "GetUsersFilter didn't return");
-            // Sort feature test for GetUsers
-            tresult = false;
-            pubnub.GetUsers().Sort(sort).Limit(1).Async((result, status) =>
-            {
-                Assert.True(status.Error.Equals(false));
-                Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
-                Debug.Log("result.Next:" + result.Next);
-                Debug.Log("result.Prev:" + result.Prev);
-                Debug.Log("result.TotalCount:" + result.TotalCount);
-                //Assert.True(result.TotalCount>0);
-
-                if (result.Data != null)
-                {
-                    foreach (PNUserResult pnUserResult in result.Data)
-                    {
-                        if (pnUserResult.ID.Equals(id))
-                        {
-                            Assert.AreEqual(name2, pnUserResult.Name);
-                            Assert.AreEqual(email2, pnUserResult.Email);
-                            Assert.AreEqual(externalID2, pnUserResult.ExternalID);
-                            Assert.AreEqual(profileURL2, pnUserResult.ProfileURL);
-                            Assert.AreNotEqual(pnUserResult.Updated, pnUserResult.Created);
-                            Assert.True(!string.IsNullOrEmpty(pnUserResult.ETag), pnUserResult.ETag);
-                            Assert.True(pnUserResult.Custom == null);
-                            tresult = true;
-                        }
-                    }
-                }
-            });
-            yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-            Assert.True(tresult, "GetUsers with Sort didn't return");
 
 			tresult = false;
 
@@ -2782,7 +2599,7 @@ namespace PubNubAPI.Tests
 			string description = string.Format("description {0}", ran);
 
 			string filter = string.Format("name like '{0}*'", name);
-			string[] sort = new string[] { "created:desc" };
+
 			PNUserSpaceInclude[] include = new PNUserSpaceInclude[]{PNUserSpaceInclude.PNUserSpaceCustom};
 
 			PubNub pubnub = new PubNub(pnConfiguration);
@@ -2889,35 +2706,6 @@ namespace PubNubAPI.Tests
 			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "GetSpacesFilter didn't return");
 
-            // Sort feature test for GetSpaces
-			tresult = false;
-            pubnub.GetSpaces().Sort(sort).Limit(1).Async((result, status) =>
-            {
-                Assert.True(status.Error.Equals(false));
-                Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
-                Debug.Log("result.Next:" + result.Next);
-                Debug.Log("result.Prev:" + result.Prev);
-                Debug.Log("result.TotalCount:" + result.TotalCount);
-                //Assert.True(result.TotalCount>0);
-
-                if (result.Data != null)
-                {
-                    foreach (PNSpaceResult pnSpaceResult in result.Data)
-                    {
-                        if (pnSpaceResult.ID.Equals(id))
-                        {
-                            Assert.AreEqual(name2, pnSpaceResult.Name);
-                            Assert.AreEqual(description2, pnSpaceResult.Description);
-                            Assert.AreNotEqual(pnSpaceResult.Updated, pnSpaceResult.Created);
-                            Assert.True(!string.IsNullOrEmpty(pnSpaceResult.ETag), pnSpaceResult.ETag);
-                            Assert.True(pnSpaceResult.Custom == null);
-                            tresult = true;
-                        }
-                    }
-                }
-            });
-            yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-            Assert.True(tresult, "GetSpaces sort didn't return");
 			tresult = false;
 
 			pubnub.DeleteSpace().ID(id).Async((result, status) => {
