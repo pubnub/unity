@@ -5,21 +5,21 @@ changelog:
       - 
         text: "Correct null check for signal callback"
         type: bug
-    date: Mar 10, 19  
+    date: Mar 10, 20  
     version: v4.8.1
   - 
     changes: 
       - 
         text: "Token Management System - Client end"
         type: improvement
-    date: Feb 18, 19  
+    date: Feb 18, 20  
     version: v4.8.0
   - 
     changes: 
       - 
         text: "HereNow Deserialization Error fix"
         type: improvement
-    date: Feb 5, 19  
+    date: Feb 5, 20  
     version: v4.7.3
   - 
     changes: 
@@ -29,14 +29,14 @@ changelog:
       - 
         text: "Presence Heartbeat defaults to 300"
         type: improvement
-    date: Jan 16, 19  
+    date: Jan 16, 20  
     version: v4.7.2
   - 
     changes: 
       - 
         text: "Objects Filtering"
         type: improvement
-    date: Jan 6, 19  
+    date: Jan 6, 20  
     version: v4.7.1   
   - 
     changes: 
