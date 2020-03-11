@@ -16,7 +16,7 @@ jobs:
       api_key:
         secure: "${s}"
       file: "$(pwd)/${UNITYCI_PROJECT_NAME}/${UNITYCI_PACKAGE_NAME}.unitypackage"
-      cleanup: true
+      skip_cleanup: true
       on:
         repo: pubnub/unity
         tags: true
