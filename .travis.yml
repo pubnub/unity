@@ -4,23 +4,25 @@ notifications:
   email:
     on_success: never
     on_failure: change
+
 jobs:
   include:
-  - stage: Install Unity/Run Tests/Export/Deploy
-    install:
-    - sudo -E sh ./TravisScripts/install.sh
-    script:
-    - sudo -E sh ./TravisScripts/build.sh
-    deploy:
-      provider: releases
-      api_key:
-        secure: "${s}"
-      file: "$(pwd)/${UNITYCI_PROJECT_NAME}/${UNITYCI_PACKAGE_NAME}.unitypackage"
-      skip_cleanup: true
-      on:
-        repo: pubnub/unity
-        tags: true
+    - stage: Install Unity/Run Tests/Export/Deploy
+      install:
+        - sudo -E sh ./TravisScripts/install.sh
+      script:
+        - sudo -E sh ./TravisScripts/build.sh
+      deploy:
+        provider: releases
+        api_key:
+          secure: ${s}
+        file: $(pwd)/${UNITYCI_PROJECT_NAME}/${UNITYCI_PACKAGE_NAME}.unitypackage
+        skip_cleanup: true
+        on:
+          repo: pubnub/unity
+          #branch: master
+          tags: true
 env:
   global:
-  - UNITYCI_PACKAGE_NAME="PubNub"
+  - UNITYCI_PACKAGE_NAME="PubNub"  
   - UNITYCI_PROJECT_NAME="PubNubUnity"
