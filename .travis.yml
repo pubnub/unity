@@ -13,8 +13,7 @@ jobs:
     - sudo -E sh ./TravisScripts/build.sh
     deploy:
       provider: releases
-      api_key:
-        secure: ${s}
+      api_key: ${s}
       file: $(pwd)/${UNITYCI_PROJECT_NAME}/${UNITYCI_PACKAGE_NAME}.unitypackage
       skip_cleanup: true
       on:
