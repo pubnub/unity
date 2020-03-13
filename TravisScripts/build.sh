@@ -70,6 +70,9 @@ echo "creating exportPackage"
 
 # returning license
 echo "returning license"
+
 /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense
+
+cat $(pwd)/editor2.log
 
 exit
