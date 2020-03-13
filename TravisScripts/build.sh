@@ -73,6 +73,6 @@ echo "returning license"
 
 /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense
 
-cat $(pwd)/editor2.log
+cat $(pwd)/exportPackage.log
 
 exit
