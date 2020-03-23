@@ -5,7 +5,7 @@
 #  the project folder is "UnityProject". If this is not true then adjust the 
 #  -projectPath argument to point to the right location.
 
-## Run the editor unit tests
+# Run the editor unit tests
 echo "Running editor unit tests for ${UNITYCI_PROJECT_NAME} editmode"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
 	-batchmode \
@@ -62,14 +62,17 @@ echo "creating exportPackage"
 	-quit \
 	-batchmode \
 	-logFile $(pwd)/exportPackage.log \
-	-projectPath $(pwd)/${UNITYCI_PROJECT_NAME} \
+	-projectPath "$(pwd)/${UNITYCI_PROJECT_NAME}" \
 	-exportPackage "Assets" "${UNITYCI_PACKAGE_NAME}.unitypackage" \
-	-username ${UNITYCI_USER_NAME} \
-	-password ${UNITYCI_PASS} \
-	-serial ${UNITYCI_SERIAL} \
+	-username "${UNITYCI_NEW_USER}" \
+	-password "${UNITYCI_NEW_PASS}" \
+	-serial "${UNITYCI_NEW_SERIAL}" 
 
 # returning license
 echo "returning license"
+
 /Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense
+
+#cat $(pwd)/exportPackage.log
 
 exit

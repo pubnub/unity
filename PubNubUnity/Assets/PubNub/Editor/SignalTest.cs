@@ -22,6 +22,23 @@ namespace PubNubAPI.Tests
             TestSignalCommon (true, true);
         }
 
+        [Test]
+        public void TestAddListenerSignalCallback ()
+        {
+            PNConfiguration pnConfiguration = new PNConfiguration ();
+            PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
+            bool receivedCallback = false;
+            Action<PNSignalEventResult> callback = (pnser) => receivedCallback = true;
+            pnUnity.AddListener(null, null, null, callback, null, null, null, null);
+
+            pnUnity.RaiseEvent(new SubscribeEventEventArgs()
+            {
+                SignalEventResult = new PNSignalEventResult(null, null, null, 0, 0, null, null)
+            });
+
+            Assert.IsTrue(receivedCallback);
+        }
+
         public void TestSignalCommon(bool ssl, bool sendQueryParams){
             string channel = EditorCommon.GetRandomChannelName();
             string message = "Test signal";
