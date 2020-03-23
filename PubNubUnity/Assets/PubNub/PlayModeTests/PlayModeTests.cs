@@ -1488,7 +1488,7 @@ namespace PubNubAPI.Tests
 			string spaceid2 = "spaceid"  + ran2;
 			string spacename2 = string.Format("space name {0}", ran2);
 			string spacedesc2 = string.Format("space desc {0}", ran2);
-			
+
 			PNUserSpaceInclude[] include = new PNUserSpaceInclude[]{PNUserSpaceInclude.PNUserSpaceCustom};
 
 			var resUsers = new Dictionary<string, int>(){
@@ -1747,6 +1747,7 @@ namespace PubNubAPI.Tests
 				});
 				yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls4);
 				Assert.True(tresult, "ManageMembers Update didn't return");
+			}
 
 			//Get Space Memberships
 			tresult = false;
