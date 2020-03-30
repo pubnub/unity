@@ -35,7 +35,7 @@ namespace PubNubAPI
             getUsersBuilder.Filter(filter);
             return this;
         }
-        public GetUsersBuilder Sort(string[] sortBy){
+        public GetUsersBuilder Sort(List<string> sortBy){
             getUsersBuilder.Sort(sortBy);
             return this;
         }

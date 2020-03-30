@@ -12,7 +12,7 @@ namespace PubNubAPI
         private string GetSpacesFilter { get; set; }        
         private bool GetSpacesCount { get; set; }
         private PNUserSpaceInclude[] GetSpacesInclude { get; set; }
-        private string[] SortBy { get; set; }
+        private List<string> SortBy { get; set; }
         public GetSpacesRequestBuilder(PubNubUnity pn) : base(pn, PNOperationType.PNGetSpacesOperation)
         {
         }
@@ -50,7 +50,7 @@ namespace PubNubAPI
             GetSpacesFilter = filter;
             return this;
         }
-        public GetSpacesRequestBuilder Sort(string[] sortBy){
+        public GetSpacesRequestBuilder Sort(List<string> sortBy){
             SortBy = sortBy;
             return this;
         }        
@@ -65,7 +65,7 @@ namespace PubNubAPI
             requestState.OperationType = OperationType;
 
             string[] includeString = (GetSpacesInclude==null) ? new string[]{} : GetSpacesInclude.Select(a=>a.GetDescription().ToString()).ToArray();
-            string[] sortFields = (SortBy == null) ? new string[] { } : SortBy;
+            List<string> sortFields = SortBy ?? new List<string>();
 
             Uri request = BuildRequests.BuildObjectsGetSpacesRequest(
                     GetSpacesLimit,

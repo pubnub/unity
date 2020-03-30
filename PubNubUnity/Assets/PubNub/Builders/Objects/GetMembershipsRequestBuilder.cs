@@ -14,7 +14,7 @@ namespace PubNubAPI
         private bool GetMembershipsCount { get; set;}
         private string GetMembershipsFilter { get; set;}
         private PNMembershipsInclude[] GetMembershipsInclude { get; set;}
-        private string[] SortBy { get; set; }
+        private List<string> SortBy { get; set; }
 
         public GetMembershipsRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNGetMembershipsOperation){
         }
@@ -57,7 +57,7 @@ namespace PubNubAPI
             GetMembershipsCount = count;
             return this;
         }
-        public GetMembershipsRequestBuilder Sort(string[] sortBy){
+        public GetMembershipsRequestBuilder Sort(List<string> sortBy){
             SortBy = sortBy;
             return this;
         }
@@ -66,7 +66,7 @@ namespace PubNubAPI
             requestState.OperationType = OperationType;
 
             string[] includeString = (GetMembershipsInclude==null) ? new string[]{} : GetMembershipsInclude.Select(a=>a.GetDescription().ToString()).ToArray();
-            string[] sortFields = (SortBy == null) ? new string[] { } : SortBy;
+            List<string> sortFields = SortBy ?? new List<string>();
 
             Uri request = BuildRequests.BuildObjectsGetMembershipsRequest(
                     GetMembershipsUserID,

@@ -53,7 +53,7 @@ namespace PubNubAPI
             manageMembershipsBuilder.QueryParam(queryParam);
             return this;
         }
-        public ManageMembershipsBuilder Sort(string[] sortBy){
+        public ManageMembershipsBuilder Sort(List<string> sortBy){
             manageMembershipsBuilder.Sort(sortBy);
             return this;
         }

@@ -40,7 +40,7 @@ namespace PubNubAPI
             getMembershipsBuilder.Filter(filter);
             return this;
         }
-        public GetMembershipsBuilder Sort(string[] sortBy){
+        public GetMembershipsBuilder Sort(List<string> sortBy){
             getMembershipsBuilder.Sort(sortBy);
             return this;
         }

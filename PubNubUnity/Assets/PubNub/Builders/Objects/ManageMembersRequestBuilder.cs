@@ -31,7 +31,7 @@ namespace PubNubAPI
         private List<PNMembersInput> ManageMembersAdd { get; set;}
         private List<PNMembersInput> ManageMembersUpdate { get; set;}
         private List<PNMembersRemove> ManageMembersRemove { get; set;}
-        private string[] SortBy { get; set; } 
+        private List<string> SortBy { get; set; } 
         
         public ManageMembersRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNManageMembersOperation){
         }
@@ -82,7 +82,7 @@ namespace PubNubAPI
             ManageMembersRemove = remove;
             return this;
         }
-        public ManageMembersRequestBuilder Sort(string[] sortBy){
+        public ManageMembersRequestBuilder Sort(List<string> sortBy){
             SortBy = sortBy;
             return this;
         }
@@ -104,7 +104,7 @@ namespace PubNubAPI
             requestState.POSTData = jsonUserBody;
 
             string[] includeString = (ManageMembersInclude==null) ? new string[]{} : ManageMembersInclude.Select(a=>a.GetDescription().ToString()).ToArray();
-            string[] sortFields = (SortBy == null) ? new string[] { } : SortBy;
+            List<string> sortFields = SortBy ?? new List<string>();
 
             Uri request = BuildRequests.BuildObjectsManageMembersRequest(
                     ManageMembersSpaceID,

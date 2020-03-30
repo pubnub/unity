@@ -48,7 +48,7 @@ namespace PubNubAPI
             manageMembersBuilder.Remove(remove);
             return this;
         }
-        public ManageMembersBuilder Sort(string[] sortBy){
+        public ManageMembersBuilder Sort(List<string> sortBy){
             manageMembersBuilder.Sort(sortBy);
             return this;
         }

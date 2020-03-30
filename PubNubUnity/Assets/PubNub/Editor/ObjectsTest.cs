@@ -1093,7 +1093,7 @@ namespace PubNubAPI.Tests
                 (string.IsNullOrEmpty(end))?"":string.Format("&end={0}",end),
                 (count) ? "&count=1" : "&count=0",
                 (withFilter)?"&filter=name%20like%20%27abc%20-%20%2F%20s%2A%27":"",
-                (withSort)?"&sort=name:desc":""
+                (withSort)?"&sort=name%3Adesc":""
             );
 
             string received = uri.OriginalString;
@@ -1558,7 +1558,7 @@ namespace PubNubAPI.Tests
                 (string.IsNullOrEmpty(end))?"":string.Format("&end={0}",end),
                 (count) ? "&count=1" : "&count=0",
                 (withFilter)?"&filter=name%20%3D%3D%20%27abc%20-%20%2F%20s%2A%27":"",
-                (withSort) ? "&sort=name:desc" : ""
+                (withSort) ? "&sort=name%3Adesc" : ""
             );
 
             string received = uri.OriginalString;
@@ -2027,7 +2027,7 @@ namespace PubNubAPI.Tests
                 (count) ? "&count=1" : "&count=0",
                 ch,
                 (withFilter)?"&filter=name%20%3D%3D%20%27abc%20-%20%2F%20s%27%2A":"",
-                (withSort) ? "&sort=name:desc" : ""
+                (withSort) ? "&sort=name%3Adesc" : ""
             );
 
             string received = uri.OriginalString;
@@ -2496,7 +2496,7 @@ namespace PubNubAPI.Tests
                 (count) ? "&count=1" : "&count=0",
                 ch,
                 (withFilter)?"&filter=name%20%3D%3D%20%27s1236%209%27":"",
-                (withSort) ? "&sort=name:desc" : ""
+                (withSort) ? "&sort=name%3Adesc" : ""
             );
 
             string received = uri.OriginalString;
@@ -2951,7 +2951,7 @@ namespace PubNubAPI.Tests
                 (string.IsNullOrEmpty(end))?"":string.Format("&end={0}",end),
                 (count) ? "&count=1" : "&count=0",
                 ch,
-               (withSort) ? "&sort=name:desc" : ""
+                (withSort) ? "&sort=name%3Adesc" : ""
             );
 
             string received = uri.OriginalString;
@@ -3404,7 +3404,7 @@ namespace PubNubAPI.Tests
                 (string.IsNullOrEmpty(end))?"":string.Format("&end={0}",end),
                 (count) ? "&count=1" : "&count=0",
                 ch,
-                (withSort) ? "&sort=name:desc" : ""
+                (withSort) ? "&sort=name%3Adesc" : ""
             );
 
             string received = uri.OriginalString;

@@ -439,7 +439,7 @@ namespace PubNubAPI
             }
             if (!string.IsNullOrEmpty(sortBy))
             {
-                parameterBuilder.AppendFormat("&sort={0}", sortBy);
+                parameterBuilder.AppendFormat("&sort={0}", Utility.EncodeUricomponent(sortBy, PNOperationType.PNGetUsersOperation, false, false));
             }
 
             List<string> url = new List<string> ();
@@ -476,7 +476,7 @@ namespace PubNubAPI
             }
             if (!string.IsNullOrEmpty(sortBy))
             {
-                parameterBuilder.AppendFormat("&sort={0}", sortBy);
+                parameterBuilder.AppendFormat("&sort={0}", Utility.EncodeUricomponent(sortBy, PNOperationType.PNGetSpacesOperation, false, false));
             } 
 
             List<string> url = new List<string>();
@@ -509,7 +509,7 @@ namespace PubNubAPI
                 parameterBuilder.AppendFormat ("&filter={0}", Utility.EncodeUricomponent(filter, PNOperationType.PNGetMembersOperation, false, false));
             }
             if (!string.IsNullOrEmpty(sortBy)){
-                parameterBuilder.AppendFormat("&sort={0}", sortBy);
+                parameterBuilder.AppendFormat("&sort={0}", Utility.EncodeUricomponent(sortBy, PNOperationType.PNGetMembersOperation, false, false));
             }
 
             List<string> url = new List<string> ();
@@ -541,7 +541,7 @@ namespace PubNubAPI
                 parameterBuilder.AppendFormat ("&end={0}", end);
             }
             if (!string.IsNullOrEmpty(sortBy)){
-                parameterBuilder.AppendFormat("&sort={0}", sortBy);
+                parameterBuilder.AppendFormat("&sort={0}", Utility.EncodeUricomponent(sortBy, PNOperationType.PNManageMembersOperation, false, false));
             }
 
             List<string> url = new List<string> ();
@@ -573,7 +573,7 @@ namespace PubNubAPI
                 parameterBuilder.AppendFormat ("&end={0}", end);
             }
             if (!string.IsNullOrEmpty(sortBy)){
-                parameterBuilder.AppendFormat("&sort={0}", sortBy);
+                parameterBuilder.AppendFormat("&sort={0}", Utility.EncodeUricomponent(sortBy, PNOperationType.PNManageMembershipsOperation, false, false));
             }
 
             List<string> url = new List<string> ();
@@ -607,7 +607,7 @@ namespace PubNubAPI
                 parameterBuilder.AppendFormat ("&filter={0}", Utility.EncodeUricomponent(filter, PNOperationType.PNGetMembershipsOperation, false, false));
             }
             if (!string.IsNullOrEmpty(sortBy)){
-                parameterBuilder.AppendFormat("&sort={0}", sortBy);
+                parameterBuilder.AppendFormat("&sort={0}", Utility.EncodeUricomponent(sortBy, PNOperationType.PNGetMembershipsOperation, false, false));
             }
 
             List<string> url = new List<string> ();
