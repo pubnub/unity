@@ -13,7 +13,7 @@ namespace PubNubAPI
         private string GetUsersFilter { get; set;}
         private bool GetUsersCount { get; set;}
         private PNUserSpaceInclude[] GetUsersInclude { get; set;}
-        
+        private List<string> SortBy { get; set;}        
         public GetUsersRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNGetUsersOperation){
         }
 
@@ -45,6 +45,10 @@ namespace PubNubAPI
         public GetUsersRequestBuilder Filter(string filter){
             GetUsersFilter = filter;
             return this;
+        }
+        public GetUsersRequestBuilder Sort(List<string> sortBy){
+            SortBy = sortBy;
+            return this;
         }        
         public GetUsersRequestBuilder Count(bool count){
             GetUsersCount = count;
@@ -54,7 +58,8 @@ namespace PubNubAPI
             RequestState requestState = new RequestState ();
             requestState.OperationType = OperationType;
 
-            string[] includeString = (GetUsersInclude==null) ? new string[]{} : GetUsersInclude.Select(a=>a.GetDescription().ToString()).ToArray();      
+            string[] includeString = (GetUsersInclude==null) ? new string[]{} : GetUsersInclude.Select(a=>a.GetDescription().ToString()).ToArray();
+            List<string> sortFields = SortBy ?? new List<string>();
 
             Uri request = BuildRequests.BuildObjectsGetUsersRequest(
                     GetUsersLimit,
@@ -64,7 +69,8 @@ namespace PubNubAPI
                     string.Join(",", includeString),
                     this.PubNubInstance,
                     this.QueryParams,
-                    GetUsersFilter
+                    GetUsersFilter,
+                    string.Join(",", sortFields)
                 );
             request = this.PubNubInstance.TokenMgr.AppendTokenToURL( request.OriginalString, "", PNResourceType.PNUsers, OperationType);    
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
