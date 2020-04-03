@@ -2981,12 +2981,18 @@ namespace PubNubAPI.Tests
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(checkResult, "create space didn't return for members sort");
+
 			checkResult = false;
-			var memberInput = new List<PNMembersInput>();
-			memberInput.Add(new PNMembersInput() { ID = user1Id });
-			memberInput.Add(new PNMembersInput() { ID = user2Id });
-			memberInput.Add(new PNMembersInput() { ID = user3Id });
-			pubnub.ManageMembers().SpaceID(spaceId).Add(memberInput).Update(new List<PNMembersInput>()).Remove(new List<PNMembersRemove>()).Sort(sortBy).Async((result, status) =>
+			int limit = 3;
+			bool count = true;
+			Dictionary<string, object> customData = new Dictionary<string, object>();
+            customData.Add("customKey", "custom");
+            var memberInput = new List<PNMembersInput>();
+            memberInput.Add(new PNMembersInput() { ID = user1Id, Custom = customData });
+            memberInput.Add(new PNMembersInput() { ID = user2Id, Custom = customData });
+            memberInput.Add(new PNMembersInput() { ID = user3Id, Custom = customData });
+			PNMembersInclude[] inclSm = new PNMembersInclude[] { PNMembersInclude.PNMembersCustom, PNMembersInclude.PNMembersUser, PNMembersInclude.PNMembersUserCustom };
+			pubnub.ManageMembers().SpaceID(spaceId).Add(memberInput).Update(new List<PNMembersInput>()).Remove(new List<PNMembersRemove>()).Include(inclSm).Limit(limit).Count(count).Sort(sortBy).Async((result, status) =>
 			{
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
@@ -3003,7 +3009,7 @@ namespace PubNubAPI.Tests
 			Assert.True(checkResult, "ManageMembers sort didn't return");
 
 			checkResult = false;
-			pubnub.GetMembers().SpaceID(spaceId).Filter(filter).Sort(sortBy).Async((result, status) =>
+			pubnub.GetMembers().SpaceID(spaceId).Include(inclSm).Limit(limit).Count(count).Filter(filter).Sort(sortBy).Async((result, status) =>
 			{
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
@@ -3020,7 +3026,7 @@ namespace PubNubAPI.Tests
 			Assert.True(checkResult, "GetMembers sort didn't return");
 
 			checkResult = false;
-			pubnub.GetMembers().SpaceID(spaceId).Filter(filter).Sort(sortByAsc).Async((result, status) =>
+			pubnub.GetMembers().SpaceID(spaceId).Include(inclSm).Limit(limit).Filter(filter).Sort(sortByAsc).Count(count).Async((result, status) =>
 			{
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
@@ -3043,7 +3049,7 @@ namespace PubNubAPI.Tests
 			memberUpdate.Add(new PNMembersInput() { ID = user1Id, Custom = custom });
 			memberUpdate.Add(new PNMembersInput() { ID = user2Id, Custom = custom });
 			memberUpdate.Add(new PNMembersInput() { ID = user3Id, Custom = custom });
-			pubnub.ManageMembers().SpaceID(spaceId).Add(new List<PNMembersInput>()).Update(memberUpdate).Remove(new List<PNMembersRemove>()).Sort(sortByAsc).Async((result, status) =>
+			pubnub.ManageMembers().SpaceID(spaceId).Add(new List<PNMembersInput>()).Update(memberUpdate).Remove(new List<PNMembersRemove>()).Include(inclSm).Limit(limit).Sort(sortByAsc).Count(count).Async((result, status) =>
 			{
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
@@ -3136,13 +3142,17 @@ namespace PubNubAPI.Tests
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(checkResult, "create user didn't return for memberships sort");
+
 			checkResult = false;
+			int limit = 3;
+			bool count = true;
+
 			var inputMembers = new List<PNMembersInput>();
 			inputMembers.Add(new PNMembersInput() { ID = space1Id });
 			inputMembers.Add(new PNMembersInput() { ID = space2Id });
 			inputMembers.Add(new PNMembersInput() { ID = space3Id });
-
-			pubnub.ManageMemberships().UserID(userId).Add(inputMembers).Update(new List<PNMembersInput>()).Remove(new List<PNMembersRemove>()).Sort(sortBy).Async((result, status) =>
+			PNMembershipsInclude[] inclMem = new PNMembershipsInclude[] { PNMembershipsInclude.PNMembershipsCustom, PNMembershipsInclude.PNMembershipsSpace, PNMembershipsInclude.PNMembershipsSpaceCustom };
+			pubnub.ManageMemberships().UserID(userId).Add(inputMembers).Update(new List<PNMembersInput>()).Remove(new List<PNMembersRemove>()).Include(inclMem).Limit(limit).Count(count).Sort(sortBy).Async((result, status) =>
 			{
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
@@ -3159,7 +3169,7 @@ namespace PubNubAPI.Tests
 			Assert.True(checkResult, "ManageMemberships sort didn't return");
 
 			checkResult = false;
-			pubnub.GetMemberships().UserID(userId).Filter(filter).Sort(sortBy).Async((result, status) =>
+			pubnub.GetMemberships().UserID(userId).Include(inclMem).Limit(limit).Count(count).Filter(filter).Sort(sortBy).Async((result, status) =>
 			{
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
@@ -3177,7 +3187,7 @@ namespace PubNubAPI.Tests
 			Assert.True(checkResult, "GetMemberships sort didn't return");
 
 			checkResult = false;
-			pubnub.GetMemberships().UserID(userId).Filter(filter).Sort(sortByAsc).Async((result, status) =>
+			pubnub.GetMemberships().UserID(userId).Include(inclMem).Limit(limit).Count(count).Filter(filter).Sort(sortByAsc).Async((result, status) =>
 			{
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
@@ -3201,7 +3211,7 @@ namespace PubNubAPI.Tests
 			updateMembers.Add(new PNMembersInput() { ID = space1Id, Custom = custom });
 			updateMembers.Add(new PNMembersInput() { ID = space2Id, Custom = custom });
 			updateMembers.Add(new PNMembersInput() { ID = space3Id, Custom = custom });
-			pubnub.ManageMemberships().UserID(userId).Add(new List<PNMembersInput>()).Update(updateMembers).Remove(new List<PNMembersRemove>()).Sort(sortByAsc).Async((result, status) =>
+			pubnub.ManageMemberships().UserID(userId).Add(new List<PNMembersInput>()).Update(updateMembers).Remove(new List<PNMembersRemove>()).Include(inclMem).Limit(limit).Count(count).Sort(sortByAsc).Async((result, status) =>
 			{
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
