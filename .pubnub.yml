@@ -4,7 +4,7 @@ changelog:
     changes: 
       - 
         text: "Objects Sorting"
-        type: improvement
+        type: feature
     date: April 10, 20  
     version: v4.8.2 
   - 
