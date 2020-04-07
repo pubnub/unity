@@ -16,7 +16,8 @@ namespace PubNubAPI
         private List<PNMembersInput> ManageMembershipsAdd { get; set;}
         private List<PNMembersInput> ManageMembershipsUpdate { get; set;}
         private List<PNMembersRemove> ManageMembershipsRemove { get; set;}
-        
+        private List<string> SortBy { get; set; }
+
         public ManageMembershipsRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNManageMembershipsOperation){
         }
 
@@ -66,7 +67,10 @@ namespace PubNubAPI
             ManageMembershipsRemove = remove;
             return this;
         }
-
+        public ManageMembershipsRequestBuilder Sort(List<string> sortBy){
+            SortBy = sortBy;
+            return this;
+        }
         protected override void RunWebRequest(QueueManager qm){
             RequestState requestState = new RequestState ();
             requestState.OperationType = OperationType;
@@ -85,6 +89,7 @@ namespace PubNubAPI
             requestState.POSTData = jsonUserBody;
 
             string[] includeString = (ManagerMembershipsInclude==null) ? new string[]{} : ManagerMembershipsInclude.Select(a=>a.GetDescription().ToString()).ToArray();
+            List<string> sortFields = SortBy ?? new List<string>();
 
             Uri request = BuildRequests.BuildObjectsManageMembershipsRequest(
                     ManageMembershipsUserID,
@@ -94,7 +99,8 @@ namespace PubNubAPI
                     ManageMembershipsCount,
                     string.Join(",", includeString),
                     this.PubNubInstance,
-                    this.QueryParams
+                    this.QueryParams,
+                    string.Join(",", sortFields)
                 );
             request = this.PubNubInstance.TokenMgr.AppendTokenToURL( request.OriginalString, ManageMembershipsUserID, PNResourceType.PNUsers, OperationType);    
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 

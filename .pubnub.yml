@@ -3,6 +3,13 @@ changelog:
   - 
     changes: 
       - 
+        text: "Objects Sorting"
+        type: feature
+    date: April 10, 20  
+    version: v4.8.2 
+  - 
+    changes: 
+      - 
         text: "Correct null check for signal callback"
         type: bug
     date: Mar 10, 20  
