@@ -1,12 +1,19 @@
 --- 
 changelog:
+  -
+    changes:
+      -
+        text: "Example scene fix for Unity 2018."
+        type: bug
+    date: Jun 17, 20
+    version: v4.8.3
   - 
     changes: 
       - 
         text: "Objects Sorting"
         type: feature
     date: April 10, 20  
-    version: v4.8.2 
+    version: v4.8.3 
   - 
     changes: 
       - 
@@ -508,10 +515,8 @@ scm: github.com/pubnub/unity
 supported-platforms: 
   - 
     editors: 
-      - "Unity 5.5.1"
-      - "Unity 2017.3.*"
-      - "Unity 2018.*"
-      - "Unity 2019.*"
+      - "LTS Release 2018.4.23f1"
+      - "LTS Release 2019.4.0f1"
     platforms: 
       - "iOS player, will require iOS 7.0 or higher."
       - "Android, OS 2.3.1 or later; ARMv7 (Cortex) CPU with NEON support or Atom CPU; OpenGL ES 2.0 or later."
@@ -522,4 +527,4 @@ supported-platforms:
       - "Ubuntu 12.04+, with Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support."
       - "Mac OS X 10.8+, with Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support."
     version: "PubNub Unity SDK"
-version: v4.8.2
+version: v4.8.3
