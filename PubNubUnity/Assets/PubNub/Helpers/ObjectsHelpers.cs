@@ -8,10 +8,10 @@ namespace PubNubAPI
         {
             switch (value)
             {
-                case "user":
-                    return PNObjectsEventType.PNObjectsUserEvent;
-                case "space":
-                    return PNObjectsEventType.PNObjectsSpaceEvent;
+                case "uuid":
+                    return PNObjectsEventType.PNObjectsUUIDEvent;
+                case "channel":
+                    return PNObjectsEventType.PNObjectsChannelEvent;
                 case "membership":
                     return PNObjectsEventType.PNObjectsMembershipEvent;
                 default:
@@ -23,10 +23,8 @@ namespace PubNubAPI
         {
             switch (value)
             {
-                case "create":
-                    return PNObjectsEvent.PNObjectsEventCreate;
-                case "update":
-                    return PNObjectsEvent.PNObjectsEventUpdate;
+                case "set":
+                    return PNObjectsEvent.PNObjectsEventSet;
                 case "delete":
                     return PNObjectsEvent.PNObjectsEventDelete;
                 default:
@@ -34,14 +32,13 @@ namespace PubNubAPI
             }
         }
 
-        public static PNUserResult ExtractUser(Dictionary<string, object> objDataDict){
-            PNUserResult pnUserResult = new PNUserResult();
+        public static PNUUIDMetadataResult ExtractUUIDMetadata(Dictionary<string, object> objDataDict){
+            PNUUIDMetadataResult pnUserResult = new PNUUIDMetadataResult();
             pnUserResult.ID = Utility.ReadMessageFromResponseDictionary(objDataDict, "id");
             pnUserResult.Name = Utility.ReadMessageFromResponseDictionary(objDataDict, "name");
             pnUserResult.ExternalID = Utility.ReadMessageFromResponseDictionary(objDataDict, "externalId");
             pnUserResult.ProfileURL = Utility.ReadMessageFromResponseDictionary(objDataDict, "profileUrl");
             pnUserResult.Email = Utility.ReadMessageFromResponseDictionary(objDataDict, "email");
-            pnUserResult.Created = Utility.ReadMessageFromResponseDictionary(objDataDict, "created");
             pnUserResult.Updated = Utility.ReadMessageFromResponseDictionary(objDataDict, "updated");
             pnUserResult.ETag = Utility.ReadMessageFromResponseDictionary(objDataDict, "eTag");
             pnUserResult.Custom = Utility.ReadDictionaryFromResponseDictionary(objDataDict, "custom");
@@ -49,12 +46,11 @@ namespace PubNubAPI
             return pnUserResult;
         }
 
-        public static PNSpaceResult ExtractSpace(Dictionary<string, object> objDataDict){
-            PNSpaceResult pnSpaceResult = new PNSpaceResult();
+        public static PNChannelMetadataResult ExtractChannelMetadata(Dictionary<string, object> objDataDict){
+            PNChannelMetadataResult pnSpaceResult = new PNChannelMetadataResult();
             pnSpaceResult.ID = Utility.ReadMessageFromResponseDictionary(objDataDict, "id");
             pnSpaceResult.Name = Utility.ReadMessageFromResponseDictionary(objDataDict, "name");
             pnSpaceResult.Description = Utility.ReadMessageFromResponseDictionary(objDataDict, "description");
-            pnSpaceResult.Created = Utility.ReadMessageFromResponseDictionary(objDataDict, "created");
             pnSpaceResult.Updated = Utility.ReadMessageFromResponseDictionary(objDataDict, "updated");
             pnSpaceResult.ETag = Utility.ReadMessageFromResponseDictionary(objDataDict, "eTag");
             pnSpaceResult.Custom = Utility.ReadDictionaryFromResponseDictionary(objDataDict, "custom");
@@ -65,7 +61,7 @@ namespace PubNubAPI
         public static PNMembers ExtractMembers(Dictionary<string, object> objDataDict){
             PNMembers pnMembers = new PNMembers();
             pnMembers.ID = Utility.ReadMessageFromResponseDictionary(objDataDict, "id");
-            pnMembers.User = ObjectsHelpers.ExtractUser(Utility.ReadDictionaryFromResponseDictionary(objDataDict, "user"));
+            pnMembers.UUID = ObjectsHelpers.ExtractUUIDMetadata(Utility.ReadDictionaryFromResponseDictionary(objDataDict, "uuid"));
             pnMembers.Created = Utility.ReadMessageFromResponseDictionary(objDataDict, "created");
             pnMembers.Updated = Utility.ReadMessageFromResponseDictionary(objDataDict, "updated");
             pnMembers.ETag = Utility.ReadMessageFromResponseDictionary(objDataDict, "eTag");
@@ -84,7 +80,7 @@ namespace PubNubAPI
         public static PNMemberships ExtractMemberships(Dictionary<string, object> objDataDict){
             PNMemberships pnMemberships = new PNMemberships();
             pnMemberships.ID = Utility.ReadMessageFromResponseDictionary(objDataDict, "id");
-            pnMemberships.Space = ObjectsHelpers.ExtractSpace(Utility.ReadDictionaryFromResponseDictionary(objDataDict, "space"));            
+            pnMemberships.Channel = ObjectsHelpers.ExtractChannelMetadata(Utility.ReadDictionaryFromResponseDictionary(objDataDict, "channel"));            
             pnMemberships.Created = Utility.ReadMessageFromResponseDictionary(objDataDict, "created");
             pnMemberships.Updated = Utility.ReadMessageFromResponseDictionary(objDataDict, "updated");
             pnMemberships.ETag = Utility.ReadMessageFromResponseDictionary(objDataDict, "eTag");
@@ -93,26 +89,63 @@ namespace PubNubAPI
             return pnMemberships;
         }
 
-        internal static PNMembersInputForJSON[] ConvertPNMembersInputForJSON(List<PNMembersInput> input){
+        internal static PNMembersInputForJSON[] ConvertPNMembersInputForJSON(List<PNChannelMembersSet> input){
             List<PNMembersInputForJSON> pnMembersInputForJSONList = new List<PNMembersInputForJSON>();
-            foreach (PNMembersInput pnMembersInput in input){
-                PNMembersInputForJSON pnMembersInputForJSON = new PNMembersInputForJSON();
-                pnMembersInputForJSON.custom = pnMembersInput.Custom;
-                pnMembersInputForJSON.id = pnMembersInput.ID;
-                pnMembersInputForJSONList.Add(pnMembersInputForJSON);
+            if(input!=null){
+                foreach (PNChannelMembersSet pnMembersInput in input){
+                    PNMembersInputForJSON pnMembersInputForJSON = new PNMembersInputForJSON();
+                    pnMembersInputForJSON.custom = pnMembersInput.Custom;
+                    pnMembersInputForJSON.uuid = new PNChannelMembersUUIDForJSON {
+                        id = pnMembersInput.UUID.ID
+                    };
+                    pnMembersInputForJSONList.Add(pnMembersInputForJSON);
+                }
             }
             return pnMembersInputForJSONList.ToArray();
         }
 
-        internal static PNMembersRemoveForJSON[] ConvertPNMembersRemoveForJSON(List<PNMembersRemove> input){
+        internal static PNMembersRemoveForJSON[] ConvertPNMembersRemoveForJSON(List<PNChannelMembersRemove> input){
             List<PNMembersRemoveForJSON> pnMembersRemoveForJSONList = new List<PNMembersRemoveForJSON>();
-            foreach (PNMembersRemove pnMembersRemove in input){
-                PNMembersRemoveForJSON pnMembersRemoveForJSON = new PNMembersRemoveForJSON();
-                pnMembersRemoveForJSON.id = pnMembersRemove.ID;
-                pnMembersRemoveForJSONList.Add(pnMembersRemoveForJSON);
+            if(input!=null){
+                foreach (PNChannelMembersRemove pnMembersRemove in input){
+                    PNMembersRemoveForJSON pnMembersRemoveForJSON = new PNMembersRemoveForJSON();
+                    pnMembersRemoveForJSON.uuid = new PNChannelMembersUUIDForJSON{
+                        id = pnMembersRemove.UUID.ID
+                    }; 
+                    pnMembersRemoveForJSONList.Add(pnMembersRemoveForJSON);
+                }
             }
             return pnMembersRemoveForJSONList.ToArray();
         }
+
+       internal static PNMembershipsInputForJSON[] ConvertPNMembershipsInputForJSON(List<PNMembershipsSet> input){
+            List<PNMembershipsInputForJSON> pnMembersInputForJSONList = new List<PNMembershipsInputForJSON>();
+            if(input!=null){
+                foreach (PNMembershipsSet pnMembersInput in input){
+                    PNMembershipsInputForJSON pnMembersInputForJSON = new PNMembershipsInputForJSON();
+                    pnMembersInputForJSON.custom = pnMembersInput.Custom;
+                    pnMembersInputForJSON.channel = new PNMembershipsChannelForJSON{
+                        id = pnMembersInput.Channel.ID
+                    }; 
+                    pnMembersInputForJSONList.Add(pnMembersInputForJSON);
+                }
+            }
+            return pnMembersInputForJSONList.ToArray();
+        }
+
+        internal static PNMembershipsRemoveForJSON[] ConvertPNMembershipsRemoveForJSON(List<PNMembershipsRemove> input){
+            List<PNMembershipsRemoveForJSON> pnMembersRemoveForJSONList = new List<PNMembershipsRemoveForJSON>();
+            if(input!=null){
+                foreach (PNMembershipsRemove pnMembersRemove in input){
+                    PNMembershipsRemoveForJSON pnMembersRemoveForJSON = new PNMembershipsRemoveForJSON();
+                    pnMembersRemoveForJSON.channel = new PNMembershipsChannelForJSON{
+                        id = pnMembersRemove.Channel.ID
+                    };
+                    pnMembersRemoveForJSONList.Add(pnMembersRemoveForJSON);
+                }
+            }
+            return pnMembersRemoveForJSONList.ToArray();
+        } 
 
     }
 }

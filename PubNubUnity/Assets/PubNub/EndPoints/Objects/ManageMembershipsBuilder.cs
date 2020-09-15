@@ -15,8 +15,8 @@ namespace PubNubAPI
             return this;
         }
 
-        public ManageMembershipsBuilder UserID(string id){
-            manageMembershipsBuilder.UserID(id);
+        public ManageMembershipsBuilder UUID(string id){
+            manageMembershipsBuilder.UUID(id);
             return this;
         }
 
@@ -37,15 +37,11 @@ namespace PubNubAPI
             manageMembershipsBuilder.Count(count);
             return this;
         }
-        public ManageMembershipsBuilder Add(List<PNMembersInput> add){
-            manageMembershipsBuilder.Add(add);
+        public ManageMembershipsBuilder Set(List<PNMembershipsSet> set){
+            manageMembershipsBuilder.Set(set);
             return this;
         }
-        public ManageMembershipsBuilder Update(List<PNMembersInput> update){
-            manageMembershipsBuilder.Update(update);
-            return this;
-        }
-        public ManageMembershipsBuilder Remove(List<PNMembersRemove> remove){
+        public ManageMembershipsBuilder Remove(List<PNMembershipsRemove> remove){
             manageMembershipsBuilder.Remove(remove);
             return this;
         }
@@ -57,7 +53,7 @@ namespace PubNubAPI
             manageMembershipsBuilder.Sort(sortBy);
             return this;
         }
-        public void Async(Action<PNMembershipsResult, PNStatus> callback)
+        public void Async(Action<PNManageMembershipsResult, PNStatus> callback)
         {
             manageMembershipsBuilder.Async(callback);
         }

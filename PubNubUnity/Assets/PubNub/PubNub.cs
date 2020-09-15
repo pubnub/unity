@@ -227,75 +227,82 @@ namespace PubNubAPI
             return pnUnity.RemovePushNotificationsFromChannels();            
         }
 
-        public CreateUserBuilder CreateUser(){            
+        public SetUUIDMetadataBuilder SetUUIDMetadata(){            
             PubNubUnityInitializationAfterCleanup();
-            return pnUnity.CreateUser();            
+            return pnUnity.SetUUIDMetadata();            
         }
 
-        public UpdateUserBuilder UpdateUser(){            
+        public RemoveUUIDMetadataBuilder RemoveUUIDMetadata(){            
             PubNubUnityInitializationAfterCleanup();
-            return pnUnity.UpdateUser();            
+            return pnUnity.RemoveUUIDMetadata();            
         }
 
-        public DeleteUserBuilder DeleteUser(){            
+        public GetUUIDMetadataBuilder GetUUIDMetadata(){            
             PubNubUnityInitializationAfterCleanup();
-            return pnUnity.DeleteUser();            
+            return pnUnity.GetUUIDMetadata();            
         }
 
-        public GetUserBuilder GetUser(){            
+        public GetAllUUIDMetadataBuilder GetAllUUIDMetadata(){            
             PubNubUnityInitializationAfterCleanup();
-            return pnUnity.GetUser();            
+            return pnUnity.GetAllUUIDMetadata();            
         }
 
-        public GetUsersBuilder GetUsers(){            
-            PubNubUnityInitializationAfterCleanup();
-            return pnUnity.GetUsers();            
-        }
-
-        public CreateSpaceBuilder CreateSpace(){            
-            PubNubUnityInitializationAfterCleanup();
-            return pnUnity.CreateSpace();            
-        }
-
-        public UpdateSpaceBuilder UpdateSpace()
+        public SetChannelMetadataBuilder SetChannelMetadata()
         {
             PubNubUnityInitializationAfterCleanup();
-            return pnUnity.UpdateSpace();
+            return pnUnity.SetChannelMetadata();
         }
 
-        public DeleteSpaceBuilder DeleteSpace()
+        public RemoveChannelMetadataBuilder RemoveChannelMetadata()
         {
             PubNubUnityInitializationAfterCleanup();
-            return pnUnity.DeleteSpace();
+            return pnUnity.RemoveChannelMetadata();
+        }                        
+        public GetChannelMetadataBuilder GetChannelMetadata()
+        {
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.GetChannelMetadata();
         }
-
-        public GetSpaceBuilder GetSpace()
+        public GetAllChannelMetadataBuilder GetAllChannelMetadata()
         {
             PubNubUnityInitializationAfterCleanup();
-            return pnUnity.GetSpace();
+            return pnUnity.GetAllChannelMetadata();
         }
-
-        public GetSpacesBuilder GetSpaces()
+        public GetChannelMembersBuilder GetChannelMembers()
         {
             PubNubUnityInitializationAfterCleanup();
-            return pnUnity.GetSpaces();
-        }
-
-        public GetMembersBuilder GetMembers()
-        {
-            PubNubUnityInitializationAfterCleanup();
-            return pnUnity.GetMembers();
+            return pnUnity.GetChannelMembers();
         }
         public GetMembershipsBuilder GetMemberships()
         {
             PubNubUnityInitializationAfterCleanup();
             return pnUnity.GetMemberships();
         }
-        public ManageMembersBuilder ManageMembers()
+        public ManageChannelMembersBuilder ManageChannelMembers()
         {
             PubNubUnityInitializationAfterCleanup();
-            return pnUnity.ManageMembers();
+            return pnUnity.ManageChannelMembers();
         }
+       public SetMembershipsBuilder SetMemberships()
+        {
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.SetMemberships();
+        }  
+        public RemoveMembershipsBuilder RemoveMemberships()
+        {
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.RemoveMemberships();
+        } 
+       public SetChannelMembersBuilder SetChannelMembers()
+        {
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.SetChannelMembers();
+        }  
+        public RemoveChannelMembersBuilder RemoveChannelMembers()
+        {
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.RemoveChannelMembers();
+        }               
         public ManageMembershipsBuilder ManageMemberships()
         {
             PubNubUnityInitializationAfterCleanup();
@@ -372,16 +379,16 @@ namespace PubNubAPI
             pnUnity.AddListener(statusCallback, messageCallback, presenceCallback, signalCallback, null, null, null, null);
         }
 
-        public void AddListener(Action<PNStatus> statusCallback, Action<PNMessageResult> messageCallback, Action<PNPresenceEventResult> presenceCallback, Action<PNSignalEventResult> signalCallback, Action<PNUserEventResult> userCallback, Action<PNSpaceEventResult> spaceCallback, Action<PNMembershipEventResult> membershipCallback)
+        public void AddListener(Action<PNStatus> statusCallback, Action<PNMessageResult> messageCallback, Action<PNPresenceEventResult> presenceCallback, Action<PNSignalEventResult> signalCallback, Action<PNUUIDEventResult> uuidEventCallback, Action<PNChannelEventResult> channelEventCallback, Action<PNMembershipEventResult> membershipCallback)
         {
             PubNubUnityInitializationAfterCleanup();
-            pnUnity.AddListener(statusCallback, messageCallback, presenceCallback, signalCallback, userCallback, spaceCallback, membershipCallback, null);
+            pnUnity.AddListener(statusCallback, messageCallback, presenceCallback, signalCallback, uuidEventCallback, channelEventCallback, membershipCallback, null);
         }
 
-        public void AddListener(Action<PNStatus> statusCallback, Action<PNMessageResult> messageCallback, Action<PNPresenceEventResult> presenceCallback, Action<PNSignalEventResult> signalCallback, Action<PNUserEventResult> userCallback, Action<PNSpaceEventResult> spaceCallback, Action<PNMembershipEventResult> membershipCallback, Action<PNMessageActionsEventResult> messageActionsCallback)
+        public void AddListener(Action<PNStatus> statusCallback, Action<PNMessageResult> messageCallback, Action<PNPresenceEventResult> presenceCallback, Action<PNSignalEventResult> signalCallback, Action<PNUUIDEventResult> uuidEventCallback, Action<PNChannelEventResult> channelEventCallback, Action<PNMembershipEventResult> membershipCallback, Action<PNMessageActionsEventResult> messageActionsCallback)
         {
             PubNubUnityInitializationAfterCleanup();
-            pnUnity.AddListener(statusCallback, messageCallback, presenceCallback, signalCallback, userCallback, spaceCallback, membershipCallback, messageActionsCallback);
+            pnUnity.AddListener(statusCallback, messageCallback, presenceCallback, signalCallback, uuidEventCallback, channelEventCallback, membershipCallback, messageActionsCallback);
         }
 
         public static long TranslateDateTimeToPubnubUnixNanoSeconds (DateTime dotNetUTCDateTime)

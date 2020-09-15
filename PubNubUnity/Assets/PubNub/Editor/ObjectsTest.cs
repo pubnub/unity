@@ -9,9 +9,9 @@ using UnityEngine;
 
 namespace PubNubAPI.Tests
 {
-     public class ObjectsCreateUserReq : CreateUserRequestBuilder{
+     public class ObjectsCreateUserReq : SetUUIDMetadataRequestBuilder{
 
-         public ObjectsCreateUserReq(PubNubUnity pn, Action<PNUserResult, PNStatus> callback): base(pn){
+         public ObjectsCreateUserReq(PubNubUnity pn, Action<PNUUIDMetadataResult, PNStatus> callback): base(pn){
              base.Callback = callback;
          }
 
@@ -74,24 +74,26 @@ namespace PubNubAPI.Tests
 
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
 
-            PNUserSpaceInclude[] CreateUserInclude = new PNUserSpaceInclude[]{PNUserSpaceInclude.PNUserSpaceCustom};
+            PNUUIDMetadataInclude[] CreateUserInclude = new PNUUIDMetadataInclude[]{PNUUIDMetadataInclude.PNUUIDMetadataIncludeCustom};
             var include = (CreateUserInclude==null) ? new string[]{} : CreateUserInclude.Select(a=>a.GetDescription().ToString()).ToArray();
             string incl = string.Join(",", include);
             if(!withIncl){
                 incl = "";
             }
+            
 
-            Uri uri = BuildRequests.BuildObjectsCreateUserRequest (incl, pnUnity, queryParams);
+            Uri uri = BuildRequests.BuildObjectsSetUUIDMetadataRequest(uuid, incl, pnUnity, queryParams);
 
-            //https://ps.pndsn.com/v1/objects/demo/spaces?uuid=customuuid&include=custom&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
-            string expected = string.Format ("http{0}://{1}/v1/objects/{2}/users?uuid={3}{4}&pnsdk={5}{6}",
+            //https://ps.pndsn.com/v2/objects/demo/spaces?uuid=customuuid&include=custom&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
+            string expected = string.Format ("http{0}://{1}/v2/objects/{2}/uuids/{7}?uuid={3}{4}&pnsdk={5}{6}",
                 ssl?"s":"", 
                 pnConfiguration.Origin, 
                 EditorCommon.SubscribeKey, 
                 uuid, 
                 (string.IsNullOrEmpty(incl))?"":string.Format("&include={0}",incl),
                 Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNPublishOperation, false, false),
-                queryParamString
+                queryParamString,
+                uuid
             );
 
             string received = uri.OriginalString;
@@ -110,10 +112,10 @@ namespace PubNubAPI.Tests
 			bool tresult = false;
 
 			Dictionary<string, object> userCustom = new Dictionary<string, object>();
-			userCustom.Add("usercustomkey1", "ucv1");
+			userCustom.Add("usercustomkey1", "ucv2");
 			userCustom.Add("usercustomkey2", "ucv2");
 
-            PNUserResult pnUserResult = new PNUserResult();
+            PNUUIDMetadataResult pnUserResult = new PNUUIDMetadataResult();
             PNStatus pnStatus = new PNStatus();
 
             ObjectsCreateUserReq cb = new ObjectsCreateUserReq(pnUnity, (result, status) => {
@@ -133,9 +135,8 @@ namespace PubNubAPI.Tests
                     Assert.AreEqual(externalID, pnUserResult.ExternalID);
                     Assert.AreEqual(profileURL, pnUserResult.ProfileURL);
                     Assert.AreEqual(userid, pnUserResult.ID);
-                    Assert.AreEqual(pnUserResult.Updated, pnUserResult.Created);
                     Assert.True(!string.IsNullOrEmpty(pnUserResult.ETag), pnUserResult.ETag);
-                    // Assert.True("ucv1" == pnUserResult.Custom["usercustomkey1"].ToString());
+                    // Assert.True("ucv2" == pnUserResult.Custom["usercustomkey1"].ToString());
                     // Assert.True("ucv2" == pnUserResult.Custom["usercustomkey2"].ToString());
                     tresult = true;
                 }
@@ -148,7 +149,7 @@ namespace PubNubAPI.Tests
             object deSerializedResult = pnUnity.JsonLibrary.DeserializeToObject (jsonString);
             cb.CreatePubNubResp(deSerializedResult, null);            
             Debug.Log("2");
-            Assert.That(() => tresult, Is.True.After(100), "CreateUser didn't return");            
+            Assert.That(() => tresult, Is.True.After(100), "SetUUIDMetadata didn't return");            
 
         }
 
@@ -202,25 +203,27 @@ namespace PubNubAPI.Tests
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
 
 
-            PNUserSpaceInclude[] CreateUserInclude = new PNUserSpaceInclude[]{PNUserSpaceInclude.PNUserSpaceCustom};
+            PNUUIDMetadataInclude[] CreateUserInclude = new PNUUIDMetadataInclude[]{PNUUIDMetadataInclude.PNUUIDMetadataIncludeCustom};
             var include = (CreateUserInclude==null) ? new string[]{} : CreateUserInclude.Select(a=>a.GetDescription().ToString()).ToArray();
             string incl = string.Join(",", include);
             if(!withIncl){
                 incl = "";
             }
+            string ch = "ch";
 
 
-            Uri uri = BuildRequests.BuildObjectsCreateSpaceRequest (incl, pnUnity, queryParams);
+            Uri uri = BuildRequests.BuildObjectsSetChannelMetadataRequest (ch, incl, pnUnity, queryParams);
 
-            //https://ps.pndsn.com/v1/objects/demo/spaces?uuid=customuuid&include=custom&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
-            string expected = string.Format ("http{0}://{1}/v1/objects/{2}/spaces?uuid={3}{4}&pnsdk={5}{6}",
+            //https://ps.pndsn.com/v2/objects/demo/spaces?uuid=customuuid&include=custom&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
+            string expected = string.Format ("http{0}://{1}/v2/objects/{2}/channels/{7}?uuid={3}{4}&pnsdk={5}{6}",
                 ssl?"s":"", 
                 pnConfiguration.Origin, 
                 EditorCommon.SubscribeKey, 
                 uuid, 
                 (string.IsNullOrEmpty(incl))?"":string.Format("&include={0}",incl),
                 Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNPublishOperation, false, false),
-                queryParamString
+                queryParamString,
+                ch
             );
 
             string received = uri.OriginalString;
@@ -265,10 +268,10 @@ namespace PubNubAPI.Tests
 
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
 
-            Uri uri = BuildRequests.BuildObjectsDeleteSpaceRequest (channel, pnUnity, queryParams);
+            Uri uri = BuildRequests.BuildObjectsDeleteChannelMetadataRequest (channel, pnUnity, queryParams);
 
-            //https://ps.pndsn.com/v1/objects/demo/spaces/UnityUnitTests_86?uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
-            string expected = string.Format ("http{0}://{1}/v1/objects/{2}/spaces/{4}?uuid={3}&pnsdk={5}{6}",
+            //https://ps.pndsn.com/v2/objects/demo/spaces/UnityUnitTests_86?uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
+            string expected = string.Format ("http{0}://{1}/v2/objects/{2}/channels/{4}?uuid={3}&pnsdk={5}{6}",
                 ssl?"s":"", 
                 pnConfiguration.Origin, 
                 EditorCommon.SubscribeKey, 
@@ -320,10 +323,10 @@ namespace PubNubAPI.Tests
 
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
 
-            Uri uri = BuildRequests.BuildObjectsDeleteUserRequest (channel, pnUnity, queryParams);
+            Uri uri = BuildRequests.BuildObjectsDeleteUUIDMetadataRequest (channel, pnUnity, queryParams);
 
-            //https://ps.pndsn.com/v1/objects/demo/spaces/UnityUnitTests_86?uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
-            string expected = string.Format ("http{0}://{1}/v1/objects/{2}/users/{4}?uuid={3}&pnsdk={5}{6}",
+            //https://ps.pndsn.com/v2/objects/demo/spaces/UnityUnitTests_86?uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
+            string expected = string.Format ("http{0}://{1}/v2/objects/{2}/uuids/{4}?uuid={3}&pnsdk={5}{6}",
                 ssl?"s":"", 
                 pnConfiguration.Origin, 
                 EditorCommon.SubscribeKey, 
@@ -387,17 +390,17 @@ namespace PubNubAPI.Tests
 
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
 
-            PNUserSpaceInclude[] CreateUserInclude = new PNUserSpaceInclude[]{PNUserSpaceInclude.PNUserSpaceCustom};
+            PNUUIDMetadataInclude[] CreateUserInclude = new PNUUIDMetadataInclude[]{PNUUIDMetadataInclude.PNUUIDMetadataIncludeCustom};
             var include = (CreateUserInclude==null) ? new string[]{} : CreateUserInclude.Select(a=>a.GetDescription().ToString()).ToArray();
             string incl = string.Join(",", include);
             if(!withIncl){
                 incl = "";
             }
 
-            Uri uri = BuildRequests.BuildObjectsUpdateUserRequest (channel, incl, pnUnity, queryParams);
+            Uri uri = BuildRequests.BuildObjectsSetUUIDMetadataRequest (channel, incl, pnUnity, queryParams);
 
-            //https://ps.pndsn.com/v1/objects/demo/spaces/UnityUnitTests_86?uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
-            string expected = string.Format ("http{0}://{1}/v1/objects/{2}/users/{4}?uuid={3}{7}&pnsdk={5}{6}",
+            //https://ps.pndsn.com/v2/objects/demo/spaces/UnityUnitTests_86?uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
+            string expected = string.Format ("http{0}://{1}/v2/objects/{2}/uuids/{4}?uuid={3}{7}&pnsdk={5}{6}",
                 ssl?"s":"", 
                 pnConfiguration.Origin, 
                 EditorCommon.SubscribeKey, 
@@ -462,17 +465,17 @@ namespace PubNubAPI.Tests
 
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
 
-            PNUserSpaceInclude[] CreateUserInclude = new PNUserSpaceInclude[]{PNUserSpaceInclude.PNUserSpaceCustom};
+            PNUUIDMetadataInclude[] CreateUserInclude = new PNUUIDMetadataInclude[]{PNUUIDMetadataInclude.PNUUIDMetadataIncludeCustom};
             var include = (CreateUserInclude==null) ? new string[]{} : CreateUserInclude.Select(a=>a.GetDescription().ToString()).ToArray();
             string incl = string.Join(",", include);
             if(!withIncl){
                 incl = "";
             }
 
-            Uri uri = BuildRequests.BuildObjectsUpdateSpaceRequest (channel, incl, pnUnity, queryParams);
+            Uri uri = BuildRequests.BuildObjectsSetChannelMetadataRequest (channel, incl, pnUnity, queryParams);
 
-            //https://ps.pndsn.com/v1/objects/demo/spaces/UnityUnitTests_86?uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
-            string expected = string.Format ("http{0}://{1}/v1/objects/{2}/spaces/{4}?uuid={3}{7}&pnsdk={5}{6}",
+            //https://ps.pndsn.com/v2/objects/demo/spaces/UnityUnitTests_86?uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
+            string expected = string.Format ("http{0}://{1}/v2/objects/{2}/channels/{4}?uuid={3}{7}&pnsdk={5}{6}",
                 ssl?"s":"", 
                 pnConfiguration.Origin, 
                 EditorCommon.SubscribeKey, 
@@ -536,17 +539,17 @@ namespace PubNubAPI.Tests
 
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
 
-            PNUserSpaceInclude[] CreateUserInclude = new PNUserSpaceInclude[]{PNUserSpaceInclude.PNUserSpaceCustom};
+            PNUUIDMetadataInclude[] CreateUserInclude = new PNUUIDMetadataInclude[]{PNUUIDMetadataInclude.PNUUIDMetadataIncludeCustom};
             var include = (CreateUserInclude==null) ? new string[]{} : CreateUserInclude.Select(a=>a.GetDescription().ToString()).ToArray();
             string incl = string.Join(",", include);
             if(!withIncl){
                 incl = "";
             }
 
-            Uri uri = BuildRequests.BuildObjectsGetSpaceRequest (channel, incl, pnUnity, queryParams);
+            Uri uri = BuildRequests.BuildObjectsGetChannelMetadataRequest (channel, incl, pnUnity, queryParams);
 
-            //https://ps.pndsn.com/v1/objects/demo/spaces/UnityUnitTests_86?uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
-            string expected = string.Format ("http{0}://{1}/v1/objects/{2}/spaces/{4}?uuid={3}{7}&pnsdk={5}{6}",
+            //https://ps.pndsn.com/v2/objects/demo/spaces/UnityUnitTests_86?uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
+            string expected = string.Format ("http{0}://{1}/v2/objects/{2}/channels/{4}?uuid={3}{7}&pnsdk={5}{6}",
                 ssl?"s":"", 
                 pnConfiguration.Origin, 
                 EditorCommon.SubscribeKey, 
@@ -610,17 +613,17 @@ namespace PubNubAPI.Tests
 
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
 
-            PNUserSpaceInclude[] CreateUserInclude = new PNUserSpaceInclude[]{PNUserSpaceInclude.PNUserSpaceCustom};
+            PNUUIDMetadataInclude[] CreateUserInclude = new PNUUIDMetadataInclude[]{PNUUIDMetadataInclude.PNUUIDMetadataIncludeCustom};
             var include = (CreateUserInclude==null) ? new string[]{} : CreateUserInclude.Select(a=>a.GetDescription().ToString()).ToArray();
             string incl = string.Join(",", include);
             if(!withIncl){
                 incl = "";
             }
 
-            Uri uri = BuildRequests.BuildObjectsGetUserRequest (channel, incl, pnUnity, queryParams);
+            Uri uri = BuildRequests.BuildObjectsGetUUIDMetadataRequest (channel, incl, pnUnity, queryParams);
 
-            //https://ps.pndsn.com/v1/objects/demo/spaces/UnityUnitTests_86?uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
-            string expected = string.Format ("http{0}://{1}/v1/objects/{2}/users/{4}?uuid={3}{7}&pnsdk={5}{6}",
+            //https://ps.pndsn.com/v2/objects/demo/spaces/UnityUnitTests_86?uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
+            string expected = string.Format ("http{0}://{1}/v2/objects/{2}/uuids/{4}?uuid={3}{7}&pnsdk={5}{6}",
                 ssl?"s":"", 
                 pnConfiguration.Origin, 
                 EditorCommon.SubscribeKey, 
@@ -1070,17 +1073,17 @@ namespace PubNubAPI.Tests
 
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
 
-            PNUserSpaceInclude[] CreateUserInclude = new PNUserSpaceInclude[]{PNUserSpaceInclude.PNUserSpaceCustom};
+            PNUUIDMetadataInclude[] CreateUserInclude = new PNUUIDMetadataInclude[]{PNUUIDMetadataInclude.PNUUIDMetadataIncludeCustom};
             var include = (CreateUserInclude==null) ? new string[]{} : CreateUserInclude.Select(a=>a.GetDescription().ToString()).ToArray();
             string incl = string.Join(",", include);            
             if(!withIncl){
                 incl = "";
             }
 
-            Uri uri = BuildRequests.BuildObjectsGetUsersRequest (limit, start, end, count, incl, pnUnity, queryParams, filter, sortBy);
+            Uri uri = BuildRequests.BuildObjectsGetAllUUIDMetadataRequest (limit, start, end, count, incl, pnUnity, queryParams, filter, sortBy);
 
-            //https://ps.pndsn.com/v1/objects/demo/spaces/UnityUnitTests_86?uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
-            string expected = string.Format ("http{0}://{1}/v1/objects/{2}/users?uuid={3}{7}{10}{11}{4}{8}{9}{12}&pnsdk={5}{6}",
+            //https://ps.pndsn.com/v2/objects/demo/spaces/UnityUnitTests_86?uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
+            string expected = string.Format ("http{0}://{1}/v2/objects/{2}/uuids?uuid={3}{7}{10}{11}{4}{8}{9}{12}&pnsdk={5}{6}",
                 ssl?"s":"", 
                 pnConfiguration.Origin, 
                 EditorCommon.SubscribeKey, 
@@ -1526,7 +1529,7 @@ namespace PubNubAPI.Tests
 
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
 
-            PNUserSpaceInclude[] CreateUserInclude = new PNUserSpaceInclude[]{PNUserSpaceInclude.PNUserSpaceCustom};
+            PNUUIDMetadataInclude[] CreateUserInclude = new PNUUIDMetadataInclude[]{PNUUIDMetadataInclude.PNUUIDMetadataIncludeCustom};
             var include = (CreateUserInclude==null) ? new string[]{} : CreateUserInclude.Select(a=>a.GetDescription().ToString()).ToArray();
             string incl = string.Join(",", include);            
             if(!withIncl){
@@ -1542,10 +1545,10 @@ namespace PubNubAPI.Tests
                 sortBy = "name:desc";
             }
 
-            Uri uri = BuildRequests.BuildObjectsGetSpacesRequest (limit, start, end, count, incl, pnUnity, queryParams, filter, sortBy);
+            Uri uri = BuildRequests.BuildObjectsGetAllChannelMetadataRequest (limit, start, end, count, incl, pnUnity, queryParams, filter, sortBy);
 
-            //https://ps.pndsn.com/v1/objects/demo/spaces/UnityUnitTests_86?uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
-            string expected = string.Format ("http{0}://{1}/v1/objects/{2}/spaces?uuid={3}{7}{10}{11}{4}{8}{9}{12}&pnsdk={5}{6}",
+            //https://ps.pndsn.com/v2/objects/demo/spaces/UnityUnitTests_86?uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
+            string expected = string.Format ("http{0}://{1}/v2/objects/{2}/channels?uuid={3}{7}{10}{11}{4}{8}{9}{12}&pnsdk={5}{6}",
                 ssl?"s":"", 
                 pnConfiguration.Origin, 
                 EditorCommon.SubscribeKey, 
@@ -1992,7 +1995,7 @@ namespace PubNubAPI.Tests
 
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
 
-            PNUserSpaceInclude[] CreateUserInclude = new PNUserSpaceInclude[]{PNUserSpaceInclude.PNUserSpaceCustom};
+            PNUUIDMetadataInclude[] CreateUserInclude = new PNUUIDMetadataInclude[]{PNUUIDMetadataInclude.PNUUIDMetadataIncludeCustom};
             var include = (CreateUserInclude==null) ? new string[]{} : CreateUserInclude.Select(a=>a.GetDescription().ToString()).ToArray();
             string incl = string.Join(",", include);            
             if(!withIncl){
@@ -2010,10 +2013,10 @@ namespace PubNubAPI.Tests
                 sortBy = "name:desc";
             }
 
-            Uri uri = BuildRequests.BuildObjectsGetMembersRequest (ch, limit, start, end, count, incl, pnUnity, queryParams, filter, sortBy);
+            Uri uri = BuildRequests.BuildObjectsGetChannelMembersRequest (ch, limit, start, end, count, incl, pnUnity, queryParams, filter, sortBy);
 
-            //https://ps.pndsn.com/v1/objects/demo/spaces/UnityUnitTests_86?uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
-            string expected = string.Format ("http{0}://{1}/v1/objects/{2}/spaces/{11}/users?uuid={3}{7}{10}{12}{4}{8}{9}{13}&pnsdk={5}{6}",
+            //https://ps.pndsn.com/v2/objects/demo/spaces/UnityUnitTests_86?uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
+            string expected = string.Format ("http{0}://{1}/v2/objects/{2}/channels/{11}/uuids?uuid={3}{7}{10}{12}{4}{8}{9}{13}&pnsdk={5}{6}",
                 ssl?"s":"", 
                 pnConfiguration.Origin, 
                 EditorCommon.SubscribeKey, 
@@ -2462,7 +2465,7 @@ namespace PubNubAPI.Tests
 
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
 
-            PNUserSpaceInclude[] CreateUserInclude = new PNUserSpaceInclude[]{PNUserSpaceInclude.PNUserSpaceCustom};
+            PNUUIDMetadataInclude[] CreateUserInclude = new PNUUIDMetadataInclude[]{PNUUIDMetadataInclude.PNUUIDMetadataIncludeCustom};
             var include = (CreateUserInclude==null) ? new string[]{} : CreateUserInclude.Select(a=>a.GetDescription().ToString()).ToArray();
             string incl = string.Join(",", include);            
             if(!withIncl){
@@ -2481,8 +2484,8 @@ namespace PubNubAPI.Tests
 
             Uri uri = BuildRequests.BuildObjectsGetMembershipsRequest (ch, limit, start, end, count, incl, pnUnity, queryParams, filter, sortBy);
 
-            //https://ps.pndsn.com/v1/objects/demo/spaces/UnityUnitTests_86?uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
-            string expected = string.Format ("http{0}://{1}/v1/objects/{2}/users/{11}/spaces?uuid={3}{7}{10}{12}{4}{8}{9}{13}&pnsdk={5}{6}",
+            //https://ps.pndsn.com/v2/objects/demo/spaces/UnityUnitTests_86?uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
+            string expected = string.Format ("http{0}://{1}/v2/objects/{2}/uuids/{11}/channels?uuid={3}{7}{10}{12}{4}{8}{9}{13}&pnsdk={5}{6}",
                 ssl?"s":"",
                 pnConfiguration.Origin,
                 EditorCommon.SubscribeKey,
@@ -2922,7 +2925,7 @@ namespace PubNubAPI.Tests
 
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
 
-            PNUserSpaceInclude[] CreateUserInclude = new PNUserSpaceInclude[]{PNUserSpaceInclude.PNUserSpaceCustom};
+            PNUUIDMetadataInclude[] CreateUserInclude = new PNUUIDMetadataInclude[]{PNUUIDMetadataInclude.PNUUIDMetadataIncludeCustom};
             var include = (CreateUserInclude==null) ? new string[]{} : CreateUserInclude.Select(a=>a.GetDescription().ToString()).ToArray();
             string incl = string.Join(",", include);            
             if(!withIncl){
@@ -2937,8 +2940,8 @@ namespace PubNubAPI.Tests
 
             Uri uri = BuildRequests.BuildObjectsManageMembershipsRequest (ch, limit, start, end, count, incl, pnUnity, queryParams,sortBy);
 
-            //https://ps.pndsn.com/v1/objects/demo/spaces/UnityUnitTests_86?uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
-            string expected = string.Format ("http{0}://{1}/v1/objects/{2}/users/{11}/spaces?uuid={3}{7}{10}{4}{8}{9}{12}&pnsdk={5}{6}",
+            //https://ps.pndsn.com/v2/objects/demo/spaces/UnityUnitTests_86?uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
+            string expected = string.Format ("http{0}://{1}/v2/objects/{2}/uuids/{11}/channels?uuid={3}{7}{10}{4}{8}{9}{12}&pnsdk={5}{6}",
                 ssl?"s":"", 
                 pnConfiguration.Origin, 
                 EditorCommon.SubscribeKey, 
@@ -3375,7 +3378,7 @@ namespace PubNubAPI.Tests
 
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
 
-            PNUserSpaceInclude[] CreateUserInclude = new PNUserSpaceInclude[]{PNUserSpaceInclude.PNUserSpaceCustom};
+            PNUUIDMetadataInclude[] CreateUserInclude = new PNUUIDMetadataInclude[]{PNUUIDMetadataInclude.PNUUIDMetadataIncludeCustom};
             var include = (CreateUserInclude==null) ? new string[]{} : CreateUserInclude.Select(a=>a.GetDescription().ToString()).ToArray();
             string incl = string.Join(",", include);            
             if(!withIncl){
@@ -3388,10 +3391,10 @@ namespace PubNubAPI.Tests
                 sortBy = "name:desc";
             }
 
-            Uri uri = BuildRequests.BuildObjectsManageMembersRequest (ch, limit, start, end, count, incl, pnUnity, queryParams, sortBy);
+            Uri uri = BuildRequests.BuildObjectsManageChannelMembersRequest (ch, limit, start, end, count, incl, pnUnity, queryParams, sortBy);
 
-            //https://ps.pndsn.com/v1/objects/demo/spaces/UnityUnitTests_86?uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
-            string expected = string.Format ("http{0}://{1}/v1/objects/{2}/spaces/{11}/users?uuid={3}{7}{10}{4}{8}{9}{12}&pnsdk={5}{6}",
+            //https://ps.pndsn.com/v2/objects/demo/spaces/UnityUnitTests_86?uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.3.0 
+            string expected = string.Format ("http{0}://{1}/v2/objects/{2}/channels/{11}/uuids?uuid={3}{7}{10}{4}{8}{9}{12}&pnsdk={5}{6}",
                 ssl?"s":"", 
                 pnConfiguration.Origin, 
                 EditorCommon.SubscribeKey, 

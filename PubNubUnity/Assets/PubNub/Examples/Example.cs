@@ -252,6 +252,7 @@ namespace PubNubExample
             //}
         }
         void ButtonPublishPostHandler(){
+            
             pubnub.Publish().Channel("channel1").Message("test message").UsePost(true).Async((result, status) => {
                     Debug.Log ("in Publish");
                     if(!status.Error){
@@ -425,8 +426,6 @@ namespace PubNubExample
             pnConfiguration.SubscribeKey = "demo";
             pnConfiguration.PublishKey = "demo";
             pnConfiguration.SecretKey = "demo";
-        pnConfiguration.PublishKey = "pub-c-3ed95c83-12e6-4cda-9d69-c47ba2abb57e"; 
-        pnConfiguration.SubscribeKey = "sub-c-26a73b0a-c3f2-11e9-8b24-569e8a5c3af3"; 
 
             pnConfiguration.CipherKey = "enigma";
             pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 

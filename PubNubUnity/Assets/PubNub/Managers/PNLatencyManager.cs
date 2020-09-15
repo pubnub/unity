@@ -174,20 +174,17 @@ namespace PubNubAPI
                 case PNOperationType.PNRemoveMessageActionsOperation:
                     MessageActionsLatency.Add(DateTime.UtcNow.Ticks, latency);
                     break;    
-                case PNOperationType.PNCreateUserOperation:
-                case PNOperationType.PNGetUsersOperation:
-                case PNOperationType.PNGetUserOperation:
-                case PNOperationType.PNUpdateUserOperation:
-                case PNOperationType.PNDeleteUserOperation:
-                case PNOperationType.PNGetSpaceOperation:
-                case PNOperationType.PNGetSpacesOperation:
-                case PNOperationType.PNCreateSpaceOperation:
-                case PNOperationType.PNDeleteSpaceOperation:
-                case PNOperationType.PNUpdateSpaceOperation:
+                case PNOperationType.PNSetUUIDMetadataOperation:
+                case PNOperationType.PNGetAllUUIDMetadataOperation:
+                case PNOperationType.PNGetUUIDMetadataOperation:
+                case PNOperationType.PNRemoveUUIDMetadataOperation:
+                case PNOperationType.PNGetAllChannelMetadataOperation:
+                case PNOperationType.PNSetChannelMetadataOperation:
+                case PNOperationType.PNRemoveChannelMetadataOperation:
                 case PNOperationType.PNGetMembershipsOperation:
-                case PNOperationType.PNGetMembersOperation:
+                case PNOperationType.PNGetChannelMembersOperation:
                 case PNOperationType.PNManageMembershipsOperation:
-                case PNOperationType.PNManageMembersOperation:
+                case PNOperationType.PNManageChannelMembersOperation:
                     ObjectsLatency.Add(DateTime.UtcNow.Ticks, latency);
                     break;    
                 case PNOperationType.PNAddChannelsToGroupOperation:

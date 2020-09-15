@@ -5,9 +5,9 @@ using UnityEngine;
 
 namespace PubNubAPI
 {
-    public class GetMembershipsRequestBuilder: PubNubNonSubBuilder<GetMembershipsRequestBuilder, PNMembershipsResult>, IPubNubNonSubscribeBuilder<GetMembershipsRequestBuilder, PNMembershipsResult>
+    public class GetMembershipsRequestBuilder: PubNubNonSubBuilder<GetMembershipsRequestBuilder, PNGetMembershipsResult>, IPubNubNonSubscribeBuilder<GetMembershipsRequestBuilder, PNGetMembershipsResult>
     {    
-        private string GetMembershipsUserID { get; set;}    
+        private string GetMembershipsUUIDMetadataID { get; set;}    
         private int GetMembershipsLimit { get; set;}
         private string GetMembershipsEnd { get; set;}
         private string GetMembershipsStart { get; set;}
@@ -20,15 +20,15 @@ namespace PubNubAPI
         }
 
         #region IPubNubBuilder implementation
-        public void Async(Action<PNMembershipsResult, PNStatus> callback)
+        public void Async(Action<PNGetMembershipsResult, PNStatus> callback)
         {
             this.Callback = callback;
             base.Async(this);
         }
         #endregion
 
-        public GetMembershipsRequestBuilder UserID(string id){
-            GetMembershipsUserID = id;
+        public GetMembershipsRequestBuilder UUID(string id){
+            GetMembershipsUUIDMetadataID = id;
             return this;
         }
 
@@ -69,7 +69,7 @@ namespace PubNubAPI
             List<string> sortFields = SortBy ?? new List<string>();
 
             Uri request = BuildRequests.BuildObjectsGetMembershipsRequest(
-                    GetMembershipsUserID,
+                    GetMembershipsUUIDMetadataID,
                     GetMembershipsLimit,
                     GetMembershipsStart,
                     GetMembershipsEnd,
@@ -80,12 +80,12 @@ namespace PubNubAPI
                     GetMembershipsFilter,
                    string.Join(",", sortFields)
                 );
-            request = this.PubNubInstance.TokenMgr.AppendTokenToURL( request.OriginalString, GetMembershipsUserID, PNResourceType.PNUsers, OperationType);    
+            request = this.PubNubInstance.TokenMgr.AppendTokenToURL( request.OriginalString, GetMembershipsUUIDMetadataID, PNResourceType.PNUUIDMetadata, OperationType);    
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }
 
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
-            PNMembershipsResult pnGetMembershipsResult = new PNMembershipsResult();
+            PNGetMembershipsResult pnGetMembershipsResult = new PNGetMembershipsResult();
             pnGetMembershipsResult.Data = new List<PNMemberships>();
             PNStatus pnStatus = new PNStatus();
 

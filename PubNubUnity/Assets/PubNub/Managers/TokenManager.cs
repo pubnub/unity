@@ -27,8 +27,8 @@ namespace PubNubAPI
     public enum PNResourceType{
         PNChannels = 0,
         PNGroups,
-        PNUsers,
-        PNSpaces
+        PNUUIDMetadata,
+        PNChannelMetadata
     }
 
     public class ChannelPermissions : ResourcePermission{
@@ -194,11 +194,11 @@ namespace PubNubAPI
                 grantResourcesWithPermissions.Groups = Tokens.Groups;
                 grantResourcesWithPermissions.GroupsPattern = Tokens.GroupsPattern;
                 break;
-                case PNResourceType.PNSpaces:
+                case PNResourceType.PNChannelMetadata:
                 grantResourcesWithPermissions.Spaces = Tokens.Spaces;
                 grantResourcesWithPermissions.SpacesPattern = Tokens.SpacesPattern;
                 break;
-                case PNResourceType.PNUsers:
+                case PNResourceType.PNUUIDMetadata:
                 grantResourcesWithPermissions.Users = Tokens.Users;
                 grantResourcesWithPermissions.UsersPattern = Tokens.UsersPattern;
                 break;
@@ -235,7 +235,7 @@ namespace PubNubAPI
                     return Tokens.GroupsPattern.First().Value.Token;
                 }
                 return "";
-                case PNResourceType.PNSpaces:
+                case PNResourceType.PNChannelMetadata:
                 UserSpacePermissionsWithToken spacePermissionsWithToken;
                 if(Tokens.Spaces.TryGetValue(resourceID, out spacePermissionsWithToken)){                    
                     return spacePermissionsWithToken.Token;
@@ -244,7 +244,7 @@ namespace PubNubAPI
                     return Tokens.SpacesPattern.First().Value.Token;
                 }
                 return "";
-                case PNResourceType.PNUsers:
+                case PNResourceType.PNUUIDMetadata:
                 UserSpacePermissionsWithToken userPermissionsWithToken;
                 if(Tokens.Users.TryGetValue(resourceID, out userPermissionsWithToken)){
                     return userPermissionsWithToken.Token;
@@ -383,7 +383,7 @@ namespace PubNubAPI
                             Tokens.Groups[kvp.Key] = groupPermissionsWithToken;
                         }                    
                         break;
-                        case PNResourceType.PNSpaces:
+                        case PNResourceType.PNChannelMetadata:
                         UserSpacePermissionsWithToken spacePermissionsWithToken = new UserSpacePermissionsWithToken {
                                 BitMaskPerms = kvp.Value,
                                 Token = token,
@@ -397,7 +397,7 @@ namespace PubNubAPI
                             Tokens.Spaces[kvp.Key] = spacePermissionsWithToken;
                         }                    
                         break;
-                        case PNResourceType.PNUsers:
+                        case PNResourceType.PNUUIDMetadata:
                         UserSpacePermissionsWithToken userPermissionsWithToken = new UserSpacePermissionsWithToken {
                                 BitMaskPerms = kvp.Value,
                                 Token = token,
@@ -426,8 +426,8 @@ namespace PubNubAPI
         public void ParseGrantResources(GrantResources res, string token, long timetoken, int ttl, bool isPattern){
             FillGrantResourcesWithPermissions(res.Channels, token, timetoken, ttl, isPattern, PNResourceType.PNChannels);
             FillGrantResourcesWithPermissions(res.Groups, token, timetoken, ttl, isPattern, PNResourceType.PNGroups);
-            FillGrantResourcesWithPermissions(res.Users, token, timetoken, ttl, isPattern, PNResourceType.PNUsers);
-            FillGrantResourcesWithPermissions(res.Spaces, token, timetoken, ttl, isPattern, PNResourceType.PNSpaces);
+            FillGrantResourcesWithPermissions(res.Users, token, timetoken, ttl, isPattern, PNResourceType.PNUUIDMetadata);
+            FillGrantResourcesWithPermissions(res.Spaces, token, timetoken, ttl, isPattern, PNResourceType.PNChannelMetadata);
         }
 
         public PNGrantTokenDecoded GetPermissions(string token){

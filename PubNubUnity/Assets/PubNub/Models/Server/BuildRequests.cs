@@ -280,42 +280,7 @@ namespace PubNubAPI
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNGetMessageActionsOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         }
 
-
-
-        public static Uri BuildObjectsCreateUserRequest (string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
-        {
-            ///v1/objects/%s/users
-            StringBuilder parameterBuilder = new StringBuilder ();
-            if(!string.IsNullOrEmpty(include)){
-                parameterBuilder.AppendFormat ("&include={0}", include);
-            }
-
-            List<string> url = new List<string> ();
-            url.Add ("v1");
-            url.Add ("objects");
-            url.Add (pnInstance.PNConfig.SubscribeKey);
-            url.Add ("users");
-
-            return BuildRestApiRequest<Uri> (url, PNOperationType.PNCreateUserOperation, parameterBuilder.ToString (), pnInstance, queryParams);
-        }
-        public static Uri BuildObjectsCreateSpaceRequest (string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
-        {
-            ///v1/objects/%s/spaces
-            StringBuilder parameterBuilder = new StringBuilder ();
-            if(!string.IsNullOrEmpty(include)){
-                parameterBuilder.AppendFormat ("&include={0}", include);
-            } 
-
-            List<string> url = new List<string> ();
-            url.Add ("v1");
-            url.Add ("objects");
-            url.Add (pnInstance.PNConfig.SubscribeKey);
-            url.Add ("spaces");
-
-            return BuildRestApiRequest<Uri> (url, PNOperationType.PNCreateSpaceOperation, parameterBuilder.ToString (), pnInstance, queryParams);
-        } 
-
-        public static Uri BuildObjectsUpdateUserRequest (string id, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        public static Uri BuildObjectsSetUUIDMetadataRequest (string id, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
         {
             ///v1/objects/%s/users/%s
             StringBuilder parameterBuilder = new StringBuilder ();
@@ -324,16 +289,16 @@ namespace PubNubAPI
             }
 
             List<string> url = new List<string> ();
-            url.Add ("v1");
+            url.Add ("v2");
             url.Add ("objects");
             url.Add (pnInstance.PNConfig.SubscribeKey);
-            url.Add ("users");
+            url.Add ("uuids");
             url.Add (id);
 
-            return BuildRestApiRequest<Uri> (url, PNOperationType.PNUpdateUserOperation, parameterBuilder.ToString (), pnInstance, queryParams);
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNSetUUIDMetadataOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         }
 
-        public static Uri BuildObjectsUpdateSpaceRequest(string id, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        public static Uri BuildObjectsSetChannelMetadataRequest(string id, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
         {
             ///v1/objects/%s/spaces/%s
             StringBuilder parameterBuilder = new StringBuilder();
@@ -342,46 +307,46 @@ namespace PubNubAPI
             }
 
             List<string> url = new List<string>();
-            url.Add("v1");
+            url.Add("v2");
             url.Add("objects");
             url.Add(pnInstance.PNConfig.SubscribeKey);
-            url.Add("spaces");
+            url.Add("channels");
             url.Add(id);
 
-            return BuildRestApiRequest<Uri>(url, PNOperationType.PNUpdateSpaceOperation, parameterBuilder.ToString (), pnInstance, queryParams);
+            return BuildRestApiRequest<Uri>(url, PNOperationType.PNSetChannelMetadataOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         }
 
-        public static Uri BuildObjectsDeleteUserRequest (string id, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        public static Uri BuildObjectsDeleteUUIDMetadataRequest (string id, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
         {
             ///v1/objects/%s/users/%s
             StringBuilder parameterBuilder = new StringBuilder ();
 
             List<string> url = new List<string> ();
-            url.Add ("v1");
+            url.Add ("v2");
             url.Add ("objects");
             url.Add (pnInstance.PNConfig.SubscribeKey);
-            url.Add ("users");
+            url.Add ("uuids");
             url.Add (id);
 
-            return BuildRestApiRequest<Uri> (url, PNOperationType.PNDeleteUserOperation, parameterBuilder.ToString (), pnInstance, queryParams);
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNRemoveUUIDMetadataOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         }
 
-        public static Uri BuildObjectsDeleteSpaceRequest(string id, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        public static Uri BuildObjectsDeleteChannelMetadataRequest(string id, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
         {
             ///v1/objects/%s/spaces/%s
             StringBuilder parameterBuilder = new StringBuilder();
 
             List<string> url = new List<string>();
-            url.Add("v1");
+            url.Add("v2");
             url.Add("objects");
             url.Add(pnInstance.PNConfig.SubscribeKey);
-            url.Add("spaces");
+            url.Add("channels");
             url.Add(id);
 
-            return BuildRestApiRequest<Uri>(url, PNOperationType.PNDeleteSpaceOperation, parameterBuilder.ToString (), pnInstance, queryParams);
+            return BuildRestApiRequest<Uri>(url, PNOperationType.PNRemoveChannelMetadataOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         }
 
-        public static Uri BuildObjectsGetUserRequest (string id, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        public static Uri BuildObjectsGetUUIDMetadataRequest (string id, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
         {
             ///v1/objects/%s/users/%s
             StringBuilder parameterBuilder = new StringBuilder ();
@@ -390,16 +355,16 @@ namespace PubNubAPI
             }
 
             List<string> url = new List<string> ();
-            url.Add ("v1");
+            url.Add ("v2");
             url.Add ("objects");
             url.Add (pnInstance.PNConfig.SubscribeKey);
-            url.Add ("users");
+            url.Add ("uuids");
             url.Add (id);
 
-            return BuildRestApiRequest<Uri> (url, PNOperationType.PNGetUserOperation, parameterBuilder.ToString (), pnInstance, queryParams);
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNGetUUIDMetadataOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         }
 
-        public static Uri BuildObjectsGetSpaceRequest(string id, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        public static Uri BuildObjectsGetChannelMetadataRequest(string id, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
         {
             ///v1/objects/%s/spaces/%s
             StringBuilder parameterBuilder = new StringBuilder();
@@ -408,16 +373,16 @@ namespace PubNubAPI
             }
 
             List<string> url = new List<string>();
-            url.Add("v1");
+            url.Add("v2");
             url.Add("objects");
             url.Add(pnInstance.PNConfig.SubscribeKey);
-            url.Add("spaces");
+            url.Add("channels");
             url.Add(id);
 
-            return BuildRestApiRequest<Uri>(url, PNOperationType.PNGetSpaceOperation, parameterBuilder.ToString (), pnInstance, queryParams);
+            return BuildRestApiRequest<Uri>(url, PNOperationType.PNGetChannelMetadataOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         }
 
-        public static Uri BuildObjectsGetUsersRequest (int limit, string start, string end, bool count, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams, string filter, string sortBy)
+        public static Uri BuildObjectsGetAllUUIDMetadataRequest (int limit, string start, string end, bool count, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams, string filter, string sortBy)
         {
             ///v1/objects/%s/users
             StringBuilder parameterBuilder = new StringBuilder ();
@@ -435,23 +400,23 @@ namespace PubNubAPI
                 parameterBuilder.AppendFormat ("&end={0}", end);
             }
             if (!string.IsNullOrEmpty(filter)) {
-                parameterBuilder.AppendFormat ("&filter={0}", Utility.EncodeUricomponent(filter, PNOperationType.PNGetUsersOperation, false, false));
+                parameterBuilder.AppendFormat ("&filter={0}", Utility.EncodeUricomponent(filter, PNOperationType.PNGetAllUUIDMetadataOperation, false, false));
             }
             if (!string.IsNullOrEmpty(sortBy))
             {
-                parameterBuilder.AppendFormat("&sort={0}", Utility.EncodeUricomponent(sortBy, PNOperationType.PNGetUsersOperation, false, false));
+                parameterBuilder.AppendFormat("&sort={0}", Utility.EncodeUricomponent(sortBy, PNOperationType.PNGetAllUUIDMetadataOperation, false, false));
             }
 
             List<string> url = new List<string> ();
-            url.Add ("v1");
+            url.Add ("v2");
             url.Add ("objects");
             url.Add (pnInstance.PNConfig.SubscribeKey);
-            url.Add ("users");
+            url.Add ("uuids");
 
-            return BuildRestApiRequest<Uri> (url, PNOperationType.PNGetUsersOperation, parameterBuilder.ToString (), pnInstance, queryParams);
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNGetAllUUIDMetadataOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         }
 
-        public static Uri BuildObjectsGetSpacesRequest(int limit, string start, string end, bool count, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams, string filter, string sortBy)
+        public static Uri BuildObjectsGetAllChannelMetadataRequest(int limit, string start, string end, bool count, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams, string filter, string sortBy)
         {
             ///v1/objects/%s/spaces
             StringBuilder parameterBuilder = new StringBuilder();
@@ -472,23 +437,23 @@ namespace PubNubAPI
                 parameterBuilder.AppendFormat("&end={0}", end);
             }
             if (!string.IsNullOrEmpty(filter)) {
-                parameterBuilder.AppendFormat ("&filter={0}", Utility.EncodeUricomponent(filter, PNOperationType.PNGetSpacesOperation, false, false));
+                parameterBuilder.AppendFormat ("&filter={0}", Utility.EncodeUricomponent(filter, PNOperationType.PNGetAllChannelMetadataOperation, false, false));
             }
             if (!string.IsNullOrEmpty(sortBy))
             {
-                parameterBuilder.AppendFormat("&sort={0}", Utility.EncodeUricomponent(sortBy, PNOperationType.PNGetSpacesOperation, false, false));
+                parameterBuilder.AppendFormat("&sort={0}", Utility.EncodeUricomponent(sortBy, PNOperationType.PNGetAllChannelMetadataOperation, false, false));
             } 
 
             List<string> url = new List<string>();
-            url.Add("v1");
+            url.Add("v2");
             url.Add("objects");
             url.Add(pnInstance.PNConfig.SubscribeKey);
-            url.Add("spaces");
+            url.Add("channels");
 
-            return BuildRestApiRequest<Uri>(url, PNOperationType.PNGetSpacesOperation, parameterBuilder.ToString (), pnInstance, queryParams);
+            return BuildRestApiRequest<Uri>(url, PNOperationType.PNGetAllChannelMetadataOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         }
 
-        public static Uri BuildObjectsGetMembersRequest (string spaceID, int limit, string start, string end, bool count, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams, string filter, string sortBy)
+        public static Uri BuildObjectsGetChannelMembersRequest (string channelID, int limit, string start, string end, bool count, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams, string filter, string sortBy)
         {
             ///v1/objects/%s/spaces/%s/users
             StringBuilder parameterBuilder = new StringBuilder ();
@@ -506,24 +471,24 @@ namespace PubNubAPI
                 parameterBuilder.AppendFormat ("&end={0}", end);
             }
             if (!string.IsNullOrEmpty(filter)) {
-                parameterBuilder.AppendFormat ("&filter={0}", Utility.EncodeUricomponent(filter, PNOperationType.PNGetMembersOperation, false, false));
+                parameterBuilder.AppendFormat ("&filter={0}", Utility.EncodeUricomponent(filter, PNOperationType.PNGetChannelMembersOperation, false, false));
             }
             if (!string.IsNullOrEmpty(sortBy)){
-                parameterBuilder.AppendFormat("&sort={0}", Utility.EncodeUricomponent(sortBy, PNOperationType.PNGetMembersOperation, false, false));
+                parameterBuilder.AppendFormat("&sort={0}", Utility.EncodeUricomponent(sortBy, PNOperationType.PNGetChannelMembersOperation, false, false));
             }
 
             List<string> url = new List<string> ();
-            url.Add ("v1");
+            url.Add ("v2");
             url.Add ("objects");
             url.Add (pnInstance.PNConfig.SubscribeKey);
-            url.Add ("spaces");
-            url.Add (spaceID);
-            url.Add ("users");
+            url.Add ("channels");
+            url.Add (channelID);
+            url.Add ("uuids");
 
-            return BuildRestApiRequest<Uri> (url, PNOperationType.PNGetMembersOperation, parameterBuilder.ToString (), pnInstance, queryParams);
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNGetChannelMembersOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         } 
 
-        public static Uri BuildObjectsManageMembersRequest (string spaceID, int limit, string start, string end, bool count, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams, string sortBy)
+        public static Uri BuildObjectsManageChannelMembersRequest (string channelMetatdataID, int limit, string start, string end, bool count, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams, string sortBy)
         {
             ///v1/objects/%s/spaces/%s/users
             StringBuilder parameterBuilder = new StringBuilder ();
@@ -541,18 +506,18 @@ namespace PubNubAPI
                 parameterBuilder.AppendFormat ("&end={0}", end);
             }
             if (!string.IsNullOrEmpty(sortBy)){
-                parameterBuilder.AppendFormat("&sort={0}", Utility.EncodeUricomponent(sortBy, PNOperationType.PNManageMembersOperation, false, false));
+                parameterBuilder.AppendFormat("&sort={0}", Utility.EncodeUricomponent(sortBy, PNOperationType.PNManageChannelMembersOperation, false, false));
             }
 
             List<string> url = new List<string> ();
-            url.Add ("v1");
+            url.Add ("v2");
             url.Add ("objects");
             url.Add (pnInstance.PNConfig.SubscribeKey);
-            url.Add ("spaces");
-            url.Add (spaceID);
-            url.Add ("users");
+            url.Add ("channels");
+            url.Add (channelMetatdataID);
+            url.Add ("uuids");
 
-            return BuildRestApiRequest<Uri> (url, PNOperationType.PNManageMembersOperation, parameterBuilder.ToString (), pnInstance, queryParams);
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNManageChannelMembersOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         } 
 
         public static Uri BuildObjectsManageMembershipsRequest(string userID, int limit, string start, string end, bool count, string include, PubNubUnity pnInstance, Dictionary<string, string> queryParams, string sortBy)
@@ -577,12 +542,12 @@ namespace PubNubAPI
             }
 
             List<string> url = new List<string> ();
-            url.Add ("v1");
+            url.Add ("v2");
             url.Add ("objects");
             url.Add (pnInstance.PNConfig.SubscribeKey);
-            url.Add ("users");
+            url.Add ("uuids");
             url.Add (userID);
-            url.Add ("spaces");
+            url.Add ("channels");
 
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNManageMembershipsOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         }  
@@ -611,12 +576,12 @@ namespace PubNubAPI
             }
 
             List<string> url = new List<string> ();
-            url.Add ("v1");
+            url.Add ("v2");
             url.Add ("objects");
             url.Add (pnInstance.PNConfig.SubscribeKey);
-            url.Add ("users");
+            url.Add ("uuids");
             url.Add (userID);
-            url.Add ("spaces");
+            url.Add ("channels");
 
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNGetMembershipsOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         } 
@@ -1109,20 +1074,18 @@ namespace PubNubAPI
                         url.AppendFormat("&l_msga={0}", latency.Signal);
                     }
                     break;    
-                case PNOperationType.PNCreateUserOperation:
-                case PNOperationType.PNGetUsersOperation:
-                case PNOperationType.PNGetUserOperation:
-                case PNOperationType.PNUpdateUserOperation:
-                case PNOperationType.PNDeleteUserOperation:
-                case PNOperationType.PNGetSpaceOperation:
-                case PNOperationType.PNGetSpacesOperation:
-                case PNOperationType.PNCreateSpaceOperation:
-                case PNOperationType.PNDeleteSpaceOperation:
-                case PNOperationType.PNUpdateSpaceOperation:
+                case PNOperationType.PNSetUUIDMetadataOperation:
+                case PNOperationType.PNGetChannelMetadataOperation:
+                case PNOperationType.PNGetAllUUIDMetadataOperation:
+                case PNOperationType.PNGetUUIDMetadataOperation:
+                case PNOperationType.PNRemoveUUIDMetadataOperation:
+                case PNOperationType.PNGetAllChannelMetadataOperation:
+                case PNOperationType.PNRemoveChannelMetadataOperation:
+                case PNOperationType.PNSetChannelMetadataOperation:
                 case PNOperationType.PNGetMembershipsOperation:
-                case PNOperationType.PNGetMembersOperation:
+                case PNOperationType.PNGetChannelMembersOperation:
                 case PNOperationType.PNManageMembershipsOperation:
-                case PNOperationType.PNManageMembersOperation:
+                case PNOperationType.PNManageChannelMembersOperation:
                     if(latency.Objects > 0){
                         url.AppendFormat("&l_obj={0}", latency.Signal);
                     }
@@ -1273,22 +1236,21 @@ namespace PubNubAPI
                 url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
                 break;
 
-            case PNOperationType.PNCreateUserOperation:
-            case PNOperationType.PNCreateSpaceOperation:
-            case PNOperationType.PNGetUserOperation:
-            case PNOperationType.PNGetSpaceOperation:
-            case PNOperationType.PNGetUsersOperation:
-            case PNOperationType.PNGetSpacesOperation:
+            case PNOperationType.PNGetUUIDMetadataOperation:
+            case PNOperationType.PNGetChannelMetadataOperation:
+            case PNOperationType.PNGetAllChannelMetadataOperation:
+            case PNOperationType.PNGetAllUUIDMetadataOperation:
             case PNOperationType.PNManageMembershipsOperation:
-            case PNOperationType.PNManageMembersOperation:
+            case PNOperationType.PNManageChannelMembersOperation:
             case PNOperationType.PNGetMembershipsOperation:
-            case PNOperationType.PNGetMembersOperation:
-            case PNOperationType.PNDeleteSpaceOperation:
-            case PNOperationType.PNDeleteUserOperation:
-            case PNOperationType.PNUpdateSpaceOperation:
-            case PNOperationType.PNUpdateUserOperation:
-                url = AppendUUIDToURL(url, uuid, true);
+            case PNOperationType.PNGetChannelMembersOperation:
+            case PNOperationType.PNRemoveChannelMetadataOperation:
+            case PNOperationType.PNRemoveUUIDMetadataOperation:
+            case PNOperationType.PNSetChannelMetadataOperation:
+            case PNOperationType.PNSetUUIDMetadataOperation:
+                url = AppendUUIDToURL(url, uuid, true); 
                 url.Append (parameters);
+                url = AppendAuthKeyToURL(url, authenticationKey, type);
                 url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
                 break;
 

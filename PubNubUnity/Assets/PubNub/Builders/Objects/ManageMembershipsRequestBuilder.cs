@@ -5,32 +5,51 @@ using UnityEngine;
 
 namespace PubNubAPI
 {
-    public class ManageMembershipsRequestBuilder: PubNubNonSubBuilder<ManageMembershipsRequestBuilder, PNMembershipsResult>, IPubNubNonSubscribeBuilder<ManageMembershipsRequestBuilder, PNMembershipsResult>
+    public class PNMembershipsChannel{
+        public string ID {get; set;}
+    }
+    public class PNMembershipsSet{
+        public PNMembershipsChannel Channel {get; set;}
+        public Dictionary<string, object> Custom {get; set;}
+    }
+    public class PNMembershipsRemove{
+        public PNMembershipsChannel Channel {get; set;}
+    }
+    class PNMembershipsChannelForJSON{
+        public string id {get; set;}
+    }
+    class PNMembershipsInputForJSON{
+        public PNMembershipsChannelForJSON channel;
+        public Dictionary<string, object> custom;
+    }
+    class PNMembershipsRemoveForJSON{
+        public PNMembershipsChannelForJSON channel;
+    }
+    public class ManageMembershipsRequestBuilder: PubNubNonSubBuilder<ManageMembershipsRequestBuilder, PNManageMembershipsResult>, IPubNubNonSubscribeBuilder<ManageMembershipsRequestBuilder, PNManageMembershipsResult>
     {        
-        private string ManageMembershipsUserID { get; set;}
+        private string ManageMembershipsUUID { get; set;}
         private int ManageMembershipsLimit { get; set;}
         private string ManageMembershipsEnd { get; set;}
         private string ManageMembershipsStart { get; set;}
         private bool ManageMembershipsCount { get; set;}
         private PNMembershipsInclude[] ManagerMembershipsInclude { get; set;}
-        private List<PNMembersInput> ManageMembershipsAdd { get; set;}
-        private List<PNMembersInput> ManageMembershipsUpdate { get; set;}
-        private List<PNMembersRemove> ManageMembershipsRemove { get; set;}
+        private List<PNMembershipsSet> ManageMembershipsSet { get; set;}
+        private List<PNMembershipsRemove> ManageMembershipsRemove { get; set;}
         private List<string> SortBy { get; set; }
 
         public ManageMembershipsRequestBuilder(PubNubUnity pn): base(pn, PNOperationType.PNManageMembershipsOperation){
         }
 
         #region IPubNubBuilder implementation
-        public void Async(Action<PNMembershipsResult, PNStatus> callback)
+        public void Async(Action<PNManageMembershipsResult, PNStatus> callback)
         {
             this.Callback = callback;
             base.Async(this);
         }
         #endregion
 
-        public ManageMembershipsRequestBuilder UserID(string id){
-            ManageMembershipsUserID = id;
+        public ManageMembershipsRequestBuilder UUID(string id){
+            ManageMembershipsUUID = id;
             return this;
         }
 
@@ -55,15 +74,11 @@ namespace PubNubAPI
             ManageMembershipsCount = count;
             return this;
         }
-        public ManageMembershipsRequestBuilder Add(List<PNMembersInput> add){
-            ManageMembershipsAdd = add;
+        public ManageMembershipsRequestBuilder Set(List<PNMembershipsSet> set){
+            ManageMembershipsSet = set;
             return this;
         }
-        public ManageMembershipsRequestBuilder Update(List<PNMembersInput> update){
-            ManageMembershipsUpdate = update;
-            return this;
-        }
-        public ManageMembershipsRequestBuilder Remove(List<PNMembersRemove> remove){
+        public ManageMembershipsRequestBuilder Remove(List<PNMembershipsRemove> remove){
             ManageMembershipsRemove = remove;
             return this;
         }
@@ -77,9 +92,8 @@ namespace PubNubAPI
             requestState.httpMethod = HTTPMethod.Patch;
 
             var cub = new { 
-                add = ObjectsHelpers.ConvertPNMembersInputForJSON(ManageMembershipsAdd),
-                update = ObjectsHelpers.ConvertPNMembersInputForJSON(ManageMembershipsUpdate),
-                remove = ObjectsHelpers.ConvertPNMembersRemoveForJSON(ManageMembershipsRemove),
+                set = ObjectsHelpers.ConvertPNMembershipsInputForJSON(ManageMembershipsSet),
+                delete = ObjectsHelpers.ConvertPNMembershipsRemoveForJSON(ManageMembershipsRemove),
             };
 
             string jsonUserBody = Helpers.JsonEncodePublishMsg (cub, "", this.PubNubInstance.JsonLibrary, this.PubNubInstance.PNLog);
@@ -87,12 +101,11 @@ namespace PubNubAPI
             this.PubNubInstance.PNLog.WriteToLog (string.Format ("jsonUserBody: {0}", jsonUserBody), PNLoggingMethod.LevelInfo);
             #endif
             requestState.POSTData = jsonUserBody;
-
             string[] includeString = (ManagerMembershipsInclude==null) ? new string[]{} : ManagerMembershipsInclude.Select(a=>a.GetDescription().ToString()).ToArray();
             List<string> sortFields = SortBy ?? new List<string>();
 
             Uri request = BuildRequests.BuildObjectsManageMembershipsRequest(
-                    ManageMembershipsUserID,
+                    ManageMembershipsUUID,
                     ManageMembershipsLimit,
                     ManageMembershipsStart,
                     ManageMembershipsEnd,
@@ -102,12 +115,12 @@ namespace PubNubAPI
                     this.QueryParams,
                     string.Join(",", sortFields)
                 );
-            request = this.PubNubInstance.TokenMgr.AppendTokenToURL( request.OriginalString, ManageMembershipsUserID, PNResourceType.PNUsers, OperationType);    
+            request = this.PubNubInstance.TokenMgr.AppendTokenToURL( request.OriginalString, ManageMembershipsUUID, PNResourceType.PNUUIDMetadata, OperationType);    
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }
 
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
-            PNMembershipsResult pnManageMembershipsResult = new PNMembershipsResult();
+            PNManageMembershipsResult pnManageMembershipsResult = new PNManageMembershipsResult();
             pnManageMembershipsResult.Data = new List<PNMemberships>();
             PNStatus pnStatus = new PNStatus();
 

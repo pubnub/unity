@@ -13,8 +13,8 @@ namespace PubNubAPI
         public PNPresenceEventResult PresenceEventResult { get; set;}
         public PNMessageResult MessageResult { get; set;}
         public PNSignalEventResult SignalEventResult { get; set;}
-        public PNUserEventResult UserEventResult { get; set;}
-        public PNSpaceEventResult SpaceEventResult { get; set;}
+        public PNUUIDEventResult UUIDEventResult { get; set;}
+        public PNChannelEventResult ChannelEventResult { get; set;}
         public PNMembershipEventResult MembershipEventResult { get; set;}
         public PNMessageActionsEventResult MessageActionsEventResult { get; set;}
     }   
@@ -545,24 +545,24 @@ namespace PubNubAPI
                 mea.SignalEventResult = subSignalEventResult;
                 PubNubInstance.RaiseEvent (mea);
             } else if ((PNMessageTypes)subscribeMessage.MessageType == PNMessageTypes.Objects) {  
-                PNUserEventResult pnUserEventResult;
-                PNSpaceEventResult pnSpaceEventResult;
+                PNUUIDEventResult pnUserEventResult;
+                PNChannelEventResult pnSpaceEventResult;
                 PNMembershipEventResult pnMembershipEventResult; 
                 CreateObjectsEventResult(subscribeMessage, out pnUserEventResult, out pnSpaceEventResult, out pnMembershipEventResult);
 
                 if (pnUserEventResult != null) {
                     #if (ENABLE_PUBNUB_LOGGING)
-                    this.PubNubInstance.PNLog.WriteToLog("Raising User event ", PNLoggingMethod.LevelInfo);
+                    this.PubNubInstance.PNLog.WriteToLog("Raising UUID event ", PNLoggingMethod.LevelInfo);
                     #endif
-                    mea.UserEventResult = pnUserEventResult;
+                    mea.UUIDEventResult = pnUserEventResult;
                     PubNubInstance.RaiseEvent (mea);
                 }
                 
                 if (pnSpaceEventResult != null) {
                     #if (ENABLE_PUBNUB_LOGGING)
-                    this.PubNubInstance.PNLog.WriteToLog("Raising Space event ", PNLoggingMethod.LevelInfo);
+                    this.PubNubInstance.PNLog.WriteToLog("Raising Channel event ", PNLoggingMethod.LevelInfo);
                     #endif
-                    mea.SpaceEventResult = pnSpaceEventResult;
+                    mea.ChannelEventResult = pnSpaceEventResult;
                     PubNubInstance.RaiseEvent (mea);
                 }
                 
@@ -832,7 +832,7 @@ namespace PubNubAPI
             }
         }
 
-        internal void CreateObjectsEventResult(SubscribeMessage subscribeMessage, out PNUserEventResult pnUserEventResult, out PNSpaceEventResult pnSpaceEventResult, out PNMembershipEventResult pnMembershipEventResult){
+        internal void CreateObjectsEventResult(SubscribeMessage subscribeMessage, out PNUUIDEventResult pnUserEventResult, out PNChannelEventResult pnSpaceEventResult, out PNMembershipEventResult pnMembershipEventResult){
             pnUserEventResult = null;
             pnSpaceEventResult = null;
             pnMembershipEventResult = null;
@@ -843,9 +843,21 @@ namespace PubNubAPI
             string objectsEvent = Utility.ReadMessageFromResponseDictionary(pnObjectEventDict, "event");
             Dictionary<string, object> data = Utility.ReadDictionaryFromResponseDictionary(pnObjectEventDict, "data");
             if(data != null){
-                string userID = Utility.ReadMessageFromResponseDictionary(data, "userId");
-                string ID = Utility.ReadMessageFromResponseDictionary(data, "id");
-                string spaceID = Utility.ReadMessageFromResponseDictionary(data, "spaceId");
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PubNubInstance.PNLog.WriteToLog(string.Format("CreateObjectsEventResult..."), PNLoggingMethod.LevelInfo);
+                #endif 
+                string channelID = "";
+                string uuid = "";
+
+                Dictionary<string, object> uuidDict = Utility.ReadDictionaryFromResponseDictionary(data, "uuid");
+                if(uuidDict!=null){
+                    uuid = Utility.ReadMessageFromResponseDictionary(uuidDict, "id");
+                }
+                string id = Utility.ReadMessageFromResponseDictionary(data, "id");
+                Dictionary<string, object> channelDict = Utility.ReadDictionaryFromResponseDictionary(data, "channel");
+                if(channelDict!=null){
+                    channelID = Utility.ReadMessageFromResponseDictionary(channelDict, "id");
+                }
                 string name = Utility.ReadMessageFromResponseDictionary(data, "name");
                 string externalID = Utility.ReadMessageFromResponseDictionary(data, "externalId");
                 string profileURL = Utility.ReadMessageFromResponseDictionary(data, "profileUrl");
@@ -857,17 +869,17 @@ namespace PubNubAPI
                 string eTag = Utility.ReadMessageFromResponseDictionary(data, "eTag");
                 Dictionary<string, object> custom = Utility.ReadDictionaryFromResponseDictionary(pnObjectEventDict, "custom");
 
-                if(objectsEventType.Equals(PNObjectsEventType.PNObjectsUserEvent.GetDescription().ToString())){
+                if(objectsEventType.Equals(PNObjectsEventType.PNObjectsUUIDEvent.GetDescription().ToString())){
                     #if (ENABLE_PUBNUB_LOGGING)
-                    this.PubNubInstance.PNLog.WriteToLog(string.Format("PNObjectsUserEvent"), PNLoggingMethod.LevelInfo);
+                    this.PubNubInstance.PNLog.WriteToLog(string.Format("PNObjectsUUIDEvent"), PNLoggingMethod.LevelInfo);
                     #endif
 
-                    pnUserEventResult = new PNUserEventResult();   
+                    pnUserEventResult = new PNUUIDEventResult();   
                     pnUserEventResult.ObjectsEvent = ObjectsHelpers.GetPNObjectsEventFromString(objectsEvent);
                     pnUserEventResult.Subscription = subscribeMessage.SubscriptionMatch.Replace(Utility.PresenceChannelSuffix, "");
                     pnUserEventResult.Channel = subscribeMessage.Channel.Replace(Utility.PresenceChannelSuffix, "");
                     pnUserEventResult.Email = email;
-                    pnUserEventResult.UserID = ID;
+                    pnUserEventResult.UUID = id;
                     pnUserEventResult.Timestamp = timestamp;
                     pnUserEventResult.Created = created;
                     pnUserEventResult.Updated = updated;
@@ -877,17 +889,17 @@ namespace PubNubAPI
                     pnUserEventResult.ExternalID = externalID;
                     pnUserEventResult.ProfileURL = profileURL;
 
-                } else if (objectsEventType.Equals(PNObjectsEventType.PNObjectsSpaceEvent.GetDescription().ToString())){
+                } else if (objectsEventType.Equals(PNObjectsEventType.PNObjectsChannelEvent.GetDescription().ToString())){
                     #if (ENABLE_PUBNUB_LOGGING)
-                    this.PubNubInstance.PNLog.WriteToLog(string.Format("PNObjectsSpaceEvent"), PNLoggingMethod.LevelInfo);
+                    this.PubNubInstance.PNLog.WriteToLog(string.Format("PNObjectsChannelEvent"), PNLoggingMethod.LevelInfo);
                     #endif  
 
-                    pnSpaceEventResult = new PNSpaceEventResult();  
+                    pnSpaceEventResult = new PNChannelEventResult();  
                     pnSpaceEventResult.ObjectsEvent = ObjectsHelpers.GetPNObjectsEventFromString(objectsEvent);        
                     pnSpaceEventResult.Subscription = subscribeMessage.SubscriptionMatch.Replace(Utility.PresenceChannelSuffix, "");
                     pnSpaceEventResult.Channel = subscribeMessage.Channel.Replace(Utility.PresenceChannelSuffix, "");
                     pnSpaceEventResult.Description = description;
-                    pnSpaceEventResult.SpaceID = ID;
+                    pnSpaceEventResult.ChannelID = id;
                     pnSpaceEventResult.Timestamp = timestamp;
                     pnSpaceEventResult.Created = created;
                     pnSpaceEventResult.Updated = updated;
@@ -905,8 +917,8 @@ namespace PubNubAPI
                     pnMembershipEventResult.Subscription = subscribeMessage.SubscriptionMatch.Replace(Utility.PresenceChannelSuffix, ""); 
                     pnMembershipEventResult.Channel = subscribeMessage.Channel.Replace(Utility.PresenceChannelSuffix, "");
                     pnMembershipEventResult.Description = description;
-                    pnMembershipEventResult.SpaceID = spaceID;
-                    pnMembershipEventResult.UserID = userID;
+                    pnMembershipEventResult.ChannelID = channelID;
+                    pnMembershipEventResult.UUID = uuid;
                     pnMembershipEventResult.Timestamp = timestamp;
                     pnMembershipEventResult.Custom = custom;
                 }

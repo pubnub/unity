@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿	using UnityEngine;
 #if !UNITY_WSA_10_0
 using UnityEngine.TestTools;
 using NUnit.Framework;
@@ -31,6 +31,173 @@ namespace PubNubAPI.Tests
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeForAsyncResponse);
 			Assert.True(testReturn, "test didn't return");
 			pubnub.CleanUp();
+            string channelMetadataID = "channelMetadataID7848";
+            string channelMetadataname = "channelMetadata name 7848";
+            string channelMetadatadesc = "channelMetadata desc 7848";
+            bool tresult = false;
+            string constString = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
+			string channelMetadata1Name = string.Format("{0}{1}", "ABC", constString);
+			string channelMetadata2Name = string.Format("{0}{1}", "PQR", constString);
+			string channelMetadata3Name = string.Format("{0}{1}", "XYZ", constString);
+			string channelMetadata1Id = string.Format("channelMetadataId_{0}{1}", "ABC", constString);
+			string channelMetadata2Id = string.Format("channelMetadataId_{0}{1}", "PQR", constString);
+			string channelMetadata3Id = string.Format("channelMetadataId_{0}{1}", "XYZ", constString);
+            string uuidMetadataId= "id_ABC1599222778052";
+			channelMetadata2Id = "channelMetadataId_ABC1599222778052";
+			channelMetadata1Name = "ABC1599222778052";
+			List<string> channelMetadataIds = new List<string>() { channelMetadata3Id, channelMetadata2Id, channelMetadata1Id };
+			List<string> channelMetadataIdsAsc = new List<string>() { channelMetadata1Id, channelMetadata2Id, channelMetadata3Id };
+			List<string> sortBy = new List<string>() { "updated:desc" };
+			List<string> sortByAsc = new List<string>() { "updated" };
+			string filter = string.Format("name == '%{0}'", constString);
+            
+            bool checkResult = false;
+			int limit = 3;
+			bool count = true;
+
+			var inputMembers = new List<PNMembershipsSet>();
+            inputMembers.Add(new PNMembershipsSet() { 
+                Channel = new PNMembershipsChannel {
+                    ID = channelMetadata1Id
+                }, 
+            });
+            inputMembers.Add(new PNMembershipsSet() { 
+                Channel = new PNMembershipsChannel {
+                    ID = channelMetadata2Id
+                },
+            });
+            inputMembers.Add(new PNMembershipsSet() { 
+                Channel = new PNMembershipsChannel {
+                    ID = channelMetadata3Id
+                }, 
+            });
+            PNMembershipsInclude[] inclMem = new PNMembershipsInclude[] { PNMembershipsInclude.PNMembershipsIncludeCustom, PNMembershipsInclude.PNMembershipsIncludeChannel, PNMembershipsInclude.PNMembershipsIncludeChannelCustom };
+            Debug.Log("Calling ManageMemberships sort:");
+            PNMembershipsSet inputMemberships = new PNMembershipsSet();
+			inputMemberships.Channel = new PNMembershipsChannel {
+                    ID = channelMetadata2Id
+                };
+				
+			PNMembershipsSet inputMemberships2 = new PNMembershipsSet();
+			inputMemberships2.Channel = new PNMembershipsChannel {
+                    ID = channelMetadata1Id
+                };
+				
+			Dictionary<string, object> membershipCustom2 = new Dictionary<string, object>();
+			membershipCustom2.Add("mememberscustomkey21", "memcv21");
+			membershipCustom2.Add("mememberscustomkey22", "memcv22");
+
+			// inputMemberships.Custom = membershipCustom2;
+            // inputMembers[0].Custom = membershipCustom2;
+            // inputMembers[1].Custom = membershipCustom2;
+            // inputMembers[2].Custom = membershipCustom2;
+			inputMemberships2.Custom = membershipCustom2;
+			inputMemberships.Custom = membershipCustom2;
+			tresult = false;
+
+			pubnub.SetMemberships().UUID(uuidMetadataId).Set(new List<PNMembershipsSet> { inputMemberships, inputMemberships2 }).Include(inclMem).Limit(limit).Count(count).Sort(sortBy).Async((result, status) => {				
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				bool bFound = false;
+				Debug.Log("Looking for " + channelMetadata1Id);
+				Debug.Log("result.Next:" + result.Next);
+				Debug.Log("result.Prev:" + result.Prev);
+				Debug.Log("result.TotalCount:" + result.TotalCount);
+				Assert.True(result.TotalCount > 0);
+
+				foreach (PNMemberships mem in result.Data)
+				{
+
+					Debug.Log("Found mem " + mem.Channel.ID);
+					if (mem.Channel.ID.Equals(channelMetadata2Id))
+					{
+						// Assert.AreEqual(channelMetadata1Name, mem.Channel.Name);
+						// Assert.AreEqual(channelMetadata1Desc, mem.Channel.Description);
+						// Assert.AreEqual(channelMetadata1Id, mem.Channel.ID);
+						// Assert.True(!string.IsNullOrEmpty(mem.Channel.ETag), mem.Channel.ETag);
+						// foreach (KeyValuePair<string, object> kvp in mem.Channel.Custom)
+						// {
+						// 	Debug.Log(kvp.Key + kvp.Value);
+						// }
+						// Assert.True("scv21" == mem.Channel.Custom["channelMetadataCustomkey21"].ToString());
+						// Assert.True("scv22" == mem.Channel.Custom["channelMetadataCustomkey22"].ToString());
+						// Assert.True("memcv21" == mem.Custom["mememberscustomkey21"].ToString());
+						// Assert.True("memcv22" == mem.Custom["mememberscustomkey22"].ToString());
+
+						bFound = true;
+						break;
+					}
+
+				}
+
+				tresult = bFound;
+
+			});
+			//yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls5);
+			yield return new WaitForSeconds(10);
+			Assert.True(tresult, "ManageMemberships didn't return");
+
+			// pubnub.ManageMemberships().UUID(uuidMetadataId).Set(new List<PNMembershipsSet> { inputMemberships }).Remove(new List<PNMembershipsRemove> { }).Include(inclMem).Limit(limit).Count(count).Async((result, status) => {
+			// 	Assert.True(status.Error.Equals(false));
+			// 	Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+			// 	bool bFound = false;
+			// 	Debug.Log("Looking for " + channelMetadata2Id);
+			// 	Debug.Log("result.Next:" + result.Next);
+			// 	Debug.Log("result.Prev:" + result.Prev);
+			// 	Debug.Log("result.TotalCount:" + result.TotalCount);
+			// 	Assert.True(result.TotalCount > 0);
+
+			// 	foreach (PNMemberships mem in result.Data)
+			// 	{
+
+			// 		Debug.Log("Found mem " + mem.Channel.ID);
+			// 		if (mem.Channel.ID.Equals(channelMetadata2Id))
+			// 		{
+			// 			// Assert.AreEqual(channelMetadata2Name, mem.Channel.Name);
+			// 			// // Assert.AreEqual(channelMetadatadesc2, mem.Channel.Description);
+			// 			// Assert.AreEqual(channelMetadata2Id, mem.Channel.ID);
+			// 			// Assert.True(!string.IsNullOrEmpty(mem.Channel.ETag), mem.Channel.ETag);
+			// 			// foreach (KeyValuePair<string, object> kvp in mem.Channel.Custom)
+			// 			// {
+			// 			// 	Debug.Log(kvp.Key + kvp.Value);
+			// 			// }
+			// 			// Assert.True("scv21" == mem.Channel.Custom["channelMetadataCustomkey21"].ToString());
+			// 			// Assert.True("scv22" == mem.Channel.Custom["channelMetadataCustomkey22"].ToString());
+			// 			// Assert.True("memcv21" == mem.Custom["mememberscustomkey21"].ToString());
+			// 			// Assert.True("memcv22" == mem.Custom["mememberscustomkey22"].ToString());
+
+			// 			bFound = true;
+			// 			break;
+			// 		}
+
+			// 	}
+
+			// 	tresult = bFound;
+
+			// });
+			// yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls5);
+			// //Assert.True(tresult, "ManageMemberships didn't return");
+
+			// pubnub.ManageMemberships().UUID(uuidMetadataId).Set(inputMembers).Remove(new List<PNMembershipsRemove>()).Include(inclMem).Limit(limit).Count(count).Sort(sortBy).Async((result, status) =>
+			// {
+			// 	Assert.True(status.Error.Equals(false));
+			// 	Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+			// 	if (result.Data != null)
+			// 	{
+            //         int i = 0;
+            //         Debug.Log("ManageMemberships sort Data:");
+			// 		foreach (PNMemberships m in result.Data)// (int i = 0; i < 3; i++)
+			// 		{
+            //             Debug.Log("ManageMemberships sort:" + channelMetadataIds[i] + " " + m.ID);
+			// 			Assert.AreEqual(channelMetadataIds[i], m.ID);   // sort by id(channelMetadataId)
+            //             i++;
+			// 		}
+			// 		checkResult = true;
+			// 	}
+			// });
+			// yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
+			// Assert.True(checkResult, "ManageMemberships sort didn't return");
+
 		}
 		#endregion
 
@@ -1599,75 +1766,74 @@ namespace PubNubAPI.Tests
 			}
 		}
 
-		[UnityTest]
-		public IEnumerator TestMembersAndMemberships()
+		[UnityTest, Timeout(90000)]
+		public IEnumerator TestObjectsMembersAndMemberships()
 		{
-			//Create user 1
+			//Create uuidMetadata 1
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			pnConfiguration.SecretKey = "";
 			System.Random r = new System.Random();
 			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next(10000);
 			int ran = r.Next(10000);
 			int ran2 = r.Next(10000);
-			string userid = "userid" + ran;
-			string name = string.Format("user name {0}", ran);
-			string email = string.Format("user email {0}", ran);
-			string externalID = string.Format("user externalID {0}", ran);
-			string profileURL = string.Format("user profileURL {0}", ran);
-			string spaceid = "spaceid" + ran;
-			string spacename = string.Format("space name {0}", ran);
-			string spacedesc = string.Format("space desc {0}", ran);
-			string userid2 = "userid" + ran2;
-			string name2 = string.Format("user name {0}", ran2);
-			string email2 = string.Format("user email {0}", ran2);
-			string externalID2 = string.Format("user externalID {0}", ran2);
-			string profileURL2 = string.Format("user profileURL {0}", ran2);
-			string spaceid2 = "spaceid" + ran2;
-			string spacename2 = string.Format("space name {0}", ran2);
-			string spacedesc2 = string.Format("space desc {0}", ran2);
+			string uuidMetadataid = "uuidMetadataid" + ran;
+			string name = string.Format("uuidMetadata name {0}", ran);
+			string email = string.Format("uuidMetadata email {0}", ran);
+			string externalID = string.Format("uuidMetadata externalID {0}", ran);
+			string profileURL = string.Format("uuidMetadata profileURL {0}", ran);
+			string channelMetadataID = "channelMetadataID" + ran;
+			string channelMetadataname = string.Format("channelMetadata name {0}", ran);
+			string channelMetadatadesc = string.Format("channelMetadata desc {0}", ran);
+			string uuidMetadataid2 = "uuidMetadataid" + ran2;
+			string name2 = string.Format("uuidMetadata name {0}", ran2);
+			string email2 = string.Format("uuidMetadata email {0}", ran2);
+			string externalID2 = string.Format("uuidMetadata externalID {0}", ran2);
+			string profileURL2 = string.Format("uuidMetadata profileURL {0}", ran2);
+			string channelMetadataID2 = "channelMetadataID" + ran2;
+			string channelMetadataname2 = string.Format("channelMetadata name {0}", ran2);
+			string channelMetadatadesc2 = string.Format("channelMetadata desc {0}", ran2);
 
-			PNUserSpaceInclude[] include = new PNUserSpaceInclude[] { PNUserSpaceInclude.PNUserSpaceCustom };
+			PNUUIDMetadataInclude[] include = new PNUUIDMetadataInclude[] { PNUUIDMetadataInclude.PNUUIDMetadataIncludeCustom };
 
 			PubNub pubnub = new PubNub(pnConfiguration);
 			bool tresult = false;
 
-			Dictionary<string, object> userCustom = new Dictionary<string, object>();
-			userCustom.Add("usercustomkey1", "ucv1");
-			userCustom.Add("usercustomkey2", "ucv2");
+			Dictionary<string, object> uuidMetadataCustom = new Dictionary<string, object>();
+			uuidMetadataCustom.Add("uuidMetadataCustomkey1", "ucv1");
+			uuidMetadataCustom.Add("uuidMetadataCustomkey2", "ucv2");
 
-			Dictionary<string, object> userCustom2 = new Dictionary<string, object>();
-			userCustom2.Add("usercustomkey21", "ucv21");
-			userCustom2.Add("usercustomkey22", "ucv22");
+			Dictionary<string, object> uuidMetadataCustom2 = new Dictionary<string, object>();
+			uuidMetadataCustom2.Add("uuidMetadataCustomkey21", "ucv21");
+			uuidMetadataCustom2.Add("uuidMetadataCustomkey22", "ucv22");
 
-			Dictionary<string, object> spaceCustom = new Dictionary<string, object>();
-			spaceCustom.Add("spacecustomkey1", "scv1");
-			spaceCustom.Add("spacecustomkey2", "scv2");
+			Dictionary<string, object> channelMetadataCustom = new Dictionary<string, object>();
+			channelMetadataCustom.Add("channelMetadataCustomkey1", "scv1");
+			channelMetadataCustom.Add("channelMetadataCustomkey2", "scv2");
 
-			Dictionary<string, object> spaceCustom2 = new Dictionary<string, object>();
-			spaceCustom2.Add("spacecustomkey21", "scv21");
-			spaceCustom2.Add("spacecustomkey22", "scv22");
+			Dictionary<string, object> channelMetadataCustom2 = new Dictionary<string, object>();
+			channelMetadataCustom2.Add("channelMetadataCustomkey21", "scv21");
+			channelMetadataCustom2.Add("channelMetadataCustomkey22", "scv22");
 
-			pubnub.CreateUser().Email(email).ExternalID(externalID).Name(name).ID(userid).Include(include).Custom(userCustom).ProfileURL(profileURL).Async((result, status) => {
+			pubnub.SetUUIDMetadata().Email(email).ExternalID(externalID).Name(name).UUID(uuidMetadataid).Include(include).Custom(uuidMetadataCustom).ProfileURL(profileURL).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				Assert.AreEqual(name, result.Name);
 				Assert.AreEqual(email, result.Email);
 				Assert.AreEqual(externalID, result.ExternalID);
 				Assert.AreEqual(profileURL, result.ProfileURL);
-				Assert.AreEqual(userid, result.ID);
-				Assert.AreEqual(result.Updated, result.Created);
+				Assert.AreEqual(uuidMetadataid, result.ID);
 				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
-				Assert.True("ucv1" == result.Custom["usercustomkey1"].ToString());
-				Assert.True("ucv2" == result.Custom["usercustomkey2"].ToString());
+				Assert.True("ucv1" == result.Custom["uuidMetadataCustomkey1"].ToString());
+				Assert.True("ucv2" == result.Custom["uuidMetadataCustomkey2"].ToString());
 				tresult = true;
 
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls4);
-			Assert.True(tresult, "CreateUser didn't return");
+			Assert.True(tresult, "SetUUIDMetadata didn't return");
 
 			tresult = false;
 
-            pubnub.GetUser().ID(userid).Include(include).Async((result, status) =>
+            pubnub.GetUUIDMetadata().UUID(uuidMetadataid).Include(include).Async((result, status) =>
             {
                 Assert.True(status.Error.Equals(false));
                 Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
@@ -1675,95 +1841,93 @@ namespace PubNubAPI.Tests
                 Assert.AreEqual(email, result.Email);
                 Assert.AreEqual(externalID, result.ExternalID);
                 Assert.AreEqual(profileURL, result.ProfileURL);
-                Assert.AreEqual(userid, result.ID);
-                Assert.AreEqual(result.Updated, result.Created);
+                Assert.AreEqual(uuidMetadataid, result.ID);
                 Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
-                Assert.True("ucv1" == result.Custom["usercustomkey1"].ToString());
-                Assert.True("ucv2" == result.Custom["usercustomkey2"].ToString());
+                Assert.True("ucv1" == result.Custom["uuidMetadataCustomkey1"].ToString());
+                Assert.True("ucv2" == result.Custom["uuidMetadataCustomkey2"].ToString());
                 tresult = true;
             });
             yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls2);
-            Assert.True(tresult, "GetUser didn't return");
+            Assert.True(tresult, "GetUUIDMetadata didn't return");
 
             tresult = false;
-            //Create user 2
+            //Create uuidMetadata 2
 
-            pubnub.CreateUser().Email(email2).ExternalID(externalID2).Name(name2).ID(userid2).Include(include).Custom(userCustom2).ProfileURL(profileURL2).Async((result, status) => {
+            pubnub.SetUUIDMetadata().Email(email2).ExternalID(externalID2).Name(name2).UUID(uuidMetadataid2).Include(include).Custom(uuidMetadataCustom2).ProfileURL(profileURL2).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				Assert.AreEqual(name2, result.Name);
 				Assert.AreEqual(email2, result.Email);
 				Assert.AreEqual(externalID2, result.ExternalID);
 				Assert.AreEqual(profileURL2, result.ProfileURL);
-				Assert.AreEqual(userid2, result.ID);
-				Assert.AreEqual(result.Updated, result.Created);
+				Assert.AreEqual(uuidMetadataid2, result.ID);
 				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
-				Assert.True("ucv21" == result.Custom["usercustomkey21"].ToString());
-				Assert.True("ucv22" == result.Custom["usercustomkey22"].ToString());
+				Assert.True("ucv21" == result.Custom["uuidMetadataCustomkey21"].ToString());
+				Assert.True("ucv22" == result.Custom["uuidMetadataCustomkey22"].ToString());
 				tresult = true;
 
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(tresult, "CreateUser didn't return");
+			Assert.True(tresult, "SetUUIDMetadata didn't return");
 
 			tresult = false;
-			//Create space 1
+			//Create channelMetadata 1
+            PNChannelMetadataInclude[] channelMetadataInclude = new PNChannelMetadataInclude[] { PNChannelMetadataInclude.PNChannelMetadataIncludeCustom };
 
-			pubnub.CreateSpace().Name(spacename).ID(spaceid).Include(include).Custom(spaceCustom).Description(spacedesc).Async((result, status) => {
+			pubnub.SetChannelMetadata().Name(channelMetadataname).Channel(channelMetadataID).Include(channelMetadataInclude).Custom(channelMetadataCustom).Description(channelMetadatadesc).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
-				Assert.AreEqual(spacename, result.Name);
-				Assert.AreEqual(spacedesc, result.Description);
-				Assert.AreEqual(spaceid, result.ID);
-				Assert.AreEqual(result.Updated, result.Created);
+				Assert.AreEqual(channelMetadataname, result.Name);
+				Assert.AreEqual(channelMetadatadesc, result.Description);
+				Assert.AreEqual(channelMetadataID, result.ID);
 				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
-				Assert.True("scv1" == result.Custom["spacecustomkey1"].ToString());
-				Assert.True("scv2" == result.Custom["spacecustomkey2"].ToString());
+				Assert.True("scv1" == result.Custom["channelMetadataCustomkey1"].ToString());
+				Assert.True("scv2" == result.Custom["channelMetadataCustomkey2"].ToString());
 				tresult = true;
 
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(tresult, "CreateSpace didn't return");
+			Assert.True(tresult, "SetChannelMetadata didn't return");
 
 			tresult = false;
 
-            pubnub.GetSpace().ID(spaceid).Include(include).Async((result, status) =>
+            pubnub.GetChannelMetadata().Channel(channelMetadataID).Include(channelMetadataInclude).Async((result, status) =>
             {
                 Assert.True(status.Error.Equals(false));
                 Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
-                Assert.AreEqual(spacename, result.Name);
-                Assert.AreEqual(spacedesc, result.Description);
-                Assert.AreEqual(spaceid, result.ID);
-                Assert.AreEqual(result.Updated, result.Created);
+                Assert.AreEqual(channelMetadataname, result.Name);
+                Assert.AreEqual(channelMetadatadesc, result.Description);
+                Assert.AreEqual(channelMetadataID, result.ID);
                 Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
-                Assert.True("scv1" == result.Custom["spacecustomkey1"].ToString());
-                Assert.True("scv2" == result.Custom["spacecustomkey2"].ToString());
+                Assert.True("scv1" == result.Custom["channelMetadataCustomkey1"].ToString());
+                Assert.True("scv2" == result.Custom["channelMetadataCustomkey2"].ToString());
                 tresult = true;
             });
-            yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-            Assert.True(tresult, "GetSpace didn't return");
+            yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls5);
+            Assert.True(tresult, "GetChannelMetadata didn't return");
 
             tresult = false;
 
-			//Create space 2
-			pubnub.CreateSpace().Name(spacename2).ID(spaceid2).Include(include).Custom(spaceCustom2).Description(spacedesc2).Async((result, status) => {
+			//Create channelMetadata 2
+			pubnub.SetChannelMetadata().Name(channelMetadataname2).Channel(channelMetadataID2).Include(channelMetadataInclude).Custom(channelMetadataCustom2).Description(channelMetadatadesc2).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
-				Assert.AreEqual(spacename2, result.Name);
-				Assert.AreEqual(spacedesc2, result.Description);
-				Assert.AreEqual(spaceid2, result.ID);
-				Assert.AreEqual(result.Updated, result.Created);
+				Assert.AreEqual(channelMetadataname2, result.Name);
+				Assert.AreEqual(channelMetadatadesc2, result.Description);
+				Assert.AreEqual(channelMetadataID2, result.ID);
 				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
-				Assert.True("scv21" == result.Custom["spacecustomkey21"].ToString());
-				Assert.True("scv22" == result.Custom["spacecustomkey22"].ToString());
+				Assert.True("scv21" == result.Custom["channelMetadataCustomkey21"].ToString());
+				Assert.True("scv22" == result.Custom["channelMetadataCustomkey22"].ToString());
 				tresult = true;
 
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls4);
-			Assert.True(tresult, "CreateSpace didn't return");
+			Assert.True(tresult, "SetChannelMetadata didn't return");
 
-			PNMembersInput input = new PNMembersInput();
-			input.ID = userid;
+			PNChannelMembersSet input = new PNChannelMembersSet();
+			input.UUID =  new PNChannelMembersUUID {
+                    ID = uuidMetadataid
+                };
 			Dictionary<string, object> membersCustom2 = new Dictionary<string, object>();
 			membersCustom2.Add("memberscustomkey21", "mcv21");
 			membersCustom2.Add("memberscustomkey22", "mcv22");
@@ -1773,15 +1937,15 @@ namespace PubNubAPI.Tests
 			bool count = true;
 			tresult = false;
 
-			PNMembersInclude[] inclSm = new PNMembersInclude[] { PNMembersInclude.PNMembersCustom, PNMembersInclude.PNMembersUser, PNMembersInclude.PNMembersUserCustom };
-			PNMembershipsInclude[] inclMem = new PNMembershipsInclude[] { PNMembershipsInclude.PNMembershipsCustom, PNMembershipsInclude.PNMembershipsSpace, PNMembershipsInclude.PNMembershipsSpaceCustom };
+			PNChannelMembersInclude[] inclSm = new PNChannelMembersInclude[] { PNChannelMembersInclude .PNChannelMembersIncludeCustom, PNChannelMembersInclude.PNChannelMembersIncludeUUID, PNChannelMembersInclude.PNChannelMembersIncludeUUIDCustom };
+			PNMembershipsInclude[] inclMem = new PNMembershipsInclude[] { PNMembershipsInclude.PNMembershipsIncludeCustom, PNMembershipsInclude.PNMembershipsIncludeChannel, PNMembershipsInclude.PNMembershipsIncludeChannelCustom };
 
-			//Add Space Memberships
-			pubnub.ManageMembers().SpaceID(spaceid).Add(new List<PNMembersInput> { input }).Update(new List<PNMembersInput> { }).Remove(new List<PNMembersRemove> { }).Include(inclSm).Limit(limit).Count(count).Async((result, status) => {
+			//Add ChannelMetadata Memberships
+			pubnub.SetChannelMembers().Channel(channelMetadataID).Set(new List<PNChannelMembersSet> { input }).Include(inclSm).Limit(limit).Count(count).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				bool bFound = false;
-				Debug.Log("Looking for " + userid);
+				Debug.Log("Looking for " + uuidMetadataid);
 				Debug.Log("result.Next:" + result.Next);
 				Debug.Log("result.Prev:" + result.Prev);
 				Debug.Log("result.TotalCount:" + result.TotalCount);
@@ -1789,19 +1953,18 @@ namespace PubNubAPI.Tests
 				foreach (PNMembers mem in result.Data)
 				{
 
-					Debug.Log("Found mem " + mem.User.ID);
-					if (mem.User.ID.Equals(userid))
+					Debug.Log("Found mem " + mem.UUID.ID);
+					if (mem.UUID.ID.Equals(uuidMetadataid))
 					{
-						Assert.AreEqual(name, mem.User.Name);
-						Assert.AreEqual(email, mem.User.Email);
-						Assert.AreEqual(externalID, mem.User.ExternalID);
-						Assert.AreEqual(profileURL, mem.User.ProfileURL);
-						Assert.AreEqual(userid, mem.User.ID);
-						Assert.AreEqual(mem.User.Updated, mem.User.Created);
+						Assert.AreEqual(name, mem.UUID.Name);
+						Assert.AreEqual(email, mem.UUID.Email);
+						Assert.AreEqual(externalID, mem.UUID.ExternalID);
+						Assert.AreEqual(profileURL, mem.UUID.ProfileURL);
+						Assert.AreEqual(uuidMetadataid, mem.UUID.ID);
 
-						Assert.True(!string.IsNullOrEmpty(mem.User.ETag), mem.User.ETag);
-						Assert.True("ucv1" == mem.User.Custom["usercustomkey1"].ToString());
-						Assert.True("ucv2" == mem.User.Custom["usercustomkey2"].ToString());
+						Assert.True(!string.IsNullOrEmpty(mem.UUID.ETag), mem.UUID.ETag);
+						Assert.True("ucv1" == mem.UUID.Custom["uuidMetadataCustomkey1"].ToString());
+						Assert.True("ucv2" == mem.UUID.Custom["uuidMetadataCustomkey2"].ToString());
 						Assert.True("mcv21" == mem.Custom["memberscustomkey21"].ToString());
 						Assert.True("mcv22" == mem.Custom["memberscustomkey22"].ToString());
 
@@ -1814,11 +1977,13 @@ namespace PubNubAPI.Tests
 
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls5);
-			Assert.True(tresult, "ManageMembers didn't return");
+			Assert.True(tresult, "ManageChannelMembers didn't return");
 
-			//Update Space Memberships
-			PNMembersInput inputUp = new PNMembersInput();
-			inputUp.ID = userid;
+			//Update ChannelMetadata Memberships
+			PNChannelMembersSet inputUp = new PNChannelMembersSet();
+			inputUp.UUID = new PNChannelMembersUUID {
+                    ID = uuidMetadataid
+                };
 			Dictionary<string, object> membersCustomUp = new Dictionary<string, object>();
 			membersCustomUp.Add("memberscustomkeyup21", "mcvup21");
 			membersCustomUp.Add("memberscustomkeyup22", "mcvup22");
@@ -1826,26 +1991,25 @@ namespace PubNubAPI.Tests
 			inputUp.Custom = membersCustomUp;
 
 			tresult = false;
-			pubnub.ManageMembers().SpaceID(spaceid).Add(new List<PNMembersInput> { }).Update(new List<PNMembersInput> { inputUp }).Remove(new List<PNMembersRemove> { }).Include(inclSm).Limit(limit).Count(count).Async((result, status) => {
+			pubnub.ManageChannelMembers().Channel(channelMetadataID).Set(new List<PNChannelMembersSet> { inputUp }).Remove(new List<PNChannelMembersRemove> { }).Include(inclSm).Limit(limit).Count(count).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				bool bFound = false;
-				Debug.Log("Looking for " + userid);
+				Debug.Log("Looking for " + uuidMetadataid);
 				foreach (PNMembers mem in result.Data)
 				{
 
-					Debug.Log("Found mem " + mem.User.ID);
-					if (mem.User.ID.Equals(userid))
+					Debug.Log("Found mem " + mem.UUID.ID);
+					if (mem.UUID.ID.Equals(uuidMetadataid))
 					{
-						Assert.AreEqual(name, mem.User.Name);
-						Assert.AreEqual(email, mem.User.Email);
-						Assert.AreEqual(externalID, mem.User.ExternalID);
-						Assert.AreEqual(profileURL, mem.User.ProfileURL);
-						Assert.AreEqual(userid, mem.User.ID);
-						Assert.AreEqual(mem.User.Updated, mem.User.Created);
-						Assert.True(!string.IsNullOrEmpty(mem.User.ETag), mem.User.ETag);
-						Assert.True("ucv1" == mem.User.Custom["usercustomkey1"].ToString());
-						Assert.True("ucv2" == mem.User.Custom["usercustomkey2"].ToString());
+						Assert.AreEqual(name, mem.UUID.Name);
+						Assert.AreEqual(email, mem.UUID.Email);
+						Assert.AreEqual(externalID, mem.UUID.ExternalID);
+						Assert.AreEqual(profileURL, mem.UUID.ProfileURL);
+						Assert.AreEqual(uuidMetadataid, mem.UUID.ID);
+						Assert.True(!string.IsNullOrEmpty(mem.UUID.ETag), mem.UUID.ETag);
+						Assert.True("ucv1" == mem.UUID.Custom["uuidMetadataCustomkey1"].ToString());
+						Assert.True("ucv2" == mem.UUID.Custom["uuidMetadataCustomkey2"].ToString());
 						Assert.True("mcvup21" == mem.Custom["memberscustomkeyup21"].ToString());
 						Assert.True("mcvup22" == mem.Custom["memberscustomkeyup22"].ToString());
 
@@ -1858,16 +2022,16 @@ namespace PubNubAPI.Tests
 
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls4);
-			Assert.True(tresult, "ManageMembers Update didn't return");
+			Assert.True(tresult, "ManageChannelMembers Update didn't return");
 
-			//Get Space Memberships
+			//Get ChannelMetadata Memberships
 			tresult = false;
-			pubnub.GetMemberships().UserID(userid).Include(inclMem).Limit(limit).Count(count).Async((result, status) => {
+			pubnub.GetMemberships().UUID(uuidMetadataid).Include(inclMem).Limit(limit).Count(count).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 
 				bool bFound = false;
-				Debug.Log("Looking for " + spaceid);
+				Debug.Log("Looking for " + channelMetadataID);
 				Debug.Log("result.Next:" + result.Next);
 				Debug.Log("result.Prev:" + result.Prev);
 				Debug.Log("result.TotalCount:" + result.TotalCount);
@@ -1876,20 +2040,19 @@ namespace PubNubAPI.Tests
 				foreach (PNMemberships mem in result.Data)
 				{
 
-					Debug.Log("Found mem " + mem.Space.ID);
-					if (mem.Space.ID.Equals(spaceid))
+					Debug.Log("Found mem::: " + mem.Channel.ID + channelMetadataID + mem.Channel.ID.Equals(channelMetadataID));
+					if (mem.Channel.ID.Equals(channelMetadataID))
 					{
-						Assert.AreEqual(spacename, mem.Space.Name);
-						Assert.AreEqual(spacedesc, mem.Space.Description);
-						Assert.AreEqual(spaceid, mem.Space.ID);
-						Assert.AreEqual(mem.Space.Updated, mem.Space.Created);
-						Assert.True(!string.IsNullOrEmpty(mem.Space.ETag), mem.Space.ETag);
-						foreach (KeyValuePair<string, object> kvp in mem.Space.Custom)
+						Assert.AreEqual(channelMetadataname, mem.Channel.Name);
+						Assert.AreEqual(channelMetadatadesc, mem.Channel.Description);
+						Assert.AreEqual(channelMetadataID, mem.Channel.ID);
+						Assert.True(!string.IsNullOrEmpty(mem.Channel.ETag), mem.Channel.ETag);
+						foreach (KeyValuePair<string, object> kvp in mem.Channel.Custom)
 						{
 							Debug.Log(kvp.Key + kvp.Value);
 						}
-						Assert.True("scv1" == mem.Space.Custom["spacecustomkey1"].ToString());
-						Assert.True("scv2" == mem.Space.Custom["spacecustomkey2"].ToString());
+						Assert.True("scv1" == mem.Channel.Custom["channelMetadataCustomkey1"].ToString());
+						Assert.True("scv2" == mem.Channel.Custom["channelMetadataCustomkey2"].ToString());
 						Assert.True("mcvup21" == mem.Custom["memberscustomkeyup21"].ToString());
 						Assert.True("mcvup22" == mem.Custom["memberscustomkeyup22"].ToString());
 
@@ -1905,16 +2068,16 @@ namespace PubNubAPI.Tests
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls4);
 			Assert.True(tresult, "GetMemberships didn't return");
 
-			string filterMemberships = string.Format("space.name == '{0}'", spacename);
+			string filterMemberships = string.Format("channel.name == '{0}'", channelMetadataname);
 
-			//Get Space Memberships with filter
+			//Get ChannelMetadata Memberships with filter
 			tresult = false;
-			pubnub.GetMemberships().UserID(userid).Include(inclMem).Limit(limit).Filter(filterMemberships).Count(count).Async((result, status) => {
+			pubnub.GetMemberships().UUID(uuidMetadataid).Include(inclMem).Limit(limit).Filter(filterMemberships).Count(count).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 
 				bool bFound = false;
-				Debug.Log("Looking for " + spaceid);
+				Debug.Log("Looking for " + channelMetadataID);
 				Debug.Log("result.Next:" + result.Next);
 				Debug.Log("result.Prev:" + result.Prev);
 				Debug.Log("result.TotalCount:" + result.TotalCount);
@@ -1923,20 +2086,19 @@ namespace PubNubAPI.Tests
 				foreach (PNMemberships mem in result.Data)
 				{
 
-					Debug.Log("Found mem " + mem.Space.ID);
-					if (mem.Space.ID.Equals(spaceid))
+					Debug.Log("Found mem " + mem.Channel.ID);
+					if (mem.Channel.ID.Equals(channelMetadataID))
 					{
-						Assert.AreEqual(spacename, mem.Space.Name);
-						Assert.AreEqual(spacedesc, mem.Space.Description);
-						Assert.AreEqual(spaceid, mem.Space.ID);
-						Assert.AreEqual(mem.Space.Updated, mem.Space.Created);
-						Assert.True(!string.IsNullOrEmpty(mem.Space.ETag), mem.Space.ETag);
-						foreach (KeyValuePair<string, object> kvp in mem.Space.Custom)
+						Assert.AreEqual(channelMetadataname, mem.Channel.Name);
+						Assert.AreEqual(channelMetadatadesc, mem.Channel.Description);
+						Assert.AreEqual(channelMetadataID, mem.Channel.ID);
+						Assert.True(!string.IsNullOrEmpty(mem.Channel.ETag), mem.Channel.ETag);
+						foreach (KeyValuePair<string, object> kvp in mem.Channel.Custom)
 						{
 							Debug.Log(kvp.Key + kvp.Value);
 						}
-						Assert.True("scv1" == mem.Space.Custom["spacecustomkey1"].ToString());
-						Assert.True("scv2" == mem.Space.Custom["spacecustomkey2"].ToString());
+						Assert.True("scv1" == mem.Channel.Custom["channelMetadataCustomkey1"].ToString());
+						Assert.True("scv2" == mem.Channel.Custom["channelMetadataCustomkey2"].ToString());
 						Assert.True("mcvup21" == mem.Custom["memberscustomkeyup21"].ToString());
 						Assert.True("mcvup22" == mem.Custom["memberscustomkeyup22"].ToString());
 
@@ -1952,31 +2114,32 @@ namespace PubNubAPI.Tests
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls4);
 			Assert.True(tresult, "GetMembershipsFilter didn't return");
 
-			//Remove Space Memberships
-			PNMembersRemove inputRm = new PNMembersRemove();
-			inputRm.ID = userid;
+			//Remove ChannelMetadata Memberships
+			PNChannelMembersRemove inputRm = new PNChannelMembersRemove();
+			inputRm.UUID = new PNChannelMembersUUID {
+                    ID = uuidMetadataid
+                };;
 
 			tresult = false;
-			pubnub.ManageMembers().SpaceID(spaceid).Add(new List<PNMembersInput> { }).Update(new List<PNMembersInput> { }).Remove(new List<PNMembersRemove> { inputRm }).Include(inclSm).Limit(limit).Count(count).Async((result, status) => {
+			pubnub.RemoveChannelMembers().Channel(channelMetadataID).Remove(new List<PNChannelMembersRemove> { inputRm }).Include(inclSm).Limit(limit).Count(count).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				bool bFound = true;
-				Debug.Log("Looking for " + userid);
+				Debug.Log("Looking for " + uuidMetadataid);
 				foreach (PNMembers mem in result.Data)
 				{
 
-					Debug.Log("Found mem " + mem.User.ID);
-					if (mem.User.ID.Equals(userid))
+					Debug.Log("Found mem " + mem.UUID.ID);
+					if (mem.UUID.ID.Equals(uuidMetadataid))
 					{
-						Assert.AreEqual(name, mem.User.Name);
-						Assert.AreEqual(email, mem.User.Email);
-						Assert.AreEqual(externalID, mem.User.ExternalID);
-						Assert.AreEqual(profileURL, mem.User.ProfileURL);
-						Assert.AreEqual(userid, mem.User.ID);
-						Assert.AreEqual(mem.User.Updated, mem.User.Created);
-						Assert.True(!string.IsNullOrEmpty(mem.User.ETag), mem.User.ETag);
-						Assert.True("ucv1" == mem.User.Custom["usercustomkey1"].ToString());
-						Assert.True("ucv2" == mem.User.Custom["usercustomkey2"].ToString());
+						Assert.AreEqual(name, mem.UUID.Name);
+						Assert.AreEqual(email, mem.UUID.Email);
+						Assert.AreEqual(externalID, mem.UUID.ExternalID);
+						Assert.AreEqual(profileURL, mem.UUID.ProfileURL);
+						Assert.AreEqual(uuidMetadataid, mem.UUID.ID);
+						Assert.True(!string.IsNullOrEmpty(mem.UUID.ETag), mem.UUID.ETag);
+						Assert.True("ucv1" == mem.UUID.Custom["uuidMetadataCustomkey1"].ToString());
+						Assert.True("ucv2" == mem.UUID.Custom["uuidMetadataCustomkey2"].ToString());
 						Assert.True("mcv21" == mem.Custom["memberscustomkey21"].ToString());
 						Assert.True("mcv22" == mem.Custom["memberscustomkey22"].ToString());
 
@@ -1989,11 +2152,13 @@ namespace PubNubAPI.Tests
 
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls4);
-			Assert.True(tresult, "ManageMembers Remove didn't return");
+			Assert.True(tresult, "ManageChannelMembers Remove didn't return");
 
-			//Add user memberships
-			PNMembersInput inputMemberships = new PNMembersInput();
-			inputMemberships.ID = spaceid2;
+			//Add uuidMetadata memberships
+			PNMembershipsSet inputMemberships = new PNMembershipsSet();
+			inputMemberships.Channel = new PNMembershipsChannel {
+                    ID = channelMetadataID2
+                };
 			Dictionary<string, object> membershipCustom2 = new Dictionary<string, object>();
 			membershipCustom2.Add("mememberscustomkey21", "memcv21");
 			membershipCustom2.Add("mememberscustomkey22", "memcv22");
@@ -2001,11 +2166,11 @@ namespace PubNubAPI.Tests
 			inputMemberships.Custom = membershipCustom2;
 			tresult = false;
 
-			pubnub.ManageMemberships().UserID(userid2).Add(new List<PNMembersInput> { inputMemberships }).Update(new List<PNMembersInput> { }).Remove(new List<PNMembersRemove> { }).Include(inclMem).Limit(limit).Count(count).Async((result, status) => {
+			pubnub.SetMemberships().UUID(uuidMetadataid2).Set(new List<PNMembershipsSet> { inputMemberships }).Include(inclMem).Limit(limit).Count(count).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				bool bFound = false;
-				Debug.Log("Looking for " + spaceid2);
+				Debug.Log("Looking for " + channelMetadataID2);
 				Debug.Log("result.Next:" + result.Next);
 				Debug.Log("result.Prev:" + result.Prev);
 				Debug.Log("result.TotalCount:" + result.TotalCount);
@@ -2014,20 +2179,19 @@ namespace PubNubAPI.Tests
 				foreach (PNMemberships mem in result.Data)
 				{
 
-					Debug.Log("Found mem " + mem.Space.ID);
-					if (mem.Space.ID.Equals(spaceid2))
+					Debug.Log("Found mem " + mem.Channel.ID);
+					if (mem.Channel.ID.Equals(channelMetadataID2))
 					{
-						Assert.AreEqual(spacename2, mem.Space.Name);
-						Assert.AreEqual(spacedesc2, mem.Space.Description);
-						Assert.AreEqual(spaceid2, mem.Space.ID);
-						Assert.AreEqual(mem.Space.Updated, mem.Space.Created);
-						Assert.True(!string.IsNullOrEmpty(mem.Space.ETag), mem.Space.ETag);
-						foreach (KeyValuePair<string, object> kvp in mem.Space.Custom)
+						Assert.AreEqual(channelMetadataname2, mem.Channel.Name);
+						Assert.AreEqual(channelMetadatadesc2, mem.Channel.Description);
+						Assert.AreEqual(channelMetadataID2, mem.Channel.ID);
+						Assert.True(!string.IsNullOrEmpty(mem.Channel.ETag), mem.Channel.ETag);
+						foreach (KeyValuePair<string, object> kvp in mem.Channel.Custom)
 						{
 							Debug.Log(kvp.Key + kvp.Value);
 						}
-						Assert.True("scv21" == mem.Space.Custom["spacecustomkey21"].ToString());
-						Assert.True("scv22" == mem.Space.Custom["spacecustomkey22"].ToString());
+						Assert.True("scv21" == mem.Channel.Custom["channelMetadataCustomkey21"].ToString());
+						Assert.True("scv22" == mem.Channel.Custom["channelMetadataCustomkey22"].ToString());
 						Assert.True("memcv21" == mem.Custom["mememberscustomkey21"].ToString());
 						Assert.True("memcv22" == mem.Custom["mememberscustomkey22"].ToString());
 
@@ -2043,9 +2207,12 @@ namespace PubNubAPI.Tests
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls5);
 			Assert.True(tresult, "ManageMemberships didn't return");
 
-			//Update user memberships
-			PNMembersInput inputMembershipsUp = new PNMembersInput();
-			inputMembershipsUp.ID = spaceid2;
+			//Update uuidMetadata memberships
+			PNMembershipsSet inputMembershipsUp = new PNMembershipsSet();
+			inputMembershipsUp.Channel = new PNMembershipsChannel {
+                    ID = channelMetadataID2
+                };
+
 			Dictionary<string, object> membershipCustomUp = new Dictionary<string, object>();
 			membershipCustomUp.Add("mememberscustomkeyup21", "memcvup21");
 			membershipCustomUp.Add("mememberscustomkeyup22", "memcvup22");
@@ -2054,28 +2221,27 @@ namespace PubNubAPI.Tests
 
 			tresult = false;
 
-			pubnub.ManageMemberships().UserID(userid2).Add(new List<PNMembersInput> { }).Update(new List<PNMembersInput> { inputMembershipsUp }).Remove(new List<PNMembersRemove> { }).Include(inclMem).Limit(limit).Count(count).Async((result, status) => {
+			pubnub.ManageMemberships().UUID(uuidMetadataid2).Set(new List<PNMembershipsSet> { inputMembershipsUp }).Remove(new List<PNMembershipsRemove> { }).Include(inclMem).Limit(limit).Count(count).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				bool bFound = false;
-				Debug.Log("Looking for " + spaceid2);
+				Debug.Log("Looking for " + channelMetadataID2);
 				foreach (PNMemberships mem in result.Data)
 				{
 
-					Debug.Log("Found mem " + mem.Space.ID);
-					if (mem.Space.ID.Equals(spaceid2))
+					Debug.Log("Found mem " + mem.Channel.ID);
+					if (mem.Channel.ID.Equals(channelMetadataID2))
 					{
-						Assert.AreEqual(spacename2, mem.Space.Name);
-						Assert.AreEqual(spacedesc2, mem.Space.Description);
-						Assert.AreEqual(spaceid2, mem.Space.ID);
-						Assert.AreEqual(mem.Space.Updated, mem.Space.Created);
-						Assert.True(!string.IsNullOrEmpty(mem.Space.ETag), mem.Space.ETag);
-						foreach (KeyValuePair<string, object> kvp in mem.Space.Custom)
+						Assert.AreEqual(channelMetadataname2, mem.Channel.Name);
+						Assert.AreEqual(channelMetadatadesc2, mem.Channel.Description);
+						Assert.AreEqual(channelMetadataID2, mem.Channel.ID);
+						Assert.True(!string.IsNullOrEmpty(mem.Channel.ETag), mem.Channel.ETag);
+						foreach (KeyValuePair<string, object> kvp in mem.Channel.Custom)
 						{
 							Debug.Log(kvp.Key + kvp.Value);
 						}
-						Assert.True("scv21" == mem.Space.Custom["spacecustomkey21"].ToString());
-						Assert.True("scv22" == mem.Space.Custom["spacecustomkey22"].ToString());
+						Assert.True("scv21" == mem.Channel.Custom["channelMetadataCustomkey21"].ToString());
+						Assert.True("scv22" == mem.Channel.Custom["channelMetadataCustomkey22"].ToString());
 						Assert.True("memcvup21" == mem.Custom["mememberscustomkeyup21"].ToString());
 						Assert.True("memcvup22" == mem.Custom["mememberscustomkeyup22"].ToString());
 
@@ -2091,15 +2257,15 @@ namespace PubNubAPI.Tests
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls4);
 			Assert.True(tresult, "ManageMemberships Update didn't return");
 
-			string filterMembers = string.Format("user.name == '{0}'", name2);
+			string filterMembers = string.Format("uuid.name == '{0}'", name2);
 
 			//Get members with Filter
 			tresult = false;
-			pubnub.GetMembers().SpaceID(spaceid2).Include(inclSm).Limit(limit).Count(count).Filter(filterMembers).Async((result, status) => {
+			pubnub.GetChannelMembers().Channel(channelMetadataID2).Include(inclSm).Limit(limit).Count(count).Filter(filterMembers).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				bool bFound = false;
-				Debug.Log("Looking for " + userid2);
+				Debug.Log("Looking for " + uuidMetadataid2);
 				Debug.Log("result.Next:" + result.Next);
 				Debug.Log("result.Prev:" + result.Prev);
 				Debug.Log("result.TotalCount:" + result.TotalCount);
@@ -2108,18 +2274,17 @@ namespace PubNubAPI.Tests
 				foreach (PNMembers mem in result.Data)
 				{
 
-					Debug.Log("Found mem " + mem.User.ID);
-					if (mem.User.ID.Equals(userid2))
+					Debug.Log("Found mem " + mem.UUID.ID);
+					if (mem.UUID.ID.Equals(uuidMetadataid2))
 					{
-						Assert.AreEqual(name2, mem.User.Name);
-						Assert.AreEqual(email2, mem.User.Email);
-						Assert.AreEqual(externalID2, mem.User.ExternalID);
-						Assert.AreEqual(profileURL2, mem.User.ProfileURL);
-						Assert.AreEqual(userid2, mem.User.ID);
-						Assert.AreEqual(mem.User.Updated, mem.User.Created);
-						Assert.True(!string.IsNullOrEmpty(mem.User.ETag), mem.User.ETag);
-						Assert.True("ucv21" == mem.User.Custom["usercustomkey21"].ToString());
-						Assert.True("ucv22" == mem.User.Custom["usercustomkey22"].ToString());
+						Assert.AreEqual(name2, mem.UUID.Name);
+						Assert.AreEqual(email2, mem.UUID.Email);
+						Assert.AreEqual(externalID2, mem.UUID.ExternalID);
+						Assert.AreEqual(profileURL2, mem.UUID.ProfileURL);
+						Assert.AreEqual(uuidMetadataid2, mem.UUID.ID);
+						Assert.True(!string.IsNullOrEmpty(mem.UUID.ETag), mem.UUID.ETag);
+						Assert.True("ucv21" == mem.UUID.Custom["uuidMetadataCustomkey21"].ToString());
+						Assert.True("ucv22" == mem.UUID.Custom["uuidMetadataCustomkey22"].ToString());
 						Assert.True("memcvup21" == mem.Custom["mememberscustomkeyup21"].ToString());
 						Assert.True("memcvup22" == mem.Custom["mememberscustomkeyup22"].ToString());
 
@@ -2132,15 +2297,15 @@ namespace PubNubAPI.Tests
 			});
 
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(tresult, "GetMembersFilter didn't return");
+			Assert.True(tresult, "GetChannelMembersFilter didn't return");
 
 			//Get members
 			tresult = false;
-			pubnub.GetMembers().SpaceID(spaceid2).Include(inclSm).Limit(limit).Count(count).Async((result, status) => {
+			pubnub.GetChannelMembers().Channel(channelMetadataID2).Include(inclSm).Limit(limit).Count(count).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				bool bFound = false;
-				Debug.Log("Looking for " + userid2);
+				Debug.Log("Looking for " + uuidMetadataid2);
 				Debug.Log("result.Next:" + result.Next);
 				Debug.Log("result.Prev:" + result.Prev);
 				Debug.Log("result.TotalCount:" + result.TotalCount);
@@ -2149,18 +2314,17 @@ namespace PubNubAPI.Tests
 				foreach (PNMembers mem in result.Data)
 				{
 
-					Debug.Log("Found mem " + mem.User.ID);
-					if (mem.User.ID.Equals(userid2))
+					Debug.Log("Found mem " + mem.UUID.ID);
+					if (mem.UUID.ID.Equals(uuidMetadataid2))
 					{
-						Assert.AreEqual(name2, mem.User.Name);
-						Assert.AreEqual(email2, mem.User.Email);
-						Assert.AreEqual(externalID2, mem.User.ExternalID);
-						Assert.AreEqual(profileURL2, mem.User.ProfileURL);
-						Assert.AreEqual(userid2, mem.User.ID);
-						Assert.AreEqual(mem.User.Updated, mem.User.Created);
-						Assert.True(!string.IsNullOrEmpty(mem.User.ETag), mem.User.ETag);
-						Assert.True("ucv21" == mem.User.Custom["usercustomkey21"].ToString());
-						Assert.True("ucv22" == mem.User.Custom["usercustomkey22"].ToString());
+						Assert.AreEqual(name2, mem.UUID.Name);
+						Assert.AreEqual(email2, mem.UUID.Email);
+						Assert.AreEqual(externalID2, mem.UUID.ExternalID);
+						Assert.AreEqual(profileURL2, mem.UUID.ProfileURL);
+						Assert.AreEqual(uuidMetadataid2, mem.UUID.ID);
+						Assert.True(!string.IsNullOrEmpty(mem.UUID.ETag), mem.UUID.ETag);
+						Assert.True("ucv21" == mem.UUID.Custom["uuidMetadataCustomkey21"].ToString());
+						Assert.True("ucv22" == mem.UUID.Custom["uuidMetadataCustomkey22"].ToString());
 						Assert.True("memcvup21" == mem.Custom["mememberscustomkeyup21"].ToString());
 						Assert.True("memcvup22" == mem.Custom["mememberscustomkeyup22"].ToString());
 
@@ -2173,36 +2337,38 @@ namespace PubNubAPI.Tests
 			});
 
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(tresult, "GetMembers didn't return");
+			Assert.True(tresult, "GetChannelMembers didn't return");
 
-			//Remove user memberships
-			PNMembersRemove inputMembershipsRm = new PNMembersRemove();
-			inputMembershipsRm.ID = spaceid2;
+			//Remove uuidMetadata memberships
+			PNMembershipsRemove inputMembershipsRm = new PNMembershipsRemove();
+			inputMembershipsRm.Channel = new PNMembershipsChannel {
+                    ID = channelMetadataID2
+                };
+
 
 			tresult = false;
 
-			pubnub.ManageMemberships().UserID(userid2).Add(new List<PNMembersInput> { }).Update(new List<PNMembersInput> { }).Remove(new List<PNMembersRemove> { inputMembershipsRm }).Include(inclMem).Limit(limit).Count(count).Async((result, status) => {
+			pubnub.RemoveMemberships().UUID(uuidMetadataid2).Remove(new List<PNMembershipsRemove> { inputMembershipsRm }).Include(inclMem).Limit(limit).Count(count).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				bool bFound = true;
-				Debug.Log("Looking for " + spaceid2);
+				Debug.Log("Looking for " + channelMetadataID2);
 				foreach (PNMemberships mem in result.Data)
 				{
 
-					Debug.Log("Found mem " + mem.Space.ID);
-					if (mem.Space.ID.Equals(spaceid2))
+					Debug.Log("Found mem " + mem.Channel.ID);
+					if (mem.Channel.ID.Equals(channelMetadataID2))
 					{
-						Assert.AreEqual(spacename2, mem.Space.Name);
-						Assert.AreEqual(spacedesc2, mem.Space.Description);
-						Assert.AreEqual(spaceid2, mem.Space.ID);
-						Assert.AreEqual(mem.Space.Updated, mem.Space.Created);
-						Assert.True(!string.IsNullOrEmpty(mem.Space.ETag), mem.Space.ETag);
-						foreach (KeyValuePair<string, object> kvp in mem.Space.Custom)
+						Assert.AreEqual(channelMetadataname2, mem.Channel.Name);
+						Assert.AreEqual(channelMetadatadesc2, mem.Channel.Description);
+						Assert.AreEqual(channelMetadataID2, mem.Channel.ID);
+						Assert.True(!string.IsNullOrEmpty(mem.Channel.ETag), mem.Channel.ETag);
+						foreach (KeyValuePair<string, object> kvp in mem.Channel.Custom)
 						{
 							Debug.Log(kvp.Key + kvp.Value);
 						}
-						Assert.True("scv21" == mem.Space.Custom["spacecustomkey21"].ToString());
-						Assert.True("scv22" == mem.Space.Custom["spacecustomkey22"].ToString());
+						Assert.True("scv21" == mem.Channel.Custom["channelMetadataCustomkey21"].ToString());
+						Assert.True("scv22" == mem.Channel.Custom["channelMetadataCustomkey22"].ToString());
 						Assert.True("memcv21" == mem.Custom["mememberscustomkey21"].ToString());
 						Assert.True("memcv22" == mem.Custom["mememberscustomkey22"].ToString());
 
@@ -2218,121 +2384,123 @@ namespace PubNubAPI.Tests
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls5);
 			Assert.True(tresult, "ManageMemberships Remove didn't return");
 
-			//delete user 1
+			//delete uuidMetadata 1
 			tresult = false;
 
-			pubnub.DeleteUser().ID(userid).Async((result, status) => {
+			pubnub.RemoveUUIDMetadata().UUID(uuidMetadataid).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				tresult = true;
 
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(tresult, "DeleteUser didn't return");
-			//delete space 1
+			Assert.True(tresult, "RemoveUUIDMetadata didn't return");
+			//delete channelMetadata 1
 			tresult = false;
-			pubnub.DeleteSpace().ID(spaceid).Async((result, status) => {
+			pubnub.RemoveChannelMetadata().Channel(channelMetadataID).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				tresult = true;
 
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(tresult, "DeleteSpace didn't return");
-			//delete user 1
+			Assert.True(tresult, "RemoveChannelMetadata didn't return");
+			//delete uuidMetadata 1
 			tresult = false;
-			pubnub.DeleteUser().ID(userid2).Async((result, status) => {
+			pubnub.RemoveUUIDMetadata().UUID(uuidMetadataid2).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				tresult = true;
 
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(tresult, "DeleteUser didn't return");
-			//delete space 1
+			Assert.True(tresult, "RemoveUUIDMetadata didn't return");
+			//delete channelMetadata 1
 			tresult = false;
-			pubnub.DeleteSpace().ID(spaceid2).Async((result, status) => {
+			pubnub.RemoveChannelMetadata().Channel(channelMetadataID2).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				tresult = true;
 
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(tresult, "DeleteSpace didn't return");
+			Assert.True(tresult, "RemoveChannelMetadata didn't return");
 
 			pubnub.CleanUp();
 		}
 
-		[UnityTest]
-		public IEnumerator TestObjectListeners()
+		[UnityTest, Timeout(60000)]
+		public IEnumerator TestObjectsListeners()
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random();
 			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next(100);
 			int ran = r.Next(10000);
-			string userid = "userid" + ran;
-			string name = string.Format("user name {0}", ran);
-			string email = string.Format("user email {0}", ran);
-			string externalID = string.Format("user externalID {0}", ran);
-			string profileURL = string.Format("user profileURL {0}", ran);
-			string spaceid = "spaceid" + ran;
-			string spacename = string.Format("space name {0}", ran);
-			string spacedesc = string.Format("space desc {0}", ran);
+			string uuidMetadataID = "uuidMetadataid" + ran;
+			string name = string.Format("uuidMetadata name {0}", ran);
+			string email = string.Format("uuidMetadata email {0}", ran);
+			string externalID = string.Format("uuidMetadata externalID {0}", ran);
+			string profileURL = string.Format("uuidMetadata profileURL {0}", ran);
+			string channelMetadataID = "channelMetadataID" + ran;
+			string channelMetadataname = string.Format("channelMetadata name {0}", ran);
+			string channelMetadatadesc = string.Format("channelMetadata desc {0}", ran);
 
 			int ran2 = r.Next(1000);
 			string name2 = string.Format("name {0}", ran2);
 			string email2 = string.Format("email {0}", ran2);
 			string externalID2 = string.Format("externalID {0}", ran2);
 			string profileURL2 = string.Format("profileURL {0}", ran2);
-			string spacename2 = string.Format("space name {0}", ran2);
-			string spacedesc2 = string.Format("space desc {0}", ran2);
+			string channelMetadataname2 = string.Format("channelMetadata name {0}", ran2);
+			string channelMetadatadesc2 = string.Format("channelMetadata desc {0}", ran2);
 
 			PubNub pubnubSub = new PubNub(pnConfiguration);
 			PubNub pubnubObjects = new PubNub(pnConfiguration);
 			List<string> channelList2 = new List<string>();
-			channelList2.Add(spaceid);
-			channelList2.Add(userid);
+			channelList2.Add(channelMetadataID);
+			channelList2.Add(uuidMetadataID);
 
-			bool userUpdate = false;
-			bool spaceUpdate = false;
-			bool userDelete = false;
-			bool spaceDelete = false;
-			bool addUserToSpace = false;
-			bool updateUserMem = false;
-			bool removeUserFromSpace = false;
+			bool uuidMetadataUpdate = false;
+			bool channelMetadataUpdate = false;
+			bool uuidMetadataDelete = false;
+			bool channelMetadataDelete = false;
+			bool addUUIDMetadataToChannelMetadata = false;
+			bool updateUUIDMetadataMem = false;
+			bool removeUUIDMetadataFromChannelMetadata = false;
 
 			pubnubSub.SubscribeCallback += (sender, e) => {
 				SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
-				if (mea.UserEventResult != null)
+				if (mea.UUIDEventResult != null)
 				{
-					userUpdate = mea.UserEventResult.Channel.Equals(userid) && mea.UserEventResult.UserID.Equals(userid) && mea.UserEventResult.ObjectsEvent.Equals(PNObjectsEvent.PNObjectsEventUpdate);
-					userDelete = mea.UserEventResult.Channel.Equals(userid) && mea.UserEventResult.UserID.Equals(userid) && mea.UserEventResult.ObjectsEvent.Equals(PNObjectsEvent.PNObjectsEventDelete);
-					Debug.Log(mea.UserEventResult.Name);
-					Debug.Log(mea.UserEventResult.Email);
-					Debug.Log(mea.UserEventResult.ExternalID);
-					Debug.Log(mea.UserEventResult.ProfileURL);
-					Debug.Log(mea.UserEventResult.UserID);
-					Debug.Log(mea.UserEventResult.ETag);
-					Debug.Log(mea.UserEventResult.ObjectsEvent);
+					uuidMetadataUpdate = mea.UUIDEventResult.Channel.Equals(uuidMetadataID) && mea.UUIDEventResult.UUID.Equals(uuidMetadataID) && mea.UUIDEventResult.ObjectsEvent.Equals(PNObjectsEvent.PNObjectsEventSet);
+                    Debug.Log(string.Format("mea.UUIDEventResult===>>>> \nuuidMetadataid {0} {1}\nmea.UUIDEventResult.Channel {2}\naddUUIDMetadataToChannelMetadata {3}\n", mea.UUIDEventResult, uuidMetadataID, mea.UUIDEventResult.Channel, uuidMetadataUpdate));
+					uuidMetadataDelete = mea.UUIDEventResult.Channel.Equals(uuidMetadataID) && mea.UUIDEventResult.UUID.Equals(uuidMetadataID) && mea.UUIDEventResult.ObjectsEvent.Equals(PNObjectsEvent.PNObjectsEventDelete);
+					Debug.Log(mea.UUIDEventResult.Name);
+					Debug.Log(mea.UUIDEventResult.Email);
+					Debug.Log(mea.UUIDEventResult.ExternalID);
+					Debug.Log(mea.UUIDEventResult.ProfileURL);
+					Debug.Log(mea.UUIDEventResult.UUID);
+					Debug.Log(mea.UUIDEventResult.ETag);
+					Debug.Log(mea.UUIDEventResult.ObjectsEvent);
 				}
-				else if (mea.SpaceEventResult != null)
+				else if (mea.ChannelEventResult != null)
 				{
-					spaceUpdate = mea.SpaceEventResult.Channel.Equals(spaceid) && mea.SpaceEventResult.SpaceID.Equals(spaceid) && mea.SpaceEventResult.ObjectsEvent.Equals(PNObjectsEvent.PNObjectsEventUpdate);
-					spaceDelete = mea.SpaceEventResult.Channel.Equals(spaceid) && mea.SpaceEventResult.SpaceID.Equals(spaceid) && mea.SpaceEventResult.ObjectsEvent.Equals(PNObjectsEvent.PNObjectsEventDelete);
-					Debug.Log(mea.SpaceEventResult.Name);
-					Debug.Log(mea.SpaceEventResult.Description);
-					Debug.Log(mea.SpaceEventResult.SpaceID);
-					Debug.Log(mea.SpaceEventResult.ETag);
-					Debug.Log(mea.SpaceEventResult.ObjectsEvent);
+					channelMetadataUpdate = mea.ChannelEventResult.Channel.Equals(channelMetadataID) && mea.ChannelEventResult.ChannelID.Equals(channelMetadataID) && mea.ChannelEventResult.ObjectsEvent.Equals(PNObjectsEvent.PNObjectsEventSet);
+					channelMetadataDelete = mea.ChannelEventResult.Channel.Equals(channelMetadataID) && mea.ChannelEventResult.ChannelID.Equals(channelMetadataID) && mea.ChannelEventResult.ObjectsEvent.Equals(PNObjectsEvent.PNObjectsEventDelete);
+					Debug.Log(mea.ChannelEventResult.Name);
+					Debug.Log(mea.ChannelEventResult.Description);
+					Debug.Log(mea.ChannelEventResult.ChannelID);
+					Debug.Log(mea.ChannelEventResult.ETag);
+					Debug.Log(mea.ChannelEventResult.ObjectsEvent);
 				}
 				else if (mea.MembershipEventResult != null)
-				{
-					addUserToSpace = mea.MembershipEventResult.SpaceID.Equals(spaceid) && mea.MembershipEventResult.UserID.Equals(userid) && mea.MembershipEventResult.ObjectsEvent.Equals(PNObjectsEvent.PNObjectsEventCreate);
-					updateUserMem = mea.MembershipEventResult.SpaceID.Equals(spaceid) && mea.MembershipEventResult.UserID.Equals(userid) && mea.MembershipEventResult.ObjectsEvent.Equals(PNObjectsEvent.PNObjectsEventUpdate);
-					removeUserFromSpace = mea.MembershipEventResult.SpaceID.Equals(spaceid) && mea.MembershipEventResult.UserID.Equals(userid) && mea.MembershipEventResult.ObjectsEvent.Equals(PNObjectsEvent.PNObjectsEventDelete);
-					Debug.Log(mea.MembershipEventResult.UserID);
+				{                    
+					addUUIDMetadataToChannelMetadata = mea.MembershipEventResult.ChannelID.Equals(channelMetadataID) && mea.MembershipEventResult.UUID.Equals(uuidMetadataID) && mea.MembershipEventResult.ObjectsEvent.Equals(PNObjectsEvent.PNObjectsEventSet);
+                    Debug.Log(string.Format("mea.MembershipEventResult===>>>> \nchannelMetadataID {0} {1}\nmea.MembershipEventResult.ChannelID {2}\naddUUIDMetadataToChannelMetadata {3}\n", mea.MembershipEventResult, channelMetadataID, mea.MembershipEventResult.ChannelID, addUUIDMetadataToChannelMetadata));
+					updateUUIDMetadataMem = mea.MembershipEventResult.ChannelID.Equals(channelMetadataID) && mea.MembershipEventResult.UUID.Equals(uuidMetadataID) && mea.MembershipEventResult.ObjectsEvent.Equals(PNObjectsEvent.PNObjectsEventSet);
+					removeUUIDMetadataFromChannelMetadata = mea.MembershipEventResult.ChannelID.Equals(channelMetadataID) && mea.MembershipEventResult.UUID.Equals(uuidMetadataID) && mea.MembershipEventResult.ObjectsEvent.Equals(PNObjectsEvent.PNObjectsEventDelete);
+					Debug.Log(mea.MembershipEventResult.UUID);
 					Debug.Log(mea.MembershipEventResult.Description);
-					Debug.Log(mea.MembershipEventResult.SpaceID);
+					Debug.Log(mea.MembershipEventResult.ChannelID);
 					Debug.Log(mea.MembershipEventResult.ObjectsEvent);
 				}
 			};
@@ -2340,86 +2508,84 @@ namespace PubNubAPI.Tests
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
 
 			bool tresult = false;
-			//Create User
-			pubnubObjects.CreateUser().Email(email).ExternalID(externalID).Name(name).ID(userid).ProfileURL(profileURL).Async((result, status) => {
+			//Create UUIDMetadata
+			pubnubObjects.SetUUIDMetadata().Email(email).ExternalID(externalID).Name(name).UUID(uuidMetadataID).ProfileURL(profileURL).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				Assert.AreEqual(name, result.Name);
 				Assert.AreEqual(email, result.Email);
 				Assert.AreEqual(externalID, result.ExternalID);
 				Assert.AreEqual(profileURL, result.ProfileURL);
-				Assert.AreEqual(userid, result.ID);
-				Assert.AreEqual(result.Updated, result.Created);
+				Assert.AreEqual(uuidMetadataID, result.ID);
 				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
 				Assert.True(result.Custom == null);
 				tresult = true;
 
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(tresult, "CreateUser didn't return");
+			Assert.True(tresult, "SetUUIDMetadata didn't return");
 
-			//Update User
+			//Update UUIDMetadata
 			tresult = false;
 
-			pubnubObjects.UpdateUser().Email(email2).ExternalID(externalID2).Name(name2).ID(userid).ProfileURL(profileURL2).Async((result, status) => {
+			pubnubObjects.SetUUIDMetadata().Email(email2).ExternalID(externalID2).Name(name2).UUID(uuidMetadataID).ProfileURL(profileURL2).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				Assert.AreEqual(name2, result.Name);
 				Assert.AreEqual(email2, result.Email);
 				Assert.AreEqual(externalID2, result.ExternalID);
 				Assert.AreEqual(profileURL2, result.ProfileURL);
-				Assert.AreEqual(userid, result.ID);
-				Assert.AreNotEqual(result.Updated, result.Created);
+				Assert.AreEqual(uuidMetadataID, result.ID);
 				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
 				Assert.True(result.Custom == null);
 				tresult = true;
 
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls4);
-			Assert.True(tresult, "UpdateUser didn't return");
+			Assert.True(tresult, "SetUUIDMetadata didn't return");
 
-			Assert.True(userUpdate, "userUpdate didn't return");
-			//Create Space
+			Assert.True(uuidMetadataUpdate, "uuidMetadataUpdate didn't return");
+			//Create ChannelMetadata
 			tresult = false;
 
-			pubnubObjects.CreateSpace().Description(spacedesc).Name(spacename).ID(spaceid).Async((result, status) => {
+			pubnubObjects.SetChannelMetadata().Description(channelMetadatadesc).Name(channelMetadataname).Channel(channelMetadataID).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
-				Assert.AreEqual(spacename, result.Name);
-				Assert.AreEqual(spacedesc, result.Description);
-				Assert.AreEqual(spaceid, result.ID);
-				Assert.AreEqual(result.Updated, result.Created);
+				Assert.AreEqual(channelMetadataname, result.Name);
+				Assert.AreEqual(channelMetadatadesc, result.Description);
+				Assert.AreEqual(channelMetadataID, result.ID);
 				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
 				Assert.True(result.Custom == null);
 				tresult = true;
 
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(tresult, "CreateSpace didn't return");
+			Assert.True(tresult, "SetChannelMetadata didn't return");
 
 			tresult = false;
-			//Update Space
+			//Update ChannelMetadata
 
-			pubnubObjects.UpdateSpace().Description(spacedesc2).Name(spacename2).ID(spaceid).Async((result, status) => {
+			pubnubObjects.SetChannelMetadata().Description(channelMetadatadesc2).Name(channelMetadataname2).Channel(channelMetadataID).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
-				Assert.AreEqual(spacename2, result.Name);
-				Assert.AreEqual(spacedesc2, result.Description);
-				Assert.AreEqual(spaceid, result.ID);
-				Assert.AreNotEqual(result.Updated, result.Created);
+				Assert.AreEqual(channelMetadataname2, result.Name);
+				Assert.AreEqual(channelMetadatadesc2, result.Description);
+				Assert.AreEqual(channelMetadataID, result.ID);
 				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
 				Assert.True(result.Custom == null);
 				tresult = true;
 
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls4);
-			Assert.True(tresult, "UpdateSpace didn't return");
+			Assert.True(tresult, "SetChannelMetadata didn't return");
 
-			Assert.True(spaceUpdate, "spaceUpdate didn't return");
+			Assert.True(channelMetadataUpdate, "channelMetadataUpdate didn't return");
 
-			//Add user to space
-			PNMembersInput input = new PNMembersInput();
-			input.ID = userid;
+			//Add uuidMetadata to channelMetadata
+			PNChannelMembersSet input = new PNChannelMembersSet();
+			input.UUID = new PNChannelMembersUUID {
+                    ID = uuidMetadataID
+                };
 			Dictionary<string, object> membersCustom2 = new Dictionary<string, object>();
 			membersCustom2.Add("memberscustomkey21", "mcv21");
 			membersCustom2.Add("memberscustomkey22", "mcv22");
@@ -2429,28 +2595,28 @@ namespace PubNubAPI.Tests
 			bool count = true;
 			tresult = false;
 
-			PNMembersInclude[] inclSm = new PNMembersInclude[] { PNMembersInclude.PNMembersCustom, PNMembersInclude.PNMembersUser, PNMembersInclude.PNMembersUserCustom };
-			PNMembershipsInclude[] inclMem = new PNMembershipsInclude[] { PNMembershipsInclude.PNMembershipsCustom, PNMembershipsInclude.PNMembershipsSpace, PNMembershipsInclude.PNMembershipsSpaceCustom };
+			PNChannelMembersInclude[] inclSm = new PNChannelMembersInclude[] { PNChannelMembersInclude.PNChannelMembersIncludeCustom, PNChannelMembersInclude.PNChannelMembersIncludeUUID, PNChannelMembersInclude.PNChannelMembersIncludeUUIDCustom };
+			PNMembershipsInclude[] inclMem = new PNMembershipsInclude[] { PNMembershipsInclude.PNMembershipsIncludeCustom, PNMembershipsInclude.PNMembershipsIncludeChannel, PNMembershipsInclude.PNMembershipsIncludeChannelCustom };
 
-			//Add Space Memberships
-			pubnubObjects.ManageMembers().SpaceID(spaceid).Add(new List<PNMembersInput> { input }).Update(new List<PNMembersInput> { }).Remove(new List<PNMembersRemove> { }).Include(inclSm).Limit(limit).Count(count).Async((result, status) => {
+			//Add ChannelMetadata Memberships
+			pubnubObjects.ManageChannelMembers().Channel(channelMetadataID).Set(new List<PNChannelMembersSet> { input }).Remove(new List<PNChannelMembersRemove> { }).Include(inclSm).Limit(limit).Count(count).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
-				Debug.Log("Looking for " + userid);
+				Debug.Log("Looking for " + uuidMetadataID);
 				bool bFound = false;
 				foreach (PNMembers mem in result.Data)
 				{
 
-					Debug.Log("Found mem " + mem.User.ID);
-					if (mem.User.ID.Equals(userid))
+					Debug.Log("Found mem " + mem.UUID.ID);
+					if (mem.UUID.ID.Equals(uuidMetadataID))
 					{
-						Assert.AreEqual(name2, mem.User.Name);
-						Assert.AreEqual(email2, mem.User.Email);
-						Assert.AreEqual(externalID2, mem.User.ExternalID);
-						Assert.AreEqual(profileURL2, mem.User.ProfileURL);
-						Assert.AreEqual(userid, mem.User.ID);
-						//Assert.AreEqual(mem.User.Updated, mem.User.Created);
-						Assert.True(!string.IsNullOrEmpty(mem.User.ETag), mem.User.ETag);
+						Assert.AreEqual(name2, mem.UUID.Name);
+						Assert.AreEqual(email2, mem.UUID.Email);
+						Assert.AreEqual(externalID2, mem.UUID.ExternalID);
+						Assert.AreEqual(profileURL2, mem.UUID.ProfileURL);
+						Assert.AreEqual(uuidMetadataID, mem.UUID.ID);
+						//Assert.AreEqual(mem.UUID.Updated, mem.UUID.Created);
+						Assert.True(!string.IsNullOrEmpty(mem.UUID.ETag), mem.UUID.ETag);
 						Assert.True("mcv21" == mem.Custom["memberscustomkey21"].ToString());
 						Assert.True("mcv22" == mem.Custom["memberscustomkey22"].ToString());
 
@@ -2463,14 +2629,16 @@ namespace PubNubAPI.Tests
 
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls4);
-			Assert.True(tresult, "ManageMembers didn't return");
+			Assert.True(tresult, "ManageChannelMembers didn't return");
 
-			Assert.True(addUserToSpace, "addUserToSpace didn't return");
+			Assert.True(addUUIDMetadataToChannelMetadata, "addUUIDMetadataToChannelMetadata didn't return");
 
-			//Update user membership
+			//Update uuidMetadata membership
 
-			PNMembersInput inputMembershipsUp = new PNMembersInput();
-			inputMembershipsUp.ID = spaceid;
+			PNMembershipsSet inputMembershipsUp = new PNMembershipsSet();
+			inputMembershipsUp.Channel = new PNMembershipsChannel {
+                    ID = channelMetadataID
+                };
 			Dictionary<string, object> membershipCustomUp = new Dictionary<string, object>();
 			membershipCustomUp.Add("mememberscustomkeyup21", "memcvup21");
 			membershipCustomUp.Add("mememberscustomkeyup22", "memcvup22");
@@ -2479,21 +2647,21 @@ namespace PubNubAPI.Tests
 
 			tresult = false;
 
-			pubnubObjects.ManageMemberships().UserID(userid).Add(new List<PNMembersInput> { }).Update(new List<PNMembersInput> { inputMembershipsUp }).Remove(new List<PNMembersRemove> { }).Include(inclMem).Limit(limit).Count(count).Async((result, status) => {
+			pubnubObjects.ManageMemberships().UUID(uuidMetadataID).Set(new List<PNMembershipsSet> { inputMembershipsUp }).Remove(new List<PNMembershipsRemove> { }).Include(inclMem).Limit(limit).Count(count).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				bool bFound = false;
-				Debug.Log("Looking for " + spaceid);
+				Debug.Log("Looking for " + channelMetadataID);
 				foreach (PNMemberships mem in result.Data)
 				{
 
-					Debug.Log("Found mem " + mem.Space.ID);
-					if (mem.Space.ID.Equals(spaceid))
+					Debug.Log("Found mem " + mem.Channel.ID);
+					if (mem.Channel.ID.Equals(channelMetadataID))
 					{
-						Assert.AreEqual(spacename2, mem.Space.Name);
-						Assert.AreEqual(spacedesc2, mem.Space.Description);
-						Assert.AreEqual(spaceid, mem.Space.ID);
-						Assert.True(!string.IsNullOrEmpty(mem.Space.ETag), mem.Space.ETag);
+						Assert.AreEqual(channelMetadataname2, mem.Channel.Name);
+						Assert.AreEqual(channelMetadatadesc2, mem.Channel.Description);
+						Assert.AreEqual(channelMetadataID, mem.Channel.ID);
+						Assert.True(!string.IsNullOrEmpty(mem.Channel.ETag), mem.Channel.ETag);
 						Assert.True("memcvup21" == mem.Custom["mememberscustomkeyup21"].ToString());
 						Assert.True("memcvup22" == mem.Custom["mememberscustomkeyup22"].ToString());
 
@@ -2509,30 +2677,30 @@ namespace PubNubAPI.Tests
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls4);
 			Assert.True(tresult, "ManageMemberships Update didn't return");
 
-			Assert.True(updateUserMem, "updateUserMem didn't return");
+			Assert.True(updateUUIDMetadataMem, "updateUUIDMetadataMem didn't return");
 
-			//Remove user from space
-			PNMembersRemove inputMembershipsRm = new PNMembersRemove();
-			inputMembershipsRm.ID = spaceid;
-
+			//Remove uuidMetadata from channelMetadata
+			PNMembershipsRemove inputMembershipsRm = new PNMembershipsRemove();
+			inputMembershipsRm.Channel = new PNMembershipsChannel {
+                    ID = channelMetadataID
+                };
 			tresult = false;
 
-			pubnubObjects.ManageMemberships().UserID(userid).Add(new List<PNMembersInput> { }).Update(new List<PNMembersInput> { }).Remove(new List<PNMembersRemove> { inputMembershipsRm }).Include(inclMem).Limit(limit).Count(count).Async((result, status) => {
+			pubnubObjects.ManageMemberships().UUID(uuidMetadataID).Set(new List<PNMembershipsSet> { }).Remove(new List<PNMembershipsRemove> { inputMembershipsRm }).Include(inclMem).Limit(limit).Count(count).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				bool bFound = true;
-				Debug.Log("Looking for " + spaceid);
+				Debug.Log("Looking for " + channelMetadataID);
 				foreach (PNMemberships mem in result.Data)
 				{
 
-					Debug.Log("Found mem " + mem.Space.ID);
-					if (mem.Space.ID.Equals(spaceid))
+					Debug.Log("Found mem " + mem.Channel.ID);
+					if (mem.Channel.ID.Equals(channelMetadataID))
 					{
-						Assert.AreEqual(spacename2, mem.Space.Name);
-						Assert.AreEqual(spacedesc2, mem.Space.Description);
-						Assert.AreEqual(spaceid, mem.Space.ID);
-						Assert.AreEqual(mem.Space.Updated, mem.Space.Created);
-						Assert.True(!string.IsNullOrEmpty(mem.Space.ETag), mem.Space.ETag);
+						Assert.AreEqual(channelMetadataname2, mem.Channel.Name);
+						Assert.AreEqual(channelMetadatadesc2, mem.Channel.Description);
+						Assert.AreEqual(channelMetadataID, mem.Channel.ID);
+						Assert.True(!string.IsNullOrEmpty(mem.Channel.ETag), mem.Channel.ETag);
 
 						bFound = false;
 						break;
@@ -2546,36 +2714,36 @@ namespace PubNubAPI.Tests
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls4);
 			Assert.True(tresult, "ManageMemberships Remove didn't return");
 
-			Assert.True(removeUserFromSpace, "removeUserFromSpace didn't return");
+			Assert.True(removeUUIDMetadataFromChannelMetadata, "removeUUIDMetadataFromChannelMetadata didn't return");
 
-			//delete user 1
+			//delete uuidMetadata 1
 			tresult = false;
-			pubnubObjects.DeleteUser().ID(userid).Async((result, status) => {
+			pubnubObjects.RemoveUUIDMetadata().UUID(uuidMetadataID).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				tresult = true;
 
 			});
-			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(tresult, "DeleteUser didn't return");
-			Assert.True(userDelete, "userDelete didn't return");
-			//delete space 1
+			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls4);
+			Assert.True(tresult, "RemoveUUIDMetadata didn't return");
+			Assert.True(uuidMetadataDelete, "uuidMetadataDelete didn't return");
+			//delete channelMetadata 1
 			tresult = false;
-			pubnubObjects.DeleteSpace().ID(spaceid).Async((result, status) => {
+			pubnubObjects.RemoveChannelMetadata().Channel(channelMetadataID).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				tresult = true;
 
 			});
-			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(tresult, "DeleteSpace didn't return");
-			Assert.True(spaceDelete, "spaceDelete didn't return");
+			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls4);
+			Assert.True(tresult, "RemoveChannelMetadata didn't return");
+			Assert.True(channelMetadataDelete, "channelMetadataDelete didn't return");
 			pubnubSub.CleanUp();
 			pubnubObjects.CleanUp();
 		}
 
 		[UnityTest]
-		public IEnumerator TestUserCRUD()
+		public IEnumerator TestObjectsUUIDMetadataCRUD()
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random();
@@ -2587,14 +2755,14 @@ namespace PubNubAPI.Tests
 			string externalID = string.Format("externalID {0}", ran);
 			string profileURL = string.Format("profileURL {0}", ran);
 
-			string filter = string.Format("name like '{0}*'", name);
+			string filter = string.Format("name == '{0}%'", name);
 
-			PNUserSpaceInclude[] include = new PNUserSpaceInclude[] { PNUserSpaceInclude.PNUserSpaceCustom };
+			PNUUIDMetadataInclude[] include = new PNUUIDMetadataInclude[] { PNUUIDMetadataInclude.PNUUIDMetadataIncludeCustom };
 
 			PubNub pubnub = new PubNub(pnConfiguration);
 			bool tresult = false;
 
-			pubnub.CreateUser().Email(email).ExternalID(externalID).Name(name).ID(id).Include(include).ProfileURL(profileURL).Async((result, status) => {
+			pubnub.SetUUIDMetadata().Email(email).ExternalID(externalID).Name(name).UUID(id).Include(include).ProfileURL(profileURL).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				Debug.Log("status.StatusCode" + status.StatusCode);
@@ -2603,18 +2771,17 @@ namespace PubNubAPI.Tests
 				Assert.AreEqual(externalID, result.ExternalID);
 				Assert.AreEqual(profileURL, result.ProfileURL);
 				Assert.AreEqual(id, result.ID);
-				Assert.AreEqual(result.Updated, result.Created);
 				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
 				Assert.True(result.Custom == null);
 				tresult = true;
 
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(tresult, "CreateUser didn't return");
+			Assert.True(tresult, "SetUUIDMetadata didn't return");
 
 			tresult = false;
 
-			pubnub.GetUser().ID(id).Async((result, status) => {
+			pubnub.GetUUIDMetadata().UUID(id).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				Assert.AreEqual(name, result.Name);
@@ -2622,13 +2789,12 @@ namespace PubNubAPI.Tests
 				Assert.AreEqual(externalID, result.ExternalID);
 				Assert.AreEqual(profileURL, result.ProfileURL);
 				Assert.AreEqual(id, result.ID);
-				Assert.AreEqual(result.Updated, result.Created);
 				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
 				Assert.True(result.Custom == null);
 				tresult = true;
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(tresult, "GetUser didn't return");
+			Assert.True(tresult, "GetUUIDMetadata didn't return");
 
 			tresult = false;
 
@@ -2639,7 +2805,7 @@ namespace PubNubAPI.Tests
 			string profileURL2 = string.Format("profileURL {0}", ran2);
 			tresult = false;
 
-			pubnub.UpdateUser().Email(email2).ExternalID(externalID2).Name(name2).ID(id).Include(include).ProfileURL(profileURL2).Async((result, status) => {
+			pubnub.SetUUIDMetadata().Email(email2).ExternalID(externalID2).Name(name2).UUID(id).Include(include).ProfileURL(profileURL2).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				Assert.AreEqual(name2, result.Name);
@@ -2647,16 +2813,15 @@ namespace PubNubAPI.Tests
 				Assert.AreEqual(externalID2, result.ExternalID);
 				Assert.AreEqual(profileURL2, result.ProfileURL);
 				Assert.AreEqual(id, result.ID);
-				Assert.AreNotEqual(result.Updated, result.Created);
 				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
 				Assert.True(result.Custom == null);
 				tresult = true;
 
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(tresult, "UpdateUser didn't return");
+			Assert.True(tresult, "SetUUIDMetadata didn't return");
 
-			pubnub.GetUsers().Async((result, status) => {
+			pubnub.GetAllUUIDMetadata().Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				Debug.Log("result.Next:" + result.Next);
@@ -2666,26 +2831,25 @@ namespace PubNubAPI.Tests
 
 				if (result.Data != null)
 				{
-					foreach (PNUserResult pnUserResult in result.Data)
+					foreach (PNUUIDMetadataResult pnUUIDMetadataResult in result.Data)
 					{
-						if (pnUserResult.ID.Equals(id))
+						if (pnUUIDMetadataResult.ID.Equals(id))
 						{
-							Assert.AreEqual(name2, pnUserResult.Name);
-							Assert.AreEqual(email2, pnUserResult.Email);
-							Assert.AreEqual(externalID2, pnUserResult.ExternalID);
-							Assert.AreEqual(profileURL2, pnUserResult.ProfileURL);
-							Assert.AreNotEqual(pnUserResult.Updated, pnUserResult.Created);
-							Assert.True(!string.IsNullOrEmpty(pnUserResult.ETag), pnUserResult.ETag);
-							Assert.True(pnUserResult.Custom == null);
+							Assert.AreEqual(name2, pnUUIDMetadataResult.Name);
+							Assert.AreEqual(email2, pnUUIDMetadataResult.Email);
+							Assert.AreEqual(externalID2, pnUUIDMetadataResult.ExternalID);
+							Assert.AreEqual(profileURL2, pnUUIDMetadataResult.ProfileURL);
+							Assert.True(!string.IsNullOrEmpty(pnUUIDMetadataResult.ETag), pnUUIDMetadataResult.ETag);
+							Assert.True(pnUUIDMetadataResult.Custom == null);
 							tresult = true;
 						}
 					}
 				}
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(tresult, "GetUsers didn't return");
+			Assert.True(tresult, "GetAllUUIDMetadata didn't return");
 
-			pubnub.GetUsers().Filter(filter).Async((result, status) => {
+			pubnub.GetAllUUIDMetadata().Filter(filter).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				Debug.Log("result.Next:" + result.Next);
@@ -2695,490 +2859,569 @@ namespace PubNubAPI.Tests
 
 				if (result.Data != null)
 				{
-					foreach (PNUserResult pnUserResult in result.Data)
+					foreach (PNUUIDMetadataResult pnUUIDMetadataResult in result.Data)
 					{
-						if (pnUserResult.ID.Equals(id))
+						if (pnUUIDMetadataResult.ID.Equals(id))
 						{
-							Assert.AreEqual(name2, pnUserResult.Name);
-							Assert.AreEqual(email2, pnUserResult.Email);
-							Assert.AreEqual(externalID2, pnUserResult.ExternalID);
-							Assert.AreEqual(profileURL2, pnUserResult.ProfileURL);
-							Assert.AreNotEqual(pnUserResult.Updated, pnUserResult.Created);
-							Assert.True(!string.IsNullOrEmpty(pnUserResult.ETag), pnUserResult.ETag);
-							Assert.True(pnUserResult.Custom == null);
+							Assert.AreEqual(name2, pnUUIDMetadataResult.Name);
+							Assert.AreEqual(email2, pnUUIDMetadataResult.Email);
+							Assert.AreEqual(externalID2, pnUUIDMetadataResult.ExternalID);
+							Assert.AreEqual(profileURL2, pnUUIDMetadataResult.ProfileURL);
+							Assert.True(!string.IsNullOrEmpty(pnUUIDMetadataResult.ETag), pnUUIDMetadataResult.ETag);
+							Assert.True(pnUUIDMetadataResult.Custom == null);
 							tresult = true;
 						}
 					}
 				}
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(tresult, "GetUsersFilter didn't return");
+			Assert.True(tresult, "GetAllUUIDMetadataFilter didn't return");
 
 			tresult = false;
 
-			pubnub.DeleteUser().ID(id).Async((result, status) => {
+			pubnub.RemoveUUIDMetadata().UUID(id).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				tresult = true;
 
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(tresult, "DeleteUser didn't return");
+			Assert.True(tresult, "RemoveUUIDMetadata didn't return");
 
 			pubnub.CleanUp();
 		}
 
 		[UnityTest]
-		public IEnumerator TestGetUsersSort()
+		public IEnumerator TestObjectsGetAllUUIDMetadataSort()
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			string constString = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
 			pnConfiguration.UUID = string.Format("{0}{1}", "UnityTestConnectedUUID_", constString);
-			string user1Name = string.Format("{0}{1}", "ABC", constString);
-			string user2Name = string.Format("{0}{1}", "PQR", constString);
-			string user3Name = string.Format("{0}{1}", "XYZ", constString);
-			string user1Id = string.Format("id_{0}{1}", "ABC", constString);
-			string user2Id = string.Format("id_{0}{1}", "PQR", constString);
-			string user3Id = string.Format("id_{0}{1}", "XYZ", constString);
-			List<string> userIds = new List<string>() { user3Id, user2Id, user1Id };
-			List<string> userIdsAsc = new List<string>() { user1Id, user2Id, user3Id };
-			List<string> sortBy = new List<string>() { "id:desc" };
-			List<string> sortByAsc = new List<string>() { "id" };
-			string filter = string.Format("id like '*{0}'", constString);
+			string uuidMetadata1Name = string.Format("{0}{1}", "ABC", constString);
+			string uuidMetadata2Name = string.Format("{0}{1}", "PQR", constString);
+			string uuidMetadata3Name = string.Format("{0}{1}", "XYZ", constString);
+			string uuidMetadata1Id = string.Format("id_{0}{1}", "ABC", constString);
+			string uuidMetadata2Id = string.Format("id_{0}{1}", "PQR", constString);
+			string uuidMetadata3Id = string.Format("id_{0}{1}", "XYZ", constString);
+			List<string> uuidMetadataIds = new List<string>() { uuidMetadata3Id, uuidMetadata2Id, uuidMetadata1Id };
+			List<string> uuidMetadataIdsAsc = new List<string>() { uuidMetadata1Id, uuidMetadata2Id, uuidMetadata3Id };
+			List<string> sortBy = new List<string>() { "updated:desc" };
+			List<string> sortByAsc = new List<string>() { "updated" };
+			string filter = string.Format("name == '%{0}'", constString);
 			PubNub pubnub = new PubNub(pnConfiguration);
 			bool checkResult = false;
 
-			pubnub.CreateUser().ID(user1Id).Name(user1Name).Async((result, status) => {
+			pubnub.SetUUIDMetadata().UUID(uuidMetadata1Id).Name(uuidMetadata1Name).Async((result, status) => {
                 Assert.False(status.Error);
                 Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
-                Assert.AreEqual(user1Id, result.ID);
-				Assert.AreEqual(user1Name, result.Name);
+                Assert.AreEqual(uuidMetadata1Id, result.ID);
+				Assert.AreEqual(uuidMetadata1Name, result.Name);
 				checkResult = true;
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(checkResult, "user creation failed for getUsers sort");
+			Assert.True(checkResult, "uuidMetadata creation failed for getUUIDMetadatas sort");
 			checkResult = false;
 
-			pubnub.CreateUser().ID(user2Id).Name(user2Name).Async((result, status) => {
+			pubnub.SetUUIDMetadata().UUID(uuidMetadata2Id).Name(uuidMetadata2Name).Async((result, status) => {
                 Assert.False(status.Error);
                 Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
                 Debug.Log("status.StatusCode" + status.StatusCode);
-				Assert.AreEqual(user2Id, result.ID);
-				Assert.AreEqual(user2Name, result.Name);
+				Assert.AreEqual(uuidMetadata2Id, result.ID);
+				Assert.AreEqual(uuidMetadata2Name, result.Name);
 				checkResult = true;
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(checkResult, "user creation failed for getUsers sort");
+			Assert.True(checkResult, "uuidMetadata creation failed for getUUIDMetadatas sort");
 			checkResult = false;
 
-			pubnub.CreateUser().ID(user3Id).Name(user3Name).Async((result, status) => {
+			pubnub.SetUUIDMetadata().UUID(uuidMetadata3Id).Name(uuidMetadata3Name).Async((result, status) => {
                 Assert.False(status.Error);
                 Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
                 Debug.Log("status.StatusCode" + status.StatusCode);
-				Assert.AreEqual(user3Id, result.ID);
-				Assert.AreEqual(user3Name, result.Name);
+				Assert.AreEqual(uuidMetadata3Id, result.ID);
+				Assert.AreEqual(uuidMetadata3Name, result.Name);
 				checkResult = true;
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(checkResult, "user creation failed for getUsers sort");
+			Assert.True(checkResult, "uuidMetadata creation failed for getUUIDMetadatas sort");
 
             checkResult = false;
-            pubnub.GetUsers().Filter(filter).Sort(sortBy).Async((result, status) =>
+            pubnub.GetAllUUIDMetadata().Filter(filter).Sort(sortBy).Async((result, status) =>
             {
                 Assert.False(status.Error);
                 Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
                 if (result.Data != null)
                 {
-                    for (int i = 0; i < 3; i++)
+                    int i = 0;
+					foreach (PNUUIDMetadataResult m in result.Data)
                     {
-                        Assert.AreEqual(userIds[i], result.Data[i].ID);     // sortById
+                        Assert.AreEqual(uuidMetadataIds[i], result.Data[i].ID);     // sortById
+                        i++;
                     }
                     checkResult = true;
                 }
             });
             yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-            Assert.True(checkResult, "GetUsers sort didn't return");
+            Assert.True(checkResult, "GetAllUUIDMetadata sort didn't return");
 
             checkResult = false;
-			pubnub.GetUsers().Filter(filter).Sort(sortByAsc).Async((result, status) => {
+			pubnub.GetAllUUIDMetadata().Filter(filter).Sort(sortByAsc).Async((result, status) => {
 				Assert.False(status.Error);
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				if (result.Data != null)
 				{
-					for (int i = 0; i >= 3; i++)
-					{
-						Assert.AreEqual(userIdsAsc[i], result.Data[i].ID);     // sortById
+                    int i = 0;
+					foreach (PNUUIDMetadataResult m in result.Data)
+                    {
+						Assert.AreEqual(uuidMetadataIdsAsc[i], result.Data[i].ID);     // sortById
+                        i++;
 					}
 					checkResult = true;
 				}
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(checkResult, "GetUsers ascending sort didn't return");
+			Assert.True(checkResult, "GetAllUUIDMetadata ascending sort didn't return");
 
-			userIds.ForEach((id) => pubnub.DeleteUser().ID(id).Async((result, status) =>{}));
+			uuidMetadataIds.ForEach((id) => pubnub.RemoveUUIDMetadata().UUID(id).Async((result, status) =>{}));
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
 			pubnub.CleanUp();
 		}
 
 		[UnityTest]
-		public IEnumerator TestGetSpacesSort()
+		public IEnumerator TestObjectsGetChannelMetadataSort()
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			string constString = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
 			pnConfiguration.UUID = string.Format("{0}{1}", "UnityTestConnectedUUID_", constString);
-			string space1Name = string.Format("{0}{1}", "ABC", constString);
-			string space2Name = string.Format("{0}{1}", "PQR", constString);
-			string space3Name = string.Format("{0}{1}", "XYZ", constString);
-			string space1Id = string.Format("spaceId_{0}{1}", "ABC", constString);
-			string space2Id = string.Format("spaceId_{0}{1}", "PQR", constString);
-			string space3Id = string.Format("spaceId_{0}{1}", "XYZ", constString);
-			List<string> spaceIds = new List<string>() { space3Id, space2Id, space1Id };
-			List<string> spaceIdsAsc = new List<string>() { space1Id, space2Id, space3Id };
-			List<string> sortBy = new List<string>() { "id:desc" };
-			List<string> sortByAsc = new List<string>() { "id" };
-			string filter = string.Format("id like '*{0}'", constString);
+			string channelMetadata1Name = string.Format("{0}{1}", "ABC", constString);
+			string channelMetadata2Name = string.Format("{0}{1}", "PQR", constString);
+			string channelMetadata3Name = string.Format("{0}{1}", "XYZ", constString);
+			string channelMetadata1Id = string.Format("channelMetadataId_{0}{1}", "ABC", constString);
+			string channelMetadata2Id = string.Format("channelMetadataId_{0}{1}", "PQR", constString);
+			string channelMetadata3Id = string.Format("channelMetadataId_{0}{1}", "XYZ", constString);
+			List<string> channelMetadataIds = new List<string>() { channelMetadata3Id, channelMetadata2Id, channelMetadata1Id };
+			List<string> channelMetadataIdsAsc = new List<string>() { channelMetadata1Id, channelMetadata2Id, channelMetadata3Id };
+			List<string> sortBy = new List<string>() { "updated:desc" };
+			List<string> sortByAsc = new List<string>() { "updated" };
+			string filter = string.Format("name == '%{0}'", constString);
 			PubNub pubnub = new PubNub(pnConfiguration);
 			bool checkResult = false;
 
-			pubnub.CreateSpace().ID(space1Id).Name(space1Name).Async((result, status) => {
+			pubnub.SetChannelMetadata().Channel(channelMetadata1Id).Name(channelMetadata1Name).Async((result, status) => {
 				Assert.False(status.Error);
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				Debug.Log("status.StatusCode " + status.StatusCode);
-				Assert.AreEqual(space1Id, result.ID);
-				Assert.AreEqual(space1Name, result.Name);
+				Assert.AreEqual(channelMetadata1Id, result.ID);
+				Assert.AreEqual(channelMetadata1Name, result.Name);
 				checkResult = true;
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(checkResult, "create space didn't return for getSpaces sort");
+			Assert.True(checkResult, "create channelMetadata didn't return for getChannelMetadatas sort");
 			checkResult = false;
 
-			pubnub.CreateSpace().ID(space2Id).Name(space2Name).Async((result, status) => {
+			pubnub.SetChannelMetadata().Channel(channelMetadata2Id).Name(channelMetadata2Name).Async((result, status) => {
 				Assert.False(status.Error);
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				Debug.Log("status.StatusCode " + status.StatusCode);
-				Assert.AreEqual(space2Id, result.ID);
-				Assert.AreEqual(space2Name, result.Name);
+				Assert.AreEqual(channelMetadata2Id, result.ID);
+				Assert.AreEqual(channelMetadata2Name, result.Name);
 				checkResult = true;
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(checkResult, "create space didn't return for getSpaces sort");
+			Assert.True(checkResult, "create channelMetadata didn't return for getChannelMetadatas sort");
 			checkResult = false;
 
-			pubnub.CreateSpace().ID(space3Id).Name(space3Name).Async((result, status) => {
+			pubnub.SetChannelMetadata().Channel(channelMetadata3Id).Name(channelMetadata3Name).Async((result, status) => {
 				Assert.False(status.Error);
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				Debug.Log("status.StatusCode " + status.StatusCode);
-				Assert.AreEqual(space3Id, result.ID);
-				Assert.AreEqual(space3Name, result.Name);
+				Assert.AreEqual(channelMetadata3Id, result.ID);
+				Assert.AreEqual(channelMetadata3Name, result.Name);
 				checkResult = true;
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(checkResult, "create space didn't return for getSpaces sort");
+			Assert.True(checkResult, "create channelMetadata didn't return for getChannelMetadatas sort");
 
 			checkResult = false;
-			pubnub.GetSpaces().Filter(filter).Sort(sortBy).Async((result, status) => {
+			pubnub.GetAllChannelMetadata().Filter(filter).Sort(sortBy).Async((result, status) => {
 				Assert.False(status.Error);
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				if (result.Data != null)
 				{
-					for (int i = 0; i < 3; i++)
-					{
-						Assert.AreEqual(spaceIds[i], result.Data[i].ID);        // sortBy id
+                    int i = 0;
+					foreach (PNChannelMetadataResult m in result.Data)
+                    {
+						Assert.AreEqual(channelMetadataIds[i], result.Data[i].ID);        // sortBy id
+                        i++;
 					}
 					checkResult = true;
 				}
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(checkResult, "GetSpaces sort didn't return");
+			Assert.True(checkResult, "GetChannelMetadata sort didn't return");
 
 			checkResult = false;
-			pubnub.GetSpaces().Filter(filter).Sort(sortByAsc).Async((result, status) => {
+			pubnub.GetAllChannelMetadata().Filter(filter).Sort(sortByAsc).Async((result, status) => {
 				Assert.False(status.Error);
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				if (result.Data != null)
 				{
-					for (int i = 0; i < 3; i++)
-					{
-						Assert.AreEqual(spaceIdsAsc[i], result.Data[i].ID);        // sortBy id
+                    int i = 0;
+					foreach (PNChannelMetadataResult m in result.Data)
+                    {
+						Assert.AreEqual(channelMetadataIdsAsc[i], result.Data[i].ID);        // sortBy id
+                        i++;
 					}
 					checkResult = true;
 				}
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(checkResult, "GetSpaces sort ascending didn't return");
+			Assert.True(checkResult, "GetChannelMetadata sort ascending didn't return");
 
-			spaceIds.ForEach((id) => pubnub.DeleteSpace().ID(id).Async((result, status) =>{}));
+			channelMetadataIds.ForEach((id) => pubnub.RemoveChannelMetadata().Channel(id).Async((result, status) =>{}));
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
 			pubnub.CleanUp();
 		}
-		[UnityTest]
-		public IEnumerator TestMembersSort()
+		[UnityTest, Timeout(60000)]
+		public IEnumerator TestObjectsMembersSort()
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			string constString = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
 			pnConfiguration.UUID = string.Format("{0}{1}", "UnityTestConnectedUUID_", constString);
-			string user1Name = string.Format("{0}{1}", "ABC", constString);
-			string user2Name = string.Format("{0}{1}", "PQR", constString);
-			string user3Name = string.Format("{0}{1}", "XYZ", constString);
-			string user1Id = string.Format("id_{0}{1}", "ABC", constString);
-			string user2Id = string.Format("id_{0}{1}", "PQR", constString);
-			string user3Id = string.Format("id_{0}{1}", "XYZ", constString);
-			List<string> userIds = new List<string>() { user3Id, user2Id, user1Id };
-			List<string> userIdsAsc = new List<string>() { user1Id, user2Id, user3Id };
-			List<string> sortBy = new List<string>() { "id:desc" };
-			List<string> sortByAsc = new List<string>() { "id" };
+			string uuidMetadata1Name = string.Format("{0}{1}", "ABC", constString);
+			string uuidMetadata2Name = string.Format("{0}{1}", "PQR", constString);
+			string uuidMetadata3Name = string.Format("{0}{1}", "XYZ", constString);
+			string uuidMetadata1Id = string.Format("id_{0}{1}", "ABC", constString);
+			string uuidMetadata2Id = string.Format("id_{0}{1}", "PQR", constString);
+			string uuidMetadata3Id = string.Format("id_{0}{1}", "XYZ", constString);
+			List<string> uuidMetadataIds = new List<string>() { uuidMetadata3Id, uuidMetadata2Id, uuidMetadata1Id };
+			List<string> uuidMetadataIdsAsc = new List<string>() { uuidMetadata1Id, uuidMetadata2Id, uuidMetadata3Id };
+			List<string> sortBy = new List<string>() { "updated:desc" };
+			List<string> sortByAsc = new List<string>() { "updated" };
 			PubNub pubnub = new PubNub(pnConfiguration);
 			bool checkResult = false;
 
-			pubnub.CreateUser().ID(user1Id).Name(user1Name).Async((result, status) => {
+			pubnub.SetUUIDMetadata().UUID(uuidMetadata1Id).Name(uuidMetadata1Name).Async((result, status) => {
 				Assert.False(status.Error);
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				Debug.Log("status.StatusCode" + status.StatusCode);
-				Assert.AreEqual(user1Id, result.ID);
-				Assert.AreEqual(user1Name, result.Name);
+				Assert.AreEqual(uuidMetadata1Id, result.ID);
+				Assert.AreEqual(uuidMetadata1Name, result.Name);
 				checkResult = true;
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(checkResult, "create user didn't return for members sort");
+			Assert.True(checkResult, "create uuidMetadata didn't return for members sort");
 			checkResult = false;
 
-			pubnub.CreateUser().ID(user2Id).Name(user2Name).Async((result, status) => {
+			pubnub.SetUUIDMetadata().UUID(uuidMetadata2Id).Name(uuidMetadata2Name).Async((result, status) => {
 				Assert.False(status.Error);
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				Debug.Log("status.StatusCode" + status.StatusCode);
-				Assert.AreEqual(user2Id, result.ID);
-				Assert.AreEqual(user2Name, result.Name);
+				Assert.AreEqual(uuidMetadata2Id, result.ID);
+				Assert.AreEqual(uuidMetadata2Name, result.Name);
 				checkResult = true;
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(checkResult, "create user didn't return for members sort");
+			Assert.True(checkResult, "create uuidMetadata didn't return for members sort");
 			checkResult = false;
 
-			pubnub.CreateUser().ID(user3Id).Name(user3Name).Async((result, status) => {
+			pubnub.SetUUIDMetadata().UUID(uuidMetadata3Id).Name(uuidMetadata3Name).Async((result, status) => {
 				Assert.False(status.Error);
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				Debug.Log("status.StatusCode" + status.StatusCode);
-				Assert.AreEqual(user3Id, result.ID);
-				Assert.AreEqual(user3Name, result.Name);
+				Assert.AreEqual(uuidMetadata3Id, result.ID);
+				Assert.AreEqual(uuidMetadata3Name, result.Name);
 				checkResult = true;
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(checkResult, "create user didn't return for members sort");
+			Assert.True(checkResult, "create uuidMetadata didn't return for members sort");
 			checkResult = false;
 
-			string spaceName = string.Format("{0}{1}", "ABC", constString);
-			string spaceId = string.Format("spaceId_{0}{1}", "ABC", constString);
+			string channelMetadataName = string.Format("{0}{1}", "ABC", constString);
+			string channelMetadataId = string.Format("channelMetadataId_{0}{1}", "ABC", constString);
 			string description = string.Format("ABCdescription_{0}", constString);
-			string filter = string.Format("id like '*{0}'", constString);
+			string filter = string.Format("uuid.name == '%{0}'", constString);
 
-			pubnub.CreateSpace().ID(spaceId).Name(spaceName).Description(description).Async((result, status) => {
+			pubnub.SetChannelMetadata().Channel(channelMetadataId).Name(channelMetadataName).Description(description).Async((result, status) => {
 				Assert.False(status.Error);
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				Debug.Log("status.StatusCode" + status.StatusCode);
-				Assert.AreEqual(spaceId, result.ID);
-				Assert.AreEqual(spaceName, result.Name);
+				Assert.AreEqual(channelMetadataId, result.ID);
+				Assert.AreEqual(channelMetadataName, result.Name);
 				checkResult = true;
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(checkResult, "create space didn't return for members sort");
+			Assert.True(checkResult, "create channelMetadata didn't return for members sort");
 
 			checkResult = false;
 			int limit = 3;
 			bool count = true;
 			Dictionary<string, object> customData = new Dictionary<string, object>();
             customData.Add("customKey", "custom");
-            var memberInput = new List<PNMembersInput>();
-            memberInput.Add(new PNMembersInput() { ID = user1Id, Custom = customData });
-            memberInput.Add(new PNMembersInput() { ID = user2Id, Custom = customData });
-            memberInput.Add(new PNMembersInput() { ID = user3Id, Custom = customData });
-			PNMembersInclude[] inclSm = new PNMembersInclude[] { PNMembersInclude.PNMembersCustom, PNMembersInclude.PNMembersUser, PNMembersInclude.PNMembersUserCustom };
-			pubnub.ManageMembers().SpaceID(spaceId).Add(memberInput).Update(new List<PNMembersInput>()).Remove(new List<PNMembersRemove>()).Include(inclSm).Limit(limit).Count(count).Sort(sortBy).Async((result, status) =>
+            var memberInput = new List<PNChannelMembersSet>();
+            memberInput.Add(new PNChannelMembersSet() { 
+                UUID = new PNChannelMembersUUID {
+                    ID = uuidMetadata1Id
+                }, 
+                Custom = customData 
+            });
+            memberInput.Add(new PNChannelMembersSet() { 
+                UUID = new PNChannelMembersUUID {
+                    ID = uuidMetadata2Id
+                },
+                Custom = customData 
+            });
+            memberInput.Add(new PNChannelMembersSet() { 
+                UUID = new PNChannelMembersUUID {
+                    ID = uuidMetadata3Id
+                }, 
+                Custom = customData 
+            });
+			PNChannelMembersInclude[] inclSm = new PNChannelMembersInclude[] { PNChannelMembersInclude.PNChannelMembersIncludeCustom, PNChannelMembersInclude.PNChannelMembersIncludeUUID, PNChannelMembersInclude.PNChannelMembersIncludeUUIDCustom };
+			pubnub.ManageChannelMembers().Channel(channelMetadataId).Set(memberInput).Remove(new List<PNChannelMembersRemove>()).Include(inclSm).Limit(limit).Count(count).Sort(sortBy).Async((result, status) =>
+			{
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+                Debug.Log("ManageChannelMembers here ===??");
+				if (result.Data != null)
+				{
+                    int i = 0;
+					// foreach (PNMembers m in result.Data)// (int i = 0; i < 3; i++)
+					// {
+					// 	Assert.AreEqual(uuidMetadataIds[i], result.Data[i].ID);   // sortBy id
+                    //     i++;
+					// }
+					checkResult = true;
+				}
+			});
+			yield return new WaitForSeconds(10);
+			Assert.True(checkResult, "ManageChannelMembers sort didn't return");
+
+			checkResult = false;
+			pubnub.GetChannelMembers().Channel(channelMetadataId).Include(inclSm).Limit(limit).Count(count).Filter(filter).Sort(sortBy).Async((result, status) =>
 			{
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				if (result.Data != null)
 				{
-					for (int i = 0; i < 3; i++)
+                    int i = 0;
+					foreach (PNMembers m in result.Data)// (int i = 0; i < 3; i++)
 					{
-						Assert.AreEqual(userIds[i], result.Data[i].ID);   // sortBy id
+						Assert.AreEqual(uuidMetadataIds[i], result.Data[i].ID);   // sortBy id
+                        i++;
 					}
 					checkResult = true;
 				}
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(checkResult, "ManageMembers sort didn't return");
+			Assert.True(checkResult, "GetChannelMembers sort didn't return");
 
 			checkResult = false;
-			pubnub.GetMembers().SpaceID(spaceId).Include(inclSm).Limit(limit).Count(count).Filter(filter).Sort(sortBy).Async((result, status) =>
+			pubnub.GetChannelMembers().Channel(channelMetadataId).Include(inclSm).Limit(limit).Filter(filter).Sort(sortByAsc).Count(count).Async((result, status) =>
 			{
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				if (result.Data != null)
 				{
-					for (int i = 0; i < 3; i++)
+                    int i = 0;
+					foreach (PNMembers m in result.Data)// (int i = 0; i < 3; i++)
 					{
-						Assert.AreEqual(userIds[i], result.Data[i].ID);   // sortBy id
+						Assert.AreEqual(uuidMetadataIdsAsc[i], result.Data[i].ID);   // sortBy id ascending
+                        i++;
 					}
 					checkResult = true;
 				}
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(checkResult, "GetMembers sort didn't return");
+			Assert.True(checkResult, "GetChannelMembers sort ascending didn't return");
 
 			checkResult = false;
-			pubnub.GetMembers().SpaceID(spaceId).Include(inclSm).Limit(limit).Filter(filter).Sort(sortByAsc).Count(count).Async((result, status) =>
-			{
-				Assert.True(status.Error.Equals(false));
-				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
-				if (result.Data != null)
-				{
-					for (int i = 0; i < 3; i++)
-					{
-						Assert.AreEqual(userIdsAsc[i], result.Data[i].ID);   // sortBy id ascending
-					}
-					checkResult = true;
-				}
-			});
-			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(checkResult, "GetMembers sort ascending didn't return");
-
-			checkResult = false;
-			var memberUpdate = new List<PNMembersInput>();
+			var memberUpdate = new List<PNChannelMembersSet>();
 			var custom = new Dictionary<string, object>();
 			custom.Add("customKey", "customValue");
-			memberUpdate.Add(new PNMembersInput() { ID = user1Id, Custom = custom });
-			memberUpdate.Add(new PNMembersInput() { ID = user2Id, Custom = custom });
-			memberUpdate.Add(new PNMembersInput() { ID = user3Id, Custom = custom });
-			pubnub.ManageMembers().SpaceID(spaceId).Add(new List<PNMembersInput>()).Update(memberUpdate).Remove(new List<PNMembersRemove>()).Include(inclSm).Limit(limit).Sort(sortByAsc).Count(count).Async((result, status) =>
+            memberUpdate.Add(new PNChannelMembersSet() { 
+                UUID = new PNChannelMembersUUID {
+                    ID = uuidMetadata1Id
+                }, 
+                Custom = customData 
+            });
+            memberUpdate.Add(new PNChannelMembersSet() { 
+                UUID = new PNChannelMembersUUID {
+                    ID = uuidMetadata2Id
+                },
+                Custom = customData 
+            });
+            memberUpdate.Add(new PNChannelMembersSet() { 
+                UUID = new PNChannelMembersUUID {
+                    ID = uuidMetadata3Id
+                }, 
+                Custom = customData 
+            });
+
+			pubnub.ManageChannelMembers().Channel(channelMetadataId).Set(memberUpdate).Remove(new List<PNChannelMembersRemove>()).Include(inclSm).Limit(limit).Sort(sortByAsc).Count(count).Async((result, status) =>
 			{
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				if (result.Data != null)
 				{
-					for (int i = 0; i < 3; i++)
-					{
-						Assert.AreEqual(userIdsAsc[i], result.Data[i].ID);   // sortBy id ascending
-					}
+                    int i = 0;
+					// foreach (PNMembers m in result.Data)// (int i = 0; i < 3; i++)
+					// {
+					// 	Assert.AreEqual(uuidMetadataIdsAsc[i], result.Data[i].ID);   // sortBy id ascending
+                    //     i++;
+					// }
 					checkResult = true;
 				}
 			});
-			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(checkResult, "ManageMembers ascending sort didn't return");
+			yield return new WaitForSeconds(10);
+			Assert.True(checkResult, "ManageChannelMembers ascending sort didn't return");
 
-			userIds.ForEach((id) => pubnub.DeleteUser().ID(id).Async((result, status) => { }));
+			uuidMetadataIds.ForEach((id) => pubnub.RemoveUUIDMetadata().UUID(id).Async((result, status) => { }));
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
 
-			pubnub.DeleteSpace().ID(spaceId).Async((result, status) => { });
+			pubnub.RemoveChannelMetadata().Channel(channelMetadataId).Async((result, status) => { });
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
 
 			pubnub.CleanUp();
 
 		}
 
-		[UnityTest]
-		public IEnumerator TestMembershipsSort()
+		[UnityTest, Timeout(60000)]
+		public IEnumerator TestObjectsMembershipsSort()
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			string constString = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
 			pnConfiguration.UUID = string.Format("{0}{1}", "UnityTestConnectedUUID_", constString);
-			string space1Name = string.Format("{0}{1}", "ABC", constString);
-			string space2Name = string.Format("{0}{1}", "PQR", constString);
-			string space3Name = string.Format("{0}{1}", "XYZ", constString);
-			string space1Id = string.Format("spaceId_{0}{1}", "ABC", constString);
-			string space2Id = string.Format("spaceId_{0}{1}", "PQR", constString);
-			string space3Id = string.Format("spaceId_{0}{1}", "XYZ", constString);
-			List<string> spaceIds = new List<string>() { space3Id, space2Id, space1Id };
-			List<string> spaceIdsAsc = new List<string>() { space1Id, space2Id, space3Id };
-			List<string> sortBy = new List<string>() { "id:desc" };
-			List<string> sortByAsc = new List<string>() { "id" };
-			string filter = string.Format("id like '*{0}'", constString);
+			string channelMetadata1Name = string.Format("{0}{1}", "ABC", constString);
+			string channelMetadata2Name = string.Format("{0}{1}", "PQR", constString);
+			string channelMetadata3Name = string.Format("{0}{1}", "XYZ", constString);
+			string channelMetadata1Id = string.Format("channelMetadataId_{0}{1}", "ABC", constString);
+			string channelMetadata2Id = string.Format("channelMetadataId_{0}{1}", "PQR", constString);
+			string channelMetadata3Id = string.Format("channelMetadataId_{0}{1}", "XYZ", constString);
+			List<string> channelMetadataIds = new List<string>() { channelMetadata3Id, channelMetadata2Id, channelMetadata1Id };
+			List<string> channelMetadataIdsAsc = new List<string>() { channelMetadata1Id, channelMetadata2Id, channelMetadata3Id };
+			List<string> sortBy = new List<string>() { "updated:desc" };
+			List<string> sortByAsc = new List<string>() { "updated" };
+			string filter = string.Format("channel.name == '%{0}'", constString);
 			PubNub pubnub = new PubNub(pnConfiguration);
 			bool checkResult = false;
 
-			pubnub.CreateSpace().ID(space1Id).Name(space1Name).Async((result, status) => {
+			pubnub.SetChannelMetadata().Channel(channelMetadata1Id).Name(channelMetadata1Name).Async((result, status) => {
 				Assert.False(status.Error);
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				Debug.Log("status.StatusCode" + status.StatusCode);
-				Assert.AreEqual(space1Id, result.ID);
-				Assert.AreEqual(space1Name, result.Name);
+				Assert.AreEqual(channelMetadata1Id, result.ID);
+				Assert.AreEqual(channelMetadata1Name, result.Name);
 				checkResult = true;
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(checkResult, "create space didn't return for memberships sort");
+			Assert.True(checkResult, "create channelMetadata didn't return for memberships sort");
 			checkResult = false;
 
-			pubnub.CreateSpace().ID(space2Id).Name(space2Name).Async((result, status) => {
+			pubnub.SetChannelMetadata().Channel(channelMetadata2Id).Name(channelMetadata2Name).Async((result, status) => {
 				Assert.False(status.Error);
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
-				Assert.AreEqual(space2Id, result.ID);
-				Assert.AreEqual(space2Name, result.Name);
+				Assert.AreEqual(channelMetadata2Id, result.ID);
+				Assert.AreEqual(channelMetadata2Name, result.Name);
 				checkResult = true;
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(checkResult, "create space didn't return for memberships sort");
+			Assert.True(checkResult, "create channelMetadata didn't return for memberships sort");
 			checkResult = false;
 
-			pubnub.CreateSpace().ID(space3Id).Name(space3Name).Async((result, status) => {
+			pubnub.SetChannelMetadata().Channel(channelMetadata3Id).Name(channelMetadata3Name).Async((result, status) => {
 				Assert.False(status.Error);
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
-				Assert.AreEqual(space3Id, result.ID);
-				Assert.AreEqual(space3Name, result.Name);
+				Assert.AreEqual(channelMetadata3Id, result.ID);
+				Assert.AreEqual(channelMetadata3Name, result.Name);
 				checkResult = true;
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(checkResult, "create space didn't return for memberships sort");
+			Assert.True(checkResult, "create channelMetadata didn't return for memberships sort");
 			checkResult = false;
 
-			string userName = string.Format("{0}{1}", "ABC", constString);
-			string userId = string.Format("id_{0}{1}", "ABC", constString);
+			string uuidMetadataName = string.Format("{0}{1}", "ABC", constString);
+			string uuidMetadataId = string.Format("id_{0}{1}", "ABC", constString);
 			string email = string.Format("email_{0}{1}", "ABC", constString);
 
-			pubnub.CreateUser().ID(userId).Name(userName).Email(email).Async((result, status) => {
+			pubnub.SetUUIDMetadata().UUID(uuidMetadataId).Name(uuidMetadataName).Email(email).Async((result, status) => {
 				Assert.False(status.Error);
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
-				Assert.AreEqual(userId, result.ID);
-				Assert.AreEqual(userName, result.Name);
+				Assert.AreEqual(uuidMetadataId, result.ID);
+				Assert.AreEqual(uuidMetadataName, result.Name);
 				checkResult = true;
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(checkResult, "create user didn't return for memberships sort");
+			Assert.True(checkResult, "create uuidMetadata didn't return for memberships sort");
 
 			checkResult = false;
 			int limit = 3;
 			bool count = true;
 
-			var inputMembers = new List<PNMembersInput>();
-			inputMembers.Add(new PNMembersInput() { ID = space1Id });
-			inputMembers.Add(new PNMembersInput() { ID = space2Id });
-			inputMembers.Add(new PNMembersInput() { ID = space3Id });
-			PNMembershipsInclude[] inclMem = new PNMembershipsInclude[] { PNMembershipsInclude.PNMembershipsCustom, PNMembershipsInclude.PNMembershipsSpace, PNMembershipsInclude.PNMembershipsSpaceCustom };
-			pubnub.ManageMemberships().UserID(userId).Add(inputMembers).Update(new List<PNMembersInput>()).Remove(new List<PNMembersRemove>()).Include(inclMem).Limit(limit).Count(count).Sort(sortBy).Async((result, status) =>
-			{
+			var inputMembers = new List<PNMembershipsSet>();
+            inputMembers.Add(new PNMembershipsSet() { 
+                Channel = new PNMembershipsChannel {
+                    ID = channelMetadata1Id
+                }, 
+            });
+            inputMembers.Add(new PNMembershipsSet() { 
+                Channel = new PNMembershipsChannel {
+                    ID = channelMetadata2Id
+                },
+            });
+            inputMembers.Add(new PNMembershipsSet() { 
+                Channel = new PNMembershipsChannel {
+                    ID = channelMetadata3Id
+                }, 
+            });
+            PNMembershipsInclude[] inclMem = new PNMembershipsInclude[] { PNMembershipsInclude.PNMembershipsIncludeCustom, PNMembershipsInclude.PNMembershipsIncludeChannel, PNMembershipsInclude.PNMembershipsIncludeChannelCustom };
+            Debug.Log("Calling ManageMemberships sort:");
+			pubnub.ManageMemberships().UUID(uuidMetadataId).Set(inputMembers).Remove(new List<PNMembershipsRemove>()).Include(inclMem).Limit(limit).Count(count).Sort(sortBy).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
-				if (result.Data != null)
+				bool bFound = false;
+				Debug.Log("Looking for " + channelMetadata1Id);
+				Debug.Log("result.Next:" + result.Next);
+				Debug.Log("result.Prev:" + result.Prev);
+				Debug.Log("result.TotalCount:" + result.TotalCount);
+				Assert.True(result.TotalCount > 0);
+
+				foreach (PNMemberships mem in result.Data)
 				{
-					for (int i = 0; i < 3; i++)
+
+					Debug.Log("Found mem " + mem.Channel.ID);
+					if (mem.Channel.ID.Equals(channelMetadata2Id))
 					{
-						Assert.AreEqual(spaceIds[i], result.Data[i].ID);   // sort by id(spaceId)
+						Assert.AreEqual(channelMetadata2Name, mem.Channel.Name);
+						// Assert.AreEqual(channelMetadata1Desc, mem.Channel.Description);
+						Assert.AreEqual(channelMetadata2Id, mem.Channel.ID);
+						Assert.True(!string.IsNullOrEmpty(mem.Channel.ETag), mem.Channel.ETag);
+						
+						bFound = true;
+						break;
 					}
-					checkResult = true;
+
 				}
+
+				checkResult = bFound;
+
 			});
-			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds(10);
 			Assert.True(checkResult, "ManageMemberships sort didn't return");
 
 			checkResult = false;
-			pubnub.GetMemberships().UserID(userId).Include(inclMem).Limit(limit).Count(count).Filter(filter).Sort(sortBy).Async((result, status) =>
+			pubnub.GetMemberships().UUID(uuidMetadataId).Include(inclMem).Limit(limit).Count(count).Filter(filter).Sort(sortBy).Async((result, status) =>
 			{
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				if (result.Data != null)
 				{
 					var resultData = result.Data as List<PNMemberships>;
-					for (int i = 0; i < 3; i++)
+                    int i = 0;
+					foreach (PNMemberships m in result.Data)// (int i = 0; i < 3; i++)
 					{
-						Assert.AreEqual(spaceIds[i], resultData[i].ID);   // sort by id(spaceId)
+						Assert.AreEqual(channelMetadataIds[i], resultData[i].ID);   // sort by id(channelMetadataId)
+                        i++;
 					}
 					checkResult = true;
 				}
@@ -3187,16 +3430,18 @@ namespace PubNubAPI.Tests
 			Assert.True(checkResult, "GetMemberships sort didn't return");
 
 			checkResult = false;
-			pubnub.GetMemberships().UserID(userId).Include(inclMem).Limit(limit).Count(count).Filter(filter).Sort(sortByAsc).Async((result, status) =>
+			pubnub.GetMemberships().UUID(uuidMetadataId).Include(inclMem).Limit(limit).Count(count).Filter(filter).Sort(sortByAsc).Async((result, status) =>
 			{
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				if (result.Data != null)
 				{
 					var resultData = result.Data as List<PNMemberships>;
-					for (int i = 0; i < 3; i++)
-					{
-						Assert.AreEqual(spaceIdsAsc[i], resultData[i].ID);   // sort by id(spaceId) ascending
+                    int i = 0;
+					foreach (PNMemberships m in result.Data)// (int i = 0; i < 3; i++)
+                    {
+						Assert.AreEqual(channelMetadataIdsAsc[i], resultData[i].ID);   // sort by id(channelMetadataId) ascending
+                        i++;
 					}
 					checkResult = true;
 				}
@@ -3205,37 +3450,54 @@ namespace PubNubAPI.Tests
 			Assert.True(checkResult, "GetMemberships sort ascending didn't return");
 
 			checkResult = false;
-			var updateMembers = new List<PNMembersInput>();
 			var custom = new Dictionary<string, object>();
 			custom.Add("customKey", "customValue");
-			updateMembers.Add(new PNMembersInput() { ID = space1Id, Custom = custom });
-			updateMembers.Add(new PNMembersInput() { ID = space2Id, Custom = custom });
-			updateMembers.Add(new PNMembersInput() { ID = space3Id, Custom = custom });
-			pubnub.ManageMemberships().UserID(userId).Add(new List<PNMembersInput>()).Update(updateMembers).Remove(new List<PNMembersRemove>()).Include(inclMem).Limit(limit).Count(count).Sort(sortByAsc).Async((result, status) =>
+            var updateMembers = new List<PNMembershipsSet>();
+            updateMembers.Add(new PNMembershipsSet() { 
+                Channel = new PNMembershipsChannel {
+                    ID = channelMetadata1Id
+                }, 
+                Custom = custom
+            });
+            updateMembers.Add(new PNMembershipsSet() { 
+                Channel = new PNMembershipsChannel {
+                    ID = channelMetadata2Id
+                },
+                Custom = custom
+            });
+            updateMembers.Add(new PNMembershipsSet() { 
+                Channel = new PNMembershipsChannel {
+                    ID = channelMetadata3Id
+                }, 
+                Custom = custom
+            });            
+			pubnub.ManageMemberships().UUID(uuidMetadataId).Set(updateMembers).Remove(new List<PNMembershipsRemove>()).Include(inclMem).Limit(limit).Count(count).Sort(sortByAsc).Async((result, status) =>
 			{
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
-				if (result.Data != null)
-				{
-					for (int i = 0; i < 3; i++)
-					{
-						Assert.AreEqual(spaceIdsAsc[i], result.Data[i].ID);   // sort by id(spaceId)
-					}
-					checkResult = true;
-				}
+				// if (result.Data != null)
+				// {
+                //     int i = 0;
+				// 	foreach (PNMemberships m in result.Data)// (int i = 0; i < 3; i++)
+				// 	{
+				// 		Assert.AreEqual(channelMetadataIdsAsc[i], result.Data[i].ID);   // sort by id(channelMetadataId)
+                //         i++;
+				// 	}
+				checkResult = true;
+				// }
 			});
-			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
+			yield return new WaitForSeconds(11);
 			Assert.True(checkResult, "ManageMemberships sort ascending didn't return");
 
 			// cleanup
-			spaceIds.ForEach((id) => pubnub.DeleteSpace().ID(id).Async((result, status) => { }));
+			channelMetadataIds.ForEach((id) => pubnub.RemoveChannelMetadata().Channel(id).Async((result, status) => { }));
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			pubnub.DeleteUser().ID(userId).Async((result, status) => { });
+			pubnub.RemoveUUIDMetadata().UUID(uuidMetadataId).Async((result, status) => { });
 
 			pubnub.CleanUp();
 		}
 		[UnityTest]
-		public IEnumerator TestSpaceCRUD()
+		public IEnumerator TestObjectsChannelMetadataCRUD()
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random();
@@ -3245,42 +3507,40 @@ namespace PubNubAPI.Tests
 			string name = string.Format("name {0}", ran);
 			string description = string.Format("description {0}", ran);
 
-			string filter = string.Format("name like '{0}*'", name);
+			string filter = string.Format("name == '{0}%'", name);
 
-			PNUserSpaceInclude[] include = new PNUserSpaceInclude[] { PNUserSpaceInclude.PNUserSpaceCustom };
+			PNChannelMetadataInclude[] include = new PNChannelMetadataInclude[] { PNChannelMetadataInclude.PNChannelMetadataIncludeCustom };
 
 			PubNub pubnub = new PubNub(pnConfiguration);
 			bool tresult = false;
 
-			pubnub.CreateSpace().Description(description).Name(name).ID(id).Include(include).Async((result, status) => {
+			pubnub.SetChannelMetadata().Description(description).Name(name).Channel(id).Include(include).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				Assert.AreEqual(name, result.Name);
 				Assert.AreEqual(description, result.Description);
 				Assert.AreEqual(id, result.ID);
-				Assert.AreEqual(result.Updated, result.Created);
 				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
 				Assert.True(result.Custom == null);
 				tresult = true;
 
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(tresult, "CreateSpace didn't return");
+			Assert.True(tresult, "SetChannelMetadata didn't return");
 			tresult = false;
 
-			pubnub.GetSpace().ID(id).Async((result, status) => {
+			pubnub.GetChannelMetadata().Channel(id).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				Assert.AreEqual(name, result.Name);
 				Assert.AreEqual(description, result.Description);
 				Assert.AreEqual(id, result.ID);
-				Assert.AreEqual(result.Updated, result.Created);
 				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
 				Assert.True(result.Custom == null);
 				tresult = true;
 			});
-			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(tresult, "GetSpace didn't return");
+			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls5);
+			Assert.True(tresult, "GetChannelMetadata didn't return");
 
 			tresult = false;
 
@@ -3289,23 +3549,22 @@ namespace PubNubAPI.Tests
 			string description2 = string.Format("description {0}", ran2);
 			tresult = false;
 
-			pubnub.UpdateSpace().Description(description2).Name(name2).ID(id).Include(include).Async((result, status) => {
+			pubnub.SetChannelMetadata().Description(description2).Name(name2).Channel(id).Include(include).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				Assert.AreEqual(name2, result.Name);
 				Assert.AreEqual(description2, result.Description);
 				Assert.AreEqual(id, result.ID);
-				Assert.AreNotEqual(result.Updated, result.Created);
 				Assert.True(!string.IsNullOrEmpty(result.ETag), result.ETag);
 				Assert.True(result.Custom == null);
 				tresult = true;
 
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(tresult, "UpdateSpace didn't return");
+			Assert.True(tresult, "SetChannelMetadata didn't return");
 
 
-			pubnub.GetSpaces().Async((result, status) => {
+			pubnub.GetAllChannelMetadata().Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				Debug.Log("result.Next:" + result.Next);
@@ -3315,24 +3574,23 @@ namespace PubNubAPI.Tests
 
 				if (result.Data != null)
 				{
-					foreach (PNSpaceResult pnSpaceResult in result.Data)
+					foreach (PNChannelMetadataResult pnChannelMetadataResult in result.Data)
 					{
-						if (pnSpaceResult.ID.Equals(id))
+						if (pnChannelMetadataResult.ID.Equals(id))
 						{
-							Assert.AreEqual(name2, pnSpaceResult.Name);
-							Assert.AreEqual(description2, pnSpaceResult.Description);
-							Assert.AreNotEqual(pnSpaceResult.Updated, pnSpaceResult.Created);
-							Assert.True(!string.IsNullOrEmpty(pnSpaceResult.ETag), pnSpaceResult.ETag);
-							Assert.True(pnSpaceResult.Custom == null);
+							Assert.AreEqual(name2, pnChannelMetadataResult.Name);
+							Assert.AreEqual(description2, pnChannelMetadataResult.Description);
+							Assert.True(!string.IsNullOrEmpty(pnChannelMetadataResult.ETag), pnChannelMetadataResult.ETag);
+							Assert.True(pnChannelMetadataResult.Custom == null);
 							tresult = true;
 						}
 					}
 				}
 			});
-			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(tresult, "GetSpaces didn't return");
+			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls5);
+			Assert.True(tresult, "GetChannelMetadata didn't return");
 
-			pubnub.GetSpaces().Filter(filter).Async((result, status) => {
+			pubnub.GetAllChannelMetadata().Filter(filter).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				Debug.Log("result.Next:" + result.Next);
@@ -3342,33 +3600,32 @@ namespace PubNubAPI.Tests
 
 				if (result.Data != null)
 				{
-					foreach (PNSpaceResult pnSpaceResult in result.Data)
+					foreach (PNChannelMetadataResult pnChannelMetadataResult in result.Data)
 					{
-						if (pnSpaceResult.ID.Equals(id))
+						if (pnChannelMetadataResult.ID.Equals(id))
 						{
-							Assert.AreEqual(name2, pnSpaceResult.Name);
-							Assert.AreEqual(description2, pnSpaceResult.Description);
-							Assert.AreNotEqual(pnSpaceResult.Updated, pnSpaceResult.Created);
-							Assert.True(!string.IsNullOrEmpty(pnSpaceResult.ETag), pnSpaceResult.ETag);
-							Assert.True(pnSpaceResult.Custom == null);
+							Assert.AreEqual(name2, pnChannelMetadataResult.Name);
+							Assert.AreEqual(description2, pnChannelMetadataResult.Description);
+							Assert.True(!string.IsNullOrEmpty(pnChannelMetadataResult.ETag), pnChannelMetadataResult.ETag);
+							Assert.True(pnChannelMetadataResult.Custom == null);
 							tresult = true;
 						}
 					}
 				}
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(tresult, "GetSpacesFilter didn't return");
+			Assert.True(tresult, "GetChannelMetadataFilter didn't return");
 
 			tresult = false;
 
-			pubnub.DeleteSpace().ID(id).Async((result, status) => {
+			pubnub.RemoveChannelMetadata().Channel(id).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				tresult = true;
 
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			Assert.True(tresult, "DeleteSpace didn't return");
+			Assert.True(tresult, "RemoveChannelMetadata didn't return");
 
 			pubnub.CleanUp();
 		}

@@ -60,7 +60,7 @@ namespace PubNubAPI
 
         }
 
-        public void AddListener(Action<PNStatus> statusCallback, Action<PNMessageResult> messageCallback, Action<PNPresenceEventResult> presenceCallback, Action<PNSignalEventResult> signalCallback, Action<PNUserEventResult> userCallback, Action<PNSpaceEventResult> spaceCallback, Action<PNMembershipEventResult> membershipCallback, Action<PNMessageActionsEventResult> messageActionsCallback)
+        public void AddListener(Action<PNStatus> statusCallback, Action<PNMessageResult> messageCallback, Action<PNPresenceEventResult> presenceCallback, Action<PNSignalEventResult> signalCallback, Action<PNUUIDEventResult> uuidCallback, Action<PNChannelEventResult> channelEventCallback, Action<PNMembershipEventResult> membershipCallback, Action<PNMessageActionsEventResult> messageActionsCallback)
         {
             SubscribeCallback += (object sender, EventArgs e) => {
                 SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
@@ -82,11 +82,11 @@ namespace PubNubAPI
                     if(mea.SignalEventResult != null && signalCallback != null){
                         signalCallback(mea.SignalEventResult);
                     }
-                    if(mea.UserEventResult != null && userCallback != null){
-                        userCallback(mea.UserEventResult);
+                    if(mea.UUIDEventResult != null && uuidCallback != null){
+                        uuidCallback(mea.UUIDEventResult);
                     }
-                    if(mea.SpaceEventResult != null && spaceCallback != null){
-                        spaceCallback(mea.SpaceEventResult);
+                    if(mea.ChannelEventResult != null && channelEventCallback != null){
+                        channelEventCallback(mea.ChannelEventResult);
                     }
                     if(mea.MembershipEventResult != null && membershipCallback != null){
                         membershipCallback(mea.MembershipEventResult);
@@ -283,93 +283,76 @@ namespace PubNubAPI
             
             return new RemoveChannelsFromPushBuilder(this);
         }
-
-        public CreateUserBuilder CreateUser(){
+        public SetUUIDMetadataBuilder SetUUIDMetadata(){
             #if (ENABLE_PUBNUB_LOGGING)
-            this.PNLog.WriteToLog("CreateUser", PNLoggingMethod.LevelInfo);
+            this.PNLog.WriteToLog("SetUUIDMetadata", PNLoggingMethod.LevelInfo);
             #endif
             
-            return new CreateUserBuilder(this);
+            return new SetUUIDMetadataBuilder(this);
         }
-        public UpdateUserBuilder UpdateUser(){
+        public RemoveUUIDMetadataBuilder RemoveUUIDMetadata(){
             #if (ENABLE_PUBNUB_LOGGING)
-            this.PNLog.WriteToLog("UpdateUser", PNLoggingMethod.LevelInfo);
+            this.PNLog.WriteToLog("RemoveUUIDMetadata", PNLoggingMethod.LevelInfo);
             #endif
             
-            return new UpdateUserBuilder(this);
+            return new RemoveUUIDMetadataBuilder(this);
         }
-        public DeleteUserBuilder DeleteUser(){
+        public GetUUIDMetadataBuilder GetUUIDMetadata(){
             #if (ENABLE_PUBNUB_LOGGING)
-            this.PNLog.WriteToLog("DeleteUser", PNLoggingMethod.LevelInfo);
+            this.PNLog.WriteToLog("GetUUIDMetadata", PNLoggingMethod.LevelInfo);
             #endif
             
-            return new DeleteUserBuilder(this);
+            return new GetUUIDMetadataBuilder(this);
         }
-        public GetUserBuilder GetUser(){
+        public GetAllUUIDMetadataBuilder GetAllUUIDMetadata(){
             #if (ENABLE_PUBNUB_LOGGING)
-            this.PNLog.WriteToLog("GetUser", PNLoggingMethod.LevelInfo);
+            this.PNLog.WriteToLog("GetAllUUIDMetadata", PNLoggingMethod.LevelInfo);
             #endif
             
-            return new GetUserBuilder(this);
+            return new GetAllUUIDMetadataBuilder(this);
         }
-        public GetUsersBuilder GetUsers(){
-            #if (ENABLE_PUBNUB_LOGGING)
-            this.PNLog.WriteToLog("GetUsers", PNLoggingMethod.LevelInfo);
-            #endif
-            
-            return new GetUsersBuilder(this);
-        }
-        public CreateSpaceBuilder CreateSpace(){
-            #if (ENABLE_PUBNUB_LOGGING)
-            this.PNLog.WriteToLog("CreateSpace", PNLoggingMethod.LevelInfo);
-            #endif
-            
-            return new CreateSpaceBuilder(this);
-        }
-
-        public UpdateSpaceBuilder UpdateSpace()
+        public SetChannelMetadataBuilder SetChannelMetadata()
         {
             #if (ENABLE_PUBNUB_LOGGING)
-            this.PNLog.WriteToLog("UpdateSpace", PNLoggingMethod.LevelInfo);
+            this.PNLog.WriteToLog("SetChannelMetadata", PNLoggingMethod.LevelInfo);
             #endif
 
-            return new UpdateSpaceBuilder(this);
+            return new SetChannelMetadataBuilder(this);
         }
 
-        public DeleteSpaceBuilder DeleteSpace()
+        public RemoveChannelMetadataBuilder RemoveChannelMetadata()
         {
             #if (ENABLE_PUBNUB_LOGGING)
-            this.PNLog.WriteToLog("DeleteSpace", PNLoggingMethod.LevelInfo);
+            this.PNLog.WriteToLog("RemoveChannelMetadata", PNLoggingMethod.LevelInfo);
             #endif
 
-            return new DeleteSpaceBuilder(this);
+            return new RemoveChannelMetadataBuilder(this);
+        }
+        public GetChannelMetadataBuilder GetChannelMetadata()
+        {
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("GetChannelMetadata", PNLoggingMethod.LevelInfo);
+            #endif
+
+            return new GetChannelMetadataBuilder(this);
         }
 
-        public GetSpaceBuilder GetSpace()
+        public GetAllChannelMetadataBuilder GetAllChannelMetadata()
         {
             #if (ENABLE_PUBNUB_LOGGING)
-            this.PNLog.WriteToLog("GetSpace", PNLoggingMethod.LevelInfo);
+            this.PNLog.WriteToLog("GetAllChannelMetadata", PNLoggingMethod.LevelInfo);
             #endif
 
-            return new GetSpaceBuilder(this);
+            return new GetAllChannelMetadataBuilder(this);
         }
 
-        public GetSpacesBuilder GetSpaces()
+        public GetChannelMembersBuilder GetChannelMembers()
         {
             #if (ENABLE_PUBNUB_LOGGING)
-            this.PNLog.WriteToLog("GetSpaces", PNLoggingMethod.LevelInfo);
+            this.PNLog.WriteToLog("GetChannelMembers", PNLoggingMethod.LevelInfo);
             #endif
 
-            return new GetSpacesBuilder(this);
-        }
-
-        public GetMembersBuilder GetMembers()
-        {
-            #if (ENABLE_PUBNUB_LOGGING)
-            this.PNLog.WriteToLog("GetMembers", PNLoggingMethod.LevelInfo);
-            #endif
-
-            return new GetMembersBuilder(this);
+            return new GetChannelMembersBuilder(this);
         }
 
         public GrantTokenBuilder GrantToken()
@@ -389,16 +372,46 @@ namespace PubNubAPI
 
             return new GetMembershipsBuilder(this);
         }
-
-        public ManageMembersBuilder ManageMembers()
+        public ManageChannelMembersBuilder ManageChannelMembers()
         {
             #if (ENABLE_PUBNUB_LOGGING)
-            this.PNLog.WriteToLog("ManageMembers", PNLoggingMethod.LevelInfo);
+            this.PNLog.WriteToLog("ManageChannelMembers", PNLoggingMethod.LevelInfo);
             #endif
 
-            return new ManageMembersBuilder(this);
+            return new ManageChannelMembersBuilder(this);
         }
+        public SetMembershipsBuilder SetMemberships()
+        {
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("SetMemberships", PNLoggingMethod.LevelInfo);
+            #endif
 
+            return new SetMembershipsBuilder(this);
+        }
+        public RemoveMembershipsBuilder RemoveMemberships()
+        {
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("RemoveMemberships", PNLoggingMethod.LevelInfo);
+            #endif
+
+            return new RemoveMembershipsBuilder(this);
+        }
+        public SetChannelMembersBuilder SetChannelMembers()
+        {
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("SetChannelMembers", PNLoggingMethod.LevelInfo);
+            #endif
+
+            return new SetChannelMembersBuilder(this);
+        }
+        public RemoveChannelMembersBuilder RemoveChannelMembers()
+        {
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("RemoveChannelMembers", PNLoggingMethod.LevelInfo);
+            #endif
+
+            return new RemoveChannelMembersBuilder(this);
+        } 
         public ManageMembershipsBuilder ManageMemberships()
         {
             #if (ENABLE_PUBNUB_LOGGING)

@@ -4,11 +4,9 @@ namespace PubNubAPI
 {
     public enum PNObjectsEvent
     {
-        // PNObjectsEventCreate is the enum when the event `create` occurs
-        PNObjectsEventCreate,
-        // PNObjectsEventUpdate is the enum when the event `update` occurs
-        PNObjectsEventUpdate,
-        // PNObjectsEventDelete is the enum when the event `delete` occurs
+        // PNObjectsEventSet is the enum when the event `set` occurs
+        PNObjectsEventSet,
+        // PNObjectsEventDelete is the enum when the event `remove` occurs
         PNObjectsEventDelete,
 
         PNObjectsNoneEvent,
@@ -18,10 +16,8 @@ namespace PubNubAPI
     {
         public static string GetDescription(this PNObjectsEvent @this)
         {
-            if (@this.Equals(PNObjectsEvent.PNObjectsEventCreate)){
-                return "create";
-            } else if (@this.Equals(PNObjectsEvent.PNObjectsEventUpdate)){
-                return "update";
+            if (@this.Equals(PNObjectsEvent.PNObjectsEventSet)){
+                return "set";
             } else if (@this.Equals(PNObjectsEvent.PNObjectsEventDelete)){
                 return "delete";
             } else {
@@ -32,10 +28,10 @@ namespace PubNubAPI
 
     public enum PNObjectsEventType
     {
-        // PNObjectsUserEvent is the enum when the event of type `user` occurs
-        PNObjectsUserEvent,
-        // PNObjectsSpaceEvent is the enum when the event of type `space` occurs
-        PNObjectsSpaceEvent,
+        // PNObjectsUUIDEvent is the enum when the event of type `uuid` occurs
+        PNObjectsUUIDEvent,
+        // PNObjectsChannelEvent is the enum when the event of type `channel` occurs
+        PNObjectsChannelEvent,
         // PNObjectsMembershipEvent is the enum when the event of type `membership` occurs
         PNObjectsMembershipEvent,
         // PNObjectsNoneEvent is used for error handling
@@ -47,10 +43,10 @@ namespace PubNubAPI
     {
         public static string GetDescription(this PNObjectsEventType @this)
         {
-            if (@this.Equals(PNObjectsEventType.PNObjectsUserEvent)){
-                return "user";
-            } else if (@this.Equals(PNObjectsEventType.PNObjectsSpaceEvent)){
-                return "space";
+            if (@this.Equals(PNObjectsEventType.PNObjectsUUIDEvent)){
+                return "uuid";
+            } else if (@this.Equals(PNObjectsEventType.PNObjectsChannelEvent)){
+                return "channel";
             } else if (@this.Equals(PNObjectsEventType.PNObjectsMembershipEvent)){
                 return "membership";
             } else {
@@ -59,18 +55,25 @@ namespace PubNubAPI
         }
     }
 
-    // PNUserSpaceInclude is used as an enum to catgorize the available User and Space include types
-    public enum PNUserSpaceInclude 
+    // PNChannelMetadataInclude is used as an enum to catgorize the available Channel Metadata include types
+    public enum PNChannelMetadataInclude
     {
-        // PNUserSpaceCustom is the enum equivalent to the value `custom` available User and Space include types
-        PNUserSpaceCustom
+        // PNChannelMetadataIncludeCustom is the enum equivalent to the value `custom` available Channel Metadata include types
+        PNChannelMetadataIncludeCustom
     }
 
-    public static class PNUserSpaceIncludeExtensions
+    // PNUUIDMetadataInclude is used as an enum to catgorize the available UUID include types
+    public enum PNUUIDMetadataInclude
     {
-        public static string GetDescription(this PNUserSpaceInclude @this)
+        // PNUUIDMetadataIncludeCustom is the enum equivalent to the value `custom` available UUID include types
+        PNUUIDMetadataIncludeCustom
+    }
+
+    public static class PNChannelMetadataIncludeExtensions
+    {
+        public static string GetDescription(this PNChannelMetadataInclude @this)
         {
-            if (@this.Equals(PNUserSpaceInclude.PNUserSpaceCustom)){
+            if (@this.Equals(PNChannelMetadataInclude.PNChannelMetadataIncludeCustom)){
                 return "custom";
             } else {
                 return "custom";  
@@ -78,15 +81,27 @@ namespace PubNubAPI
         }
     }
 
+    public static class PNUUIDMetadataIncludeExtensions
+    {
+        public static string GetDescription(this PNUUIDMetadataInclude @this)
+        {
+            if (@this.Equals(PNUUIDMetadataInclude.PNUUIDMetadataIncludeCustom)){
+                return "custom";
+            } else {
+                return "custom";  
+            }
+        }
+    }  
+
     // PNMembershipsInclude is used as an enum to catgorize the available Memberships include types
     public enum PNMembershipsInclude
     {
-        // PNMembershipsCustom is the enum equivalent to the value `custom` available Memberships include types
-        PNMembershipsCustom,
-        // PNMembershipsSpace is the enum equivalent to the value `space` available Memberships include types
-        PNMembershipsSpace,
-        // PNMembershipsSpaceCustom is the enum equivalent to the value `space.custom` available Memberships include types
-        PNMembershipsSpaceCustom
+        // PNMembershipsIncludeCustom is the enum equivalent to the value `custom` available Memberships include types
+        PNMembershipsIncludeCustom,
+        // PNMembershipsIncludeChannel is the enum equivalent to the value `channel` available Memberships include types
+        PNMembershipsIncludeChannel,
+        // PNMembershipsIncludeChannelCustom is the enum equivalent to the value `channel.custom` available Memberships include types
+        PNMembershipsIncludeChannelCustom
 
     }
 
@@ -94,12 +109,12 @@ namespace PubNubAPI
     {
         public static string GetDescription(this PNMembershipsInclude @this)
         {
-            if (@this.Equals(PNMembershipsInclude.PNMembershipsCustom)){
+            if (@this.Equals(PNMembershipsInclude.PNMembershipsIncludeCustom)){
                 return "custom";
-            } else if (@this.Equals(PNMembershipsInclude.PNMembershipsSpace)){
-                return "space";
-            } else if (@this.Equals(PNMembershipsInclude.PNMembershipsSpaceCustom)){
-                return "space.custom";
+            } else if (@this.Equals(PNMembershipsInclude.PNMembershipsIncludeChannel)){
+                return "channel";
+            } else if (@this.Equals(PNMembershipsInclude.PNMembershipsIncludeChannelCustom)){
+                return "channel.custom";
             } else {
                 return "custom";  
             }
@@ -107,28 +122,28 @@ namespace PubNubAPI
     }
 
 
-    // PNMembersInclude is used as an enum to catgorize the available Members include types
-    public enum PNMembersInclude
+    // PNChannelMembersInclude is used as an enum to catgorize the available Members include types
+    public enum PNChannelMembersInclude
     {
-        // PNMembersCustom is the enum equivalent to the value `custom` available Members include types
-        PNMembersCustom,
-        // PNMembersUser is the enum equivalent to the value `user` available Members include types
-        PNMembersUser,
-        // PNMembersUserCustom is the enum equivalent to the value `user.custom` available Members include types
-        PNMembersUserCustom,
+        // PNChannelMembersIncludeCustom is the enum equivalent to the value `custom` available Members include types
+        PNChannelMembersIncludeCustom,
+        // PNChannelMembersIncludeUUID is the enum equivalent to the value `uuid` available Members include types
+        PNChannelMembersIncludeUUID,
+        // PNChannelMembersIncludeUUIDCustom is the enum equivalent to the value `uuid.custom` available Members include types
+        PNChannelMembersIncludeUUIDCustom,
 
     }
 
-    public static class PNMembersIncludeExtensions
+    public static class PNChannelMembersIncludeExtensions
     {
-        public static string GetDescription(this PNMembersInclude @this)
+        public static string GetDescription(this PNChannelMembersInclude @this)
         {
-            if (@this.Equals(PNMembersInclude.PNMembersCustom)){
+            if (@this.Equals(PNChannelMembersInclude.PNChannelMembersIncludeCustom)){
                 return "custom";
-            } else if (@this.Equals(PNMembersInclude.PNMembersUser)){
-                return "user";
-            } else if (@this.Equals(PNMembersInclude.PNMembersUserCustom)){
-                return "user.custom";
+            } else if (@this.Equals(PNChannelMembersInclude.PNChannelMembersIncludeUUID)){
+                return "uuid";
+            } else if (@this.Equals(PNChannelMembersInclude.PNChannelMembersIncludeUUIDCustom)){
+                return "uuid.custom";
             } else {
                 return "custom";  
             }

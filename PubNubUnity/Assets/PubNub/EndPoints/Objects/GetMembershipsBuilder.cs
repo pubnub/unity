@@ -17,8 +17,8 @@ namespace PubNubAPI
             return this;
         }
 
-        public GetMembershipsBuilder UserID(string id){
-            getMembershipsBuilder.UserID(id);
+        public GetMembershipsBuilder UUID(string id){
+            getMembershipsBuilder.UUID(id);
             return this;
         }
 
@@ -53,7 +53,7 @@ namespace PubNubAPI
             return this;
         }
 
-        public void Async(Action<PNMembershipsResult, PNStatus> callback)
+        public void Async(Action<PNGetMembershipsResult, PNStatus> callback)
         {
             getMembershipsBuilder.Async(callback);
         }

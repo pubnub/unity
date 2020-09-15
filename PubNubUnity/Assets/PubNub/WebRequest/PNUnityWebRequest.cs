@@ -319,7 +319,7 @@ namespace PubNubAPI
 
             #if (ENABLE_PUBNUB_LOGGING)
             this.PNLog.WriteToLog (string.Format ("StartWebRequestsByName: {0} running",  unityWebRequestWrapper.CurrentRequestType.ToString ()), PNLoggingMethod.LevelInfo);
-            this.PNLog.WriteToLog (string.Format ("StartWebRequests POST Data : {1} \nURL : {0}", unityWebRequestWrapper.URL, unityWebRequestWrapper.CurrentRequestState.POSTData), PNLoggingMethod.LevelInfo);
+            this.PNLog.WriteToLog (string.Format ("StartWebRequests {2} Data : {1} \nURL : {0}", unityWebRequestWrapper.URL, unityWebRequestWrapper.CurrentRequestState.POSTData, unityWebRequestWrapper.CurrentUnityWebRequest.method), PNLoggingMethod.LevelInfo);
             #endif
         }
 
