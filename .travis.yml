@@ -27,7 +27,7 @@ jobs:
       name: "Editor unit tests"
       script: 
         - ./TravisScripts/unity.sh test edit "$UNITYCI_PROJECT_NAME"
-        - ./TravisScripts/unity.sh test play "$UNITYCI_PROJECT_NAME"
+        - travis_wait 20 ./TravisScripts/unity.sh test play "$UNITYCI_PROJECT_NAME"
 
 
 before_cache: 
