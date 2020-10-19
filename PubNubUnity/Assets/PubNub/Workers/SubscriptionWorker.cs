@@ -17,6 +17,7 @@ namespace PubNubAPI
         public PNChannelEventResult ChannelEventResult { get; set;}
         public PNMembershipEventResult MembershipEventResult { get; set;}
         public PNMessageActionsEventResult MessageActionsEventResult { get; set;}
+        public PNFileEventResult FileEventResult { get; set;}
     }   
 
     public class SubscriptionWorker<U>
@@ -583,6 +584,16 @@ namespace PubNubAPI
                     mea.MessageActionsEventResult = pnMessageActionsEventResult;
                     PubNubInstance.RaiseEvent (mea);
                 }
+            } else if ((PNMessageTypes)subscribeMessage.MessageType == PNMessageTypes.File) {  
+                PNFileEventResult pnFileEventResult;
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PubNubInstance.PNLog.WriteToLog("Raising File event ", PNLoggingMethod.LevelInfo);
+                #endif
+                CreateFileEventResult(subscribeMessage, out pnFileEventResult);
+                if(pnFileEventResult!= null) {
+                    mea.FileEventResult = pnFileEventResult;
+                    PubNubInstance.RaiseEvent (mea);
+                }
             } else {
                 PNMessageResult subMessageResult; 
                 CreatePNMessageResult(subscribeMessage, out subMessageResult);
@@ -778,6 +789,51 @@ namespace PubNubAPI
         }
 
         #endregion
+        
+        internal void CreateFileEventResult(SubscribeMessage subscribeMessage, out PNFileEventResult pnFileEventResult){
+            pnFileEventResult = null;
+            
+            object payload = subscribeMessage.Payload;
+            if(!string.IsNullOrEmpty(this.PubNubInstance.PNConfig.CipherKey) && (this.PubNubInstance.PNConfig.CipherKey.Length > 0)){
+                payload = Helpers.DecodeMessage(PubNubInstance.PNConfig.CipherKey, subscribeMessage.Payload, PNOperationType.PNSubscribeOperation, this.PubNubInstance);
+            } 
+
+
+            Dictionary<string, object> data = payload as Dictionary<string, object>;
+            if(data != null){
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PubNubInstance.PNLog.WriteToLog(string.Format("PNFileEventResult"), PNLoggingMethod.LevelInfo);
+                #endif  
+
+                pnFileEventResult = new PNFileEventResult();
+                pnFileEventResult.FileEvent = new PNFileMessageAndDetails();
+                pnFileEventResult.FileEvent.PNFile = new PNFileDetails();
+                pnFileEventResult.FileEvent.PNMessage = new PNPublishMessage();
+                pnFileEventResult.Channel = subscribeMessage.Channel.Replace(Utility.PresenceChannelSuffix, "");
+
+                Dictionary<string, object> fileDict = Utility.ReadDictionaryFromResponseDictionary(data, "file");
+                if(fileDict != null){
+                    pnFileEventResult.FileEvent.PNFile.ID = Utility.ReadMessageFromResponseDictionary(fileDict, "id");
+                    pnFileEventResult.FileEvent.PNFile.Name = Utility.ReadMessageFromResponseDictionary(fileDict, "name");
+                    pnFileEventResult.FileEvent.PNFile.URL = BuildRequests.BuildDownloadFileRequest(pnFileEventResult.Channel, pnFileEventResult.FileEvent.PNFile.ID, pnFileEventResult.FileEvent.PNFile.Name, this.PubNubInstance, null).ToString();
+                }          
+                      
+                Dictionary<string, object> messageDict = Utility.ReadDictionaryFromResponseDictionary(data, "message");
+                if(messageDict != null){
+                    pnFileEventResult.FileEvent.PNMessage.Text = Utility.ReadMessageFromResponseDictionary(messageDict, "text");
+                }          
+                      
+                
+                pnFileEventResult.Subscription = subscribeMessage.SubscriptionMatch.Replace(Utility.PresenceChannelSuffix, "");
+                long timetoken = (subscribeMessage.PublishTimetokenMetadata != null) ? subscribeMessage.PublishTimetokenMetadata.Timetoken : 0;
+                long originatingTimetoken = (subscribeMessage.OriginatingTimetoken != null) ? subscribeMessage.OriginatingTimetoken.Timetoken : 0;
+                pnFileEventResult.Timetoken = timetoken;
+                pnFileEventResult.OriginatingTimetoken = originatingTimetoken;
+                pnFileEventResult.UserMetadata = subscribeMessage.UserMetadata;
+                pnFileEventResult.IssuingClientId = subscribeMessage.IssuingClientId;
+
+            }
+        }
 
         internal void CreatePNMessageResult(SubscribeMessage subscribeMessage, out PNMessageResult messageResult)
         {

@@ -156,7 +156,16 @@ namespace PubNubAPI
             return BuildRestApiRequest<Uri>(url, PNOperationType.PNRemoveAllPushNotificationsOperation, parameterBuilder.ToString (), pnInstance, queryParams);
         }
 
-        public static Uri BuildPublishRequest (string channel, string message, bool storeInHistory, string metadata, uint messageCounter, int ttl, bool usePost, bool repilicate, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        public static Uri BuildPublishFileMessageRequest (string channel, string message, bool storeInHistory, string metadata, uint messageCounter, int ttl, bool usePost, bool repilicate, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        {
+            return BuildPublishRequestCommon (channel, message, storeInHistory, metadata, messageCounter, ttl, usePost, repilicate, pnInstance, queryParams, PNOperationType.PNPublishFileMessageOperation);
+        }
+
+        public static Uri BuildPublishRequest (string channel, string message, bool storeInHistory, string metadata, uint messageCounter, int ttl, bool usePost, bool repilicate, PubNubUnity pnInstance, Dictionary<string, string> queryParams){
+            return BuildPublishRequestCommon (channel, message, storeInHistory, metadata, messageCounter, ttl, usePost, repilicate, pnInstance, queryParams, PNOperationType.PNPublishOperation);
+        }
+
+        public static Uri BuildPublishRequestCommon (string channel, string message, bool storeInHistory, string metadata, uint messageCounter, int ttl, bool usePost, bool repilicate, PubNubUnity pnInstance, Dictionary<string, string> queryParams, PNOperationType pnOperationType)
         {
             StringBuilder parameterBuilder = new StringBuilder ();
             parameterBuilder.AppendFormat ("&seqn={0}", messageCounter.ToString ());
@@ -196,7 +205,13 @@ namespace PubNubAPI
 
             // Build URL
             List<string> url = new List<string> ();
-            url.Add ("publish");
+            if(pnOperationType.Equals(PNOperationType.PNPublishFileMessageOperation)){
+                url.Add ("v1");
+                url.Add ("files");
+                url.Add ("publish-file");
+            } else {
+                url.Add ("publish");
+            }
             url.Add (pnInstance.PNConfig.PublishKey);
             url.Add (pnInstance.PNConfig.SubscribeKey);
             url.Add (signature);
@@ -206,8 +221,74 @@ namespace PubNubAPI
                 url.Add (message);
             }
 
-            return BuildRestApiRequest<Uri> (url, PNOperationType.PNPublishOperation, parameterBuilder.ToString (), pnInstance, queryParams);
+            return BuildRestApiRequest<Uri> (url, pnOperationType, parameterBuilder.ToString (), pnInstance, queryParams);
         }
+        public static Uri BuildDeleteFileRequest (string channel, string id, string name, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        {
+            ///v1/files/%s/channels/%s/files/%s/%s
+            List<string> url = new List<string> ();
+            url.Add ("v1");
+            url.Add ("files");
+            url.Add (pnInstance.PNConfig.SubscribeKey);
+            url.Add ("channels");
+            url.Add (channel);
+            url.Add ("files");
+            url.Add (id);
+            url.Add (name);
+
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNGetMessageActionsOperation, "", pnInstance, queryParams);
+        }  
+
+        public static Uri BuildDownloadFileRequest (string channel, string id, string name, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        {
+            ///v1/files/%s/channels/%s/files/%s/%s
+            List<string> url = new List<string> ();
+            url.Add ("v1");
+            url.Add ("files");
+            url.Add (pnInstance.PNConfig.SubscribeKey);
+            url.Add ("channels");
+            url.Add (channel);
+            url.Add ("files");
+            url.Add (id);
+            url.Add (name);
+
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNGetMessageActionsOperation, "", pnInstance, queryParams);
+        } 
+
+        public static Uri BuildSendFileRequest (string channel, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        {
+            ///v1/files/%s/channels/%s/generate-upload-url
+            List<string> url = new List<string> ();
+            url.Add ("v1");
+            url.Add ("files");
+            url.Add (pnInstance.PNConfig.SubscribeKey);
+            url.Add ("channels");
+            url.Add (channel);
+            url.Add ("generate-upload-url");
+
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNGetMessageActionsOperation, "", pnInstance, queryParams);
+        }  
+        public static Uri BuildListFilesRequest (string channel, int limit, string next, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
+        {
+            ///v1/files/%s/channels/%s/files
+            StringBuilder parameterBuilder = new StringBuilder ();
+            if (limit > 0) {
+                parameterBuilder.AppendFormat ("&limit={0}", limit.ToString());
+            }
+            if (!string.IsNullOrEmpty(next) ) {
+                parameterBuilder.AppendFormat ("&next={0}", next);
+            }
+
+            List<string> url = new List<string> ();
+            url.Add ("v1");
+            url.Add ("files");
+            url.Add (pnInstance.PNConfig.SubscribeKey);
+            url.Add ("channels");
+            url.Add (channel);
+            url.Add ("files");
+
+            return BuildRestApiRequest<Uri> (url, PNOperationType.PNGetMessageActionsOperation, parameterBuilder.ToString (), pnInstance, queryParams);
+        }                                                
 
         public static Uri BuildSignalRequest (string channel, string message, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
         {
@@ -628,7 +709,7 @@ namespace PubNubAPI
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNMessageCountsOperation, parameterBuilder.ToString(), pnInstance, queryParams);
         }
 
-        public static Uri BuildFetchRequest (string[] channels, long start, long end, uint count, bool reverse, bool includeToken, PubNubUnity pnInstance, Dictionary<string, string> queryParams, bool withMeta, bool withMessageActions)
+        public static Uri BuildFetchRequest (string[] channels, long start, long end, uint count, bool reverse, bool includeToken, PubNubUnity pnInstance, Dictionary<string, string> queryParams, bool withMeta, bool withMessageActions, bool withMessageType, bool withUUID)
         {
             StringBuilder parameterBuilder = new StringBuilder ();
 
@@ -647,6 +728,12 @@ namespace PubNubAPI
             }
             if (withMeta) {
                 parameterBuilder.AppendFormat ("&include_meta={0}", withMeta.ToString ().ToLowerInvariant ());
+            }
+            if (withMessageType) {
+                parameterBuilder.AppendFormat ("&include_message_type={0}", withMessageType.ToString ().ToLowerInvariant ());
+            }
+            if (withUUID) {
+                parameterBuilder.AppendFormat ("&include_uuid={0}", withUUID.ToString ().ToLowerInvariant ());
             }
             List<string> url = new List<string> ();
             
@@ -1089,7 +1176,17 @@ namespace PubNubAPI
                     if(latency.Objects > 0){
                         url.AppendFormat("&l_obj={0}", latency.Signal);
                     }
-                    break;    
+                    break; 
+                case PNOperationType.PNDeleteFileOperation:
+                case PNOperationType.PNDownloadFileOperation:
+                case PNOperationType.PNGetFileURLOperation:
+                case PNOperationType.PNListFilesOperation:
+                case PNOperationType.PNSendFileOperation:
+                    if(latency.Files > 0){
+                        url.AppendFormat("&l_file={0}", latency.Files);
+                    }
+                    break; 
+
                 default:
                     break;    
                     
@@ -1306,6 +1403,17 @@ namespace PubNubAPI
                 url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
                 
                 break;
+            case PNOperationType.PNDeleteFileOperation:
+            case PNOperationType.PNDownloadFileOperation:
+            case PNOperationType.PNGetFileURLOperation:
+            case PNOperationType.PNListFilesOperation:
+            case PNOperationType.PNSendFileOperation:
+                url.Append (parameters);
+                url = AppendAuthKeyToURL(url, authenticationKey, type);
+                url = AppendUUIDToURL (url, uuid, false);
+                url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);
+                break; 
+                
             default:
                 url = AppendUUIDToURL(url, uuid, true);
                 url = AppendPNSDKVersionToURL(url, pnsdkVersion, type);

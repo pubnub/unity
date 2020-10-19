@@ -1,13 +1,29 @@
 --- 
-version: v4.9.0
+version: v4.10.0
 changelog:
+  -
+    changes:
+      -
+        text: "Files."
+        type: feature
+      -
+        text: " Random IV in Encryption."
+        type: feature
+      -
+        text: "Fetch with UUID and Message Type."
+        type: feature
+      -
+        text: "Fetch with 100 messages."
+        type: improvement
+    date: Oct 19, 20
+    version: v4.10.0
   -
     changes:
       -
         text: "Objects V2."
         type: feature
     date: Sep 15, 20
-    version: v4.9.0
+    version: v4.10.0
   -
     changes:
       -
@@ -431,7 +447,8 @@ features:
   others: 
     - TELEMETRY
     - QUERY-PARAM
-    - CREATE-PUSH-PAYLOAD    
+    - CREATE-PUSH-PAYLOAD  
+    - RANDOM-INITIALIZATION-VECTOR
   presence: 
     - PRESENCE-HERE-NOW
     - PRESENCE-WHERE-NOW
@@ -452,6 +469,7 @@ features:
     - PUBLISH-FIRE
     - PUBLISH-REPLICATION-FLAG
     - PUBLISH-RAW-JSON
+    - PUBLISH-FILE-MESSAGE    
   push: 
     - PUSH-ADD-DEVICE-TO-CHANNELS
     - PUSH-REMOVE-DEVICE-FROM-CHANNELS
@@ -472,6 +490,10 @@ features:
     - STORAGE-HISTORY-WITH-META
     - STORAGE-FETCH-WITH-META
     - STORAGE-FETCH-WITH-MESSAGE-ACTIONS
+    - STORAGE-FETCH-WITH-FILE
+    - STORAGE-FETCH-WITH-INCLUDE-MESSAGE-TYPE
+    - STORAGE-FETCH-WITH-INCLUDE-UUID   
+    - STORAGE-FETCH-DEFAULT-100
   subscribe: 
     - SUBSCRIBE-CHANNELS
     - SUBSCRIBE-CHANNEL-GROUPS
@@ -487,6 +509,7 @@ features:
     - SUBSCRIBE-SPACE-LISTENER
     - SUBSCRIBE-USER-LISTENER
     - SUBSCRIBE-MESSAGE-ACTIONS-LISTENER
+    - SUBSCRIBE-FILE-LISTENER
   objects:
     - OBJECTS-FILTERING
     - OBJECTS-SORTING
@@ -506,6 +529,13 @@ features:
     - OBJECTS-REMOVE-CHANNEL-MEMBERS-V2
     - OBJECTS-MANAGE-MEMBERSHIPS-V2
     - OBJECTS-MANAGE-CHANNEL-MEMBERS-V2
+  files:
+    - FILES-SEND-FILE
+    - FILES-LIST-FILES
+    - FILES-GET-FILE-URL
+    - FILES-DELETE-FILE
+    - FILES-DOWNLOAD-FILE   
+    - FILES-TIMETOKEN-IN-RESPONSE
   message-actions:
     - MESSAGE-ACTIONS-GET
     - MESSAGE-ACTIONS-ADD

@@ -169,6 +169,22 @@ namespace PubNubAPI
             get {return suppressLeaveEvents;}
             set {suppressLeaveEvents = value;}
         }
+
+        public int fileMessagePublishRetryLimit = 5;
+
+        public int FileMessagePublishRetryLimit
+        {
+            get {return fileMessagePublishRetryLimit;}
+            set {fileMessagePublishRetryLimit = value;}
+        }
+
+        public bool useRandomInitializationVector = false;
+
+        public bool UseRandomInitializationVector
+        {
+            get {return useRandomInitializationVector;}
+            set {useRandomInitializationVector = value;}
+        }        
     }
 }
 

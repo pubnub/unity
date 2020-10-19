@@ -1,18 +1,199 @@
-﻿	using UnityEngine;
-#if !UNITY_WSA_10_0
+﻿using UnityEngine;
 using UnityEngine.TestTools;
 using NUnit.Framework;
 using System.Collections;
 using PubNubAPI;
 using System.Collections.Generic;
 using System;
-#endif
+using System.Text;
+using System.IO;
 
 namespace PubNubAPI.Tests
 {
 	public class PlayModeTests
 	{
 #if !UNITY_WSA_10_0
+		#region "Files"
+		[UnityTest]
+		public IEnumerator TestFiles(){
+			yield return TestFilesCommon(false);
+		}
+
+		[UnityTest]
+		public IEnumerator TestFilesEncrypted(){
+			yield return TestFilesCommon(true);
+		}
+
+		public IEnumerator TestFilesCommon(bool encrypted){
+			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
+			pnConfiguration.SubscribeKey ="demo";
+			pnConfiguration.PublishKey ="demo";
+			PubNub pubnub = new PubNub(pnConfiguration);
+			if(encrypted){
+				pubnub.PNConfig.CipherKey = "enigma";
+			}
+			pubnub.PNConfig.AuthKey = "myauth";
+			bool testReturn = false;
+            string constString = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
+			// string constString = "test";
+			// string filePath = "Assets/PubNub/PlayModeTests/file_image_enc_decrypted_to_original.jpg";
+			string filePath = "Assets/PubNub/PlayModeTests/file_upload_test.txt";
+			string channel = string.Format("{0}{1}", "ch_", constString);
+			var extension = Path.GetExtension(filePath);
+			string name = string.Format("{0}{1}{2}", "name_", constString, extension);
+			string id = string.Format("{0}{1}", "id_", constString);
+			string publishMessage = string.Format("publishMessage_{0}{1}", "id_", constString);
+			
+			string savePath = string.Format("{0}/{1}", Application.temporaryCachePath, "test.txt");
+
+			pubnub.GetFileURL().Channel(channel).ID(id).Name(name).Async((result, status) => {
+				bool statusError = status.Error;
+				Debug.Log(statusError);
+				bool resultTimeToken = result.URL.Contains(string.Format("/v1/files/{0}/channels/{1}/files/{2}/{3}", pubnub.PNConfig.SubscribeKey, channel, id, name));
+				Debug.Log(result.URL);
+				Debug.Log(resultTimeToken);
+				testReturn = !statusError && resultTimeToken;
+			});
+			yield return new WaitForSeconds(PlayModeCommon.WaitTimeForAsyncResponse);
+			Assert.True(testReturn, "test didn't return");
+
+			bool messageMatch = false, idMatch = false, nameMatch = false, channelMatch = false, urlMatch = false;
+			string returnedId = "";
+
+			pubnub.SubscribeCallback += (sender, e) => {
+				SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
+				if (mea.FileEventResult != null)
+				{
+					channelMatch = mea.FileEventResult.Channel.Equals(channel);
+					Debug.Log(mea.FileEventResult.Channel);
+					Debug.Log(mea.FileEventResult.FileEvent.PNFile.ID);
+					Debug.Log(mea.FileEventResult.FileEvent.PNFile.Name);
+					Debug.Log(mea.FileEventResult.FileEvent.PNFile.URL);
+					Debug.Log(mea.FileEventResult.FileEvent.PNMessage.Text);
+					Debug.Log(mea.FileEventResult.IssuingClientId);
+					Debug.Log(mea.FileEventResult.OriginatingTimetoken);
+					Debug.Log(mea.FileEventResult.Subscription);
+					Debug.Log(mea.FileEventResult.Timetoken);
+					messageMatch = publishMessage.Equals(mea.FileEventResult.FileEvent.PNMessage.Text);
+					
+					idMatch = returnedId.Equals(mea.FileEventResult.FileEvent.PNFile.ID);
+					nameMatch = name.Equals(mea.FileEventResult.FileEvent.PNFile.Name);
+					string urlToMatch = string.Format("/v1/files/{0}/channels/{1}/files/{2}/{3}", pubnub.PNConfig.SubscribeKey, channel, returnedId, name);
+					
+					urlMatch = mea.FileEventResult.FileEvent.PNFile.URL.Contains(urlToMatch);
+					Debug.Log(returnedId);
+					Debug.Log(urlToMatch);
+					Debug.Log(urlMatch);
+					Debug.Log(messageMatch);
+					Debug.Log(idMatch);
+					Debug.Log(nameMatch);
+					Debug.Log(channelMatch);
+				}
+			};
+			pubnub.Subscribe().Channels(new List<string>(){channel}).Execute();
+
+
+			pubnub.SendFile().Channel(channel).Message(publishMessage).Name(name).FilePath(filePath).Async((result, status) => {
+				Assert.False(status.Error);
+				Debug.Log(result);
+				if(!status.Error){
+					returnedId = result.Data.ID;
+					Debug.Log("result.Timetoken:" + result.Timetoken);
+					Assert.True(result.Timetoken!=0);
+				}
+
+			});
+			yield return new WaitForSeconds(10);
+			Debug.Log("Application.temporaryCachePath: " + Application.temporaryCachePath);
+			// Assert.True(urlMatch);
+			Assert.True(messageMatch);
+			// Assert.True(idMatch);
+			Assert.True(nameMatch);
+			Assert.True(channelMatch);			
+
+			pubnub.DownloadFile().Channel(channel).ID(returnedId).Name(name).SavePath(savePath).Async((result, status) => {
+				Assert.False(status.Error);
+				Assert.True(status.StatusCode.Equals(200));
+
+			});
+			yield return new WaitForSeconds(10);
+			//Match
+			byte[] read = System.IO.File.ReadAllBytes(filePath);
+			byte[] save = System.IO.File.ReadAllBytes(savePath);
+			Debug.Log(Encoding.UTF8.GetString(save));
+			Assert.True(Encoding.UTF8.GetString(read).Equals(Encoding.UTF8.GetString(save)));
+			testReturn = false;
+			
+			//List
+			pubnub.ListFiles().Channel(channel).Async((result, status) => {
+				Assert.False(status.Error);
+				foreach(PNFileInfo pnFileInfo in result.Data){
+					Debug.Log(pnFileInfo.Name);
+					Debug.Log(pnFileInfo.ID);
+					Debug.Log(pnFileInfo.Size);
+					Debug.Log(pnFileInfo.Created);
+					if(name.Equals(pnFileInfo.Name) && returnedId.Equals(pnFileInfo.ID)){
+						testReturn = true;
+						break;
+					}
+					
+				}
+
+			});
+			yield return new WaitForSeconds(PlayModeCommon.WaitTimeForAsyncResponse);
+			Assert.True(testReturn, "ListFiles didn't return");
+
+			//Fetch
+			testReturn = false;
+
+			pubnub.FetchMessages().Count(1).Channels(new List<string>(){channel}).IncludeTimetoken(true).IncludeMessageType(true).IncludeUUID(true).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				if (!status.Error)
+				{
+
+					if (result.Channels != null)
+					{
+						Dictionary<string, List<PNMessageResult>> fetchResult = result.Channels as Dictionary<string, List<PNMessageResult>>;
+						foreach (KeyValuePair<string, List<PNMessageResult>> kvp in fetchResult)
+						{
+							if (kvp.Key.Equals(channel))
+							{
+								foreach (PNMessageResult msg in kvp.Value)
+								{
+									testReturn = msg.MessageType.Equals(4) && msg.IssuingClientId.Equals(pubnub.PNConfig.UUID);
+									if(testReturn){	
+										break;
+									}											
+								}
+							}
+						}
+					}
+
+				}
+			});
+			yield return new WaitForSeconds(7);
+			Assert.True(testReturn, "fetch test didnt return");			
+
+			//Delete
+			testReturn = false;
+
+			pubnub.DeleteFile().Channel(channel).ID(returnedId).Name(name).Async((result, status) => {
+				Assert.True(status.Error.Equals(false));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				testReturn = true;
+			});
+			yield return new WaitForSeconds(PlayModeCommon.WaitTimeForAsyncResponse);
+			Assert.True(testReturn, "DeleteFile didn't return");
+			pubnub.Unsubscribe().Channels(new List<string>(){channel}).Async((result, status) => {
+				Debug.Log("status.Error:" + status.Error);
+				Assert.True(!status.Error);
+			});
+			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
+
+
+		}
+		#endregion
+
 		#region "Time"
 		//[UnityTest]
 		public IEnumerator TestTime()
@@ -5812,85 +5993,7 @@ namespace PubNubAPI.Tests
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(tresult, "fetch test didnt return");
-			/*tresult = false;
-			pubnub.FetchMessages().Channels(channelList2).Start(timetoken2).Reverse(true).Async((result, status) => {
-				Assert.True(status.Error.Equals(false));
-				if(!status.Error){
-					
-					if((result.Channels != null) && (result.Channels.Count.Equals(1))){
-						Dictionary<string, List<PNMessageResult>> fetchResult = result.Channels as Dictionary<string, List<PNMessageResult>>;
-						Debug.Log("fetchResult.Count:" + fetchResult.Count);
-						bool found1 = false, found2 = false;
-						foreach(KeyValuePair<string, List<PNMessageResult>> kvp in fetchResult){
-							Debug.Log("Channel:" + kvp.Key);
-							if(kvp.Key.Equals(channel)){
-								
-								foreach(PNMessageResult msg in kvp.Value){
-									Debug.Log("msg.Channel:" + msg.Channel);
-									Debug.Log("msg.Payload.ToString():" + msg.Payload.ToString());
-									if(msg.Channel.Equals(channel) && (msg.Payload.ToString().Equals(payloadList[0]) || (msg.Payload.ToString().Equals(payloadList[1])))){
-										found1 = true;
-									}
-								}
-								if(!found1){
-									break;
-								}
-							}
-						}
-						tresult = found1;
-					}
-
-                } 
-			});
-			yield return new WaitForSeconds (7);
-			Assert.True(tresult, "fetch test didnt return 2");
-			tresult = false;
-
-			pubnub.FetchMessages().Channels(channelList2).End(timetoken1).Async((result, status) => {
-				Assert.True(status.Error.Equals(false));
-				if(!status.Error){
-					
-					if((result.Channels != null) && (result.Channels.Count.Equals(2))){
-						Dictionary<string, List<PNMessageResult>> fetchResult = result.Channels as Dictionary<string, List<PNMessageResult>>;
-						Debug.Log("fetchResult.Count:" + fetchResult.Count);
-						bool found1 = false, found2 = false;
-						foreach(KeyValuePair<string, List<PNMessageResult>> kvp in fetchResult){
-							Debug.Log("Channel:" + kvp.Key);
-							if(kvp.Key.Equals(channel)){
-								
-								foreach(PNMessageResult msg in kvp.Value){
-									Debug.Log("msg.Channel:" + msg.Channel);
-									Debug.Log("msg.Payload.ToString():" + msg.Payload.ToString());
-									if(msg.Channel.Equals(channel) && (msg.Payload.ToString().Equals(payloadList[0]) || (msg.Payload.ToString().Equals(payloadList[1])))){
-										found1 = true;
-									}
-								}
-								if(!found1){
-									break;
-								}
-							}
-							if(kvp.Key.Equals(channel2)){
-								foreach(PNMessageResult msg in kvp.Value){
-									Debug.Log("msg.Channel" + msg.Channel);
-									Debug.Log("msg.Payload.ToString()" + msg.Payload.ToString());
-
-									if(msg.Channel.Equals(channel2) && (msg.Payload.Equals(payloadList[2]) || (msg.Payload.Equals(payloadList[3])))){
-										found2 = true;
-									}
-								}
-								if(!found2){
-									break;
-								}
-							}
-						}
-						tresult = found1 && found2;
-
-					}
-
-                } 
-			});
-			yield return new WaitForSeconds (7);
-			Assert.True(tresult, "fetch test didnt return 3");*/
+			
 
 			pubnub.CleanUp();
 		}
@@ -6174,192 +6277,6 @@ namespace PubNubAPI.Tests
 			Assert.True(tresult, "fetch test didnt return 2");
 			pubnub.CleanUp();
 		}
-
-
-		/*[UnityTest]
-		public IEnumerator TestSetGetDeleteState() {
-			
-			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
-			System.Random r = new System.Random ();
-			pnConfiguration.UUID = "UnityTestCGUUID_" + r.Next (100);
-			string channel = "UnityTestWithCGChannel";
-			string channel2 = "UnityTestWithCGChannel2";
-			List<string> channelList = new List<string>();
-			channelList.Add(channel);
-			channelList.Add(channel2);
-
-			PubNub pubnub = new PubNub(pnConfiguration);
-			bool tresult = false;
-			
-			tresult = false;
-			string payload = string.Format("payload {0}", pnConfiguration.UUID);
-
-			pubnub.SubscribeCallback += (sender, e) => { 
-				SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
-				if(!mea.Status.Category.Equals(PNStatusCategory.PNConnectedCategory)){
-					if(mea.MessageResult!=null){
-						Debug.Log("SubscribeCallback" + mea.MessageResult.Subscription);
-						Debug.Log("SubscribeCallback" + mea.MessageResult.Channel);
-						Debug.Log("SubscribeCallback" + mea.MessageResult.Payload);
-						Debug.Log("SubscribeCallback" + mea.MessageResult.Timetoken);
-						bool matchChannel = mea.MessageResult.Channel.Equals(channel);
-						Assert.True(matchChannel);
-						bool matchPayload = mea.MessageResult.Payload.ToString().Equals(payload);
-						Assert.True(matchPayload);
-						tresult = matchPayload && matchChannel;
-					}
-				}
-				
-			};
-			
-			pubnub.Subscribe ().SetChannels(channelList).Execute();
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
-
-			//tresult = false;
-			pubnub.Publish().Channel(channel).Message(payload).Async((result, status) => {
-				Assert.True(!result.Timetoken.Equals(0));
-				Assert.True(status.Error.Equals(false));
-				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
-			});
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls3);
-			Assert.True(tresult, "test didn't return 3");
-			tresult = false;
-
-			Dictionary<string, object> state = new Dictionary<string, object>();
-            state.Add  ("k1", "v1");
-            pubnub.SetPresenceState().Channels(channelList).State(state).Async ((result, status) => {
-                if(status.Error){
-					Assert.Fail("SetPresenceState failed");
-                } else {
-                    if(result != null){
-						if(result.StateByChannels!= null){
-							foreach (KeyValuePair<string, object> key in result.StateByChannels){
-								Debug.Log("key.Key" + key.Key);
-								if(key.Key.Equals(channel)){
-									Debug.Log("pubnub.JsonLibrary.SerializeToJsonString(key.Value)" + pubnub.JsonLibrary.SerializeToJsonString(key.Value));
-									bool stateMatch = pubnub.JsonLibrary.SerializeToJsonString(key.Value).Equals("{\"k1\":\"v1\"}");
-									Assert.IsTrue(stateMatch);
-									tresult = stateMatch;
-									break;
-								}
-							}
-						}
-                    }
-                }
-            });
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
-			Assert.True(tresult, "test didn't return 4");
-
-			tresult = false;
-
-			pubnub.GetPresenceState().Channels(channelList).Async ((result, status) => {
-                if(status.Error){
-					Assert.Fail("GetPresenceState failed");
-                } else {
-                    if(result != null){
-						if(result.StateByChannels!= null){
-							bool found1= false, found2 = false;
-							foreach (KeyValuePair<string, object> key in result.StateByChannels){
-								Debug.Log("key.Key" + key.Key);
-								Dictionary<string, object> stateDict = key.Value as Dictionary<string, object>;
-								foreach (KeyValuePair<string, object> keyInStateDict in stateDict){
-									Debug.Log("keyInStateDict.Key" + keyInStateDict.Key);
-									if(keyInStateDict.Key.Equals(channel)){
-										bool stateMatch = pubnub.JsonLibrary.SerializeToJsonString(keyInStateDict.Value).Equals("\"UnityTestWithCGChannel\":{\"k1\":\"v1\"}");
-										Debug.Log("pubnub.JsonLibrary.SerializeToJsonString(keyInStateDict.Value)" + pubnub.JsonLibrary.SerializeToJsonString(keyInStateDict.Value));
-										Assert.IsTrue(stateMatch);
-										found1 = stateMatch;
-									}
-									if(keyInStateDict.Key.Equals(channel2)){
-										bool stateMatch = pubnub.JsonLibrary.SerializeToJsonString(keyInStateDict.Value).Equals("\"UnityTestWithCGChannel2\":{\"k1\":\"v1\"}");
-										Debug.Log("pubnub.JsonLibrary.SerializeToJsonString(keyInStateDict.Value)" + pubnub.JsonLibrary.SerializeToJsonString(keyInStateDict.Value));
-										Assert.IsTrue(stateMatch);
-										found2 = stateMatch;
-									}
-								}
-							}
-							Assert.IsTrue(found1);
-							Assert.IsTrue(found2);
-							tresult = found1 && found2 ;
-						}
-                    }
-                }
-            });
-
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
-			Assert.True(tresult, "test didn't return 5");
-
-			tresult = false;
-			Dictionary<string, object> stateToDel = new Dictionary<string, object> ();
-			stateToDel.Add("k1", "");
-
-			pubnub.SetPresenceState().Channels(channelList).State(stateToDel).Async ((result, status) => {
-                if(status.Error){
-					Assert.Fail("SetPresenceState null failed");
-                } else {
-                    if(result != null){
-						if(result.StateByChannels!= null){
-							bool found = false;
-							foreach (KeyValuePair<string, object> key in result.StateByChannels){
-								Debug.Log("key.Key" + key.Key);
-								if(key.Key.Equals(channel)){
-									bool stateMatch = pubnub.JsonLibrary.SerializeToJsonString(key.Value).Equals("{\"k1\":\"v1\"}");
-									Debug.Log("pubnub.JsonLibrary.SerializeToJsonString(key.Value)" + pubnub.JsonLibrary.SerializeToJsonString(key.Value));
-									found = stateMatch;
-									break;
-								}
-							}
-							Assert.IsFalse(found);
-							tresult = !found;
-						}
-                    }
-                }
-            });
-
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
-			Assert.True(tresult, "test didn't return 6");
-
-			tresult = false;
-
-			pubnub.GetPresenceState().Channels(channelList).Async ((result, status) => {
-            //pubnub.SetPresenceState().Channels(new List<string> (){ch1}).State(state).Async ((result, status) => {    
-                if(status.Error){
-					Assert.Fail("GetPresenceState failed");
-                } else {
-                    if(result != null){
-						if(result.StateByChannels!= null){
-							bool found1= false, found2 = false;
-							foreach (KeyValuePair<string, object> key in result.StateByChannels){
-								Debug.Log("key.Key" + key.Key);
-								Dictionary<string, object> stateDict = key.Value as Dictionary<string, object>;
-								foreach (KeyValuePair<string, object> keyInStateDict in stateDict){
-									Debug.Log("keyInStateDict.Key" + keyInStateDict.Key);
-									if(keyInStateDict.Key.Equals(channel)){
-										bool stateMatch = pubnub.JsonLibrary.SerializeToJsonString(keyInStateDict.Value).Equals("{\"cg\":{\"k1\":\"v1\"}}");
-										Debug.Log("pubnub.JsonLibrary.SerializeToJsonString(keyInStateDict.Value)" + pubnub.JsonLibrary.SerializeToJsonString(keyInStateDict.Value));
-										Assert.IsFalse(stateMatch);
-										found1 = stateMatch;
-									}
-									if(keyInStateDict.Key.Equals(channel2)){
-										bool stateMatch = pubnub.JsonLibrary.SerializeToJsonString(keyInStateDict.Value).Equals("{\"cg\":{\"k1\":\"v1\"}}");
-										Debug.Log("pubnub.JsonLibrary.SerializeToJsonString(keyInStateDict.Value)" + pubnub.JsonLibrary.SerializeToJsonString(keyInStateDict.Value));
-										Assert.IsFalse(stateMatch);
-										found2 = stateMatch;
-									}
-								}
-							}
-							Assert.IsTrue(!found1);
-							Assert.IsTrue(!found2);
-							tresult = !found1 && !found2;
-						}
-                    }
-                }
-            });
-
-			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls2);
-			Assert.True(tresult, "test didn't return 7");
-
-		}*/
 
 		[UnityTest]
 		public IEnumerator TestUnsubscribeNoLeave()

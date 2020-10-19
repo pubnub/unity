@@ -50,9 +50,13 @@ namespace PubNubAPI.Tests
             string authKey, long startTime, long endTime, int count, bool sendQueryParams){
                 TestFetchMessagesBuildRequestCommon (false, false, false, "authKey", startTime, endTime, 25, false, false, false);
         }
-
         public void TestFetchMessagesBuildRequestCommon(bool ssl, bool reverse, bool includeTimetoken, 
             string authKey, long startTime, long endTime, int count, bool sendQueryParams, bool withMeta, bool withMessageActions){
+                TestFetchMessagesBuildRequestCommon (false, false, false, "authKey", startTime, endTime, 25, false, false, false, false, false);
+        }
+        
+        public void TestFetchMessagesBuildRequestCommon(bool ssl, bool reverse, bool includeTimetoken, 
+            string authKey, long startTime, long endTime, int count, bool sendQueryParams, bool withMeta, bool withMessageActions, bool withMessageType, bool withUUID){
             string[] channels = new[] {"history_channel", "history_channel2"};
             string uuid = "customuuid";
             Dictionary<string,string> queryParams = new Dictionary<string, string>();
@@ -97,7 +101,7 @@ namespace PubNubAPI.Tests
             }
 
             Uri uri = BuildRequests.BuildFetchRequest (channels, startTime, endTime, (uint)count, reverse, 
-                includeTimetoken, pnUnity, queryParams, withMeta, withMessageActions
+                includeTimetoken, pnUnity, queryParams, withMeta, withMessageActions, withMessageType, withUUID
             );
 
             if (count == -1) {

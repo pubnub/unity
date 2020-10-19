@@ -61,6 +61,11 @@ namespace PubNubAPI
             get{return objects;}
             set{objects = value;}
         }
+        private float files; //l_file
+        public float Files{
+            get{return files;}
+            set{objects = files;}
+        }
         private SafeDictionary<long, float> TimeLatency = new SafeDictionary<long, float>(); 
         private SafeDictionary<long, float> PublishLatency = new SafeDictionary<long, float>(); 
         private SafeDictionary<long, float> PresenceLatency = new SafeDictionary<long, float>(); 
@@ -72,6 +77,7 @@ namespace PubNubAPI
         private SafeDictionary<long, float> SignalLatency = new SafeDictionary<long, float>();
         private SafeDictionary<long, float> MessageActionsLatency = new SafeDictionary<long, float>();
         private SafeDictionary<long, float> ObjectsLatency = new SafeDictionary<long, float>();
+        private SafeDictionary<long, float> FileLatency = new SafeDictionary<long, float>();
 
         private static readonly DateTime epoch = new DateTime(0001, 1, 1, 0, 0, 0, DateTimeKind.Local);
         private bool RunUpdateLatencyLoop;
@@ -116,6 +122,7 @@ namespace PubNubAPI
             UpdateLatency(ref SignalLatency, t, ref signal, "Signal");
             UpdateLatency(ref MessageActionsLatency, t, ref messageActions, "MessageActions");
             UpdateLatency(ref ObjectsLatency, t, ref objects, "Objects");
+            UpdateLatency(ref FileLatency, t, ref files, "File");
         }
 
         void UpdateLatency(ref SafeDictionary<long, float> dict, long t, ref float f, string name){
@@ -143,6 +150,7 @@ namespace PubNubAPI
                     TimeLatency.Add(DateTime.UtcNow.Ticks, latency);
                     break;
                 case PNOperationType.PNPublishOperation:
+                case PNOperationType.PNPublishFileMessageOperation:
                     PublishLatency.Add(DateTime.UtcNow.Ticks, latency);
                     break;
                 case PNOperationType.PNSignalOperation:
@@ -193,6 +201,13 @@ namespace PubNubAPI
                 case PNOperationType.PNRemoveChannelsFromGroupOperation:
                 case PNOperationType.PNRemoveGroupOperation:
                     ChannelGroupsLatency.Add(DateTime.UtcNow.Ticks, latency);
+                    break;
+                case PNOperationType.PNDeleteFileOperation:
+                case PNOperationType.PNDownloadFileOperation:
+                case PNOperationType.PNGetFileURLOperation:
+                case PNOperationType.PNListFilesOperation:
+                case PNOperationType.PNSendFileOperation:
+                    FileLatency.Add(DateTime.UtcNow.Ticks, latency);
                     break;
                 default:
                     break;    

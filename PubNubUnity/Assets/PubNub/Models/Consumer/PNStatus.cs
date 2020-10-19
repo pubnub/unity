@@ -42,6 +42,7 @@ namespace PubNubAPI
         // send back channel, channel groups that were affected by this operation
         public List<String> AffectedChannels {get; set;}
         public List<String> AffectedChannelGroups {get; set;}
+        public object AdditionalData {get; set;}
     }
 }
 

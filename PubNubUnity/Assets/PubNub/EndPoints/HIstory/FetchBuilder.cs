@@ -49,6 +49,16 @@ namespace PubNubAPI
             return this;
         }
 
+        public FetchBuilder IncludeUUID(bool includeUUID){
+            pubBuilder.IncludeUUID(includeUUID);
+            return this;
+        }
+
+        public FetchBuilder IncludeMessageType(bool includeMessageType){
+            pubBuilder.IncludeMessageType(includeMessageType);
+            return this;
+        }        
+
         public FetchBuilder QueryParam(Dictionary<string, string> queryParam){
             pubBuilder.QueryParam(queryParam);
             return this;

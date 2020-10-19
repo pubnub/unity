@@ -67,7 +67,21 @@ namespace PubNubAPI
 	    PNSetChannelMetadataOperation,
 	    // PNGetChannelMetadataOperation is the enum used to Get Channel Metadata in the Object API.
 	    PNGetChannelMetadataOperation,
-        PNGrantTokenOperation
+        PNGrantTokenOperation,
+        // PNDeleteFileOperation is the enum used for DeleteFile requests.
+        PNDeleteFileOperation,
+        // PNDownloadFileOperation is the enum used for DownloadFile requests.
+        PNDownloadFileOperation,
+        // PNGetFileURLOperation is the enum used for GetFileURL requests.
+        PNGetFileURLOperation,
+        // PNListFilesOperation is the enum used for ListFiles requests.
+        PNListFilesOperation,
+        // PNSendFileOperation is the enum used for SendFile requests.
+        PNSendFileOperation,
+        // PNSendFileToS3Operation is the enum used for v requests.
+        PNSendFileToS3Operation,
+        // PNPublishFileMessageOperation is the enum used for PublishFileMessage requests.
+        PNPublishFileMessageOperation,       
     }
 
 }

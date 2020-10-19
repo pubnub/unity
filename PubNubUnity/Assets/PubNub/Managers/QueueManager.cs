@@ -80,6 +80,11 @@ namespace PubNubAPI
                             publishBuilder.RaiseRunRequest(this);
 
                             break;
+                        case PNOperationType.PNPublishFileMessageOperation:
+                            PublishFileMessageRequestBuilder publishFileBuilder  = operationParams as PublishFileMessageRequestBuilder;
+                            publishFileBuilder.RaiseRunRequest(this);
+
+                            break;
                         case PNOperationType.PNSignalOperation:
                             SignalRequestBuilder signalBuilder  = operationParams as SignalRequestBuilder;
                             signalBuilder.RaiseRunRequest(this);
@@ -224,7 +229,24 @@ namespace PubNubAPI
                         case PNOperationType.PNGrantTokenOperation:
                             GrantTokenBuilder grantTokenBuilder = operationParams as GrantTokenBuilder;
                             grantTokenBuilder.RaiseRunRequest(this);
-                            break;                         
+                            break;  
+                        case PNOperationType.PNSendFileOperation:
+                            SendFileRequestBuilder sendFileRequestBuilder = operationParams as SendFileRequestBuilder;
+                            sendFileRequestBuilder.RaiseRunRequest(this);
+                            break;  
+                        case PNOperationType.PNDeleteFileOperation:
+                            DeleteFileRequestBuilder deleteFileRequestBuilder = operationParams as DeleteFileRequestBuilder;
+                            deleteFileRequestBuilder.RaiseRunRequest(this);
+                            break;  
+                        case PNOperationType.PNDownloadFileOperation:
+                            // DownloadFileRequestBuilder downloadFileRequestBuilder = operationParams as DownloadFileRequestBuilder;
+                            // downloadFileRequestBuilder.RaiseRunRequest(this);
+                            break;  
+                        case PNOperationType.PNListFilesOperation:
+                            ListFilesRequestBuilder listFilesRequestBuilder = operationParams as ListFilesRequestBuilder;
+                            listFilesRequestBuilder.RaiseRunRequest(this);
+                            break;  
+                                                   
                         default:
                         break;
                     }

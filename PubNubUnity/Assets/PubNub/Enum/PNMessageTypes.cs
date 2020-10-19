@@ -7,7 +7,8 @@ namespace PubNubAPI
         Subscribe = 0,
         Signal,
         Objects,
-        MessageActions
+        MessageActions,
+        File
 
     }
 }

@@ -1,6 +1,6 @@
 #if((!USE_JSONFX_UNITY_IOS) && (!USE_MiniJSON))
 #define USE_JSONFX_UNITY_IOS
-//#define USE_MiniJSON
+// #define USE_MiniJSON
 #endif
 
 #if (USE_JSONFX_UNITY_IOS)
@@ -44,6 +44,12 @@ namespace PubNubAPI
                 pnUnityBase.PNLog.WriteToLog ("JSON LIB: USE_JSONFX_UNITY_IOS", PNLoggingMethod.LevelInfo);
                 #endif
                 jsonLibrary = new JsonFxUnitySerializer (pnUnityBase);
+            #elif (USE_SimpleJSON)
+                #if (ENABLE_PUBNUB_LOGGING)
+                pnUnityBase.PNLog.WriteToLog ("JSON LIB: USE_SimpleJSON", PNLoggingMethod.LevelInfo);
+                #endif
+                jsonLibrary = new SimpleJSONSerializer (pnUnityBase);
+            
             #endif
             return jsonLibrary;
         }
@@ -154,6 +160,84 @@ namespace PubNubAPI
             return Json.Deserialize (jsonString) as Dictionary<string, object>;
         }
     }
+    #elif (USE_SimpleJSON)
+    public class SimpleJSONSerializer : IJsonLibrary
+    {
+        PubNubUnityBase pnUnityBase;
+        public SimpleJSONSerializer(PubNubUnityBase pnUnityBase){
+            this.pnUnityBase = pnUnityBase;
+        }
+
+        public bool IsArrayCompatible (string jsonString)
+        {
+            return false;
+        }
+
+        public bool IsDictionaryCompatible (string jsonString)
+        {
+            return true;
+        }
+
+        public string SerializeToJsonString (object objectToSerialize)
+        {
+            string json = JsonUtility.ToJson (objectToSerialize); 
+            return PubnubCryptoBase.ConvertHexToUnicodeChars (json);
+        }
+
+        public List<object> DeserializeToListOfObject (string jsonString)
+        {
+            
+            #if (ENABLE_PUBNUB_LOGGING)
+            pnUnityBase.PNLog.WriteToLog (string.Format ("DeserializeToListOfObject: jsonString: {0}", jsonString), PNLoggingMethod.LevelInfo);
+            #endif
+        
+            var output = JsonUtility.FromJson<object[]> (jsonString) as object[];
+            List<object> messageList = output.Cast<object> ().ToList ();
+            return messageList;
+        }
+
+        public object DeserializeToObject (string jsonString)
+        {
+            #if (ENABLE_PUBNUB_LOGGING)
+            pnUnityBase.PNLog.WriteToLog (string.Format ("DeserializeToObject: jsonString: {0}", jsonString), PNLoggingMethod.LevelInfo);
+            #endif
+        
+            var output = JsonUtility.FromJson<object> (jsonString);
+            return output;
+        }
+
+        public T Deserialize<T> (string jsonString)
+        {
+            var output = JsonUtility.FromJson<T> (jsonString);
+            return output;
+        }
+
+        public Dictionary<string, object> DeserializeToDictionaryOfObject (string jsonString)
+        {
+            #if (ENABLE_PUBNUB_LOGGING)
+            pnUnityBase.PNLog.WriteToLog (string.Format ("DeserializeToDictionaryOfObject: before"), PNLoggingMethod.LevelInfo);
+            #endif
+
+            object obj = DeserializeToObject (jsonString);
+            #if (ENABLE_PUBNUB_LOGGING)
+            pnUnityBase.PNLog.WriteToLog (string.Format ("DeserializeToDictionaryOfObject: after {0}", obj.ToString()), PNLoggingMethod.LevelInfo);
+            #endif
+            
+            Dictionary<string, object> stateDictionary = new Dictionary<string, object> ();
+            Dictionary<string, object> message = (Dictionary<string, object>)obj;
+            if (message != null) {
+                foreach (KeyValuePair<String, object> kvp in message) {
+                    stateDictionary.Add (kvp.Key, kvp.Value);
+                }
+            } else {
+            #if (ENABLE_PUBNUB_LOGGING)
+            pnUnityBase.PNLog.WriteToLog (string.Format ("DeserializeToDictionaryOfObject: message null {0}", obj.ToString()), PNLoggingMethod.LevelInfo);
+            #endif
+            }
+            return stateDictionary;
+        }
+    }       
+
     #endif
     #endregion
 }

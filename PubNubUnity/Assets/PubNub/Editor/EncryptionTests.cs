@@ -16,6 +16,21 @@ namespace PubNubAPI.Tests
         PNLoggingMethod PNLog = new PNLoggingMethod(PNLogVerbosity.BODY);
         PNConfiguration pnConfig = new PNConfiguration();
         PubNub pn {get; set;}
+
+        [Test]
+        public void TestRandomIVGen (){
+            TestRandomIVGenCommon("yay!");
+            TestRandomIVGenCommon("{\"this stuff\":{\"can get\":\"complicated!\"}}");
+        }
+
+        public void TestRandomIVGenCommon (string message){
+            pn = EditorCommon.InitPN(pnConfig);
+            PubnubCrypto pubnubCrypto = new PubnubCrypto ("enigma", PNLog, true);
+            string encrypted = pubnubCrypto.Encrypt (message);
+            string decrypted = pubnubCrypto.Decrypt (encrypted);
+            UnityEngine.Debug.Log(decrypted);
+            Assert.True (message.Equals (decrypted));
+        }
         
         /// <summary>
         /// Tests the yay decryption.

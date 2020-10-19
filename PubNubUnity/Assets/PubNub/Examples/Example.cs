@@ -46,8 +46,16 @@ namespace PubNubExample
         UnityEngine.UI.Button ButtonMessageCounts;
 
         UnityEngine.UI.Button ButtonSignal;
+        UnityEngine.UI.Button ButtonSendFile;
+        UnityEngine.UI.Button ButtonDownloadFile;
+        UnityEngine.UI.Button ButtonEncrypt;
+        UnityEngine.UI.InputField InputFieldName;
+        UnityEngine.UI.InputField InputFieldID;
 
         string deviceId = "ababababababababababababababababababababababababababababababababababababababababababababab";
+        string cipherKey = "";
+        string FileName = "";
+        string FileID = "";
         PNPushType pnPushType = PNPushType.GCM;
 
         void Awake(){
@@ -238,7 +246,7 @@ namespace PubNubExample
             Dictionary<string, string> meta = new Dictionary<string, string>();
             meta.Add  ("k1", "v1");
 
-            pubnub.Publish().Channel("channel1").Meta(meta).Message("test message" + DateTime.Now.Ticks.ToString()).QueryParam(dict).Async((result, status) => {    
+            pubnub.Publish().Channel("channel1").Meta(meta).Message("Text with 😜 emoji 🐥" + DateTime.Now.Ticks.ToString()).QueryParam(dict).Async((result, status) => {    
                     Debug.Log ("in Publish");
                     if(!status.Error){
                         Debug.Log (string.Format("DateTime {0}, In Publish Example, Timetoken: {1}", DateTime.UtcNow , result.Timetoken));
@@ -411,7 +419,67 @@ namespace PubNubExample
             ButtonMessageCounts.onClick.AddListener(ButtonMessageCountsHandler);
             ButtonSignal = GameObject.Find("ButtonSignal").GetComponent<UnityEngine.UI.Button>();
             ButtonSignal.onClick.AddListener(ButtonSignalHandler);
+
+            ButtonSendFile = GameObject.Find("ButtonSendFile").GetComponent<UnityEngine.UI.Button>();
+            ButtonSendFile.onClick.AddListener(ButtonSendFileHandler);
+            ButtonDownloadFile = GameObject.Find("ButtonDownloadFile").GetComponent<UnityEngine.UI.Button>();
+            ButtonDownloadFile.onClick.AddListener(ButtonDownloadFileHandler);
+            ButtonEncrypt = GameObject.Find("ButtonEncrypt").GetComponent<UnityEngine.UI.Button>();
+            ButtonEncrypt.onClick.AddListener(ButtonEncryptHandler);
+            InputFieldName = GameObject.Find("InputFieldName").GetComponent<UnityEngine.UI.InputField>();
+            // InputFieldName.onValueChanged.AddListener(InputFieldNameHandler);
+            InputFieldID = GameObject.Find("InputFieldID").GetComponent<UnityEngine.UI.InputField>();
+            // InputFieldID.onValueChanged.AddListener(InputFieldIDHandler);
+            
         }
+
+        void ButtonSendFileHandler(){
+            string publishMessage = string.Format("publishMessage_{0}{1}", "id_", "constString");
+            // string filePath = "Assets/PubNub/PlayModeTests/file_upload_test.txt";
+            string filePath = Application.persistentDataPath + "/test.txt";
+            FileName = InputFieldName.text.ToString();
+            if(!string.IsNullOrEmpty(FileName)){
+                pubnub.SendFile().CipherKey(this.cipherKey).Channel(ch1).Message(publishMessage).Name(FileName).FilePath(filePath).Async((result, status) => {
+                    Debug.Log(result);
+                    if(!status.Error){
+                        Debug.Log("result.ID:" + result.Data.ID);
+                        Debug.Log("result.Timetoken:" + result.Timetoken);
+                    }
+
+                });
+            } else {
+                Debug.Log("FileID or FileName empty");
+            }
+
+        }
+
+        void ButtonDownloadFileHandler(){
+            string savePath = string.Format("{0}/{1}", Application.persistentDataPath, "test.txt");
+            FileID = InputFieldID.text.ToString();
+            FileName = InputFieldName.text.ToString();            
+            if(!string.IsNullOrEmpty(FileID) && !string.IsNullOrEmpty(FileName)){
+                pubnub.DownloadFile().CipherKey(this.cipherKey).Channel(ch1).ID(FileID).Name(FileName).SavePath(savePath).Async((result, status) => {
+                    byte[] save = System.IO.File.ReadAllBytes(savePath);
+                    Debug.Log(Encoding.UTF8.GetString(save));
+
+                });
+            } else {
+                Debug.Log("FileID or FileName empty");
+            }
+        }
+
+        void ButtonEncryptHandler(){
+            cipherKey = "enigma";
+            Debug.Log("cipher key set");
+        }
+
+        // void InputFieldNameHandler(){
+        //     FileName = InputFieldName.text;
+        // }
+
+        // void InputFieldIDHandler(){
+        //     FileID = InputFieldID.text;
+        // }
 
     	// Use this for initialization
     	void Start () {
@@ -427,7 +495,7 @@ namespace PubNubExample
             pnConfiguration.PublishKey = "demo";
             pnConfiguration.SecretKey = "demo";
 
-            pnConfiguration.CipherKey = "enigma";
+            pnConfiguration.CipherKey = cipherKey;
             pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
             pnConfiguration.PresenceTimeout = 120;    
             pnConfiguration.PresenceInterval= 60;
@@ -523,7 +591,7 @@ namespace PubNubExample
 
 
         void FetchRecursive(long start, List<string> listChannels){
-
+            
             pubnub.FetchMessages().Channels(listChannels).Start(start).Async ((result, status) => {
                 if(status.Error){
                     Debug.Log (string.Format("In Example, FetchMessages Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
@@ -543,7 +611,7 @@ namespace PubNubExample
             });
         }
 
-        void GetHistoryRecursive(long start, string channel){
+        void GetHistoryRecursive(long start, string channel){   
             pubnub.History ().Channel(channel).Start(start).Reverse(true).IncludeTimetoken(true).Async ((result, status) => {
                 
                 if(status.Error){

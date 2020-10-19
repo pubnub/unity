@@ -7,7 +7,7 @@ namespace PubNubAPI
         Get,
         Post,
         Delete,
-        Patch
+        Patch,
     }
 }
 

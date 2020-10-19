@@ -343,6 +343,42 @@ namespace PubNubAPI
             pnUnity.TokenMgr.StoreTokens(tokens);
         }
 
+        public SendFileBuilder SendFile()
+        {
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.SendFile();
+        }
+
+        public ListFilesBuilder ListFiles()
+        {
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.ListFiles();
+        }
+
+        public GetFileURLBuilder GetFileURL()
+        {
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.GetFileURL();
+        }
+
+        public DownloadFileBuilder DownloadFile()
+        {
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.DownloadFile();
+        }
+
+        public DeleteFileBuilder DeleteFile()
+        {
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.DeleteFile();
+        }
+
+        public PublishFileMessageBuilder PublishFileMessage()
+        {
+            PubNubUnityInitializationAfterCleanup();
+            return pnUnity.PublishFileMessage();
+        }
+
         public GrantResourcesWithPermissions GetTokens()
         {
             PubNubUnityInitializationAfterCleanup();

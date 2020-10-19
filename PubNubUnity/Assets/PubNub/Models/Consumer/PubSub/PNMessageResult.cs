@@ -11,7 +11,8 @@ namespace PubNubAPI
         public long Timetoken { get; set;} 
         public long OriginatingTimetoken { get; set;} 
         public object UserMetadata { get; set;} 
-        public string IssuingClientId { get; set;} 
+        public string IssuingClientId { get; set;}
+        public int MessageType { get; set;} 
 
         public Dictionary<string, PNHistoryMessageActionsTypeValues> MessageActions { get; set;} 
 

@@ -53,7 +53,6 @@ namespace PubNubAPI.Tests
             long endTime = -1;
             string channel = "DeleteMessagesChannel";
             string paramsInOrder = "pnsdk={0}&timestamp={1}&uuid=DeleteMessagesTestUUID";
-            //uuid=PubNubUnityExample&start=15078932998876451&end=15078933628583256&timestamp=1534756366&auth=authKey&pnsdk=PubNub-CSharp-UnityWin%2F4.0.1
             string uriParamString = "uuid={0}{1}{2}&timestamp={3}{4}&pnsdk={5}";
 
             DeleteMessagesBuildRequestsCommon (true, channel, "", startTime, endTime, paramsInOrder, uriParamString);
@@ -151,9 +150,6 @@ namespace PubNubAPI.Tests
             Uri uri = BuildRequests.BuildDeleteMessagesRequest (channel, startTime, endTime, pnUnity, queryParams);
 
             var segments = uri.Segments;
-            foreach(string seg in segments){
-                UnityEngine.Debug.Log(seg);
-            }
             Assert.AreEqual("v3/", segments[1]);
             Assert.AreEqual("history/", segments[2]);
             Assert.AreEqual("sub-key/", segments[3]);

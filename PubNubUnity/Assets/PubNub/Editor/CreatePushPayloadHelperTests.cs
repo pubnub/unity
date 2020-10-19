@@ -508,7 +508,6 @@ namespace PubNubAPI.Tests
             if(result != null){
                 if (withAPNS2 || withAPNS) {
                     Dictionary<string, object> resAPNS = result["pn_apns"] as Dictionary<string, object>;
-                    UnityEngine.Debug.Log(resAPNS["aps"]);
                     if(resAPNS != null){
                         Dictionary<string, object> resAPS = resAPNS["aps"] as Dictionary<string, object>;
                         if (!setAPNSAlert) {   

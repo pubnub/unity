@@ -443,6 +443,60 @@ namespace PubNubAPI
             #endif
 
             return new GetMessageActionsBuilder(this);
+        }      
+
+        public SendFileBuilder SendFile()
+        {
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("SendFileBuilder", PNLoggingMethod.LevelInfo);
+            #endif
+
+            return new SendFileBuilder(this);
+        }
+
+        public ListFilesBuilder ListFiles()
+        {
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("ListFiles", PNLoggingMethod.LevelInfo);
+            #endif
+
+            return new ListFilesBuilder(this);
+        }
+
+        public GetFileURLBuilder GetFileURL()
+        {
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("GetFileURL", PNLoggingMethod.LevelInfo);
+            #endif
+
+            return new GetFileURLBuilder(this);
+        }
+
+        public DownloadFileBuilder DownloadFile()
+        {
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("DownloadFile", PNLoggingMethod.LevelInfo);
+            #endif
+
+            return new DownloadFileBuilder(this);
+        }
+
+        public DeleteFileBuilder DeleteFile()
+        {
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("DeleteFile", PNLoggingMethod.LevelInfo);
+            #endif
+
+            return new DeleteFileBuilder(this);
+        }
+
+        public PublishFileMessageBuilder PublishFileMessage()
+        {
+            #if (ENABLE_PUBNUB_LOGGING)
+            this.PNLog.WriteToLog("PublishFileMessage", PNLoggingMethod.LevelInfo);
+            #endif
+
+            return new PublishFileMessageBuilder(this, publishMessageCounter.NextValue());
         }                                
     }
 }
