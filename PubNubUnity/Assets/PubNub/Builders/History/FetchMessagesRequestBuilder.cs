@@ -165,6 +165,14 @@ namespace PubNubAPI
                                 pnFetchMessagesResult.Channels = channelsResult;
                             }
                         }
+                        object moreObject;
+                        dictionary.TryGetValue("more", out moreObject);
+                        if(moreObject != null){
+                            Dictionary<string, object> more;
+                            if(CreateMoreObjectResult(moreObject, out more)){
+                                pnFetchMessagesResult.More = more;
+                            }
+                        }
                     }
                 } else {
                     pnFetchMessagesResult = null;
@@ -177,7 +185,31 @@ namespace PubNubAPI
 
             Callback(pnFetchMessagesResult, pnStatus);
         }
-        
+
+        protected bool CreateMoreObjectResult(object moreFieldDictionary, out Dictionary<string, dynamic> moreResult){
+            moreResult = new Dictionary<string, object>();
+            Dictionary<string, object> moreFields = moreFieldDictionary as Dictionary<string, object>;
+            object url;
+            if(moreFields.TryGetValue("url", out url)){
+                moreResult.Add("url", url as string);
+            }
+            object start;
+            long startTimetoken;
+            if (moreFields.TryGetValue("start", out start)){
+                if(long.TryParse (start as string, out startTimetoken)){
+                    moreResult.Add("start", startTimetoken);
+                }
+            }
+            object maxObj;
+            int max;
+            if(moreFields.TryGetValue("max", out maxObj)){
+                if (int.TryParse(maxObj.ToString(), out max)) {
+                    moreResult.Add("max", max);
+                }
+            }
+
+            return true;
+        }
         protected bool CreateFetchMessagesResult(object objChannelsDict, out Dictionary<string, List<PNMessageResult>> channelsResult ){
             Dictionary<string, object> channelsDict = objChannelsDict as Dictionary<string, object>;
             channelsResult = new Dictionary<string, List<PNMessageResult>>();

@@ -1,6 +1,13 @@
 --- 
-version: v4.10.0
+version: v4.10.1
 changelog:
+  -
+    changes:
+      -
+        text: "Fixes issue of missing `more` field in FetchMessages response."
+        type: bug
+    date: Dec 14, 20
+    version: v4.10.1
   -
     changes:
       -
@@ -16,14 +23,14 @@ changelog:
         text: "Fetch with 100 messages."
         type: improvement
     date: Oct 19, 20
-    version: v4.10.0
+    version: v4.10.1
   -
     changes:
       -
         text: "Objects V2."
         type: feature
     date: Sep 15, 20
-    version: v4.10.0
+    version: v4.9.0
   -
     changes:
       -
