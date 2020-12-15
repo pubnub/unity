@@ -23,7 +23,7 @@ changelog:
         text: "Fetch with 100 messages."
         type: improvement
     date: Oct 19, 20
-    version: v4.10.1
+    version: v4.10.0
   -
     changes:
       -
