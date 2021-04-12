@@ -1,5 +1,6 @@
-#define USE_JSONFX_UNITY_IOS
+// #define USE_JSONFX_UNITY_IOS
 //#define USE_MiniJSON
+#define USE_NEWTONSOFT_JSON
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

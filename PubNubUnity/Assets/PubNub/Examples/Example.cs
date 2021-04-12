@@ -14,8 +14,9 @@ namespace PubNubExample
 
         string cg1 = "channelGroup1";
         string cg2 = "channelGroup2";
+        // string ch1 = "team_readonly.a8e9eff5-eed9-4d42-8686-1ecb6fe9916f";
         string ch1 = "channel1";
-        string ch2 = "channel2";        
+        string ch2 = "channel11";        
         UnityEngine.UI.Text TextContent;
         UnityEngine.UI.Button ButtonClear;
         UnityEngine.UI.Button ButtonReset;
@@ -238,16 +239,13 @@ namespace PubNubExample
                 });
         }
         void ButtonPublishHandler(){
-            //for(int i =0; i<1000; i++){
-            //pubnub.Publish().Channel("channel1").Message("test message" +i+ " " + DateTime.Now.Ticks.ToString()).Async((result, status) => {
             Dictionary<string, string> dict = new Dictionary<string, string>();
             dict.Add  ("k1", "v1");
 
             Dictionary<string, string> meta = new Dictionary<string, string>();
             meta.Add  ("k1", "v1");
 
-            pubnub.Publish().Channel("channel1").Meta(meta).Message("Text with 😜 emoji 🐥" + DateTime.Now.Ticks.ToString()).QueryParam(dict).Async((result, status) => {    
-                    Debug.Log ("in Publish");
+            pubnub.Publish().Channel("channel1").Meta(meta).Message("Text with  emoji 🙀" + DateTime.Now.Ticks.ToString()).QueryParam(dict).Async((result, status) => {    
                     if(!status.Error){
                         Debug.Log (string.Format("DateTime {0}, In Publish Example, Timetoken: {1}", DateTime.UtcNow , result.Timetoken));
                         Display(string.Format("Published: {0}", result.Timetoken));
@@ -257,7 +255,6 @@ namespace PubNubExample
                     }
 
                 });
-            //}
         }
         void ButtonPublishPostHandler(){
             
@@ -427,15 +424,11 @@ namespace PubNubExample
             ButtonEncrypt = GameObject.Find("ButtonEncrypt").GetComponent<UnityEngine.UI.Button>();
             ButtonEncrypt.onClick.AddListener(ButtonEncryptHandler);
             InputFieldName = GameObject.Find("InputFieldName").GetComponent<UnityEngine.UI.InputField>();
-            // InputFieldName.onValueChanged.AddListener(InputFieldNameHandler);
             InputFieldID = GameObject.Find("InputFieldID").GetComponent<UnityEngine.UI.InputField>();
-            // InputFieldID.onValueChanged.AddListener(InputFieldIDHandler);
-            
         }
 
         void ButtonSendFileHandler(){
             string publishMessage = string.Format("publishMessage_{0}{1}", "id_", "constString");
-            // string filePath = "Assets/PubNub/PlayModeTests/file_upload_test.txt";
             string filePath = Application.persistentDataPath + "/test.txt";
             FileName = InputFieldName.text.ToString();
             if(!string.IsNullOrEmpty(FileName)){
@@ -473,14 +466,6 @@ namespace PubNubExample
             Debug.Log("cipher key set");
         }
 
-        // void InputFieldNameHandler(){
-        //     FileName = InputFieldName.text;
-        // }
-
-        // void InputFieldIDHandler(){
-        //     FileID = InputFieldID.text;
-        // }
-
     	// Use this for initialization
     	void Start () {
             AddComponents();
@@ -499,7 +484,6 @@ namespace PubNubExample
             pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
             pnConfiguration.PresenceTimeout = 120;    
             pnConfiguration.PresenceInterval= 60;
-            pnConfiguration.AuthKey = "authKey";
             pnConfiguration.HeartbeatNotificationOption = PNHeartbeatNotificationOption.All;
 
             //TODO: remove
@@ -537,7 +521,6 @@ namespace PubNubExample
 
         Dictionary<string, Dictionary<string, object>> messageList = new Dictionary<string, Dictionary<string, object>>();
  
-
         void SubscribeCallbackHandler2(object sender, EventArgs e) {
             SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
 
@@ -631,41 +614,31 @@ namespace PubNubExample
             Debug.Log("SubscribeCallbackHandler Event handler");
             SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
 
-                if(mea.Status != null){
-                    switch (mea.Status.Category){
-                        case PNStatusCategory.PNConnectedCategory:
-                        PrintStatus(mea.Status);
-                        // pubnub.Publish().Channel("my_channel").Message("Hello from the PubNub Unity SDK").Ttl(10).UsePost(true).Async((result, status) => {
-                        //     if(!status.Error){
-                        //         Debug.Log (string.Format("DateTime {0}, In Publish Example, Timetoken: {1}", DateTime.UtcNow , result.Timetoken));
-                        //     } else {
-                        //         Debug.Log (status.Error);
-                        //         Debug.Log (status.ErrorData.Info);
-                        //     }
-
-                        // });
-                        
-                        break;
-                        case PNStatusCategory.PNUnexpectedDisconnectCategory:
-                        case PNStatusCategory.PNTimeoutCategory:
-                        pubnub.Reconnect();
-                        pubnub.CleanUp();
-                        break;
-                    }
-                } else {
-                    Debug.Log("mea.Status null" + e.GetType().ToString() + mea.GetType().ToString());
+            if(mea.Status != null){
+                switch (mea.Status.Category){
+                    case PNStatusCategory.PNConnectedCategory:
+                    PrintStatus(mea.Status);
+                    break;
+                    case PNStatusCategory.PNUnexpectedDisconnectCategory:
+                    case PNStatusCategory.PNTimeoutCategory:
+                    pubnub.Reconnect();
+                    pubnub.CleanUp();
+                    break;
                 }
-                if(mea.MessageResult != null){
-                    Debug.Log ("In Example, SubscribeCallback in message" + mea.MessageResult.Channel + mea.MessageResult.Payload);
-                    Display(string.Format("SubscribeCallback Result: {0}", pubnub.JsonLibrary.SerializeToJsonString(mea.MessageResult.Payload)));
-                }
-                if(mea.PresenceEventResult != null){
-                    Debug.Log ("In Example, SubscribeCallback in presence" + mea.PresenceEventResult.Channel + mea.PresenceEventResult.Occupancy + mea.PresenceEventResult.Event + mea.PresenceEventResult.State);
-                }
-                if(mea.SignalEventResult != null){
-                    Debug.Log ("In Example, SubscribeCallback in SignalEventResult" + mea.SignalEventResult.Channel + mea.SignalEventResult.Payload);
-                    Display(string.Format("SubscribeCallback SignalEventResult: {0}", pubnub.JsonLibrary.SerializeToJsonString(mea.SignalEventResult.Payload)));
-                }
+            } else {
+                Debug.Log("mea.Status null" + e.GetType().ToString() + mea.GetType().ToString());
+            }
+            if(mea.MessageResult != null){
+                Debug.Log ("In Example, SubscribeCallback in message" + mea.MessageResult.Channel + mea.MessageResult.Payload);
+                Display(string.Format("SubscribeCallback Result: {0}", pubnub.JsonLibrary.SerializeToJsonString(mea.MessageResult.Payload)));
+            }
+            if(mea.PresenceEventResult != null){
+                Debug.Log ("In Example, SubscribeCallback in presence" + mea.PresenceEventResult.Channel + mea.PresenceEventResult.Occupancy + mea.PresenceEventResult.Event + mea.PresenceEventResult.State);
+            }
+            if(mea.SignalEventResult != null){
+                Debug.Log ("In Example, SubscribeCallback in SignalEventResult" + mea.SignalEventResult.Channel + mea.SignalEventResult.Payload);
+                Display(string.Format("SubscribeCallback SignalEventResult: {0}", pubnub.JsonLibrary.SerializeToJsonString(mea.SignalEventResult.Payload)));
+            }
         }
 
         void RemoveChannelsFromPush(List<string> listChannels, PubNub pubnub, string deviceId, PNPushType pnPushType){
@@ -764,18 +737,27 @@ namespace PubNubExample
         }
 
         void FetchMessages(PubNub pubnub, List<string> listChannels){
-            pubnub.FetchMessages().Channels(listChannels).IncludeMeta(true).Async ((result, status) => {
+            pubnub.FetchMessages().Channels(new List<string>(){ch1}).IncludeMeta(true).Async ((result, status) => {    
                 if(status.Error){
                     Debug.Log (string.Format("In Example, FetchMessages Error: {0} {1} {2}", status.StatusCode, status.ErrorData, status.Category));
                 } else {
                     Debug.Log (string.Format("In FetchMessages, result: "));//,result.EndTimetoken, result.Messages[0].ToString()));
                     foreach(KeyValuePair<string, List<PNMessageResult>> kvp in result.Channels){
                         Debug.Log("kvp channelname" + kvp.Key);
+                        int count = 0;
                         foreach(PNMessageResult pnMessageResut in kvp.Value){
-                            Debug.Log("Channel: " + pnMessageResut.Channel);
-                            Debug.Log("payload: " + pnMessageResut.Payload.ToString());
-                            Debug.Log("timetoken: " + pnMessageResut.Timetoken.ToString());
-                            Display(string.Format("Channel {0}, payload {1}, timetoken {2}", pnMessageResut.Channel, pnMessageResut.Payload.ToString(), pnMessageResut.Timetoken.ToString()));
+                            count++;
+                            try{
+                                
+                                Debug.Log("Channel: " + pnMessageResut.Channel);
+                                Debug.Log("Timetoken: " + pnMessageResut.Timetoken.ToString());
+                                Debug.Log("Payload: " + pnMessageResut.Payload.ToString());
+                                
+                                Display("Payload: " + pnMessageResut.Payload.ToString());
+                            }catch (Exception ex){
+                                Debug.Log("payload: " + pnMessageResut.Payload.ToString());
+                                Debug.Log("ex: " + ex.ToString());
+                            }
                         }
                     }
                 }
@@ -795,6 +777,7 @@ namespace PubNubExample
                             sb.Append("in HereNow channel occupancy: " + hereNowChannelData.Occupancy.ToString());
                             Display(string.Format("channelName: {0}", hereNowChannelData.Occupancy));
                             List<PNHereNowOccupantData> hereNowOccupantData = hereNowChannelData.Occupants as List<PNHereNowOccupantData>;
+                            Display(string.Format("hereNowOccupantData: {0}", hereNowOccupantData.Count));
                             if(hereNowOccupantData != null){
                                 foreach(PNHereNowOccupantData pnHereNowOccupantData in hereNowOccupantData){
                                     if(pnHereNowOccupantData.State != null){

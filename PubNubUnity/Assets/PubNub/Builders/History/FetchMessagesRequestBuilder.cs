@@ -227,13 +227,24 @@ namespace PubNubAPI
                         #endif
                         continue;
                     }
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    this.PubNubInstance.PNLog.WriteToLog(string.Format ("kvpair.Value {0}", kvpair.Value), PNLoggingMethod.LevelInfo);
+                    #endif
                     object[] channelDetails = kvpair.Value as object[];
+                    if(channelDetails == null){
+                        List<object> channelDetailsList = kvpair.Value as List<object>;
+                        if(channelDetailsList != null){
+                            channelDetails = channelDetailsList.Cast<object>().ToArray();
+                        }
+                    }
                     #if (ENABLE_PUBNUB_LOGGING)
                     this.PubNubInstance.PNLog.WriteToLog(string.Format ("CreateFetchMessagesResult: channelDetails {0}", channelDetails.Length), PNLoggingMethod.LevelInfo);
                     #endif
 
                     List<PNMessageResult> lstMessageResult = new List<PNMessageResult>();
+                    int count = 0;
                     foreach(object messageData in channelDetails){
+                        count++;
                         Dictionary<string, object> messageDataDict = messageData as Dictionary<string, object>;
                         if(messageDataDict!=null){
                             

@@ -228,7 +228,7 @@ namespace PubNubAPI.Tests
         #else
                 [Test]
         #endif
-                public void TestObjectEncryption ()
+        public void TestObjectEncryption ()
         {
             pn = EditorCommon.InitPN(pnConfig);
             PubnubCrypto pubnubCrypto = new PubnubCrypto ("enigma", PNLog);
@@ -271,7 +271,7 @@ namespace PubNubAPI.Tests
         #else
                 [Test]
         #endif
-                public void TestObjectDecryption ()
+        public void TestObjectDecryption ()
         {
             pn = EditorCommon.InitPN(pnConfig);
             PubnubCrypto pubnubCrypto = new PubnubCrypto ("enigma", PNLog);
@@ -776,6 +776,32 @@ namespace PubNubAPI.Tests
 
             Assert.True (("stpgsG1DZZxb44J7mFNSzg==").Equals (encrypted));
         }
+
+        [Test]
+        public void TestEmojiEncryption ()
+        {
+            pn = EditorCommon.InitPN(pnConfig);
+            PubnubCrypto pubnubCrypto = new PubnubCrypto ("enigma", PNLog);
+            string message = "Text with emoji 🙀 👸 🐥 😜 🎉";
+            message = EditorCommon.Serialize (message);
+            string encrypted = pubnubCrypto.Encrypt (message);
+            UnityEngine.Debug.Log(encrypted);
+
+            Assert.True (("QnmYXhfz/qbYEbkHktlm6RqNZOxJWR32V1u1F4eVILWozb0esjAjZvwnQ8L6ozo8KTCgOu1OUonsLFS8+VABJ6DcqFXYOkEGH4aVJkCknejBYsrgYythpypltwEdMnG8").Equals (encrypted));
+        }
+        [Test]
+        public void TestEmojiDecryption ()
+        {
+            pn = EditorCommon.InitPN(pnConfig);
+            PubnubCrypto pubnubCrypto = new PubnubCrypto ("enigma", PNLog);
+            string message = "QnmYXhfz/qbYEbkHktlm6RqNZOxJWR32V1u1F4eVILWozb0esjAjZvwnQ8L6ozo8KTCgOu1OUonsLFS8+VABJ6DcqFXYOkEGH4aVJkCknejBYsrgYythpypltwEdMnG8";
+            //decrypt
+            string decrypted = pubnubCrypto.Decrypt (message);
+            //deserialize
+            message = EditorCommon.Deserialize<string> (decrypted);
+            UnityEngine.Debug.Log(message);
+            Assert.True (("Text with emoji 🙀 👸 🐥 😜 🎉").Equals (message));
+        }        
 
         #if (USE_MiniJSON)
         [Test]

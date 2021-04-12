@@ -178,7 +178,7 @@ namespace PubNubAPI
             set {fileMessagePublishRetryLimit = value;}
         }
 
-        public bool useRandomInitializationVector = false;
+        public bool useRandomInitializationVector = true;
 
         public bool UseRandomInitializationVector
         {

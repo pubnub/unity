@@ -71,7 +71,7 @@ namespace PubNubAPI.Tests
         public static int WaitTimeForAsyncResponse = 2;       
         public static int WaitTimeBetweenCalls1 = 1;  
         public static int WaitTimeBetweenCalls = 3;   
-        public static int WaitTimeBetweenCalls2 = 3;  
+        public static int WaitTimeBetweenCalls2 = 7;  
         public static int WaitTimeBetweenCalls3 = 3;  
         public static int WaitTimeBetweenCalls4 = 4;   
         public static int WaitTimeBetweenCalls5 = 4;       
@@ -89,6 +89,7 @@ namespace PubNubAPI.Tests
             pnConfiguration.Origin = Origin;
             pnConfiguration.SubscribeKey = SubscribeKey;
             pnConfiguration.PublishKey = PublishKey;
+            pnConfiguration.NonSubscribeTimeout = 30;
             if(withPAM){
                 pnConfiguration.SubscribeKey = SubscribeKeyPAM;
                 pnConfiguration.PublishKey = PublishKeyPAM;

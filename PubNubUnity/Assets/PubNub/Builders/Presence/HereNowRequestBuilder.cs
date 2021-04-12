@@ -1,7 +1,10 @@
+#define ENABLE_PUBNUB_LOGGING
+
 using System;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Text;
 
 namespace PubNubAPI
 {
@@ -61,7 +64,6 @@ namespace PubNubAPI
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }
 
-        //TODO refactor
         protected override void CreatePubNubResponse(object deSerializedResult, RequestState requestState){
             //Retruned JSON: `{"status": 200, "message": "OK", "payload": {"channels": {"channel1": {"occupancy": 1, "uuids": ["a"]}, "channel2": {"occupancy": 1, "uuids": ["a"]}}, "total_channels": 2, "total_occupancy": 2}, "service": "Presence"}`
             //Retruned JSON: `{"status": 200, "message": "OK", "occupancy": 1, "uuids": [{"uuid": "UnityTestHereNowUUID"}], "service": "Presence"}` 
@@ -86,7 +88,6 @@ namespace PubNubAPI
                         Dictionary<string, object> payload = objPayload as Dictionary<string, object>;
                         object objChannelsDict;
                         payload.TryGetValue("channels", out objChannelsDict);
-
                         if(objChannelsDict!=null){
                             Dictionary<string, PNHereNowChannelData> channelsResult;
                             pnStatus.Error = CreateHereNowResult(objChannelsDict, out channelsResult);
@@ -94,15 +95,15 @@ namespace PubNubAPI
                             pnHereNowResult.Channels = channelsResult;
                         } 
                     } else if(Utility.TryCheckKeyAndParseInt(dictionary, "total_channels", "total_channels", out log, out totalChannels)){
-                            pnHereNowResult.TotalChannels = totalChannels;
-                            #if (ENABLE_PUBNUB_LOGGING)
-                            this.PubNubInstance.PNLog.WriteToLog(string.Format ("log: {0}", log), PNLoggingMethod.LevelInfo);
-                            #endif
+                        pnHereNowResult.TotalChannels = totalChannels;
+                        #if (ENABLE_PUBNUB_LOGGING)
+                        this.PubNubInstance.PNLog.WriteToLog(string.Format ("log: {0}", log), PNLoggingMethod.LevelInfo);
+                        #endif
                     } else if(Utility.TryCheckKeyAndParseInt(dictionary, "total_occupancy", "total_occupancy", out log, out total_occupancy)){
-                            pnHereNowResult.TotalOccupancy = total_occupancy;
-                            #if (ENABLE_PUBNUB_LOGGING)
-                            this.PubNubInstance.PNLog.WriteToLog(string.Format ("log2: {0}", log), PNLoggingMethod.LevelInfo);
-                            #endif
+                        pnHereNowResult.TotalOccupancy = total_occupancy;
+                        #if (ENABLE_PUBNUB_LOGGING)
+                        this.PubNubInstance.PNLog.WriteToLog(string.Format ("log2: {0}", log), PNLoggingMethod.LevelInfo);
+                        #endif
                     } else if((ChannelsToUse.Count.Equals(1) && (ChannelGroupsToUse==null)) && dictionary.TryGetValue("uuids", out objPayload)){
                         Dictionary<string, object> objChannelsDict = new Dictionary<string, object>();
                         Dictionary<string, PNHereNowChannelData> channelsResult;
@@ -115,17 +116,41 @@ namespace PubNubAPI
                         pnHereNowResult.Channels = channelsResult;
                         #if (ENABLE_PUBNUB_LOGGING)
                         this.PubNubInstance.PNLog.WriteToLog(string.Format ("pnStatus.Error: {0} channelsResult.Count().ToString(): {1} ChannelsToUse[0]: {2}", pnStatus.Error, channelsResult.Count().ToString(), ChannelsToUse[0]), PNLoggingMethod.LevelInfo);
+                        #endif
 
                         foreach(KeyValuePair<string,PNHereNowChannelData> kvp in channelsResult){
+                            #if (ENABLE_PUBNUB_LOGGING)
                             this.PubNubInstance.PNLog.WriteToLog(string.Format ("kvp.Key: {0} ", kvp.Key), PNLoggingMethod.LevelInfo);
+                            #endif
 
                             PNHereNowChannelData pnHereNowChannelData = kvp.Value;
                             List<PNHereNowOccupantData> pnHereNowOccupantDataList = pnHereNowChannelData.Occupants;
+                            #if (ENABLE_PUBNUB_LOGGING)
+                            this.PubNubInstance.PNLog.WriteToLog(string.Format("pnHereNowOccupantDataList Count: {0}", pnHereNowOccupantDataList.Count), PNLoggingMethod.LevelInfo);
+                            #endif
+                            StringBuilder sb = new StringBuilder();
                             foreach(PNHereNowOccupantData pnHereNowOccupantData in pnHereNowOccupantDataList){
+                                #if (ENABLE_PUBNUB_LOGGING)
                                 this.PubNubInstance.PNLog.WriteToLog(string.Format ("pnHereNowOccupantData.UUID: {0} ", pnHereNowOccupantData.UUID), PNLoggingMethod.LevelInfo);
+                                #endif
+                                
+                                if(pnHereNowOccupantData.State != null){                                    
+                                    sb.Append (string.Format ("in HereNow channel State: " + pnHereNowOccupantData.State.ToString()));
+                                    Dictionary<string, object> state = pnHereNowOccupantData.State as Dictionary<string, object>;
+                                    foreach (KeyValuePair<string, object> kvpState in state){
+                                        sb.Append (kvp.Key);
+                                        sb.Append ("=====>");
+                                        sb.Append (kvp.Value.ToString());
+                                    }
+                                }
+                                if(pnHereNowOccupantData.UUID != null){
+                                    sb.Append ("in HereNow channel UUID: " + pnHereNowOccupantData.UUID.ToString());
+                                }
                             }
+                            #if (ENABLE_PUBNUB_LOGGING)
+                            this.PubNubInstance.PNLog.WriteToLog(string.Format("pnHereNowOccupantDataList state and UUID: {0}", sb.ToString()), PNLoggingMethod.LevelInfo);
+                            #endif
                         }
-                        #endif
 
                     } else {
                         if(objPayload!=null){
@@ -148,7 +173,6 @@ namespace PubNubAPI
             Callback(pnHereNowResult, pnStatus);
         }
 
-        //TODO refactor
         protected bool CreateHereNowResult(object objChannelsDict, out Dictionary<string, PNHereNowChannelData> channelsResult ){
             Dictionary<string, object> channelsDict = objChannelsDict as Dictionary<string, object>;
             channelsResult = new Dictionary<string, PNHereNowChannelData>();
@@ -178,19 +202,64 @@ namespace PubNubAPI
                                 #endif
                                 
                             }
+                        } 
+                        #if (ENABLE_PUBNUB_LOGGING)
+                        else {
+                            this.PubNubInstance.PNLog.WriteToLog(string.Format ("objOccupancy null"), PNLoggingMethod.LevelInfo);
                         }
+                        #endif
 
                         object uuids;
                         channelDetails.TryGetValue("uuids", out uuids);
                         
                         if(uuids!=null){
                             #if (ENABLE_PUBNUB_LOGGING)
-                            this.PubNubInstance.PNLog.WriteToLog(string.Format ("uuids ! null: {0}", channelName), PNLoggingMethod.LevelInfo);
+                            this.PubNubInstance.PNLog.WriteToLog(string.Format ("uuids ! null: {0} {1}", channelName, uuids.GetType()), PNLoggingMethod.LevelInfo);
                             #endif
+                            string uuidType = uuids.GetType().ToString();
+                            if(uuidType.Equals("System.Object[]")){
+                                object[] objUuids = uuids as object[];
+                                #if (ENABLE_PUBNUB_LOGGING)
+                                this.PubNubInstance.PNLog.WriteToLog(string.Format ("objUuids count: {0}", objUuids.Length), PNLoggingMethod.LevelInfo);
+                                #endif                                    
+
+                                foreach (object uuid in objUuids){
+                                    #if (ENABLE_PUBNUB_LOGGING)
+                                    this.PubNubInstance.PNLog.WriteToLog(string.Format ("uuid: {0}", uuid.ToString()), PNLoggingMethod.LevelInfo);
+                                    #endif                                    
+                                    PNHereNowOccupantData occupantData = new PNHereNowOccupantData();
+                                    Dictionary<string, object> dictUuidsState = uuid as Dictionary<string, object>;
+                                    bool bUuid = false;
+                                    bool bState = false;
+                                    foreach (KeyValuePair<string, object> objUuidsState in dictUuidsState){
+                                        #if (ENABLE_PUBNUB_LOGGING)
+                                        this.PubNubInstance.PNLog.WriteToLog(string.Format ("objUuidsState: {0}, val: {1}", objUuidsState.Key, objUuidsState.Value), PNLoggingMethod.LevelInfo);
+                                        #endif                                    
+                                        if(objUuidsState.Key.Equals("uuid")){
+                                            occupantData.UUID = objUuidsState.Value.ToString();
+                                            bUuid = true;
+                                        } else if(objUuidsState.Key.Equals("state")) {
+                                            occupantData.State = objUuidsState.Value;
+                                            bState = true;
+                                        } 
+                                    }
+                                    if(!bState && !bUuid){
+                                        occupantData.State = dictUuidsState;
+                                    }
+                                    channelData.Occupants.Add(occupantData);
+                                    
+                                    #if (ENABLE_PUBNUB_LOGGING)
+                                    this.PubNubInstance.PNLog.WriteToLog(string.Format ("uuid: {0}", uuid), PNLoggingMethod.LevelInfo);
+                                    #endif                                    
+                                }
+                            } else if (uuidType.Equals("System.String[]")){
+
+                                string[] arrUuids = uuids as string[];
                             
-                            string[] arrUuids = uuids as string[];
-                            
-                            if(arrUuids!=null){
+                                #if (ENABLE_PUBNUB_LOGGING)
+                                this.PubNubInstance.PNLog.WriteToLog(string.Format ("arrUuids count: {0}", arrUuids.Length), PNLoggingMethod.LevelInfo);
+                                #endif                                    
+
                                 foreach (string uuid in arrUuids){
                                     PNHereNowOccupantData occupantData = new PNHereNowOccupantData();
                                     occupantData.UUID = uuid;
@@ -202,30 +271,49 @@ namespace PubNubAPI
                             } else {
                                 Dictionary<string, object>[] dictUuidsState = uuids as Dictionary<string, object>[];
                                 if (dictUuidsState != null){
-                                foreach (Dictionary<string, object> objUuidsState in dictUuidsState){
-                                    PNHereNowOccupantData occupantData = new PNHereNowOccupantData();
-                                    
-                                    object objUuid;
-                                    bool bUuid = false;
-                                    if(objUuidsState.TryGetValue("uuid", out objUuid)){
-                                        bUuid= true;
-                                        occupantData.UUID = objUuid.ToString();
+                                    #if (ENABLE_PUBNUB_LOGGING)
+                                    this.PubNubInstance.PNLog.WriteToLog(string.Format ("dictUuidsState count: {0}", dictUuidsState.Length), PNLoggingMethod.LevelInfo);
+                                    #endif                                    
+
+                                    foreach (Dictionary<string, object> objUuidsState in dictUuidsState){
+                                        PNHereNowOccupantData occupantData = new PNHereNowOccupantData();
+                                        
+                                        object objUuid;
+                                        bool bUuid = false;
+                                        if(objUuidsState.TryGetValue("uuid", out objUuid)){
+                                            bUuid= true;
+                                            occupantData.UUID = objUuid.ToString();
+                                        }
+                                        object objState;
+                                        bool bState = false;
+                                        if(objUuidsState.TryGetValue("state", out objState)){
+                                            bState = true;
+                                            occupantData.State = objState;
+                                        }
+                                        if(!bState && !bUuid){
+                                            occupantData.State = objUuidsState;
+                                        }
+                                        channelData.Occupants.Add(occupantData);
                                     }
-                                    object objState;
-                                    bool bState = false;
-                                    if(objUuidsState.TryGetValue("state", out objState)){
-                                        bState = true;
-                                        occupantData.State = objState;
-                                    }
-                                    if(!bState && !bUuid){
-                                        occupantData.State = objUuidsState;
-                                    }
-                                    channelData.Occupants.Add(occupantData);
-                                    }
+                                } 
+                                #if (ENABLE_PUBNUB_LOGGING)
+                                else {
+                                    this.PubNubInstance.PNLog.WriteToLog(string.Format ("dictUuidsState null"), PNLoggingMethod.LevelInfo);
                                 }
+                                #endif  
                             }
+                        } 
+                        #if (ENABLE_PUBNUB_LOGGING)
+                        else {
+                            this.PubNubInstance.PNLog.WriteToLog(string.Format ("UUIDs null"), PNLoggingMethod.LevelInfo);
                         }
+                        #endif
+                    } 
+                    #if (ENABLE_PUBNUB_LOGGING)
+                    else {
+                        this.PubNubInstance.PNLog.WriteToLog(string.Format ("channelDetails null"), PNLoggingMethod.LevelInfo);
                     }
+                    #endif 
                     channelsResult.Add(channelName, channelData);
                 }
             }

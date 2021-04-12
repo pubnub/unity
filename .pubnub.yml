@@ -1,12 +1,22 @@
 --- 
-version: v4.10.1
+version: v5.0.0
 changelog:
+  -
+    changes:
+      -
+        text: "BREAKING CHANGE - New JSON Parser Json .Net for Unity 2.0.1. The parser used earlier has been deprecated."
+        type: improvement
+      -
+        text: "BREAKING CHANGE - IV used for encryption is now random by default."
+        type: improvement
+    date: Apr 12, 21
+    version: v5.0.0
   -
     changes:
       -
         text: "Fixes issue of missing `more` field in FetchMessages response."
         type: bug
-    date: Dec 14, 20
+    date: 2020-12-14
     version: v4.10.1
   -
     changes:
@@ -22,49 +32,49 @@ changelog:
       -
         text: "Fetch with 100 messages."
         type: improvement
-    date: Oct 19, 20
+    date: 2020-10-19
     version: v4.10.0
   -
     changes:
       -
         text: "Objects V2."
         type: feature
-    date: Sep 15, 20
+    date: 2020-09-15
     version: v4.9.0
   -
     changes:
       -
         text: "Example scene fix for Unity 2018."
         type: bug
-    date: Jun 17, 20
+    date: 2020-06-17
     version: v4.8.3
   - 
     changes: 
       - 
         text: "Objects Sorting"
         type: feature
-    date: April 10, 20  
+    date: 2020-04-10
     version: v4.8.2 
   - 
     changes: 
       - 
         text: "Correct null check for signal callback"
         type: bug
-    date: Mar 10, 20  
+    date: 2020-03-10  
     version: v4.8.1
   - 
     changes: 
       - 
         text: "Token Management System - Client end"
         type: improvement
-    date: Feb 18, 20  
+    date: 2020-02-18
     version: v4.8.0
   - 
     changes: 
       - 
         text: "HereNow Deserialization Error fix"
         type: improvement
-    date: Feb 5, 20  
+    date: 2020-02-05
     version: v4.7.3
   - 
     changes: 
@@ -74,14 +84,14 @@ changelog:
       - 
         text: "Presence Heartbeat defaults to 300"
         type: improvement
-    date: Jan 16, 20  
+    date: 2020-01-16
     version: v4.7.2
   - 
     changes: 
       - 
         text: "Objects Filtering"
         type: improvement
-    date: Jan 6, 20  
+    date: 2020-01-06
     version: v4.7.1   
   - 
     changes: 
@@ -91,7 +101,7 @@ changelog:
       - 
         text: "Push payload helper class"
         type: improvement
-    date: Dec 24, 19  
+    date: 2019-12-24
     version: v4.7.0  
   - 
     changes: 
@@ -101,7 +111,7 @@ changelog:
       - 
         text: "Return types of Start and End in PNGetMessageActionsMore changed to long"
         type: improvement
-    date: Nov 22, 19  
+    date: 2019-11-22
     version: v4.6.0  
   - 
     changes: 
@@ -111,14 +121,14 @@ changelog:
       - 
         text: "Fetch with Message Actions"
         type: improvement
-    date: Nov 21, 19  
+    date: 2019-11-21
     version: v4.5.0  
   - 
     changes: 
       - 
         text: "Objects"
         type: improvement
-    date: Nov 8, 19  
+    date: 2019-11-08
     version: v4.4.0  
   - 
     changes: 
@@ -128,7 +138,7 @@ changelog:
       - 
         text: "IncludeMeta in History and Fetch"
         type: improvement
-    date: Oct 10, 19  
+    date: 2019-10-10
     version: v4.3.0  
   - 
     changes: 
@@ -138,28 +148,28 @@ changelog:
       - 
         text: "PNPresenceEventResult.State property not populated in callback"
         type: bug
-    date: Jun 4, 19  
+    date: 2019-06-04
     version: v4.2.1  
   - 
     changes: 
       - 
         text: "Message Counts simplification (Breaking changes from the previous version)."
         type: improvement
-    date: Mar 13, 19  
+    date: 2019-03-13
     version: v4.2.0
   - 
     changes: 
       - 
         text: "Message Counts API"
         type: improvement 
-    date: "Mar 5, 19"
+    date: 2019-03-05
     version: v4.1.1
   - 
     changes: 
       - 
         text: "BREAKING CHANGE: Fixed a typo by renaming the `event` from `SusbcribeCallback` to `SubscribeCallback` and the `EventArgs` from `SusbcribeEventEventArgs` to `SubscribeEventEventArgs` "
         type: improvement 
-    date: "Feb 18, 19"
+    date: 2019-02-18
     version: v4.1.0
   - 
     changes: 
@@ -178,105 +188,105 @@ changelog:
       - 
         text: "Leave callback message exception fix"
         type: bug       
-    date: "Jan 9, 19"
+    date: 2019-01-09
     version: v4.0.5
   - 
     changes: 
       - 
         text: "UnityPackage reorganization"
         type: improvement
-    date: "Nov 13, 18"
+    date: 2018-11-13
     version: v4.0.4
   - 
     changes: 
       - 
         text: "Travis update for UnityPackage"
         type: improvement
-    date: "Nov 12, 18"
+    date: 2018-11-12
     version: v4.0.3
   - 
     changes: 
       - 
         text: "Delete Messages Fix"
         type: improvement
-    date: "Aug 23, 18"
+    date: 2018-08-23
     version: v4.0.2
   - 
     changes: 
       - 
         text: "Integration tests fixes"
         type: improvement
-    date: "Mar 8, 18"
+    date: 2018-03-08
     version: v4.0.1
   - 
     changes: 
       - 
         text: "Here Now Refresh"
         type: improvement
-    date: "Feb 28, 18"
+    date: 2018-02-28
     version: v4.0-rc2
   - 
     changes: 
       - 
         text: Cleanup
         type: improvement
-    date: "Jan 22, 18"
+    date: 2018-01-22
     version: v4.0-beta6
   - 
     changes: 
       - 
         text: "Logging enhancements"
         type: improvement
-    date: "Jan 18, 18"
+    date: 2018-01-18
     version: v4.0-beta5
   - 
     changes: 
       - 
         text: Cleanup
         type: improvement
-    date: "Jan 16, 18"
+    date: 2018-01-16
     version: v4.0-beta4
   - 
     changes: 
       - 
         text: "Windows Universal compatibility"
         type: improvement
-    date: "Jan 11, 18"
+    date: 2018-01-11
     version: v4.0-beta3
   - 
     changes: 
       - 
         text: "Leave fixes"
         type: improvement
-    date: "Dec 26, 17"
+    date: 2017-12-26
     version: v4.0-beta2
   - 
     changes: 
       - 
         text: "All new PubNub Unity SDK"
         type: improvement
-    date: "Dec 11, 17"
+    date: 2017-12-18
     version: v4.0-beta1
   - 
     changes: 
       - 
         text: "Presence delta intervals"
         type: improvement
-    date: "Dec 18, 17"
+    date: 2017-12-11
     version: v3.7.10
   - 
     changes: 
       - 
         text: "Unity UWP compatibility"
         type: improvement
-    date: "Aug 8, 17"
+    date: 2017-08-08
     version: v3.7.9
   - 
     changes: 
       - 
         text: "Presence delta intervals"
         type: improvement
-    date: "Mar 31, 17"
+    date: 2017-03-31
     version: v3.7.8
   - 
     changes: 
@@ -286,21 +296,21 @@ changelog:
       - 
         text: "Prefix UUID with 'pn-'"
         type: improvement
-    date: "Feb 20, 17"
+    date: 2017-02-20
     version: v3.7.7
   - 
     changes: 
       - 
         text: "Fixed user state issue for other UUID"
         type: bug
-    date: "Jan 12, 17"
+    date: 2017-01-12
     version: v3.7.6.2
   - 
     changes: 
       - 
         text: "Changed origin to ps.pndsn.com"
         type: feature
-    date: "Dec 21, 16"
+    date: 2016-12-21
     version: v3.7.6.1
   - 
     changes: 
@@ -308,9 +318,9 @@ changelog:
         text: "Offers the ability to set a per message time to live in storage."
         type: feature
       - 
-        text: "Find out which UUID sent the message (only avialable when debug symbol `PUBNUB_PS_V2_RESPONSE` is used)."
+        text: "Find out which UUID sent the message (only available when debug symbol `PUBNUB_PS_V2_RESPONSE` is used)."
         type: feature
-    date: "Dec 9, 16"
+    date: 2016-12-09
     version: v3.7.6
   - 
     changes: 
@@ -330,7 +340,7 @@ changelog:
       - 
         text: "Added a debug symbol `PUBNUB_PS_V2_RESPONSE` to enable v4 subscribe"
         type: feature
-    date: "Sep 24, 16"
+    date: 2016-09-24
     version: v3.7.4
   - 
     changes: 
@@ -356,7 +366,7 @@ changelog:
       - 
         text: "Code optimizations"
         type: improvement
-    date: "Aug 2, 16"
+    date: 2016-08-02
     version: v3.7.2
   - 
     changes: 
@@ -366,7 +376,7 @@ changelog:
       - 
         text: "For iOS if the value of NonSubscribeTimeout and SubscribeTimeout is greater than 59 secs, the SDK will force the value to be 59 secs."
         type: improvement
-    date: "Jun 21, 16"
+    date: 2016-06-21
     version: v3.6.9.1
   - 
     changes: 
@@ -574,3 +584,286 @@ supported-platforms:
       - "Ubuntu 12.04+, with Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support."
       - "Mac OS X 10.8+, with Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support."
     version: "PubNub Unity SDK"
+sdks:
+  -
+    full-name: PubNub Unity SDK
+    short-name: Unity
+    artifacts:
+      -
+        artifact-type: package
+        language: c#
+        tier: 2
+        tags:
+          - Desktop
+          - Mobile
+          - Game Engine
+        source-repository: https://github.com/pubnub/unity
+        documentation: https://www.pubnub.com/docs/unity3d-c-sharp/pubnub-c-sharp-sdk
+        distributions:
+          -
+            distribution-type: package
+            distribution-repository: git release
+            package-name: PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v4.9.0/PubNub.unitypackage
+            requires:
+              -
+                name: "Pathfinding.Serialization.JsonFx"
+                min-version: ""
+                license: "MIT"
+                license-url: ""
+                location: "Shipped within package"
+                is-required: "Optional, one JSON serialization library is required"          
+              -
+                name: "PeterO.Cbor"
+                min-version: ""
+                license: "MIT"
+                license-url: ""
+                location: "Shipped within package"
+                is-required: "Required"
+              -
+                name: "Pathfinding.Serialization.JsonFx"
+                min-version: ""
+                license: "MIT"
+                license-url: ""
+                location: "Shipped within package"
+                is-required: "Optional, one JSON serialization library is required"
+              -
+                name: "MiniJSON"
+                min-version: ""
+                license: "MIT"
+                license-url: ""
+                location: "Shipped within package"
+                is-required: "Optional, one JSON serialization library is required"
+            supported-platforms:
+                supported-operating-systems:
+                  Android:
+                    runtime-version:
+                      - .NET 4.x Equivalent
+                    api-compatibility:
+                      - .NET Core 2
+                      - .NET 4.x
+                    target-api-level: 
+                      - 11
+                    minimum-api-level:
+                      - 4.1
+                    maximum-api-level:
+                      - 30  
+                    ndk-verison:
+                      - 8
+                    target-architecture:
+                      - armeabi-v7a
+                      - atom
+                    additional-requirements:  
+                      - OpenGL ES 2.0 or later.
+                      - ARMv7 (Cortex) CPU with NEON support
+                  iOS:
+                    runtime-version:
+                      - .NET 4.x Equivalent
+                    api-compatibility:
+                      - .NET Core 2
+                      - .NET 4.x
+                    minimum-os-version: 
+                      - iOS 9
+                    maximum-os-version:
+                      - iOS 14
+                    target-architecture:
+                      - Universal
+                    target-devices:
+                      - iPad
+                      - iPhone
+                  WebGL:
+                    runtime-version:
+                      - .NET 4.x Equivalent
+                    api-compatibility:
+                      - .NET Core 2
+                      - .NET 4.x
+                    target-devices:
+                      - Chrome macOS 86.0.4240+
+                      - Firefox macOS 83.0+
+                      - Chrome Windows 86.0.4240+
+                      - Firefox Windows 83.0 (x64)+
+                      - Safari 14.0.1+
+                      - Microsoft Edge 87.0.664.60+                    
+                  Windows:
+                    target-architecture:
+                      - x86-64
+                    runtime-version:
+                      - .NET 4.x Equivalent
+                    api-compatibility:
+                      - .NET Core 2
+                      - .NET 4.x
+                    minimum-os-version:
+                      - Windows 7 Professional
+                      - Windows 7 Enterprise
+                      - Windows 7 Ultimate
+                    maximum-os-version:
+                      - Windows 10 Enterprise
+                    additional-requirements: 
+                      - Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support.                 
+                  Linux:
+                    target-architecture:
+                      - x86-64
+                    runtime-version:
+                      - .NET 4.x Equivalent
+                    api-compatibility:
+                      - .NET Core 2
+                      - .NET 4.x
+                    maximum-os-version:
+                      - Ubuntu 20.04 LTS
+                    minimum-os-version:
+                      - Ubuntu 12.04
+                    additional-requirements: 
+                      - Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support.                    
+                  macOS:
+                    target-architecture:
+                      - x86-64
+                    runtime-version:
+                      - .NET 4.x Equivalent
+                    api-compatibility:
+                      - .NET Core 2
+                      - .NET 4.x
+                    minimum-os-version:
+                      - Mac OS X 10.8
+                    maximum-os-version:
+                      - macOS 10.14.6
+                    additional-requirements:
+                      - Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support.
+      -
+        artifact-type: api-client
+        language: c#
+        tier: 2
+        tags:
+          - Desktop
+          - Mobile
+          - Game Engine
+        source-repository: https://github.com/pubnub/unity
+        documentation: https://www.pubnub.com/docs/unity3d-c-sharp/pubnub-c-sharp-sdk
+        distributions:
+          -
+            distribution-type: package
+            distribution-repository: git release
+            package-name: PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v4.9.0/PubNub.unitypackage
+            requires:
+              -
+                name: "Pathfinding.Serialization.JsonFx"
+                min-version: ""
+                license: "MIT"
+                license-url: ""
+                location: "Shipped within package"
+                is-required: "Optional, one JSON serialization library is required"          
+              -
+                name: "PeterO.Cbor"
+                min-version: ""
+                license: "MIT"
+                license-url: ""
+                location: "Shipped within package"
+                is-required: "Required"
+              -
+                name: "Pathfinding.Serialization.JsonFx"
+                min-version: ""
+                license: "MIT"
+                license-url: ""
+                location: "Shipped within package"
+                is-required: "Optional, one JSON serialization library is required"
+              -
+                name: "MiniJSON"
+                min-version: ""
+                license: "MIT"
+                license-url: ""
+                location: "Shipped within package"
+                is-required: "Optional, one JSON serialization library is required"
+            supported-platforms:
+                supported-operating-systems:
+                  Android:
+                    runtime-version:
+                      - .NET 4.x Equivalent
+                    api-compatibility:
+                      - .NET Core 2
+                      - .NET 4.x
+                    target-api-level: 
+                      - 11
+                    minimum-api-level:
+                      - 4.1
+                    maximum-api-level:
+                      - 30  
+                    ndk-verison:
+                      - 8
+                    target-architecture:
+                      - armeabi-v7a
+                      - atom
+                    additional-requirements:  
+                      - OpenGL ES 2.0 or later.
+                      - ARMv7 (Cortex) CPU with NEON support
+                  iOS:
+                    runtime-version:
+                      - .NET 4.x Equivalent
+                    api-compatibility:
+                      - .NET Core 2
+                      - .NET 4.x
+                    minimum-os-version: 
+                      - iOS 9
+                    maximum-os-version:
+                      - iOS 14
+                    target-architecture:
+                      - Universal
+                    target-devices:
+                      - iPad
+                      - iPhone
+                  WebGL:
+                    runtime-version:
+                      - .NET 4.x Equivalent
+                    api-compatibility:
+                      - .NET Core 2
+                      - .NET 4.x
+                    target-devices:
+                      - Chrome macOS 86.0.4240+
+                      - Firefox macOS 83.0+
+                      - Chrome Windows 86.0.4240+
+                      - Firefox Windows 83.0 (x64)+
+                      - Safari 14.0.1+
+                      - Microsoft Edge 87.0.664.60+                    
+                  Windows:
+                    target-architecture:
+                      - x86-64
+                    runtime-version:
+                      - .NET 4.x Equivalent
+                    api-compatibility:
+                      - .NET Core 2
+                      - .NET 4.x
+                    minimum-os-version:
+                      - Windows 7 Professional
+                      - Windows 7 Enterprise
+                      - Windows 7 Ultimate
+                    maximum-os-version:
+                      - Windows 10 Enterprise
+                    additional-requirements: 
+                      - Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support.                 
+                  Linux:
+                    target-architecture:
+                      - x86-64
+                    runtime-version:
+                      - .NET 4.x Equivalent
+                    api-compatibility:
+                      - .NET Core 2
+                      - .NET 4.x
+                    maximum-os-version:
+                      - Ubuntu 20.04 LTS
+                    minimum-os-version:
+                      - Ubuntu 12.04
+                    additional-requirements: 
+                      - Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support.                    
+                  macOS:
+                    target-architecture:
+                      - x86-64
+                    runtime-version:
+                      - .NET 4.x Equivalent
+                    api-compatibility:
+                      - .NET Core 2
+                      - .NET 4.x
+                    minimum-os-version:
+                      - Mac OS X 10.8
+                    maximum-os-version:
+                      - macOS 10.14.6
+                    additional-requirements:
+                      - Graphics card DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities; and CPU SSE2 instruction set support.

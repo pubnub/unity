@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace PubNubAPI
@@ -51,6 +52,13 @@ namespace PubNubAPI
                     foreach (KeyValuePair<string, object> kvpActionValues in objActionValues)
                     {
                         object[] actionAttributes = kvpActionValues.Value as object[];
+                        if(actionAttributes == null){
+                            List<object> actionAttributesList = kvpActionValues.Value as List<object>;
+                            if(actionAttributesList != null){
+                                actionAttributes = actionAttributesList.Cast<object>().ToArray();
+                            }
+                        }
+
                         List<PNHistoryMessageActionsTypeValueAttributes> actionValueAttributes = new List<PNHistoryMessageActionsTypeValueAttributes>();
                         foreach(object actionValueAttribute in actionAttributes){
                             Dictionary<string, object>  attributeValues= actionValueAttribute as Dictionary<string, object>;

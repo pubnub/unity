@@ -391,6 +391,24 @@ namespace PubNubAPI
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PubNubInstance.PNLog.WriteToLog (string.Format ("ParseReceiedJSONV2: jsonString = {0}",  jsonString), PNLoggingMethod.LevelInfo);
                 #endif
+
+                StringBuilder newJsonStringBuilder = new StringBuilder();
+
+                for (int x = 0; x < jsonString.Length; x++)
+                {
+                    if(Char.IsSurrogate(jsonString, x)){
+                        newJsonStringBuilder.Append(jsonString[x]);
+                    } else {
+                        newJsonStringBuilder.Append(jsonString[x]);
+                    }
+                }
+                jsonString = newJsonStringBuilder.ToString();
+                var enc = new UTF32Encoding();
+                Byte[] encodedBytes = enc.GetBytes(jsonString);
+                String decodedString = enc.GetString(encodedBytes);
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PubNubInstance.PNLog.WriteToLog (string.Format ("decodedString = {0}",  decodedString), PNLoggingMethod.LevelInfo);
+                #endif
                 
                 //this doesnt work on JSONFx for Unity in case a string is passed in an variable of type object
                 //SubscribeEnvelope resultSubscribeEnvelope = jsonPluggableLibrary.Deserialize<SubscribeEnvelope>(jsonString);
