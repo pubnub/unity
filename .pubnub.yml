@@ -9,7 +9,7 @@ changelog:
       -
         text: "BREAKING CHANGE - IV used for encryption is now random by default."
         type: improvement
-    date: Apr 12, 21
+    date: 2021-04-12
     version: v5.0.0
   -
     changes:
@@ -598,35 +598,35 @@ sdks:
           - Mobile
           - Game Engine
         source-repository: https://github.com/pubnub/unity
-        documentation: https://www.pubnub.com/docs/unity3d-c-sharp/pubnub-c-sharp-sdk
+        documentation: https://www.pubnub.com/docs/sdks/unity
         distributions:
           -
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v4.9.0/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v5.0.0/PubNub.unitypackage
             requires:
               -
-                name: "Pathfinding.Serialization.JsonFx"
-                min-version: ""
-                license: "MIT"
+                name: "UnityEditor"
+                min-version: "2018.4.26f1"
+                license: "https://unity3d.com/legal"
+                license-url: "https://unity3d.com/legal"
+                location: "Should be installed on computer"
+                is-required: "Required"          
+              -
+                name: "JSON .NET For Unity"
+                min-version: "2.0.1"
+                license: "Unity's standard Unity Asset Store End User License Agreement"
                 license-url: ""
                 location: "Shipped within package"
                 is-required: "Optional, one JSON serialization library is required"          
               -
                 name: "PeterO.Cbor"
                 min-version: ""
-                license: "MIT"
+                license: "Creative Commons"
                 license-url: ""
                 location: "Shipped within package"
                 is-required: "Required"
-              -
-                name: "Pathfinding.Serialization.JsonFx"
-                min-version: ""
-                license: "MIT"
-                license-url: ""
-                location: "Shipped within package"
-                is-required: "Optional, one JSON serialization library is required"
               -
                 name: "MiniJSON"
                 min-version: ""
@@ -634,6 +634,34 @@ sdks:
                 license-url: ""
                 location: "Shipped within package"
                 is-required: "Optional, one JSON serialization library is required"
+              -
+                name: "MarkerMetro.Unity.WinLegacy"
+                min-version: "1.8.0.18"
+                license: "MIT"
+                license-url: "https://raw.githubusercontent.com/MarkerMetro/MarkerMetro.Unity.WinLegacy/master/LICENSE"
+                location: "Shipped within package"
+                is-required: "Optional, only applicable for Metro"
+              -
+                name: "BouncyCastle"
+                min-version: "1.8.1.0"
+                license: "MIT"
+                license-url: ""
+                location: "Shipped within package"
+                is-required: "Optional, only applicable for Metro"
+              -
+                name: "BouncyCastle.Crypto"
+                min-version: "1.8.1.0"
+                license: "MIT"
+                license-url: ""
+                location: "Shipped within package"
+                is-required: "Optional, only applicable for Metro"
+              -
+                name: "JsonFx.Json"
+                min-version: ""
+                license: "MIT"
+                license-url: ""
+                location: "Shipped within package"
+                is-required: "Optional, only applicable for Metro"
             supported-platforms:
                 supported-operating-systems:
                   Android:
@@ -663,11 +691,11 @@ sdks:
                       - .NET Core 2
                       - .NET 4.x
                     minimum-os-version: 
-                      - iOS 9
+                      - iOS 9.0
                     maximum-os-version:
-                      - iOS 14
+                      - iOS 14.4.2
                     target-architecture:
-                      - Universal
+                      - arm64
                     target-devices:
                       - iPad
                       - iPhone
@@ -737,35 +765,35 @@ sdks:
           - Mobile
           - Game Engine
         source-repository: https://github.com/pubnub/unity
-        documentation: https://www.pubnub.com/docs/unity3d-c-sharp/pubnub-c-sharp-sdk
+        documentation: https://www.pubnub.com/docs/sdks/unity
         distributions:
           -
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v4.9.0/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v5.0.0/PubNub.unitypackage
             requires:
               -
-                name: "Pathfinding.Serialization.JsonFx"
-                min-version: ""
-                license: "MIT"
+                name: "UnityEditor"
+                min-version: "2018.4.26f1"
+                license: "https://unity3d.com/legal"
+                license-url: "https://unity3d.com/legal"
+                location: "Should be installed on computer"
+                is-required: "Required"          
+              -
+                name: "JSON .NET For Unity"
+                min-version: "2.0.1"
+                license: "Unity's standard Unity Asset Store End User License Agreement"
                 license-url: ""
                 location: "Shipped within package"
                 is-required: "Optional, one JSON serialization library is required"          
               -
                 name: "PeterO.Cbor"
                 min-version: ""
-                license: "MIT"
+                license: "Creative Commons"
                 license-url: ""
                 location: "Shipped within package"
                 is-required: "Required"
-              -
-                name: "Pathfinding.Serialization.JsonFx"
-                min-version: ""
-                license: "MIT"
-                license-url: ""
-                location: "Shipped within package"
-                is-required: "Optional, one JSON serialization library is required"
               -
                 name: "MiniJSON"
                 min-version: ""
@@ -773,6 +801,34 @@ sdks:
                 license-url: ""
                 location: "Shipped within package"
                 is-required: "Optional, one JSON serialization library is required"
+              -
+                name: "MarkerMetro.Unity.WinLegacy"
+                min-version: "1.8.0.18"
+                license: "MIT"
+                license-url: "https://raw.githubusercontent.com/MarkerMetro/MarkerMetro.Unity.WinLegacy/master/LICENSE"
+                location: "Shipped within package"
+                is-required: "Optional, only applicable for Metro"
+              -
+                name: "BouncyCastle"
+                min-version: "1.8.1.0"
+                license: "MIT"
+                license-url: ""
+                location: "Shipped within package"
+                is-required: "Optional, only applicable for Metro"
+              -
+                name: "BouncyCastle.Crypto"
+                min-version: "1.8.1.0"
+                license: "MIT"
+                license-url: ""
+                location: "Shipped within package"
+                is-required: "Optional, only applicable for Metro"
+              -
+                name: "JsonFx.Json"
+                min-version: ""
+                license: "MIT"
+                license-url: ""
+                location: "Shipped within package"
+                is-required: "Optional, only applicable for Metro"
             supported-platforms:
                 supported-operating-systems:
                   Android:
@@ -802,11 +858,11 @@ sdks:
                       - .NET Core 2
                       - .NET 4.x
                     minimum-os-version: 
-                      - iOS 9
+                      - iOS 9.0
                     maximum-os-version:
-                      - iOS 14
+                      - iOS 14.4.2
                     target-architecture:
-                      - Universal
+                      - arm64
                     target-devices:
                       - iPad
                       - iPhone
