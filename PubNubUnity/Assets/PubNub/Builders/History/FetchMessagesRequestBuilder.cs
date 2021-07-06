@@ -16,6 +16,7 @@ namespace PubNubAPI
         private long EndTime = -1;
         
         private const ushort MaxCount = 100;
+        private const ushort MaxCountWithActions = 25;
         private ushort count = MaxCount;
         private ushort HistoryCount { 
             get {
@@ -118,8 +119,8 @@ namespace PubNubAPI
             this.PubNubInstance.PNLog.WriteToLog(string.Format ("FetchMessagesRequestBuilder: \nChannel {0} \nStartTime: {1} \nthis.EndTime:{2} \nthis.HistoryCount:{3} \nthis.ReverseHistory:{4}", string.Join(",", this.ChannelsToUse.ToArray()), this.StartTime, this.EndTime, this.HistoryCount, this.ReverseHistory), PNLoggingMethod.LevelInfo);
             #endif
 
-            if(IncludeMessageActionsInHistory || ChannelsToUse.Count > 1){
-                this.HistoryCount = 25;
+            if (((this.HistoryCount<=0) || (this.HistoryCount>MaxCountWithActions)) && (IncludeMessageActionsInHistory || ChannelsToUse.Count > 1)){
+                this.HistoryCount = MaxCountWithActions;
             }
 
             Uri request =  BuildRequests.BuildFetchRequest(

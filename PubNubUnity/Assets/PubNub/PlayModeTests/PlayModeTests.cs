@@ -1512,7 +1512,7 @@ namespace PubNubAPI.Tests
 
 		}
 
-		[UnityTest]
+		[UnityTest, Timeout(60000)]
 		public IEnumerator TestMessageActions()
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
@@ -1548,7 +1548,8 @@ namespace PubNubAPI.Tests
 						Debug.Log(mea.MessageActionsEventResult.Data.ActionType);
 						Debug.Log(mea.MessageActionsEventResult.Data.ActionValue);
 						Debug.Log(mea.MessageActionsEventResult.Data.MessageTimetoken);
-						Debug.Log(mea.MessageActionsEventResult.Data.UUID);
+						Debug.Log("UUID in Event" + mea.MessageActionsEventResult.Data.UUID);
+						Assert.True(mea.MessageActionsEventResult.Data.UUID.Equals(pnConfiguration2.UUID));
 					}
 					Debug.Log(mea.MessageActionsEventResult.MessageActionsEvent);
 					Debug.Log(mea.MessageActionsEventResult.Subscription);

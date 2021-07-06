@@ -900,6 +900,9 @@ namespace PubNubAPI
                 pnMessageActionsEventResult = new PNMessageActionsEventResult();
                 pnMessageActionsEventResult.MessageActionsEvent = MessageActionsHelpers.GetPNMessageActionsEventFromString(messageActionsEvent);
                 pnMessageActionsEventResult.Data = MessageActionsHelpers.ExtractMessageAction(data);
+                if(pnMessageActionsEventResult.Data != null){
+                    pnMessageActionsEventResult.Data.UUID = subscribeMessage.IssuingClientId;
+                }
                 pnMessageActionsEventResult.Channel = subscribeMessage.Channel.Replace(Utility.PresenceChannelSuffix, "");
                 pnMessageActionsEventResult.Subscription = subscribeMessage.SubscriptionMatch.Replace(Utility.PresenceChannelSuffix, "");
 

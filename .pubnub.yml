@@ -1,6 +1,16 @@
 --- 
-version: v5.0.0
+version: v5.0.1
 changelog:
+  -
+    changes:
+      -
+        text: "Fixed missing UUID in message action events."
+        type: bug
+      -
+        text: "Fixed custom count settings in Fetch Messages with Message Actions."
+        type: bug
+    date: 2021-07-06
+    version: v5.0.1
   -
     changes:
       -
