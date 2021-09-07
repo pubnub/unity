@@ -598,11 +598,11 @@ sdks:
   -
     full-name: PubNub Unity SDK
     short-name: Unity
+    tier: 2    
     artifacts:
       -
         artifact-type: package
         language: c#
-        tier: 2
         tags:
           - Desktop
           - Mobile
@@ -769,7 +769,6 @@ sdks:
       -
         artifact-type: api-client
         language: c#
-        tier: 2
         tags:
           - Desktop
           - Mobile
