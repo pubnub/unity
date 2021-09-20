@@ -13,25 +13,50 @@ namespace PubNubAPI.Tests
         [Test]
         public void TestCBORTokens1 ()
         {
-            TestCBORTokensCommon("p0F2AkF0Gl2AX-JDdHRsCkNyZXOkRGNoYW6gQ2dycKBDdXNyoWl1LTMzNTIwNTUPQ3NwY6Fpcy0xNzA3OTgzGB9DcGF0pERjaGFuoENncnCgQ3VzcqBDc3BjoERtZXRhoENzaWdYINqGs2EyEMHPZrp6znVqTBzXNBAD_31hUH3JuUSWE2A6");
+            Dictionary<string, int> d = new Dictionary<string, int>();
+            d.Add("userid9778", 31);
+            d.Add("userid2043", 31);
+            d.Add("spaceid9778", 31);
+            d.Add("spaceid2043", 31);
+            d.Add("UnityTestConnectedUUID_8602", 31);
+            TestCBORTokensCommon(d, "p0F2AkF0GmFB9CFDdHRsA0NyZXOlRGNoYW6ianVzZXJpZDk3NzgYH2p1c2VyaWQyMDQzGB9DZ3JwomtzcGFjZWlkOTc3OBgfa3NwYWNlaWQyMDQzGB9DdXNyoENzcGOgRHV1aWSheBtVbml0eVRlc3RDb25uZWN0ZWRVVUlEXzg2MDIYH0NwYXSlRGNoYW6gQ2dycKBDdXNyoENzcGOgRHV1aWSgRG1ldGGgQ3NpZ1gghOCkA7lSx9r7uM78UQLehCMbxauzzrTRJAUOWI0m4J8=");
         }
         [Test]
         public void TestCBORTokens2 ()
         {
-            TestCBORTokensCommon("p0F2AkF0Gl2AaMlDdHRsCkNyZXOkRGNoYW6gQ2dycKBDdXNyoWl1LTE5NzQxMDcPQ3NwY6Fpcy0yMzExMDExGB9DcGF0pERjaGFuoENncnCgQ3VzcqBDc3BjoERtZXRhoENzaWdYIO1ti19DLbEKK-s_COJPlM1xtZCpP8K4sV51nvRPTIxf");
+            Dictionary<string, int> d = new Dictionary<string, int>();
+            d.Add("userid5539", 31);
+            d.Add("userid6719", 31);
+            d.Add("spaceid5539", 31);
+            d.Add("spaceid6719", 31);
+            d.Add("UnityTestConnectedUUID_1220", 31);
+            TestCBORTokensCommon(d, "qEF2AkF0GmFCDRZDdHRsA0NyZXOlRGNoYW6ianVzZXJpZDU1MzkYH2p1c2VyaWQ2NzE5GB9DZ3JwomtzcGFjZWlkNTUzORgfa3NwYWNlaWQ2NzE5GB9DdXNyoENzcGOgRHV1aWSheBtVbml0eVRlc3RDb25uZWN0ZWRVVUlEXzEyMjAYH0NwYXSlRGNoYW6gQ2dycKBDdXNyoENzcGOgRHV1aWSgRG1ldGGgRHV1aWR4G1VuaXR5VGVzdENvbm5lY3RlZFVVSURfMTIyMENzaWdYIGfRv7AlWGyE20gOABvD9dt4qpg-KvEq2etivD3GpSlr");
         }
         [Test]
         public void TestCBORTokens3 ()
         {
-            TestCBORTokensCommon("p0F2AkF0Gl2CEiRDdHRsA0NyZXOkRGNoYW6gQ2dycKBDdXNyoW50ZXN0dXNlcl8xNjY2ORgfQ3NwY6FvdGVzdHNwYWNlXzE1MDExGB9DcGF0pERjaGFuoENncnCgQ3VzcqBDc3BjoERtZXRhoENzaWdYIMqDoIOYPP9ULfXKLDK3eoGQ-C8nJxPTWFCDAc-Flxu7");
+            Dictionary<string, int> d = new Dictionary<string, int>();
+            d.Add("userid3412", 31);
+            d.Add("userid7657", 31);
+            d.Add("spaceid3412", 31);
+            d.Add("spaceid7657", 31);
+            d.Add("UnityTestConnectedUUID_2913", 31);
+            TestCBORTokensCommon(d, "qEF2AkF0GmFCHV9DdHRsA0NyZXOlRGNoYW6ianVzZXJpZDM0MTIYH2p1c2VyaWQ3NjU3GB9DZ3JwomtzcGFjZWlkMzQxMhgfa3NwYWNlaWQ3NjU3GB9DdXNyoENzcGOgRHV1aWSheBtVbml0eVRlc3RDb25uZWN0ZWRVVUlEXzI5MTMYH0NwYXSlRGNoYW6gQ2dycKBDdXNyoENzcGOgRHV1aWSgRG1ldGGgRHV1aWR4G1VuaXR5VGVzdENvbm5lY3RlZFVVSURfMjkxM0NzaWdYILH6RRtdwpp1qpUVtPhuZLnn8tcZeuZucbWzSXZt2i0b");
         }
         [Test]
         public void TestCBORTokens4 ()
         {
-            TestCBORTokensCommon("p0F2AkF0Gl2CEiVDdHRsA0NyZXOkRGNoYW6gQ2dycKBDdXNyoENzcGOgQ3BhdKREY2hhbqBDZ3JwoEN1c3KhY14uKhgfQ3NwY6FjXi4qGB9EbWV0YaBDc2lnWCDfqMStM0r1GgghNjt1MPeSaA0ADTw6aGsuQgMT3jYylg==");
+            Dictionary<string, int> d = new Dictionary<string, int>();
+            d.Add("userid8078", 31);
+            d.Add("userid1207", 239);
+            d.Add("spaceid8078", 103);
+            d.Add("spaceid1207", 231);
+            d.Add("UnityTestConnectedUUID_8339", 215);
+            TestCBORTokensCommon(d, "qEF2AkF0GmFCKBFDdHRsA0NyZXOlRGNoYW6ianVzZXJpZDgwNzgYH2p1c2VyaWQxMjA3GO9DZ3JwomtzcGFjZWlkODA3OBhna3NwYWNlaWQxMjA3GOdDdXNyoENzcGOgRHV1aWSheBtVbml0eVRlc3RDb25uZWN0ZWRVVUlEXzgzMzkY10NwYXSlRGNoYW6gQ2dycKBDdXNyoENzcGOgRHV1aWSgRG1ldGGgRHV1aWR4G1VuaXR5VGVzdENvbm5lY3RlZFVVSURfODMzOUNzaWdYICDs_hNBIBXto9MMp94oxxhusEfHQpZkYBG6WzjRjS-Y");
         }
+        
        
-        public void TestCBORTokensCommon (string token)
+        public void TestCBORTokensCommon (Dictionary<string, int> d, string token)
         {
             PNConfiguration pnConfiguration = new PNConfiguration ();
 
@@ -40,146 +65,96 @@ namespace PubNubAPI.Tests
             pnConfiguration.SecretKey = "";
 
             Debug.Log("Token: " + token);
-            TokenManager tm = new TokenManager(pnUnity);
-            tm.StoreToken(token);
-            var p  = tm.GetPermissions(token);
+            pnUnity.Token = token;
+            var p  = TokenHelpers.ParseToken(pnUnity, token);
             Debug.Log("TTL: " + p.TTL);
             Debug.Log("Version: " + p.Version);
             Debug.Log("Timestamp: " + p.Timestamp);
             Debug.Log("Meta: " + p.Meta);
-            Debug.Log("Signature: " + System.Text.Encoding.ASCII.GetString(p.Signature));
-            foreach(KeyValuePair<string, int> kvp in p.Patterns.Channels){
+            Debug.Log("AuthorizedUUID: " + p.AuthorizedUUID);
+            Debug.Log("Signature: " + p.Signature);
+            foreach(KeyValuePair<string, TokenAuthValues> kvp in p.Patterns.Channels){
                 Debug.Log(string.Format("Patterns Channels: key {0}, val {1}", kvp.Key, kvp.Value));
-            }
-            foreach(KeyValuePair<string, int> kvp in p.Patterns.Groups){
-                Debug.Log(string.Format("Patterns Groups: key {0}, val {1}", kvp.Key, kvp.Value));
-            }
-            foreach(KeyValuePair<string, int> kvp in p.Patterns.Users){
-                Debug.Log(string.Format("Patterns Users: key {0}, val {1}", kvp.Key, kvp.Value));
-            }
-            foreach(KeyValuePair<string, int> kvp in p.Patterns.Spaces){
-                Debug.Log(string.Format("Patterns Spaces: key {0}, val {1}", kvp.Key, kvp.Value));
-            }
-            foreach(KeyValuePair<string, int> kvp in p.Resources.Channels){
-                Debug.Log(string.Format("Resources Channels: key {0}, val {1}", kvp.Key, kvp.Value));
-            }
-            foreach(KeyValuePair<string, int> kvp in p.Resources.Groups){
-                Debug.Log(string.Format("Resources Groups: key {0}, val {1}", kvp.Key, kvp.Value));
-            }
-            foreach(KeyValuePair<string, int> kvp in p.Resources.Spaces){
-                Debug.Log(string.Format("Resources Spaces: key {0}, val {1}", kvp.Key, kvp.Value));
-            }
-            foreach(KeyValuePair<string, int> kvp in p.Resources.Users){
-                Debug.Log(string.Format("Resources Users: key {0}, val {1}", kvp.Key, kvp.Value));
-            }
-
-        }
-        [Test]
-         public void TestCBORTokensCommon ()
-        {
-            string t1 = "p0F2AkF0Gl2AX-JDdHRsCkNyZXOkRGNoYW6gQ2dycKBDdXNyoWl1LTMzNTIwNTUPQ3NwY6Fpcy0xNzA3OTgzGB9DcGF0pERjaGFuoENncnCgQ3VzcqBDc3BjoERtZXRhoENzaWdYINqGs2EyEMHPZrp6znVqTBzXNBAD_31hUH3JuUSWE2A6";
-	        string t2 = "p0F2AkF0Gl2AaMlDdHRsCkNyZXOkRGNoYW6gQ2dycKBDdXNyoWl1LTE5NzQxMDcPQ3NwY6Fpcy0yMzExMDExGB9DcGF0pERjaGFuoENncnCgQ3VzcqBDc3BjoERtZXRhoENzaWdYIO1ti19DLbEKK-s_COJPlM1xtZCpP8K4sV51nvRPTIxf";
-	        string t3 = "p0F2AkF0Gl2CEiRDdHRsA0NyZXOkRGNoYW6gQ2dycKBDdXNyoW50ZXN0dXNlcl8xNjY2ORgfQ3NwY6FvdGVzdHNwYWNlXzE1MDExGB9DcGF0pERjaGFuoENncnCgQ3VzcqBDc3BjoERtZXRhoENzaWdYIMqDoIOYPP9ULfXKLDK3eoGQ-C8nJxPTWFCDAc-Flxu7";
-	        string t4 = "p0F2AkF0Gl2CEiVDdHRsA0NyZXOkRGNoYW6gQ2dycKBDdXNyoENzcGOgQ3BhdKREY2hhbqBDZ3JwoEN1c3KhY14uKhgfQ3NwY6FjXi4qGB9EbWV0YaBDc2lnWCDfqMStM0r1GgghNjt1MPeSaA0ADTw6aGsuQgMT3jYylg==";
-
-            PNConfiguration pnConfiguration = new PNConfiguration ();
-
-            PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
-            pnConfiguration.StoreTokensOnGrant = true;
-            pnConfiguration.SecretKey = "";
-
-            PubNub pn = new PubNub(pnConfiguration);
-
-            pn.SetTokens(new List<string>{t1, t2, t3, t4});
-
-            GrantResourcesWithPermissions g = pn.GetTokens();
-            Assert.IsTrue(g.Channels.Count.Equals(0));
-            Assert.IsTrue(g.Groups.Count.Equals(0));
-            Assert.IsTrue(g.ChannelsPattern.Count.Equals(0));
-            Assert.IsTrue(g.GroupsPattern.Count.Equals(0));
-            foreach(KeyValuePair<string, UserSpacePermissionsWithToken> kvp in g.Users){
-                Debug.Log(kvp.Key + "===>" + kvp.Value);
-                UserSpacePermissionsWithToken u;
-                
-                if(g.Users.TryGetValue(kvp.Key, out u)){
-                    Debug.Log(kvp.Key + "=======>" + u.Token);
+                StringBuilder sbLog = TokenHelpers.PrintTokenPermissions(kvp.Value);
+                if(d.ContainsKey(kvp.Key)){
+                    Assert.AreEqual(d[kvp.Key], TokenHelpers.PermissionsMapping(kvp.Value), "Permission mismatch");
                 }
+                Debug.Log(sbLog.ToString());
             }
-            UserSpacePermissionsWithToken u1;
-            if(g.Users.TryGetValue("testuser_16669", out u1)){
-                Debug.Log("testuser_16669 =======>" + u1.Token);
-            } else {
-                Debug.Log("testuser_16669 not found");
+            foreach(KeyValuePair<string, TokenAuthValues> kvp in p.Patterns.Groups){
+                Debug.Log(string.Format("Patterns Groups: key {0}, val {1}", kvp.Key, kvp.Value));
+                StringBuilder sbLog = TokenHelpers.PrintTokenPermissions(kvp.Value);
+                if(d.ContainsKey(kvp.Key)){
+                    Assert.AreEqual(d[kvp.Key], TokenHelpers.PermissionsMapping(kvp.Value), "Permission mismatch");
+                }
+                Debug.Log(sbLog.ToString());
             }
-            Debug.Log(g.Users.ContainsKey("testuser_16669"));
-            Debug.Log(g.Users.ContainsKey("u-1974107"));
-            Debug.Log(g.Users.ContainsKey("u-3352055"));
-            Assert.IsTrue(g.Users["testuser_16669"].BitMaskPerms.Equals(31));
-            Assert.IsTrue(g.Users["testuser_16669"].TTL.Equals(3));
-            Assert.IsTrue(g.Users["testuser_16669"].Timestamp.Equals(1568805412));
-
-            Assert.IsTrue(g.Users["testuser_16669"].Token.Equals(t3));
-            Assert.IsTrue(g.Users["testuser_16669"].Permissions.Read.Equals(true));
-            Assert.IsTrue(g.Users["testuser_16669"].Permissions.Write.Equals(true));
-            Assert.IsTrue(g.Users["testuser_16669"].Permissions.Delete.Equals(true));
-            Assert.IsTrue(g.Users["testuser_16669"].Permissions.Create.Equals(true));
-            Assert.IsTrue(g.Users["testuser_16669"].Permissions.Manage.Equals(true));
-
-            Assert.IsTrue(g.Spaces["testspace_15011"].Token.Equals(t3));
-            Assert.IsTrue(g.Spaces["testspace_15011"].Permissions.Read.Equals(true));
-            Assert.IsTrue(g.Spaces["testspace_15011"].Permissions.Write.Equals(true));
-            Assert.IsTrue(g.Spaces["testspace_15011"].Permissions.Delete.Equals(true));
-            Assert.IsTrue(g.Spaces["testspace_15011"].Permissions.Create.Equals(true));
-            Assert.IsTrue(g.Spaces["testspace_15011"].Permissions.Manage.Equals(true));
-
-            Assert.IsTrue(g.Users["u-1974107"].Token.Equals(t2));
-            Assert.IsTrue(g.Spaces["s-1707983"].Token.Equals(t1));
-
-            Assert.IsTrue(g.UsersPattern["^.*"].Token.Equals(t4));
-            Assert.IsTrue(g.SpacesPattern["^.*"].Token.Equals(t4));
-
-            GrantResourcesWithPermissions g2 = pn.GetTokensByResource(PNResourceType.PNUUIDMetadata);
-            Assert.IsTrue(g2.Users["testuser_16669"].BitMaskPerms.Equals(31));
-            Assert.IsTrue(g2.Users["testuser_16669"].TTL.Equals(3));
-            Assert.IsTrue(g2.Users["testuser_16669"].Timestamp.Equals(1568805412));
-
-            Assert.IsTrue(g2.Users["testuser_16669"].Token.Equals(t3));
-            Assert.IsTrue(g2.Users["testuser_16669"].Permissions.Read.Equals(true));
-            Assert.IsTrue(g2.Users["testuser_16669"].Permissions.Write.Equals(true));
-            Assert.IsTrue(g2.Users["testuser_16669"].Permissions.Delete.Equals(true));
-            Assert.IsTrue(g2.Users["testuser_16669"].Permissions.Create.Equals(true));
-            Assert.IsTrue(g2.Users["testuser_16669"].Permissions.Manage.Equals(true));
-            Assert.IsTrue(g2.Users["u-1974107"].Token.Equals(t2));
-            Assert.IsTrue(g2.UsersPattern["^.*"].Token.Equals(t4));
-
-            GrantResourcesWithPermissions g3 = pn.GetTokensByResource(PNResourceType.PNChannelMetadata);
-            Assert.IsTrue(g3.Spaces["testspace_15011"].BitMaskPerms.Equals(31));
-            Assert.IsTrue(g3.Spaces["testspace_15011"].TTL.Equals(3));
-            Assert.IsTrue(g3.Spaces["testspace_15011"].Timestamp.Equals(1568805412));
-
-            Assert.IsTrue(g3.Spaces["testspace_15011"].Token.Equals(t3));
-            Assert.IsTrue(g3.Spaces["testspace_15011"].Permissions.Read.Equals(true));
-            Assert.IsTrue(g3.Spaces["testspace_15011"].Permissions.Write.Equals(true));
-            Assert.IsTrue(g3.Spaces["testspace_15011"].Permissions.Delete.Equals(true));
-            Assert.IsTrue(g3.Spaces["testspace_15011"].Permissions.Create.Equals(true));
-            Assert.IsTrue(g3.Spaces["testspace_15011"].Permissions.Manage.Equals(true));
-            Assert.IsTrue(g3.Spaces["s-1707983"].Token.Equals(t1));
-            Assert.IsTrue(g3.SpacesPattern["^.*"].Token.Equals(t4));   
-
-            string g4 = pn.GetToken("testspace_15011", PNResourceType.PNChannelMetadata);
-            Debug.Log("g4" + g4);
-            Assert.IsTrue(g4.Equals(t3));
-            string g5 = pn.GetToken("testuser_16669", PNResourceType.PNUUIDMetadata);
-            Assert.IsTrue(g5.Equals(t3));
-            string g6 = pn.GetToken("^.*", PNResourceType.PNChannelMetadata);
-            Assert.IsTrue(g6.Equals(t4));
-            string g7 = pn.GetToken("^.*", PNResourceType.PNUUIDMetadata);
-            Assert.IsTrue(g7.Equals(t4));
-            string g8 = pn.GetToken("NONEXISTENT", PNResourceType.PNChannelMetadata);
-            Assert.IsTrue(g8.Equals(t4));
-            string g9 = pn.GetToken("NONEXISTENT", PNResourceType.PNUUIDMetadata);
-            Assert.IsTrue(g9.Equals(t4));
+            foreach(KeyValuePair<string, TokenAuthValues> kvp in p.Patterns.Users){
+                Debug.Log(string.Format("Patterns Users: key {0}, val {1}", kvp.Key, kvp.Value));
+                StringBuilder sbLog = TokenHelpers.PrintTokenPermissions(kvp.Value);                
+                if(d.ContainsKey(kvp.Key)){
+                    Assert.AreEqual(d[kvp.Key], TokenHelpers.PermissionsMapping(kvp.Value), "Permission mismatch");
+                }
+                Debug.Log(sbLog.ToString());
+            }
+            foreach(KeyValuePair<string, TokenAuthValues> kvp in p.Patterns.Spaces){
+                Debug.Log(string.Format("Patterns Spaces: key {0}, val {1}", kvp.Key, kvp.Value));
+                StringBuilder sbLog = TokenHelpers.PrintTokenPermissions(kvp.Value);
+                if(d.ContainsKey(kvp.Key)){
+                    Assert.AreEqual(d[kvp.Key], TokenHelpers.PermissionsMapping(kvp.Value), "Permission mismatch");
+                }
+                Debug.Log(sbLog.ToString());
+            }
+            foreach(KeyValuePair<string, TokenAuthValues> kvp in p.Patterns.UUIDs){
+                Debug.Log(string.Format("Patterns UUIDs: key {0}, val {1}", kvp.Key, kvp.Value));
+                StringBuilder sbLog = TokenHelpers.PrintTokenPermissions(kvp.Value);
+                if(d.ContainsKey(kvp.Key)){
+                    Assert.AreEqual(d[kvp.Key], TokenHelpers.PermissionsMapping(kvp.Value), "Permission mismatch");
+                }
+                Debug.Log(sbLog.ToString());
+            }
+            foreach(KeyValuePair<string, TokenAuthValues> kvp in p.Resources.Channels){
+                Debug.Log(string.Format("Resources Channels: key {0}, val {1}", kvp.Key, kvp.Value));
+                StringBuilder sbLog = TokenHelpers.PrintTokenPermissions(kvp.Value);
+                if(d.ContainsKey(kvp.Key)){
+                    Assert.AreEqual(d[kvp.Key], TokenHelpers.PermissionsMapping(kvp.Value), "Permission mismatch");
+                }
+                Debug.Log(sbLog.ToString());
+            }
+            foreach(KeyValuePair<string, TokenAuthValues> kvp in p.Resources.Groups){
+                Debug.Log(string.Format("Resources Groups: key {0}, val {1}", kvp.Key, kvp.Value));
+                StringBuilder sbLog = TokenHelpers.PrintTokenPermissions(kvp.Value);
+                if(d.ContainsKey(kvp.Key)){
+                    Assert.AreEqual(d[kvp.Key], TokenHelpers.PermissionsMapping(kvp.Value), "Permission mismatch");
+                }
+                Debug.Log(sbLog.ToString());
+            }
+            foreach(KeyValuePair<string, TokenAuthValues> kvp in p.Resources.Spaces){
+                Debug.Log(string.Format("Resources Spaces: key {0}, val {1}", kvp.Key, kvp.Value));
+                StringBuilder sbLog = TokenHelpers.PrintTokenPermissions(kvp.Value);
+                if(d.ContainsKey(kvp.Key)){
+                    Assert.AreEqual(d[kvp.Key], TokenHelpers.PermissionsMapping(kvp.Value), "Permission mismatch");
+                }
+                Debug.Log(sbLog.ToString());
+            }
+            foreach(KeyValuePair<string, TokenAuthValues> kvp in p.Resources.Users){
+                Debug.Log(string.Format("Resources Users: key {0}, val {1}", kvp.Key, kvp.Value));
+                StringBuilder sbLog = TokenHelpers.PrintTokenPermissions(kvp.Value);
+                if(d.ContainsKey(kvp.Key)){
+                    Assert.AreEqual(d[kvp.Key], TokenHelpers.PermissionsMapping(kvp.Value), "Permission mismatch");
+                }
+                Debug.Log(sbLog.ToString());
+            }
+            foreach(KeyValuePair<string, TokenAuthValues> kvp in p.Resources.UUIDs){
+                Debug.Log(string.Format("Resources UUIDs: key {0}, val {1}", kvp.Key, kvp.Value));
+                StringBuilder sbLog = TokenHelpers.PrintTokenPermissions(kvp.Value);
+                if(d.ContainsKey(kvp.Key)){
+                    Assert.AreEqual(d[kvp.Key], TokenHelpers.PermissionsMapping(kvp.Value), "Permission mismatch");
+                }
+                Debug.Log(sbLog.ToString());
+            }
 
         }
+        
     }
 }

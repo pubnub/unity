@@ -48,14 +48,20 @@ namespace PubNubAPI
         internal SubscriptionWorker<SubscribeEnvelope> SubWorker { get; set;}
         internal bool localGobj;
         public readonly PNLatencyManager latency;
-        internal TokenManager tokenManager;
+        public string Token{
+            internal get; set;
+        }
+        internal string AuthorizedUUID{
+            get; set;
+        }
+        // internal TokenManager tokenManager;
         public PNLatencyManager Latency{
             get {return latency;}
         }
 
-        public TokenManager TokenMgr{
-            get {return tokenManager;}
-        }
+        // public TokenManager TokenMgr{
+        //     get {return tokenManager;}
+        // }
 
 
         public PubNubUnityBase(PNConfiguration pnConfiguration, GameObject gameObjectRef, IJsonLibrary jsonLibrary){
