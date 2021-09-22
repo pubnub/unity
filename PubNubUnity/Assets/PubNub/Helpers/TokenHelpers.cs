@@ -51,7 +51,7 @@ namespace PubNubAPI
 
     }
 
-    public class TokenPatterns{
+    public class TokenPermissionMappingBase{
         //chan
         public Dictionary<string, TokenAuthValues> Channels {get; set;}
         //grp
@@ -62,19 +62,13 @@ namespace PubNubAPI
         public Dictionary<string, TokenAuthValues> Spaces {get; set;}
         //uuid
         public Dictionary<string, TokenAuthValues> UUIDs {get; set;}
+
     }
 
-    public class TokenResources{
-        //chan
-        public Dictionary<string, TokenAuthValues> Channels {get; set;}
-        //grp
-        public Dictionary<string, TokenAuthValues> Groups {get; set;}
-        //usr
-        public Dictionary<string, TokenAuthValues> Users {get; set;}
-        //spc
-        public Dictionary<string, TokenAuthValues> Spaces {get; set;}
-        //uuid
-        public Dictionary<string, TokenAuthValues> UUIDs {get; set;}
+    public class TokenPatterns: TokenPermissionMappingBase{
+    }
+
+    public class TokenResources: TokenPermissionMappingBase{
     }
 
     public class TokenContents{
