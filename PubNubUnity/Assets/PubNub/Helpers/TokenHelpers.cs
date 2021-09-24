@@ -230,17 +230,36 @@ namespace PubNubAPI
                 case "ttl":
                 pnGrantTokenDecoded.TTL = i;
                 break;
-                case "meta":
-                pnGrantTokenDecoded.Meta = val as Dictionary<string, object>;
-                break;
                 case "uuid":
-                pnGrantTokenDecoded.AuthorizedUUID = val.ToString();
+                pnGrantTokenDecoded.AuthorizedUUID = ((CBORObject)val).AsString();
                 break;
                 case "sig":
                 pnGrantTokenDecoded.Signature = val.ToString();
                 break;
                 default:
                 switch(parent){
+                    case "meta":
+                    if ((pnGrantTokenDecoded.Meta != null) && !pnGrantTokenDecoded.Meta.ContainsKey(key))
+                    {
+                        switch (type.Name)
+                        {
+                            case "Int32":
+                                pnGrantTokenDecoded.Meta.Add(key, i);
+                                break;
+                            case "Int64":
+                                pnGrantTokenDecoded.Meta.Add(key, l);
+                                break;
+                            case "String":
+                                pnGrantTokenDecoded.Meta.Add(key, ((CBORObject)val).AsString());
+                                break;
+                            default:
+                                #if (ENABLE_PUBNUB_LOGGING)
+                                pnInstance.PNLog.WriteToLog (string.Format("typeName: {0}", type.Name), PNLoggingMethod.LevelInfo);
+                                #endif                            
+                                break;
+                        }
+                    }
+                    break;                    
                     case "res:spc": 
                     // pnGrantTokenDecoded.Resources.Spaces[key] = i;
                     break;
@@ -282,7 +301,6 @@ namespace PubNubAPI
         }
 
         public static TokenAuthValues ParseGrantPrems(PubNubUnity pnInstance, int b){
-            UnityEngine.Debug.Log(b + " perms");
             TokenAuthValues rp = new TokenAuthValues {
                 Read = false,
                 Write = false,
@@ -296,7 +314,6 @@ namespace PubNubAPI
             char[] charArray = Convert.ToString(b, 2).ToCharArray();
             Array.Reverse( charArray );
             string bits = new string( charArray );
-            UnityEngine.Debug.Log(b + " perms " + bits);
             #if (ENABLE_PUBNUB_LOGGING)
             pnInstance.PNLog.WriteToLog ("binary==>"+bits, PNLoggingMethod.LevelInfo);
             #endif
@@ -306,7 +323,6 @@ namespace PubNubAPI
                 #if (ENABLE_PUBNUB_LOGGING)
                 pnInstance.PNLog.WriteToLog (string.Format("{0}-{1}", i, bits[i]), PNLoggingMethod.LevelInfo);
                 #endif
-                UnityEngine.Debug.Log(string.Format("{0}-{1}", i, bits[i]));
                 switch(i) {
                     case 0:
                     rp.Read = (bits[i] == '1');

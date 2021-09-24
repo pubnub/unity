@@ -22,13 +22,14 @@ namespace PubNubAPI
         private Dictionary<string, int> PatUUIDs {get; set;}
         private Dictionary<string, int> PatChannels {get; set;}
         private Dictionary<string, int> PatGroups {get; set;}
+        private Dictionary<string, object> Meta {get; set;}
         private int TTL {get; set;}
         private string AuthorizedUUID {get; set;}
 
         public GrantTokenBuilder(PubNubUnity pn): base(pn, PNOperationType.PNGrantTokenOperation){
         }
 
-        public GrantTokenBuilder SetParams(Dictionary<string, int> resChannels, Dictionary<string, int> resGroups, Dictionary<string, int> resUsers, Dictionary<string, int> resSpaces, Dictionary<string, int> resUUIDs, Dictionary<string, int> patUsers, Dictionary<string, int> patSpaces, Dictionary<string, int> patChannels, Dictionary<string, int> patGroups, Dictionary<string, int> patUUIDs, int ttl, string authorizedUUID){
+        public GrantTokenBuilder SetParams(Dictionary<string, int> resChannels, Dictionary<string, int> resGroups, Dictionary<string, int> resUsers, Dictionary<string, int> resSpaces, Dictionary<string, int> resUUIDs, Dictionary<string, int> patUsers, Dictionary<string, int> patSpaces, Dictionary<string, int> patChannels, Dictionary<string, int> patGroups, Dictionary<string, int> patUUIDs, int ttl, string authorizedUUID, Dictionary<string, object> meta){
             this.ResUsers = resUsers;
             this.ResSpaces = resSpaces;
             this.ResUUIDs = resUUIDs;
@@ -41,6 +42,7 @@ namespace PubNubAPI
             this.PatGroups = patGroups;
             this.AuthorizedUUID = authorizedUUID;
             this.TTL = ttl;
+            this.Meta = meta;
             return this;
         }
 
@@ -51,7 +53,6 @@ namespace PubNubAPI
         }
 
         protected override void RunWebRequest(QueueManager qm){
-
             var permissions = new Dictionary<string, object>(){
                 {"resources", new Dictionary<string, object>(){
                     {"channels", ResChannels },
@@ -68,7 +69,7 @@ namespace PubNubAPI
                     {"uuids", PatUUIDs },
 
                 }},
-                {"meta", new Dictionary<string, object>()},
+                {"meta", Meta},
                 {"uuid", AuthorizedUUID}
             };
 

@@ -5765,6 +5765,9 @@ namespace PubNubAPI.Tests
 			string spaceid = "spaceid"  + ran;
 			string userid2 = "userid"  + ran2;
 			string spaceid2 = "spaceid"  + ran2;
+            Dictionary<string, object> meta = new Dictionary<string, object>();
+            meta.Add("score", 100);
+            meta.Add("color", "red");
 			
 			var resChannels = new Dictionary<string, int>(){
 				{userid, 31},
@@ -5801,7 +5804,8 @@ namespace PubNubAPI.Tests
 				new Dictionary<string, int>(), 
 				new Dictionary<string, int>(),
 				3, 
-				pnConfiguration.UUID
+				pnConfiguration.UUID,
+				meta
 				)
 				.Async((result, status) => {
 				Debug.Log("GrantToken response:::" + result.Token);
@@ -5816,7 +5820,20 @@ namespace PubNubAPI.Tests
             Debug.Log("Version: " + p.Version);
             Debug.Log("Timestamp: " + p.Timestamp);
             Debug.Log("Meta: " + p.Meta);
+            if(p.Meta != null){
+                Debug.Log("p.Meta count " + p.Meta.Count);
+                foreach(KeyValuePair<string, object> kvp in p.Meta){
+                    Debug.Log(string.Format("Meta: key {0}, val {1}", kvp.Key, kvp.Value));
+                    if((meta != null) && meta.ContainsKey(kvp.Key)){
+                        Assert.AreEqual(meta[kvp.Key], kvp.Value, "Meta mismatch");
+                    }
+                }
+            } else {
+                Debug.Log("p.Meta = null");
+            }
+
             Debug.Log("AuthorizedUUID: " + p.AuthorizedUUID);
+			Assert.True(pnConfiguration.UUID.Equals(p.AuthorizedUUID));
             Debug.Log("Signature: " + p.Signature);
             foreach(KeyValuePair<string, TokenAuthValues> kvp in p.Patterns.Channels){
                 Debug.Log(string.Format("Patterns Channels: key {0}, val {1}", kvp.Key, kvp.Value));
