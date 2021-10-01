@@ -6,7 +6,10 @@ changelog:
       -
         text: "SetToken and ParseToken for PAMv3."
         type: feature
-    date: 2021-09-30
+      - 
+        text: "BREAKING CHANGE - Token Management System - Client end"
+        type: improvement        
+    date: 2021-09-04
     version: v6.0.0
   -
     changes:
@@ -472,7 +475,6 @@ changelog:
     version: v3.6.8.1
 features: 
   access: 
-    - ACCESS-TOKEN-MANAGEMENT
     - ACCESS-PARSE-TOKEN
     - ACCESS-SET-TOKEN
   channel-groups: 
