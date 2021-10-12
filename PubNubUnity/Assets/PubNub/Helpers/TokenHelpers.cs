@@ -260,12 +260,6 @@ namespace PubNubAPI
                         }
                     }
                     break;                    
-                    case "res:spc": 
-                    // pnGrantTokenDecoded.Resources.Spaces[key] = i;
-                    break;
-                    case "res:usr": 
-                    // pnGrantTokenDecoded.Resources.Users[key] = i;
-                    break;
                     case "res:chan": 
                     pnGrantTokenDecoded.Resources.Channels[key] = ParseGrantPrems(pnInstance, i);
                     break;
@@ -274,12 +268,6 @@ namespace PubNubAPI
                     break;
                     case "res:uuid": 
                     pnGrantTokenDecoded.Resources.UUIDs[key] = ParseGrantPrems(pnInstance, i);
-                    break;
-                    case "pat:spc": 
-                    // pnGrantTokenDecoded.Patterns.Spaces[key] = i;
-                    break;
-                    case "pat:usr": 
-                    // pnGrantTokenDecoded.Patterns.Users[key] = i;
                     break;
                     case "pat:chan": 
                     pnGrantTokenDecoded.Patterns.Channels[key] = ParseGrantPrems(pnInstance, i);
