@@ -7,9 +7,9 @@ changelog:
         text: "SetToken and ParseToken for PAMv3."
         type: feature
       - 
-        text: "BREAKING CHANGE - Token Management System - Client end"
+        text: "BREAKING CHANGE - Renmoved Token Management System - Client end"
         type: improvement        
-    date: 2021-09-04
+    date: 2021-10-12
     version: v6.0.0
   -
     changes:
