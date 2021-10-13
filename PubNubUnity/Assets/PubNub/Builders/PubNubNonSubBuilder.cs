@@ -129,6 +129,19 @@ namespace PubNubAPI
                 return;
             }
 
+            if(!string.IsNullOrEmpty(this.PubNubInstance.AuthorizedUUID) && !this.PubNubInstance.AuthorizedUUID.Equals(this.PubNubInstance.PNConfig.UUID)){
+                string responseMsg = "Authorized UUID doesn't match.";
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PubNubInstance.PNLog.WriteToLog(string.Format("{0} {1}", responseMsg, OperationType.ToString()), PNLoggingMethod.LevelWarning);
+                #endif
+                PNStatus pnStatus = new PNStatus();
+                pnStatus.Error = true;
+                pnStatus = this.CreateErrorResponseFromMessage(responseMsg, null, PNStatusCategory.PNAccessDeniedCategory);
+                Callback(null, pnStatus);
+                return;
+            }
+
+
             RequestQueue.Instance.Enqueue (Callback, OperationType, pnBuilder, this.PubNubInstance);
         }
 

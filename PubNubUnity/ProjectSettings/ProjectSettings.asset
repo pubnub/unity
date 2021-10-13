@@ -506,7 +506,7 @@ PlayerSettings:
   webGLLinkerTarget: 1
   webGLThreadsSupport: 0
   scriptingDefineSymbols:
-    1: 
+    1: '`'
   platformArchitecture: {}
   scriptingBackend: {}
   il2cppCompilerConfiguration: {}

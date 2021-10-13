@@ -10,23 +10,39 @@ namespace PubNubAPI
         public string Token {get; set;}
     }
 
-    public class GrantTokenBuilder: PubNubNonSubBuilder<HereNowRequestBuilder, PNGrantTokenResult>, IPubNubNonSubscribeBuilder<GrantTokenBuilder, PNGrantTokenResult>{
+    public class GrantTokenBuilder: PubNubNonSubBuilder<GrantTokenBuilder, PNGrantTokenResult>, IPubNubNonSubscribeBuilder<GrantTokenBuilder, PNGrantTokenResult>{
 
         private Dictionary<string, int> ResUsers {get; set;}
         private Dictionary<string, int> ResSpaces {get; set;}
+        private Dictionary<string, int> ResUUIDs {get; set;}
+        private Dictionary<string, int> ResChannels {get; set;}
+        private Dictionary<string, int> ResGroups {get; set;}
         private Dictionary<string, int> PatUsers {get; set;}
         private Dictionary<string, int> PatSpaces {get; set;}
+        private Dictionary<string, int> PatUUIDs {get; set;}
+        private Dictionary<string, int> PatChannels {get; set;}
+        private Dictionary<string, int> PatGroups {get; set;}
+        private Dictionary<string, object> Meta {get; set;}
         private int TTL {get; set;}
+        private string AuthorizedUUID {get; set;}
 
         public GrantTokenBuilder(PubNubUnity pn): base(pn, PNOperationType.PNGrantTokenOperation){
         }
 
-        public GrantTokenBuilder SetParams(Dictionary<string, int> resUsers, Dictionary<string, int> resSpaces, Dictionary<string, int> patUsers, Dictionary<string, int> patSpaces, int ttl){
+        public GrantTokenBuilder SetParams(Dictionary<string, int> resChannels, Dictionary<string, int> resGroups, Dictionary<string, int> resUsers, Dictionary<string, int> resSpaces, Dictionary<string, int> resUUIDs, Dictionary<string, int> patUsers, Dictionary<string, int> patSpaces, Dictionary<string, int> patChannels, Dictionary<string, int> patGroups, Dictionary<string, int> patUUIDs, int ttl, string authorizedUUID, Dictionary<string, object> meta){
             this.ResUsers = resUsers;
             this.ResSpaces = resSpaces;
+            this.ResUUIDs = resUUIDs;
+            this.ResChannels = resChannels;
+            this.ResGroups = resGroups;
             this.PatUsers = patUsers;
             this.PatSpaces = patSpaces;
+            this.PatUUIDs = patUUIDs;
+            this.PatChannels = patChannels;
+            this.PatGroups = patGroups;
+            this.AuthorizedUUID = authorizedUUID;
             this.TTL = ttl;
+            this.Meta = meta;
             return this;
         }
 
@@ -37,22 +53,24 @@ namespace PubNubAPI
         }
 
         protected override void RunWebRequest(QueueManager qm){
-
             var permissions = new Dictionary<string, object>(){
                 {"resources", new Dictionary<string, object>(){
-                    {"channels", new Dictionary<string, int>() },
-                    {"groups", new Dictionary<string, int>() },
+                    {"channels", ResChannels },
+                    {"groups", ResGroups },
                     {"users", ResUsers },
                     {"spaces", ResSpaces },
+                    {"uuids", ResUUIDs },
                 }},
                 {"patterns",  new Dictionary<string, object>(){
-                    {"channels", new Dictionary<string, int>() },
-                    {"groups", new Dictionary<string, int>() },
+                    {"channels", PatChannels },
+                    {"groups", PatGroups },
                     {"users", PatUsers },
                     {"spaces", PatSpaces },
+                    {"uuids", PatUUIDs },
 
                 }},
-                {"meta", new Dictionary<string, object>()},
+                {"meta", Meta},
+                {"uuid", AuthorizedUUID}
             };
 
             Dictionary<string, object> objBody = new Dictionary<string, object>(){
@@ -96,7 +114,7 @@ namespace PubNubAPI
                         if(dataDictionary!=null){
                             dataDictionary.TryGetValue("token", out objData);
                             pnGrantTokenResult.Token = objData.ToString();
-                            this.PubNubInstance.TokenMgr.StoreToken(pnGrantTokenResult.Token);
+                            this.PubNubInstance.Token = pnGrantTokenResult.Token;
                         } else {
                             pnGrantTokenResult = null;
                             pnStatus = base.CreateErrorResponseFromException(new PubNubException("dataDictionary null"), requestState, PNStatusCategory.PNUnknownCategory);

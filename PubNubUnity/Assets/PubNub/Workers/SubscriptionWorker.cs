@@ -327,6 +327,30 @@ namespace PubNubAPI
                 
                 return;
             }
+
+            if(!string.IsNullOrEmpty(this.PubNubInstance.AuthorizedUUID) && !this.PubNubInstance.AuthorizedUUID.Equals(this.PubNubInstance.PNConfig.UUID)){
+                string responseMsg = "Authorized UUID doesn't match.";
+                #if (ENABLE_PUBNUB_LOGGING)
+                this.PubNubInstance.PNLog.WriteToLog(responseMsg, PNLoggingMethod.LevelWarning);
+                #endif
+                
+                PNStatus pnStatus = Helpers.CreatePNStatus(
+                            PNStatusCategory.PNAccessDeniedCategory,
+                            "",
+                            null,
+                            true,
+                            PNOperationType.PNSubscribeOperation,
+                            PubNubInstance.SubscriptionInstance.AllChannels,
+                            PubNubInstance.SubscriptionInstance.AllChannelGroups,
+                            null,
+                            this.PubNubInstance
+                        );
+
+                CreateEventArgsAndRaiseEvent(pnStatus);
+
+                return;
+
+            }
 			List<ChannelEntity> channelEntities = PubNubInstance.SubscriptionInstance.AllSubscribedChannelsAndChannelGroups;
 
             // Begin recursive subscribe

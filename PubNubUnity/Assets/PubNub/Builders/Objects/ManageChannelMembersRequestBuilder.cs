@@ -116,7 +116,6 @@ namespace PubNubAPI
                     this.QueryParams,
                     string.Join(",", sortFields)
                 );
-            request = this.PubNubInstance.TokenMgr.AppendTokenToURL( request.OriginalString, ManageMembersChannel, PNResourceType.PNChannelMetadata, OperationType);    
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }
 

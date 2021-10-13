@@ -80,7 +80,6 @@ namespace PubNubAPI
                     GetMembershipsFilter,
                    string.Join(",", sortFields)
                 );
-            request = this.PubNubInstance.TokenMgr.AppendTokenToURL( request.OriginalString, GetMembershipsUUIDMetadataID, PNResourceType.PNUUIDMetadata, OperationType);    
             base.RunWebRequest(qm, request, requestState, this.PubNubInstance.PNConfig.NonSubscribeTimeout, 0, this); 
         }
 

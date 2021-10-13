@@ -1288,6 +1288,14 @@ namespace PubNubAPI
             }
             return url;
         }
+
+        private static string TokenOrAuthKey(PubNubUnity pnInstance){
+            if(string.IsNullOrEmpty(pnInstance.Token)){
+                return pnInstance.PNConfig.AuthKey;
+            } else {
+                return pnInstance.Token;
+            }
+        }
         
         private static Uri BuildRestApiRequest<T> (List<string> urlComponents, PNOperationType type, string parameters, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
         {
@@ -1295,7 +1303,7 @@ namespace PubNubAPI
             bool ssl = pnInstance.PNConfig.Secure;
             string origin = pnInstance.PNConfig.Origin;
             int pubnubPresenceHeartbeatInSeconds = pnInstance.PNConfig.PresenceTimeout;
-            string authenticationKey = pnInstance.PNConfig.AuthKey;
+            string authenticationKey = TokenOrAuthKey(pnInstance);
             string pnsdkVersion = pnInstance.Version;
 
             StringBuilder url = new StringBuilder ();

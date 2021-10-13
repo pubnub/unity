@@ -2,7 +2,6 @@
 using UnityEngine.TestTools;
 using NUnit.Framework;
 using System.Collections;
-using PubNubAPI;
 using System.Collections.Generic;
 using System;
 using System.Text;
@@ -11,7 +10,7 @@ using System.Linq;
 
 namespace PubNubAPI.Tests
 {
-	public class PlayModeTests
+    public class PlayModeTests
 	{
 		#region "Files"
 		[UnityTest]
@@ -210,9 +209,6 @@ namespace PubNubAPI.Tests
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeForAsyncResponse);
 			Assert.True(testReturn, "test didn't return");
 			pubnub.CleanUp();
-            string channelMetadataID = "channelMetadataID7848";
-            string channelMetadataname = "channelMetadata name 7848";
-            string channelMetadatadesc = "channelMetadata desc 7848";
             bool tresult = false;
             string constString = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
 			string channelMetadata1Name = string.Format("{0}{1}", "ABC", constString);
@@ -229,8 +225,6 @@ namespace PubNubAPI.Tests
 			List<string> sortBy = new List<string>() { "updated:desc" };
 			List<string> sortByAsc = new List<string>() { "updated" };
 			string filter = string.Format("name == '%{0}'", constString);
-            
-            bool checkResult = false;
 			int limit = 3;
 			bool count = true;
 
@@ -3157,8 +3151,7 @@ namespace PubNubAPI.Tests
                 Debug.Log("ManageChannelMembers here ===??");
 				if (result.Data != null)
 				{
-                    int i = 0;
-					checkResult = true;
+                    checkResult = true;
 				}
 			});
 			yield return new WaitForSeconds(10);
@@ -3231,8 +3224,7 @@ namespace PubNubAPI.Tests
 				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				if (result.Data != null)
 				{
-                    int i = 0;
-					checkResult = true;
+                    checkResult = true;
 				}
 			});
 			yield return new WaitForSeconds(10);
@@ -4856,7 +4848,6 @@ namespace PubNubAPI.Tests
 			//History t1 - t2
 
 			int testCount = 2;
-			int testStart = 0;
 			pubnub.History().Channel(channel).Start(timetoken1).End(timetoken2).IncludeTimetoken(true).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				if (!status.Error)
@@ -5429,7 +5420,7 @@ namespace PubNubAPI.Tests
 						Debug.Log("(result.Channels != null) && (result.Channels.Count.Equals(1))" + ((result.Channels != null) && (result.Channels.Count.Equals(1))));
 						Dictionary<string, List<PNMessageResult>> fetchResult = result.Channels as Dictionary<string, List<PNMessageResult>>;
 						Debug.Log("fetchResult.Count:" + fetchResult.Count);
-						bool found1 = false, found2 = false;
+						bool found1 = false;
 						foreach (KeyValuePair<string, List<PNMessageResult>> kvp in fetchResult)
 						{
 							Debug.Log("Channel:" + kvp.Key);
@@ -5760,6 +5751,169 @@ namespace PubNubAPI.Tests
 			Assert.True(tresult, "MessageCounts test didnt return 2");
 			pubnub.CleanUp();
 		}
+
+		[UnityTest]
+		public IEnumerator TestGrantToken() {
+			PNConfiguration pnConfiguration = PlayModeCommon.SetPAMPNConfig(false);
+			PubNub pnPAM = new PubNub(pnConfiguration);
+
+			System.Random r = new System.Random ();
+			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next (10000);
+			int ran = r.Next (10000);
+			int ran2 = r.Next (10000);
+			string userid = "userid"  + ran;
+			string spaceid = "spaceid"  + ran;
+			string userid2 = "userid"  + ran2;
+			string spaceid2 = "spaceid"  + ran2;
+            Dictionary<string, object> meta = new Dictionary<string, object>();
+            meta.Add("score", 100);
+            meta.Add("color", "red");
+			
+			var resChannels = new Dictionary<string, int>(){
+				{userid, 31},
+				{userid2, 239},
+			};
+
+			var resGroups = new Dictionary<string, int>(){
+				{spaceid, 103},
+				{spaceid2, 231},
+			};
+			var resUUIDs = new Dictionary<string, int>(){
+				{pnConfiguration.UUID, 215},
+			};
+
+			// publish expect 403
+			bool testReturn = false;
+			pnPAM.Publish().Channel(userid).Message("test 403").Async((result, status) => {
+				testReturn = status.Error.Equals(true);
+				Assert.True(status.StatusCode.Equals(403), status.StatusCode.ToString());
+			});
+			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls2);
+			Assert.True(testReturn, "test didn't return or the response was not expected");
+			
+			string token = "";
+			pnPAM.GrantToken().SetParams(				
+				resChannels, 
+				resGroups,				
+				new Dictionary<string, int>(), 
+				new Dictionary<string, int>(), 
+				resUUIDs,
+				new Dictionary<string, int>(),
+				new Dictionary<string, int>(),				
+				new Dictionary<string, int>(), 
+				new Dictionary<string, int>(), 
+				new Dictionary<string, int>(),
+				3, 
+				pnConfiguration.UUID,
+				meta
+				)
+				.Async((result, status) => {
+				Debug.Log("GrantToken response:::" + result.Token);
+				token = result.Token;
+			});
+
+			yield return new WaitForSeconds (PlayModeCommon.WaitTimeBetweenCalls4);
+			pnPAM.SetToken(token);
+			
+			TokenContents p = pnPAM.ParseToken(token);
+			Debug.Log("TTL: " + p.TTL);
+            Debug.Log("Version: " + p.Version);
+            Debug.Log("Timestamp: " + p.Timestamp);
+            Debug.Log("Meta: " + p.Meta);
+            if(p.Meta != null){
+                Debug.Log("p.Meta count " + p.Meta.Count);
+                foreach(KeyValuePair<string, object> kvp in p.Meta){
+                    Debug.Log(string.Format("Meta: key {0}, val {1}", kvp.Key, kvp.Value));
+                    if((meta != null) && meta.ContainsKey(kvp.Key)){
+                        Assert.AreEqual(meta[kvp.Key], kvp.Value, "Meta mismatch");
+                    }
+                }
+            } else {
+                Debug.Log("p.Meta = null");
+            }
+
+            Debug.Log("AuthorizedUUID: " + p.AuthorizedUUID);
+			Assert.True(pnConfiguration.UUID.Equals(p.AuthorizedUUID));
+            Debug.Log("Signature: " + p.Signature);
+            foreach(KeyValuePair<string, TokenAuthValues> kvp in p.Patterns.Channels){
+                Debug.Log(string.Format("Patterns Channels: key {0}, val {1}", kvp.Key, kvp.Value));
+                StringBuilder sbLog = TokenHelpers.PrintTokenPermissions(kvp.Value);
+                Debug.Log(sbLog.ToString());
+            }
+            foreach(KeyValuePair<string, TokenAuthValues> kvp in p.Patterns.Groups){
+                Debug.Log(string.Format("Patterns Groups: key {0}, val {1}", kvp.Key, kvp.Value));
+                StringBuilder sbLog = TokenHelpers.PrintTokenPermissions(kvp.Value);
+                Debug.Log(sbLog.ToString());
+            }
+            foreach(KeyValuePair<string, TokenAuthValues> kvp in p.Patterns.Users){
+                Debug.Log(string.Format("Patterns Users: key {0}, val {1}", kvp.Key, kvp.Value));
+                StringBuilder sbLog = TokenHelpers.PrintTokenPermissions(kvp.Value);
+                Debug.Log(sbLog.ToString());
+            }
+            foreach(KeyValuePair<string, TokenAuthValues> kvp in p.Patterns.Spaces){
+                Debug.Log(string.Format("Patterns Spaces: key {0}, val {1}", kvp.Key, kvp.Value));
+                StringBuilder sbLog = TokenHelpers.PrintTokenPermissions(kvp.Value);
+                Debug.Log(sbLog.ToString());
+            }
+            foreach(KeyValuePair<string, TokenAuthValues> kvp in p.Patterns.UUIDs){
+                Debug.Log(string.Format("Patterns UUIDs: key {0}, val {1}", kvp.Key, kvp.Value));
+                StringBuilder sbLog = TokenHelpers.PrintTokenPermissions(kvp.Value);
+                Debug.Log(sbLog.ToString());
+            }
+            foreach(KeyValuePair<string, TokenAuthValues> kvp in p.Resources.Channels){
+                Debug.Log(string.Format("Resources Channels: key {0}, val {1}", kvp.Key, kvp.Value));
+                StringBuilder sbLog = TokenHelpers.PrintTokenPermissions(kvp.Value);
+				Debug.Log(sbLog.ToString());
+				if(kvp.Key.Equals(userid)){
+					Assert.AreEqual(31, TokenHelpers.PermissionsMapping(kvp.Value), "Permission mismatch");
+				}
+				if(kvp.Key.Equals(userid2)){
+					Assert.AreEqual(239, TokenHelpers.PermissionsMapping(kvp.Value), "Permission mismatch");
+				}                
+            }
+            foreach(KeyValuePair<string, TokenAuthValues> kvp in p.Resources.Groups){
+                Debug.Log(string.Format("Resources Groups: key {0}, val {1}", kvp.Key, kvp.Value));
+                StringBuilder sbLog = TokenHelpers.PrintTokenPermissions(kvp.Value);
+				Debug.Log(sbLog.ToString());
+				if(kvp.Key.Equals(spaceid)){
+					Assert.AreEqual(103, TokenHelpers.PermissionsMapping(kvp.Value), "Permission mismatch");
+				}
+				if(kvp.Key.Equals(spaceid2)){
+					Assert.AreEqual(231, TokenHelpers.PermissionsMapping(kvp.Value), "Permission mismatch");
+				}				
+            }
+            foreach(KeyValuePair<string, TokenAuthValues> kvp in p.Resources.Spaces){
+                Debug.Log(string.Format("Resources Spaces: key {0}, val {1}", kvp.Key, kvp.Value));
+                StringBuilder sbLog = TokenHelpers.PrintTokenPermissions(kvp.Value);
+                Debug.Log(sbLog.ToString());
+            }
+            foreach(KeyValuePair<string, TokenAuthValues> kvp in p.Resources.Users){
+                Debug.Log(string.Format("Resources Users: key {0}, val {1}", kvp.Key, kvp.Value));
+                StringBuilder sbLog = TokenHelpers.PrintTokenPermissions(kvp.Value);
+                Debug.Log(sbLog.ToString());
+            }
+            foreach(KeyValuePair<string, TokenAuthValues> kvp in p.Resources.UUIDs){
+                Debug.Log(string.Format("Resources UUIDs: key {0}, val {1}", kvp.Key, kvp.Value));
+                StringBuilder sbLog = TokenHelpers.PrintTokenPermissions(kvp.Value);	
+				Debug.Log(sbLog.ToString());
+				if(kvp.Key.Equals(pnConfiguration.UUID)){
+					Assert.AreEqual(215, TokenHelpers.PermissionsMapping(kvp.Value), "Permission mismatch");
+				}				
+            }
+				
+			// publish expect it to be successfull
+			testReturn = false;
+			pnPAM.Publish().Channel(userid).Message("test non 403").Async((result, status) => {
+				Assert.True(!result.Timetoken.Equals(0));
+				Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
+				testReturn = status.Error.Equals(false);
+			});
+			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls2);
+			Assert.True(testReturn, "test didn't return or the response was not expected");
+
+			pnPAM.CleanUp();			
+		}
+
 
 	}
 }
