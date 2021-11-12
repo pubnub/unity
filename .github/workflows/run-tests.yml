@@ -1,4 +1,4 @@
-name: Acceptance tests
+name: Run regular tests
 
 on:
   push:
@@ -22,5 +22,5 @@ jobs:
         uses: ./.github/.release/actions/actions/installers/unity
         with:
           unity-version: "2019.2.11f1"
-          installation-path: "${{ github.workspace }}/.github/.release/Unity_2019.2.11f1"
+          installation-path: "./.github/.release/Unity_2019.2.11f1"
           standalone-action: true
