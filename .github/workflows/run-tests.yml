@@ -22,5 +22,4 @@ jobs:
         uses: ./.github/.release/actions/actions/installers/unity
         with:
           unity-version: "2019.2.11f1"
-          installation-path: "./.github/.release/Unity_2019.2.11f1"
           standalone-action: true
