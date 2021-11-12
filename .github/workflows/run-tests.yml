@@ -18,7 +18,7 @@ jobs:
           ref: v1
           token: ${{ secrets.GH_TOKEN }}
           path: .github/.release/actions
-      - name: Publish to CocoaPods Trunk
+      - name: Install Unity engine
         uses: ./.github/.release/actions/actions/installers/unity
         with:
           unity-version: "2019.2.11f1"
