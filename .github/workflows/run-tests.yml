@@ -1,0 +1,26 @@
+name: Acceptance tests
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  acceptance-tests:
+    name: Run Acceptance tests
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Checkout actions
+        uses: actions/checkout@v2
+        with:
+          repository: pubnub/client-engineering-deployment-tools
+          ref: v1
+          token: ${{ secrets.GH_TOKEN }}
+          path: .github/.release/actions
+      - name: Publish to CocoaPods Trunk
+        uses: ./.github/.release/actions/actions/installers/unity
+        with:
+          unity-version: "2019.2.11f1"
+          installation-path: "${{ github.workspace }}/.github/.release/Unity_2019.2.11f1"
+          standalone-action: true
