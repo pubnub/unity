@@ -1,4 +1,5 @@
 name: Run regular tests
+concurrency: unity_run
 
 on:
   push:
@@ -8,6 +9,8 @@ jobs:
   acceptance-tests:
     name: Run Acceptance tests
     runs-on: macos-latest
+    env:
+      EVENT_NOKQUEUE: 1
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -30,11 +33,9 @@ jobs:
           license-username: ${{ secrets.UNITYCI_NEW_USER }}
           license-password: ${{ secrets.UNITYCI_NEW_PASS }}
           license-serial: ${{ secrets.UNITYCI_NEW_SERIAL }}
-      - name: Test play mode
-        uses: ./.github/.release/actions/actions/runners/unity
+      - name: Upload log file and test reports
+        uses: actions/upload-artifact@v2
         with:
-          project-path: ./PubNubUnity
-          test-mode: play
-          license-username: ${{ secrets.UNITYCI_NEW_USER }}
-          license-password: ${{ secrets.UNITYCI_NEW_PASS }}
-          license-serial: ${{ secrets.UNITYCI_NEW_SERIAL }}
+          name: unity-tests-result
+          path: .github/.release/UnityLogs/*
+          retention-days: 2
