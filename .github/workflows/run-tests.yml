@@ -33,3 +33,7 @@ jobs:
           license-username: ${{ secrets.UNITYCI_NEW_USER }}
           license-password: ${{ secrets.UNITYCI_NEW_PASS }}
           license-serial: ${{ secrets.UNITYCI_NEW_SERIAL }}
+      - name: List packages
+        shell: bash
+        run: |
+          ls -la ./PubNubUnity/Packages
