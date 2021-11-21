@@ -22,4 +22,19 @@ jobs:
         uses: ./.github/.release/actions/actions/installers/unity
         with:
           unity-version: "2019.2.11f1"
-          standalone-action: true
+      - name: Test edit mode
+        uses: ./.github/.release/actions/actions/runners/unity
+        with:
+          project-path: ./PubNubUnity
+          test-mode: edit
+          license-username: ${{ secrets.UNITYCI_NEW_USER }}
+          license-password: ${{ secrets.UNITYCI_NEW_PASS }}
+          license-serial: ${{ secrets.UNITYCI_NEW_SERIAL }}
+      - name: Test play mode
+        uses: ./.github/.release/actions/actions/runners/unity
+        with:
+          project-path: ./PubNubUnity
+          test-mode: play
+          license-username: ${{ secrets.UNITYCI_NEW_USER }}
+          license-password: ${{ secrets.UNITYCI_NEW_PASS }}
+          license-serial: ${{ secrets.UNITYCI_NEW_SERIAL }}
