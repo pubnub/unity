@@ -1,4 +1,4 @@
-name: Run regular tests
+name: Run tests
 concurrency: unity_run
 
 on:
@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  acceptance-tests:
-    name: Run Acceptance tests
+  tests:
+    name: Run tests
     runs-on: macos-latest
     env:
       EVENT_NOKQUEUE: 1
@@ -33,9 +33,3 @@ jobs:
           license-username: ${{ secrets.UNITYCI_NEW_USER }}
           license-password: ${{ secrets.UNITYCI_NEW_PASS }}
           license-serial: ${{ secrets.UNITYCI_NEW_SERIAL }}
-      - name: Upload log file and test reports
-        uses: actions/upload-artifact@v2
-        with:
-          name: unity-tests-result
-          path: .github/.release/UnityLogs/*
-          retention-days: 2
