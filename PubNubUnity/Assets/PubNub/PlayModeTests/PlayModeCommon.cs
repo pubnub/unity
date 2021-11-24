@@ -8,6 +8,7 @@ using System;
 namespace PubNubAPI.Tests
 {
 
+#if !UNITY_WSA && !UNITY_WSA_10_0
     class PubnubDemoObject
     {
         public double VersionID {get; set;} 
@@ -109,4 +110,5 @@ namespace PubNubAPI.Tests
 
         
     }
+#endif    
 }
