@@ -1,0 +1,58 @@
+version: 4.0.{build}
+branches:
+  only:
+  - CE-3823
+  - master
+  - develop
+image: Visual Studio 2017
+environment:
+  UNITYCI_SERIAL:
+    secure: Z3eyCIiPfolQ2Q+C5CY8bztDLIDBFo3I0l0p1oGadZs=
+  UNITYCI_USER_NAME:
+    secure: ipyQlnYQJCFiSkP/gaES7K/9XtlOfSsbEAFZKjecyjA=
+  UNITYCI_PASS:
+    secure: zRW4OYumwMTBXCFL1NcjiA==
+build_script:
+- ps: >-
+    $source = "https://download.unity3d.com/download_unity/b1a7e1fb4fa5/Windows64EditorInstaller/UnitySetup64.exe"
+
+    $destination = ".\UnitySetup64.exe"
+
+    Invoke-WebRequest $source -OutFile $destination
+
+    Start-Process -FilePath ".\UnitySetup64.exe" -Wait -ArgumentList ('/S', '/Q')
+
+    Write-Host "$(date) UnitySetup64-2019.2.12 Installed"-ForegroundColor green
+
+
+    DIR
+
+
+    $DOCDIR = "c:\users\appveyor\AppData\Roaming"
+
+    Write-Host $DOCDIR
+
+    $TARGETDIR = "$DOCDIR\Unity"
+
+
+    if(!(Test-Path -Path $TARGETDIR )){
+        New-Item -ItemType directory -Path $TARGETDIR
+    }
+
+
+    $TARGETDIR = "$DOCDIR\Unity\Certificates"
+
+    if(!(Test-Path -Path $TARGETDIR )){
+        New-Item -ItemType directory -Path $TARGETDIR
+    }
+
+
+    Write-Host "Copying .\TravisScripts\CACerts.pem $TARGETDIR"
+
+
+    copy ".\TravisScripts\CACerts.pem" "$TARGETDIR\CACerts.pem"
+
+
+    DIR c:\users\appveyor\AppData\Roaming\Unity\Certificates
+test_script:
+- ps: "$env:Path += \";C:\\Program Files\\Unity\\Editor\"\n\nStart-Process -FilePath \"Unity.exe\" -Wait -ArgumentList ('-quit', '-batchmode', '-silent-crashes', '-nographics', '-logFile', 'c:\\projects\\unity\\PubNubUnity\\unity.txt', '-username', \"$env:UNITYCI_USER_NAME\", '-password', \"$env:UNITYCI_PASS\", '-serial', \"$env:UNITYCI_SERIAL\")\n\n#DIR c:\\projects\\unity\\PubNubUnity\n#Get-Content c:\\projects\\unity\\PubNubUnity\\unity.txt\n\nWrite-Host \"Opening Unity for tests\"\n\nStart-Process -FilePath \"Unity.exe\" -Wait -ArgumentList ('-batchmode', '-logFile', 'c:\\projects\\unity\\PubNubUnity\\unity.txt', '-runEditorTests', '-projectPath', 'c:\\projects\\unity\\PubNubUnity', '-testPlatform', 'editmode', '-testResults', 'c:\\projects\\unity\\PubNubUnity\\results.xml', '-username', \"$env:UNITYCI_USER_NAME\", '-password', \"$env:UNITYCI_PASS\", '-serial', \"$env:UNITYCI_SERIAL\")\n\nWrite-Host \"Checking for test results\"\n\nDIR c:\\projects\\unity\\PubNubUnity\n\n#Get-Content c:\\projects\\unity\\PubNubUnity\\unity.txt\n#Get-Content c:\\projects\\unity\\PubNubUnity\\results.xml\n#Get-Content c:\\projects\\unity\\PubNubUnity\\results1.xml\n\n$wc = New-Object 'System.Net.WebClient'\n$wc.UploadFile(\"https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)\", \"C:\\projects\\unity\\PubNubUnity\\results.xml\")\n\n\nStart-Process -FilePath \"Unity.exe\" -Wait -ArgumentList ('-batchmode', '-logFile', 'c:\\projects\\unity\\PubNubUnity\\unity.txt', '-runEditorTests', '-projectPath', 'c:\\projects\\unity\\PubNubUnity', '-testPlatform', 'playmode', '-testResults', 'c:\\projects\\unity\\PubNubUnity\\results2.xml', '-username', \"$env:UNITYCI_USER_NAME\", '-password', \"$env:UNITYCI_PASS\", '-serial', \"$env:UNITYCI_SERIAL\")\n\nDIR c:\\projects\\unity\\PubNubUnity\n#Get-Content c:\\projects\\unity\\PubNubUnity\\unity.txt\n#Get-Content c:\\projects\\unity\\PubNubUnity\\results3.xml\n#Get-Content c:\\projects\\unity\\PubNubUnity\\results2.xml\n\n$wc2 = New-Object 'System.Net.WebClient'\n$wc2.UploadFile(\"https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)\", \"C:\\projects\\unity\\PubNubUnity\\results2.xml\")\n\nStart-Process -FilePath \"Unity.exe\" -Wait -ArgumentList ('-batchmode', '-quit', '-returnlicense')\n\n[xml]$results = Get-Content \"C:\\projects\\unity\\PubNubUnity\\results.xml\"\n$failure = $results.SelectSingleNode(\"//test-run[@result='Failed(Child)']\")\nif ($failure -ne $null){\n    Write-Host $failure.Attributes[\"failed\"].Value;\n} else {\n  Write-Host \"$failure null\"\n}\n\nif (($failure -ne $null) -and ($failure.Attributes[\"failed\"].Value -gt 0)) \n{ \n    \n    $host.SetShouldExit(1)\n    Write-Host \"Forcing build failure due to unit test failure(s)\"\n} else {\n  Write-Host \"$failure val = 0\"\n}\n\n[xml]$results2 = Get-Content \"C:\\projects\\unity\\PubNubUnity\\results2.xml\"\n\n$failure2 = $results2.SelectSingleNode(\"/test-run/test-suite[@result='Failed']\")\nif ($failure2 -ne $null){\n    Write-Host $failure2.Attributes[\"failed\"].Value;\n} else {\n  Write-Host \"$failure2 null\"\n}\n\nif (($failure2 -ne $null) -and ($failure2.Attributes[\"failed\"].Value -gt 0))\n{ \n    $host.SetShouldExit(1)\n    Write-Host \"Forcing build failure due to integration test failure(s)\"\n} else {\n  Write-Host \"$failure2 val = 0\"\n}"
