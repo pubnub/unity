@@ -1,4 +1,5 @@
 name: Automated product release
+concurrency: unity_run
 
 on:
   pull_request:
