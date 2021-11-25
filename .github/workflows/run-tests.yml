@@ -1,0 +1,28 @@
+name: Integration and Unit tests
+concurrency: unity_run
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  tests:
+    name: Run Unity tests
+    runs-on: windows-latest
+    env:
+      EVENT_NOKQUEUE: 1
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Checkout actions
+        uses: actions/checkout@v2
+        with:
+          repository: pubnub/client-engineering-deployment-tools
+          ref: v1
+          token: ${{ secrets.GH_TOKEN }}
+          path: .github/.release/actions
+      - name: Install Unity engine
+        uses: ./.github/.release/actions/actions/installers/unity
+        with:
+          unity-version: "2019.2.12f1"
+          unity-package-name: "Windows64EditorInstaller/UnitySetup64"
