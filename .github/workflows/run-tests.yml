@@ -26,3 +26,11 @@ jobs:
         with:
           unity-version: "2019.2.12f1"
           unity-package-name: "Windows64EditorInstaller/UnitySetup64"
+      - name: Unit tests
+        uses: ./.github/.release/actions/actions/runners/unity
+        with:
+          project-path: ./PubNubUnity
+          test-mode: edit
+          license-username: ${{ secrets.UNITYCI_NEW_USER }}
+          license-password: ${{ secrets.UNITYCI_NEW_PASS }}
+          license-serial: ${{ secrets.UNITYCI_NEW_SERIAL }}
