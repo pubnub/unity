@@ -1,4 +1,4 @@
-name: Integration and Unit tests
+name: Tests
 concurrency: unity_run
 
 on:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   tests:
-    name: Run Unity tests
+    name: Integration and Unit tests
     runs-on: macos-latest
     env:
       EVENT_NOKQUEUE: 1
