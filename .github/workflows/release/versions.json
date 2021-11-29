@@ -1,0 +1,24 @@
+{
+  ".pubnub.yml": [
+    { "pattern": "^version: (v?(\\.?\\d+){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)$", "cleared": false },
+    {
+      "pattern": "\/releases\/download\/(v?(\\.?\\d+){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)\/PubNub\\.unitypackage\\)\\.$",
+      "cleared": false
+    }
+  ],
+  "VERSION": [
+    { "pattern": "(v?(\\d+\\.?){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)", "cleared": true }
+  ],
+  "README.md": [
+    {
+      "pattern": "\/releases\/download\/(v?(\\.?\\d+){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)\/PubNub\\.unitypackage\\)\\.$",
+      "cleared": false
+    }
+  ],
+  "PubNubUnity/Assets/PubNub/PubNubUnity/PubNubUnityBase.cs": [
+    {
+      "pattern": "^\\s{2,}private const string build = \"(v?(\\.?\\d+){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)\";",
+      "cleared": true 
+    }
+  ]
+}
