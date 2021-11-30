@@ -1,6 +1,11 @@
 --- 
-version: v6.0.0
+version: v6.0.1
 changelog:
+  - date: 2021-11-30
+    version: v6.0.1
+    changes:
+      - type: improvement
+        text: "Remove BouncyCastle, JsonFx.Json, MarkerMetro and crypto DLLs. Features works without the need of these libs."
   -
     changes:
       -

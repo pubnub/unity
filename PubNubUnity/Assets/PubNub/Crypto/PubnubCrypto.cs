@@ -1,16 +1,6 @@
 ﻿using System;
 using System.Text;
-
-#if UNITY_WSA || UNITY_WSA_8_1 || UNITY_WSA_10_0
-using Org.BouncyCastle.Crypto.Digests;
-using Org.BouncyCastle.Crypto.Engines;
-using Org.BouncyCastle.Crypto.Modes;
-using Org.BouncyCastle.Crypto.Paddings;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Security;
-#endif
 using System.Security.Cryptography;
-
 using System.IO;
 
 namespace PubNubAPI
@@ -111,110 +101,7 @@ namespace PubNubAPI
 
             return true;
         }
-                
-        #if UNITY_WSA || UNITY_WSA_8_1 || UNITY_WSA_10_0
-        public override string ComputeHashRaw(string input)
-        {
-            Sha256Digest algorithm = new Sha256Digest();
-            Byte[] inputBytes = System.Text.Encoding.UTF8.GetBytes(input);
-            Byte[] bufferBytes = new byte[algorithm.GetDigestSize()];
-            algorithm.BlockUpdate(inputBytes, 0, inputBytes.Length);
-            algorithm.DoFinal(bufferBytes, 0);
-            return BitConverter.ToString(bufferBytes);
-        }
 
-        protected override string EncryptOrDecrypt(bool type, string plainStr)
-        {
-            //Demo params
-            string keyString = GetEncryptionKey();
-
-            string input = plainStr;
-            byte[] inputBytes;            
-            byte[] keyBytes = System.Text.Encoding.UTF8.GetBytes(keyString);
-
-            //Set up
-            AesEngine engine = new AesEngine();
-            CbcBlockCipher blockCipher = new CbcBlockCipher(engine); //CBC
-            PaddedBufferedBlockCipher cipher = new PaddedBufferedBlockCipher(blockCipher); //Default scheme is PKCS5/PKCS7
-            KeyParameter keyParam = new KeyParameter(keyBytes);            
-
-            if (type)
-            {
-                // Encrypt
-                byte[] iv = new byte[16];
-                if(UseRandomInitializationVector){
-                    // Generate IV here
-                    iv = new byte[16]; 
-                    SecureRandom sr = new SecureRandom();
-                    sr.NextBytes(iv);
-                    
-                    
-                } else {
-                    iv = System.Text.Encoding.ASCII.GetBytes("0123456789012345");
-                }
-                
-                ParametersWithIV keyParamWithIV = new ParametersWithIV(keyParam, iv, 0, iv.Length);
-                
-                input = EncodeNonAsciiCharacters(input);
-                inputBytes = Encoding.UTF8.GetBytes(input);
-                cipher.Init(true, keyParamWithIV);
-                byte[] outputBytes = new byte[cipher.GetOutputSize(inputBytes.Length)];
-                int length = cipher.ProcessBytes(inputBytes, outputBytes, 0);
-                cipher.DoFinal(outputBytes, length); //Do the final block
-
-                if(UseRandomInitializationVector){
-                    // Add IV
-                    byte[] message = new byte[outputBytes.Length + iv.Length];
-                    System.Buffer.BlockCopy(iv, 0, message, 0, iv.Length);
-                    System.Buffer.BlockCopy(outputBytes, 0, message, iv.Length, outputBytes.Length);
-                    outputBytes = new byte[message.Length];
-                    System.Buffer.BlockCopy(message, 0, outputBytes, 0, message.Length);
-                }
-
-                return Convert.ToBase64String(outputBytes);
-            }
-            else
-            {
-                try
-                {
-                    //Decrypt
-                    
-                    inputBytes = Convert.FromBase64CharArray(input.ToCharArray(), 0, input.Length);
-                    byte[] iv = new byte[16];
-
-                    if(UseRandomInitializationVector){
-                        // Extract IV here
-                        System.Buffer.BlockCopy(inputBytes, 0, iv, 0, 16);
-                        byte[] message = new byte[inputBytes.Length - 16];
-                        System.Buffer.BlockCopy(inputBytes, 16, message, 0, inputBytes.Length-16);
-                        inputBytes = new byte[message.Length];
-                        System.Buffer.BlockCopy(message, 0, inputBytes, 0, message.Length);
-
-                    } else {
-                        iv = System.Text.Encoding.ASCII.GetBytes("0123456789012345");
-                    }
-
-                    ParametersWithIV keyParamWithIV = new ParametersWithIV(keyParam, iv, 0, iv.Length);
-                    
-                    cipher.Init(false, keyParamWithIV);
-                    byte[] encryptedBytes = new byte[cipher.GetOutputSize(inputBytes.Length)];
-                    int encryptLength = cipher.ProcessBytes(inputBytes, encryptedBytes, 0);
-                    int numOfOutputBytes = cipher.DoFinal(encryptedBytes, encryptLength); //Do the final block
-                    int len = Array.IndexOf(encryptedBytes, (byte)0);
-                    len = (len == -1) ? encryptedBytes.Length : len;
-                    return Encoding.UTF8.GetString(encryptedBytes, 0, len);
-
-                }
-                catch (Exception ex)
-                {
-                    #if (ENABLE_PUBNUB_LOGGING)
-                    pnLog.WriteToLog(string.Format("Decrypt Error. {0}", ex.ToString()), PNLoggingMethod.LevelVerbose);
-                    #endif
-                    throw ex;
-                }
-            }
-        }
-        #else
         public override string ComputeHashRaw (string input)
         {
         #if (SILVERLIGHT || WINDOWS_PHONE || MONOTOUCH || __IOS__ || MONODROID || __ANDROID__ || UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_IOS || UNITY_ANDROID || UNITY_5 || UNITY_WEBGL)
@@ -299,9 +186,6 @@ namespace PubNubAPI
                 }
             }
         }
-
-        #endif
-
     }
     #endregion
 }

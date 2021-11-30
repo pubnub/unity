@@ -1,12 +1,13 @@
-﻿using UnityEngine;
+﻿#if !UNITY_WSA && !UNITY_WSA_10_0
+using UnityEngine;
 using UnityEngine.TestTools;
-using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Text;
 using System.IO;
 using System.Linq;
+using NUnit.Framework;
 
 namespace PubNubAPI.Tests
 {
@@ -5917,3 +5918,4 @@ namespace PubNubAPI.Tests
 
 	}
 }
+#endif
