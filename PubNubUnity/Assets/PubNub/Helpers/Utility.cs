@@ -25,6 +25,12 @@ namespace PubNubAPI
             }
         }
         #endif  
+
+        public static void CheckUUID(string uuid){
+            if (string.IsNullOrEmpty (uuid) || string.IsNullOrEmpty (uuid.Trim ())) {
+                throw new PubNubException(CommonText.UUIDMissing);
+            }
+        }
     
         public static bool CheckDictionaryForError(Dictionary<string, object> dictionary, string keyName){
             if(dictionary.ContainsKey(keyName) && dictionary[keyName].Equals(true)){

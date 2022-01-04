@@ -90,6 +90,7 @@ namespace PubNubAPI.Tests
             pnConfiguration.Origin = Origin;
             pnConfiguration.SubscribeKey = SubscribeKey;
             pnConfiguration.PublishKey = PublishKey;
+            pnConfiguration.UUID = PubNub.GenerateUUID();
             pnConfiguration.NonSubscribeTimeout = 30;
             if(withPAM){
                 pnConfiguration.SubscribeKey = SubscribeKeyPAM;
