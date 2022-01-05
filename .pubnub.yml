@@ -628,7 +628,7 @@ sdks:
         distributions:
           -
             distribution-type: package
-            distribution-repository: git release
+            distribution-repository: GitHub
             package-name: PubNub.unitypackage
             location: https://github.com/pubnub/unity/releases/download/v5.0.0/PubNub.unitypackage
             requires:
@@ -795,7 +795,7 @@ sdks:
         distributions:
           -
             distribution-type: package
-            distribution-repository: git release
+            distribution-repository: GitHub
             package-name: PubNub.unitypackage
             location: https://github.com/pubnub/unity/releases/download/v5.0.0/PubNub.unitypackage
             requires:
