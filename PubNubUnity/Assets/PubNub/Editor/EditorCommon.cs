@@ -50,6 +50,7 @@ namespace PubNubAPI.Tests
         public bool DeliveryStatus  { get; set; }
 
         public static PubNub InitPN(PNConfiguration pnConfig){
+            pnConfig.UUID = PubNub.GenerateUUID();
             return new PubNub(pnConfig);
         }
 
@@ -62,6 +63,7 @@ namespace PubNubAPI.Tests
             pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
             pnConfiguration.PresenceTimeout = 60;
             pnConfiguration.PresenceInterval= 30;
+            pnConfiguration.UUID = PubNub.GenerateUUID();
             return pnConfiguration;
         }
 

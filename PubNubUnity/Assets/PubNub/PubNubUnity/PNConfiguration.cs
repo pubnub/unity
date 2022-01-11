@@ -29,14 +29,11 @@ namespace PubNubAPI
         private string uuid;
         public string UUID { 
             get{
-                if (string.IsNullOrEmpty (uuid) || string.IsNullOrEmpty (uuid.Trim ())) {
-                    uuid = string.Format("pn-{0}", Guid.NewGuid ().ToString ());
-                }
-
                 return uuid;
             }
             set{
                 uuid = value;
+                Utility.CheckUUID(uuid);
                 if(UUIDChanged!=null){
                     UUIDChanged.Invoke(this, null);
                 }

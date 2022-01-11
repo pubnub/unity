@@ -72,6 +72,7 @@ namespace PubNubAPI
             this.jsonLibrary = jsonLibrary;
             this.gameObj = gameObjectRef;
             this.PNConfig = pnConfiguration;
+            Utility.CheckUUID(this.PNConfig.UUID);
             PubNubUnityInitializationAfterCleanup();
         }
 
@@ -100,6 +101,10 @@ namespace PubNubAPI
                     return null;
                 }
             }
+        }
+
+        public static string GenerateUUID(){
+            return string.Format("pn-{0}", Guid.NewGuid ().ToString ());
         }
 
         public void Reconnect(){

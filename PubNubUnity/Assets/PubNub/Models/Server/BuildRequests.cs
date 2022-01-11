@@ -1300,6 +1300,7 @@ namespace PubNubAPI
         private static Uri BuildRestApiRequest<T> (List<string> urlComponents, PNOperationType type, string parameters, PubNubUnity pnInstance, Dictionary<string, string> queryParams)
         {
             string uuid = pnInstance.PNConfig.UUID;
+            Utility.CheckUUID(pnInstance.PNConfig.UUID);
             bool ssl = pnInstance.PNConfig.Secure;
             string origin = pnInstance.PNConfig.Origin;
             int pubnubPresenceHeartbeatInSeconds = pnInstance.PNConfig.PresenceTimeout;
