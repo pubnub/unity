@@ -520,8 +520,7 @@ features:
     - PUSH-REMOVE-DEVICE
     - PUSH-TYPE-APNS
     - PUSH-TYPE-APNS2
-    - PUSH-TYPE-FCM
-    - PUSH-TYPE-MPNS    
+    - PUSH-TYPE-FCM    
   storage: 
     - STORAGE-REVERSE
     - STORAGE-INCLUDE-TIMETOKEN
