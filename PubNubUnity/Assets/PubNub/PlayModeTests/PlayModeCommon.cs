@@ -108,7 +108,6 @@ namespace PubNubAPI.Tests
             return pnConfiguration;
         }
 
-        
     }
 #endif    
 }
