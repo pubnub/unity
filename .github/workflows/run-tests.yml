@@ -24,7 +24,7 @@ jobs:
       - name: Install Unity engine
         uses: ./.github/.release/actions/actions/installers/unity
         with:
-          unity-version: "2020.3.3f1"
+          unity-version: "2019.2.11f1"
       - name: Unit tests
         uses: ./.github/.release/actions/actions/runners/unity
         with:
