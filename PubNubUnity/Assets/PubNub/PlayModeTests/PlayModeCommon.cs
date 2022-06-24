@@ -56,13 +56,13 @@ namespace PubNubAPI.Tests
 		public static bool SslOn = true;
 		public static bool CipherOn = false;
 		public static string Origin = "ps.pndsn.com";
-        public static string PublishKey = "pub-c-3ed95c83-12e6-4cda-9d69-c47ba2abb57e"; 
-        public static string SubscribeKey = "sub-c-26a73b0a-c3f2-11e9-8b24-569e8a5c3af3"; 
+        public static string PublishKey = "pub-c-7b22d447-dd68-41ad-903b-d07eb9169960"; 
+        public static string SubscribeKey = "sub-c-6e923054-b0f1-411d-ac71-0c59e384fe86"; 
         public static string SecretKey = "";
 
-        public static string PublishKeyPAM = "pub-c-cdea0ef1-c571-4b72-b43f-ff1dc8aa4c5d"; 
-        public static string SubscribeKeyPAM = "sub-c-4757f09c-c3f2-11e9-9d00-8a58a5558306"; 
-        public static string SecretKeyPAM = "sec-c-YTYxNzVjYzctNDY2MS00N2NmLTg2NjYtNGRlNWY1NjMxMDBm";
+        public static string PublishKeyPAM = "pub-c-b0a534df-1a8b-43cb-b62e-da6ce6e6ac37"; 
+        public static string SubscribeKeyPAM = "sub-c-e48eb113-5e23-47be-bdff-0a5cb5218986"; 
+        public static string SecretKeyPAM = "sec-c-ZjA0MzdiMzItYmM0Ni00ZGQyLTkwZDktNjFmNWY2MjMxN2Iy";
 
         public static string cg1 = "channelGroup1";
         public static string cg2 = "channelGroup2";
