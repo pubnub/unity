@@ -30,6 +30,12 @@ jobs:
   publish:
     name: Build package
     runs-on: macos-11
+    env:
+      PUB_KEY: ${{ secrets.PUB_KEY }}
+      SUB_KEY: ${{ secrets.SUB_KEY }}
+      PAM_PUB_KEY: ${{ secrets.PAM_PUB_KEY }}
+      PAM_SUB_KEY: ${{ secrets.PAM_SUB_KEY }}
+      PAM_SECRET_KEY: ${{ secrets.PAM_SECRET_KEY }}
     needs: check-release
     if: ${{ needs.check-release.outputs.release == 'true' }}
     steps:
@@ -48,7 +54,7 @@ jobs:
       - name: Install Unity engine
         uses: ./.github/.release/actions/actions/installers/unity
         with:
-          unity-version: "2019.2.11f1"
+          unity-version: "2020.3.22f1"
       - name: Build Unity package
         uses: ./.github/.release/actions/actions/services/unity
         with:
