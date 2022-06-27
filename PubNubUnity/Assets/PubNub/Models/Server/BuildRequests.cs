@@ -694,8 +694,7 @@ namespace PubNubAPI
             if (!string.IsNullOrEmpty(timetoken)) {
                 parameterBuilder.AppendFormat("?timetoken={0}&", timetoken);
             } else {
-                parameterBuilder.Append("?&");
-
+                parameterBuilder.Append("?");
             }
             parameterBuilder.AppendFormat("channelsTimetoken={0}", channelsTimetoken);
 
