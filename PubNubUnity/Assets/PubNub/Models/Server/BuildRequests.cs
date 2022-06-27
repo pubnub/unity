@@ -694,8 +694,12 @@ namespace PubNubAPI
         {
             StringBuilder parameterBuilder = new StringBuilder ();
 
-            parameterBuilder.AppendFormat ("?timetoken={0}", timetoken);
-            parameterBuilder.AppendFormat ("&channelsTimetoken={0}", channelsTimetoken);
+            if (!string.IsNullOrEmpty(timetoken)) {
+                parameterBuilder.AppendFormat("?timetoken={0}&", timetoken);
+            } else {
+                parameterBuilder.Append("?");
+            }
+            parameterBuilder.AppendFormat("channelsTimetoken={0}", channelsTimetoken);
 
             List<string> url = new List<string> ();
 

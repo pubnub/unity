@@ -106,13 +106,22 @@ namespace PubNubAPI.Tests
 
             Uri uri = BuildRequests.BuildMessageCountsRequest (channels, channelsTimetokenStr, timetoken, pnUnity, queryParams);
 
+            string expected = "";
             //https://ps.pndsn.com/v3/history/sub-key/demo/message-counts/test,test2?timetoken=15499825804610609&channelsTimetoken=15499825804610610,15499925804610615&auth=authKey&uuid=customuuid&pnsdk=PubNub-CSharp-UnityOSX%2F4.1.1 
-            string expected = string.Format ("http{0}://{1}/v3/history/sub-key/{2}/message-counts/{3}?timetoken={4}&channelsTimetoken={5}{6}&uuid={7}&pnsdk={8}{9}",
-                ssl?"s":"", pnConfiguration.Origin, EditorCommon.SubscribeKey, chStr, timetoken,
+            if (!string.IsNullOrEmpty(timetoken)) {
+                expected = string.Format("http{0}://{1}/v3/history/sub-key/{2}/message-counts/{3}?timetoken={4}&channelsTimetoken={5}{6}&uuid={7}&pnsdk={8}{9}",
+                ssl ? "s" : "", pnConfiguration.Origin, EditorCommon.SubscribeKey, chStr, timetoken,
                 channelsTimetokenStr, authKeyString,
                 uuid, Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNMessageCountsOperation, false, true),
-                queryParamString
-            );
+                queryParamString);
+            }
+            else {
+                expected = string.Format("http{0}://{1}/v3/history/sub-key/{2}/message-counts/{3}?channelsTimetoken={4}{5}&uuid={6}&pnsdk={7}{8}",
+                ssl ? "s" : "", pnConfiguration.Origin, EditorCommon.SubscribeKey, chStr, channelsTimetokenStr,
+                authKeyString,
+                uuid, Utility.EncodeUricomponent(pnUnity.Version, PNOperationType.PNMessageCountsOperation, false, true),
+                queryParamString);
+            }
             string received = uri.OriginalString;
             received.Trim().Equals(expected.Trim());
             EditorCommon.LogAndCompare (expected, received);   
