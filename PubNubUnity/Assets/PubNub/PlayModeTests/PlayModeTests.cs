@@ -397,46 +397,46 @@ namespace PubNubAPI.Tests
 			pubnub.CleanUp();
 		}
 
-		[UnityTest]
-		public IEnumerator TestGlobalHereNowWithoutUUID()
-		{
-			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
-			pnConfiguration.UUID = "UnityTestHereNowUUID";
-			PubNub pubnub = new PubNub(pnConfiguration);
-			System.Random r = new System.Random();
+		// [UnityTest]
+		// public IEnumerator TestGlobalHereNowWithoutUUID()
+		// {
+		// 	PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
+		// 	pnConfiguration.UUID = "UnityTestHereNowUUID";
+		// 	PubNub pubnub = new PubNub(pnConfiguration);
+		// 	System.Random r = new System.Random();
 
-			string hereNowChannel = "UnityTestHereNowChannel6" + r.Next(100);
-			string hereNowChannel2 = "UnityTestHereNowChannel7" + r.Next(100);
-			string hereNowChannel3 = "UnityTestHereNowChannel8" + r.Next(100);
+		// 	string hereNowChannel = "UnityTestHereNowChannel6" + r.Next(100);
+		// 	string hereNowChannel2 = "UnityTestHereNowChannel7" + r.Next(100);
+		// 	string hereNowChannel3 = "UnityTestHereNowChannel8" + r.Next(100);
 
-			string channelGroup = "channelGroup5" + r.Next(100);
-			List<string> channelList = new List<string>();
-			channelList.Add(hereNowChannel);
-			channelList.Add(hereNowChannel2);
-			List<string> channelList2 = new List<string>();
-			channelList2.Add(hereNowChannel3);
-			List<string> channelGroupList = new List<string>();
-			channelGroupList.Add(channelGroup);
-			pubnub.AddChannelsToChannelGroup().ChannelGroup(channelGroup).Channels(channelList).Async((result, status) => {
-				Debug.Log("in AddChannelsToChannelGroup");
-			});
-			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
+		// 	string channelGroup = "channelGroup5" + r.Next(100);
+		// 	List<string> channelList = new List<string>();
+		// 	channelList.Add(hereNowChannel);
+		// 	channelList.Add(hereNowChannel2);
+		// 	List<string> channelList2 = new List<string>();
+		// 	channelList2.Add(hereNowChannel3);
+		// 	List<string> channelGroupList = new List<string>();
+		// 	channelGroupList.Add(channelGroup);
+		// 	pubnub.AddChannelsToChannelGroup().ChannelGroup(channelGroup).Channels(channelList).Async((result, status) => {
+		// 		Debug.Log("in AddChannelsToChannelGroup");
+		// 	});
+		// 	yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
 
-			pubnub.Subscribe().Channels(channelList2).ChannelGroups(channelGroupList).Execute();
-			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
-			bool testReturn = false;
-			pubnub.HereNow().IncludeState(true).IncludeUUIDs(false).Async((result, status) => {
-				Debug.Log("status.Error:" + status.Error);
-				Assert.True(!status.Error);
-				channelList.AddRange(channelList2);
-				bool matchResult = MatchHereNowresult(pubnub, result, channelList, pnConfiguration.UUID, false, true, false, 1, false, null);
-				testReturn = !status.Error && matchResult;
-			});
+		// 	pubnub.Subscribe().Channels(channelList2).ChannelGroups(channelGroupList).Execute();
+		// 	yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
+		// 	bool testReturn = false;
+		// 	pubnub.HereNow().IncludeState(true).IncludeUUIDs(false).Async((result, status) => {
+		// 		Debug.Log("status.Error:" + status.Error);
+		// 		Assert.True(!status.Error);
+		// 		channelList.AddRange(channelList2);
+		// 		bool matchResult = MatchHereNowresult(pubnub, result, channelList, pnConfiguration.UUID, false, true, false, 1, false, null);
+		// 		testReturn = !status.Error && matchResult;
+		// 	});
 
-			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls3);
-			Assert.True(testReturn, "test didn't return");
-			pubnub.CleanUp();
-		}
+		// 	yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls3);
+		// 	Assert.True(testReturn, "test didn't return");
+		// 	pubnub.CleanUp();
+		// }
 
 		[UnityTest]
 		public IEnumerator TestHereNowWithUUIDWithState()
@@ -827,7 +827,7 @@ namespace PubNubAPI.Tests
 			pubnub2.CleanUp();
 		}
 
-		[UnityTest]
+		[UnityTest, Timeout(60000)]
 		public IEnumerator TestPublishLoadTest()
 		{
 			string publishChannel = "UnityTestPublishChannel";
@@ -854,7 +854,7 @@ namespace PubNubAPI.Tests
 				}
 			};
 			pubnub.Subscribe().Channels(channelList2).Execute();
-			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls1);
+			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
 			foreach (KeyValuePair<string, bool> kvp in payload)
 			{
 				pubnub.Publish().Channel(publishChannel).Message(kvp.Key).Async((result, status) => {
@@ -863,7 +863,7 @@ namespace PubNubAPI.Tests
 					Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				});
 			}
-			yield return new WaitForSeconds(5);
+			yield return new WaitForSeconds(6);
 			bool tresult = false;
 			foreach (KeyValuePair<string, bool> kvp in payload)
 			{

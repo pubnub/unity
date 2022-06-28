@@ -694,8 +694,12 @@ namespace PubNubAPI
         {
             StringBuilder parameterBuilder = new StringBuilder ();
 
-            parameterBuilder.AppendFormat ("?timetoken={0}", timetoken);
-            parameterBuilder.AppendFormat ("&channelsTimetoken={0}", channelsTimetoken);
+            if (!string.IsNullOrEmpty(timetoken)) {
+                parameterBuilder.AppendFormat("?timetoken={0}&", timetoken);
+            } else {
+                parameterBuilder.Append("?");
+            }
+            parameterBuilder.AppendFormat("channelsTimetoken={0}", channelsTimetoken);
 
             List<string> url = new List<string> ();
 
@@ -704,7 +708,7 @@ namespace PubNubAPI
             url.Add ("sub-key");
             url.Add (pnInstance.PNConfig.SubscribeKey);
             url.Add ("message-counts");
-            url.Add (Utility.EncodeUricomponent(string.Join(",", channels), PNOperationType.PNMessageCountsOperation, true, false));
+            url.Add (string.Join(",", channels));
 
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNMessageCountsOperation, parameterBuilder.ToString(), pnInstance, queryParams);
         }
@@ -747,7 +751,7 @@ namespace PubNubAPI
             url.Add ("sub-key");
             url.Add (pnInstance.PNConfig.SubscribeKey);
             url.Add ("channel");
-            url.Add (Utility.EncodeUricomponent(string.Join(",", channels), PNOperationType.PNFetchMessagesOperation, true, false));
+            url.Add (string.Join(",", channels));
             
             return BuildRestApiRequest<Uri> (url, PNOperationType.PNFetchMessagesOperation, parameterBuilder.ToString(), pnInstance, queryParams);
         }

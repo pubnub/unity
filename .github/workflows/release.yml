@@ -48,7 +48,7 @@ jobs:
       - name: Install Unity engine
         uses: ./.github/.release/actions/actions/installers/unity
         with:
-          unity-version: "2019.2.11f1"
+          unity-version: "2020.3.22f1"
       - name: Build Unity package
         uses: ./.github/.release/actions/actions/services/unity
         with:

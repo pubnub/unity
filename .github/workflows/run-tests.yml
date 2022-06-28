@@ -11,6 +11,11 @@ jobs:
     runs-on: macos-latest
     env:
       EVENT_NOKQUEUE: 1
+      PUB_KEY: ${{ secrets.PUB_KEY }}
+      SUB_KEY: ${{ secrets.SUB_KEY }}
+      PAM_PUB_KEY: ${{ secrets.PAM_PUB_KEY }}
+      PAM_SUB_KEY: ${{ secrets.PAM_SUB_KEY }}
+      PAM_SECRET_KEY: ${{ secrets.PAM_SECRET_KEY }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -24,7 +29,7 @@ jobs:
       - name: Install Unity engine
         uses: ./.github/.release/actions/actions/installers/unity
         with:
-          unity-version: "2019.2.11f1"
+          unity-version: "2020.3.22f1"
       - name: Unit tests
         uses: ./.github/.release/actions/actions/runners/unity
         with:
