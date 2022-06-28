@@ -827,7 +827,7 @@ namespace PubNubAPI.Tests
 			pubnub2.CleanUp();
 		}
 
-		[UnityTest]
+		[UnityTest, Timeout(60000)]
 		public IEnumerator TestPublishLoadTest()
 		{
 			string publishChannel = "UnityTestPublishChannel";
@@ -854,7 +854,7 @@ namespace PubNubAPI.Tests
 				}
 			};
 			pubnub.Subscribe().Channels(channelList2).Execute();
-			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls1);
+			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
 			foreach (KeyValuePair<string, bool> kvp in payload)
 			{
 				pubnub.Publish().Channel(publishChannel).Message(kvp.Key).Async((result, status) => {
@@ -863,7 +863,7 @@ namespace PubNubAPI.Tests
 					Assert.True(status.StatusCode.Equals(0), status.StatusCode.ToString());
 				});
 			}
-			yield return new WaitForSeconds(5);
+			yield return new WaitForSeconds(6);
 			bool tresult = false;
 			foreach (KeyValuePair<string, bool> kvp in payload)
 			{
