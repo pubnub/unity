@@ -6,11 +6,6 @@ changelog:
     changes:
       - type: bug
         text: "Fixes issue of encoding in FetchMessages and MessageCount apis."
-  - date: 2022-06-28
-    version: v6.0.2
-    changes:
-      - type: bug
-        text: "Fixes issue of encoding in FetchMessages and MessageCount apis."
   - date: 2021-11-30
     version: v6.0.1
     changes:
@@ -530,8 +525,7 @@ features:
     - PUSH-REMOVE-DEVICE
     - PUSH-TYPE-APNS
     - PUSH-TYPE-APNS2
-    - PUSH-TYPE-FCM
-    - PUSH-TYPE-MPNS    
+    - PUSH-TYPE-FCM   
   storage: 
     - STORAGE-REVERSE
     - STORAGE-INCLUDE-TIMETOKEN
