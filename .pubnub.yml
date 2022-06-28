@@ -1,6 +1,11 @@
 --- 
-version: v6.0.1
+version: v6.0.2
 changelog:
+  - date: 2022-06-28
+    version: v6.0.2
+    changes:
+      - type: bug
+        text: "Fixes issue of encoding in FetchMessages and MessageCount apis."
   - date: 2021-11-30
     version: v6.0.1
     changes:
