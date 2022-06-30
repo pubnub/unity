@@ -827,7 +827,8 @@ namespace PubNubAPI.Tests
 			pubnub2.CleanUp();
 		}
 
-		[UnityTest, Timeout(60000)]
+		// disabled temporarily
+		// [UnityTest, Timeout(60000)]
 		public IEnumerator TestPublishLoadTest()
 		{
 			string publishChannel = "UnityTestPublishChannel";
