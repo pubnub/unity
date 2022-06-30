@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 using UnityEngine.Networking;
 
 namespace PubNubAPI
@@ -34,7 +35,7 @@ namespace PubNubAPI
                 InstanceCount++;
             }
             this.queueManager = queueManager;
-            webRequest = this.queueManager.PubNubInstance.GameObjectRef.AddComponent<PNUnityWebRequest> ();
+            webRequest = this.queueManager.PubNubInstance.GameObjectRef.AddComponent<PNUnityWebRequest>();
             webRequest.WebRequestComplete += WebRequestCompleteHandler;
             this.webRequest.PNLog = this.queueManager.PubNubInstance.PNLog;
         }
@@ -75,16 +76,16 @@ namespace PubNubAPI
             CustomEventArgs cea = ea as CustomEventArgs;
             this.queueManager.RaiseRunningRequestEnd(cea.PubNubRequestState.OperationType);
             try {
-               
+
                 if ((cea != null) && (cea.CurrRequestType.Equals(PNCurrentRequestType.NonSubscribe))) {
                     PNStatus pnStatus;
-                    if(Helpers.TryCheckErrorTypeAndCallback<V>(cea, this.queueManager.PubNubInstance, out pnStatus)){
+                    if (Helpers.TryCheckErrorTypeAndCallback<V>(cea, this.queueManager.PubNubInstance, out pnStatus)) {
                         #if (ENABLE_PUBNUB_LOGGING)
                         this.queueManager.PubNubInstance.PNLog.WriteToLog("WebRequestCompleteHandler: Is Error true ", PNLoggingMethod.LevelInfo);
                         #endif
                         PNBuilder.RaiseError(pnStatus);
                     } else {
-                        ProcessNonSubscribeResult (cea.PubNubRequestState, cea.Message);
+                        ProcessNonSubscribeResult(cea.PubNubRequestState, cea.Message);
                         #if (ENABLE_PUBNUB_LOGGING)
                         this.queueManager.PubNubInstance.PNLog.WriteToLog ("NonSubscribeHandler: result", PNLoggingMethod.LevelInfo);
                         #endif
@@ -96,6 +97,8 @@ namespace PubNubAPI
                 this.queueManager.PubNubInstance.PNLog.WriteToLog(string.Format ("WebRequestCompleteHandler: Exception={0}", ex.ToString ()), PNLoggingMethod.LevelInfo);
                 #endif
                 PNBuilder.RaiseError(PNStatusCategory.PNUnknownCategory, ex, false, cea.PubNubRequestState);
+            } finally {
+                UnityEngine.Object.Destroy(sender as PNUnityWebRequest);
             }
 
         }
