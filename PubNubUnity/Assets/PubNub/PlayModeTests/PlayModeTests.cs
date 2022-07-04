@@ -826,13 +826,13 @@ namespace PubNubAPI.Tests
 			pubnub.CleanUp();
 			pubnub2.CleanUp();
 		}
-
+		
 		[UnityTest, Timeout(60000)]
 		public IEnumerator TestPublishLoadTest()
 		{
 			string publishChannel = "UnityTestPublishChannel";
 			Dictionary<string, bool> payload = new Dictionary<string, bool>();
-			for (int i = 0; i < 50; i++)
+			for (int i = 0; i < 20; i++)
 			{
 				payload.Add(string.Format("payload {0}", i), false);
 			}
