@@ -158,7 +158,7 @@ namespace PubNubAPI.Tests
 							{
 								foreach (PNMessageResult msg in kvp.Value)
 								{
-									testReturn = msg.MessageType.Equals(4) && msg.IssuingClientId.Equals(pubnub.PNConfig.UUID);
+									testReturn = msg.MessageType.Equals(4) && msg.IssuingClientId.Equals(pubnub.PNConfig.UserId);
 									if(testReturn){	
 										break;
 									}											
@@ -300,7 +300,7 @@ namespace PubNubAPI.Tests
 		public IEnumerator TestHereNowEmptyChannel()
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
-			pnConfiguration.UUID = "UnityTestHereNowUUID";
+			pnConfiguration.UserId = "UnityTestHereNowUUID";
 			PubNub pubnub = new PubNub(pnConfiguration);
 			string hereNowChannel = "EmptyChannel";
 			List<string> channelList = new List<string>() { hereNowChannel };
@@ -310,7 +310,7 @@ namespace PubNubAPI.Tests
 			{
 				Debug.Log("status.Error:" + status.Error);
 				Assert.True(!status.Error);
-				bool matchResult = MatchHereNowresult(pubnub, result, channelList, pnConfiguration.UUID, true, false, false, 0, false, null);// Check occupancy-> It should be empty
+				bool matchResult = MatchHereNowresult(pubnub, result, channelList, pnConfiguration.UserId, true, false, false, 0, false, null);// Check occupancy-> It should be empty
 				testReturn = !status.Error && matchResult;
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls4);
@@ -322,7 +322,7 @@ namespace PubNubAPI.Tests
 		public IEnumerator TestHereNowChannels()
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
-			pnConfiguration.UUID = "UnityTestHereNowUUID";
+			pnConfiguration.UserId = "UnityTestHereNowUUID";
 			PubNub pubnub = new PubNub(pnConfiguration);
 			string hereNowChannel = "UnityTestHereNowChannel1";
 			string hereNowChannel2 = "UnityTestHereNowChannel2";
@@ -336,7 +336,7 @@ namespace PubNubAPI.Tests
 			pubnub.HereNow().Channels(channelList).IncludeState(true).IncludeUUIDs(true).Async((result, status) => {
 				Debug.Log("status.Error:" + status.Error);
 				Assert.True(!status.Error);
-				bool matchResult = MatchHereNowresult(pubnub, result, channelList, pnConfiguration.UUID, false, false, true, 0, false, null);
+				bool matchResult = MatchHereNowresult(pubnub, result, channelList, pnConfiguration.UserId, false, false, true, 0, false, null);
 				testReturn = !status.Error && matchResult;
 			});
 
@@ -367,7 +367,7 @@ namespace PubNubAPI.Tests
 		public IEnumerator TestHereNowChannelGroups()
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
-			pnConfiguration.UUID = "UnityTestHereNowUUID";
+			pnConfiguration.UserId = "UnityTestHereNowUUID";
 			PubNub pubnub = new PubNub(pnConfiguration);
 			string hereNowChannel = "UnityTestHereNowChannel";
 			string hereNowChannel2 = "UnityTestHereNowChannel2";
@@ -388,7 +388,7 @@ namespace PubNubAPI.Tests
 			pubnub.HereNow().ChannelGroups(channelGroupList).IncludeState(true).IncludeUUIDs(true).Async((result, status) => {
 				Debug.Log("status.Error:" + status.Error);
 				Assert.True(!status.Error);
-				bool matchResult = MatchHereNowresult(pubnub, result, channelList, pnConfiguration.UUID, false, false, true, 0, false, null);
+				bool matchResult = MatchHereNowresult(pubnub, result, channelList, pnConfiguration.UserId, false, false, true, 0, false, null);
 				testReturn = !status.Error && matchResult;
 			});
 
@@ -442,7 +442,7 @@ namespace PubNubAPI.Tests
 		public IEnumerator TestHereNowWithUUIDWithState()
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
-			pnConfiguration.UUID = "UnityTestHereNowUUID";
+			pnConfiguration.UserId = "UnityTestHereNowUUID";
 			PubNub pubnub = new PubNub(pnConfiguration);
 			System.Random r = new System.Random();
 
@@ -475,7 +475,7 @@ namespace PubNubAPI.Tests
 				Debug.Log("status.Error:" + status.Error);
 				Assert.True(!status.Error);
 				channelList.AddRange(channelList2);
-				bool matchResult = MatchHereNowresult(pubnub, result, channelList, pnConfiguration.UUID, false, true, false, 1, true, state);
+				bool matchResult = MatchHereNowresult(pubnub, result, channelList, pnConfiguration.UserId, false, true, false, 1, true, state);
 				testReturn = !status.Error && matchResult;
 			});
 
@@ -698,7 +698,7 @@ namespace PubNubAPI.Tests
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random();
-			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next(100);
+			pnConfiguration.UserId = "UnityTestConnectedUUID_" + r.Next(100);
 			string channel = "UnityTestConnectedChannel";
 
 			PubNub pubnub = new PubNub(pnConfiguration);
@@ -710,7 +710,7 @@ namespace PubNubAPI.Tests
 				SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
 				if (mea.Status.Category.Equals(PNStatusCategory.PNConnectedCategory))
 				{
-					tresult = mea.Status.UUID.Contains(pnConfiguration.UUID);
+					tresult = mea.Status.UUID.Contains(pnConfiguration.UserId);
 					Assert.True(tresult);
 				}
 			};
@@ -726,7 +726,7 @@ namespace PubNubAPI.Tests
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random();
-			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next(100);
+			pnConfiguration.UserId = "UnityTestConnectedUUID_" + r.Next(100);
 			string channel = "UnityTestConnectedChannel";
 
 			PubNub pubnub = new PubNub(pnConfiguration);
@@ -764,12 +764,12 @@ namespace PubNubAPI.Tests
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random();
 			channel = channel + r.Next(100);
-			pnConfiguration.UUID = "UnityTestJoinUUID_" + r.Next(100);
+			pnConfiguration.UserId = "UnityTestJoinUUID_" + r.Next(100);
 			PubNub pubnub = new PubNub(pnConfiguration);
 
 			PNConfiguration pnConfiguration2 = PlayModeCommon.SetPNConfig(false);
 
-			pnConfiguration2.UUID = "UnityTestJoinUUID_" + r.Next(100);
+			pnConfiguration2.UserId = "UnityTestJoinUUID_" + r.Next(100);
 
 			List<string> channelList2 = new List<string>();
 			channelList2.Add(channel);
@@ -788,7 +788,7 @@ namespace PubNubAPI.Tests
 						Debug.Log(mea.PresenceEventResult.Timestamp);
 						Debug.Log(mea.PresenceEventResult.Occupancy);
 						Debug.Log(string.Join(",", mea.PresenceEventResult.Join.ToArray()));
-						bool containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UUID);
+						bool containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UserId);
 						Assert.True(containsUUID);
 						bool containsOccupancy = mea.PresenceEventResult.Occupancy > 0;
 						Assert.True(containsOccupancy);
@@ -801,7 +801,7 @@ namespace PubNubAPI.Tests
 					}
 					else if (mea.PresenceEventResult.Event.Equals("leave"))
 					{
-						bool containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UUID);
+						bool containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UserId);
 						Assert.True(containsUUID);
 						bool containsTimestamp = mea.PresenceEventResult.Timestamp > 0;
 						Assert.True(containsTimestamp);
@@ -838,7 +838,7 @@ namespace PubNubAPI.Tests
 			}
 
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
-			pnConfiguration.UUID = "UnityTestPublishLoadTestUUID";
+			pnConfiguration.UserId = "UnityTestPublishLoadTestUUID";
 			PubNub pubnub = new PubNub(pnConfiguration);
 			List<string> channelList2 = new List<string>();
 			channelList2.Add(publishChannel);
@@ -967,7 +967,7 @@ namespace PubNubAPI.Tests
 			Dictionary<string, object> payload = cpph.SetAPNSPayload(apns, apns2).SetMPNSPayload(mpns).SetFCMPayload(fcm).SetCommonPayload(commonPayload).BuildPayload();
 
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
-			pnConfiguration.UUID = "UnityTestPublishUUID";
+			pnConfiguration.UserId = "UnityTestPublishUUID";
 			PubNub pubnub = new PubNub(pnConfiguration);
 			List<string> channelList2 = new List<string>();
 			channelList2.Add(publishChannel);
@@ -1124,7 +1124,7 @@ namespace PubNubAPI.Tests
 		{
 			Debug.Log("PAYLOAD:" + payload);
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
-			pnConfiguration.UUID = "UnityTestPublishUUID";
+			pnConfiguration.UserId = "UnityTestPublishUUID";
 			PubNub pubnub = new PubNub(pnConfiguration);
 			List<string> channelList2 = new List<string>();
 			channelList2.Add(publishChannel);
@@ -1435,9 +1435,9 @@ namespace PubNubAPI.Tests
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random();
-			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next(100);
+			pnConfiguration.UserId = "UnityTestConnectedUUID_" + r.Next(100);
 			string channel = "UnityTestWithTTLChannel";
-			string payload = string.Format("payload {0}", pnConfiguration.UUID);
+			string payload = string.Format("payload {0}", pnConfiguration.UserId);
 
 			PubNub pubnub = new PubNub(pnConfiguration);
 			long timetoken = 0;
@@ -1476,7 +1476,7 @@ namespace PubNubAPI.Tests
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random();
-			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next(100);
+			pnConfiguration.UserId = "UnityTestConnectedUUID_" + r.Next(100);
 			string channel = "UnityTestSignalChannel_" + r.Next(100);
 			string payload = string.Format("Signal {0}", r.Next(100));
 
@@ -1512,14 +1512,14 @@ namespace PubNubAPI.Tests
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random();
-			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next(100);
+			pnConfiguration.UserId = "UnityTestConnectedUUID_" + r.Next(100);
 			int ran = r.Next(10000);
 			string channel = "message_actions_channel_" + ran;
 			string message = "message_actions_message_" + ran;
 
 			PubNub pubnubSub = new PubNub(pnConfiguration);
 			PNConfiguration pnConfiguration2 = PlayModeCommon.SetPNConfig(false);
-			pnConfiguration2.UUID = "UnityTestConnectedUUID_" + r.Next(100);
+			pnConfiguration2.UserId = "UnityTestConnectedUUID_" + r.Next(100);
 			PubNub pubnubMA = new PubNub(pnConfiguration2);
 			List<string> channelList2 = new List<string>();
 			channelList2.Add(channel);
@@ -1534,8 +1534,8 @@ namespace PubNubAPI.Tests
 				SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
 				if (mea.MessageActionsEventResult != null)
 				{
-					maAdd = mea.MessageActionsEventResult.Channel.Equals(channel) && mea.MessageActionsEventResult.Data.UUID.Equals(pnConfiguration2.UUID) && mea.MessageActionsEventResult.MessageActionsEvent.Equals(PNMessageActionsEvent.PNMessageActionsEventAdded);
-					maDelete = mea.MessageActionsEventResult.Channel.Equals(channel) && mea.MessageActionsEventResult.Data.UUID.Equals(pnConfiguration2.UUID) && mea.MessageActionsEventResult.MessageActionsEvent.Equals(PNMessageActionsEvent.PNMessageActionsEventRemoved);
+					maAdd = mea.MessageActionsEventResult.Channel.Equals(channel) && mea.MessageActionsEventResult.Data.UUID.Equals(pnConfiguration2.UserId) && mea.MessageActionsEventResult.MessageActionsEvent.Equals(PNMessageActionsEvent.PNMessageActionsEventAdded);
+					maDelete = mea.MessageActionsEventResult.Channel.Equals(channel) && mea.MessageActionsEventResult.Data.UUID.Equals(pnConfiguration2.UserId) && mea.MessageActionsEventResult.MessageActionsEvent.Equals(PNMessageActionsEvent.PNMessageActionsEventRemoved);
 					Debug.Log(mea.MessageActionsEventResult.Channel);
 					if (mea.MessageActionsEventResult.Data != null)
 					{
@@ -1544,7 +1544,7 @@ namespace PubNubAPI.Tests
 						Debug.Log(mea.MessageActionsEventResult.Data.ActionValue);
 						Debug.Log(mea.MessageActionsEventResult.Data.MessageTimetoken);
 						Debug.Log("UUID in Event" + mea.MessageActionsEventResult.Data.UUID);
-						Assert.True(mea.MessageActionsEventResult.Data.UUID.Equals(pnConfiguration2.UUID));
+						Assert.True(mea.MessageActionsEventResult.Data.UUID.Equals(pnConfiguration2.UserId));
 					}
 					Debug.Log(mea.MessageActionsEventResult.MessageActionsEvent);
 					Debug.Log(mea.MessageActionsEventResult.Subscription);
@@ -1589,7 +1589,7 @@ namespace PubNubAPI.Tests
 				Assert.True(maa.ActionType.Equals(result.ActionType));
 				Assert.True(maa.ActionValue.Equals(result.ActionValue));
 				Assert.True(messageTimetoken.Equals(result.MessageTimetoken));
-				Assert.True(pnConfiguration2.UUID.Equals(result.UUID));
+				Assert.True(pnConfiguration2.UserId.Equals(result.UUID));
 				testAMAReturn = true;
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls2);
@@ -1598,7 +1598,7 @@ namespace PubNubAPI.Tests
 			bool testGMAReturn = false;
 			// Get message actions CH only
 			pubnubMA.GetMessageActions().Channel(channel).Async((result, status) => {
-				testGMAReturn = MatchGMA(result, maa.ActionType, maa.ActionValue, messageActionTimetoken, messageTimetoken, pnConfiguration2.UUID);
+				testGMAReturn = MatchGMA(result, maa.ActionType, maa.ActionValue, messageActionTimetoken, messageTimetoken, pnConfiguration2.UserId);
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(testGMAReturn, "test didn't return");
@@ -1606,7 +1606,7 @@ namespace PubNubAPI.Tests
 			// Get message actions start
 			testGMAReturn = false;
 			pubnubMA.GetMessageActions().Channel(channel).Start(messageActionTimetoken + 1).Async((result, status) => {
-				testGMAReturn = MatchGMA(result, maa.ActionType, maa.ActionValue, messageActionTimetoken, messageTimetoken, pnConfiguration2.UUID);
+				testGMAReturn = MatchGMA(result, maa.ActionType, maa.ActionValue, messageActionTimetoken, messageTimetoken, pnConfiguration2.UserId);
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(testGMAReturn, "start test didn't return");
@@ -1614,7 +1614,7 @@ namespace PubNubAPI.Tests
 			// Get message actions start end
 			testGMAReturn = false;
 			pubnubMA.GetMessageActions().Channel(channel).Start(messageActionTimetoken + 1).End(messageActionTimetoken).Async((result, status) => {
-				testGMAReturn = MatchGMA(result, maa.ActionType, maa.ActionValue, messageActionTimetoken, messageTimetoken, pnConfiguration2.UUID);
+				testGMAReturn = MatchGMA(result, maa.ActionType, maa.ActionValue, messageActionTimetoken, messageTimetoken, pnConfiguration2.UserId);
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(testGMAReturn, "start end test didn't return");
@@ -1622,7 +1622,7 @@ namespace PubNubAPI.Tests
 			// Get message actions ch limit
 			testGMAReturn = false;
 			pubnubMA.GetMessageActions().Channel(channel).Limit(1).Async((result, status) => {
-				testGMAReturn = MatchGMA(result, maa.ActionType, maa.ActionValue, messageActionTimetoken, messageTimetoken, pnConfiguration2.UUID);
+				testGMAReturn = MatchGMA(result, maa.ActionType, maa.ActionValue, messageActionTimetoken, messageTimetoken, pnConfiguration2.UserId);
 			});
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls2);
 			Assert.True(testGMAReturn, "limit test didn't return");
@@ -1635,7 +1635,7 @@ namespace PubNubAPI.Tests
 				{
 					if (result.Channels != null)
 					{
-						tresultMA = MatchFetchMA(result, pnConfiguration2.UUID, messageActionTimetoken, message, channel, maa.ActionType, maa.ActionValue);
+						tresultMA = MatchFetchMA(result, pnConfiguration2.UserId, messageActionTimetoken, message, channel, maa.ActionType, maa.ActionValue);
 					}
 
 				}
@@ -1742,7 +1742,7 @@ namespace PubNubAPI.Tests
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			pnConfiguration.SecretKey = "";
 			System.Random r = new System.Random();
-			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next(10000);
+			pnConfiguration.UserId = "UnityTestConnectedUUID_" + r.Next(10000);
 			int ran = r.Next(10000);
 			int ran2 = r.Next(10000);
 			string uuidMetadataid = "uuidMetadataid" + ran;
@@ -2403,7 +2403,7 @@ namespace PubNubAPI.Tests
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random();
-			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next(100);
+			pnConfiguration.UserId = "UnityTestConnectedUUID_" + r.Next(100);
 			int ran = r.Next(10000);
 			string uuidMetadataID = "uuidMetadataid" + ran;
 			string name = string.Format("uuidMetadata name {0}", ran);
@@ -2715,7 +2715,7 @@ namespace PubNubAPI.Tests
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random();
-			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next(1000);
+			pnConfiguration.UserId = "UnityTestConnectedUUID_" + r.Next(1000);
 			int ran = r.Next(1000);
 			string id = "id" + ran;
 			string name = string.Format("name {0}", ran);
@@ -2863,7 +2863,7 @@ namespace PubNubAPI.Tests
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			string constString = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
-			pnConfiguration.UUID = string.Format("{0}{1}", "UnityTestConnectedUUID_", constString);
+			pnConfiguration.UserId = string.Format("{0}{1}", "UnityTestConnectedUUID_", constString);
 			string uuidMetadata1Name = string.Format("{0}{1}", "ABC", constString);
 			string uuidMetadata2Name = string.Format("{0}{1}", "PQR", constString);
 			string uuidMetadata3Name = string.Format("{0}{1}", "XYZ", constString);
@@ -2959,7 +2959,7 @@ namespace PubNubAPI.Tests
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			string constString = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
-			pnConfiguration.UUID = string.Format("{0}{1}", "UnityTestConnectedUUID_", constString);
+			pnConfiguration.UserId = string.Format("{0}{1}", "UnityTestConnectedUUID_", constString);
 			string channelMetadata1Name = string.Format("{0}{1}", "ABC", constString);
 			string channelMetadata2Name = string.Format("{0}{1}", "PQR", constString);
 			string channelMetadata3Name = string.Format("{0}{1}", "XYZ", constString);
@@ -3054,7 +3054,7 @@ namespace PubNubAPI.Tests
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			string constString = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
-			pnConfiguration.UUID = string.Format("{0}{1}", "UnityTestConnectedUUID_", constString);
+			pnConfiguration.UserId = string.Format("{0}{1}", "UnityTestConnectedUUID_", constString);
 			string uuidMetadata1Name = string.Format("{0}{1}", "ABC", constString);
 			string uuidMetadata2Name = string.Format("{0}{1}", "PQR", constString);
 			string uuidMetadata3Name = string.Format("{0}{1}", "XYZ", constString);
@@ -3246,7 +3246,7 @@ namespace PubNubAPI.Tests
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			string constString = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
-			pnConfiguration.UUID = string.Format("{0}{1}", "UnityTestConnectedUUID_", constString);
+			pnConfiguration.UserId = string.Format("{0}{1}", "UnityTestConnectedUUID_", constString);
 			string channelMetadata1Name = string.Format("{0}{1}", "ABC", constString);
 			string channelMetadata2Name = string.Format("{0}{1}", "PQR", constString);
 			string channelMetadata3Name = string.Format("{0}{1}", "XYZ", constString);
@@ -3446,7 +3446,7 @@ namespace PubNubAPI.Tests
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random();
-			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next(1000);
+			pnConfiguration.UserId = "UnityTestConnectedUUID_" + r.Next(1000);
 			int ran = r.Next(1000);
 			string id = "id" + ran;
 			string name = string.Format("name {0}", ran);
@@ -3579,7 +3579,7 @@ namespace PubNubAPI.Tests
 
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random();
-			pnConfiguration.UUID = "UnityTestCGUUID_" + r.Next(100);
+			pnConfiguration.UserId = "UnityTestCGUUID_" + r.Next(100);
 			string channel = "UnityTestWithCGChannel";
 			string channel2 = "UnityTestWithCGChannel2";
 			List<string> channelList = new List<string>();
@@ -3635,7 +3635,7 @@ namespace PubNubAPI.Tests
 			yield return new WaitForSeconds(PlayModeCommon.WaitTimeBetweenCalls);
 			Assert.True(tresult, "test didn't return2");
 			tresult = false;
-			string payload = string.Format("payload {0}", pnConfiguration.UUID);
+			string payload = string.Format("payload {0}", pnConfiguration.UserId);
 
 			pubnub.SubscribeCallback += (sender, e) => {
 				SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
@@ -3711,7 +3711,7 @@ namespace PubNubAPI.Tests
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random();
-			pnConfiguration.UUID = "UnityTestCGUUID_" + r.Next(100);
+			pnConfiguration.UserId = "UnityTestCGUUID_" + r.Next(100);
 			string channel = "UnityTestWithCGChannel";
 			string channel2 = "UnityTestWithCGChannel2";
 			List<string> channelList = new List<string>();
@@ -3840,7 +3840,7 @@ namespace PubNubAPI.Tests
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			PubNub pubnub = new PubNub(pnConfiguration);
 			System.Random r = new System.Random();
-			pnConfiguration.UUID = "UnityTestCGUUID_" + r.Next(100);
+			pnConfiguration.UserId = "UnityTestCGUUID_" + r.Next(100);
 			string channel = "UnityTestWithPushChannel";
 			string channel2 = "UnityTestWithPushChannel2";
 			List<string> listChannels = new List<string>();
@@ -4003,9 +4003,9 @@ namespace PubNubAPI.Tests
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random();
-			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next(100);
+			pnConfiguration.UserId = "UnityTestConnectedUUID_" + r.Next(100);
 			string channel = "UnityTestWithMetaNegChannel";
-			string payload = string.Format("payload {0}", pnConfiguration.UUID);
+			string payload = string.Format("payload {0}", pnConfiguration.UserId);
 
 			pnConfiguration.FilterExpression = "region=='east'";
 			PubNub pubnub = new PubNub(pnConfiguration);
@@ -4073,9 +4073,9 @@ namespace PubNubAPI.Tests
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random();
-			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next(100);
+			pnConfiguration.UserId = "UnityTestConnectedUUID_" + r.Next(100);
 			string channel = "UnityPublishAndHistoryChannel" + r.Next(100); ;
-			string payload = string.Format("payload {0}", pnConfiguration.UUID);
+			string payload = string.Format("payload {0}", pnConfiguration.UserId);
 
 			PubNub pubnub = new PubNub(pnConfiguration);
 
@@ -4220,9 +4220,9 @@ namespace PubNubAPI.Tests
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random();
-			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next(100);
+			pnConfiguration.UserId = "UnityTestConnectedUUID_" + r.Next(100);
 			string channel = "UnityTestNoStoreChannel";
-			string payload = string.Format("payload no store {0}", pnConfiguration.UUID);
+			string payload = string.Format("payload no store {0}", pnConfiguration.UserId);
 
 			PubNub pubnub = new PubNub(pnConfiguration);
 
@@ -4279,7 +4279,7 @@ namespace PubNubAPI.Tests
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random();
-			pnConfiguration.UUID = "UnityTestPublishKeyPresentUUID_" + r.Next(100);
+			pnConfiguration.UserId = "UnityTestPublishKeyPresentUUID_" + r.Next(100);
 			string channel = "UnityPublishKeyPresentChannel";
 
 			PubNub pubnub = new PubNub(pnConfiguration);
@@ -4306,9 +4306,9 @@ namespace PubNubAPI.Tests
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random();
-			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next(100);
+			pnConfiguration.UserId = "UnityTestConnectedUUID_" + r.Next(100);
 			string channel = "UnityTestFireChannel";
-			string payload = string.Format("payload no store {0}", pnConfiguration.UUID);
+			string payload = string.Format("payload no store {0}", pnConfiguration.UserId);
 
 			PubNub pubnub = new PubNub(pnConfiguration);
 
@@ -4365,11 +4365,11 @@ namespace PubNubAPI.Tests
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random();
-			pnConfiguration.UUID = "UnityWildSubscribeUUID_" + r.Next(100);
+			pnConfiguration.UserId = "UnityWildSubscribeUUID_" + r.Next(100);
 			string channel = "UnityWildSubscribeChannel." + r.Next(100);
 			string channel2 = "UnityWildSubscribeChannel." + r.Next(100);
 
-			string payload = string.Format("payload {0}", pnConfiguration.UUID);
+			string payload = string.Format("payload {0}", pnConfiguration.UserId);
 			PubNub pubnub = new PubNub(pnConfiguration);
 
 			List<string> channelList2 = new List<string>();
@@ -4381,7 +4381,7 @@ namespace PubNubAPI.Tests
 			bool tresult = false;
 
 			PNConfiguration pnConfiguration2 = PlayModeCommon.SetPNConfig(false);
-			pnConfiguration2.UUID = "UnityWildSubscribeUUID2_" + r.Next(100);
+			pnConfiguration2.UserId = "UnityWildSubscribeUUID2_" + r.Next(100);
 
 			pubnub.SubscribeCallback += (sender, e) => {
 				SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
@@ -4396,11 +4396,11 @@ namespace PubNubAPI.Tests
 								bool containsUUID = false;
 								if (whatToTest.Equals("join1"))
 								{
-									containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration.UUID);
+									containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration.UserId);
 								}
 								else
 								{
-									containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UUID);
+									containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UserId);
 								}
 								bool containsOccupancy = mea.PresenceEventResult.Occupancy > 0;
 								Assert.True(containsOccupancy);
@@ -4420,7 +4420,7 @@ namespace PubNubAPI.Tests
 						case "leave":
 							if (mea.PresenceEventResult.Event.Equals("leave"))
 							{
-								bool containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UUID);
+								bool containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UserId);
 								Assert.True(containsUUID);
 								Debug.Log(containsUUID);
 								bool containsTimestamp = mea.PresenceEventResult.Timestamp > 0;
@@ -4491,10 +4491,10 @@ namespace PubNubAPI.Tests
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random();
-			pnConfiguration.UUID = "UnityReconnectUUID" + r.Next(100);
+			pnConfiguration.UserId = "UnityReconnectUUID" + r.Next(100);
 			string channel = "UnityReconnectChannel." + r.Next(100);
 
-			string payload = string.Format("Reconnect payload {0}", pnConfiguration.UUID);
+			string payload = string.Format("Reconnect payload {0}", pnConfiguration.UserId);
 			PubNub pubnub = new PubNub(pnConfiguration);
 
 			List<string> channelList2 = new List<string>();
@@ -4503,7 +4503,7 @@ namespace PubNubAPI.Tests
 			string whatToTest = "join1";
 
 			PNConfiguration pnConfiguration2 = PlayModeCommon.SetPNConfig(false);
-			pnConfiguration2.UUID = "UnityReconnectUUID2" + r.Next(100);
+			pnConfiguration2.UserId = "UnityReconnectUUID2" + r.Next(100);
 
 			pubnub.SubscribeCallback += (sender, e) => {
 				SubscribeEventEventArgs mea = e as SubscribeEventEventArgs;
@@ -4525,11 +4525,11 @@ namespace PubNubAPI.Tests
 								bool containsUUID = false;
 								if (whatToTest.Equals("join1"))
 								{
-									containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration.UUID);
+									containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration.UserId);
 								}
 								else
 								{
-									containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UUID);
+									containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UserId);
 								}
 								bool containsOccupancy = mea.PresenceEventResult.Occupancy > 0;
 								Assert.True(containsOccupancy);
@@ -4552,7 +4552,7 @@ namespace PubNubAPI.Tests
 						{
 							if ((mea.PresenceEventResult != null) && (mea.PresenceEventResult.Event.Equals("leave")))
 							{
-								bool containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UUID);
+								bool containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UserId);
 								Assert.True(containsUUID);
 								Debug.Log(containsUUID);
 								bool containsTimestamp = mea.PresenceEventResult.Timestamp > 0;
@@ -4629,7 +4629,7 @@ namespace PubNubAPI.Tests
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random();
-			pnConfiguration.UUID = "UnityTestCGPresUUID_" + r.Next(100);
+			pnConfiguration.UserId = "UnityTestCGPresUUID_" + r.Next(100);
 			string channel = "UnityTestPresWithCGChannel";
 			string channel2 = "UnityTestPresWithCGChannel2";
 			List<string> channelList = new List<string>();
@@ -4644,7 +4644,7 @@ namespace PubNubAPI.Tests
 			bool tresult = false;
 
 			PNConfiguration pnConfiguration2 = PlayModeCommon.SetPNConfig(false);
-			pnConfiguration2.UUID = "UnityReconnectUUID2" + r.Next(100);
+			pnConfiguration2.UserId = "UnityReconnectUUID2" + r.Next(100);
 
 			pubnub.AddChannelsToChannelGroup().Channels(channelList).ChannelGroup(channelGroup).Async((result, status) => {
 				Debug.Log("in AddChannelsToChannelGroup " + status.Error);
@@ -4677,11 +4677,11 @@ namespace PubNubAPI.Tests
 								bool containsUUID = false;
 								if (whatToTest.Equals("join1"))
 								{
-									containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration.UUID);
+									containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration.UserId);
 								}
 								else
 								{
-									containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UUID);
+									containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UserId);
 								}
 								bool containsOccupancy = mea.PresenceEventResult.Occupancy > 0;
 								Assert.True(containsOccupancy);
@@ -4705,7 +4705,7 @@ namespace PubNubAPI.Tests
 						{
 							if (mea.PresenceEventResult.Event.Equals("leave"))
 							{
-								bool containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UUID);
+								bool containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UserId);
 								Assert.True(containsUUID);
 								Debug.Log(containsUUID);
 								bool containsTimestamp = mea.PresenceEventResult.Timestamp > 0;
@@ -4759,9 +4759,9 @@ namespace PubNubAPI.Tests
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random();
-			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next(100);
+			pnConfiguration.UserId = "UnityTestConnectedUUID_" + r.Next(100);
 			string channel = "UnityPublishAndHistoryChannel_" + r.Next(100);
-			string payload = string.Format("payload {0}", pnConfiguration.UUID);
+			string payload = string.Format("payload {0}", pnConfiguration.UserId);
 
 			PubNub pubnub = new PubNub(pnConfiguration);
 
@@ -4893,9 +4893,9 @@ namespace PubNubAPI.Tests
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random();
-			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next(100);
+			pnConfiguration.UserId = "UnityTestConnectedUUID_" + r.Next(100);
 			string channel = "UnityPublishAndHistoryChannel2_" + r.Next(100);
-			string payload = string.Format("payload {0}", pnConfiguration.UUID);
+			string payload = string.Format("payload {0}", pnConfiguration.UserId);
 
 			PubNub pubnub = new PubNub(pnConfiguration);
 
@@ -5033,10 +5033,10 @@ namespace PubNubAPI.Tests
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random();
-			pnConfiguration.UUID = "UnityTestFetchUUID_" + r.Next(100);
+			pnConfiguration.UserId = "UnityTestFetchUUID_" + r.Next(100);
 			string channel = "UnityPublishAndFetchChannel_" + r.Next(100);
 			string channel2 = "UnityPublishAndFetchChannel2_" + r.Next(100);
-			string payload = string.Format("payload {0}", pnConfiguration.UUID);
+			string payload = string.Format("payload {0}", pnConfiguration.UserId);
 
 			PubNub pubnub = new PubNub(pnConfiguration);
 
@@ -5181,10 +5181,10 @@ namespace PubNubAPI.Tests
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random();
-			pnConfiguration.UUID = "UnityTestFetchUUID_" + r.Next(100);
+			pnConfiguration.UserId = "UnityTestFetchUUID_" + r.Next(100);
 			string channel = "UnityPublishAndFetchChannel_" + r.Next(100);
 			string channel2 = "UnityPublishAndFetchChannel2_" + r.Next(100);
-			string payload = string.Format("payload {0}", pnConfiguration.UUID);
+			string payload = string.Format("payload {0}", pnConfiguration.UserId);
 
 			PubNub pubnub = new PubNub(pnConfiguration);
 
@@ -5328,10 +5328,10 @@ namespace PubNubAPI.Tests
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random();
-			pnConfiguration.UUID = "UnityTestFetchUUID_" + r.Next(100);
+			pnConfiguration.UserId = "UnityTestFetchUUID_" + r.Next(100);
 			string channel = "UnityPublishAndFetchChannel_" + r.Next(100);
 			string channel2 = "UnityPublishAndFetchChannel2_" + r.Next(100);
-			string payload = string.Format("payload {0}", pnConfiguration.UUID);
+			string payload = string.Format("payload {0}", pnConfiguration.UserId);
 
 			PubNub pubnub = new PubNub(pnConfiguration);
 
@@ -5462,11 +5462,11 @@ namespace PubNubAPI.Tests
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			System.Random r = new System.Random();
-			pnConfiguration.UUID = "UnityUnsubUUID_" + r.Next(100);
+			pnConfiguration.UserId = "UnityUnsubUUID_" + r.Next(100);
 			string channel = "UnityUnubscribeChannel." + r.Next(100);
 			string channel2 = "UnityUnubscribeChannel." + r.Next(100);
 
-			string payload = string.Format("payload {0}", pnConfiguration.UUID);
+			string payload = string.Format("payload {0}", pnConfiguration.UserId);
 
 			List<string> channelList2 = new List<string>();
 			channelList2.Add(channel);
@@ -5477,7 +5477,7 @@ namespace PubNubAPI.Tests
 			bool tresult = false;
 
 			PNConfiguration pnConfiguration2 = PlayModeCommon.SetPNConfig(false);
-			pnConfiguration2.UUID = "UnityUnsubUUID2_" + r.Next(100);
+			pnConfiguration2.UserId = "UnityUnsubUUID2_" + r.Next(100);
 			pnConfiguration2.SuppressLeaveEvents = true;
 			PubNub pubnub2 = new PubNub(pnConfiguration2);
 
@@ -5494,11 +5494,11 @@ namespace PubNubAPI.Tests
 								bool containsUUID = false;
 								if (whatToTest.Equals("join1"))
 								{
-									containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration.UUID);
+									containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration.UserId);
 								}
 								else
 								{
-									containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UUID);
+									containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UserId);
 								}
 								bool containsOccupancy = mea.PresenceEventResult.Occupancy > 0;
 								Assert.True(containsOccupancy);
@@ -5518,7 +5518,7 @@ namespace PubNubAPI.Tests
 						case "leave":
 							if (mea.PresenceEventResult.Event.Equals("leave"))
 							{
-								bool containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UUID);
+								bool containsUUID = mea.PresenceEventResult.UUID.Contains(pnConfiguration2.UserId);
 								Assert.True(containsUUID);
 								Debug.Log(containsUUID);
 								bool containsChannel = mea.PresenceEventResult.Channel.Equals(channel) || mea.PresenceEventResult.Channel.Equals(channel2);
@@ -5591,10 +5591,10 @@ namespace PubNubAPI.Tests
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
 			pnConfiguration.ConcurrentNonSubscribeWorkers = 5;
 			System.Random r = new System.Random();
-			pnConfiguration.UUID = "UnityTestMessageCountsUUID_" + r.Next(100);
+			pnConfiguration.UserId = "UnityTestMessageCountsUUID_" + r.Next(100);
 			string channel = "UnityPublishAndMessageCountsChannel_" + r.Next(100);
 			string channel2 = "UnityPublishAndMessageCountsChannel2_" + r.Next(100);
-			string payload = string.Format("payload {0}", pnConfiguration.UUID);
+			string payload = string.Format("payload {0}", pnConfiguration.UserId);
 
 			PubNub pubnub = new PubNub(pnConfiguration);
 
@@ -5759,7 +5759,7 @@ namespace PubNubAPI.Tests
 			PubNub pnPAM = new PubNub(pnConfiguration);
 
 			System.Random r = new System.Random ();
-			pnConfiguration.UUID = "UnityTestConnectedUUID_" + r.Next (10000);
+			pnConfiguration.UserId = "UnityTestConnectedUUID_" + r.Next (10000);
 			int ran = r.Next (10000);
 			int ran2 = r.Next (10000);
 			string userid = "userid"  + ran;
@@ -5780,7 +5780,7 @@ namespace PubNubAPI.Tests
 				{spaceid2, 231},
 			};
 			var resUUIDs = new Dictionary<string, int>(){
-				{pnConfiguration.UUID, 215},
+				{pnConfiguration.UserId, 215},
 			};
 
 			// publish expect 403
@@ -5805,7 +5805,7 @@ namespace PubNubAPI.Tests
 				new Dictionary<string, int>(), 
 				new Dictionary<string, int>(),
 				3, 
-				pnConfiguration.UUID,
+				pnConfiguration.UserId,
 				meta
 				)
 				.Async((result, status) => {
@@ -5834,7 +5834,7 @@ namespace PubNubAPI.Tests
             }
 
             Debug.Log("AuthorizedUUID: " + p.AuthorizedUUID);
-			Assert.True(pnConfiguration.UUID.Equals(p.AuthorizedUUID));
+			Assert.True(pnConfiguration.UserId.Equals(p.AuthorizedUUID));
             Debug.Log("Signature: " + p.Signature);
             foreach(KeyValuePair<string, TokenAuthValues> kvp in p.Patterns.Channels){
                 Debug.Log(string.Format("Patterns Channels: key {0}, val {1}", kvp.Key, kvp.Value));
@@ -5897,7 +5897,7 @@ namespace PubNubAPI.Tests
                 Debug.Log(string.Format("Resources UUIDs: key {0}, val {1}", kvp.Key, kvp.Value));
                 StringBuilder sbLog = TokenHelpers.PrintTokenPermissions(kvp.Value);	
 				Debug.Log(sbLog.ToString());
-				if(kvp.Key.Equals(pnConfiguration.UUID)){
+				if(kvp.Key.Equals(pnConfiguration.UserId)){
 					Assert.AreEqual(215, TokenHelpers.PermissionsMapping(kvp.Value), "Permission mismatch");
 				}				
             }

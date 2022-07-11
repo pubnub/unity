@@ -37,7 +37,7 @@ namespace PubNubAPI
         public PubNubUnity (PNConfiguration pnConfiguration, GameObject gameObjectRef, IJsonLibrary jsonLibrary): base(pnConfiguration, gameObjectRef, jsonLibrary)
         {
             #if (ENABLE_PUBNUB_LOGGING)
-            base.PNLog.WriteToLog (string.Format("Init with UUID {0}", base.PNConfig.UUID), PNLoggingMethod.LevelInfo);
+            base.PNLog.WriteToLog (string.Format("Init with UUID {0}", base.PNConfig.UserId), PNLoggingMethod.LevelInfo);
             #endif
             SubscriptionInstance = new Subscription (this);
             SubWorker = new SubscriptionWorker<SubscribeEnvelope>(this);             
@@ -45,9 +45,9 @@ namespace PubNubAPI
             // base.tokenManager = new TokenManager(this);
 
             //TODO test
-            PNConfig.UUIDChanged += (sender, e) =>{
+            PNConfig.UserIdChanged += (sender, e) =>{
                 if(SubWorker != null){
-                    SubWorker.UUIDChanged = true;
+                    SubWorker.UserIdChanged = true;
                     SubWorker.BounceRequest();
                 }
             };
