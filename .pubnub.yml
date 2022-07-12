@@ -1,6 +1,15 @@
 --- 
-version: v6.0.2
+version: v6.0.3
 changelog:
+  - date: 2022-07-12
+    version: v6.0.3
+    changes:
+      - type: bug
+        text: "Fixes continuous allocation of components per request."
+      - type: improvement
+        text: "reduce the load of `TestPublishLoadTest` to stop derailing the pipeline"
+      - type: improvement
+        text: "Disable TestPublishLoadTest temporarily"
   - date: 2022-06-28
     version: v6.0.2
     changes:
@@ -634,7 +643,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v5.0.0/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v6.0.3/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
