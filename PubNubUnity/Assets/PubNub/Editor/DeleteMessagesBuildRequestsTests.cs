@@ -127,7 +127,7 @@ namespace PubNubAPI.Tests
             pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
             pnConfiguration.PresenceTimeout = 60;
             pnConfiguration.PresenceInterval= 30;
-            pnConfiguration.UUID = "DeleteMessagesTestUUID";
+            pnConfiguration.UserId = "DeleteMessagesTestUUID";
             pnConfiguration.AuthKey = authKey;
 
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
@@ -172,7 +172,7 @@ namespace PubNubAPI.Tests
                 UnityEngine.Debug.Log(string.Format("key:{0}, value:{1}",kv[0], kv[1]));
                 switch (kv[0]){
                 case "uuid":
-                Assert.AreEqual(pnConfiguration.UUID,kv[1]);
+                Assert.AreEqual(pnConfiguration.UserId,kv[1]);
                 break;
                 case "timestamp":
                 timestamp = kv[1];
@@ -190,7 +190,7 @@ namespace PubNubAPI.Tests
             }
             string uriParamStringFormatted = string.Format(
                 uriParamString, 
-                pnConfiguration.UUID, 
+                pnConfiguration.UserId, 
                 startTimeString, 
                 endTimeString, 
                 timestamp, 

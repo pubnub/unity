@@ -43,7 +43,7 @@ namespace PubNubAPI
                         UserState, 
                         false,
                         uuid, 
-                        this.PubNubInstance.PNConfig.UUID,
+                        this.PubNubInstance.PNConfig.UserId,
                         out ChannelEntities
                     )) {
                         base.Async(this);
@@ -74,7 +74,7 @@ namespace PubNubAPI
             }
 
             if (string.IsNullOrEmpty (uuid)) {
-                uuid = this.PubNubInstance.PNConfig.UUID;
+                uuid = this.PubNubInstance.PNConfig.UserId;
             }
             Uri request = BuildRequests.BuildSetStateRequest(
                 channels,

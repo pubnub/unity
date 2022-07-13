@@ -13,7 +13,7 @@ namespace PubNubAPI.Tests
         public void TestPNinGenerateGuid ()
         {
             PNConfiguration pnConfig = new PNConfiguration();
-            Assert.IsTrue(pnConfig.UUID.Contains("pn-"));
+            Assert.IsTrue(pnConfig.UserId.Contains("pn-"));
         }
        #endif
     }

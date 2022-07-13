@@ -129,7 +129,7 @@ namespace PubNubAPI
                 return;
             }
 
-            if(!string.IsNullOrEmpty(this.PubNubInstance.AuthorizedUUID) && !this.PubNubInstance.AuthorizedUUID.Equals(this.PubNubInstance.PNConfig.UUID)){
+            if(!string.IsNullOrEmpty(this.PubNubInstance.AuthorizedUUID) && !this.PubNubInstance.AuthorizedUUID.Equals(this.PubNubInstance.PNConfig.UserId)){
                 string responseMsg = "Authorized UUID doesn't match.";
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PubNubInstance.PNLog.WriteToLog(string.Format("{0} {1}", responseMsg, OperationType.ToString()), PNLoggingMethod.LevelWarning);

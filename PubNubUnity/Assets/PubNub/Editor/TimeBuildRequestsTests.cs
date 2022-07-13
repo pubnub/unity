@@ -51,7 +51,7 @@ namespace PubNubAPI.Tests
             pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
             pnConfiguration.PresenceTimeout = 60;
             pnConfiguration.PresenceInterval= 30;
-            pnConfiguration.UUID = uuid;
+            pnConfiguration.UserId = uuid;
 
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
 

@@ -495,7 +495,7 @@ namespace PubNubAPI.Tests
             pnConfiguration.PresenceTimeout = 60;
             pnConfiguration.PresenceInterval= 30;
             pnConfiguration.AuthKey = authKey;
-            pnConfiguration.UUID = uuid;
+            pnConfiguration.UserId = uuid;
 
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);
 
