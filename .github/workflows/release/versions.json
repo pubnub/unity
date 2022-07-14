@@ -2,7 +2,7 @@
   ".pubnub.yml": [
     { "pattern": "^version: (v?(\\.?\\d+){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)$", "cleared": false },
     {
-      "pattern": "\/releases\/download\/(v?(\\.?\\d+){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)\/PubNub\\.unitypackage\\)\\.$",
+      "pattern": "\/releases\/download\/(v?(\\.?\\d+){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)\/PubNub\\.unitypackage$",
       "cleared": false
     }
   ],
