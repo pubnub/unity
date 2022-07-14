@@ -51,8 +51,14 @@ namespace PubNubAPI
         public string Token{
             internal get; set;
         }
-        internal string AuthorizedUUID{
+        internal string AuthorizedUserId{
             get; set;
+        }
+
+        [Obsolete("Deprecated - use AuthorizedUserId instead")]
+        internal string AuthorizedUUID {
+            get => AuthorizedUserId;
+            set => AuthorizedUserId = value;
         }
         // internal TokenManager tokenManager;
         public PNLatencyManager Latency{
