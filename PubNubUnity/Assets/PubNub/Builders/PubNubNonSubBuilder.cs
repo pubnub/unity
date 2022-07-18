@@ -130,7 +130,7 @@ namespace PubNubAPI
             }
 
             if(!string.IsNullOrEmpty(this.PubNubInstance.AuthorizedUserId) && !this.PubNubInstance.AuthorizedUserId.Equals(this.PubNubInstance.PNConfig.UserId)){
-                string responseMsg = "Authorized UUID doesn't match.";
+                string responseMsg = "Authorized User ID doesn't match.";
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PubNubInstance.PNLog.WriteToLog(string.Format("{0} {1}", responseMsg, OperationType.ToString()), PNLoggingMethod.LevelWarning);
                 #endif
