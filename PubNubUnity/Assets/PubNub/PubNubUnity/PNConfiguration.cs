@@ -5,7 +5,10 @@ namespace PubNubAPI
     public class PNConfiguration
     {
         [Obsolete("Use UserIdChanged instead")]
-        public event EventHandler<EventArgs> UUIDChanged;
+        public event EventHandler<EventArgs> UUIDChanged {
+            add => UserIdChanged += value;
+            remove => UserIdChanged -= value;
+        }
         public event EventHandler<EventArgs> UserIdChanged;
         public event EventHandler<EventArgs> FilterExpressionChanged; 
         public PNConfiguration ()
@@ -39,7 +42,6 @@ namespace PubNubAPI
             }
             set{
                 userId = value;
-                UUIDChanged?.Invoke(this, null);
                 UserIdChanged?.Invoke(this, null);
             }
         }
