@@ -31,6 +31,8 @@ ExportedObj/
 *.tmp
 *.booproj
 */.vs/
+*.vscode*
+*.idea*
 *.pdb
 
 # Unity3D generated meta files
