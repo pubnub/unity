@@ -8,6 +8,11 @@
 */[Bb]uild/
 */[Bb]uilds/
 */UWP/
+*/SwitchIL2CPPCache
+*/SwitchIL2CPPStats
+/PubNubUnity/Library/
+/PubNubUnity/Assets/Plugins*
+/PubNubUnity/Assets/ThirdParty*
 
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
@@ -27,20 +32,6 @@ ExportedObj/
 *.booproj
 */.vs/
 *.pdb
-/PubNubUnity/Library/metadata/*
-/PubNubUnity/Library/PackageCache/*.meta
-/PubNubUnity/Library/ShaderCache/*
-/PubNubUnity/Library/*.log
-/PubNubUnity/Library/ScriptAssemblies/*.meta
-/PubNubUnity/Logs/*
-/PubNubUnity/Library/*.asset
-/PubNubUnity/Library/*.txt
-/PubNubUnity/Library/*.prefs
-/PubNubUnity/Library/*.dwlt
-/PubNubUnity/Library/*.db
-/PubNubUnity/Assets/*.meta
-/PubNubUnity/Library/*.meta
-/PubNubUnity/Packages/*.meta
 
 # Unity3D generated meta files
 *.pidb.meta
