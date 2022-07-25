@@ -69,7 +69,7 @@ namespace PubNubAPI.Tests
         public static string ch1 = "channel1";
         public static string ch2 = "channel2"; 
 
-        public static int WaitTimeForAsyncResponse = 2;       
+        public static int WaitTimeForAsyncResponse = 3;       
         public static int WaitTimeBetweenCalls1 = 1;  
         public static int WaitTimeBetweenCalls = 3;   
         public static int WaitTimeBetweenCalls2 = 7;  
