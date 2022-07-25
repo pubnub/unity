@@ -832,7 +832,7 @@ namespace PubNubAPI.Tests
 		{
 			string publishChannel = "UnityTestPublishChannel";
 			Dictionary<string, bool> payload = new Dictionary<string, bool>();
-			for (int i = 0; i < 20; i++)
+			for (int i = 0; i < 5; i++)
 			{
 				payload.Add(string.Format("payload {0}", i), false);
 			}
