@@ -296,7 +296,7 @@ namespace PubNubAPI.Tests
 		#endregion
 
 		#region "HereNow"
-		[UnityTest]
+		[UnityTest, Timeout(20000)]
 		public IEnumerator TestHereNowEmptyChannel()
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
@@ -438,7 +438,7 @@ namespace PubNubAPI.Tests
 		// 	pubnub.CleanUp();
 		// }
 
-		[UnityTest]
+		[UnityTest, Timeout(20000)]
 		public IEnumerator TestHereNowWithUUIDWithState()
 		{
 			PNConfiguration pnConfiguration = PlayModeCommon.SetPNConfig(false);
@@ -832,7 +832,7 @@ namespace PubNubAPI.Tests
 		{
 			string publishChannel = "UnityTestPublishChannel";
 			Dictionary<string, bool> payload = new Dictionary<string, bool>();
-			for (int i = 0; i < 20; i++)
+			for (int i = 0; i < 5; i++)
 			{
 				payload.Add(string.Format("payload {0}", i), false);
 			}
