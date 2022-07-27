@@ -1,11 +1,6 @@
 --- 
-version: v6.0.4
+version: v6.0.3
 changelog:
-  - date: 2022-07-21
-    version: v6.0.4
-    changes:
-      - type: improvement
-        text: "UUID has been marked as deprecated, and it's being renamed to UserId. For now, both variants will work, but UUID will be gradually phased out in favor of UserId."
   - date: 2022-07-12
     version: v6.0.3
     changes:
