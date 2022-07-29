@@ -4,7 +4,12 @@ namespace PubNubAPI
 {
     public class PNConfiguration
     {
-        public event EventHandler<EventArgs> UUIDChanged; 
+        [Obsolete("Use UserIdChanged instead")]
+        public event EventHandler<EventArgs> UUIDChanged {
+            add => UserIdChanged += value;
+            remove => UserIdChanged -= value;
+        }
+        public event EventHandler<EventArgs> UserIdChanged;
         public event EventHandler<EventArgs> FilterExpressionChanged; 
         public PNConfiguration ()
         {
@@ -26,21 +31,26 @@ namespace PubNubAPI
         public string PublishKey {get; set;}
         public string SecretKey {get; set;}
         public string CipherKey {get; set;}
-        private string uuid;
-        public string UUID { 
+        private string userId;
+        public string UserId { 
             get{
-                if (string.IsNullOrEmpty (uuid) || string.IsNullOrEmpty (uuid.Trim ())) {
-                    uuid = string.Format("pn-{0}", Guid.NewGuid ().ToString ());
+                if (string.IsNullOrEmpty (userId) || string.IsNullOrEmpty (userId.Trim ())) {
+                    userId = string.Format("pn-{0}", Guid.NewGuid ().ToString ());
                 }
 
-                return uuid;
+                return userId;
             }
             set{
-                uuid = value;
-                if(UUIDChanged!=null){
-                    UUIDChanged.Invoke(this, null);
-                }
+                userId = value;
+                UserIdChanged?.Invoke(this, null);
             }
+        }
+
+        
+        [Obsolete("Use the UserId parameter instead")]
+        public string UUID {
+            get => UserId;
+            set => UserId = value;
         }
 
         public PNLogVerbosity LogVerbosity { get; set;}

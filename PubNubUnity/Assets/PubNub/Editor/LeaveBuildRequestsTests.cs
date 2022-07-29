@@ -222,7 +222,7 @@ namespace PubNubAPI.Tests
             pnConfiguration.LogVerbosity = PNLogVerbosity.BODY; 
 
             pnConfiguration.AuthKey = authKey;
-            pnConfiguration.UUID = uuid;
+            pnConfiguration.UserId = uuid;
 
         
             PubNubUnity pnUnity = new PubNubUnity(pnConfiguration, null, null);

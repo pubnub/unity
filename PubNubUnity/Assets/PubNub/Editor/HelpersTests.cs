@@ -41,7 +41,7 @@ namespace PubNubAPI.Tests
             Assert.True(pnStatus.Origin.Equals(pnConfiguration.Origin));
             Assert.True(pnStatus.StatusCode.Equals(0));
             Assert.True(pnStatus.TlsEnabled.Equals(pnConfiguration.Secure));
-            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UUID));
+            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UserId));
             Assert.True(EditorCommon.MatchChannelsEntities(channelEntities1, pnStatus.AffectedChannelGroups));
             Assert.True(EditorCommon.MatchChannelsEntities(channelEntities2, pnStatus.AffectedChannels));
         }
@@ -72,7 +72,7 @@ namespace PubNubAPI.Tests
             Assert.True(pnStatus.Origin.Equals(pnConfiguration.Origin));
             Assert.True(pnStatus.StatusCode.Equals(0));
             Assert.True(pnStatus.TlsEnabled.Equals(pnConfiguration.Secure));
-            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UUID));
+            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UserId));
             Assert.True(pnStatus.AffectedChannelGroups.Count.Equals(0));
             Assert.True(pnStatus.AffectedChannels.Count.Equals(0));
         }
@@ -105,7 +105,7 @@ namespace PubNubAPI.Tests
             Assert.True(pnStatus.Origin.Equals(pnConfiguration.Origin));
             Assert.True(pnStatus.StatusCode.Equals(0));
             Assert.True(pnStatus.TlsEnabled.Equals(pnConfiguration.Secure));
-            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UUID));
+            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UserId));
             Assert.True(pnStatus.AffectedChannelGroups.Count.Equals(0));
             Assert.True(pnStatus.AffectedChannels.Count.Equals(0));
 
@@ -144,7 +144,7 @@ namespace PubNubAPI.Tests
             Assert.True(pnStatus.Origin.Equals(pnConfiguration.Origin));
             Assert.True(pnStatus.StatusCode.Equals(0));
             Assert.True(pnStatus.TlsEnabled.Equals(pnConfiguration.Secure));
-            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UUID));
+            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UserId));
             Assert.True(EditorCommon.MatchChannelsEntities(channelEntities1, pnStatus.AffectedChannelGroups));
             Assert.True(EditorCommon.MatchChannelsEntities(channelEntities2, pnStatus.AffectedChannels));
 
@@ -181,7 +181,7 @@ namespace PubNubAPI.Tests
             Assert.True(pnStatus.Origin.Equals(pnConfiguration.Origin));
             Assert.True(pnStatus.StatusCode.Equals(0));
             Assert.True(pnStatus.TlsEnabled.Equals(pnConfiguration.Secure));
-            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UUID));
+            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UserId));
             Assert.True(channelEntities1[0].ChannelID.ChannelOrChannelGroupName.Equals(pnStatus.AffectedChannelGroups[0]));
             //Assert.True(pnStatus.AffectedChannels.Count.Equals(0));
             Assert.True(pnStatus.ClientRequest.Equals(pnRequestState.URL));
@@ -216,7 +216,7 @@ namespace PubNubAPI.Tests
             Assert.True(pnStatus.Origin.Equals(pnConfiguration.Origin));
             Assert.True(pnStatus.StatusCode.Equals(0));
             Assert.True(pnStatus.TlsEnabled.Equals(pnConfiguration.Secure));
-            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UUID));
+            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UserId));
             Assert.True(channelEntities1[0].ChannelID.ChannelOrChannelGroupName.Equals(pnStatus.AffectedChannelGroups[0]));
             Assert.True(pnStatus.ClientRequest.Equals(pnRequestState.URL));
         }
@@ -252,7 +252,7 @@ namespace PubNubAPI.Tests
             Assert.True(pnStatus.Origin.Equals(pnConfiguration.Origin));
             Assert.True(pnStatus.StatusCode.Equals(0));
             Assert.True(pnStatus.TlsEnabled.Equals(pnConfiguration.Secure));
-            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UUID));
+            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UserId));
             Assert.True(channelEntities1[0].ChannelID.ChannelOrChannelGroupName.Equals(pnStatus.AffectedChannels[0]));
             //Assert.True(pnStatus.AffectedChannels.Count.Equals(0));
             Assert.True(pnStatus.ClientRequest.Equals(pnRequestState.URL));
@@ -287,7 +287,7 @@ namespace PubNubAPI.Tests
             Assert.True(pnStatus.Origin.Equals(pnConfiguration.Origin));
             Assert.True(pnStatus.StatusCode.Equals(0));
             Assert.True(pnStatus.TlsEnabled.Equals(pnConfiguration.Secure));
-            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UUID));
+            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UserId));
             Assert.True(channelEntities1[0].ChannelID.ChannelOrChannelGroupName.Equals(pnStatus.AffectedChannels[0]));
             //Assert.True(pnStatus.AffectedChannels.Count.Equals(0));
             Assert.True(pnStatus.ClientRequest.Equals(pnRequestState.URL));
@@ -324,7 +324,7 @@ namespace PubNubAPI.Tests
             Assert.True(pnStatus.Origin.Equals(pnConfiguration.Origin));
             Assert.True(pnStatus.StatusCode.Equals(0));
             Assert.True(pnStatus.TlsEnabled.Equals(pnConfiguration.Secure));
-            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UUID));
+            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UserId));
             Assert.True(ch[0].Equals(pnStatus.AffectedChannels[0]));
             Assert.True(cg[0].Equals(pnStatus.AffectedChannelGroups[0]));
             Assert.True(pnStatus.ClientRequest.Equals(pnRequestState.URL));
@@ -365,7 +365,7 @@ namespace PubNubAPI.Tests
             Assert.True(pnStatus.Origin.Equals(pnConfiguration.Origin));
             Assert.True(pnStatus.StatusCode.Equals(0));
             Assert.True(pnStatus.TlsEnabled.Equals(pnConfiguration.Secure));
-            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UUID));
+            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UserId));
             Assert.True(ch[0].Equals(pnStatus.AffectedChannels[0]));
             Assert.True(cg[0].Equals(pnStatus.AffectedChannelGroups[0]));
             Assert.True(pnStatus.ClientRequest.Equals(pnRequestState.URL));
@@ -407,7 +407,7 @@ namespace PubNubAPI.Tests
             Assert.True(pnStatus.Origin.Equals(pnConfiguration.Origin));
             Assert.True(pnStatus.StatusCode.Equals(0));
             Assert.True(pnStatus.TlsEnabled.Equals(pnConfiguration.Secure));
-            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UUID));
+            Assert.True(pnStatus.UUID.Equals(pnConfiguration.UserId));
             Assert.True(ch[0].Equals(pnStatus.AffectedChannels[0]));
             Assert.True(cg[0].Equals(pnStatus.AffectedChannelGroups[0]));
             Assert.True(pnStatus.ClientRequest.Equals(pnRequestState.URL));

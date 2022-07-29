@@ -172,14 +172,20 @@ namespace PubNubAPI
             }
         }
         private bool resetTimetoken = false;
-        private bool uuidChanged = false;
-        public bool UUIDChanged{
+        private bool userIdChanged = false;
+        public bool UserIdChanged{
             get{
-                return uuidChanged;
+                return userIdChanged;
             }
             set{
-                uuidChanged = value;
+                userIdChanged = value;
             }
+        }
+
+        [Obsolete("Use UserIdChanged instead")]
+        public bool UUIDChanged {
+            get => UserIdChanged;
+            set => UserIdChanged = value;
         }
 
         private long lastSubscribeTimetoken = 0;
@@ -276,10 +282,10 @@ namespace PubNubAPI
             sbLogger.AppendFormat("SaveLastTimetoken: sentTimetoken={0}\n", sentTimetoken.ToString());
             sbLogger.AppendFormat("SaveLastTimetoken: lastSubscribeTimetoken={0}\n", lastSubscribeTimetoken);
             #endif
-            if (resetTimetoken || uuidChanged)
+            if (resetTimetoken || userIdChanged)
             {
                 lastTimetoken = 0;
-                uuidChanged = false;
+                userIdChanged = false;
                 resetTimetoken = false;
                 #if (ENABLE_PUBNUB_LOGGING)
                 sbLogger.AppendFormat("SaveLastTimetoken: resetTimetoken\n");
@@ -328,8 +334,8 @@ namespace PubNubAPI
                 return;
             }
 
-            if(!string.IsNullOrEmpty(this.PubNubInstance.AuthorizedUUID) && !this.PubNubInstance.AuthorizedUUID.Equals(this.PubNubInstance.PNConfig.UUID)){
-                string responseMsg = "Authorized UUID doesn't match.";
+            if(!string.IsNullOrEmpty(this.PubNubInstance.AuthorizedUserId) && !this.PubNubInstance.AuthorizedUserId.Equals(this.PubNubInstance.PNConfig.UserId)){
+                string responseMsg = "Authorized User ID doesn't match.";
                 #if (ENABLE_PUBNUB_LOGGING)
                 this.PubNubInstance.PNLog.WriteToLog(responseMsg, PNLoggingMethod.LevelWarning);
                 #endif

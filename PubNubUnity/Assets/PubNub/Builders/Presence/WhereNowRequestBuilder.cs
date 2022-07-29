@@ -32,7 +32,7 @@ namespace PubNubAPI
             this.PubNubInstance.PNLog.WriteToLog(string.Format ("WhereNowBuilder UuidForWhereNow: {0}", this.UuidForWhereNow), PNLoggingMethod.LevelInfo);
             #endif                                    
 
-            string uuidForWhereNow = this.PubNubInstance.PNConfig.UUID;
+            string uuidForWhereNow = this.PubNubInstance.PNConfig.UserId;
             if(!string.IsNullOrEmpty(this.UuidForWhereNow)){
                 uuidForWhereNow = this.UuidForWhereNow;
             }

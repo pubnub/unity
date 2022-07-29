@@ -7,7 +7,7 @@ namespace PubNubAPI
     public class PubNubUnityBase
     {
         protected Counter publishMessageCounter;
-        private const string build = "6.0.3";
+        private const string build = "6.0.4";
         private string pnsdkVersion = string.Format ("PubNub-CSharp-Unity/{0}", build);
 
         public string Version {
@@ -51,8 +51,14 @@ namespace PubNubAPI
         public string Token{
             internal get; set;
         }
-        internal string AuthorizedUUID{
+        internal string AuthorizedUserId{
             get; set;
+        }
+
+        [Obsolete("Deprecated - use AuthorizedUserId instead")]
+        internal string AuthorizedUUID {
+            get => AuthorizedUserId;
+            set => AuthorizedUserId = value;
         }
         // internal TokenManager tokenManager;
         public PNLatencyManager Latency{

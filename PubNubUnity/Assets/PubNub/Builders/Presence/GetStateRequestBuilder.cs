@@ -37,7 +37,7 @@ namespace PubNubAPI
             requestState.OperationType = OperationType;
 
             if (string.IsNullOrEmpty (uuid)) {
-                uuid = this.PubNubInstance.PNConfig.UUID;
+                uuid = this.PubNubInstance.PNConfig.UserId;
             }
 
             string channels = "";

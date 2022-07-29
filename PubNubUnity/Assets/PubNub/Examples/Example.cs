@@ -487,7 +487,7 @@ namespace PubNubExample
             pnConfiguration.HeartbeatNotificationOption = PNHeartbeatNotificationOption.All;
 
             //TODO: remove
-            pnConfiguration.UUID = "PubNubUnityExample";
+            pnConfiguration.UserId = "PubNubUnityExample";
             Debug.Log ("PNConfiguration");  
             pubnub = new PubNub (pnConfiguration);
 
