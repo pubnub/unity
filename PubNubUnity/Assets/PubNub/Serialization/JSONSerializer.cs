@@ -20,6 +20,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Globalization;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace PubNubAPI
@@ -222,9 +223,36 @@ namespace PubNubAPI
     #elif (USE_NEWTONSOFT_JSON)
     public class NewtonsoftJsonSerializer : IJsonLibrary {
         readonly PubNubUnityBase  pnUnityBase;
+
+        private readonly JsonSerializerSettings defaultSettings;
+        
         public NewtonsoftJsonSerializer(PubNubUnityBase pnUnityBase) {
- 
+
             this.pnUnityBase = pnUnityBase;
+            defaultSettings = new JsonSerializerSettings() {
+                Context = new StreamingContext(),
+                Culture = CultureInfo.InvariantCulture,
+                ReferenceLoopHandling = ReferenceLoopHandling.Error,
+                MissingMemberHandling = MissingMemberHandling.Ignore,
+                NullValueHandling = NullValueHandling.Include,
+                DefaultValueHandling = DefaultValueHandling.Include,
+                ObjectCreationHandling = ObjectCreationHandling.Auto,
+                PreserveReferencesHandling = PreserveReferencesHandling.None,
+                ConstructorHandling = ConstructorHandling.Default,
+                TypeNameHandling = TypeNameHandling.None,
+                MetadataPropertyHandling = MetadataPropertyHandling.Default,
+                Formatting = Formatting.None,
+                DateFormatHandling = DateFormatHandling.IsoDateFormat,
+                DateTimeZoneHandling = DateTimeZoneHandling.RoundtripKind,
+                DateParseHandling = DateParseHandling.DateTime,
+                FloatParseHandling = FloatParseHandling.Double,
+                FloatFormatHandling = FloatFormatHandling.String,
+                StringEscapeHandling = StringEscapeHandling.Default,
+                TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
+                CheckAdditionalContent = false,
+                DateFormatString = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.FFFFFFFK",
+                MaxDepth = 64
+            };
         }
 
         public bool IsArrayCompatible (string jsonString)
@@ -239,7 +267,7 @@ namespace PubNubAPI
 
         public string SerializeToJsonString (object objectToSerialize)
         {
-            string json = JsonConvert.SerializeObject(objectToSerialize, (JsonSerializerSettings)null); 
+            string json = JsonConvert.SerializeObject(objectToSerialize, defaultSettings); 
             return EncodeNonAsciiCharacters(json);
         }
 
@@ -250,7 +278,7 @@ namespace PubNubAPI
             pnUnityBase.PNLog.WriteToLog (string.Format ("DeserializeToListOfObject: jsonString: {0}", jsonString), PNLoggingMethod.LevelInfo);
             #endif
 
-            var output = JsonConvert.DeserializeObject<List<object>>(jsonString, (JsonSerializerSettings)null);
+            var output = JsonConvert.DeserializeObject<List<object>>(jsonString, defaultSettings);
             return output;
         }
 
@@ -260,7 +288,7 @@ namespace PubNubAPI
             pnUnityBase.PNLog.WriteToLog (string.Format ("DeserializeToObject: jsonString: {0}", jsonString), PNLoggingMethod.LevelInfo);
             #endif
             jsonString = DecodeEncodedNonAsciiCharacters(jsonString);
-            var output = JsonConvert.DeserializeObject<object> (jsonString, (JsonSerializerSettings)null);
+            var output = JsonConvert.DeserializeObject<object> (jsonString, defaultSettings);
             
             #if (ENABLE_PUBNUB_LOGGING)
             pnUnityBase.PNLog.WriteToLog (string.Format("DeserializeToObject: type {0} decoded jsonString: {1}", output.GetType(), jsonString), PNLoggingMethod.LevelInfo);
@@ -351,9 +379,9 @@ namespace PubNubAPI
             if (!isArray)
             {
                 
-                var values = JsonConvert.DeserializeObject<Dictionary<string, object>>(jo, (JsonSerializerSettings)null);
+                var values = JsonConvert.DeserializeObject<Dictionary<string, object>>(jo, defaultSettings);
                 #if (ENABLE_PUBNUB_LOGGING)
-                pnUnityBase.PNLog.WriteToLog (string.Format("JsonConvert.SerializeObject(values) {0}", JsonConvert.SerializeObject(values, (JsonSerializerSettings)null)), PNLoggingMethod.LevelInfo);
+                pnUnityBase.PNLog.WriteToLog (string.Format("JsonConvert.SerializeObject(values) {0}", JsonConvert.SerializeObject(values, defaultSettings)), PNLoggingMethod.LevelInfo);
                 #endif
                 
                 var values2 = new Dictionary<string, object>();
@@ -386,9 +414,9 @@ namespace PubNubAPI
             else
             {
                 
-                var values = JsonConvert.DeserializeObject<List<object>>(jo, (JsonSerializerSettings)null);
+                var values = JsonConvert.DeserializeObject<List<object>>(jo, defaultSettings);
                 #if (ENABLE_PUBNUB_LOGGING)
-                pnUnityBase.PNLog.WriteToLog (string.Format("2: JsonConvert.SerializeObject(values) {0}", JsonConvert.SerializeObject(values, (JsonSerializerSettings)null)), PNLoggingMethod.LevelInfo);
+                pnUnityBase.PNLog.WriteToLog (string.Format("2: JsonConvert.SerializeObject(values) {0}", JsonConvert.SerializeObject(values, defaultSettings)), PNLoggingMethod.LevelInfo);
                 #endif
 
                 Type whatType = typeof(object);
@@ -453,16 +481,16 @@ namespace PubNubAPI
 
         public T Deserialize<T> (string jsonString)
         {
-            var output = JsonConvert.DeserializeObject<T> (jsonString, (JsonSerializerSettings)null);
+            var output = JsonConvert.DeserializeObject<T> (jsonString, defaultSettings);
             return output;
         }
 
-        public Dictionary<string, object> DeserializeToDictionaryOfObject (string jsonString)
-        {
-            var output = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonString, (JsonSerializerSettings)null);
-            
+        public Dictionary<string, object> DeserializeToDictionaryOfObject(string jsonString) {
+            var output =
+                JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonString, defaultSettings);
+
             return output;
-        }  
+        }
     }      
     #elif (USE_SimpleJSON)
     public class SimpleJSONSerializer : IJsonLibrary
