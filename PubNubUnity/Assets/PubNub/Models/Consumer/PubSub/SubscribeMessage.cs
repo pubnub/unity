@@ -2,12 +2,33 @@
 
 namespace PubNubAPI
 {
-    public class SubscribeMessage
+    public class SubscribeMessage : SubscribeMessage<object> {
+        internal SubscribeMessage(string shard, string subscriptionMatch, string channel, object payload,
+            string flags, string issuingClientId, string subscribeKey, long sequenceNumber,
+            TimetokenMetadata originatingTimetoken,
+            TimetokenMetadata publishMetadata, object userMetadata, int messageType) : base(shard, subscriptionMatch,
+            channel, payload, flags, issuingClientId, subscribeKey, sequenceNumber, originatingTimetoken,
+            publishMetadata, userMetadata, messageType) {
+        }
+    }
+    
+    // Message class variant that does not deserialize the message
+    public class SubscribeVerbatimMessage : SubscribeMessage<string> {
+        internal SubscribeVerbatimMessage(string shard, string subscriptionMatch, string channel, string payload,
+            string flags, string issuingClientId, string subscribeKey, long sequenceNumber,
+            TimetokenMetadata originatingTimetoken,
+            TimetokenMetadata publishMetadata, object userMetadata, int messageType) : base(shard, subscriptionMatch,
+            channel, payload, flags, issuingClientId, subscribeKey, sequenceNumber, originatingTimetoken,
+            publishMetadata, userMetadata, messageType) {
+        }
+    }
+
+    public class SubscribeMessage<T>
     {
         private string a { get; set;} //JSON shard;
         private string b { get; set;} //JSON subscriptionMatch
         private string c { get; set;} //JSON channel
-        private object d { get; set;} //JSON payload
+        private T d { get; set;} //JSON payload
         private int e { get; set;} //JSON Message Type (1: Signal, 2: MessageObjects, 3: MessageActions)
         private string f { get; set;} //JSON flags
         private string i { get; set;} //JSON issuingClientId
@@ -17,7 +38,7 @@ namespace PubNubAPI
         private TimetokenMetadata p { get; set;} //JSON publishMetadata
         private object u { get; set;} //JSON userMetadata
 
-        internal SubscribeMessage(string shard, string subscriptionMatch, string channel, object payload,
+        internal SubscribeMessage(string shard, string subscriptionMatch, string channel, T payload,
             string flags, string issuingClientId, string subscribeKey, long sequenceNumber, TimetokenMetadata originatingTimetoken,
             TimetokenMetadata publishMetadata, object userMetadata, int messageType
         )
@@ -60,7 +81,7 @@ namespace PubNubAPI
             }
         }
 
-        public object Payload{
+        public T Payload{
             get{
                 return d;
             }
