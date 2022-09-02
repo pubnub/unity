@@ -1,6 +1,11 @@
 --- 
-version: v6.0.4
+version: v6.0.5
 changelog:
+  - date: 2022-09-02
+    version: v6.0.5
+    changes:
+      - type: bug
+        text: "Json.net stores its settings globally, which means any changes in the client application will affect the behaviour of the SDK. The SDK will now use the initial default settings."
   - date: 2022-07-27
     version: v6.0.4
     changes:
@@ -648,7 +653,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v6.0.4/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v6.0.5/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
@@ -815,7 +820,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v6.0.4/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v6.0.5/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
