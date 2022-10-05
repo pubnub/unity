@@ -10,9 +10,10 @@ public class ExportPubNubPackage : MonoBehaviour {
 	public static void ExportPackage() {
 		System.Func<string, bool> assetTestsFilter = (string s) => !s.StartsWith("Assets/PubNub/PlayModeTests");
 		
-		var assets = AssetDatabase.FindAssets("", new[] { "Assets/PubNub" }).Select(AssetDatabase.GUIDToAssetPath).Where(assetTestsFilter);
+		var assets = AssetDatabase.FindAssets("", new[] { "Assets/PubNub" }).Select(AssetDatabase.GUIDToAssetPath).Where(assetTestsFilter).ToArray();
 
-		Debug.Log(string.Join(", ", assets));
+		Debug.Log("Folders to be exported:" + string.Join(", ", assets));
+
+		AssetDatabase.ExportPackage(assets, "UnityPubNub.unitypackage", ExportPackageOptions.Recurse);
 	}
-	
 }
