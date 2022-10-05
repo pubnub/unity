@@ -14,6 +14,6 @@ public class ExportPubNubPackage : MonoBehaviour {
 
 		Debug.Log("Folders to be exported:" + string.Join(", ", assets));
 
-		AssetDatabase.ExportPackage(assets, "UnityPubNub.unitypackage", ExportPackageOptions.Recurse);
+		AssetDatabase.ExportPackage(assets, "PubNub.unitypackage", ExportPackageOptions.Recurse);
 	}
 }
