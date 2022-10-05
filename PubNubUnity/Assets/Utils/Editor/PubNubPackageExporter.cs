@@ -12,7 +12,7 @@ public class PubNubPackageExporter : MonoBehaviour {
 
 		var assets = AssetDatabase.FindAssets("", new[] { "Assets/PubNub" }).Select(AssetDatabase.GUIDToAssetPath).Where(assetTestsFilter).ToArray();
 
-		Debug.Log("Folders to be exported:\n" + string.Join(", ", assets));
+		Debug.Log("Assets to be exported:\n" + string.Join(", ", assets));
 
 		AssetDatabase.ExportPackage(assets, "PubNub.unitypackage", ExportPackageOptions.Recurse);
 	}
