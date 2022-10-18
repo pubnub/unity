@@ -20,7 +20,7 @@ You will need the publish and subscribe keys to authenticate your app. Get your 
 
 4. If you are using a recent Unity version (greater than 2018 LTS):
     1. In the Project window, navigate to Assets > PubNub > PlayModeTests.
-    2. Right click the file **PlayModeTests.cs** and click delete. Press the Delete button in the pop-up dialog to confirm.
+    2. Right click the file **PlayModeTests.cs** and click Delete. Press the Delete button in the pop-up dialog to confirm.
     3. Let the Unity Editor compile to finalize these changes and remove all compiler errors.
 
 5. If you are using a Unity version equal to or older than 2018 LTS, you will need to enable the PubNub Unity package in the Test Runner:
