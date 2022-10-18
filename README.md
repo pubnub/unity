@@ -1,4 +1,4 @@
-# PubNub Unity SDK (V4)
+# PubNub Unity SDK
 
 [![Build Status](https://travis-ci.com/pubnub/unity.svg?branch=master)](https://travis-ci.com/pubnub/unity) [![Build status](https://ci.appveyor.com/api/projects/status/1p3494pnt6rgqdsm/branch/master?svg=true)](https://ci.appveyor.com/project/PubNub/unity)
 
@@ -24,7 +24,7 @@ You will need the publish and subscribe keys to authenticate your app. Get your 
     pnConfiguration.PublishKey = "my_pubkey";
     pnConfiguration.SecretKey = "my_secretkey";
     pnConfiguration.LogVerbosity = PNLogVerbosity.BODY;
-    pnConfiguration.UUID = "myUniqueUUID"; 
+    pnConfiguration.UUID = "myUniqueUUID";
     ```
 
 ## Add event listeners
@@ -52,10 +52,10 @@ void SubscribeCallbackHandler(object sender, EventArgs e) {
 	if (mea.PresenceEventResult != null) {
 		Debug.Log("SubscribeCallback in presence" + mea.PresenceEventResult.Channel + mea.PresenceEventResult.Occupancy + mea.PresenceEventResult.Event);
 	}
-	if (mea.SignalEventResult != null) {					
+	if (mea.SignalEventResult != null) {
 		Debug.Log ("SubscribeCallback in SignalEventResult" + mea.SignalEventResult.Channel + mea.SignalEventResult.Payload);
 	}
-	if (mea.UserEventResult != null) {					
+	if (mea.UserEventResult != null) {
 		Debug.Log(mea.UserEventResult.Name);
 		Debug.Log(mea.UserEventResult.Email);
 		Debug.Log(mea.UserEventResult.ExternalID);
@@ -64,20 +64,20 @@ void SubscribeCallbackHandler(object sender, EventArgs e) {
 		Debug.Log(mea.UserEventResult.ETag);
 		Debug.Log(mea.UserEventResult.ObjectsEvent);
 	}
-	if (mea.SpaceEventResult != null) {					
+	if (mea.SpaceEventResult != null) {
 		Debug.Log(mea.SpaceEventResult.Name);
 		Debug.Log(mea.SpaceEventResult.Description);
 		Debug.Log(mea.SpaceEventResult.SpaceID);
 		Debug.Log(mea.SpaceEventResult.ETag);
 		Debug.Log(mea.SpaceEventResult.ObjectsEvent);
-	} 
-	if (mea.MembershipEventResult != null) {					
+	}
+	if (mea.MembershipEventResult != null) {
 		Debug.Log(mea.MembershipEventResult.UserID);
 		Debug.Log(mea.MembershipEventResult.Description);
 		Debug.Log(mea.MembershipEventResult.SpaceID);
 		Debug.Log(mea.MembershipEventResult.ObjectsEvent);
 	}
-	if (mea.MessageActionsEventResult != null) {					
+	if (mea.MessageActionsEventResult != null) {
 		Debug.Log(mea.MessageActionsEventResult.Channel);
 		if(mea.MessageActionsEventResult.Data!=null){
 			Debug.Log(mea.MessageActionsEventResult.Data.ActionTimetoken);
@@ -98,7 +98,7 @@ void SubscribeCallbackHandler(object sender, EventArgs e) {
 pubnub.Publish()
 	.Channel("channel1")
 	.Message("test message")
-	.Async((result, status) => {    
+	.Async((result, status) => {
 		if (!status.Error) {
 			Debug.Log(string.Format("Publish Timetoken: {0}", result.Timetoken));
 		} else {
