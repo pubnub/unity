@@ -1204,7 +1204,7 @@ namespace PubNubAPI
             for (int componentIndex = 0; componentIndex < urlComponents.Count; componentIndex++)
             {
 	            if (urlComponents[componentIndex] is null) {
-		            UnityEngine.Debug.Error("Null component passed into URL encoder");
+		            UnityEngine.Debug.LogError("Null component passed into URL encoder");
 	            }
                 url.Append("/");
                 if (type == PNOperationType.PNPublishOperation && componentIndex == urlComponents.Count - 1)
