@@ -5732,13 +5732,13 @@ namespace PubNubAPI.Tests
 							{
 								tresult = true;
 								Debug.Log(string.Format("kvp.Key {0}, kvp.Value {1} ", kvp.Key, kvp.Value));
-								Assert.Equals(0, kvp.Value);
+								Assert.AreEqual(0, kvp.Value);
 							}
 							if (kvp.Key.Equals(channel2))
 							{
 								tresult = true;
 								Debug.Log(string.Format("kvp.Key {0}, kvp.Value {1} ", kvp.Key, kvp.Value));
-								Assert.Equals(3, kvp.Value);
+								Assert.AreEqual(3, kvp.Value);
 							}
 						}
 					}
