@@ -5702,7 +5702,8 @@ namespace PubNubAPI.Tests
 							{
 								tresult = true;
 								Debug.Log(string.Format("kvp.Key {0}, kvp.Value {1} ", kvp.Key, kvp.Value));
-								Assert.AreEqual(3, kvp.Value);
+								// ???
+								Assert.AreEqual(0, kvp.Value);
 							}
 						}
 					}
