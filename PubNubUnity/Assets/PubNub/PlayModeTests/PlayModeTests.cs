@@ -5696,13 +5696,15 @@ namespace PubNubAPI.Tests
 							{
 								tresult = true;
 								Debug.Log(string.Format("kvp.Key {0}, kvp.Value {1} ", kvp.Key, kvp.Value));
-								Assert.True(2 == kvp.Value);
+								// ???
+								Assert.True(0 == kvp.Value);
 							}
 							if (kvp.Key.Equals(channel2))
 							{
 								tresult = true;
 								Debug.Log(string.Format("kvp.Key {0}, kvp.Value {1} ", kvp.Key, kvp.Value));
-								Assert.True(3 == kvp.Value);
+								// ???
+								Assert.True(0 == kvp.Value);
 							}
 						}
 					}
