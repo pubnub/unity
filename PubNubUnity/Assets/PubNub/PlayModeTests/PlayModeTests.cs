@@ -5683,24 +5683,18 @@ namespace PubNubAPI.Tests
 			pubnub.MessageCounts().Channels(channelList2).ChannelsTimetoken(new List<long> { timetoken2, timetoken3 }).Async((result, status) => {
 				Assert.True(status.Error.Equals(false));
 				Debug.Log("status.Error.Equals(false)" + status.Error.Equals(false));
-				if (!status.Error)
-				{
-
-					if ((result.Channels != null))
-					{
+				if (!status.Error) {
+					if ((result.Channels != null)) {
 						Debug.Log(string.Format("MessageCounts, {0}", result.Channels.Count));
-						foreach (KeyValuePair<string, int> kvp in result.Channels)
-						{
+						foreach (KeyValuePair<string, int> kvp in result.Channels) {
 							Debug.Log(string.Format("==kvp.Key {0}, kvp.Value {1} ", kvp.Key, kvp.Value));
-							if (kvp.Key.Equals(channel))
-							{
+							if (kvp.Key.Equals(channel)) {
 								tresult = true;
 								Debug.Log(string.Format("kvp.Key {0}, kvp.Value {1} ", kvp.Key, kvp.Value));
 								// ???
 								Assert.True(0 == kvp.Value);
 							}
-							if (kvp.Key.Equals(channel2))
-							{
+							if (kvp.Key.Equals(channel2)) {
 								tresult = true;
 								Debug.Log(string.Format("kvp.Key {0}, kvp.Value {1} ", kvp.Key, kvp.Value));
 								// ???
