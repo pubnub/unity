@@ -1,6 +1,13 @@
 --- 
-version: v6.0.6
+version: v6.0.7
 changelog:
+  - date: 2022-11-02
+    version: v6.0.7
+    changes:
+      - type: bug
+        text: "Expose exceptions fired within callbacks."
+      - type: bug
+        text: "Log null arguments passed to EncodeURL."
   - date: 2022-10-12
     version: v6.0.6
     changes:
@@ -658,7 +665,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v6.0.6/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v6.0.7/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
@@ -825,7 +832,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v6.0.6/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v6.0.7/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"

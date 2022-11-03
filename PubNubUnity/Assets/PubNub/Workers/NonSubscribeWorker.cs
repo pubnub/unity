@@ -76,7 +76,6 @@ namespace PubNubAPI
             CustomEventArgs cea = ea as CustomEventArgs;
             this.queueManager.RaiseRunningRequestEnd(cea.PubNubRequestState.OperationType);
             try {
-
                 if ((cea != null) && (cea.CurrRequestType.Equals(PNCurrentRequestType.NonSubscribe))) {
                     PNStatus pnStatus;
                     if (Helpers.TryCheckErrorTypeAndCallback<V>(cea, this.queueManager.PubNubInstance, out pnStatus)) {
@@ -97,6 +96,12 @@ namespace PubNubAPI
                 this.queueManager.PubNubInstance.PNLog.WriteToLog(string.Format ("WebRequestCompleteHandler: Exception={0}", ex.ToString ()), PNLoggingMethod.LevelInfo);
                 #endif
                 PNBuilder.RaiseError(PNStatusCategory.PNUnknownCategory, ex, false, cea.PubNubRequestState);
+                #if (ENABLE_PUBNUB_EXCEPTIONS)
+                throw ex;
+                #else
+                // Built-in debug for stacktrace inspectability
+                Debug.LogError(ex);
+                #endif
             } finally {
                 UnityEngine.Object.Destroy(sender as PNUnityWebRequest);
             }
