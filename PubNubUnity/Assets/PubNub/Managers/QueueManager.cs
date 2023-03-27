@@ -14,6 +14,10 @@ namespace PubNubAPI
         public PubNubUnity PubNubInstance { get; set;}
         private ushort RunningRequests;
 
+        void Awake() {
+            DontDestroyOnLoad(gameObject);
+        }
+        
         void Start(){
             this.RunningRequestEnd += delegate(PNOperationType operationType) {
                 UpdateRunningRequests(true);
