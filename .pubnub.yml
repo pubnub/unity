@@ -1,6 +1,11 @@
 --- 
-version: v6.0.8
+version: v6.0.9
 changelog:
+  - date: 2023-03-30
+    version: v6.0.9
+    changes:
+      - type: bug
+        text: "Fixed deserialization fail on arrays with all null values."
   - date: 2023-03-24
     version: v6.0.8
     changes:
@@ -670,7 +675,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v6.0.8/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v6.0.9/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
@@ -837,7 +842,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v6.0.8/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v6.0.9/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
