@@ -381,7 +381,8 @@ namespace PubNubAPI
                 
                 var values = JsonConvert.DeserializeObject<Dictionary<string, object>>(jo, defaultSettings);
                 #if (ENABLE_PUBNUB_LOGGING)
-                pnUnityBase.PNLog.WriteToLog (string.Format("JsonConvert.SerializeObject(values) {0}", JsonConvert.SerializeObject(values, defaultSettings)), PNLoggingMethod.LevelInfo);
+                pnUnityBase.PNLog.WriteToLog (
+                    $"JsonConvert.SerializeObject(values) {JsonConvert.SerializeObject(values, defaultSettings)}", PNLoggingMethod.LevelInfo);
                 #endif
                 
                 var values2 = new Dictionary<string, object>();
@@ -390,21 +391,21 @@ namespace PubNubAPI
                     if (d.Value is JObject)
                     {
                         #if (ENABLE_PUBNUB_LOGGING)
-                        pnUnityBase.PNLog.WriteToLog (string.Format("1: d.Key {0}, d.Value {1}", d.Key, d.Value), PNLoggingMethod.LevelInfo);
+                        pnUnityBase.PNLog.WriteToLog ($"1: d.Key {d.Key}, d.Value {d.Value}", PNLoggingMethod.LevelInfo);
                         #endif
                         values2.Add(d.Key, deserializeToDictionary(d.Value.ToString()));
                     }
                     else if (d.Value is JArray)
                     {
                         #if (ENABLE_PUBNUB_LOGGING)
-                        pnUnityBase.PNLog.WriteToLog (string.Format("2: d.Key {0}, d.Value {1}", d.Key, d.Value), PNLoggingMethod.LevelInfo);
+                        pnUnityBase.PNLog.WriteToLog ($"2: d.Key {d.Key}, d.Value {d.Value}", PNLoggingMethod.LevelInfo);
                         #endif
                         values2.Add(d.Key, deserializeToDictionary(d.Value.ToString(), true));
                     }
                     else
                     {
                         #if (ENABLE_PUBNUB_LOGGING)
-                        pnUnityBase.PNLog.WriteToLog (string.Format("3: d.Key {0}, d.Value {1}", d.Key, d.Value), PNLoggingMethod.LevelInfo);
+                        pnUnityBase.PNLog.WriteToLog ($"3: d.Key {d.Key}, d.Value {d.Value}", PNLoggingMethod.LevelInfo);
                         #endif
                         values2.Add(d.Key, d.Value);
                     }
@@ -416,7 +417,8 @@ namespace PubNubAPI
                 
                 var values = JsonConvert.DeserializeObject<List<object>>(jo, defaultSettings);
                 #if (ENABLE_PUBNUB_LOGGING)
-                pnUnityBase.PNLog.WriteToLog (string.Format("2: JsonConvert.SerializeObject(values) {0}", JsonConvert.SerializeObject(values, defaultSettings)), PNLoggingMethod.LevelInfo);
+                pnUnityBase.PNLog.WriteToLog (
+                    $"2: JsonConvert.SerializeObject(values) {JsonConvert.SerializeObject(values, defaultSettings)}", PNLoggingMethod.LevelInfo);
                 #endif
 
                 Type whatType = typeof(object);
@@ -424,12 +426,12 @@ namespace PubNubAPI
                 int count = 0;
                 foreach (var d in values)
                 {
-                    if ((d is JObject) || (d is JArray)){
+                    if (d is JObject || d is JArray || d is null){
                         break;
                     }
-                    if(count == 0){
+                    if (count == 0){
                         currType = d.GetType();
-                    } else if(!currType.Equals(d.GetType())){
+                    } else if (currType != d.GetType()){
                         break;
                     } 
                     count++;
@@ -439,7 +441,7 @@ namespace PubNubAPI
                     currType = d.GetType();
                 }
                 #if (ENABLE_PUBNUB_LOGGING)
-                pnUnityBase.PNLog.WriteToLog (string.Format("whatType {0}", whatType), PNLoggingMethod.LevelInfo);
+                pnUnityBase.PNLog.WriteToLog ($"whatType {whatType}", PNLoggingMethod.LevelInfo);
                 #endif
                 
                 Type listType = typeof(List<>).MakeGenericType(new [] { whatType } );
@@ -448,32 +450,32 @@ namespace PubNubAPI
                 foreach (var d in values)
                 {
                     #if (ENABLE_PUBNUB_LOGGING)
-                    pnUnityBase.PNLog.WriteToLog (string.Format("d.GetType() {0}", d.GetType()), PNLoggingMethod.LevelInfo);
+                    pnUnityBase.PNLog.WriteToLog ($"d.GetType() {d?.GetType()}", PNLoggingMethod.LevelInfo);
                     #endif
                     if (d is JObject)
                     {
                         #if (ENABLE_PUBNUB_LOGGING)
-                        pnUnityBase.PNLog.WriteToLog (string.Format("1: d {0}", d), PNLoggingMethod.LevelInfo);
+                        pnUnityBase.PNLog.WriteToLog ($"1: d {d}", PNLoggingMethod.LevelInfo);
                         #endif
                         values2.Add(deserializeToDictionary(d.ToString()));
                     }
                     else if (d is JArray)
                     {
                         #if (ENABLE_PUBNUB_LOGGING)
-                        pnUnityBase.PNLog.WriteToLog (string.Format("2: d {0}", d), PNLoggingMethod.LevelInfo);
+                        pnUnityBase.PNLog.WriteToLog ($"2: d {d}", PNLoggingMethod.LevelInfo);
                         #endif
                         values2.Add(deserializeToDictionary(d.ToString(), true));
                     }
                     else
                     {      
                         #if (ENABLE_PUBNUB_LOGGING)
-                        pnUnityBase.PNLog.WriteToLog (string.Format("3: d {0}", d), PNLoggingMethod.LevelInfo);
+                        pnUnityBase.PNLog.WriteToLog ($"3: d {d}", PNLoggingMethod.LevelInfo);
                         #endif
                         values2.Add(d);
                     }
                 }
                 #if (ENABLE_PUBNUB_LOGGING)
-                pnUnityBase.PNLog.WriteToLog (string.Format("values2.GetType() {0}", values2.GetType()), PNLoggingMethod.LevelInfo);
+                pnUnityBase.PNLog.WriteToLog ($"values2.GetType() {values2.GetType()}", PNLoggingMethod.LevelInfo);
                 #endif
                 return ListExtensions.ConvertToDynamicArray(values2, whatType, pnUnityBase);
             }

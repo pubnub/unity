@@ -12,7 +12,7 @@ You will need the publish and subscribe keys to authenticate your app. Get your 
 
 ## Configure PubNub
 
-1. Download the PubNub Unity package from [this repository](https://github.com/pubnub/unity/releases/download/v6.0.8/PubNub.unitypackage).
+1. Download the PubNub Unity package from [this repository](https://github.com/pubnub/unity/releases/download/v6.0.9/PubNub.unitypackage).
 
 2. Import the package to your Unity project by going to Assets > Import Package > Custom Package.
 
