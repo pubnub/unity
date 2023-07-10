@@ -36,11 +36,12 @@ namespace PubnubApi.Unity.Internal.EditorTools {
 			
 			// external file handling
 			
-			EditorGUILayout.BeginVertical("helpbox");
-			EditorGUILayout.PropertyField(externalJsonEnabled,
-				new GUIContent("Use external key config"));
-			ExternalFileGui();
-			EditorGUILayout.EndVertical();
+			// TODO finish
+			// EditorGUILayout.BeginVertical("helpbox");
+			// EditorGUILayout.PropertyField(externalJsonEnabled,
+			// 	new GUIContent("Use external key config"));
+			// ExternalFileGui();
+			// EditorGUILayout.EndVertical();
 		
 
 			// UserId info
