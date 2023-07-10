@@ -5,7 +5,7 @@ using PubnubApi.EndPoint;
 namespace PubnubApi.Unity {
 	public static class PubnubExtensions {
 		public static SubscribeOperation<T> Subscribe<T>(this Pubnub pn) => pn.Subscribe<T>();
-		
+
 		[Obsolete("Use the generic version instead")]
 		public static SubscribeOperation<string> Subscribe(this Pubnub pn) => pn.Subscribe<string>();
 
@@ -52,8 +52,10 @@ namespace PubnubApi.Unity {
 		}
 
 		// TODO create an async variant
-		public static UnsubscribeOperation<T> Unsubscribe<T>(this Pubnub pn) {
-			return pn.Unsubscribe<T>();
+		public static UnsubscribeOperation<string> Unsubscribe(this Pubnub pn) {
+			return pn.Unsubscribe<string>();
 		}
+
+
 	}
 }
