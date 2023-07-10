@@ -339,6 +339,9 @@ namespace PubnubApi.Unity {
 			callback?.Invoke(res.Result, res.Status);
 		}
 
+		public static RemoveChannelsFromChannelGroupOperation Channels(this RemoveChannelsFromChannelGroupOperation o,
+			List<string> c) => o.Channels(c.ToArray());
+
 		// GrantToken
 		// TODO document change - Async -> Execute
 		public static async void Execute(this GrantTokenOperation o, System.Action<PNAccessManagerTokenResult, PNStatus> callback) {
