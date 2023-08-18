@@ -43,13 +43,6 @@ namespace PubnubApi.Unity {
 			return pn.UnsubscribeAll<string>();
 		}
 
-		// TODO remove ugly hack after adding retval to parent sdk
-		public static Task<bool> UnsibscribeAll(this Pubnub pn) {
-			pn.UnsubscribeAll<string>();
-			var tcs = new TaskCompletionSource<bool>();
-			tcs.SetResult(true);
-			return tcs.Task;
-		}
 
 		// TODO create an async variant
 		public static UnsubscribeOperation<string> Unsubscribe(this Pubnub pn) {

@@ -17,17 +17,37 @@ namespace PubnubApi.Unity.Internal.EditorTools {
 		private static readonly string templatePath =
 			$"{templateFolder}/55-PubNub__PubNub Manager Script-PNManager.cs.txt";
 
-		[InitializeOnLoadMethod]
+		// [InitializeOnLoadMethod]
 		public static void EnsureTemplate() {
 			if (!File.Exists(templatePath)) {
 				var data = Convert.FromBase64String(template64);
 				Directory.CreateDirectory(templateFolder);
 				File.WriteAllBytes(templatePath, data);
-				
+
 				// inform the user
 				EditorUtility.DisplayDialog("PubNub",
 					"Restart the Editor in order to have access to the script templates", "Ok");
 			}
+		}
+
+
+		// Validated menu item.
+		// Add a menu item named "Log Selected Transform Name" to MyMenu in the menu bar.
+		// We use a second function to validate the menu item
+		// so it will only be enabled if we have a transform selected.
+		[MenuItem("PubNub/Set up templates")]
+		static void SetUpTemplates()
+		{
+			EnsureTemplate();
+		}
+
+		// Validate the menu item defined by the function above.
+		// The menu item will be disabled if this function returns false.
+		[MenuItem("PubNub/Set up templates", true)]
+		static bool ValidateSetUpTemplates()
+		{
+			// Return false if no transform is selected.
+			return !File.Exists(templatePath);
 		}
 	}
 }

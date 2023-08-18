@@ -10,7 +10,7 @@ namespace PubnubApi.Unity {
 			get;
 			protected set;
 		}
-		
+
 		public SubscribeCallbackListener listener { get; }
 			= new SubscribeCallbackListener();
 
@@ -23,25 +23,32 @@ namespace PubnubApi.Unity {
 			if (Application.isPlaying) {
 				DontDestroyOnLoad(gameObject);
 			}
-			
+
 			if (pnConfiguration is null) {
 				Debug.LogError("PNConfigAsset is missing", this);
 				return null;
 			}
-			
+
 			if (pubnub is not null) {
 				Debug.LogError("PubNub has already been initialized");
 				return pubnub;
 			}
-			
+
 			pnConfiguration.UserId = userId;
 			pubnub = new Pubnub(pnConfiguration);
 			pubnub.AddListener(listener);
 			return pubnub;
+
 		}
 
 		protected virtual void OnDestroy() {
 			pubnub.UnsubscribeAll<string>();
+			pubnub.UnsubscribeAll<object>();
+		}
+
+		protected virtual void OnDisable() {
+			pubnub.UnsubscribeAll<string>();
+			pubnub.UnsubscribeAll<object>();
 		}
 
 		public static implicit operator Pubnub(PNManagerBehaviour pn) {

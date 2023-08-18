@@ -6,14 +6,14 @@ using UnityEngine;
 namespace PubnubApi.Unity {
 	[CreateAssetMenu(fileName = "PNConfigAsset", menuName = "PubNub/PubNub Config Asset")]
 	public class PNConfigAsset : ScriptableObject {
-		public string PublishKey;
-		public string SubscribeKey;
+		public string PublishKey = "demo";
+		public string SubscribeKey = "demo";
 		public string AuthKey;
 		public string CipherKey;
 		public bool EnableTelemetry;
 		public bool Secure;
 		public PNLogVerbosity LogVerbosity;
-		
+
 		[SerializeField] private bool externalJsonEnabled = false;
 		[SerializeField] private UnityEngine.TextAsset externalJsonFile;
 
