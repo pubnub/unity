@@ -19,5 +19,12 @@
     "email": "michal.dobrzanski@pubnub.com",
     "url": "https://pubnub.com/"
   },
+  "samples": [
+    {
+        "displayName": "Sample Implementation",
+        "description": "Contains a sample implementation of a PN Manager script.",
+        "path": "Samples~/PubNubManagerSample"
+    }
+  ],
   "repository": "https://github.com/pubnub/unity"
 }
