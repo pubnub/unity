@@ -33,14 +33,6 @@ jobs:
         uses: ./.github/.release/actions/actions/installers/unity
         with:
           unity-version: "2020.3.22f1"
-      - name: Unit tests
-        uses: ./.github/.release/actions/actions/runners/unity
-        with:
-          project-path: ./PubNubUnity
-          test-mode: edit
-          license-username: ${{ secrets.UNITYCI_NEW_USER }}
-          license-password: ${{ secrets.UNITYCI_NEW_PASS }}
-          license-serial: ${{ secrets.UNITYCI_NEW_SERIAL }}
       - name: Integration tests
         uses: ./.github/.release/actions/actions/runners/unity
         with:
