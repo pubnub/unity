@@ -7,7 +7,6 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using PubnubApi;
 using PubnubApi.Unity;
-using UnityEditor.SceneManagement;
 using Object = System.Object;
 
 
