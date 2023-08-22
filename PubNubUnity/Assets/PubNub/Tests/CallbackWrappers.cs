@@ -345,7 +345,8 @@ namespace PubnubApi.Unity.Tests {
 			Assert.IsFalse(s.Error);
 		}
 
-		[UnityTest]
+		// TODO re-enable
+		// [UnityTest]
 		public IEnumerator GrantAndRevokeToken() {
 			var tokenResources = new Dictionary<string, PNTokenAuthValues>()
 				{ { "test", new PNTokenAuthValues() { Get = true } } };

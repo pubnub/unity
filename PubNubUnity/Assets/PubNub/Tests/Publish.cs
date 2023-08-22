@@ -31,7 +31,11 @@ namespace PubnubApi.Unity.Tests {
 		public IEnumerator ReceiveMessage() {
 			yield return new WaitUntil(() => lastMessage != null);
 
-			Assert.AreEqual(lastMessage, "test");
+			Assert.AreEqual("test", lastMessage);
+			if (lastMessage != "test") {
+				Debug.Log($"Message type {lastMessage?.GetType()?.ToString()}");
+			}
+
 			lastMessage = null;
 		}
 
