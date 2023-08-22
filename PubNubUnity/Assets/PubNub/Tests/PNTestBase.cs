@@ -19,9 +19,9 @@ namespace PubnubApi.Unity.Tests {
 		[OneTimeSetUp]
 		public void OneTimeSetUp() {
 			PNConfiguration pnConfiguration = new PNConfiguration("unit-test") {
-				PublishKey = "",
-				SubscribeKey = "",
-				SecretKey = ""
+				PublishKey = System.Environment.GetEnvironmentVariable("PUB_KEY"),
+				SubscribeKey = System.Environment.GetEnvironmentVariable("SUB_KEY"),
+				SecretKey = System.Environment.GetEnvironmentVariable("PAM_SECRET_KEY")
 			};
 			pn = new Pubnub(pnConfiguration);
 
