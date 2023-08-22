@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
-using PubnubApi;
-using PubnubApi.EndPoint;
-using PubnubApi.Unity;
 
 namespace PubnubApi.Unity.Tests {
 

@@ -1,11 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
-using UnityEngine;
 using UnityEngine.TestTools;
-using PubnubApi;
-using PubnubApi.EndPoint;
-using PubnubApi.Unity;
 
 namespace PubnubApi.Unity.Tests {
 	public class CallbackWrappers : PNTestBase {

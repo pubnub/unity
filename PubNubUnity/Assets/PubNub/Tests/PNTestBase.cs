@@ -1,14 +1,8 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.TestTools;
-using PubnubApi;
-using PubnubApi.Unity;
-using Object = System.Object;
-
 
 namespace PubnubApi.Unity.Tests {
 	public class PNTestBase {
@@ -17,7 +11,7 @@ namespace PubnubApi.Unity.Tests {
 
 		[OneTimeSetUp]
 		public void OneTimeSetUp() {
-			PNConfiguration pnConfiguration = new PNConfiguration("unit-test") {
+			PNConfiguration pnConfiguration = new PNConfiguration(new UserId("unit-test")) {
 				PublishKey = System.Environment.GetEnvironmentVariable("PUB_KEY"),
 				SubscribeKey = System.Environment.GetEnvironmentVariable("SUB_KEY"),
 				SecretKey = System.Environment.GetEnvironmentVariable("PAM_SECRET_KEY")
