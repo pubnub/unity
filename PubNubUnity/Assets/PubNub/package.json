@@ -1,0 +1,30 @@
+﻿{
+  "name": "com.pubnub.sdk",
+  "version": "7.0.0",
+  "displayName": "PubNub SDK",
+  "description": "PubNub Real-time Cloud-Hosted Push API and Push Notification Client Frameworks",
+  "unity": "2021.3",
+  "documentationUrl": "https://www.pubnub.com/docs/sdks/unity",
+  "changelogUrl": "https://github.com/pubnub/unity/.pubnub.yml",
+  "licensesUrl": "https://github.com/pubnub/unity/blob/master/LICENSE",
+  "dependencies": {
+    "com.unity.nuget.newtonsoft-json": "3.0.2"
+  },
+  "keywords": [
+    "pubnub",
+    "sdk"
+  ],
+  "author": {
+    "name": "PubNub",
+    "email": "michal.dobrzanski@pubnub.com",
+    "url": "https://pubnub.com/"
+  },
+  "samples": [
+    {
+        "displayName": "Sample Implementation",
+        "description": "Contains a sample implementation of a PN Manager script.",
+        "path": "Samples~/PubNubManagerSample"
+    }
+  ],
+  "repository": "https://github.com/pubnub/unity"
+}
