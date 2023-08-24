@@ -21,7 +21,8 @@ You will need the publish and subscribe keys to authenticate your app. Get your 
    https://github.com/pubnub/unity.git?path=/PubNubUnity/Assets/PubNub
    ```
 
-4. In the editor menu bar, navigate to PubNub and click **Set up templates**.
+4. In the editor menu bar, navigate to **PubNub** and click **Set up templates**.
+
 5. Restart Unity Editor.
 
 ## Documentation
