@@ -15,10 +15,11 @@
       "cleared": false
     }
   ],
-  "PubNubUnity/Assets/PubNub/PubNubUnity/PubNubUnityBase.cs": [
+  "PubNubUnity/Assets/PubNub/package.json": [
     {
-      "pattern": "^\\s{2,}private const string build = \"(v?(\\.?\\d+){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)\";",
-      "cleared": true 
+      "pattern": "^\\s{2,}\"version\": \"(v?(\\d+\\.?){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)\",$",
+      "clearedPrefix": true,
+      "clearedSuffix": false
     }
   ]
 }

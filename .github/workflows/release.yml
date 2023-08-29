@@ -2,7 +2,7 @@ name: Automated product release
 
 on:
   pull_request:
-    branches: [ ]
+    branches: [ master ]
     types: [ closed ]
 concurrency: unity_run
 
