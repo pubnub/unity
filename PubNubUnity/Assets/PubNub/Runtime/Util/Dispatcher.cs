@@ -6,12 +6,20 @@ using UnityEngine;
 namespace PubnubApi.Unity.Internal {
 	public sealed class Dispatcher : MonoBehaviour {
 		static Dispatcher instance;
-		
+
 		static object lockObject = new();
 		static volatile Queue<System.Action> dispatchQueue = new();
 
 		void FixedUpdate() {
 			HandleDispatch();
+		}
+
+		private void OnDestroy() {
+			PubnubApi.Pubnub.CleanUp();
+		}
+
+		private void OnDisable() {
+			OnDestroy();
 		}
 
 		static void HandleDispatch() {
