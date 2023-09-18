@@ -5,7 +5,8 @@ changelog:
     version: 7.0.1
     changes:
       - type: bug
-        text: "Package exporting fix."  - date: 2023-09-01
+        text: "Package exporting fix."
+  - date: 2023-09-01
     version: 7.0.0
     changes:
       - type: bug
