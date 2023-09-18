@@ -1,11 +1,11 @@
 --- 
 version: 7.0.1
 changelog:
-  - date: 2023-09-15
+  - date: 2023-09-18
     version: 7.0.1
     changes:
       - type: bug
-        text: "On domain reload, ensure background thread cancellation."
+        text: "Package exporting fix."
   - date: 2023-09-01
     version: 7.0.0
     changes:

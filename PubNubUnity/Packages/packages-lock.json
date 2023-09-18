@@ -30,6 +30,13 @@
       },
       "url": "https://packages.unity.com"
     },
+    "com.unity.asset-store-tools": {
+      "version": "https://github.com/Unity-Technologies/com.unity.asset-store-tools.git/?path=/com.unity.asset-store-tools/",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "42a65698c4186c03237629f42ba3e8d9d034fe4a"
+    },
     "com.unity.collab-proxy": {
       "version": "1.17.1",
       "depth": 0,
