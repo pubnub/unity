@@ -12,6 +12,7 @@ namespace PubnubApi.Unity.Internal.EditorTools {
 		private readonly string[] propNames = new[] {
 			"PublishKey",
 			"SubscribeKey",
+			"SecretKey",
 			"AuthKey",
 			"CipherKey",
 			"EnableTelemetry",
