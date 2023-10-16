@@ -13,46 +13,48 @@ public class PubNubPackageExporter : MonoBehaviour {
 			System.IO.Directory.Delete(targetPath, true);
 		}
 	}
-	
+
 	[MenuItem("Assets/Export PubNub Package")]
 	public static async void ExportPNPackage() {
-		CleanUp();
-		CopyFilesRecursively(sourcePath, targetPath);
+		// CleanUp();
+		// CopyFilesRecursively(sourcePath, targetPath);
 
-		var assets = new[] { "Packages/com.pubnub.sdk" };
-
+		var assets = new[] { "Assets/PubNub" };
 		Debug.Log("Assets to be exported:\n" + string.Join(", ", assets));
+		// "Complex" export method
+		// var assets = new[] { "Packages/com.pubnub.sdk" };
+		// var exportMethod = Assembly.Load("asset-store-tools-editor")
+		// 	.GetType("AssetStoreTools.Uploader.PackageExporter")
+		// 	.GetMethod("ExportPackage", BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy);
+		//
+		// var task = exportMethod.Invoke(
+		// 	null,
+		// 	new object[] {
+		// 		assets,
+		// 		"PubNub.unitypackage",
+		// 		false,
+		// 		false,
+		// 		false,
+		// 		null
+		// 	}
+		// ) as Task;
+		//
+		// await task;
+		// var o = task
+		// 	.GetType()
+		// 	.GetProperty("Result", BindingFlags.Instance | BindingFlags.Public)
+		// 	.GetValue(task);
+		// var r = o.GetType()
+		// 	.GetField("Success")
+		// 	.GetValue(o) as bool?;
+		//
+		// Debug.Assert(r.Value, "Export broke.");
 
-		var exportMethod = Assembly.Load("asset-store-tools-editor")
-			.GetType("AssetStoreTools.Uploader.PackageExporter")
-			.GetMethod("ExportPackage", BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy);
+		AssetDatabase.ExportPackage(assets, "PubNub.unitypackage",  ExportPackageOptions.Recurse);
 
-		var task = exportMethod.Invoke(
-			null,
-			new object[] {
-				assets,
-				"PubNub.unitypackage",
-				false,
-				false,
-				false,
-				null
-			}
-		) as Task;
-
-		await task;
-		var o = task
-			.GetType()
-			.GetProperty("Result", BindingFlags.Instance | BindingFlags.Public)
-			.GetValue(task);
-		var r = o.GetType()
-			.GetField("Success")
-			.GetValue(o) as bool?;
-
-		Debug.Assert(r.Value, "Export broke.");
-		
-		CleanUp();
+		// CleanUp();
 	}
-	
+
 	private static void CopyFilesRecursively(string sourcePath, string targetPath)
 	{
 		//Now Create all of the directories
