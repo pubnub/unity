@@ -1,6 +1,13 @@
 --- 
-version: 7.0.1
+version: 7.1.0
 changelog:
+  - date: 2023-10-16
+    version: 7.1.0
+    changes:
+      - type: feature
+        text: "Add crypto module that allows configure SDK to encrypt and decrypt messages."
+      - type: bug
+        text: "Improved security of crypto implementation by adding enhanced AES-CBC cryptor."
   - date: 2023-09-18
     version: 7.0.1
     changes:
@@ -685,7 +692,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/7.0.1/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/7.1.0/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
@@ -852,7 +859,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/7.0.1/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/7.1.0/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"

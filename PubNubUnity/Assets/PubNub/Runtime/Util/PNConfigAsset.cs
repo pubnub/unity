@@ -8,6 +8,7 @@ namespace PubnubApi.Unity {
 	public class PNConfigAsset : ScriptableObject {
 		public string PublishKey = "demo";
 		public string SubscribeKey = "demo";
+		public string SecretKey = "";
 		public string AuthKey;
 		public string CipherKey;
 		public bool EnableTelemetry;
@@ -27,6 +28,7 @@ namespace PubnubApi.Unity {
 			var config = new PNConfiguration(new UserId(new UserId(asset.UserId)));
 			config.SubscribeKey = asset.SubscribeKey;
 			config.PublishKey = asset.PublishKey;
+			config.SecretKey = asset.SecretKey;
 			config.AuthKey = asset.AuthKey;
 			config.CipherKey = asset.CipherKey;
 			config.Secure = asset.Secure;

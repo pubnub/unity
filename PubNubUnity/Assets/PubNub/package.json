@@ -1,6 +1,6 @@
 ﻿{
   "name": "com.pubnub.sdk",
-  "version": "7.0.1",
+  "version": "7.1.0",
   "displayName": "PubNub SDK",
   "description": "PubNub Real-time Cloud-Hosted Push API and Push Notification Client Frameworks",
   "unity": "2021.3",
