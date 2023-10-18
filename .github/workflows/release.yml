@@ -55,7 +55,7 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
           project-path: ./PubNubUnity
           package-name: PubNub
-          export-method-name: PubNubPackageExporter.ExportPackage
+          export-method-name: PubNubPackageExporter.ExportPNPackage
           license-username: ${{ secrets.UNITYCI_NEW_USER }}
           license-password: ${{ secrets.UNITYCI_NEW_PASS }}
           license-serial: ${{ secrets.UNITYCI_NEW_SERIAL }}
