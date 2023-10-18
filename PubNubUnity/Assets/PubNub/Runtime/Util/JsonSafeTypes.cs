@@ -42,10 +42,10 @@ namespace PubnubApi.Unity {
 			jsonResponse.TryGetValue("z", out var oz);
 			jsonResponse.TryGetValue("w", out var ow);
 
-			x = ox is not null ? (float)(double)ox : 0;
-			y = oy is not null ? (float)(double)oy : 0;
-			z = oz is not null ? (float)(double)oz : 0;
-			w = ow is not null ? (float)(double)ow : 0;
+			x = ox != null ? (float)(double)ox : 0;
+			y = oy != null ? (float)(double)oy : 0;
+			z = oz != null ? (float)(double)oz : 0;
+			w = ow != null ? (float)(double)ow : 0;
 		}
 
 		public static implicit operator Vector3(JsonSafeVector v) {

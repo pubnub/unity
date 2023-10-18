@@ -24,12 +24,12 @@ namespace PubnubApi.Unity {
 				DontDestroyOnLoad(gameObject);
 			}
 
-			if (pnConfiguration is null) {
+			if (pnConfiguration == null) {
 				Debug.LogError("PNConfigAsset is missing", this);
 				return null;
 			}
 
-			if (pubnub is not null) {
+			if (pubnub != null) {
 				Debug.LogError("PubNub has already been initialized");
 				return pubnub;
 			}
