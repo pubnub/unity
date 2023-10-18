@@ -27,38 +27,6 @@ jobs:
         uses: ./.github/.release/actions/actions/checks/release
         with:
           token: ${{ secrets.GH_TOKEN }}
-  publish:
-    name: Build package
-    runs-on: macos-11
-    needs: check-release
-    if: needs.check-release.outputs.release == 'true'
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          # This should be the same as the one specified for on.pull_request.branches
-          ref: master
-      - name: Checkout actions
-        uses: actions/checkout@v3
-        with:
-          repository: pubnub/client-engineering-deployment-tools
-          ref: v1
-          token: ${{ secrets.GH_TOKEN }}
-          path: .github/.release/actions
-      - name: Install Unity engine
-        uses: ./.github/.release/actions/actions/installers/unity
-        with:
-          unity-version: "2020.3.22f1"
-      - name: Build Unity package
-        uses: ./.github/.release/actions/actions/services/unity
-        with:
-          token: ${{ secrets.GH_TOKEN }}
-          project-path: ./PubNubUnity
-          package-name: PubNub
-          export-method-name: PubNubPackageExporter.ExportPackage
-          license-username: ${{ secrets.UNITYCI_NEW_USER }}
-          license-password: ${{ secrets.UNITYCI_NEW_PASS }}
-          license-serial: ${{ secrets.UNITYCI_NEW_SERIAL }}
       - name: Create Release
         uses: ./.github/.release/actions/actions/services/github-release
         with:
