@@ -27,8 +27,7 @@ namespace PubnubApi.Unity.Tests {
 			Assert.IsFalse(s.Error);
 		}
 
-		// Non-deterministic?
-		// [UnityTest]
+		[UnityTest]
 		public IEnumerator ReceiveMessage() {
 			yield return new WaitUntil(() => lastMessage != null);
 
