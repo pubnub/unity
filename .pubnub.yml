@@ -1,6 +1,10 @@
 --- 
-version: 7.1.0
+version: v7.1.1
 changelog:
+  - date: 2023-10-25
+    version: v7.1.1
+    changes:
+
   - date: 2023-10-16
     version: 7.1.0
     changes:
@@ -692,7 +696,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/7.1.0/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v7.1.1/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
@@ -859,7 +863,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/7.1.0/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v7.1.1/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
