@@ -1,6 +1,11 @@
 --- 
-version: v7.1.1
+version: v7.1.2
 changelog:
+  - date: 2023-10-30
+    version: v7.1.2
+    changes:
+      - type: improvement
+        text: "Changed license to PubNub Software Development Kit License."
   - date: 2023-10-25
     version: v7.1.1
     changes:
@@ -697,7 +702,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v7.1.1/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v7.1.2/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
@@ -864,7 +869,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v7.1.1/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v7.1.2/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
