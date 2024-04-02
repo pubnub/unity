@@ -1,6 +1,11 @@
 --- 
-version: v7.1.3
+version: v7.1.4
 changelog:
+  - date: 2024-04-02
+    version: v7.1.4
+    changes:
+      - type: bug
+        text: "Fixes issue of inaccurate DateTime to TimeToken conversion in TranslateDateTimeToPubnubUnixNanoSeconds."
   - date: 2023-11-28
     version: v7.1.3
     changes:
@@ -709,7 +714,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v7.1.3/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v7.1.4/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
@@ -876,7 +881,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v7.1.3/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v7.1.4/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
