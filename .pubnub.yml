@@ -1,6 +1,13 @@
 --- 
-version: v7.1.4
+version: v7.2.0
 changelog:
+  - date: 2024-04-18
+    version: v7.2.0
+    changes:
+      - type: feature
+        text: "Added event engine implementation for subscribe and presence operation."
+      - type: feature
+        text: "Added support for RetryConfiguration to configure subscribe request retry."
   - date: 2024-04-02
     version: v7.1.4
     changes:
@@ -714,7 +721,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v7.1.4/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v7.2.0/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
@@ -881,7 +888,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v7.1.4/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v7.2.0/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
