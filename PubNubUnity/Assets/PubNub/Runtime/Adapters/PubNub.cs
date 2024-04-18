@@ -1,13 +1,14 @@
 using System;
 using System.Threading.Tasks;
 using PubnubApi.EndPoint;
+using PubnubApi.Interface;
 
 namespace PubnubApi.Unity {
 	public static class PubnubExtensions {
-		public static SubscribeOperation<T> Subscribe<T>(this Pubnub pn) => pn.Subscribe<T>();
+		public static ISubscribeOperation<T> Subscribe<T>(this Pubnub pn) => pn.Subscribe<T>();
 
 		[Obsolete("Use the generic version instead")]
-		public static SubscribeOperation<string> Subscribe(this Pubnub pn) => pn.Subscribe<string>();
+		public static ISubscribeOperation<string> Subscribe(this Pubnub pn) => pn.Subscribe<string>();
 
 		[Obsolete("Use the generic version instead")]
 		public static bool Reconnect(this Pubnub pn) => pn.Reconnect<string>();
@@ -45,10 +46,9 @@ namespace PubnubApi.Unity {
 
 
 		// TODO create an async variant
-		public static UnsubscribeOperation<string> Unsubscribe(this Pubnub pn) {
+		public static IUnsubscribeOperation<string> Unsubscribe(this Pubnub pn) {
 			return pn.Unsubscribe<string>();
 		}
-
 
 	}
 }
