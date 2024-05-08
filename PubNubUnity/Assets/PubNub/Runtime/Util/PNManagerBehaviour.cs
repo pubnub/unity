@@ -1,3 +1,4 @@
+using PubnubApi.Unity.PubNub.Runtime.Util;
 using UnityEngine;
 
 namespace PubnubApi.Unity {
@@ -36,6 +37,7 @@ namespace PubnubApi.Unity {
 
 			pnConfiguration.UserId = userId;
 			pubnub = new Pubnub(pnConfiguration);
+			pubnub.SetJsonPluggableLibrary(new NewtonsoftJsonUnity(pnConfiguration, ((PNConfiguration)pnConfiguration).PubnubLog));
 			pubnub.AddListener(listener);
 			return pubnub;
 
