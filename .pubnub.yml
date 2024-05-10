@@ -1,6 +1,11 @@
 --- 
-version: v7.2.0
+version: v7.2.1
 changelog:
+  - date: 2024-05-09
+    version: v7.2.1
+    changes:
+      - type: bug
+        text: "Fixes issue of Unity SDK not being able to have a fully independent IJsonPluggableLibrary implementation because of direct nu-get Newtonsoft usage in C# SDK (Unity has it's own version that works with IL2CPP builds)."
   - date: 2024-04-18
     version: v7.2.0
     changes:
@@ -721,7 +726,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v7.2.0/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v7.2.1/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
@@ -888,7 +893,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v7.2.0/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v7.2.1/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
