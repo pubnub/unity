@@ -11,19 +11,21 @@ defaults:
 jobs:
   tests:
     name: Integration and Unit tests
-    runs-on: macos-latest
+    runs-on:
+      group: Default
+      labels: macos-latest
     env:
       EVENT_NOKQUEUE: 1
-      PUB_KEY: ${{ secrets.PUB_KEY }}
-      SUB_KEY: ${{ secrets.SUB_KEY }}
-      PAM_PUB_KEY: ${{ secrets.PAM_PUB_KEY }}
-      PAM_SUB_KEY: ${{ secrets.PAM_SUB_KEY }}
-      PAM_SECRET_KEY: ${{ secrets.PAM_SECRET_KEY }}
+      PUB_KEY: ${{ secrets.SDK_PUB_KEY }}
+      SUB_KEY: ${{ secrets.SDK_SUB_KEY }}
+      PAM_PUB_KEY: ${{ secrets.SDK_PAM_PUB_KEY }}
+      PAM_SUB_KEY: ${{ secrets.SDK_PAM_SUB_KEY }}
+      PAM_SECRET_KEY: ${{ secrets.SDK_PAM_SEC_KEY }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Checkout actions
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: pubnub/client-engineering-deployment-tools
           ref: v1
@@ -46,7 +48,9 @@ jobs:
         uses: ./.github/.release/actions/actions/utils/fast-jobs-failure
   all-tests:
     name: Tests
-    runs-on: ubuntu-latest
+    runs-on:
+      group: Default Larger Runners
+      labels: ubuntu-latest-m
     needs: [tests]
     steps:
       - name: Tests summary
