@@ -31,10 +31,6 @@ jobs:
           ref: v1
           token: ${{ secrets.GH_TOKEN }}
           path: .github/.release/actions
-      - name: Install Unity engine
-        uses: ./.github/.release/actions/actions/installers/unity
-        with:
-          unity-version: "2021.2.2f1"
       - name: Integration tests
         uses: ./.github/.release/actions/actions/runners/unity
         with:
