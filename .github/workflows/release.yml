@@ -9,10 +9,9 @@ concurrency: unity_run
 jobs:
   check-release:
     name: Check release required
-    runs-on:
-      group: Default Larger Runners
-      labels: ubuntu-latest-m
     if: github.event.pull_request.merged && endsWith(github.repository, '-private') != true
+    runs-on:
+      group: Default
     outputs:
       release: ${{ steps.check.outputs.ready }}
     steps:
@@ -31,8 +30,7 @@ jobs:
   publish:
     name: Build package
     runs-on:
-      group: Default
-      labels: macos-latest
+      group: macos-gh
     needs: check-release
     if: needs.check-release.outputs.release == 'true'
     steps:

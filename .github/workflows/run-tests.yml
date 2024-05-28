@@ -12,8 +12,7 @@ jobs:
   tests:
     name: Integration and Unit tests
     runs-on:
-      group: Default
-      labels: macos-latest
+      group: macos-gh
     env:
       EVENT_NOKQUEUE: 1
       PUB_KEY: ${{ secrets.SDK_PUB_KEY }}
@@ -48,10 +47,9 @@ jobs:
         uses: ./.github/.release/actions/actions/utils/fast-jobs-failure
   all-tests:
     name: Tests
-    runs-on:
-      group: Default Larger Runners
-      labels: ubuntu-latest-m
     needs: [tests]
+    runs-on:
+      group: Default
     steps:
       - name: Tests summary
         run: echo -e "\033[38;2;95;215;0m\033[1mAll tests successfully passed"
