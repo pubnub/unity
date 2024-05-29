@@ -11,28 +11,25 @@ defaults:
 jobs:
   tests:
     name: Integration and Unit tests
-    runs-on: macos-latest
+    runs-on:
+      group: macos-gh
     env:
       EVENT_NOKQUEUE: 1
-      PUB_KEY: ${{ secrets.PUB_KEY }}
-      SUB_KEY: ${{ secrets.SUB_KEY }}
-      PAM_PUB_KEY: ${{ secrets.PAM_PUB_KEY }}
-      PAM_SUB_KEY: ${{ secrets.PAM_SUB_KEY }}
-      PAM_SECRET_KEY: ${{ secrets.PAM_SECRET_KEY }}
+      PUB_KEY: ${{ secrets.SDK_PUB_KEY }}
+      SUB_KEY: ${{ secrets.SDK_SUB_KEY }}
+      PAM_PUB_KEY: ${{ secrets.SDK_PAM_PUB_KEY }}
+      PAM_SUB_KEY: ${{ secrets.SDK_PAM_SUB_KEY }}
+      PAM_SECRET_KEY: ${{ secrets.SDK_PAM_SEC_KEY }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Checkout actions
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: pubnub/client-engineering-deployment-tools
           ref: v1
           token: ${{ secrets.GH_TOKEN }}
           path: .github/.release/actions
-      - name: Install Unity engine
-        uses: ./.github/.release/actions/actions/installers/unity
-        with:
-          unity-version: "2021.2.2f1"
       - name: Integration tests
         uses: ./.github/.release/actions/actions/runners/unity
         with:
@@ -46,8 +43,9 @@ jobs:
         uses: ./.github/.release/actions/actions/utils/fast-jobs-failure
   all-tests:
     name: Tests
-    runs-on: ubuntu-latest
     needs: [tests]
+    runs-on:
+      group: Default
     steps:
       - name: Tests summary
         run: echo -e "\033[38;2;95;215;0m\033[1mAll tests successfully passed"
