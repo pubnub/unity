@@ -16,7 +16,6 @@ namespace PubnubApi.Unity.Tests {
 				SubscribeKey = System.Environment.GetEnvironmentVariable("SUB_KEY"),
 				SecretKey = System.Environment.GetEnvironmentVariable("PAM_SECRET_KEY")
 			};
-			pnConfiguration.LogVerbosity = PNLogVerbosity.BODY;
 			pn = new Pubnub(pnConfiguration);
 
 			pn.AddListener(listener);

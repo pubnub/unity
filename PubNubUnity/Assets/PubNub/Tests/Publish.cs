@@ -9,8 +9,6 @@ namespace PubnubApi.Unity.Tests {
 		string lastMessage = null;
 
 		private void OnMessage(Pubnub arg1, PNMessageResult<object> arg2) {
-			Debug.Log($"Message Received. Channel: {arg2.Channel} / Message: {arg2.Message}");
-			Debug.Log($"Received Message type {arg2.Message?.GetType()?.ToString()}");
 			lastMessage = arg2.Message as string;
 		}
 
