@@ -38,6 +38,7 @@ namespace PubnubApi.Unity {
 			pnConfiguration.UserId = userId;
 			pubnub = new Pubnub(pnConfiguration);
 			pubnub.SetJsonPluggableLibrary(new NewtonsoftJsonUnity(pnConfiguration, ((PNConfiguration)pnConfiguration).PubnubLog));
+			pubnub.SetTransportLayer(new UnityHttpClientService());
 			pubnub.AddListener(listener);
 			return pubnub;
 
