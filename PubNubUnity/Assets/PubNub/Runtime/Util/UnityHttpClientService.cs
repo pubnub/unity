@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.Networking;
 
 namespace PubnubApi.Unity {
@@ -12,7 +13,6 @@ namespace PubnubApi.Unity {
 				StatusCode = (int)request.responseCode,
 				Content = request.downloadHandler?.data,
 				RequestUrl = request.url,
-				Error = new Exception(request.error),
 				Headers = request.GetResponseHeaders()
 					.ToDictionary(
 						x => x.Key,
@@ -33,6 +33,7 @@ namespace PubnubApi.Unity {
 		}
 
 		public async Task<TransportResponse> DeleteRequest(TransportRequest transportRequest) {
+			Debug.LogError("DELETE");
 			TransportResponse response;
 			try {
 				var deleteRequest = UnityWebRequest.Delete(transportRequest.RequestUrl);
@@ -50,6 +51,7 @@ namespace PubnubApi.Unity {
 					response = await taskCompletionSource.Task;
 				}
 			} catch (Exception ex) {
+				Debug.LogError($"DELETE Error: {ex}");
 				response = new TransportResponse() {
 					RequestUrl = transportRequest.RequestUrl,
 					Error = ex
@@ -60,23 +62,30 @@ namespace PubnubApi.Unity {
 		}
 
 		public async Task<TransportResponse> GetRequest(TransportRequest transportRequest) {
+			Debug.LogError("GET");
 			TransportResponse response;
 			try {
 				var getRequest = UnityWebRequest.Get(transportRequest.RequestUrl);
 				PrepareUnityRequest(getRequest, transportRequest);
+				Debug.LogError("PREPARED");
 				var taskCompletionSource = new TaskCompletionSource<TransportResponse>();
 				getRequest.SendWebRequest().completed += _ => {
 					//will raise an exception if cancellation token is triggered
 					//but shouldn't because we also Abort (probably?)
+					Debug.LogError("COMPLETED");
 					taskCompletionSource.SetResult(UnityRequestToResponse(getRequest));
+					Debug.LogError("RESULT SET");
 				};
 				await using (transportRequest.CancellationToken.Register(() => {
 					             getRequest.Abort();
 					             taskCompletionSource.TrySetCanceled();
 				             })) {
+					Debug.LogError("GET PRE AWAIT");
 					response = await taskCompletionSource.Task;
+					Debug.LogError("GET POST AWAIT");
 				}
 			} catch (Exception ex) {
+				Debug.LogError($"GET Error: {ex}");
 				response = new TransportResponse() {
 					RequestUrl = transportRequest.RequestUrl,
 					Error = ex
@@ -87,6 +96,7 @@ namespace PubnubApi.Unity {
 		}
 
 		public async Task<TransportResponse> PostRequest(TransportRequest transportRequest) {
+			Debug.LogError("POST");
 			TransportResponse response;
 			try {
 				var formData = new List<IMultipartFormSection>();
@@ -111,6 +121,7 @@ namespace PubnubApi.Unity {
 					response = await taskCompletionSource.Task;
 				}
 			} catch (Exception ex) {
+				Debug.LogError($"POST Error: {ex}");
 				response = new TransportResponse() {
 					RequestUrl = transportRequest.RequestUrl,
 					Error = ex
@@ -121,6 +132,7 @@ namespace PubnubApi.Unity {
 		}
 
 		public async Task<TransportResponse> PatchRequest(TransportRequest transportRequest) {
+			Debug.LogError("PATCH");
 			TransportResponse response;
 			try {
 				UnityWebRequest patchRequest;
@@ -147,6 +159,7 @@ namespace PubnubApi.Unity {
 					response = await taskCompletionSource.Task;
 				}
 			} catch (Exception ex) {
+				Debug.LogError($"PATCH Error: {ex}");
 				response = new TransportResponse() {
 					RequestUrl = transportRequest.RequestUrl,
 					Error = ex
@@ -157,6 +170,7 @@ namespace PubnubApi.Unity {
 		}
 
 		public async Task<TransportResponse> PutRequest(TransportRequest transportRequest) {
+			Debug.LogError("PUT");
 			TransportResponse response;
 			try {
 				UnityWebRequest putRequest;
@@ -182,6 +196,7 @@ namespace PubnubApi.Unity {
 					response = await taskCompletionSource.Task;
 				}
 			} catch (Exception ex) {
+				Debug.LogError($"PUT Error: {ex}");
 				response = new TransportResponse() {
 					RequestUrl = transportRequest.RequestUrl,
 					Error = ex

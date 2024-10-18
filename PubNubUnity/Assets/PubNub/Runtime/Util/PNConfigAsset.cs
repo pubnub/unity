@@ -24,7 +24,7 @@ namespace PubnubApi.Unity {
 			if (string.IsNullOrEmpty(asset.UserId)) {
 				throw new NullReferenceException("You need to set the UserId before passing configuration");
 			}
-
+			Debug.LogError("NEW CONFIG");
 			var config = new PNConfiguration(new UserId(new UserId(asset.UserId)));
 			config.SubscribeKey = asset.SubscribeKey;
 			config.PublishKey = asset.PublishKey;
@@ -34,6 +34,7 @@ namespace PubnubApi.Unity {
 			config.Secure = asset.Secure;
 			config.LogVerbosity = asset.LogVerbosity;
 			config.EnableTelemetry = asset.EnableTelemetry;
+			Debug.LogError("NEW CONFIG DONE");
 			return config;
 		}
 	}
