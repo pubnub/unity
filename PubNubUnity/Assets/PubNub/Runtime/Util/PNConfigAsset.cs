@@ -11,7 +11,6 @@ namespace PubnubApi.Unity {
 		public string SecretKey = "";
 		public string AuthKey;
 		public string CipherKey;
-		public bool EnableTelemetry;
 		public bool Secure;
 		public PNLogVerbosity LogVerbosity;
 
@@ -33,7 +32,6 @@ namespace PubnubApi.Unity {
 			config.CipherKey = asset.CipherKey;
 			config.Secure = asset.Secure;
 			config.LogVerbosity = asset.LogVerbosity;
-			config.EnableTelemetry = asset.EnableTelemetry;
 			return config;
 		}
 	}
