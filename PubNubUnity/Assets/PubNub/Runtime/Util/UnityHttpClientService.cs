@@ -22,6 +22,7 @@ namespace PubnubApi.Unity {
 
 		private void PrepareUnityRequest(UnityWebRequest request, TransportRequest transportRequest) {
 			if (transportRequest.Timeout.HasValue) {
+				Debug.LogWarning($"TIMEOUT: {(int)transportRequest.Timeout.Value.TotalSeconds}");
 				request.timeout = (int)transportRequest.Timeout.Value.TotalSeconds;
 			}
 
@@ -33,23 +34,20 @@ namespace PubnubApi.Unity {
 		}
 
 		public async Task<TransportResponse> DeleteRequest(TransportRequest transportRequest) {
-			Debug.LogError("DELETE");
+			Debug.LogWarning("DELETE");
 			TransportResponse response;
 			try {
 				var deleteRequest = UnityWebRequest.Delete(transportRequest.RequestUrl);
 				PrepareUnityRequest(deleteRequest, transportRequest);
 				var taskCompletionSource = new TaskCompletionSource<TransportResponse>();
+				transportRequest.CancellationToken.Register(() => {
+					deleteRequest.Abort();
+					taskCompletionSource.TrySetCanceled();
+				});
 				deleteRequest.SendWebRequest().completed += _ => {
-					//will raise an exception if cancellation token is triggered
-					//but shouldn't because we also Abort (probably?)
-					taskCompletionSource.SetResult(UnityRequestToResponse(deleteRequest));
+					taskCompletionSource.TrySetResult(UnityRequestToResponse(deleteRequest));
 				};
-				await using (transportRequest.CancellationToken.Register(() => {
-					             deleteRequest.Abort();
-					             taskCompletionSource.TrySetCanceled();
-				             })) {
-					response = await taskCompletionSource.Task;
-				}
+				response = await taskCompletionSource.Task.ConfigureAwait(false);
 			} catch (Exception ex) {
 				Debug.LogError($"DELETE Error: {ex}");
 				response = new TransportResponse() {
@@ -57,33 +55,28 @@ namespace PubnubApi.Unity {
 					Error = ex
 				};
 			}
-
 			return response;
 		}
 
 		public async Task<TransportResponse> GetRequest(TransportRequest transportRequest) {
-			Debug.LogError("GET");
+			Debug.LogWarning($"GET: {transportRequest.RequestUrl}");
 			TransportResponse response;
 			try {
 				var getRequest = UnityWebRequest.Get(transportRequest.RequestUrl);
 				PrepareUnityRequest(getRequest, transportRequest);
-				Debug.LogError("PREPARED");
+				Debug.LogWarning($"GET PREPARED: {Time.frameCount}");
 				var taskCompletionSource = new TaskCompletionSource<TransportResponse>();
+				transportRequest.CancellationToken.Register(() => {
+					getRequest.Abort();
+					taskCompletionSource.TrySetCanceled();
+				});
 				getRequest.SendWebRequest().completed += _ => {
-					//will raise an exception if cancellation token is triggered
-					//but shouldn't because we also Abort (probably?)
-					Debug.LogError("COMPLETED");
-					taskCompletionSource.SetResult(UnityRequestToResponse(getRequest));
-					Debug.LogError("RESULT SET");
+					Debug.LogWarning($"GET COMPLETED: {Time.frameCount}");
+					taskCompletionSource.TrySetResult(UnityRequestToResponse(getRequest));
+					Debug.LogWarning("GET RESULT SET");
+					Debug.LogError($"GET ERROR: {getRequest.error}");
 				};
-				await using (transportRequest.CancellationToken.Register(() => {
-					             getRequest.Abort();
-					             taskCompletionSource.TrySetCanceled();
-				             })) {
-					Debug.LogError("GET PRE AWAIT");
-					response = await taskCompletionSource.Task;
-					Debug.LogError("GET POST AWAIT");
-				}
+				response = await taskCompletionSource.Task.ConfigureAwait(false);
 			} catch (Exception ex) {
 				Debug.LogError($"GET Error: {ex}");
 				response = new TransportResponse() {
@@ -91,12 +84,11 @@ namespace PubnubApi.Unity {
 					Error = ex
 				};
 			}
-
 			return response;
 		}
 
 		public async Task<TransportResponse> PostRequest(TransportRequest transportRequest) {
-			Debug.LogError("POST");
+			Debug.LogWarning("POST");
 			TransportResponse response;
 			try {
 				var formData = new List<IMultipartFormSection>();
@@ -109,17 +101,14 @@ namespace PubnubApi.Unity {
 				var postRequest = UnityWebRequest.Post(transportRequest.RequestUrl, formData);
 				PrepareUnityRequest(postRequest, transportRequest);
 				var taskCompletionSource = new TaskCompletionSource<TransportResponse>();
+				transportRequest.CancellationToken.Register(() => {
+					postRequest.Abort();
+					taskCompletionSource.TrySetCanceled();
+				});
 				postRequest.SendWebRequest().completed += _ => {
-					//will raise an exception if cancellation token is triggered
-					//but shouldn't because we also Abort (probably?)
-					taskCompletionSource.SetResult(UnityRequestToResponse(postRequest));
+					taskCompletionSource.TrySetResult(UnityRequestToResponse(postRequest));
 				};
-				await using (transportRequest.CancellationToken.Register(() => {
-					             postRequest.Abort();
-					             taskCompletionSource.TrySetCanceled();
-				             })) {
-					response = await taskCompletionSource.Task;
-				}
+				response = await taskCompletionSource.Task.ConfigureAwait(false);
 			} catch (Exception ex) {
 				Debug.LogError($"POST Error: {ex}");
 				response = new TransportResponse() {
@@ -127,12 +116,11 @@ namespace PubnubApi.Unity {
 					Error = ex
 				};
 			}
-
 			return response;
 		}
 
 		public async Task<TransportResponse> PatchRequest(TransportRequest transportRequest) {
-			Debug.LogError("PATCH");
+			Debug.LogWarning("PATCH");
 			TransportResponse response;
 			try {
 				UnityWebRequest patchRequest;
@@ -147,17 +135,14 @@ namespace PubnubApi.Unity {
 
 				PrepareUnityRequest(patchRequest, transportRequest);
 				var taskCompletionSource = new TaskCompletionSource<TransportResponse>();
+				transportRequest.CancellationToken.Register(() => {
+					patchRequest.Abort();
+					taskCompletionSource.TrySetCanceled();
+				});
 				patchRequest.SendWebRequest().completed += _ => {
-					//will raise an exception if cancellation token is triggered
-					//but shouldn't because we also Abort (probably?)
-					taskCompletionSource.SetResult(UnityRequestToResponse(patchRequest));
+					taskCompletionSource.TrySetResult(UnityRequestToResponse(patchRequest));
 				};
-				await using (transportRequest.CancellationToken.Register(() => {
-					             patchRequest.Abort();
-					             taskCompletionSource.TrySetCanceled();
-				             })) {
-					response = await taskCompletionSource.Task;
-				}
+				response = await taskCompletionSource.Task.ConfigureAwait(false);
 			} catch (Exception ex) {
 				Debug.LogError($"PATCH Error: {ex}");
 				response = new TransportResponse() {
@@ -170,7 +155,7 @@ namespace PubnubApi.Unity {
 		}
 
 		public async Task<TransportResponse> PutRequest(TransportRequest transportRequest) {
-			Debug.LogError("PUT");
+			Debug.LogWarning("PUT");
 			TransportResponse response;
 			try {
 				UnityWebRequest putRequest;
@@ -184,17 +169,14 @@ namespace PubnubApi.Unity {
 
 				PrepareUnityRequest(putRequest, transportRequest);
 				var taskCompletionSource = new TaskCompletionSource<TransportResponse>();
+				transportRequest.CancellationToken.Register(() => {
+					putRequest.Abort();
+					taskCompletionSource.TrySetCanceled();
+				});
 				putRequest.SendWebRequest().completed += _ => {
-					//will raise an exception if cancellation token is triggered
-					//but shouldn't because we also Abort (probably?)
-					taskCompletionSource.SetResult(UnityRequestToResponse(putRequest));
+					taskCompletionSource.TrySetResult(UnityRequestToResponse(putRequest));
 				};
-				await using (transportRequest.CancellationToken.Register(() => {
-					             putRequest.Abort();
-					             taskCompletionSource.TrySetCanceled();
-				             })) {
-					response = await taskCompletionSource.Task;
-				}
+				response = await taskCompletionSource.Task.ConfigureAwait(false);
 			} catch (Exception ex) {
 				Debug.LogError($"PUT Error: {ex}");
 				response = new TransportResponse() {

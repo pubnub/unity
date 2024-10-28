@@ -33,7 +33,7 @@ namespace PubnubApi.Unity {
 			config.CipherKey = asset.CipherKey;
 			config.Secure = asset.Secure;
 			config.LogVerbosity = asset.LogVerbosity;
-			config.EnableTelemetry = asset.EnableTelemetry;
+			//config.EnableTelemetry = asset.EnableTelemetry;
 			Debug.LogError("NEW CONFIG DONE");
 			return config;
 		}

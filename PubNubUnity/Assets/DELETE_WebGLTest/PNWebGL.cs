@@ -1,83 +1,62 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using PubnubApi;
 using PubnubApi.Unity;
 using UnityEngine;
 
 public class PNWebGL : PNManagerBehaviour
 {
-    // UserId identifies this client.
 	public string userId;
 
-	private async void Awake() {
+	private async void Awake()
+	{
+		Debug.LogError("Awoke!");
 
-		Debug.LogError("HELLO");
+		await Task.Delay(3000);
 
+		Init();
+	}
+
+	private async void Init() {
 		if (string.IsNullOrEmpty(userId)) {
-			// It is recommended to change the UserId to a meaningful value, to be able to identify this client.
+			// It is recommended to change the UserId to a meaningful value to be able to identify this client.
 			userId = System.Guid.NewGuid().ToString();
 		}
 
 		// Listener example.
 		listener.onStatus += OnPnStatus;
 		listener.onMessage += OnPnMessage;
-		listener.onPresence += OnPnPresence;
-		listener.onFile += OnPnFile;
-		listener.onObject += OnPnObject;
-		listener.onSignal += OnPnSignal;
-		listener.onMessageAction += OnPnMessageAction;
 
 		// Initialize will create a PubNub instance, pass the configuration object, and prepare the listener.
-		Debug.LogError("BEFORE INIT");
 		Initialize(userId);
+		Debug.LogWarning("Inited!");
+
+		await Task.Delay(3000);
 
 		// Subscribe example
-		Debug.LogError("SUBBING:");
 		pubnub.Subscribe<string>().Channels(new[] { "TestChannel" }).Execute();
+		Debug.LogWarning("Subbed!");
+
+		await Task.Delay(5000);
 
 		// Publish example
-		Debug.LogError("PUBBING:");
-		await pubnub.Publish().Channel("TestChannel").Message("Hello World from Unity!").ExecuteAsync();
-		Debug.LogError("AFTER PUBBING:");
+		await pubnub.Publish().Channel("TestChannel").Message("Hello World from WEEEEEEB GLLLLL!").ExecuteAsync().ConfigureAwait(false);
+		Debug.LogWarning("Pubbed!");
 	}
 
-	private void OnPnMessageAction(Pubnub pn, PNMessageActionEventResult result) {
-		Debug.LogError(result.Channel);
+	void OnPnStatus(Pubnub pn, PNStatus status) {
+		Debug.LogWarning(status.Category == PNStatusCategory.PNConnectedCategory ? "Connected" : "Not connected");
 	}
 
-	private void OnPnSignal(Pubnub pn, PNSignalResult<object> result) {
-		Debug.LogError(result.Channel);
-	}
-
-	private void OnPnObject(Pubnub pn, PNObjectEventResult result) {
-		Debug.LogError(result.Channel);
-	}
-
-	private void OnPnFile(Pubnub pn, PNFileEventResult result) {
-		Debug.LogError(result.Channel);
-	}
-
-	private void OnPnPresence(Pubnub pn, PNPresenceEventResult result) {
-		Debug.LogError(result.Event);
-	}
-
-	private void OnPnStatus(Pubnub pn, PNStatus status) {
-		Debug.LogError(status.Category == PNStatusCategory.PNConnectedCategory ? "Connected" : "Not connected");
-	}
-
-	private void OnPnMessage(Pubnub pn, PNMessageResult<object> result) {
-		Debug.LogError($"Message received: {result.Message}");
+	void OnPnMessage(Pubnub pn, PNMessageResult<object> result) {
+		Debug.LogWarning($"Message received: {result.Message}");
 	}
 
 	protected override void OnDestroy() {
-		// Use OnDestroy to clean up, e.g. unsubscribe from listeners.
+		// Use OnDestroy to clean up, for example, to unsubscribe from listeners.
 		listener.onStatus -= OnPnStatus;
 		listener.onMessage -= OnPnMessage;
-		listener.onPresence -= OnPnPresence;
-		listener.onFile -= OnPnFile;
-		listener.onObject -= OnPnObject;
-		listener.onSignal -= OnPnSignal;
-		listener.onMessageAction -= OnPnMessageAction;
 
 		base.OnDestroy();
 	}
