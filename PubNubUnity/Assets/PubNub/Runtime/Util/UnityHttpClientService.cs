@@ -64,17 +64,13 @@ namespace PubnubApi.Unity {
 			try {
 				var getRequest = UnityWebRequest.Get(transportRequest.RequestUrl);
 				PrepareUnityRequest(getRequest, transportRequest);
-				Debug.LogWarning($"GET PREPARED: {Time.frameCount}");
 				var taskCompletionSource = new TaskCompletionSource<TransportResponse>();
 				transportRequest.CancellationToken.Register(() => {
 					getRequest.Abort();
 					taskCompletionSource.TrySetCanceled();
 				});
 				getRequest.SendWebRequest().completed += _ => {
-					Debug.LogWarning($"GET COMPLETED: {Time.frameCount}");
 					taskCompletionSource.TrySetResult(UnityRequestToResponse(getRequest));
-					Debug.LogWarning("GET RESULT SET");
-					Debug.LogError($"GET ERROR: {getRequest.error}");
 				};
 				response = await taskCompletionSource.Task.ConfigureAwait(false);
 			} catch (Exception ex) {
