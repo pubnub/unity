@@ -41,7 +41,7 @@ namespace PubnubApi.Unity {
 			Debug.LogError("Before new PN");
 			pubnub = new Pubnub(pnConfig);
 			Debug.LogError("Setup new PN");
-			pubnub.SetJsonPluggableLibrary(new NewtonsoftJsonUnity(pnConfig, pnConfig.PubnubLog));
+			//pubnub.SetJsonPluggableLibrary(new NewtonsoftJsonUnity(pnConfig, pnConfig.PubnubLog));
 			Debug.LogError("Setup JSON");
 			pubnub.SetTransportLayer(new UnityHttpClientService());
 			Debug.LogError("Setup Transport Layer");
