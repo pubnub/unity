@@ -11,8 +11,9 @@ namespace PubnubApi.Unity {
 		public string SecretKey = "";
 		public string AuthKey;
 		public string CipherKey;
-		public bool EnableTelemetry;
 		public bool Secure;
+		public bool EnableWebGLBuildMode;
+		public bool LogToUnityConsole;
 		public PNLogVerbosity LogVerbosity;
 
 		[SerializeField] private bool externalJsonEnabled = false;
@@ -33,7 +34,6 @@ namespace PubnubApi.Unity {
 			config.CipherKey = asset.CipherKey;
 			config.Secure = asset.Secure;
 			config.LogVerbosity = asset.LogVerbosity;
-			//config.EnableTelemetry = asset.EnableTelemetry;
 			Debug.LogError("NEW CONFIG DONE");
 			return config;
 		}

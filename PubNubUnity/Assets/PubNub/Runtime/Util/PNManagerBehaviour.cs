@@ -37,17 +37,13 @@ namespace PubnubApi.Unity {
 
 			pnConfiguration.UserId = userId;
 			var pnConfig = ((PNConfiguration)pnConfiguration);
-			pnConfig.PubnubLog = new UnityPNLog();
-			Debug.LogError("Before new PN");
-			pubnub = new Pubnub(pnConfig, new UnityHttpClientService());
-			Debug.LogError("Setup new PN");
-			//pubnub.SetJsonPluggableLibrary(new NewtonsoftJsonUnity(pnConfig, pnConfig.PubnubLog));
-			Debug.LogError("Setup JSON");
-			Debug.LogError("Setup Transport Layer");
+			if (pnConfiguration.LogToUnityConsole) {
+				pnConfig.PubnubLog = new UnityPNLog();
+			}
+			pubnub = pnConfiguration.EnableWebGLBuildMode ? new Pubnub(pnConfig, new UnityWebGLHttpClientService()) : new Pubnub(pnConfig);
+			pubnub.SetJsonPluggableLibrary(new NewtonsoftJsonUnity(pnConfig, pnConfig.PubnubLog));
 			pubnub.AddListener(listener);
-			Debug.LogError("Added listener");
 			return pubnub;
-
 		}
 
 		protected virtual void OnDestroy() {

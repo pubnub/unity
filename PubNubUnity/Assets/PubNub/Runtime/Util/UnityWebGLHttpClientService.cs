@@ -7,7 +7,10 @@ using UnityEngine.Networking;
 
 namespace PubnubApi.Unity {
 
-	public class UnityHttpClientService : IHttpClientService {
+	/// <summary>
+	/// This is an implementation of the PubNub Transport Layer created for Web GL builds compatibility
+	/// </summary>
+	public class UnityWebGLHttpClientService : IHttpClientService {
 		private TransportResponse UnityRequestToResponse(UnityWebRequest request) {
 			return new TransportResponse() {
 				StatusCode = (int)request.responseCode,
