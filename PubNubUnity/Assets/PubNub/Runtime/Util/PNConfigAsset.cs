@@ -12,6 +12,7 @@ namespace PubnubApi.Unity {
 		public string AuthKey;
 		public string CipherKey;
 		public bool Secure;
+		public bool EnableEventEngine;
 		public bool EnableWebGLBuildMode;
 		public bool LogToUnityConsole;
 		public PNLogVerbosity LogVerbosity;
@@ -32,6 +33,7 @@ namespace PubnubApi.Unity {
 			config.SecretKey = asset.SecretKey;
 			config.AuthKey = asset.AuthKey;
 			config.CipherKey = asset.CipherKey;
+			config.EnableEventEngine = asset.EnableEventEngine;
 			config.Secure = asset.Secure;
 			config.LogVerbosity = asset.LogVerbosity;
 			Debug.LogError("NEW CONFIG DONE");

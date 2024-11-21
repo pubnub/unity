@@ -16,6 +16,7 @@ namespace PubnubApi.Unity.Internal.EditorTools {
 			"AuthKey",
 			"CipherKey",
 			"Secure",
+			"EnableEventEngine",
 			"EnableWebGLBuildMode",
 			"LogToUnityConsole",
 			"LogVerbosity"
