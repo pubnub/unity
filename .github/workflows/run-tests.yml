@@ -12,7 +12,7 @@ jobs:
   tests:
     name: Integration and Unit tests
     runs-on:
-      group: macos-gh
+      group: organization/macos-gh
     env:
       EVENT_NOKQUEUE: 1
       PUB_KEY: ${{ secrets.SDK_PUB_KEY }}
@@ -45,7 +45,7 @@ jobs:
     name: Tests
     needs: [tests]
     runs-on:
-      group: Default
+      group: organization/Default
     steps:
       - name: Tests summary
         run: echo -e "\033[38;2;95;215;0m\033[1mAll tests successfully passed"
