@@ -12,7 +12,7 @@ namespace PubnubApi.Unity {
 		public string AuthKey;
 		public string CipherKey;
 		public bool Secure;
-		public bool EnableEventEngine;
+		public bool EnableEventEngine = true;
 		public bool EnableWebGLBuildMode;
 		public bool LogToUnityConsole;
 		public PNLogVerbosity LogVerbosity;
