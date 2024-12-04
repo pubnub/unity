@@ -36,11 +36,14 @@ namespace PubnubApi.Unity {
 			}
 
 			pnConfiguration.UserId = userId;
-			pubnub = new Pubnub(pnConfiguration);
-			pubnub.SetJsonPluggableLibrary(new NewtonsoftJsonUnity(pnConfiguration, ((PNConfiguration)pnConfiguration).PubnubLog));
+			var pnConfig = ((PNConfiguration)pnConfiguration);
+			if (pnConfiguration.LogToUnityConsole) {
+				pnConfig.PubnubLog = new UnityPNLog();
+			}
+			pubnub = pnConfiguration.EnableWebGLBuildMode ? new Pubnub(pnConfig, new UnityWebGLHttpClientService()) : new Pubnub(pnConfig);
+			pubnub.SetJsonPluggableLibrary(new NewtonsoftJsonUnity(pnConfig, pnConfig.PubnubLog));
 			pubnub.AddListener(listener);
 			return pubnub;
-
 		}
 
 		protected virtual void OnDestroy() {

@@ -15,8 +15,14 @@ namespace PubnubApi.Unity.Internal.EditorTools {
 			"SecretKey",
 			"AuthKey",
 			"CipherKey",
-			"EnableTelemetry",
 			"Secure",
+			"NonSubscribeRequestTimeout",
+			"SubscribeTimeout",
+			"ReconnectionPolicy",
+			"MaintainPresenceState",
+			"EnableEventEngine",
+			"EnableWebGLBuildMode",
+			"LogToUnityConsole",
 			"LogVerbosity"
 		};
 

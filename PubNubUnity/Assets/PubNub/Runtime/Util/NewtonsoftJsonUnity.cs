@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -104,6 +105,19 @@ namespace PubnubApi.Unity.PubNub.Runtime.Util {
 			return result;
 		}
 
+		public object DeserializeToObject(object rawObject, Type type) {
+			try {
+				if (rawObject is JObject jObject) {
+					return jObject.ToObject(type);
+				} else {
+					return rawObject;
+				}
+			} catch (Exception e) {
+				LoggingMethod.WriteToLog(pubnubLog, e.ToString(), config.LogVerbosity);
+				return rawObject;
+			}
+		}
+
 		public object DeserializeToObject(string jsonString) {
 			object result = JsonConvert.DeserializeObject<object>(jsonString,
 				new JsonSerializerSettings { DateParseHandling = DateParseHandling.None, MaxDepth = 64 });
@@ -125,26 +139,6 @@ namespace PubnubApi.Unity.PubNub.Runtime.Util {
 			return result;
 		}
 
-		public object DeserializeToObject(object rawObject, Type type)
-        {
-            try
-            {
-                if (rawObject is JObject jObject)
-                {
-                    return jObject.ToObject(type);
-                }
-                else
-                {
-                    return rawObject;
-                }
-            }
-            catch (Exception e)
-            {
-	            LoggingMethod.WriteToLog(pubnubLog, e.ToString(), config.LogVerbosity);
-                return rawObject;
-            }
-        }
-
 		public void PopulateObject(string value, object target) {
 			JsonConvert.PopulateObject(value, target, defaultJsonSerializerSettings);
 		}
@@ -164,25 +158,24 @@ namespace PubnubApi.Unity.PubNub.Runtime.Util {
 
 		private bool IsGenericTypeForMessage<T>() {
 			bool ret = false;
+			if (typeof(T).GetTypeInfo().IsGenericType &&
+			    typeof(T).GetGenericTypeDefinition() == typeof(PNMessageResult<>)) {
+				ret = true;
+			}
 
-#if (NET35 || NET40 || NET45 || NET461 || NET48)
-            if (typeof(T).IsGenericType && typeof(T).GetGenericTypeDefinition() == typeof(PNMessageResult<>))
-            {
-                ret = true;
-            }
-            LoggingMethod.WriteToLog(pubnubLog, string.Format(CultureInfo.InvariantCulture, "DateTime: {0}, NET35/40 IsGenericTypeForMessage = {1}", DateTime.Now.ToString(CultureInfo.InvariantCulture), ret.ToString()), config.LogVerbosity);
-#elif (NETSTANDARD10 || NETSTANDARD11 || NETSTANDARD12 || NETSTANDARD13 || NETSTANDARD14 || NETSTANDARD20 || NET60 || UAP || NETFX_CORE || WINDOWS_UWP)
-            if (typeof(T).GetTypeInfo().IsGenericType && typeof(T).GetGenericTypeDefinition() == typeof(PNMessageResult<>))
-            {
-                ret = true;
-            }
-            LoggingMethod.WriteToLog(pubnubLog, string.Format(CultureInfo.InvariantCulture, "DateTime: {0}, typeof(T).GetTypeInfo().IsGenericType = {1}", DateTime.Now.ToString(CultureInfo.InvariantCulture), typeof(T).GetTypeInfo().IsGenericType.ToString()), config.LogVerbosity);
-            if (typeof(T).GetTypeInfo().IsGenericType)
-            {
-                LoggingMethod.WriteToLog(pubnubLog, string.Format(CultureInfo.InvariantCulture, "DateTime: {0}, typeof(T).GetGenericTypeDefinition() = {1}", DateTime.Now.ToString(CultureInfo.InvariantCulture), typeof(T).GetGenericTypeDefinition().ToString()), config.LogVerbosity);
-            }
-            LoggingMethod.WriteToLog(pubnubLog, string.Format(CultureInfo.InvariantCulture, "DateTime: {0}, PCL/CORE IsGenericTypeForMessage = {1}", DateTime.Now.ToString(CultureInfo.InvariantCulture), ret.ToString()), config.LogVerbosity);
-#endif
+			LoggingMethod.WriteToLog(pubnubLog,
+				string.Format(CultureInfo.InvariantCulture,
+					"DateTime: {0}, typeof(T).GetTypeInfo().IsGenericType = {1}",
+					DateTime.Now.ToString(CultureInfo.InvariantCulture),
+					typeof(T).GetTypeInfo().IsGenericType.ToString()), config.LogVerbosity);
+			if (typeof(T).GetTypeInfo().IsGenericType) {
+				LoggingMethod.WriteToLog(pubnubLog,
+					string.Format(CultureInfo.InvariantCulture,
+						"DateTime: {0}, typeof(T).GetGenericTypeDefinition() = {1}",
+						DateTime.Now.ToString(CultureInfo.InvariantCulture),
+						typeof(T).GetGenericTypeDefinition().ToString()), config.LogVerbosity);
+			}
+
 			LoggingMethod.WriteToLog(pubnubLog,
 				string.Format(CultureInfo.InvariantCulture, "DateTime: {0}, IsGenericTypeForMessage = {1}",
 					DateTime.Now.ToString(CultureInfo.InvariantCulture), ret.ToString()), config.LogVerbosity);
@@ -191,154 +184,69 @@ namespace PubnubApi.Unity.PubNub.Runtime.Util {
 
 		private T DeserializeMessageToObjectBasedOnPlatform<T>(List<object> listObject) {
 			T ret = default(T);
+			Type dataType = typeof(T).GetTypeInfo().GenericTypeArguments[0];
+			Type generic = typeof(PNMessageResult<>);
+			Type specific = generic.MakeGenericType(dataType);
 
-#if NET35 || NET40 || NET45 || NET461 || NET48
-            Type dataType = typeof(T).GetGenericArguments()[0];
-            Type generic = typeof(PNMessageResult<>);
-            Type specific = generic.MakeGenericType(dataType);
+			ConstructorInfo ci = specific.GetTypeInfo().DeclaredConstructors.FirstOrDefault();
+			if (ci != null) {
+				object message = ci.Invoke(new object[] { });
 
-            ConstructorInfo ci = specific.GetConstructors().FirstOrDefault();
-            if (ci != null)
-            {
-                object message = ci.Invoke(new object[] { });
+				//Set data
+				PropertyInfo dataProp = specific.GetRuntimeProperty("Message");
 
-                //Set data
-                PropertyInfo dataProp = specific.GetProperty("Message");
+				object userMessage = null;
+				if (listObject[0].GetType() == typeof(JValue)) {
+					JValue jsonValue = listObject[0] as JValue;
+					userMessage = jsonValue.Value;
+					userMessage = ConvertToDataType(dataType, userMessage);
 
-                object userMessage = null;
-                if (listObject[0].GetType() == typeof(Newtonsoft.Json.Linq.JValue))
-                {
-                    JValue jsonValue = listObject[0] as JValue;
-                    userMessage = jsonValue.Value;
-                    userMessage = ConvertToDataType(dataType, userMessage);
+					dataProp.SetValue(message, userMessage, null);
+				} else if (listObject[0].GetType() == typeof(JObject) ||
+				           listObject[0].GetType() == typeof(JArray)) {
+					JToken token = listObject[0] as JToken;
+					if (dataProp.PropertyType == typeof(string)) {
+						userMessage = JsonConvert.SerializeObject(token, defaultJsonSerializerSettings);
+					} else {
+						userMessage = token.ToObject(dataProp.PropertyType, JsonSerializer.Create());
+					}
 
-                    dataProp.SetValue(message, userMessage, null);
-                }
-                else if (listObject[0].GetType() == typeof(Newtonsoft.Json.Linq.JObject) || listObject[0].GetType() == typeof(Newtonsoft.Json.Linq.JArray))
-                {
-                    JToken token = listObject[0] as JToken;
-                    if (dataProp.PropertyType == typeof(string))
-                    {
-                        userMessage = JsonConvert.SerializeObject(token, defaultJsonSerializerSettings);
-                    }
-                    else
-                    {
-                        userMessage = token.ToObject(dataProp.PropertyType, JsonSerializer.Create());
-                    }
+					dataProp.SetValue(message, userMessage, null);
+				} else if (listObject[0].GetType() == typeof(System.String)) {
+					userMessage = listObject[0] as string;
+					dataProp.SetValue(message, userMessage, null);
+				}
 
-                    dataProp.SetValue(message, userMessage, null);
-                }
-                else if (listObject[0].GetType() == typeof(System.String))
-                {
-                    userMessage = listObject[0] as string;
-                    dataProp.SetValue(message, userMessage, null);
-                }
+				//Set Time
+				PropertyInfo timeProp = specific.GetRuntimeProperty("Timetoken");
+				long timetoken;
+				Int64.TryParse(listObject[2].ToString(), out timetoken);
+				timeProp.SetValue(message, timetoken, null);
 
-                //Set Time
-                PropertyInfo timeProp = specific.GetProperty("Timetoken");
-                long timetoken;
-                var _ = Int64.TryParse(listObject[2].ToString(), out timetoken);
-                timeProp.SetValue(message, timetoken, null);
+				//Set Publisher
+				PropertyInfo publisherProp = specific.GetRuntimeProperty("Publisher");
+				string publisherValue = (listObject[3] != null) ? listObject[3].ToString() : "";
+				publisherProp.SetValue(message, publisherValue, null);
 
-                //Set Publisher
-                PropertyInfo publisherProp = specific.GetProperty("Publisher");
-                string publisherValue = (listObject[3] != null) ? listObject[3].ToString() : "";
-                publisherProp.SetValue(message, publisherValue, null);
+				// Set ChannelName
+				PropertyInfo channelNameProp = specific.GetRuntimeProperty("Channel");
+				channelNameProp.SetValue(message, listObject[5]?.ToString(), null);
 
-                // Set ChannelName
-                PropertyInfo channelNameProp = specific.GetProperty("Channel");
-                channelNameProp.SetValue(message, (listObject.Count == 6) ? listObject[5].ToString() : listObject[4].ToString(), null);
+				// Set ChannelGroup
+				PropertyInfo subsciptionProp = specific.GetRuntimeProperty("Subscription");
+				subsciptionProp.SetValue(message, listObject[4]?.ToString(), null);
 
-                // Set ChannelGroup
-                if (listObject.Count == 6)
-                {
-                    PropertyInfo subsciptionProp = specific.GetProperty("Subscription");
-                    subsciptionProp.SetValue(message, listObject[4].ToString(), null);
-                }
+				PropertyInfo customMessageType = specific.GetRuntimeProperty("CustomMessageType");
+				customMessageType.SetValue(message, listObject[6], null);
+				//Set Metadata list second position, index=1
+				if (listObject[1] != null) {
+					PropertyInfo userMetadataProp = specific.GetRuntimeProperty("UserMetadata");
+					userMetadataProp.SetValue(message, listObject[1], null);
+				}
 
-                //Set Metadata list second position, index=1
-                if (listObject[1] != null)
-                {
-                    PropertyInfo userMetadataProp = specific.GetProperty("UserMetadata");
-                    userMetadataProp.SetValue(message, listObject[1], null);
-                }
 
-                ret = (T)Convert.ChangeType(message, specific, CultureInfo.InvariantCulture);
-            }
-#elif NETSTANDARD10 || NETSTANDARD11 || NETSTANDARD12 || NETSTANDARD13 || NETSTANDARD14 || NETSTANDARD20 || NET60 || UAP || NETFX_CORE || WINDOWS_UWP
-            Type dataType = typeof(T).GetTypeInfo().GenericTypeArguments[0];
-            Type generic = typeof(PNMessageResult<>);
-            Type specific = generic.MakeGenericType(dataType);
-
-            ConstructorInfo ci = specific.GetTypeInfo().DeclaredConstructors.FirstOrDefault();
-            if (ci != null)
-            {
-                object message = ci.Invoke(new object[] { });
-
-                //Set data
-                PropertyInfo dataProp = specific.GetRuntimeProperty("Message");
-
-                object userMessage = null;
-                if (listObject[0].GetType() == typeof(Newtonsoft.Json.Linq.JValue))
-                {
-                    JValue jsonValue = listObject[0] as JValue;
-                    userMessage = jsonValue.Value;
-                    userMessage = ConvertToDataType(dataType, userMessage);
-
-                    dataProp.SetValue(message, userMessage, null);
-                }
-                else if (listObject[0].GetType() == typeof(Newtonsoft.Json.Linq.JObject) || listObject[0].GetType() == typeof(Newtonsoft.Json.Linq.JArray))
-                {
-                    JToken token = listObject[0] as JToken;
-                    if (dataProp.PropertyType == typeof(string))
-                    {
-                        userMessage = JsonConvert.SerializeObject(token, defaultJsonSerializerSettings);
-                    }
-                    else
-                    {
-                        userMessage = token.ToObject(dataProp.PropertyType, JsonSerializer.Create());
-                    }
-
-                    dataProp.SetValue(message, userMessage, null);
-                }
-                else if (listObject[0].GetType() == typeof(System.String))
-                {
-                    userMessage = listObject[0] as string;
-                    dataProp.SetValue(message, userMessage, null);
-                }
-
-                //Set Time
-                PropertyInfo timeProp = specific.GetRuntimeProperty("Timetoken");
-                long timetoken;
-                Int64.TryParse(listObject[2].ToString(), out timetoken);
-                timeProp.SetValue(message, timetoken, null);
-
-                //Set Publisher
-                PropertyInfo publisherProp = specific.GetRuntimeProperty("Publisher");
-                string publisherValue = (listObject[3] != null) ? listObject[3].ToString() : "";
-                publisherProp.SetValue(message, publisherValue, null);
-
-                // Set ChannelName
-                PropertyInfo channelNameProp = specific.GetRuntimeProperty("Channel");
-                channelNameProp.SetValue(message, (listObject.Count == 6) ? listObject[5].ToString() : listObject[4].ToString(), null);
-
-                // Set ChannelGroup
-                if (listObject.Count == 6)
-                {
-                    PropertyInfo subsciptionProp = specific.GetRuntimeProperty("Subscription");
-                    subsciptionProp.SetValue(message, listObject[4].ToString(), null);
-                }
-
-                //Set Metadata list second position, index=1
-                if (listObject[1] != null)
-                {
-                    PropertyInfo userMetadataProp = specific.GetRuntimeProperty("UserMetadata");
-                    userMetadataProp.SetValue(message, listObject[1], null);
-                }
-
-                ret = (T)Convert.ChangeType(message, specific, CultureInfo.InvariantCulture);
-            }
-#endif
+				ret = (T)Convert.ChangeType(message, specific, CultureInfo.InvariantCulture);
+			}
 
 			return ret;
 		}
@@ -408,8 +316,8 @@ namespace PubnubApi.Unity.PubNub.Runtime.Util {
 					} else if (localContainer.GetType().ToString() ==
 					           "System.Collections.Generic.List`1[System.Object]") {
 						List<object> localList = localContainer as List<object>;
-						if (localList != null) {
-							if (localList.Count > 0 && localList[0].GetType() == typeof(KeyValuePair<string, object>)) {
+						if (localList != null && localList.Count > 0) {
+							if (localList[0].GetType() == typeof(KeyValuePair<string, object>)) {
 								ret = new Dictionary<string, object>();
 								foreach (object item in localList) {
 									if (item is KeyValuePair<string, object> kvpItem) {
@@ -419,14 +327,14 @@ namespace PubnubApi.Unity.PubNub.Runtime.Util {
 										break;
 									}
 								}
-							} else if (localList.Count == 1 &&
-							           localList[0].GetType() == typeof(Dictionary<string, object>)) {
+							} else if (localList[0].GetType() == typeof(Dictionary<string, object>)) {
 								ret = new Dictionary<string, object>();
-
-								Dictionary<string, object> localDic = localList[0] as Dictionary<string, object>;
-								foreach (object item in localDic) {
-									if (item is KeyValuePair<string, object> kvpItem) {
-										ret.Add(kvpItem.Key, kvpItem.Value);
+								foreach (object item in localList) {
+									if (item is Dictionary<string, object> dicItem) {
+										if (dicItem.Count > 0 && dicItem.ContainsKey("key") &&
+										    dicItem.ContainsKey("value")) {
+											ret.Add(dicItem["key"].ToString(), dicItem["value"]);
+										}
 									} else {
 										ret = null;
 										break;
@@ -556,7 +464,7 @@ namespace PubnubApi.Unity.PubNub.Runtime.Util {
 					userMessage = Convert.ChangeType(inputValue, typeof(System.String), CultureInfo.InvariantCulture);
 					break;
 				case "System.Object":
-					userMessage = Convert.ChangeType(inputValue, typeof(System.Object), CultureInfo.InvariantCulture);
+					userMessage = Convert.ChangeType(inputValue, typeof(Object), CultureInfo.InvariantCulture);
 					break;
 				default:
 					break;

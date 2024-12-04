@@ -14,10 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PublishKey: demo
   SubscribeKey: demo
+  SecretKey: 
   AuthKey: 
   CipherKey: 
-  EnableTelemetry: 0
   Secure: 0
-  LogVerbosity: 1
+  EnableEventEngine: 0
+  EnableWebGLBuildMode: 0
+  LogToUnityConsole: 0
+  LogVerbosity: 0
   externalJsonEnabled: 1
   externalJsonFile: {fileID: 4900000, guid: cece9ff28bff4146b7592375b7909cc0, type: 3}
