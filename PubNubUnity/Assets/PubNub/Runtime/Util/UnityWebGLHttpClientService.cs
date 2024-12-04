@@ -25,7 +25,6 @@ namespace PubnubApi.Unity {
 
 		private void PrepareUnityRequest(UnityWebRequest request, TransportRequest transportRequest) {
 			if (transportRequest.Timeout.HasValue) {
-				Debug.LogWarning($"TIMEOUT: {(int)transportRequest.Timeout.Value.TotalSeconds}");
 				request.timeout = (int)transportRequest.Timeout.Value.TotalSeconds;
 			}
 
@@ -37,7 +36,6 @@ namespace PubnubApi.Unity {
 		}
 
 		public async Task<TransportResponse> DeleteRequest(TransportRequest transportRequest) {
-			Debug.LogWarning("DELETE");
 			TransportResponse response;
 			try {
 				var deleteRequest = UnityWebRequest.Delete(transportRequest.RequestUrl);
@@ -62,7 +60,6 @@ namespace PubnubApi.Unity {
 		}
 
 		public async Task<TransportResponse> GetRequest(TransportRequest transportRequest) {
-			Debug.LogWarning($"GET: {transportRequest.RequestUrl}");
 			TransportResponse response;
 			try {
 				var getRequest = UnityWebRequest.Get(transportRequest.RequestUrl);
@@ -87,7 +84,6 @@ namespace PubnubApi.Unity {
 		}
 
 		public async Task<TransportResponse> PostRequest(TransportRequest transportRequest) {
-			Debug.LogWarning("POST");
 			TransportResponse response;
 			try {
 				var formData = new List<IMultipartFormSection>();
@@ -119,7 +115,6 @@ namespace PubnubApi.Unity {
 		}
 
 		public async Task<TransportResponse> PatchRequest(TransportRequest transportRequest) {
-			Debug.LogWarning("PATCH");
 			TransportResponse response;
 			try {
 				UnityWebRequest patchRequest;
@@ -154,7 +149,6 @@ namespace PubnubApi.Unity {
 		}
 
 		public async Task<TransportResponse> PutRequest(TransportRequest transportRequest) {
-			Debug.LogWarning("PUT");
 			TransportResponse response;
 			try {
 				UnityWebRequest putRequest;
