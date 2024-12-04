@@ -11,7 +11,7 @@ jobs:
     name: Check release required
     if: github.event.pull_request.merged && endsWith(github.repository, '-private') != true
     runs-on:
-      group: Default
+      organization/Default
     outputs:
       release: ${{ steps.check.outputs.ready }}
     steps:
@@ -30,7 +30,7 @@ jobs:
   publish:
     name: Build package
     runs-on:
-      group: macos-gh
+      group: organization/macos-gh
     needs: check-release
     if: needs.check-release.outputs.release == 'true'
     steps:
