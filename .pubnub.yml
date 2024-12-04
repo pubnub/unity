@@ -5,7 +5,9 @@ changelog:
     version: v8.0.0
     changes:
       - type: feature
-        text: "BREAKING CHANGES: Adding Channel, ChannelGroup, ChannelMetadata and UserMetadata entities to be first-class citizens to access APIs related to them. Currently, access is provided only for subscription APIs."
+        text: "BREAKING CHANGES: Default Reconnection policy is set to Exponential."
+      - type: feature
+        text: "Adding Channel, ChannelGroup, ChannelMetadata and UserMetadata entities to be first-class citizens to access APIs related to them. Currently, access is provided only for subscription APIs."
       - type: feature
         text: "Default value for EnableEventEngine is set to true, Subscribe operation will be executed by event engine by default."
       - type: feature
@@ -13,7 +15,7 @@ changelog:
       - type: feature
         text: "Added support for Type field in membership APIs.."
       - type: bug
-        text: "Implemented a WebGL-targeted Transport Layer utilising UnityWebRequest to bring back WebGL compatibility."
+        text: "Re-implement WebGL support by implementing a WebGL-targeted Transport Layer utilising UnityWebRequest."
       - type: improvement
         text: "Removed telemetry manager."
   - date: 2024-05-09
