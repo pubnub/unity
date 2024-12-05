@@ -18,6 +18,7 @@ changelog:
         text: "Re-implement WebGL support by addigng a Transport Layer implementation utilising UnityWebRequest"
       - type: improvement
         text: "Removed telemetry manager."
+  - date: 2024-05-09
     version: v7.2.1
     changes:
       - type: bug
