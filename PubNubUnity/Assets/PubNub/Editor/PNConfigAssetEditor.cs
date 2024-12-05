@@ -45,16 +45,6 @@ namespace PubnubApi.Unity.Internal.EditorTools {
 
 			serializedObject.Update();
 
-			// external file handling
-
-			// TODO implement external source
-			// EditorGUILayout.BeginVertical("helpbox");
-			// EditorGUILayout.PropertyField(externalJsonEnabled,
-			// 	new GUIContent("Use external key config"));
-			// ExternalFileGui();
-			// EditorGUILayout.EndVertical();
-
-
 			// UserId info
 			EditorGUILayout.Space();
 			EditorGUILayout.HelpBox("Note that you need to set the UserId variable on runtime, before passing the configuration object to the PubNub instance.", MessageType.Warning);
