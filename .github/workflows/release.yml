@@ -11,7 +11,7 @@ jobs:
     name: Check release required
     if: github.event.pull_request.merged && endsWith(github.repository, '-private') != true
     runs-on:
-      organization/Default
+      group: organization/Default
     outputs:
       release: ${{ steps.check.outputs.ready }}
     steps:
