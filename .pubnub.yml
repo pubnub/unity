@@ -15,9 +15,9 @@ changelog:
       - type: feature
         text: "Added support for Type field in membership APIs.."
       - type: bug
-        text: "Implemented a WebGL-targeted Transport Layer utilising UnityWebRequest to bring back WebGL compatibility."
+        text: "Re-implement WebGL support by addigng a Transport Layer implementation utilising UnityWebRequest"
       - type: improvement
-        text: "Removed telemetry manager."  - date: 2024-05-09
+        text: "Removed telemetry manager."
     version: v7.2.1
     changes:
       - type: bug
