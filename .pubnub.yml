@@ -1,6 +1,11 @@
 --- 
-version: v8.0.0
+version: v8.0.1
 changelog:
+  - date: 2025-01-20
+    version: v8.0.1
+    changes:
+      - type: bug
+        text: "Fix an issue where the PNSDK value would point to C# SDK instead of Unity."
   - date: 2024-12-05
     version: v8.0.0
     changes:
@@ -743,7 +748,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v8.0.0/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v8.0.1/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
@@ -910,7 +915,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v8.0.0/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v8.0.1/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"

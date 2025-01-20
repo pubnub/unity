@@ -7,10 +7,7 @@ namespace PubnubApi.Unity {
 	public class PNManagerBehaviour : MonoBehaviour {
 		public PNConfigAsset pnConfiguration;
 
-		public Pubnub pubnub {
-			get;
-			protected set;
-		}
+		public Pubnub pubnub { get; protected set; }
 
 		public SubscribeCallbackListener listener { get; }
 			= new SubscribeCallbackListener();
@@ -40,7 +37,11 @@ namespace PubnubApi.Unity {
 			if (pnConfiguration.LogToUnityConsole) {
 				pnConfig.PubnubLog = new UnityPNLog();
 			}
-			pubnub = pnConfiguration.EnableWebGLBuildMode ? new Pubnub(pnConfig, new UnityWebGLHttpClientService()) : new Pubnub(pnConfig);
+
+			pubnub = pnConfiguration.EnableWebGLBuildMode
+				? new Pubnub(pnConfig, httpTransportService: new UnityWebGLHttpClientService(),
+					ipnsdkSource: new UnityPNSDKSource())
+				: new Pubnub(pnConfig, ipnsdkSource: new UnityPNSDKSource());
 			pubnub.SetJsonPluggableLibrary(new NewtonsoftJsonUnity(pnConfig, pnConfig.PubnubLog));
 			pubnub.AddListener(listener);
 			return pubnub;
