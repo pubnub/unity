@@ -23,7 +23,7 @@
     }
   ],
   "PubNubUnity/Assets/PubNub/Runtime/Util/UnityPNSDKSource.cs": [
-	{
+    {
       "pattern": "^\\s{2,}private const string build = \"(v?(\\.?\\d+){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)\";",
       "cleared": true 
     }
