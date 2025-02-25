@@ -1,6 +1,11 @@
 --- 
-version: v8.1.0
+version: v8.1.1
 changelog:
+  - date: 2025-02-25
+    version: v8.1.1
+    changes:
+      - type: bug
+        text: "Fixed an issue where repeated sub/unsub requests with EE enabled would stop working after a while."
   - date: 2025-02-04
     version: v8.1.0
     changes:
@@ -755,7 +760,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v8.1.0/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v8.1.1/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
@@ -922,7 +927,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v8.1.0/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v8.1.1/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
