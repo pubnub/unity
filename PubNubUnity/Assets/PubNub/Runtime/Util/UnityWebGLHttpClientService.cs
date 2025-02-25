@@ -41,7 +41,7 @@ namespace PubnubApi.Unity {
 				var deleteRequest = UnityWebRequest.Delete(transportRequest.RequestUrl);
 				PrepareUnityRequest(deleteRequest, transportRequest);
 				var taskCompletionSource = new TaskCompletionSource<TransportResponse>();
-				transportRequest.CancellationToken.Register(() => {
+				transportRequest.CancellationTokenSource.Token.Register(() => {
 					deleteRequest.Abort();
 					taskCompletionSource.TrySetCanceled();
 				});
@@ -65,7 +65,7 @@ namespace PubnubApi.Unity {
 				var getRequest = UnityWebRequest.Get(transportRequest.RequestUrl);
 				PrepareUnityRequest(getRequest, transportRequest);
 				var taskCompletionSource = new TaskCompletionSource<TransportResponse>();
-				transportRequest.CancellationToken.Register(() => {
+				transportRequest.CancellationTokenSource.Token.Register(() => {
 					getRequest.Abort();
 					taskCompletionSource.TrySetCanceled();
 				});
@@ -96,7 +96,7 @@ namespace PubnubApi.Unity {
 				var postRequest = UnityWebRequest.Post(transportRequest.RequestUrl, formData);
 				PrepareUnityRequest(postRequest, transportRequest);
 				var taskCompletionSource = new TaskCompletionSource<TransportResponse>();
-				transportRequest.CancellationToken.Register(() => {
+				transportRequest.CancellationTokenSource.Token.Register(() => {
 					postRequest.Abort();
 					taskCompletionSource.TrySetCanceled();
 				});
@@ -129,7 +129,7 @@ namespace PubnubApi.Unity {
 
 				PrepareUnityRequest(patchRequest, transportRequest);
 				var taskCompletionSource = new TaskCompletionSource<TransportResponse>();
-				transportRequest.CancellationToken.Register(() => {
+				transportRequest.CancellationTokenSource.Token.Register(() => {
 					patchRequest.Abort();
 					taskCompletionSource.TrySetCanceled();
 				});
@@ -162,7 +162,7 @@ namespace PubnubApi.Unity {
 
 				PrepareUnityRequest(putRequest, transportRequest);
 				var taskCompletionSource = new TaskCompletionSource<TransportResponse>();
-				transportRequest.CancellationToken.Register(() => {
+				transportRequest.CancellationTokenSource.Token.Register(() => {
 					putRequest.Abort();
 					taskCompletionSource.TrySetCanceled();
 				});
