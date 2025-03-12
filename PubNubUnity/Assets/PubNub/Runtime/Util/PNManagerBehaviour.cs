@@ -1,4 +1,3 @@
-using PubnubApi.Unity.PubNub.Runtime.Util;
 using UnityEngine;
 
 namespace PubnubApi.Unity {
@@ -34,15 +33,14 @@ namespace PubnubApi.Unity {
 
 			pnConfiguration.UserId = userId;
 			var pnConfig = ((PNConfiguration)pnConfiguration);
-			if (pnConfiguration.LogToUnityConsole) {
-				pnConfig.PubnubLog = new UnityPNLog();
-			}
-
 			pubnub = pnConfiguration.EnableWebGLBuildMode
 				? new Pubnub(pnConfig, httpTransportService: new UnityWebGLHttpClientService(),
 					ipnsdkSource: new UnityPNSDKSource())
 				: new Pubnub(pnConfig, ipnsdkSource: new UnityPNSDKSource());
-			pubnub.SetJsonPluggableLibrary(new NewtonsoftJsonUnity(pnConfig, pnConfig.PubnubLog));
+			if (pnConfiguration.LogToUnityConsole) {
+				pubnub.SetLogger(new UnityPubNubLogger(pubnub.InstanceId));
+			}
+			pubnub.SetJsonPluggableLibrary(new NewtonsoftJsonUnity(pnConfig));
 			pubnub.AddListener(listener);
 			return pubnub;
 		}
