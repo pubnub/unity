@@ -18,7 +18,7 @@ namespace PubnubApi.Unity {
 		public bool MaintainPresenceState = true;
 		public bool EnableEventEngine = true;
 		public bool EnableWebGLBuildMode;
-		public bool LogToUnityConsole;
+		public bool LogToUnityConsole = true;
 		public PNLogVerbosity LogVerbosity;
 
 		[SerializeField] private bool externalJsonEnabled = false;
