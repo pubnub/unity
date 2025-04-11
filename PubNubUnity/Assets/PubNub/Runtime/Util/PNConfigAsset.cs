@@ -19,7 +19,9 @@ namespace PubnubApi.Unity {
 		public bool EnableEventEngine = true;
 		public bool EnableWebGLBuildMode;
 		public bool LogToUnityConsole = true;
+		[Tooltip("Obsolete and used in legacy logging, if you can please use LogLevel instead")]
 		public PNLogVerbosity LogVerbosity;
+		public PubnubLogLevel LogLevel;
 
 		[SerializeField] private bool externalJsonEnabled = false;
 		[SerializeField] private UnityEngine.TextAsset externalJsonFile;
@@ -43,6 +45,7 @@ namespace PubnubApi.Unity {
 			config.EnableEventEngine = asset.EnableEventEngine;
 			config.Secure = asset.Secure;
 			config.LogVerbosity = asset.LogVerbosity;
+			config.LogLevel = asset.LogLevel;
 			return config;
 		}
 	}

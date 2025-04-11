@@ -23,7 +23,8 @@ namespace PubnubApi.Unity.Internal.EditorTools {
 			"EnableEventEngine",
 			"EnableWebGLBuildMode",
 			"LogToUnityConsole",
-			"LogVerbosity"
+			"LogVerbosity",
+			"LogLevel"
 		};
 
 		private SerializedProperty externalJsonEnabled;
