@@ -5,7 +5,7 @@ namespace PubnubApi.Unity
 {
     public class UnityPNSDKSource : IPNSDKSource {
 
-	    private const string build = "8.2.0";
+	    private const string build = "9.0.0";
 
 	    public string GetPNSDK() {
 			#if(UNITY_IOS)

@@ -1,6 +1,13 @@
 --- 
-version: v8.2.0
+version: v9.0.0
 changelog:
+  - date: 2025-05-08
+    version: v9.0.0
+    changes:
+      - type: feature
+        text: "Imported and adapted a C# change with handling and reporting different transport layer http request failure causes."
+      - type: feature
+        text: "BREAKING CHANGES - Changed Pubnub C# DLL target to .NET Standard 2.0 which is recommended by Unity, oldest supported Unity version is now 2018.2."
   - date: 2025-03-12
     version: v8.2.0
     changes:
@@ -765,7 +772,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v8.2.0/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v9.0.0/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
@@ -897,7 +904,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v8.2.0/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v9.0.0/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
