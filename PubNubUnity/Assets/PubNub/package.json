@@ -3,7 +3,7 @@
   "version": "8.2.0",
   "displayName": "PubNub SDK",
   "description": "PubNub Real-time Cloud-Hosted Push API and Push Notification Client Frameworks",
-  "unity": "2021.3",
+  "unity": "2018.2",
   "documentationUrl": "https://www.pubnub.com/docs/sdks/unity",
   "changelogUrl": "https://github.com/pubnub/unity/.pubnub.yml",
   "licensesUrl": "https://github.com/pubnub/unity/blob/master/LICENSE",
@@ -16,7 +16,7 @@
   ],
   "author": {
     "name": "PubNub",
-    "email": "michal.dobrzanski@pubnub.com",
+    "email": "jakub.grzesiowski@pubnub.com",
     "url": "https://pubnub.com/"
   },
   "samples": [

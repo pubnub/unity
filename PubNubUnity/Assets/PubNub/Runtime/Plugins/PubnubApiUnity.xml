@@ -1,0 +1,526 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PubnubApiUnity</name>
+    </assembly>
+    <members>
+        <member name="M:PubnubApi.EndPoint.OtherOperation.TranslateDateTimeToPubnubUnixNanoSeconds(System.DateTime)">
+            <summary>
+            Convert the UTC/GMT DateTime to Unix Nano Seconds format
+            </summary>
+            <param name="dotNetUTCDateTime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PubnubApi.EndPoint.OtherOperation.TranslatePubnubUnixNanoSecondsToDateTime(System.Int64)">
+            <summary>
+            Convert the Unix Nano Seconds format time to UTC/GMT DateTime
+            </summary>
+            <param name="unixNanoSecondTime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PubnubApi.EndPoint.AddMessageActionOperation.MessageTimetoken(System.Int64)">
+            <summary>
+            The publish timetoken of a parent message
+            </summary>
+            <param name="timetoken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PubnubApi.EndPoint.PublishOperation.Ttl(System.Int32)">
+            <summary>
+            ttl in hours
+            </summary>
+            <param name="ttl"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PubnubApi.EndPoint.RemoveMessageActionOperation.MessageTimetoken(System.Int64)">
+            <summary>
+            The publish timetoken of a parent message
+            </summary>
+            <param name="timetoken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PubnubApi.EndPoint.RemoveMessageActionOperation.ActionTimetoken(System.Int64)">
+            <summary>
+            The publish timetoken of the action
+            </summary>
+            <param name="timetoken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PubnubApi.EndPoint.AddPushChannelOperation.Environment(PubnubApi.PushEnvironment)">
+            <summary>
+            Applies to APNS2 Only. Default = Development
+            </summary>
+            <param name="environment"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PubnubApi.EndPoint.AddPushChannelOperation.Topic(System.String)">
+            <summary>
+            Applies to APNS2 Only
+            </summary>
+            <param name="deviceTopic"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PubnubApi.EndPoint.AuditPushChannelOperation.Environment(PubnubApi.PushEnvironment)">
+            <summary>
+            Applies to APNS2 Only. Default = Development
+            </summary>
+            <param name="environment"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PubnubApi.EndPoint.AuditPushChannelOperation.Topic(System.String)">
+            <summary>
+            Applies to APNS2 Only
+            </summary>
+            <param name="deviceTopic"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PubnubApi.EndPoint.RemoveAllPushChannelsOperation.Environment(PubnubApi.PushEnvironment)">
+            <summary>
+            Applies to APNS2 Only. Default = Development
+            </summary>
+            <param name="environment"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PubnubApi.EndPoint.RemoveAllPushChannelsOperation.Topic(System.String)">
+            <summary>
+            Applies to APNS2 Only
+            </summary>
+            <param name="deviceTopic"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PubnubApi.EndPoint.RemovePushChannelOperation.Environment(PubnubApi.PushEnvironment)">
+            <summary>
+            Applies to APNS2 Only. Default = Development
+            </summary>
+            <param name="environment"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PubnubApi.EndPoint.RemovePushChannelOperation.Topic(System.String)">
+            <summary>
+            Applies to APNS2 Only
+            </summary>
+            <param name="deviceTopic"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PubnubApi.EventEngine.Core.EffectDispatcher.Dispatch(PubnubApi.EventEngine.Core.IEffectInvocation)">
+            <summary>
+            Dispatch an invocation i.e. call a registered effect handler.
+            </summary>
+        </member>
+        <member name="M:PubnubApi.EventEngine.Core.EffectDispatcher.Register``2(``1)">
+            <summary>
+            Assign a handler implementation to an invocation.
+            </summary>
+        </member>
+        <member name="E:PubnubApi.EventEngine.Core.Engine.OnEffectDispatch">
+            <summary>
+            Subscribe to receive notification on effect dispatch
+            </summary>
+        </member>
+        <member name="E:PubnubApi.EventEngine.Core.Engine.OnStateTransition">
+            <summary>
+            Subscribe to receive notification on state transition
+            </summary>
+        </member>
+        <member name="E:PubnubApi.EventEngine.Core.Engine.OnEventQueued">
+            <summary>
+            Subscribe to receive notification on event being queued
+            </summary>
+        </member>
+        <member name="M:PubnubApi.EventEngine.Core.Engine.ExecuteStateChange(PubnubApi.EventEngine.Core.State,PubnubApi.EventEngine.Core.State,System.Collections.Generic.IEnumerable{PubnubApi.EventEngine.Core.IEffectInvocation})">
+            <summary>
+            Launch the invocations associated with transitioning between states
+            </summary>
+        </member>
+        <member name="T:PubnubApi.EventEngine.Core.IEffectHandler">
+            <summary>
+            Generic effect handler.
+            </summary>
+        </member>
+        <member name="T:PubnubApi.EventEngine.Core.IEffectHandler`1">
+            <summary>
+            Handler (implementation) for a given invocation. The invocation represents the input arguments of a handler.
+            </summary>
+            <typeparam name="T">Associated invocation</typeparam>
+        </member>
+        <member name="T:PubnubApi.EventEngine.Core.EffectCancellableHandler`2">
+            <summary>
+            Implement a handler a cancellable invocation.
+            </summary>
+            <typeparam name="T1">Connect type invocation</typeparam>
+            <typeparam name="T2">Cancel running invocation</typeparam>
+        </member>
+        <member name="T:PubnubApi.EventEngine.Core.EffectDoubleHandler`2">
+            <summary>
+            Implement a handler for two invocations (meant for connect-reconnect pairs). Use EffectDoubleCancellableHandler to implement cancellable handler.
+            </summary>
+            <typeparam name="T1">Run type invocation</typeparam>
+            <typeparam name="T2">Retry type invocation</typeparam>
+        </member>
+        <member name="T:PubnubApi.EventEngine.Core.EffectDoubleCancellableHandler`3">
+            <summary>
+            Implement a handler for two invocations (meant for connect-reconnect pairs) with a cancel invocation
+            </summary>
+            <typeparam name="T1">Run type invocation</typeparam>
+            <typeparam name="T2">Retry type invocation</typeparam>
+            <typeparam name="T3">Cancel connecting invocation</typeparam>
+        </member>
+        <member name="T:PubnubApi.EventEngine.Core.EffectDoubleCancellableHandler`4">
+            <summary>
+            Implement a handler for two invocations (meant for connect-reconnect pairs) with a cancel invocation
+            </summary>
+            <typeparam name="T1">Run type invocation</typeparam>
+            <typeparam name="T2">Retry type invocation</typeparam>
+            <typeparam name="T3">Cancel run invocation</typeparam>
+            <typeparam name="T4">Cancel retry invocation</typeparam>
+        </member>
+        <member name="T:PubnubApi.EventEngine.Core.IEffectInvocation">
+            <summary>
+            An effect invocation. It represents calling <c>Run()</c> on a registered effect handler - calling it is orchestrated by the dispatcher.
+            </summary>
+        </member>
+        <member name="T:PubnubApi.EventEngine.Core.IEffectCancelInvocation">
+            <summary>
+            A cancel effect invocation. It represents calling <c>Cancel()</c> on a registered effect handler - calling it is orchestrated by the dispatcher.
+            </summary>
+        </member>
+        <member name="M:PubnubApi.EventEngine.Core.State.Transition(PubnubApi.EventEngine.Core.IEvent)">
+            <summary>
+            The EE transition pure function.
+            </summary>
+            <param name="e">Input event</param>
+            <returns>Target state and invocation list, or null for no-transition</returns>
+        </member>
+        <member name="M:PubnubApi.EventEngine.Core.EventQueue.Enqueue(PubnubApi.EventEngine.Core.IEvent)">
+            <summary>
+            Enqueue (fire) an event to the Event Engine. Handling that event is covered by the Engine itself.
+            </summary>
+            <param name="e">Event to be fired</param>
+        </member>
+        <member name="M:PubnubApi.EventEngine.Core.TransitionResult.#ctor(PubnubApi.EventEngine.Core.State)">
+            <summary>
+            Create a state-invocation pair with empty invocations
+            </summary>
+        </member>
+        <member name="M:PubnubApi.EventEngine.Core.TransitionResult.#ctor(PubnubApi.EventEngine.Core.State,System.Collections.Generic.IEnumerable{PubnubApi.EventEngine.Core.IEffectInvocation})">
+            <summary>
+            Create a state-invocation pair
+            </summary>
+        </member>
+        <member name="M:PubnubApi.EventEngine.Core.TransitionResult.#ctor(PubnubApi.EventEngine.Core.State,PubnubApi.EventEngine.Core.IEffectInvocation[])">
+            <summary>
+            Create a state-invocation pair
+            </summary>
+        </member>
+        <member name="M:PubnubApi.MobilePushHelper.Apns2Data(System.Collections.Generic.List{PubnubApi.Apns2Data})">
+            <summary>
+            Supports Only APNS2
+            </summary>
+            <param name="apns2SupportData"></param>
+            <returns></returns>
+        </member>
+        <member name="P:PubnubApi.PNTokenAuthValues.Read">
+            <summary>
+            Read. Applies to Subscribe, History, Presence
+            </summary>
+        </member>
+        <member name="P:PubnubApi.PNTokenAuthValues.Write">
+            <summary>
+            Write. Applies to Publish
+            </summary>
+        </member>
+        <member name="P:PubnubApi.PNTokenAuthValues.Manage">
+            <summary>
+            Manage. Applies to Channel-Groups, Objects
+            </summary>
+        </member>
+        <member name="P:PubnubApi.PNTokenAuthValues.Delete">
+            <summary>
+            Delete. Applies to History, Objects
+            </summary>
+        </member>
+        <member name="P:PubnubApi.PNTokenAuthValues.Create">
+            <summary>
+            Create. Applies to Objects v1
+            </summary>
+        </member>
+        <member name="P:PubnubApi.PNTokenAuthValues.Get">
+            <summary>
+            Get. Applies to Objects v2
+            </summary>
+        </member>
+        <member name="P:PubnubApi.PNTokenAuthValues.Update">
+            <summary>
+            Update. Applies to Objects v2
+            </summary>
+        </member>
+        <member name="P:PubnubApi.PNTokenAuthValues.Join">
+            <summary>
+            Join. Applies to Objects v2
+            </summary>
+        </member>
+        <member name="P:PubnubApi.SubscribeEnvelope.m">
+            <summary>
+            messages
+            </summary>
+        </member>
+        <member name="P:PubnubApi.SubscribeEnvelope.t">
+            <summary>
+            subscribeMetadata
+            </summary>
+        </member>
+        <member name="P:PubnubApi.SubscribeMessage.a">
+            <summary>
+            shard
+            </summary>
+        </member>
+        <member name="P:PubnubApi.SubscribeMessage.b">
+            <summary>
+            subscriptionMatch
+            </summary>
+        </member>
+        <member name="P:PubnubApi.SubscribeMessage.c">
+            <summary>
+            channel
+            </summary>
+        </member>
+        <member name="P:PubnubApi.SubscribeMessage.d">
+            <summary>
+            payload
+            </summary>
+        </member>
+        <member name="P:PubnubApi.SubscribeMessage.e">
+            <summary>
+            message type indicator
+            </summary>
+        </member>
+        <member name="P:PubnubApi.SubscribeMessage.f">
+            <summary>
+            flags
+            </summary>
+        </member>
+        <member name="P:PubnubApi.SubscribeMessage.i">
+            <summary>
+            issuingClientId
+            </summary>
+        </member>
+        <member name="P:PubnubApi.SubscribeMessage.k">
+            <summary>
+            subscribeKey
+            </summary>
+        </member>
+        <member name="P:PubnubApi.SubscribeMessage.s">
+            <summary>
+            sequenceNumber
+            </summary>
+        </member>
+        <member name="P:PubnubApi.SubscribeMessage.o">
+            <summary>
+            originatingTimetoken
+            </summary>
+        </member>
+        <member name="P:PubnubApi.SubscribeMessage.p">
+            <summary>
+            publishMetadata
+            </summary>
+        </member>
+        <member name="P:PubnubApi.SubscribeMessage.u">
+            <summary>
+            userMetadata
+            </summary>
+        </member>
+        <member name="P:PubnubApi.TimetokenMetadata.t">
+            <summary>
+            timetoken
+            </summary>
+        </member>
+        <member name="P:PubnubApi.TimetokenMetadata.r">
+            <summary>
+            region
+            </summary>
+        </member>
+        <member name="P:PubnubApi.PNConfiguration.LogVerbosity">
+            <summary>
+            This property is obsolete. Use <see cref="P:PubnubApi.PNConfiguration.LogLevel"/> instead.
+            </summary>
+            <remarks>
+            LogVerbosity is deprecated. Use LogLevel to enable logging.
+            LogLevel provides more granular control and supports different standard logging levels.
+            To migrate, replace LogVerbosity = X with LogLevel = (LogLevel)X.
+            </remarks>
+        </member>
+        <member name="P:PubnubApi.PNConfiguration.PubnubLog">
+            <summary>
+            This property is deprecated. Use <see cref="M:PubnubApi.Pubnub.SetLogger(PubnubApi.IPubnubLogger)"/> method to configure custom logger.
+            </summary>
+            <remarks>
+            PubnubLog is deprecated. Implement IPubnubLogger and Use SetLogger method to configure custom logger for improved flexibility and control.
+            </remarks>
+        </member>
+        <member name="M:PubnubApi.Pubnub.CleanUp">
+            <summary>
+            Call this function to globally clean up all background threads running in the SDK. Note that this will unsubscribe all channels.
+            </summary>
+        </member>
+        <member name="M:PubnubApi.Pubnub.ParseToken(System.String)">
+            <summary>
+            Parses the token and provides token details. This is client only method (works without secret key)
+            </summary>
+            <param name="token">string</param>
+            <returns>PNTokenContent</returns>
+        </member>
+        <member name="M:PubnubApi.Pubnub.SetAuthToken(System.String)">
+            <summary>
+            Sets the auth token.  This is client only method (works without secret key)
+            </summary>
+            <param name="token"></param>
+        </member>
+        <member name="M:PubnubApi.Pubnub.SetLogger(PubnubApi.IPubnubLogger)">
+            <summary>
+            Configures a custom logger.
+            </summary>
+            <param name="logger">The logger to use.</param>
+        </member>
+        <member name="P:PubnubApi.Security.Crypto.ICryptor.Identifier">
+             <summary>
+             Unique crypto algorithm identifier.
+            
+             Identifier will be encoded into crypto data header and passed along
+             with encrypted data.
+            
+             The identifier **must** be 4 bytes long.
+             </summary>
+        </member>
+        <member name="T:PubnubApi.MD5">
+            <summary>
+            MD5 Service provider
+            </summary>
+            <summary>
+            MD5 messaging-digest algorithm is a widely used cryptographic hash function that produces 128-bit hash value.
+            </summary>
+        </member>
+        <member name="M:PubnubApi.MD5.ROTATE_LEFT(System.UInt32,System.Byte)">
+            <summary>
+            rotates x left n bits.
+            </summary>
+            <param name="x"></param>
+            <param name="n"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PubnubApi.MD5.FF(System.UInt32@,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.Byte,System.UInt32)">
+            FF, GG, HH, and II transformations 
+            for rounds 1, 2, 3, and 4.
+            Rotation is separate from addition to prevent re-computation.
+        </member>
+        <member name="F:PubnubApi.MD5.state">
+            <summary>
+            state (ABCD)
+            </summary>
+        </member>
+        <member name="F:PubnubApi.MD5.count">
+            <summary>
+            number of bits, modulo 2^64 (LSB first)
+            </summary>
+        </member>
+        <member name="F:PubnubApi.MD5.buffer">
+            <summary>
+            input buffer
+            </summary>
+        </member>
+        <member name="M:PubnubApi.MD5.Initialize">
+            <summary>
+            MD5 initialization. Begins an MD5 operation, writing a new context.
+            </summary>
+            <remarks>
+            The RFC named it "MD5Init"
+            </remarks>
+        </member>
+        <member name="M:PubnubApi.MD5.HashCore(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            MD5 block update operation. Continues an MD5 message-digest
+            operation, processing another message block, and updating the
+            context.
+            </summary>
+            <param name="input"></param>
+            <param name="offset"></param>
+            <param name="count"></param>
+            <remarks>The RFC Named it MD5Update</remarks>
+        </member>
+        <member name="M:PubnubApi.MD5.HashFinal">
+            <summary>
+            MD5 finalization. Ends an MD5 message-digest operation, writing the
+            the message digest and zeroizing the context.
+            </summary>
+            <returns>message digest</returns>
+            <remarks>The RFC named it MD5Final</remarks>
+        </member>
+        <member name="M:PubnubApi.MD5.Transform(System.Byte[],System.Int32)">
+            <summary>
+            MD5 basic transformation. Transforms state based on 64 bytes block.
+            </summary>
+            <param name="block"></param>
+            <param name="offset"></param>
+        </member>
+        <member name="M:PubnubApi.MD5.Encode(System.Byte[],System.Int32,System.UInt32[],System.Int32,System.Int32)">
+            <summary>
+            Encodes input (uint) into output (byte). Assumes len is
+             multiple of 4.
+            </summary>
+            <param name="output"></param>
+            <param name="outputOffset"></param>
+            <param name="input"></param>
+            <param name="inputOffset"></param>
+            <param name="count"></param>
+        </member>
+        <member name="M:PubnubApi.MD5.Decode(System.UInt32[],System.Int32,System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Decodes input (byte) into output (uint). Assumes len is
+            a multiple of 4.
+            </summary>
+            <param name="output"></param>
+            <param name="outputOffset"></param>
+            <param name="input"></param>
+            <param name="inputOffset"></param>
+            <param name="count"></param>
+        </member>
+        <member name="M:PubnubApi.PubnubCryptoBase.ComputeHashRaw(System.String)">
+            <summary>
+            Computes the hash using the specified algo
+            </summary>
+            <returns>
+            The hash.
+            </returns>
+            <param name='input'>
+            Input string
+            </param>
+            <param name='algorithm'>
+            Algorithm to use for Hashing
+            </param>
+        </member>
+        <member name="M:PubnubApi.PubnubCryptoBase.EncryptOrDecrypt(System.Boolean,System.String,System.Boolean)">
+            EncryptOrDecrypt
+            
+            Basic function for encrypt or decrypt a string
+            for encrypt type = true
+            for decrypt type = false
+        </member>
+        <member name="M:PubnubApi.PubnubCryptoBase.ConvertHexToUnicodeChars(System.String)">
+            <summary>
+            Converts the upper case hex to lower case hex.
+            </summary>
+            <returns>The lower case hex.</returns>
+            <param name="value">Hex Value.</param>
+        </member>
+        <member name="M:PubnubApi.PubnubCryptoBase.EncodeNonAsciiCharacters(System.String)">
+            <summary>
+            Encodes the non ASCII characters.
+            </summary>
+            <returns>
+            The non ASCII characters.
+            </returns>
+            <param name='value'>
+            Value.
+            </param>
+        </member>
+    </members>
+</doc>

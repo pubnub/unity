@@ -776,53 +776,18 @@ sdks:
                 is-required: "Required"          
               -
                 name: "JSON .NET For Unity"
-                min-version: "2.0.1"
+                min-version: "3.0.2"
                 license: "Unity's standard Unity Asset Store End User License Agreement"
                 license-url: ""
                 location: "Shipped within package"
                 is-required: "Optional, one JSON serialization library is required"          
               -
                 name: "PeterO.Cbor"
-                min-version: ""
+                min-version: "4.5.5"
                 license: "Creative Commons"
                 license-url: ""
                 location: "Shipped within package"
                 is-required: "Required"
-              -
-                name: "MiniJSON"
-                min-version: ""
-                license: "MIT"
-                license-url: ""
-                location: "Shipped within package"
-                is-required: "Optional, one JSON serialization library is required"
-              -
-                name: "MarkerMetro.Unity.WinLegacy"
-                min-version: "1.8.0.18"
-                license: "MIT"
-                license-url: "https://raw.githubusercontent.com/MarkerMetro/MarkerMetro.Unity.WinLegacy/master/LICENSE"
-                location: "Shipped within package"
-                is-required: "Optional, only applicable for Metro"
-              -
-                name: "BouncyCastle"
-                min-version: "1.8.1.0"
-                license: "MIT"
-                license-url: ""
-                location: "Shipped within package"
-                is-required: "Optional, only applicable for Metro"
-              -
-                name: "BouncyCastle.Crypto"
-                min-version: "1.8.1.0"
-                license: "MIT"
-                license-url: ""
-                location: "Shipped within package"
-                is-required: "Optional, only applicable for Metro"
-              -
-                name: "JsonFx.Json"
-                min-version: ""
-                license: "MIT"
-                license-url: ""
-                location: "Shipped within package"
-                is-required: "Optional, only applicable for Metro"
             supported-platforms:
                 supported-operating-systems:
                   Android:
@@ -943,53 +908,18 @@ sdks:
                 is-required: "Required"          
               -
                 name: "JSON .NET For Unity"
-                min-version: "2.0.1"
+                min-version: "3.0.2"
                 license: "Unity's standard Unity Asset Store End User License Agreement"
                 license-url: ""
                 location: "Shipped within package"
                 is-required: "Optional, one JSON serialization library is required"          
               -
                 name: "PeterO.Cbor"
-                min-version: ""
+                min-version: "4.5.5"
                 license: "Creative Commons"
                 license-url: ""
                 location: "Shipped within package"
                 is-required: "Required"
-              -
-                name: "MiniJSON"
-                min-version: ""
-                license: "MIT"
-                license-url: ""
-                location: "Shipped within package"
-                is-required: "Optional, one JSON serialization library is required"
-              -
-                name: "MarkerMetro.Unity.WinLegacy"
-                min-version: "1.8.0.18"
-                license: "MIT"
-                license-url: "https://raw.githubusercontent.com/MarkerMetro/MarkerMetro.Unity.WinLegacy/master/LICENSE"
-                location: "Shipped within package"
-                is-required: "Optional, only applicable for Metro"
-              -
-                name: "BouncyCastle"
-                min-version: "1.8.1.0"
-                license: "MIT"
-                license-url: ""
-                location: "Shipped within package"
-                is-required: "Optional, only applicable for Metro"
-              -
-                name: "BouncyCastle.Crypto"
-                min-version: "1.8.1.0"
-                license: "MIT"
-                license-url: ""
-                location: "Shipped within package"
-                is-required: "Optional, only applicable for Metro"
-              -
-                name: "JsonFx.Json"
-                min-version: ""
-                license: "MIT"
-                license-url: ""
-                location: "Shipped within package"
-                is-required: "Optional, only applicable for Metro"
             supported-platforms:
                 supported-operating-systems:
                   Android:

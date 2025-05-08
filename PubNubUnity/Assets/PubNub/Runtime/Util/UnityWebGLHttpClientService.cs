@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -11,6 +12,13 @@ namespace PubnubApi.Unity {
 	/// This is an implementation of the PubNub Transport Layer created for Web GL builds compatibility
 	/// </summary>
 	public class UnityWebGLHttpClientService : IHttpClientService {
+
+		private PubnubLogModule logger;
+
+		public void SetLogger(PubnubLogModule logger) {
+			this.logger = logger;
+		}
+
 		private TransportResponse UnityRequestToResponse(UnityWebRequest request) {
 			return new TransportResponse() {
 				StatusCode = (int)request.responseCode,
@@ -35,11 +43,52 @@ namespace PubnubApi.Unity {
 			}
 		}
 
+		private TransportResponse GetTransportResponseForRequestException(Exception exception, TransportRequest transportRequest,
+			UnityWebRequest requestWithTimeout)
+		{
+			if (requestWithTimeout == null) {
+				logger?.Error($"HttpClient Service: UnityWebRequest for url {transportRequest.RequestUrl} was null!");
+				return new TransportResponse()
+				{
+					RequestUrl = transportRequest.RequestUrl,
+					Error = exception,
+				};
+			}
+
+			TransportResponse transportResponse;
+			if (exception is TaskCanceledException taskCanceledException) {
+				logger?.Error($"HttpClient Service: TaskCanceledException for url {transportRequest.RequestUrl}");
+				transportResponse = new TransportResponse()
+				{
+					RequestUrl = transportRequest.RequestUrl,
+					Error = taskCanceledException,
+				};
+				logger?.Debug("HttpClient Service: Task cancelled due to cancellation request");
+				transportResponse.IsCancelled = true;
+			} else {
+				logger?.Error(
+					$"HttpClient Service: Exception for http call url {transportRequest.RequestUrl}, exception message: {exception.Message}, stacktrace: {exception.StackTrace}");
+				transportResponse = new TransportResponse() {
+					RequestUrl = transportRequest.RequestUrl,
+					Error = exception
+				};
+				//Apparently error.Contains("Request timeout") is the only way to determine if request timed out
+				if (!string.IsNullOrEmpty(requestWithTimeout.error) && requestWithTimeout.error.Contains("Request timeout") &&
+				    !transportRequest.CancellationTokenSource.IsCancellationRequested)
+				{
+					logger?.Debug("HttpClient Service: Request cancelled due to timeout");
+					transportResponse.IsTimeOut = true;
+				}
+			}
+
+			return transportResponse;
+		}
+
 		public async Task<TransportResponse> DeleteRequest(TransportRequest transportRequest) {
+			var deleteRequest = UnityWebRequest.Delete(transportRequest.RequestUrl);
+			PrepareUnityRequest(deleteRequest, transportRequest);
 			TransportResponse response;
 			try {
-				var deleteRequest = UnityWebRequest.Delete(transportRequest.RequestUrl);
-				PrepareUnityRequest(deleteRequest, transportRequest);
 				var taskCompletionSource = new TaskCompletionSource<TransportResponse>();
 				transportRequest.CancellationTokenSource.Token.Register(() => {
 					deleteRequest.Abort();
@@ -50,20 +99,18 @@ namespace PubnubApi.Unity {
 				};
 				response = await taskCompletionSource.Task.ConfigureAwait(false);
 			} catch (Exception ex) {
-				Debug.LogError($"DELETE Error: {ex}");
-				response = new TransportResponse() {
-					RequestUrl = transportRequest.RequestUrl,
-					Error = ex
-				};
+				response = GetTransportResponseForRequestException(ex, transportRequest, deleteRequest);
+			} finally {
+				transportRequest.CancellationTokenSource?.Dispose();
 			}
 			return response;
 		}
 
 		public async Task<TransportResponse> GetRequest(TransportRequest transportRequest) {
+			var getRequest = UnityWebRequest.Get(transportRequest.RequestUrl);
+			PrepareUnityRequest(getRequest, transportRequest);
 			TransportResponse response;
 			try {
-				var getRequest = UnityWebRequest.Get(transportRequest.RequestUrl);
-				PrepareUnityRequest(getRequest, transportRequest);
 				var taskCompletionSource = new TaskCompletionSource<TransportResponse>();
 				transportRequest.CancellationTokenSource.Token.Register(() => {
 					getRequest.Abort();
@@ -74,17 +121,16 @@ namespace PubnubApi.Unity {
 				};
 				response = await taskCompletionSource.Task.ConfigureAwait(false);
 			} catch (Exception ex) {
-				Debug.LogError($"GET Error: {ex}");
-				response = new TransportResponse() {
-					RequestUrl = transportRequest.RequestUrl,
-					Error = ex
-				};
+				response = GetTransportResponseForRequestException(ex, transportRequest, getRequest);
+			} finally {
+				transportRequest.CancellationTokenSource?.Dispose();
 			}
 			return response;
 		}
 
 		public async Task<TransportResponse> PostRequest(TransportRequest transportRequest) {
 			TransportResponse response;
+			UnityWebRequest postRequest = null;
 			try {
 				var formData = new List<IMultipartFormSection>();
 				if (!string.IsNullOrEmpty(transportRequest.BodyContentString)) {
@@ -93,7 +139,7 @@ namespace PubnubApi.Unity {
 					formData.Add(new MultipartFormDataSection(transportRequest.BodyContentBytes));
 				}
 
-				var postRequest = UnityWebRequest.Post(transportRequest.RequestUrl, formData);
+				postRequest = UnityWebRequest.Post(transportRequest.RequestUrl, formData);
 				PrepareUnityRequest(postRequest, transportRequest);
 				var taskCompletionSource = new TaskCompletionSource<TransportResponse>();
 				transportRequest.CancellationTokenSource.Token.Register(() => {
@@ -105,19 +151,18 @@ namespace PubnubApi.Unity {
 				};
 				response = await taskCompletionSource.Task.ConfigureAwait(false);
 			} catch (Exception ex) {
-				Debug.LogError($"POST Error: {ex}");
-				response = new TransportResponse() {
-					RequestUrl = transportRequest.RequestUrl,
-					Error = ex
-				};
+				response = GetTransportResponseForRequestException(ex, transportRequest, postRequest);
+			} finally {
+				transportRequest.CancellationTokenSource?.Dispose();
 			}
 			return response;
 		}
 
 		public async Task<TransportResponse> PatchRequest(TransportRequest transportRequest) {
 			TransportResponse response;
+			UnityWebRequest patchRequest = null;
 			try {
-				UnityWebRequest patchRequest;
+
 				if (!string.IsNullOrEmpty(transportRequest.BodyContentString)) {
 					patchRequest = UnityWebRequest.Put(transportRequest.RequestUrl, transportRequest.BodyContentString);
 				} else if (transportRequest.BodyContentBytes != null) {
@@ -138,20 +183,18 @@ namespace PubnubApi.Unity {
 				};
 				response = await taskCompletionSource.Task.ConfigureAwait(false);
 			} catch (Exception ex) {
-				Debug.LogError($"PATCH Error: {ex}");
-				response = new TransportResponse() {
-					RequestUrl = transportRequest.RequestUrl,
-					Error = ex
-				};
+				response = GetTransportResponseForRequestException(ex, transportRequest, patchRequest);
+			} finally {
+				transportRequest.CancellationTokenSource?.Dispose();
 			}
 
 			return response;
 		}
 
 		public async Task<TransportResponse> PutRequest(TransportRequest transportRequest) {
+			UnityWebRequest putRequest = null;
 			TransportResponse response;
 			try {
-				UnityWebRequest putRequest;
 				if (!string.IsNullOrEmpty(transportRequest.BodyContentString)) {
 					putRequest = UnityWebRequest.Put(transportRequest.RequestUrl, transportRequest.BodyContentString);
 				} else if (transportRequest.BodyContentBytes != null) {
@@ -171,11 +214,9 @@ namespace PubnubApi.Unity {
 				};
 				response = await taskCompletionSource.Task.ConfigureAwait(false);
 			} catch (Exception ex) {
-				Debug.LogError($"PUT Error: {ex}");
-				response = new TransportResponse() {
-					RequestUrl = transportRequest.RequestUrl,
-					Error = ex
-				};
+				response = GetTransportResponseForRequestException(ex, transportRequest, putRequest);
+			} finally {
+				transportRequest.CancellationTokenSource?.Dispose();
 			}
 
 			return response;
