@@ -52,10 +52,9 @@ namespace PubnubApi.Unity.Tests {
 
 		[UnityTest]
 		public IEnumerator PublishAndReceiveCustomMessageWithUnityJson() {
+			var mainThread = Thread.CurrentThread;
 			yield return TestTask().AsCoroutine();
 			async Task TestTask() {
-				var mainThread = Thread.CurrentThread;
-
 				pn.SetJsonPluggableLibrary(new NewtonsoftJsonUnity(configuration));
 
 				pn.Subscribe<DummyCustomClass>().Channels(new []{"test_channel"}).Execute();
