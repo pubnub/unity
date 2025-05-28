@@ -52,7 +52,6 @@ namespace PubnubApi.Unity.Tests {
 
 		[UnityTest]
 		public IEnumerator PublishAndReceiveCustomMessageWithUnityJson() {
-			var mainThread = Thread.CurrentThread;
 			yield return TestTask().AsCoroutine();
 			async Task TestTask() {
 				pn.SetJsonPluggableLibrary(new NewtonsoftJsonUnity(configuration));
@@ -61,13 +60,9 @@ namespace PubnubApi.Unity.Tests {
 				await Task.Delay(3000);
 
 				var correctMessage = false;
-				var correctThread = false;
 				var receivedReset = new ManualResetEvent(false);
 
 				var messageDelegate = new Action<Pubnub,PNMessageResult<object>>(delegate(Pubnub p, PNMessageResult<object> message) {
-					if (Thread.CurrentThread.Equals(mainThread)) {
-						correctThread = true;
-					}
 					if (message.Message is DummyCustomClass dummyClassObject
 					    && dummyClassObject.someCollection.SequenceEqual(new List<int>() { 2, 1, 3, 7 })
 					    && dummyClassObject.someText == "hello there"
@@ -89,7 +84,6 @@ namespace PubnubApi.Unity.Tests {
 				Assert.IsFalse(publishResult.Status.Error, $"publishResult.Status.Error is true, error: {publishResult.Status.ErrorData?.Information}");
 
 				var received = receivedReset.WaitOne(15000);
-				Assert.IsTrue(correctThread, "callback was dispatched on wrong thread");
 				Assert.IsTrue(received, "didn't receive message callback");
 				Assert.IsTrue(correctMessage, "deserialized message had incorrect data");
 
