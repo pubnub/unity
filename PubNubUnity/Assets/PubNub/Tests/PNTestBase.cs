@@ -5,18 +5,32 @@ using NUnit.Framework;
 using UnityEngine;
 
 namespace PubnubApi.Unity.Tests {
+
+	public static class TestUtils {
+		public static IEnumerator AsCoroutine(this Task task)
+		{
+			while (!task.IsCompleted) yield return null;
+			// if task is faulted, throws the exception
+			task.GetAwaiter().GetResult();
+		}
+	}
+
 	public class PNTestBase {
 		protected static Pubnub pn;
 		protected static SubscribeCallbackListener listener = new();
+		protected static PNConfiguration configuration;
 
 		[OneTimeSetUp]
 		public void OneTimeSetUp() {
-			PNConfiguration pnConfiguration = new PNConfiguration(new UserId(System.Guid.NewGuid().ToString())) {
-				PublishKey = System.Environment.GetEnvironmentVariable("PUB_KEY"),
-				SubscribeKey = System.Environment.GetEnvironmentVariable("SUB_KEY"),
-				SecretKey = System.Environment.GetEnvironmentVariable("PAM_SECRET_KEY")
+			var envPub = System.Environment.GetEnvironmentVariable("PUB_KEY");
+			var envSub = System.Environment.GetEnvironmentVariable("SUB_KEY");
+			var envSec = System.Environment.GetEnvironmentVariable("PAM_SECRET_KEY");
+			configuration = new PNConfiguration(new UserId(System.Guid.NewGuid().ToString())) {
+				PublishKey = string.IsNullOrEmpty(envPub) ? "demo-36" : envPub,
+				SubscribeKey = string.IsNullOrEmpty(envSub) ? "demo-36" : envSub,
+				SecretKey = envSec ?? "demo-36"
 			};
-			pn = new Pubnub(pnConfiguration);
+			pn = new Pubnub(configuration);
 
 			pn.AddListener(listener);
 
