@@ -1,6 +1,13 @@
 --- 
-version: v9.0.0
+version: v9.0.1
 changelog:
+  - date: 2025-05-30
+    version: v9.0.1
+    changes:
+      - type: feature
+        text: "Improved Unity-side testing of core C# codebase."
+      - type: bug
+        text: "Updated the legacy Reconnect() call to properly call new C#-side signature."
   - date: 2025-05-08
     version: v9.0.0
     changes:
@@ -772,7 +779,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v9.0.0/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v9.0.1/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
@@ -904,7 +911,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v9.0.0/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v9.0.1/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
