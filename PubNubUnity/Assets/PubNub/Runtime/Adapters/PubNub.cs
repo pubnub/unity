@@ -11,7 +11,7 @@ namespace PubnubApi.Unity {
 		public static ISubscribeOperation<string> Subscribe(this Pubnub pn) => pn.Subscribe<string>();
 
 		[Obsolete("Use the generic version instead")]
-		public static bool Reconnect(this Pubnub pn) => pn.Reconnect<string>();
+		public static bool Reconnect(this Pubnub pn) => pn.Reconnect<string>().Result;
 
 		/// <summary>
 		/// Add an event listener that dispatches to the main Unity thread. This allows manipulation of the built-in classes within callbacks.
