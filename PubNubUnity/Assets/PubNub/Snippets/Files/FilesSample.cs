@@ -1,7 +1,11 @@
 // snippet.using
 using PubnubApi;
+using PubnubApi.Unity;
 
 // snippet.end
+using System.Threading.Tasks;
+using UnityEngine;
+using System;
 
 public class FilesSample
 {
@@ -17,38 +21,15 @@ public class FilesSample
             Secure = true
         };
 
-        Pubnub pubnub = new Pubnub(pnConfiguration);
-        // snippet.end
-    }
-    
-    public static async Task SendFileBasicUsage()
-    {
-        // snippet.send_file_basic_usage
-        try
-        {
-            PNResult<PNFileUploadResult> fileUploadResponse = await pubnub.SendFile()
-                .Channel("my_channel")
-                .File("path/to/your/file/cat_picture.jpg")
-                .Message("Look at this photo!")
-                .CustomMessageType("file-message")
-                .ExecuteAsync();
+        Pubnub pubnub = PubnubUnityUtils.NewUnityPubnub(pnConfiguration);
 
-            PNFileUploadResult fileUploadResult = fileUploadResponse.Result;
-            PNStatus fileUploadStatus = fileUploadResponse.Status;
+        // If you're using Unity Editor setup you can get the Pubnub instance from PNManagerBehaviour
+        // For more details, see https://www.pubnub.com/docs/sdks/unity#configure-pubnub
+        /*
+        [SerializeField] private PNManagerBehaviour pubnubManager;
+        Pubnub pubnub = pubnubManager.pubnub;
+        */
 
-            if (!fileUploadStatus.Error && fileUploadResult != null)
-            {
-                Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(fileUploadResult));
-            }
-            else
-            {
-                Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(fileUploadStatus));
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Request cannot be executed due to error: {ex.Message}");
-        }
         // snippet.end
     }
 
@@ -62,11 +43,11 @@ public class FilesSample
         PNStatus listFilesStatus = listFilesResponse.Status;
         if (!listFilesStatus.Error && listFilesResult != null)
         {
-            Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(listFilesResult));
+            Debug.Log(pubnub.JsonPluggableLibrary.SerializeToJsonString(listFilesResult));
         }
         else
         {
-            Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(listFilesStatus));
+            Debug.Log(pubnub.JsonPluggableLibrary.SerializeToJsonString(listFilesStatus));
         }
         // snippet.end
     }
@@ -83,11 +64,11 @@ public class FilesSample
         PNStatus getFileUrlStatus = getFileUrlResponse.Status;
         if (!getFileUrlStatus.Error && getFileUrlResult != null)
         {
-            Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(getFileUrlResult));
+            Debug.Log(pubnub.JsonPluggableLibrary.SerializeToJsonString(getFileUrlResult));
         }
         else
         {
-            Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(getFileUrlStatus));
+            Debug.Log(pubnub.JsonPluggableLibrary.SerializeToJsonString(getFileUrlStatus));
         }
         // snippet.end
     }
@@ -105,11 +86,11 @@ public class FilesSample
         if (!fileDownloadStatus.Error && fileDownloadResult != null)
         {
             fileDownloadResult.SaveFileToLocal(downloadUrlFileName); //saves to bin folder if no path is provided
-            Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(fileDownloadResult.FileName));
+            Debug.Log(pubnub.JsonPluggableLibrary.SerializeToJsonString(fileDownloadResult.FileName));
         }
         else
         {
-            Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(fileDownloadStatus));
+            Debug.Log(pubnub.JsonPluggableLibrary.SerializeToJsonString(fileDownloadStatus));
         }
         // snippet.end
     }
@@ -126,11 +107,11 @@ public class FilesSample
         PNStatus deleteFileStatus = deleteFileResponse.Status;
         if (!deleteFileStatus.Error && deleteFileResult != null)
         {
-            Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(deleteFileResult));
+            Debug.Log(pubnub.JsonPluggableLibrary.SerializeToJsonString(deleteFileResult));
         }
         else
         {
-            Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(deleteFileStatus));
+            Debug.Log(pubnub.JsonPluggableLibrary.SerializeToJsonString(deleteFileStatus));
         }
         // snippet.end
     }
@@ -149,11 +130,11 @@ public class FilesSample
         PNStatus publishFileMsgStatus = publishFileMsgResponse.Status;
         if (!publishFileMsgStatus.Error && publishFileMsgResult != null)
         {
-            Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(publishFileMsgResult));
+            Debug.Log(pubnub.JsonPluggableLibrary.SerializeToJsonString(publishFileMsgResult));
         }
         else
         {
-            Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(publishFileMsgStatus));
+            Debug.Log(pubnub.JsonPluggableLibrary.SerializeToJsonString(publishFileMsgStatus));
         }
         // snippet.end
     }

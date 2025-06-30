@@ -1,7 +1,10 @@
 // snippet.using
 using PubnubApi;
+using PubnubApi.Unity;
 
 // snippet.end
+using UnityEngine;
+using System;
 
 public class MessageActionsSample
 {
@@ -19,36 +22,15 @@ public class MessageActionsSample
         };
 
         // Initialize PubNub
-        Pubnub pubnub = new Pubnub(pnConfiguration);
+        Pubnub pubnub = PubnubUnityUtils.NewUnityPubnub(pnConfiguration);
 
-        // snippet.end
-    }
-    
-    public static void AddMessageActionBasicUsage()
-    {
-        // snippet.add_message_action_basic_usage
-        try
-        {
-            pubnub.AddMessageAction()
-                .Channel("my_channel")
-                .MessageTimetoken(5610547826969050) // Replace with actual message timetoken
-                .Action(new PNMessageAction { Type = "reaction", Value = "smiley_face" })
-                .Execute(new PNAddMessageActionResultExt((result, status) =>
-                {
-                    if (!status.Error && result != null)
-                    {
-                        Console.WriteLine("Message action added successfully.");
-                    }
-                    else
-                    {
-                        Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(status));
-                    }
-                }));
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Request cannot be executed due to error: {ex.Message}");
-        }
+        // If you're using Unity Editor setup you can get the Pubnub instance from PNManagerBehaviour
+        // For more details, see https://www.pubnub.com/docs/sdks/unity#configure-pubnub
+        /*
+        [SerializeField] private PNManagerBehaviour pubnubManager;
+        Pubnub pubnub = pubnubManager.pubnub;
+        */
+
         // snippet.end
     }
 
@@ -78,4 +60,4 @@ public class MessageActionsSample
             }));
         // snippet.end
     }
-} 
+}

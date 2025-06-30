@@ -1,12 +1,15 @@
 // snippet.using
 using PubnubApi;
+using PubnubApi.Unity;
 
 // snippet.end
+using System.Collections.Generic;
+using UnityEngine;
 
 public class MiscSample
 {
     private static Pubnub pubnub;
-    
+
     static void Init()
     {
         // snippet.init
@@ -19,18 +22,15 @@ public class MiscSample
         };
 
         // Initialize PubNub
-        Pubnub pubnub = new Pubnub(pnConfiguration);
-        
-        // snippet.end
-    }
-    
-    public static void DestroyBasicUsage()
-    {
-        // snippet.destroy_basic_usage
-        // Destroy PubNub instance to clean up resources
-        pubnub.Destroy();
+        Pubnub pubnub = PubnubUnityUtils.NewUnityPubnub(pnConfiguration);
 
-        Console.WriteLine("PubNub instance destroyed successfully.");
+        // If you're using Unity Editor setup you can get the Pubnub instance from PNManagerBehaviour
+        // For more details, see https://www.pubnub.com/docs/sdks/unity#configure-pubnub
+        /*
+        [SerializeField] private PNManagerBehaviour pubnubManager;
+        Pubnub pubnub = pubnubManager.pubnub;
+        */
+
         // snippet.end
     }
 
@@ -130,4 +130,4 @@ public class MiscSample
             ));
         // snippet.end
     }
-} 
+}

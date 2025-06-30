@@ -1,5 +1,6 @@
 // snippet.using
 using PubnubApi;
+using PubnubApi.Unity;
 
 // snippet.end
 
@@ -7,6 +8,8 @@ using PubnubApi;
 using PubnubApi.Security.Crypto;
 using PubnubApi.Security.Crypto.Cryptors;
 // snippet.end
+
+using System.Collections.Generic;
 
 public class ConfigurationSample
 {
@@ -17,7 +20,7 @@ public class ConfigurationSample
         // snippet.init_config
         PNConfiguration pnConfiguration = new PNConfiguration(new UserId("myUniqueUserId"));
         // snippet.end
-        
+
         // snippet.crypto
         // encrypts using 256-bit AES-CBC cipher (recommended)
         // decrypts data encrypted with the legacy and the 256-bit AES-CBC ciphers
@@ -29,17 +32,37 @@ public class ConfigurationSample
         pnConfiguration.CryptoModule = new CryptoModule(new LegacyCryptor("enigma"),
             new List<ICryptor> { new AesCbcCryptor("enigma") });
         // snippet.end
-        
+
         // snippet.new_pubnub
-        Pubnub pubnub = new Pubnub(pnConfiguration);
-        
+        Pubnub pubnub = PubnubUnityUtils.NewUnityPubnub(pnConfiguration);
+
+        // If you're using Unity Editor setup you can get the Pubnub instance from PNManagerBehaviour
+        // For more details, see https://www.pubnub.com/docs/sdks/unity#configure-pubnub
+        /*
+        [SerializeField] private PNManagerBehaviour pubnubManager;
+        Pubnub pubnub = pubnubManager.pubnub;
+        */
+
         // snippet.end
+    }
+
+    static void VariousInitializations() {
+	    PNConfiguration pnConfig = null;
+	    {
+		    // snippet.web_gl_init_one
+		    var pubnub = new Pubnub(pnConfig, httpTransportService: new UnityWebGLHttpClientService(),
+			    ipnsdkSource: new UnityPNSDKSource());
+		    // snippet.end
+	    }
+	    {
+		    // snippet.web_gl_init_two
+		    var pubnub = PubnubUnityUtils.NewUnityPubnub(pnConfig, webGLBuildMode: true);
+		    // snippet.end
+	    }
     }
 
     static void BasicUsage()
     {
-        // snippet.basic_usage
-        // Create a configuration instance for PubNub
         PNConfiguration pnConfiguration = new PNConfiguration(new UserId("myUniqueUserId"))
         {
             SubscribeKey = "demo", // Required
@@ -55,22 +78,10 @@ public class ConfigurationSample
             PresenceTimeout = 120, // Presence timeout
         };
 
-        // Configure presence timeout with custom interval
-        pnConfiguration.SetPresenceTimeoutWithCustomInterval(120, 59);
-
-        // Encryption configuration (Optional)
-        pnConfiguration.CryptoModule = new CryptoModule(
-            new AesCbcCryptor("enigma"), 
-            new List<ICryptor> { new LegacyCryptor("enigma") });
-
-        // Initialize a new PubNub instance with the created confiiguration
-        Pubnub pubnub = new Pubnub(pnConfiguration);
-        // snippet.end
-        
         // snippet.user_id
         pnConfiguration.UserId = new UserId("myUserId");
         // snippet.end
-        
+
         // snippet.get_user_id
         UserId currentUserId = pubnub.GetCurrentUserId();
         // snippet.end
@@ -85,14 +96,14 @@ public class ConfigurationSample
         pnConfiguration.UserId = new UserId("myUserId");
         // snippet.end
     }
-    
+
     static void SetAndGetAuthKey()
     {
         // snippet.set_auth_key
         PNConfiguration pnConfiguration = new PNConfiguration(new UserId("myUniqueUserId"));
         pnConfiguration.AuthKey = "authKey";
         // snippet.end
-        
+
         // snippet.get_auth_key
         string sampleAuthKey = pnConfiguration.AuthKey;
         // snippet.end
@@ -104,7 +115,7 @@ public class ConfigurationSample
         PNConfiguration pnConfiguration = new PNConfiguration(new UserId("myUniqueUserId"));
         pnConfiguration.FilterExpression = "such=wow";
         // snippet.end
-        
+
         // snippet.get_filter_expression
         string filterExpression = pnConfiguration.FilterExpression;
         // snippet.end
@@ -122,10 +133,10 @@ public class ConfigurationSample
         };
 
         // Create the PubNub instance with the configuration
-        Pubnub pubnub = new Pubnub(pnConfiguration);
+        Pubnub pubnub = PubnubUnityUtils.NewUnityPubnub(pnConfiguration);
         // snippet.end
     }
-    
+
     static void InitNonSecure()
     {
         // snippet.init_non_secure
@@ -133,10 +144,10 @@ public class ConfigurationSample
         pnConfiguration.PublishKey = "my_pubkey";
         pnConfiguration.SubscribeKey = "my_subkey";
         pnConfiguration.Secure = false;
-        Pubnub pubnub = new Pubnub(pnConfiguration);
+        Pubnub pubnub = PubnubUnityUtils.NewUnityPubnub(pnConfiguration);
         // snippet.end
     }
-    
+
     static void InitSecure()
     {
         // snippet.init_secure
@@ -144,10 +155,10 @@ public class ConfigurationSample
         pnConfiguration.PublishKey = "my_pubkey";
         pnConfiguration.SubscribeKey = "my_subkey";
         pnConfiguration.Secure = true;
-        Pubnub pubnub = new Pubnub(pnConfiguration);
+        Pubnub pubnub = PubnubUnityUtils.NewUnityPubnub(pnConfiguration);
         // snippet.end
     }
-    
+
     static void InitSecretKey()
     {
         // snippet.init_secret_key
@@ -157,16 +168,16 @@ public class ConfigurationSample
         pnConfiguration.SecretKey = "my_secretkey";
         pnConfiguration.Secure = true;
 
-        Pubnub pubnub = new Pubnub(pnConfiguration);
+        Pubnub pubnub = PubnubUnityUtils.NewUnityPubnub(pnConfiguration);
         // snippet.end
     }
-    
+
     static void InitReadOnly()
     {
         // snippet.init_read_only
         PNConfiguration pnConfiguration = new PNConfiguration(new UserId("myUniqueUserId"));
         pnConfiguration.SubscribeKey = "my_subkey";
-        Pubnub pubnub = new Pubnub(pnConfiguration);
+        Pubnub pubnub = PubnubUnityUtils.NewUnityPubnub(pnConfiguration);
         // snippet.end
     }
 }

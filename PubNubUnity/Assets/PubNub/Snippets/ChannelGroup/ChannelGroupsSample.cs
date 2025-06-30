@@ -1,7 +1,9 @@
 // snippet.using
 using PubnubApi;
+using PubnubApi.Unity;
 
 // snippet.end
+using System.Threading.Tasks;
 
 public class ChannelGroupsSample
 {
@@ -17,40 +19,18 @@ public class ChannelGroupsSample
             PublishKey = "demo"
         };
         //Create a new PubNub instance
-        Pubnub pubnub = new Pubnub(pnConfiguration);
-        
+        Pubnub pubnub = PubnubUnityUtils.NewUnityPubnub(pnConfiguration);
+
+        // If you're using Unity Editor setup you can get the Pubnub instance from PNManagerBehaviour
+        // For more details, see https://www.pubnub.com/docs/sdks/unity#configure-pubnub
+        /*
+        [SerializeField] private PNManagerBehaviour pubnubManager;
+        Pubnub pubnub = pubnubManager.pubnub;
+        */
+
         // snippet.end
     }
 
-    static async Task AddToGroup()
-    {
-        // snippet.add_to_group
-        try
-        {
-            PNResult<PNChannelGroupsAddChannelResult> cgAddChResponse = await pubnub.AddChannelsToChannelGroup()
-                .ChannelGroup("myChannelGroup")
-                .Channels(new string[] { "channel1", "channel2", "channel3" })
-                .ExecuteAsync();
-
-            PNChannelGroupsAddChannelResult cgAddChResult = cgAddChResponse.Result;
-            PNStatus cgAddChStatus = cgAddChResponse.Status;
-
-            if (!cgAddChStatus.Error && cgAddChResult != null)
-            {
-                Console.WriteLine("Channels successfully added to the channel group.");
-            }
-            else
-            {
-                Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(cgAddChStatus));
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Request cannot be executed due to error: {ex.Message}");
-        }
-        // snippet.end
-    }
-    
     static async Task ListFromGroup()
     {
         // snippet.list
@@ -59,7 +39,7 @@ public class ChannelGroupsSample
             .ExecuteAsync();
         // snippet.end
     }
-    
+
     static async Task RemoveFromGroup()
     {
         // snippet.remove
@@ -71,7 +51,7 @@ public class ChannelGroupsSample
             .ExecuteAsync();
         // snippet.end
     }
-    
+
     static async Task DeleteGroup()
     {
         // snippet.delete

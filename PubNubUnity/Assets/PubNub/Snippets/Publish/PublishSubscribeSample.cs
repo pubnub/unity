@@ -2,6 +2,12 @@
 using PubnubApi;
 
 // snippet.end
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using UnityEngine;
+using System;
+using System.Linq;
+using PubnubApi.Unity;
 
 public class PublishSubscribeSample
 {
@@ -19,7 +25,14 @@ public class PublishSubscribeSample
         };
 
         // Initialize PubNub
-        Pubnub pubnub = new Pubnub(pnConfiguration);
+        Pubnub pubnub = PubnubUnityUtils.NewUnityPubnub(pnConfiguration);
+
+        // If you're using Unity Editor setup you can get the Pubnub instance from PNManagerBehaviour
+        // For more details, see https://www.pubnub.com/docs/sdks/unity#configure-pubnub
+        /*
+        [SerializeField] private PNManagerBehaviour pubnubManager;
+        Pubnub pubnub = pubnubManager.pubnub;
+        */
 
         // snippet.end
     }
@@ -36,7 +49,7 @@ public class PublishSubscribeSample
                 { "lng", 32F }
             };
 
-            Console.WriteLine("before pub: " + pubnub.JsonPluggableLibrary.SerializeToJsonString(position));
+            Debug.Log("before pub: " + pubnub.JsonPluggableLibrary.SerializeToJsonString(position));
 
             PNResult<PNPublishResult> publishResponse = await pubnub.Publish()
                 .Message(position)
@@ -49,17 +62,17 @@ public class PublishSubscribeSample
 
             if (!status.Error)
             {
-                Console.WriteLine("pub timetoken: " + publishResult.Timetoken.ToString());
-                Console.WriteLine("pub status code : " + status.StatusCode.ToString());
+                Debug.Log("pub timetoken: " + publishResult.Timetoken.ToString());
+                Debug.Log("pub status code : " + status.StatusCode.ToString());
             }
             else
             {
-                Console.WriteLine("Error occurred: " + pubnub.JsonPluggableLibrary.SerializeToJsonString(status));
+                Debug.LogError("Error occurred: " + pubnub.JsonPluggableLibrary.SerializeToJsonString(status));
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Request cannot be executed due to error: {ex.Message}");
+            Debug.LogError($"Request cannot be executed due to error: {ex.Message}");
         }
         // snippet.end
     }
@@ -72,7 +85,7 @@ public class PublishSubscribeSample
         position.Add("lat", 32F);
         position.Add("lng", 32F);
 
-        Console.WriteLine("before pub: " + pubnub.JsonPluggableLibrary.SerializeToJsonString(position));
+        Debug.Log("before pub: " + pubnub.JsonPluggableLibrary.SerializeToJsonString(position));
 
         pubnub.Publish()
             .Message(position)
@@ -81,8 +94,8 @@ public class PublishSubscribeSample
             .Execute(new PNPublishResultExt(
                 (result, status) =>
                 {
-                    Console.WriteLine("pub timetoken: " + result.Timetoken.ToString());
-                    Console.WriteLine("pub status code : " + status.StatusCode.ToString());
+                    Debug.Log("pub timetoken: " + result.Timetoken.ToString());
+                    Debug.Log("pub status code : " + status.StatusCode.ToString());
                 }
             ));
         // snippet.end
@@ -184,12 +197,12 @@ public class PublishSubscribeSample
                     if (status.Error)
                     {
                         // something bad happened.
-                        Console.WriteLine(
+                        Debug.Log(
                             $"error while publishing: {pubnub.JsonPluggableLibrary.SerializeToJsonString(status)}");
                     }
                     else
                     {
-                        Console.WriteLine($"published with timetoken: {result.Timetoken}");
+                        Debug.Log($"published with timetoken: {result.Timetoken}");
                     }
                 }
             ));
@@ -214,12 +227,12 @@ public class PublishSubscribeSample
                 {
                     if (status.Error)
                     {
-                        Console.WriteLine(
+                        Debug.Log(
                             $"error while publishing: {pubnub.JsonPluggableLibrary.SerializeToJsonString(status)}");
                     }
                     else
                     {
-                        Console.WriteLine($"published with timetoken: {result.Timetoken}");
+                        Debug.Log($"published with timetoken: {result.Timetoken}");
                     }
                 }
             ));
@@ -240,11 +253,11 @@ public class PublishSubscribeSample
             {
                 if (status.Error)
                 {
-                    Console.WriteLine(status.ErrorData.Information);
+                    Debug.Log(status.ErrorData.Information);
                 }
                 else
                 {
-                    Console.WriteLine(result.Timetoken);
+                    Debug.Log(result.Timetoken);
                 }
             }));
         // snippet.end
@@ -292,7 +305,7 @@ public class PublishSubscribeSample
             LogLevel = PubnubLogLevel.Debug
         };
 
-        Pubnub pubnub = new Pubnub(pnConfiguration);
+        Pubnub pubnub = PubnubUnityUtils.NewUnityPubnub(pnConfiguration);
 
         pubnub.Subscribe<string>()
             .Channels(new string[]
@@ -335,30 +348,28 @@ public class PublishSubscribeSample
     public static void SubscribeWithState()
     {
         // snippet.subscribe_with_state
-        pubnub.AddListener(new SubscribeCallbackExt(
-            (pubnubObj, message) => { },
-            (pubnubObj, presence) => { },
-            (pubnubObj, status) =>
-            {
-                if (status.Category == PNStatusCategory.PNConnectedCategory)
-                {
-                    Dictionary<string, object> data = new Dictionary<string, object>();
-                    data.Add("FieldA", "Awesome");
-                    data.Add("FieldB", 10);
+        var listener = new SubscribeCallbackListener();
+        listener.onStatus += (pubnubObj, status) =>
+        {
+	        if (status.Category == PNStatusCategory.PNConnectedCategory)
+	        {
+		        Dictionary<string, object> data = new Dictionary<string, object>();
+		        data.Add("FieldA", "Awesome");
+		        data.Add("FieldB", 10);
 
-                    pubnub.SetPresenceState()
-                        .Channels(new string[] { "awesomeChannel" })
-                        .ChannelGroups(new string[] { "awesomeChannelGroup" })
-                        .State(data)
-                        .Execute(new PNSetStateResultExt(
-                            (r, s) =>
-                            {
-                                // handle set state response
-                            }
-                        ));
-                }
-            }
-        ));
+		        pubnub.SetPresenceState()
+			        .Channels(new string[] { "awesomeChannel" })
+			        .ChannelGroups(new string[] { "awesomeChannelGroup" })
+			        .State(data)
+			        .Execute(new PNSetStateResultExt(
+				        (r, s) =>
+				        {
+					        // handle set state response
+				        }
+			        ));
+	        }
+        };
+        pubnub.AddListener(listener);
 
         pubnub.Subscribe<string>()
             .Channels(new string[]
@@ -444,23 +455,20 @@ public class PublishSubscribeSample
                     if (status.Error)
                     {
                         // something bad happened.
-                        Console.WriteLine("error happened while publishing: " +
+                        Debug.Log("error happened while publishing: " +
                                           pubnub.JsonPluggableLibrary.SerializeToJsonString(status));
                     }
                     else
                     {
-                        Console.WriteLine("publish worked! timetoken: " + result.Timetoken.ToString());
+                        Debug.Log("publish worked! timetoken: " + result.Timetoken.ToString());
                     }
                 }
             ));
 
-        SubscribeCallbackExt objectListenerSubscribeCallack = new SubscribeCallbackExt(
-            (pubnubObj, message) =>
-            {
-                //message.Message gives the Phone object because you subscribed to type Phone during subscribe.
-            },
-            (pubnubObj, presence) => { },
-            (pubnubObj, status) => { });
+        SubscribeCallbackListener objectListenerSubscribeCallack = new SubscribeCallbackListener();
+        objectListenerSubscribeCallack.onMessage += (pubnubObj, message) => {
+	        //message.Message gives the Phone object because you subscribed to type Phone during subscribe.
+        };
 
         pubnub.AddListener(objectListenerSubscribeCallack);
         pubnub.Subscribe<Phone>()
@@ -471,18 +479,15 @@ public class PublishSubscribeSample
             .Execute();
 
         //If you are subscribing to multiple message types, then
-        SubscribeCallbackExt stringListenerSubscribeCallack = new SubscribeCallbackExt(
-            (pubnubObj, message) =>
-            {
-                //message.Message gives the string object because you subscribed to type "string" during subscribe.
-                string phoneStringMessage = message.Message.ToString(); //this is your string message
-                //using pluggable JSON library from the Pubnub instance, but you can use any form of JSON deserialization you wish
-                var deserializedMessage = pubnub.JsonPluggableLibrary.DeserializeToObject<Phone>(phoneStringMessage);
-            },
-            (pubnubObj, presence) => { },
-            (pubnubObj, status) => { });
+        SubscribeCallbackListener stringListenerSubscribeCallback = new SubscribeCallbackListener();
+        stringListenerSubscribeCallback.onMessage += (pubnubObj, message) => {
+	        //message.Message gives the string object because you subscribed to type "string" during subscribe.
+	        string phoneStringMessage = message.Message.ToString(); //this is your string message
+	        //using pluggable JSON library from the Pubnub instance, but you can use any form of JSON deserialization you wish
+	        var deserializedMessage = pubnub.JsonPluggableLibrary.DeserializeToObject<Phone>(phoneStringMessage);
+        };
 
-        pubnub.AddListener(stringListenerSubscribeCallack);
+        pubnub.AddListener(stringListenerSubscribeCallback);
         pubnub.Subscribe<string>()
             .Channels(new string[]
             {
@@ -583,23 +588,24 @@ public class PublishSubscribeSample
 
         subscription1.onMessage += (Pubnub pn, PNMessageResult<object> messageEvent) =>
         {
-            Console.WriteLine($"Message received {messageEvent.Message}");
+            Debug.Log($"Message received {messageEvent.Message}");
         };
 
         subscription1.Subscribe<object>();
 
 
         // Add multiple listeners
-        SubscribeCallbackExt eventListener = new SubscribeCallbackExt(
+        SubscribeCallbackListener eventListener = new SubscribeCallbackListener(
             delegate(Pubnub pn, PNMessageResult<object> messageEvent)
             {
-                Console.WriteLine($"received message {messageEvent.Message}");
+                Debug.Log($"received message {messageEvent.Message}");
             },
-            delegate(Pubnub pn, PNPresenceEventResult e) { Console.WriteLine("Presence event"); },
-            delegate(Pubnub pn, PNSignalResult<object> e) { Console.WriteLine("Signal event"); },
-            delegate(Pubnub pn, PNObjectEventResult e) { Console.WriteLine("Object event"); },
-            delegate(Pubnub pn, PNMessageActionEventResult e) { Console.WriteLine("Message Action event"); },
-            delegate(Pubnub pn, PNFileEventResult e) { Console.WriteLine("File event"); }
+            delegate(Pubnub pn, PNPresenceEventResult e) { Debug.Log("Presence event"); },
+            delegate(Pubnub pn, PNSignalResult<object> e) { Debug.Log("Signal event"); },
+            delegate(Pubnub pn, PNObjectEventResult e) { Debug.Log("Object event"); },
+            delegate(Pubnub pn, PNMessageActionEventResult e) { Debug.Log("Message Action event"); },
+            delegate(Pubnub pn, PNFileEventResult e) { Debug.Log("File event"); },
+            delegate(Pubnub pn, PNStatus e) { Debug.Log("Status event"); }
         );
 
         Channel firstChannel = pubnub.Channel("first");
@@ -620,19 +626,17 @@ public class PublishSubscribeSample
             SubscriptionOptions.ReceivePresenceEvents
         );
 
-        SubscribeCallbackExt eventListener = new SubscribeCallbackExt(
-            delegate(Pubnub pn, PNMessageResult<object> messageEvent)
-            {
-                Console.WriteLine($"received message {messageEvent.Message}");
-            },
-            delegate(Pubnub pn, PNPresenceEventResult e) { Console.WriteLine("Presence event"); },
-            delegate(Pubnub pn, PNStatus s) { Console.WriteLine("Status event"); }
-        );
+        SubscribeCallbackListener eventListener = new SubscribeCallbackListener();
+        eventListener.onMessage += delegate(Pubnub pn, PNMessageResult<object> messageEvent) {
+	        Debug.Log($"received message {messageEvent.Message}");
+        };
+        eventListener.onPresence += delegate(Pubnub pn, PNPresenceEventResult e) { Debug.Log("Presence event"); };
+        eventListener.onStatus += delegate(Pubnub pn, PNStatus s) { Debug.Log("Status event"); };
 
         subscription1.AddListener(eventListener);
         subscriptionSet.onSignal += (Pubnub pn, PNSignalResult<object> signalEvent) =>
         {
-            Console.WriteLine($"Message received {signalEvent.Message}");
+            Debug.Log($"Message received {signalEvent.Message}");
         };
 
         subscription1.Subscribe<object>();
@@ -644,10 +648,10 @@ public class PublishSubscribeSample
     {
         // snippet.add_listener_method1
         // Adding listener.
-        pubnub.AddListener(new SubscribeCallbackExt(
+        pubnub.AddListener(new SubscribeCallbackListener(
             delegate(Pubnub pnObj, PNMessageResult<object> pubMsg)
             {
-                Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(pubMsg));
+                Debug.Log(pubnub.JsonPluggableLibrary.SerializeToJsonString(pubMsg));
                 var channelName = pubMsg.Channel;
                 var channelGroupName = pubMsg.Subscription;
                 var pubTT = pubMsg.Timetoken;
@@ -656,7 +660,7 @@ public class PublishSubscribeSample
             },
             delegate(Pubnub pnObj, PNPresenceEventResult presenceEvnt)
             {
-                Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(presenceEvnt));
+                Debug.Log(pubnub.JsonPluggableLibrary.SerializeToJsonString(presenceEvnt));
                 var action = presenceEvnt.Event; // Can be join, leave, state-change or timeout
                 var channelName = presenceEvnt.Channel; // The channel for which the message belongs
                 var occupancy = presenceEvnt.Occupancy; // No. of users connected with the channel
@@ -669,7 +673,7 @@ public class PublishSubscribeSample
             },
             delegate(Pubnub pnObj, PNSignalResult<object> signalMsg)
             {
-                Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(signalMsg));
+                Debug.Log(pubnub.JsonPluggableLibrary.SerializeToJsonString(signalMsg));
                 var channelName = signalMsg.Channel; // The channel for which the signal belongs
                 var channelGroupName =
                     signalMsg.Subscription; // The channel group or wildcard subscription match (if exists)
@@ -697,7 +701,7 @@ public class PublishSubscribeSample
                     /* got membership related event. */
                 }
 
-                Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(objectEventObj));
+                Debug.Log(pubnub.JsonPluggableLibrary.SerializeToJsonString(objectEventObj));
             },
             delegate(Pubnub pnObj, PNMessageActionEventResult msgActionEvent)
             {
@@ -722,7 +726,7 @@ public class PublishSubscribeSample
             },
             delegate(Pubnub pnObj, PNStatus pnStatus)
             {
-                Console.WriteLine("{0} {1} {2}", pnStatus.Operation, pnStatus.Category, pnStatus.StatusCode);
+                Debug.Log($"{pnStatus.Operation} {pnStatus.Category} {pnStatus.StatusCode}");
                 var affectedChannelGroups =
                     pnStatus.AffectedChannelGroups; // The channel groups affected in the operation, of type array.
                 var affectedChannels =
@@ -731,36 +735,28 @@ public class PublishSubscribeSample
                 var operation = pnStatus.Operation; //Returns PNSubscribeOperation
             }
         ));
-        
-        //Add listener to receive Signal messages
-        SubscribeCallbackExt signalSubscribeCallback = new SubscribeCallbackExt(
-            delegate (Pubnub pubnubObj, PNSignalResult<object> message) {
-                // Handle new signal message stored in message.Message
-            },
-            delegate (Pubnub pubnubObj, PNStatus status)
-            {
-                // the status object returned is always related to subscribe but could contain
-                // information about subscribe, heartbeat, or errors
-            }
-        );
-        pubnub.AddListener(signalSubscribeCallback);
-        
-        //Add listener to receive Events
-        SubscribeCallbackExt eventListener = new SubscribeCallbackExt(
-            delegate (Pubnub pnObj, PNObjectEventResult objectEvent)
-            {
-                string channelMetadataId = objectEvent.Channel; // The channel
-                string uuidMetadataId = objectEvent.UuidMetadata.Uuid; // The UUID
-                string objEvent = objectEvent.Event; // The event name that occurred
-                string eventType = objectEvent.Type; // The event type that occurred
-                PNUuidMetadataResult uuidMetadata = objectEvent.UuidMetadata; // UuidMetadata
-                PNChannelMetadataResult channelMetadata = objectEvent.ChannelMetadata; // ChannelMetadata
-            },
-            delegate (Pubnub pnObj, PNStatus status)
-            {
 
-            }
-        );
+        //Add listener to receive Signal messages
+        SubscribeCallbackListener signalSubscribeCallback = new SubscribeCallbackListener();
+        signalSubscribeCallback.onSignal += delegate (Pubnub pubnubObj, PNSignalResult<object> message) {
+		        // Handle new signal message stored in message.Message
+	        };
+        signalSubscribeCallback.onStatus += delegate (Pubnub pubnubObj, PNStatus status) {
+		        // the status object returned is always related to subscribe but could contain
+		        // information about subscribe, heartbeat, or errors
+	        };
+        pubnub.AddListener(signalSubscribeCallback);
+
+        //Add listener to receive Events
+        SubscribeCallbackListener eventListener = new SubscribeCallbackListener();
+        eventListener.onObject += delegate(Pubnub pnObj, PNObjectEventResult objectEvent) {
+	        string channelMetadataId = objectEvent.Channel; // The channel
+	        string uuidMetadataId = objectEvent.UuidMetadata.Uuid; // The UUID
+	        string objEvent = objectEvent.Event; // The event name that occurred
+	        string eventType = objectEvent.Type; // The event type that occurred
+	        PNUuidMetadataResult uuidMetadata = objectEvent.UuidMetadata; // UuidMetadata
+	        PNChannelMetadataResult channelMetadata = objectEvent.ChannelMetadata; // ChannelMetadata
+        };
         pubnub.AddListener(eventListener);
         // snippet.end
     }
@@ -868,11 +864,7 @@ public class PublishSubscribeSample
     public static void RemoveListener()
     {
         // snippet.remove_listener
-        SubscribeCallbackExt listenerSubscribeCallback = new SubscribeCallbackExt(
-            (pubnubObj, message) => { },
-            (pubnubObj, presence) => { },
-            (pubnubObj, status) => { });
-
+        SubscribeCallbackListener listenerSubscribeCallback = new SubscribeCallbackListener();
         pubnub.AddListener(listenerSubscribeCallback);
 
         // some time later
@@ -883,9 +875,8 @@ public class PublishSubscribeSample
     public static void AddConnectionStatusListener()
     {
         // snippet.add_connection_status_listener
-        SubscribeCallbackExt eventListener = new SubscribeCallbackExt(
-            delegate(Pubnub pn, PNStatus e) { Console.WriteLine("Status event"); }
-        );
+        SubscribeCallbackListener eventListener = new SubscribeCallbackListener();
+        eventListener.onStatus += delegate(Pubnub pn, PNStatus e) { Debug.Log("Status event"); };
 
         pubnub.AddListener(eventListener);
         // snippet.end

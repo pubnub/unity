@@ -1,7 +1,12 @@
 // snippet.using
 using PubnubApi;
+using PubnubApi.Unity;
 
 // snippet.end
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using UnityEngine;
 
 public class EntitiesSample
 {
@@ -20,37 +25,15 @@ public class EntitiesSample
         };
 
         // Initialize PubNub
-        Pubnub pubnub = new Pubnub(pnConfiguration);
-        
-        // snippet.end
-    }
+        Pubnub pubnub = PubnubUnityUtils.NewUnityPubnub(pnConfiguration);
 
-    public static async Task GetAllUuidMetadataBasicUsage()
-    {
-        // snippet.get_all_uuid_metadata_basic_usage
-        try
-        {
-            PNResult<PNGetAllUuidMetadataResult> getAllUuidMetadataResponse = await pubnub.GetAllUuidMetadata()
-                .IncludeCustom(true)
-                .IncludeCount(true)
-                .ExecuteAsync();
-            
-            PNGetAllUuidMetadataResult getAllUuidMetadataResult = getAllUuidMetadataResponse.Result;
-            PNStatus status = getAllUuidMetadataResponse.Status;
+        // If you're using Unity Editor setup you can get the Pubnub instance from PNManagerBehaviour
+        // For more details, see https://www.pubnub.com/docs/sdks/unity#configure-pubnub
+        /*
+        [SerializeField] private PNManagerBehaviour pubnubManager;
+        Pubnub pubnub = pubnubManager.pubnub;
+        */
 
-            if (!status.Error && getAllUuidMetadataResult != null)
-            {
-                Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(getAllUuidMetadataResult));
-            }
-            else
-            {
-                Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(status));
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Request cannot be executed due to error: {ex.Message}");
-        }
         // snippet.end
     }
 
@@ -163,7 +146,7 @@ public class EntitiesSample
             .Description(description)
             .Custom(customField)
             .ExecuteAsync();
-        Console.WriteLine("The channel has been created with name and description.\n");
+        Debug.Log("The channel has been created with name and description.\n");
 
         // Fetch current object with custom fields
         PNResult<PNGetChannelMetadataResult> currentObjectResponse = await pubnub.GetChannelMetadata()
@@ -188,11 +171,11 @@ public class EntitiesSample
                 .Name(currentObject?.Name)
                 .Description(currentObject?.Description)
                 .ExecuteAsync();
-            Console.WriteLine($"Object has been updated.\n {setChannelMetadataResponse.Result}");
+            Debug.Log($"Object has been updated.\n {setChannelMetadataResponse.Result}");
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
+            Debug.Log(ex.Message);
         }
         // snippet.end
     }
@@ -229,10 +212,10 @@ public class EntitiesSample
     {
         // snippet.set_memberships_basic_usage
         List<PNMembership> setMembershipChannelMetadataIdList =
-        [
-            new PNMembership()
-                { Channel = "my-channel", Custom = new Dictionary<string, object>() { { "item", "book" } } }
-        ];
+	        new() {
+		        new PNMembership()
+			        { Channel = "my-channel", Custom = new Dictionary<string, object>() { { "item", "book" } } }
+	        };
 
         PNResult<PNMembershipsResult> setMembershipsResponse = await pubnub.SetMemberships()
             .Uuid("my-uuid")
@@ -250,10 +233,10 @@ public class EntitiesSample
     {
         // snippet.remove_memberships_basic_usage
         List<string> removeMembershipList =
-        [
-            "my-channel",
-            "your-channel"
-        ];
+	        new() {
+		        "my-channel",
+		        "your-channel"
+	        };
 
         PNResult<PNMembershipsResult> removeMembershipsResponse = await pubnub.RemoveMemberships()
             .Uuid("uuid")
@@ -271,16 +254,15 @@ public class EntitiesSample
     {
         // snippet.manage_memberships_basic_usage
         List<PNMembership> setMembrshipList =
-        [
-            new PNMembership() { Channel = "ch1", Custom = new Dictionary<string, object>() { { "say", "hello" } } },
-            new PNMembership() { Channel = "ch2", Custom = new Dictionary<string, object>() { { "say", "world" } } },
-            new PNMembership() { Channel = "ch3", Custom = new Dictionary<string, object>() { { "say", "bye" } } }
-        ];
+	        new() {
+		        new PNMembership()
+			        { Channel = "ch1", Custom = new Dictionary<string, object>() { { "say", "hello" } } },
+		        new PNMembership()
+			        { Channel = "ch2", Custom = new Dictionary<string, object>() { { "say", "world" } } },
+		        new PNMembership() { Channel = "ch3", Custom = new Dictionary<string, object>() { { "say", "bye" } } }
+	        };
 
-        List<string> removeMembrshipList =
-        [
-            "ch4"
-        ];
+        List<string> removeMembrshipList = new() { "ch4" };
 
         PNResult<PNMembershipsResult> manageMmbrshipsResponse = await pubnub.ManageMemberships()
             .Uuid("my-uuid")
@@ -317,11 +299,11 @@ public class EntitiesSample
         // snippet.set_channel_members_basic_usage
         // Add Members (UUID) for a specific channel
         List<PNChannelMember> setMemberChannelList =
-        [
-            new PNChannelMember()
-                { Uuid = "my-uuid", Custom = new Dictionary<string, object>() { { "planet", "earth" } } }
-        ];
-        
+	        new() {
+		        new PNChannelMember()
+			        { Uuid = "my-uuid", Custom = new Dictionary<string, object>() { { "planet", "earth" } } }
+	        };
+
         PNResult<PNChannelMembersResult> setChannelMembersResponse = await pubnub.SetChannelMembers()
             .Channel("my-channel")
             .Uuids(setMemberChannelList)
@@ -339,10 +321,10 @@ public class EntitiesSample
         // snippet.remove_channel_members_basic_usage
         // Remove Members (UUID) for a specific channel
         List<string> removeChannelMemberList =
-        [
-            "my-uuid",
-            "your-uuid"
-        ];
+	        new() {
+		        "my-uuid",
+		        "your-uuid"
+	        };
 
         PNResult<PNChannelMembersResult> removeChannelMembersResponse = await pubnub.RemoveChannelMembers()
             .Channel("my-channel")
@@ -355,4 +337,4 @@ public class EntitiesSample
         PNStatus status = removeChannelMembersResponse.Status;
         // snippet.end
     }
-} 
+}

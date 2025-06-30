@@ -1,7 +1,10 @@
 // snippet.using
 using PubnubApi;
+using PubnubApi.Unity;
 
 // snippet.end
+using UnityEngine;
+using System;
 
 public class PushSample
 {
@@ -19,71 +22,17 @@ public class PushSample
         };
 
         // Initialize PubNub
-        Pubnub pubnub = new Pubnub(pnConfiguration);
-        
+        Pubnub pubnub = PubnubUnityUtils.NewUnityPubnub(pnConfiguration);
+
+        // If you're using Unity Editor setup you can get the Pubnub instance from PNManagerBehaviour
+        // For more details, see https://www.pubnub.com/docs/sdks/unity#configure-pubnub
+        /*
+        [SerializeField] private PNManagerBehaviour pubnubManager;
+        Pubnub pubnub = pubnubManager.pubnub;
+        */
+
         // snippet.end
     }
-    
-    // snippet.add_device_to_channel_basic_usage
-    public class PushNotificationCallback : PNCallback<PNPushAddChannelResult>
-    {
-        public override void OnResponse(PNPushAddChannelResult result, PNStatus status)
-        {
-            if (!status.Error && result != null)
-            {
-                Console.WriteLine("Push notifications added to channels successfully.");
-            }
-            else
-            {
-                Console.WriteLine("Failed to add push notifications: " + pubnub.JsonPluggableLibrary.SerializeToJsonString(status));
-            }
-        }
-    }
-    
-    public static void AddDeviceToChannelBasicUsage()
-    {
-        // Configuration
-        PNConfiguration pnConfiguration = new PNConfiguration(new UserId("myUniqueUserId"))
-        {
-            SubscribeKey = "demo",
-            PublishKey = "demo",
-            Secure = true
-        };
-
-        // Initialize PubNub
-        Pubnub pubnub = new Pubnub(pnConfiguration);
-        
-        try
-        {
-            // For FCM
-            pubnub.AddPushNotificationsOnChannels()
-                .PushType(PNPushType.FCM)
-                .Channels(new string[] { "ch1", "ch2", "ch3" })
-                .DeviceId("googleDevice")
-                .Execute(new PushNotificationCallback());
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"FCM operation failed due to error: {ex.Message}");
-        }
-
-        try
-        {
-            // For APNS2
-            pubnub.AddPushNotificationsOnChannels()
-                .PushType(PNPushType.APNS2)
-                .Channels(new string[] { "ch1", "ch2", "ch3" })
-                .DeviceId("appleDevice")
-                .Topic("myapptopic")
-                .Environment(PushEnvironment.Development)
-                .Execute(new PushNotificationCallback());
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"APNS2 operation failed due to error: {ex.Message}");
-        }
-    }
-    // snippet.end
 
     public static void ListChannelsForDeviceBasicUsage()
     {
@@ -94,7 +43,7 @@ public class PushSample
             .PushType(PNPushType.FCM)
             .Execute(new PNPushListProvisionsResultExt((r, s) =>
             {
-                Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(r));
+                Debug.Log(pubnub.JsonPluggableLibrary.SerializeToJsonString(r));
             }));
 
         // for APNS2
@@ -105,7 +54,7 @@ public class PushSample
             .Environment(PushEnvironment.Development)
             .Execute(new PNPushListProvisionsResultExt((r, s) =>
             {
-                Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(r));
+                Debug.Log(pubnub.JsonPluggableLibrary.SerializeToJsonString(r));
             }));
         // snippet.end
     }
@@ -124,7 +73,7 @@ public class PushSample
             .PushType(PNPushType.FCM)
             .Execute(new PNPushRemoveChannelResultExt((r, s) =>
             {
-                Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(r));
+                Debug.Log(pubnub.JsonPluggableLibrary.SerializeToJsonString(r));
             }));
 
         // for APNS2
@@ -140,7 +89,7 @@ public class PushSample
             .Environment(PushEnvironment.Development)
             .Execute(new PNPushRemoveChannelResultExt((r, s) =>
             {
-                Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(r));
+                Debug.Log(pubnub.JsonPluggableLibrary.SerializeToJsonString(r));
             }));
         // snippet.end
     }
@@ -153,7 +102,7 @@ public class PushSample
             .DeviceId("googleDevice")
             .PushType(PNPushType.FCM)
             .Execute(new PNPushRemoveAllChannelsResultExt((r, s) => {
-                Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(r));
+                Debug.Log(pubnub.JsonPluggableLibrary.SerializeToJsonString(r));
             }));
 
         // for APNS2
@@ -163,8 +112,8 @@ public class PushSample
             .Topic("myapptopic")
             .Environment(PushEnvironment.Development)
             .Execute(new PNPushRemoveAllChannelsResultExt((r, s) => {
-                Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(r));
+                Debug.Log(pubnub.JsonPluggableLibrary.SerializeToJsonString(r));
             }));
         // snippet.end
     }
-} 
+}

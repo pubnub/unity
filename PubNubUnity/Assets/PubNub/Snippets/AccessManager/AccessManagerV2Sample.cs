@@ -1,7 +1,9 @@
 // snippet.using
 using PubnubApi;
+using PubnubApi.Unity;
 
 // snippet.end
+using System.Threading.Tasks;
 
 public class AccessManagerV2Sample
 {
@@ -17,8 +19,15 @@ public class AccessManagerV2Sample
             PublishKey = "demo"
         };
         //Create a new PubNub instance
-        Pubnub pubnub = new Pubnub(pnConfiguration);
-        
+        Pubnub pubnub = PubnubUnityUtils.NewUnityPubnub(pnConfiguration);
+
+        // If you're using Unity Editor setup you can get the Pubnub instance from PNManagerBehaviour
+        // For more details, see https://www.pubnub.com/docs/sdks/unity#configure-pubnub
+        /*
+        [SerializeField] private PNManagerBehaviour pubnubManager;
+        Pubnub pubnub = pubnubManager.pubnub;
+        */
+
         // snippet.end
     }
 
@@ -56,7 +65,7 @@ public class AccessManagerV2Sample
         //PNAccessManagerGrantResult is a parsed and abstracted response from server
         // snippet.end
     }
-    
+
     static void GrantCallback()
     {
         // snippet.grant_callback
@@ -91,7 +100,7 @@ public class AccessManagerV2Sample
             ));
         // snippet.end
     }
-    
+
     static async Task GrantTTL()
     {
         // snippet.grant_ttl
@@ -113,7 +122,7 @@ public class AccessManagerV2Sample
         //PNAccessManagerGrantResult is a parsed and abstracted response from server
         // snippet.end
     }
-    
+
     static async Task GrantPresence()
     {
         // snippet.grant_presence
@@ -131,7 +140,7 @@ public class AccessManagerV2Sample
         //PNAccessManagerGrantResult is a parsed and abstracted response from server
         // snippet.end
     }
-    
+
     static async Task GrantChannelGroup()
     {
         // snippet.grant_group
@@ -158,7 +167,7 @@ public class AccessManagerV2Sample
         //PNAccessManagerGrantResult is a parsed and abstracted response from server
         // snippet.end
     }
-    
+
     static async Task GrantWithAuthKey()
     {
         // snippet.grant_auth_key
@@ -180,7 +189,7 @@ public class AccessManagerV2Sample
         //PNAccessManagerGrantResult is a parsed and abstracted response from server
         // snippet.end
     }
-    
+
     static async Task GrantAppLevel()
     {
         // snippet.grant_app_level
@@ -195,7 +204,7 @@ public class AccessManagerV2Sample
         //PNAccessManagerGrantResult is a parsed and abstracted response from server
         // snippet.end
     }
-    
+
     static async Task GrantChannelLevel()
     {
         // snippet.grant_channel_level
@@ -213,7 +222,7 @@ public class AccessManagerV2Sample
         //PNAccessManagerGrantResult is a parsed and abstracted response from server
         // snippet.end
     }
-    
+
     static async Task GrantUserLevel()
     {
         // snippet.grant_user_level

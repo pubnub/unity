@@ -1,7 +1,12 @@
 // snippet.using
 using PubnubApi;
+using PubnubApi.Unity;
 
 // snippet.end
+using System.Threading.Tasks;
+using UnityEngine;
+using System;
+using System.Threading;
 
 public class StorageAndPlaybackSample
 {
@@ -19,40 +24,15 @@ public class StorageAndPlaybackSample
         };
 
         // Initialize PubNub
-        Pubnub pubnub = new Pubnub(pnConfiguration);
-        
-        // snippet.end
-    }
+        Pubnub pubnub = PubnubUnityUtils.NewUnityPubnub(pnConfiguration);
 
-    public static async Task FetchHistoryBasicUsage()
-    {
-        // snippet.fetch_history_basic_usage
-        try
-        {
-            // Fetch historical messages
-            PNResult<PNFetchHistoryResult> fetchHistoryResponse = await pubnub.FetchHistory()
-                .Channels(new string[] { "my_channel" })
-                .IncludeMeta(true)
-                .IncludeCustomMessageType(true)
-                .MaximumPerChannel(25)
-                .ExecuteAsync();
-            
-            PNFetchHistoryResult fetchHistoryResult = fetchHistoryResponse.Result;
-            PNStatus status = fetchHistoryResponse.Status;
+        // If you're using Unity Editor setup you can get the Pubnub instance from PNManagerBehaviour
+        // For more details, see https://www.pubnub.com/docs/sdks/unity#configure-pubnub
+        /*
+        [SerializeField] private PNManagerBehaviour pubnubManager;
+        Pubnub pubnub = pubnubManager.pubnub;
+        */
 
-            if (!status.Error && fetchHistoryResult != null)
-            {
-                Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(fetchHistoryResult));
-            }
-            else
-            {
-                Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(status));
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Request cannot be executed due to error: {ex.Message}");
-        }
         // snippet.end
     }
 
@@ -85,12 +65,12 @@ public class StorageAndPlaybackSample
         if (status != null && status.Error)
         {
             //Check for any error
-            Console.WriteLine(status.ErrorData.Information);
+            Debug.Log(status.ErrorData.Information);
         }
         else if (delMsgResult != null)
         {
             //Expect empty object
-            Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(delMsgResult));
+            Debug.Log(pubnub.JsonPluggableLibrary.SerializeToJsonString(delMsgResult));
         }
         // snippet.end
     }
@@ -106,11 +86,11 @@ public class StorageAndPlaybackSample
                 (result, status) => {
                     if (status != null && status.Error) {
                         //Check for any error
-                        Console.WriteLine(status.ErrorData.Information);
+                        Debug.Log(status.ErrorData.Information);
                     }
                     else if (result != null) {
                         //Expect empty object
-                        Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(result));
+                        Debug.Log(pubnub.JsonPluggableLibrary.SerializeToJsonString(result));
                     }
                 }
             ));
@@ -132,12 +112,12 @@ public class StorageAndPlaybackSample
         if (status != null && status.Error)
         {
             //Check for any error
-            Console.WriteLine(status.ErrorData.Information);
+            Debug.Log(status.ErrorData.Information);
         }
         else if (delMsgResult != null)
         {
             //Expect empty object
-            Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(delMsgResult));
+            Debug.Log(pubnub.JsonPluggableLibrary.SerializeToJsonString(delMsgResult));
         }
         // snippet.end
     }
@@ -156,11 +136,11 @@ public class StorageAndPlaybackSample
         if (status != null && status.Error)
         {
             //Check for any error
-            Console.WriteLine(status.ErrorData.Information);
+            Debug.Log(status.ErrorData.Information);
         }
         else
         {
-            Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(msgCountResult));
+            Debug.Log(pubnub.JsonPluggableLibrary.SerializeToJsonString(msgCountResult));
         }
         // snippet.end
     }
@@ -176,11 +156,11 @@ public class StorageAndPlaybackSample
                 if (status != null && status.Error)
                 {
                     //Check for any error
-                    Console.WriteLine(status.ErrorData.Information);
+                    Debug.Log(status.ErrorData.Information);
                 }
                 else
                 {
-                    Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(result));
+                    Debug.Log(pubnub.JsonPluggableLibrary.SerializeToJsonString(result));
                 }
             }));
         // snippet.end
@@ -200,11 +180,11 @@ public class StorageAndPlaybackSample
         if (status != null && status.Error)
         {
             //Check for any error
-            Console.WriteLine(status.ErrorData.Information);
+            Debug.Log(status.ErrorData.Information);
         }
         else
         {
-            Console.WriteLine(pubnub.JsonPluggableLibrary.SerializeToJsonString(msgCountResult));
+            Debug.Log(pubnub.JsonPluggableLibrary.SerializeToJsonString(msgCountResult));
         }
         // snippet.end
     }
@@ -291,7 +271,7 @@ public class StorageAndPlaybackSample
             // so use your pub/sub keys instead
             PNConfiguration pnConfiguration = new PNConfiguration(new UserId("myUniqueUserId"));
             pnConfiguration.SubscribeKey = "demo";
-            pubnub = new Pubnub(pnConfiguration);
+            pubnub = PubnubUnityUtils.NewUnityPubnub(pnConfiguration);
         }
 
         static public void Main() {
@@ -320,9 +300,9 @@ public class StorageAndPlaybackSample
             }
             public override void OnResponse(PNHistoryResult result, PNStatus status) {
                 if (!status.Error && result != null && result.Messages != null && result.Messages.Count > 0) {
-                    Console.WriteLine(result.Messages.Count);
-                    Console.WriteLine("start:" + result.StartTimeToken.ToString());
-                    Console.WriteLine("end:" + result.EndTimeToken.ToString());
+                    Debug.Log(result.Messages.Count);
+                    Debug.Log("start:" + result.StartTimeToken.ToString());
+                    Debug.Log("end:" + result.EndTimeToken.ToString());
 
                     internalCallback.HandleResponse(result);
                     GetAllMessages(result.EndTimeToken, this.internalCallback);
@@ -337,4 +317,4 @@ public class StorageAndPlaybackSample
         }
     }
     // snippet.end
-} 
+}

@@ -1,7 +1,12 @@
 // snippet.using
 using PubnubApi;
+using PubnubApi.Unity;
 
 // snippet.end
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using UnityEngine;
+using System;
 
 public class PresenceSample
 {
@@ -19,51 +24,15 @@ public class PresenceSample
         };
 
         // Initialize PubNub
-        Pubnub pubnub = new Pubnub(pnConfiguration);
-        
-        // snippet.end
-    }
+        Pubnub pubnub = PubnubUnityUtils.NewUnityPubnub(pnConfiguration);
 
-    public static async Task HereNowBasicUsage()
-    {
-        // snippet.here_now_basic_usage
-        try
-        {
-            PNResult<PNHereNowResult> herenowResponse = await pubnub.HereNow()
-                .Channels(new string[] { "coolChannel", "coolChannel2" })
-                .IncludeUUIDs(true)
-                .ExecuteAsync();
+        // If you're using Unity Editor setup you can get the Pubnub instance from PNManagerBehaviour
+        // For more details, see https://www.pubnub.com/docs/sdks/unity#configure-pubnub
+        /*
+        [SerializeField] private PNManagerBehaviour pubnubManager;
+        Pubnub pubnub = pubnubManager.pubnub;
+        */
 
-            PNHereNowResult herenowResult = herenowResponse.Result;
-            PNStatus status = herenowResponse.Status;
-
-            if (!status.Error && herenowResult != null)
-            {
-                foreach (KeyValuePair<string, PNHereNowChannelData> channelData in herenowResult.Channels)
-                {
-                    Console.WriteLine("---");
-                    Console.WriteLine("Channel: " + channelData.Value.ChannelName);
-                    Console.WriteLine("Occupancy: " + channelData.Value.Occupancy);
-
-                    if (channelData.Value.Occupants != null)
-                    {
-                        foreach (var occupant in channelData.Value.Occupants)
-                        {
-                            Console.WriteLine($"UUID: {occupant.Uuid}");
-                            Console.WriteLine($"State: {(occupant.State != null ? pubnub.JsonPluggableLibrary.SerializeToJsonString(occupant.State) : "No state")}");
-                        }
-                    }
-                }
-            }
-            else
-            {
-                Console.WriteLine("Error occurred: " + pubnub.JsonPluggableLibrary.SerializeToJsonString(status));
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Request cannot be executed due to error: {ex.Message}");
-        }
         // snippet.end
     }
 
@@ -87,15 +56,15 @@ public class PresenceSample
                     if (result.Channels != null && result.Channels.Count > 0) {
                         foreach (KeyValuePair<string, PNHereNowChannelData> kvp in result.Channels) {
                             PNHereNowChannelData channelData = kvp.Value;
-                            Console.WriteLine("---");
-                            Console.WriteLine("channel:" + channelData.ChannelName);
-                            Console.WriteLine("occupancy:" + channelData.Occupancy);
-                            Console.WriteLine("Occupants:");
+                            Debug.Log("---");
+                            Debug.Log("channel:" + channelData.ChannelName);
+                            Debug.Log("occupancy:" + channelData.Occupancy);
+                            Debug.Log("Occupants:");
                             if (channelData.Occupants != null && channelData.Occupants.Count > 0) {
                                 for (int index = 0; index < channelData.Occupants.Count; index++) {
                                     PNHereNowOccupantData occupant = channelData.Occupants[index];
-                                    Console.WriteLine(string.Format("uuid: {0}", occupant.Uuid));
-                                    Console.WriteLine(string.Format("state:{1}", (occupant.State != null) ?
+                                    Debug.Log(string.Format("uuid: {0}", occupant.Uuid));
+                                    Debug.Log(string.Format("state:{1}", (occupant.State != null) ?
                                     pubnub.JsonPluggableLibrary.SerializeToJsonString(occupant.State) : ""));
                                 }
                             }
@@ -301,4 +270,4 @@ public class PresenceSample
         // on new state for those channels
         // snippet.end
     }
-} 
+}
