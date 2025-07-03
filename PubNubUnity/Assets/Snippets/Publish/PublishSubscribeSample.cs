@@ -918,4 +918,46 @@ public class PublishSubscribeSample
         pubnub.UnsubscribeAll<object>();
         // snippet.end
     }
+
+    public static void Entities() {
+        // snippet.create_channel
+        var channel = pubnub.Channel("channelName");
+
+        // Listener to add relevant callbacks to
+        SubscribeCallbackListener channelListener = new SubscribeCallbackListener();
+
+        channel.Subscription().AddListener(channelListener);
+        channel.Subscription().Subscribe<object>();
+        // snippet.end
+
+        // snippet.create_channel_group
+        var channelGroup = pubnub.ChannelGroup("channelGroupName");
+
+        // Listener to add relevant callbacks to
+        SubscribeCallbackListener channelGroupListener = new SubscribeCallbackListener();
+
+        channelGroup.Subscription().AddListener(channelGroupListener);
+        channelGroup.Subscription().Subscribe<object>();
+        // snippet.end
+
+        // snippet.create_channel_metadata
+        var channelMetadata = pubnub.ChannelMetadata("channelMetadata");
+
+        // Listener to add relevant callbacks to
+        SubscribeCallbackListener channelMetadataListener = new SubscribeCallbackListener();
+
+        channelMetadata.Subscription().AddListener(channelMetadataListener);
+        channelMetadata.Subscription().Subscribe<object>();
+        // snippet.end
+
+        // snippet.create_user_metadata
+        var userMetadata = pubnub.UserMetadata("userMetadata");
+
+        // Listener to add relevant callbacks to
+        SubscribeCallbackListener userMetadataListener = new SubscribeCallbackListener();
+
+        userMetadata.Subscription().AddListener(userMetadataListener);
+        userMetadata.Subscription().Subscribe<object>();
+        // snippet.end
+    }
 }
