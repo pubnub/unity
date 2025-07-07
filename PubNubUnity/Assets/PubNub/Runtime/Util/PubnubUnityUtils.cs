@@ -23,7 +23,7 @@ namespace PubnubApi.Unity {
 		/// Creates a new Pubnub instance with Unity specific settings (like WebGL setup, logging, and JSON library)
 		/// </summary>
 		/// <param name="configurationAsset">Pubnub configuration Scriptable Object asset</param>
-		/// <param name="userId">Client user ID</param>
+		/// <param name="userId">Client user ID for this instance</param>
 		/// <returns></returns>
 		public static Pubnub NewUnityPubnub(PNConfigAsset configurationAsset, string userId) {
 			configurationAsset.UserId = userId;
