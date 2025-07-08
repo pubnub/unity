@@ -19,8 +19,9 @@ class AccessManagerSample
         //Create configuration
         PNConfiguration pnConfiguration = new PNConfiguration(new UserId("myUniqueUserId"))
         {
-            SubscribeKey = "demo",
-            PublishKey = "demo"
+	        SubscribeKey = "YOUR_SUBSCRIBE_KEY",
+	        PublishKey = "YOUR_PUBLISH_KEY",
+	        SecretKey = "YOUR_SECRET_KEY",
         };
         //Create a new PubNub instance
         Pubnub pubnub = PubnubUnityUtils.NewUnityPubnub(pnConfiguration);
