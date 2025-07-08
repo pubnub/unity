@@ -1,0 +1,9 @@
+---
+exclude_paths:
+  - '**/Examples/**'
+  - '**/Editor/**'
+  - '**/PlayModeTests/**' 
+  - '**/ThirdParty/**'
+  - '**/Crypto/MD5.*'
+  - '**/Snippets/**'
+  

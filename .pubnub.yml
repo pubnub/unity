@@ -1,6 +1,17 @@
 --- 
-version: v9.0.1
+version: v9.1.0
 changelog:
+  - date: 2025-07-08
+    version: v9.1.0
+    changes:
+      - type: feature
+        text: "Added the PubnubUnityUtils.NewUnityPubnub() method to streamline creating Pubnub instances with Unity-specific settings outside of PNManagerBehaviour."
+      - type: feature
+        text: "Implemented an in-house CBOR solution for ParseToken() handling to reduce total SDK+dependencies size."
+      - type: bug
+        text: "Improved parsing of file download errors to be properly set in operation status ErrorData."
+      - type: improvement
+        text: "Updated log type from Error to Warn for TaskCanceledException."
   - date: 2025-05-30
     version: v9.0.1
     changes:
@@ -779,7 +790,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v9.0.1/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v9.1.0/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
@@ -911,7 +922,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v9.0.1/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v9.1.0/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"

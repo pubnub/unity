@@ -102,6 +102,47 @@
             <param name="deviceTopic"></param>
             <returns></returns>
         </member>
+        <member name="T:PubnubApi.CBOR">
+            <summary>
+            A simple not-all-covering implementation of CBOR serialisation/deserialisation for internal Pubnub ParseToken() usage
+            Converted to C# from https://github.com/seba-aln/CBORCodec
+            </summary>
+        </member>
+        <member name="M:PubnubApi.CBOR.Decode(System.String)">
+            <summary>
+            Decode incoming hexadecimal string of data and outputing decoded values
+            </summary>
+            <param name="value">Hexadecimal string to decode</param>
+            <returns>Decoded value</returns>
+            <exception cref="T:System.Exception">Thrown when input is invalid or unsupported type</exception>
+        </member>
+        <member name="M:PubnubApi.CBOR.SanitizeInput(System.String)">
+            <summary>
+            Removes spaces, converts string to upper case and throws exception if input is not a valid hexadecimal string
+            </summary>
+            <param name="value">Input string to sanitize</param>
+            <returns>Sanitized hexadecimal string</returns>
+            <exception cref="T:System.Exception">Thrown when input contains invalid characters</exception>
+        </member>
+        <member name="M:PubnubApi.CBOR.SanitizeOutput(System.String,System.Boolean)">
+            <summary>
+            Sanitizes the output value so it contains even number of characters and returns it upper cased
+            </summary>
+            <param name="value">Hexadecimal value to sanitize</param>
+            <param name="useByteLength">Should the length of output be in powers of two (2, 4, 8, 16)</param>
+            <returns>Sanitized hexadecimal string</returns>
+        </member>
+        <member name="M:PubnubApi.CBOR.Encode(System.Object,System.Byte)">
+            <summary>
+            Encodes value to a hexadecimal CBOR string. Because C# does not differentiate byte strings and text strings
+            the only way to manipulate output type of strings is to pass a string type (one of CBOR::TYPE_TEXT_STRING and
+            CBOR::TYPE_BYTE_STRING).
+            </summary>
+            <param name="value">Value to encode</param>
+            <param name="stringType">Type of string encoding</param>
+            <returns>Hexadecimal CBOR string</returns>
+            <exception cref="T:System.Exception">Thrown when unsupported type is passed</exception>
+        </member>
         <member name="M:PubnubApi.EventEngine.Core.EffectDispatcher.Dispatch(PubnubApi.EventEngine.Core.IEffectInvocation)">
             <summary>
             Dispatch an invocation i.e. call a registered effect handler.
