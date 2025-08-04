@@ -1,6 +1,6 @@
 # PubNub Unity SDK
 
-[![Build Status](https://travis-ci.com/pubnub/unity.svg?branch=master)](https://travis-ci.com/pubnub/unity) [![Build status](https://ci.appveyor.com/api/projects/status/1p3494pnt6rgqdsm/branch/master?svg=true)](https://ci.appveyor.com/project/PubNub/unity)
+[![Build Status](https://travis-ci.com/pubnub/unity.svg?branch=master)](https://travis-ci.com/pubnub/unity)  [![Build status](https://ci.appveyor.com/api/projects/status/1p3494pnt6rgqdsm/branch/master?svg=true)](https://ci.appveyor.com/project/PubNub/unity)
 
 This is the official PubNub Unity SDK repository.
 
