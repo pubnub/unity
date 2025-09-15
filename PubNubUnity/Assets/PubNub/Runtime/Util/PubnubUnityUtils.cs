@@ -1,3 +1,5 @@
+using PubnubApi.PNSDK;
+
 namespace PubnubApi.Unity {
 	public static class PubnubUnityUtils {
 		/// <summary>
@@ -6,12 +8,14 @@ namespace PubnubApi.Unity {
 		/// <param name="configuration">Pubnub configuration object</param>
 		/// <param name="webGLBuildMode">Flag for enabling WebGL mode - sets httpTransportService to UnityWebGLHttpClientService</param>
 		/// <param name="unityLogging">Flag to set Unity specific logger (UnityPubNubLogger)</param>
+		/// <param name="ipnsdkSource">Optional: PNSDK source, used for analytics and debugging.</param>
 		/// <returns></returns>
-		public static Pubnub NewUnityPubnub(PNConfiguration configuration, bool webGLBuildMode = false, bool unityLogging = false) {
+		public static Pubnub NewUnityPubnub(PNConfiguration configuration, bool webGLBuildMode = false, bool unityLogging = false, IPNSDKSource ipnsdkSource = null) {
+			ipnsdkSource ??= new UnityPNSDKSource();
 			var pubnub = webGLBuildMode
 				? new Pubnub(configuration, httpTransportService: new UnityWebGLHttpClientService(),
-					ipnsdkSource: new UnityPNSDKSource())
-				: new Pubnub(configuration, ipnsdkSource: new UnityPNSDKSource());
+					ipnsdkSource: ipnsdkSource)
+				: new Pubnub(configuration, ipnsdkSource: ipnsdkSource);
 			if (unityLogging) {
 				pubnub.SetLogger(new UnityPubNubLogger(pubnub.InstanceId));
 			}
@@ -24,11 +28,12 @@ namespace PubnubApi.Unity {
 		/// </summary>
 		/// <param name="configurationAsset">Pubnub configuration Scriptable Object asset</param>
 		/// <param name="userId">Client user ID for this instance</param>
+		/// <param name="ipnsdkSource">Optional: PNSDK source, used for analytics and debugging.</param>
 		/// <returns></returns>
-		public static Pubnub NewUnityPubnub(PNConfigAsset configurationAsset, string userId) {
+		public static Pubnub NewUnityPubnub(PNConfigAsset configurationAsset, string userId, IPNSDKSource ipnsdkSource = null) {
 			configurationAsset.UserId = userId;
 			var pnConfig = ((PNConfiguration)configurationAsset);
-			return NewUnityPubnub(pnConfig, configurationAsset.EnableWebGLBuildMode, configurationAsset.LogToUnityConsole);
+			return NewUnityPubnub(pnConfig, configurationAsset.EnableWebGLBuildMode, configurationAsset.LogToUnityConsole, ipnsdkSource: ipnsdkSource);
 		}
 	}
 }
