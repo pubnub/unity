@@ -1,6 +1,11 @@
 --- 
-version: v9.1.0
+version: v9.2.0
 changelog:
+  - date: 2025-10-02
+    version: v9.2.0
+    changes:
+      - type: feature
+        text: "Updated the C# SDK dependency to latest version (7.5.0)."
   - date: 2025-07-08
     version: v9.1.0
     changes:
@@ -790,7 +795,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v9.1.0/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v9.2.0/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
@@ -922,7 +927,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v9.1.0/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v9.2.0/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
