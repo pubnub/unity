@@ -1,6 +1,13 @@
 --- 
-version: v9.2.0
+version: v9.3.0
 changelog:
+  - date: 2025-11-04
+    version: v9.3.0
+    changes:
+      - type: feature
+        text: "BREAKING CHANGES: The HereNow method will return a maximum of 1000 occupants per channel. Previously, it was returning all occupants without limit parameter support. Use pagination through offset when more than 1000 occupants present in channel."
+      - type: bug
+        text: "Discard use of gcm and replaced with fcm for push notification service type of google. Removed mpns support."
   - date: 2025-10-02
     version: v9.2.0
     changes:
@@ -795,7 +802,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v9.2.0/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v9.3.0/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
@@ -927,7 +934,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v9.2.0/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v9.3.0/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
