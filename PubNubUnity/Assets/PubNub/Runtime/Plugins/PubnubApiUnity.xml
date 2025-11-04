@@ -21,10 +21,7 @@
         <member name="M:PubnubApi.EndPoint.HereNowOperation.Limit(System.Int32)">
             <summary>
             limit number of users details to be returned.
-            maximum value of limit parameter is 1000.
             default value is 1000.
-            Note: value can not be greater than 1000.
-            If provided value more than 1000, It will be capped to 1000.
             </summary>
             <param name="limit"></param>
             <returns></returns>
