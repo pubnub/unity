@@ -5,8 +5,9 @@ using PubnubApi;
 using System;
 using System.Globalization;
 
-public class LoggingSample
-{
+public class LoggingSample {
+	protected static PNConfiguration pnConfiguration;
+
     // snippet.custom_logger
     // A custom logger that logs information on Unity console.
     // Use can implement logger that can log information using log4Net or file etc.
@@ -53,5 +54,69 @@ public class LoggingSample
         // To remove the custom logger. Use RemoveLogger().
         pubnub.RemoveLogger(customLogger);
         // snippet.end
+    }
+
+    //Dummy loggers for snippet
+    class PubnubFileLogger : IPubnubLogger {
+	    public void Trace(string logMessage) {
+		    throw new NotImplementedException();
+	    }
+
+	    public void Debug(string logMessage) {
+		    throw new NotImplementedException();
+	    }
+
+	    public void Info(string logMessage) {
+		    throw new NotImplementedException();
+	    }
+
+	    public void Warn(string logMessage) {
+		    throw new NotImplementedException();
+	    }
+
+	    public void Error(string logMessage) {
+		    throw new NotImplementedException();
+	    }
+    }
+
+    class PubnubAnalyticsLogger : IPubnubLogger {
+	    public void Trace(string logMessage) {
+		    throw new NotImplementedException();
+	    }
+
+	    public void Debug(string logMessage) {
+		    throw new NotImplementedException();
+	    }
+
+	    public void Info(string logMessage) {
+		    throw new NotImplementedException();
+	    }
+
+	    public void Warn(string logMessage) {
+		    throw new NotImplementedException();
+	    }
+
+	    public void Error(string logMessage) {
+		    throw new NotImplementedException();
+	    }
+    }
+
+    public static void SetMultipleLoggers() {
+
+	    // snippet.multiple_loggers
+	    var pubnub = new Pubnub(pnConfiguration);
+
+		// Add multiple loggers
+	    var unityLogger = new UnityPubNubLogger(pubnub.InstanceId);
+	    var fileLogger = new PubnubFileLogger();
+	    var analyticsLogger = new PubnubAnalyticsLogger();
+
+	    pubnub.SetLogger(unityLogger);
+	    pubnub.SetLogger(fileLogger);
+	    pubnub.SetLogger(analyticsLogger);
+
+		// To remove a custom logger
+	    pubnub.RemoveLogger(fileLogger);
+	    // snippet.end
     }
 }
