@@ -119,4 +119,18 @@ public class LoggingSample {
 	    pubnub.RemoveLogger(fileLogger);
 	    // snippet.end
     }
+
+	public static void DisableLogging() {
+
+	    // snippet.disable_logging
+	    var pubnubConfiguration = new PNConfiguration(new UserId("uniqueUserId"))
+        {
+            SubscribeKey = "[yourSubscribeKey]",
+            PublishKey = "[yourPublishKey]",
+			// To explicitly disable logging
+            LogLevel = PubnubLogLevel.None,
+        };
+        var pubnub = new Pubnub(pubnubConfiguration);
+	    // snippet.end
+    }
 }
