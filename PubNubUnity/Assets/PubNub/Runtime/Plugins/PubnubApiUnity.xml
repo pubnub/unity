@@ -160,6 +160,17 @@
             <returns>Hexadecimal CBOR string</returns>
             <exception cref="T:System.Exception">Thrown when unsupported type is passed</exception>
         </member>
+        <member name="M:PubnubApi.EventEngine.Common.EventEmitter.SafeInvokeListener(System.Action,System.String)">
+            <summary>
+            Safely invokes a listener callback with exception handling to prevent listener exceptions from affecting SDK operations.
+            </summary>
+            <param name="listenerAction">The listener callback action to invoke.</param>
+            <param name="eventType">The type of event being processed (for logging purposes).</param>
+            <remarks>
+            This method ensures that exceptions thrown by user-provided listener callbacks do not crash the SDK
+            or prevent other listeners from receiving events. All exceptions are logged at Warning level.
+            </remarks>
+        </member>
         <member name="M:PubnubApi.EventEngine.Core.EffectDispatcher.Dispatch(PubnubApi.EventEngine.Core.IEffectInvocation)">
             <summary>
             Dispatch an invocation i.e. call a registered effect handler.
