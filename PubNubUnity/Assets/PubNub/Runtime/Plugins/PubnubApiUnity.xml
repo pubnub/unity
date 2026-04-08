@@ -4,6 +4,221 @@
         <name>PubnubApiUnity</name>
     </assembly>
     <members>
+        <member name="T:PubnubApi.EndPoint.CreateEntityParameters">
+            <summary>
+            Parameters for creating a new entity via DataSync.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.CreateEntityParameters.Id">
+            <summary>
+            Entity identifier. Optional — if not provided, the server generates one.
+            Must be 1–255 characters if provided.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.CreateEntityParameters.EntityClass">
+            <summary>
+            Entity class identifier (e.g., "vehicle", "order", "sensor").
+            Required. Immutable after creation.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.CreateEntityParameters.EntityClassVersion">
+            <summary>
+            Schema version of the entity class. Required. Must be >= 1.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.CreateEntityParameters.Status">
+            <summary>
+            Entity status (e.g., "active", "inactive"). 1–100 characters.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.CreateEntityParameters.Payload">
+            <summary>
+            User-defined custom properties. Supports arbitrarily nested objects.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.CreateEntityParameters.IdempotencyKey">
+            <summary>
+            Idempotency key (UUIDv4) to ensure the request is processed exactly once.
+            Required for POST requests.
+            </summary>
+        </member>
+        <member name="T:PubnubApi.EndPoint.DataSync">
+            <summary>
+            Entrypoint for PubNub Data Sync operations
+            </summary>
+        </member>
+        <member name="T:PubnubApi.EndPoint.DeleteEntityParameters">
+            <summary>
+            Parameters for deleting an entity by ID via DataSync.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.DeleteEntityParameters.Id">
+            <summary>
+            Entity identifier. Required.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.DeleteEntityParameters.IfMatch">
+            <summary>
+            ETag for optimistic concurrency control. If provided, the server rejects
+            the delete when the current resource version does not match (HTTP 412).
+            </summary>
+        </member>
+        <member name="T:PubnubApi.EndPoint.GetEntitiesParameters">
+            <summary>
+            Parameters for listing entities via DataSync.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetEntitiesParameters.EntityClass">
+            <summary>
+            Entity class name to filter by. Required.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetEntitiesParameters.EntityClassVersion">
+            <summary>
+            Schema version of the entity class. Optional — if not provided the server
+            returns entities matching the latest version.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetEntitiesParameters.Cursor">
+            <summary>
+            Pagination cursor returned from a previous request.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetEntitiesParameters.Limit">
+            <summary>
+            Maximum number of items to return per page.
+            Min 1, max 100, default 20.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetEntitiesParameters.Filter">
+            <summary>
+            Filter expression using AppContext Query Language (e.g., "status == 'active'").
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetEntitiesParameters.FilterAdvanced">
+            <summary>
+            Advanced filter expression supporting logical operators and nested conditions.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetEntitiesParameters.Sort">
+            <summary>
+            Comma-separated list of fields to sort by. Prefix with + for ascending
+            or - for descending (default). Example: "-createdAt,+id".
+            </summary>
+        </member>
+        <member name="T:PubnubApi.EndPoint.PNDataSyncEntitiesListResult">
+            <summary>
+            Result returned by GetEntities (list) containing an array of entities
+            plus cursor-based pagination metadata and HATEOAS links.
+            </summary>
+        </member>
+        <member name="T:PubnubApi.EndPoint.PaginationMeta">
+            <summary>
+            Cursor-based pagination metadata returned in list responses.
+            </summary>
+        </member>
+        <member name="T:PubnubApi.EndPoint.PaginationLinks">
+            <summary>
+            HATEOAS navigation links returned in list responses.
+            </summary>
+        </member>
+        <member name="T:PubnubApi.EndPoint.GetEntityParameters">
+            <summary>
+            Parameters for retrieving an entity by ID via DataSync.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetEntityParameters.Id">
+            <summary>
+            Entity identifier. Required.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.PatchEntityParameters.Id">
+            <summary>
+            Entity identifier. Required.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.PatchEntityParameters.Operations">
+            <summary>
+            List of JSON Patch operations (RFC 6902) to apply. Required; must contain at least one operation.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.PatchEntityParameters.IfMatch">
+            <summary>
+            ETag for optimistic concurrency control. If provided, the server rejects
+            the patch when the current resource version does not match (HTTP 412).
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.PatchEntityParameters.IdempotencyKey">
+            <summary>
+            Idempotency key (UUIDv4) to ensure the request is processed exactly once.
+            Required for PATCH requests.
+            </summary>
+        </member>
+        <member name="T:PubnubApi.EndPoint.JsonPatchOperation">
+            <summary>
+            A single JSON Patch operation as defined by RFC 6902.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.JsonPatchOperation.Op">
+            <summary>
+            The operation to perform: "add", "remove", "replace", "move", "copy", or "test".
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.JsonPatchOperation.Path">
+            <summary>
+            JSON Pointer (RFC 6901) to the target location.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.JsonPatchOperation.Value">
+            <summary>
+            The value to apply. Required for "add", "replace", and "test" operations.
+            Can be any JSON-serializable value including null.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.JsonPatchOperation.From">
+            <summary>
+            Source location (JSON Pointer). Required for "move" and "copy" operations.
+            </summary>
+        </member>
+        <member name="T:PubnubApi.EndPoint.PNDataSyncEntityResult">
+            <summary>
+            Result returned by a single-entity operation (Create, Get, Update, Patch).
+            The server response envelope is deserialized into this type.
+            </summary>
+        </member>
+        <member name="T:PubnubApi.EndPoint.UpdateEntityParameters">
+            <summary>
+            Parameters for updating an entity with complete resource replacement (PUT) via DataSync.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.UpdateEntityParameters.Id">
+            <summary>
+            Entity identifier. Required.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.UpdateEntityParameters.EntityClassVersion">
+            <summary>
+            Schema version of the entity class. Required. Must be >= 1.
+            Note: entityClass is immutable and cannot be changed after creation.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.UpdateEntityParameters.Status">
+            <summary>
+            Entity status (e.g., "active", "inactive"). 1–100 characters.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.UpdateEntityParameters.Payload">
+            <summary>
+            User-defined custom properties. Supports arbitrarily nested objects.
+            Replaces the entire payload — omitted fields are removed.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.UpdateEntityParameters.IfMatch">
+            <summary>
+            ETag for optimistic concurrency control. If provided, the server rejects
+            the update when the current resource version does not match (HTTP 412).
+            </summary>
+        </member>
         <member name="M:PubnubApi.EndPoint.OtherOperation.TranslateDateTimeToPubnubUnixNanoSeconds(System.DateTime)">
             <summary>
             Convert the UTC/GMT DateTime to Unix Nano Seconds format
@@ -159,6 +374,17 @@
             <param name="stringType">Type of string encoding</param>
             <returns>Hexadecimal CBOR string</returns>
             <exception cref="T:System.Exception">Thrown when unsupported type is passed</exception>
+        </member>
+        <member name="M:PubnubApi.EventEngine.Common.EventEmitter.SafeInvokeListener(System.Action,System.String)">
+            <summary>
+            Safely invokes a listener callback with exception handling to prevent listener exceptions from affecting SDK operations.
+            </summary>
+            <param name="listenerAction">The listener callback action to invoke.</param>
+            <param name="eventType">The type of event being processed (for logging purposes).</param>
+            <remarks>
+            This method ensures that exceptions thrown by user-provided listener callbacks do not crash the SDK
+            or prevent other listeners from receiving events. All exceptions are logged at Warning level.
+            </remarks>
         </member>
         <member name="M:PubnubApi.EventEngine.Core.EffectDispatcher.Dispatch(PubnubApi.EventEngine.Core.IEffectInvocation)">
             <summary>
@@ -408,6 +634,17 @@
         <member name="P:PubnubApi.TimetokenMetadata.r">
             <summary>
             region
+            </summary>
+        </member>
+        <member name="P:PubnubApi.PNConfiguration.SplitSubscribeCalls">
+            <summary>
+            When enabled single multi-channel subscriptions will internally be changed into multiple single-channel ones.
+            Enable this option if your keyset has channel-based sharding enabled.
+            This option requires Event Engine to be enabled (it's on by default).
+            <para><b>WARNING: Enabling this option will also:</b>
+            <li><b>Disable subscribing to channel groups</b></li>
+            <li><b>Disable subscribing with WithPresence() (you can still explicitly subscribe to *-pnpres channels directly)</b></li>
+            <li><b>Generate more server requests, potentially increasing costs</b></li></para>
             </summary>
         </member>
         <member name="P:PubnubApi.PNConfiguration.LogVerbosity">
