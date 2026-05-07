@@ -4,6 +4,11 @@
         <name>PubnubApiUnity</name>
     </assembly>
     <members>
+        <member name="T:PubnubApi.EndPoint.DataSync">
+            <summary>
+            Entrypoint for PubNub Data Sync operations
+            </summary>
+        </member>
         <member name="T:PubnubApi.EndPoint.CreateEntityParameters">
             <summary>
             Parameters for creating a new entity via DataSync.
@@ -40,11 +45,6 @@
             <summary>
             Idempotency key (UUIDv4) to ensure the request is processed exactly once.
             Required for POST requests.
-            </summary>
-        </member>
-        <member name="T:PubnubApi.EndPoint.DataSync">
-            <summary>
-            Entrypoint for PubNub Data Sync operations
             </summary>
         </member>
         <member name="T:PubnubApi.EndPoint.DeleteEntityParameters">
@@ -214,6 +214,198 @@
             </summary>
         </member>
         <member name="P:PubnubApi.EndPoint.UpdateEntityParameters.IfMatch">
+            <summary>
+            ETag for optimistic concurrency control. If provided, the server rejects
+            the update when the current resource version does not match (HTTP 412).
+            </summary>
+        </member>
+        <member name="T:PubnubApi.EndPoint.CreateRelationshipParameters">
+            <summary>
+            Parameters for creating a new relationship via DataSync.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.CreateRelationshipParameters.Id">
+            <summary>
+            Relationship identifier. Optional — if not provided, the server generates one.
+            Must be 1–255 characters if provided.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.CreateRelationshipParameters.EntityAId">
+            <summary>
+            First entity ID (the "A" side of the relationship). Required. Immutable after creation.
+            Must be 1–255 characters.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.CreateRelationshipParameters.EntityBId">
+            <summary>
+            Second entity ID (the "B" side of the relationship). Required. Immutable after creation.
+            Must be 1–255 characters.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.CreateRelationshipParameters.RelationshipClass">
+            <summary>
+            Relationship class identifier (e.g., "ProductOwner", "FriendOf").
+            Required. Immutable after creation.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.CreateRelationshipParameters.RelationshipClassVersion">
+            <summary>
+            Version of the relationship class. Required. Must be >= 1.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.CreateRelationshipParameters.Status">
+            <summary>
+            Relationship status (e.g., "active", "inactive"). 1–100 characters.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.CreateRelationshipParameters.Payload">
+            <summary>
+            User-defined custom properties. Supports arbitrarily nested objects.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.CreateRelationshipParameters.IdempotencyKey">
+            <summary>
+            Idempotency key (UUIDv4) to ensure the request is processed exactly once.
+            Required for POST requests.
+            </summary>
+        </member>
+        <member name="T:PubnubApi.EndPoint.DeleteRelationshipParameters">
+            <summary>
+            Parameters for deleting a relationship by ID via DataSync.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.DeleteRelationshipParameters.Id">
+            <summary>
+            Relationship identifier. Required.
+            </summary>
+        </member>
+        <member name="T:PubnubApi.EndPoint.GetRelationshipParameters">
+            <summary>
+            Parameters for retrieving a relationship by ID via DataSync.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetRelationshipParameters.Id">
+            <summary>
+            Relationship identifier. Required.
+            </summary>
+        </member>
+        <member name="T:PubnubApi.EndPoint.GetRelationshipsParameters">
+            <summary>
+            Parameters for listing relationships via DataSync.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetRelationshipsParameters.RelationshipClass">
+            <summary>
+            Relationship class name to filter by. Required.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetRelationshipsParameters.EntityAId">
+            <summary>
+            Filter relationships by the first entity (A-side) ID. Optional.
+            At least one of EntityAId or EntityBId should be provided for meaningful results.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetRelationshipsParameters.EntityBId">
+            <summary>
+            Filter relationships by the second entity (B-side) ID. Optional.
+            At least one of EntityAId or EntityBId should be provided for meaningful results.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetRelationshipsParameters.Cursor">
+            <summary>
+            Pagination cursor returned from a previous request.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetRelationshipsParameters.Limit">
+            <summary>
+            Maximum number of items to return per page.
+            Min 1, max 100, default 20.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetRelationshipsParameters.Filter">
+            <summary>
+            Filter expression using AppContext Query Language (e.g., "status == 'active'").
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetRelationshipsParameters.FilterAdvanced">
+            <summary>
+            Advanced filter expression supporting logical operators and nested conditions.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetRelationshipsParameters.Sort">
+            <summary>
+            Comma-separated list of fields to sort by. Prefix with + for ascending
+            or - for descending (default). Example: "-createdAt,+id".
+            </summary>
+        </member>
+        <member name="T:PubnubApi.EndPoint.PNDataSyncRelationshipsListResult">
+            <summary>
+            Result returned by GetRelationships (list) containing an array of relationships
+            plus cursor-based pagination metadata and HATEOAS links.
+            </summary>
+        </member>
+        <member name="T:PubnubApi.EndPoint.PatchRelationshipParameters">
+            <summary>
+            Parameters for partially updating a relationship via JSON Patch (RFC 6902).
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.PatchRelationshipParameters.Id">
+            <summary>
+            Relationship identifier. Required.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.PatchRelationshipParameters.Operations">
+            <summary>
+            List of JSON Patch operations (RFC 6902) to apply. Required; must contain at least one operation.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.PatchRelationshipParameters.IfMatch">
+            <summary>
+            ETag for optimistic concurrency control. If provided, the server rejects
+            the patch when the current resource version does not match (HTTP 412).
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.PatchRelationshipParameters.IdempotencyKey">
+            <summary>
+            Idempotency key (UUIDv4) to ensure the request is processed exactly once.
+            Required for PATCH requests.
+            </summary>
+        </member>
+        <member name="T:PubnubApi.EndPoint.PNDataSyncRelationshipResult">
+            <summary>
+            Result returned by a single-relationship operation (Create, Get, Update, Patch).
+            The server response envelope is deserialized into this type.
+            </summary>
+        </member>
+        <member name="T:PubnubApi.EndPoint.UpdateRelationshipParameters">
+            <summary>
+            Parameters for updating a relationship with complete resource replacement (PUT) via DataSync.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.UpdateRelationshipParameters.Id">
+            <summary>
+            Relationship identifier. Required.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.UpdateRelationshipParameters.RelationshipClassVersion">
+            <summary>
+            Version of the relationship class. Required. Must be >= 1.
+            Note: entityAId, entityBId, and relationshipClass are immutable
+            and cannot be changed after creation.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.UpdateRelationshipParameters.Status">
+            <summary>
+            Relationship status (e.g., "active", "inactive"). 1–100 characters.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.UpdateRelationshipParameters.Payload">
+            <summary>
+            User-defined custom properties. Supports arbitrarily nested objects.
+            Replaces the entire payload — omitted fields are removed.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.UpdateRelationshipParameters.IfMatch">
             <summary>
             ETag for optimistic concurrency control. If provided, the server rejects
             the update when the current resource version does not match (HTTP 412).
