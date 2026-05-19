@@ -4,6 +4,125 @@
         <name>PubnubApiUnity</name>
     </assembly>
     <members>
+        <member name="P:PubnubApi.EndPoint.CreateChannelParameters.Id">
+            <summary>
+            Channel identifier. Optional — if not provided, the server generates one.
+            Must be 1–255 characters if provided.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.CreateChannelParameters.EntityClassVersion">
+            <summary>
+            Schema version of the entity class. Required. Must be >= 1.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.CreateChannelParameters.Status">
+            <summary>
+            Channel status (e.g., "active", "archived"). 1–100 characters.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.CreateChannelParameters.Payload">
+            <summary>
+            User-defined custom properties. Supports arbitrarily nested objects.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.CreateChannelParameters.IdempotencyKey">
+            <summary>
+            Idempotency key (UUIDv4) to ensure the request is processed exactly once.
+            Required for POST requests.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.DeleteChannelParameters.Id">
+            <summary>
+            Channel identifier. Required.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetChannelParameters.Id">
+            <summary>
+            Channel identifier. Required.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetChannelsParameters.EntityClassVersion">
+            <summary>
+            Schema version of the entity class. Optional — if not provided the server
+            returns channels matching the latest version.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetChannelsParameters.Cursor">
+            <summary>
+            Pagination cursor returned from a previous request.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetChannelsParameters.Limit">
+            <summary>
+            Maximum number of items to return per page.
+            Min 1, max 100, default 20.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetChannelsParameters.Filter">
+            <summary>
+            Filter expression using AppContext Query Language (e.g., "status == 'active'").
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetChannelsParameters.FilterAdvanced">
+            <summary>
+            Advanced filter expression supporting logical operators and nested conditions.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetChannelsParameters.Sort">
+            <summary>
+            Comma-separated list of fields to sort by. Prefix with + for ascending
+            or - for descending (default). Example: "-createdAt,+id".
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.PatchChannelParameters.Id">
+            <summary>
+            Channel identifier. Required.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.PatchChannelParameters.Operations">
+            <summary>
+            List of JSON Patch operations (RFC 6902) to apply.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.PatchChannelParameters.IfMatch">
+            <summary>
+            ETag for optimistic concurrency control. If provided, the server rejects
+            the patch when the current resource version does not match (HTTP 412).
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.PatchChannelParameters.IdempotencyKey">
+            <summary>
+            Idempotency key (UUIDv4) to ensure the request is processed exactly once.
+            Required for PATCH requests.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.UpdateChannelParameters.Id">
+            <summary>
+            Channel identifier. Required.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.UpdateChannelParameters.EntityClassVersion">
+            <summary>
+            Schema version of the entity class. Required. Must be >= 1.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.UpdateChannelParameters.Status">
+            <summary>
+            Channel status (e.g., "active", "archived"). 1–100 characters.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.UpdateChannelParameters.Payload">
+            <summary>
+            User-defined custom properties. Supports arbitrarily nested objects.
+            Replaces the entire payload — omitted fields are removed.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.UpdateChannelParameters.IfMatch">
+            <summary>
+            ETag for optimistic concurrency control. If provided, the server rejects
+            the update when the current resource version does not match (HTTP 412).
+            </summary>
+        </member>
         <member name="T:PubnubApi.EndPoint.DataSync">
             <summary>
             Entrypoint for PubNub Data Sync operations
@@ -219,6 +338,147 @@
             the update when the current resource version does not match (HTTP 412).
             </summary>
         </member>
+        <member name="P:PubnubApi.EndPoint.CreateMembershipParameters.Id">
+            <summary>
+            Membership identifier. Optional — if not provided, the server generates one.
+            Must be 1–255 characters if provided.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.CreateMembershipParameters.ChannelId">
+            <summary>
+            Channel ID. Required. Immutable after creation.
+            Maps to entityAId on the wire.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.CreateMembershipParameters.UserId">
+            <summary>
+            User ID. Required. Immutable after creation.
+            Maps to entityBId on the wire.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.CreateMembershipParameters.RelationshipClassVersion">
+            <summary>
+            Version of the membership relationship class. Required. Must be >= 1.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.CreateMembershipParameters.Status">
+            <summary>
+            Membership status (e.g., "active", "banned"). 1–100 characters.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.CreateMembershipParameters.Payload">
+            <summary>
+            User-defined custom properties. Supports arbitrarily nested objects.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.CreateMembershipParameters.IdempotencyKey">
+            <summary>
+            Idempotency key (UUIDv4) to ensure the request is processed exactly once.
+            Required for POST requests.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.DeleteMembershipParameters.Id">
+            <summary>
+            Membership identifier. Required.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetMembershipParameters.Id">
+            <summary>
+            Membership identifier. Required.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetMembershipsParameters.UserId">
+            <summary>
+            Filter memberships by user ID. Optional.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetMembershipsParameters.ChannelId">
+            <summary>
+            Filter memberships by channel ID. Optional.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetMembershipsParameters.RelationshipClassVersion">
+            <summary>
+            Version of the relationship class. Optional — if not provided the server
+            returns memberships matching the latest version.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetMembershipsParameters.Cursor">
+            <summary>
+            Pagination cursor returned from a previous request.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetMembershipsParameters.Limit">
+            <summary>
+            Maximum number of items to return per page.
+            Min 1, max 100, default 20.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetMembershipsParameters.Filter">
+            <summary>
+            Filter expression using AppContext Query Language (e.g., "status == 'active'").
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetMembershipsParameters.FilterAdvanced">
+            <summary>
+            Advanced filter expression supporting logical operators and nested conditions.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetMembershipsParameters.Sort">
+            <summary>
+            Comma-separated list of fields to sort by. Prefix with + for ascending
+            or - for descending (default). Example: "-createdAt,+id".
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.PatchMembershipParameters.Id">
+            <summary>
+            Membership identifier. Required.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.PatchMembershipParameters.Operations">
+            <summary>
+            List of JSON Patch operations (RFC 6902) to apply.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.PatchMembershipParameters.IfMatch">
+            <summary>
+            ETag for optimistic concurrency control. If provided, the server rejects
+            the patch when the current resource version does not match (HTTP 412).
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.PatchMembershipParameters.IdempotencyKey">
+            <summary>
+            Idempotency key (UUIDv4) to ensure the request is processed exactly once.
+            Required for PATCH requests.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.UpdateMembershipParameters.Id">
+            <summary>
+            Membership identifier. Required.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.UpdateMembershipParameters.RelationshipClassVersion">
+            <summary>
+            Version of the membership relationship class. Required. Must be >= 1.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.UpdateMembershipParameters.Status">
+            <summary>
+            Membership status (e.g., "active", "banned"). 1–100 characters.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.UpdateMembershipParameters.Payload">
+            <summary>
+            User-defined custom properties. Supports arbitrarily nested objects.
+            Replaces the entire payload — omitted fields are removed.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.UpdateMembershipParameters.IfMatch">
+            <summary>
+            ETag for optimistic concurrency control. If provided, the server rejects
+            the update when the current resource version does not match (HTTP 412).
+            </summary>
+        </member>
         <member name="T:PubnubApi.EndPoint.CreateRelationshipParameters">
             <summary>
             Parameters for creating a new relationship via DataSync.
@@ -411,6 +671,125 @@
             the update when the current resource version does not match (HTTP 412).
             </summary>
         </member>
+        <member name="P:PubnubApi.EndPoint.CreateUserParameters.Id">
+            <summary>
+            User identifier. Optional — if not provided, the server generates one.
+            Must be 1–255 characters if provided.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.CreateUserParameters.EntityClassVersion">
+            <summary>
+            Schema version of the entity class. Required. Must be >= 1.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.CreateUserParameters.Status">
+            <summary>
+            User status (e.g., "active", "inactive"). 1–100 characters.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.CreateUserParameters.Payload">
+            <summary>
+            User-defined custom properties. Supports arbitrarily nested objects.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.CreateUserParameters.IdempotencyKey">
+            <summary>
+            Idempotency key (UUIDv4) to ensure the request is processed exactly once.
+            Required for POST requests.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.DeleteUserParameters.Id">
+            <summary>
+            User identifier. Required.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetUserParameters.Id">
+            <summary>
+            User identifier. Required.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetUsersParameters.EntityClassVersion">
+            <summary>
+            Schema version of the entity class. Optional — if not provided the server
+            returns users matching the latest version.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetUsersParameters.Cursor">
+            <summary>
+            Pagination cursor returned from a previous request.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetUsersParameters.Limit">
+            <summary>
+            Maximum number of items to return per page.
+            Min 1, max 100, default 20.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetUsersParameters.Filter">
+            <summary>
+            Filter expression using AppContext Query Language (e.g., "status == 'active'").
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetUsersParameters.FilterAdvanced">
+            <summary>
+            Advanced filter expression supporting logical operators and nested conditions.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.GetUsersParameters.Sort">
+            <summary>
+            Comma-separated list of fields to sort by. Prefix with + for ascending
+            or - for descending (default). Example: "-createdAt,+id".
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.PatchUserParameters.Id">
+            <summary>
+            User identifier. Required.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.PatchUserParameters.Operations">
+            <summary>
+            List of JSON Patch operations (RFC 6902) to apply.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.PatchUserParameters.IfMatch">
+            <summary>
+            ETag for optimistic concurrency control. If provided, the server rejects
+            the patch when the current resource version does not match (HTTP 412).
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.PatchUserParameters.IdempotencyKey">
+            <summary>
+            Idempotency key (UUIDv4) to ensure the request is processed exactly once.
+            Required for PATCH requests.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.UpdateUserParameters.Id">
+            <summary>
+            User identifier. Required.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.UpdateUserParameters.EntityClassVersion">
+            <summary>
+            Schema version of the entity class. Required. Must be >= 1.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.UpdateUserParameters.Status">
+            <summary>
+            User status (e.g., "active", "inactive"). 1–100 characters.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.UpdateUserParameters.Payload">
+            <summary>
+            User-defined custom properties. Supports arbitrarily nested objects.
+            Replaces the entire payload — omitted fields are removed.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.EndPoint.UpdateUserParameters.IfMatch">
+            <summary>
+            ETag for optimistic concurrency control. If provided, the server rejects
+            the update when the current resource version does not match (HTTP 412).
+            </summary>
+        </member>
         <member name="M:PubnubApi.EndPoint.OtherOperation.TranslateDateTimeToPubnubUnixNanoSeconds(System.DateTime)">
             <summary>
             Convert the UTC/GMT DateTime to Unix Nano Seconds format
@@ -455,6 +834,10 @@
             </summary>
             <param name="ttl"></param>
             <returns></returns>
+        </member>
+        <member name="M:PubnubApi.EndPoint.PublishOperation.EstimateGetPublishUrlSizeBytes(System.String,System.Collections.Generic.Dictionary{System.String,System.String})">
+            Estimates final URL size for regular publish GET using the same middleware path
+            and query construction used for actual requests.
         </member>
         <member name="M:PubnubApi.EndPoint.RemoveMessageActionOperation.MessageTimetoken(System.Int64)">
             <summary>
