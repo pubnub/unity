@@ -180,4 +180,28 @@ public class ConfigurationSample
         Pubnub pubnub = PubnubUnityUtils.NewUnityPubnub(pnConfiguration);
         // snippet.end
     }
+
+    static void Http2UsingYAHH() {
+	//Not compiling to avoid having to import YAHH into the project
+#if false
+	    // snippet.http2_yahh
+	    var config = new PNConfiguration(new UserId("h2-user"))
+	    {
+		    PublishKey = "your-key-kere",
+		    SubscribeKey = "your-key-kere",
+		    //HTTP/2 supporting origin, default one only supports HTTP/1.1
+		    Origin = "h2.pubnubapi.com",
+		    //Have to be true (and are by default)
+		    Secure = true,
+		    EnableHttp2 = true
+	    };
+	    //The YAHH handler
+	    var handler = new YetAnotherHttpHandler();
+	    //Creating a HttpClientService instance
+	    var customTransport = new HttpClientService(handler, true);
+	    //Creating a Pubnub instance with the custom transport layer
+	    var pubnub = PubnubUnityUtils.NewUnityPubnub(config, customIHttpClientService: customTransport);
+	    // snippet.end
+#endif
+    }
 }
