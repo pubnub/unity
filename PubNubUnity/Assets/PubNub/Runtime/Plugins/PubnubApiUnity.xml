@@ -49,6 +49,10 @@
             <param name="ttl"></param>
             <returns></returns>
         </member>
+        <member name="M:PubnubApi.EndPoint.PublishOperation.EstimateGetPublishUrlSizeBytes(System.String,System.Collections.Generic.Dictionary{System.String,System.String})">
+            Estimates final URL size for regular publish GET using the same middleware path
+            and query construction used for actual requests.
+        </member>
         <member name="M:PubnubApi.EndPoint.RemoveMessageActionOperation.MessageTimetoken(System.Int64)">
             <summary>
             The publish timetoken of a parent message
@@ -159,6 +163,17 @@
             <param name="stringType">Type of string encoding</param>
             <returns>Hexadecimal CBOR string</returns>
             <exception cref="T:System.Exception">Thrown when unsupported type is passed</exception>
+        </member>
+        <member name="M:PubnubApi.EventEngine.Common.EventEmitter.SafeInvokeListener(System.Action,System.String)">
+            <summary>
+            Safely invokes a listener callback with exception handling to prevent listener exceptions from affecting SDK operations.
+            </summary>
+            <param name="listenerAction">The listener callback action to invoke.</param>
+            <param name="eventType">The type of event being processed (for logging purposes).</param>
+            <remarks>
+            This method ensures that exceptions thrown by user-provided listener callbacks do not crash the SDK
+            or prevent other listeners from receiving events. All exceptions are logged at Warning level.
+            </remarks>
         </member>
         <member name="M:PubnubApi.EventEngine.Core.EffectDispatcher.Dispatch(PubnubApi.EventEngine.Core.IEffectInvocation)">
             <summary>
@@ -410,6 +425,17 @@
             region
             </summary>
         </member>
+        <member name="P:PubnubApi.PNConfiguration.SplitSubscribeCalls">
+            <summary>
+            When enabled single multi-channel subscriptions will internally be changed into multiple single-channel ones.
+            Enable this option if your keyset has channel-based sharding enabled.
+            This option requires Event Engine to be enabled (it's on by default).
+            <para><b>WARNING: Enabling this option will also:</b>
+            <li><b>Disable subscribing to channel groups</b></li>
+            <li><b>Disable subscribing with WithPresence() (you can still explicitly subscribe to *-pnpres channels directly)</b></li>
+            <li><b>Generate more server requests, potentially increasing costs</b></li></para>
+            </summary>
+        </member>
         <member name="P:PubnubApi.PNConfiguration.LogVerbosity">
             <summary>
             This property is obsolete. Use <see cref="P:PubnubApi.PNConfiguration.LogLevel"/> instead.
@@ -427,6 +453,18 @@
             <remarks>
             PubnubLog is deprecated. Implement IPubnubLogger and Use SetLogger method to configure custom logger for improved flexibility and control.
             </remarks>
+        </member>
+        <member name="P:PubnubApi.PNConfiguration.EnableHttp2">
+            <summary>
+            When enabled (default), each outbound request negotiates HTTP/2 using
+            <see cref="P:System.Net.Http.HttpRequestMessage.Version"/> / VersionPolicy, with
+            automatic fallback to HTTP/1.1. HTTP/2 only takes effect against an HTTP/2-capable
+            (customer-enabled) PubNub origin; otherwise requests transparently use HTTP/1.1.
+            The negotiated protocol is re-evaluated on new connections (natural reconnect or
+            Pubnub client recreation); the SDK does not pin or proactively probe for HTTP/2.
+            On target frameworks without VersionPolicy support (netstandard2.0/.NET Framework),
+            only the request version is set as a best-effort hint.
+            </summary>
         </member>
         <member name="M:PubnubApi.Pubnub.CleanUp">
             <summary>
@@ -461,6 +499,23 @@
             
              The identifier **must** be 4 bytes long.
              </summary>
+        </member>
+        <member name="M:PubnubApi.HttpClientService.#ctor(System.Net.Http.HttpMessageHandler,System.Boolean)">
+            <summary>
+            Creates a transport backed by a caller-supplied <see cref="T:System.Net.Http.HttpMessageHandler"/>.
+            Intended for testing and advanced transport scenarios (e.g. observing outgoing
+            requests or stubbing responses). The supplied handler is fully responsible for
+            TLS/certificate validation and proxy behavior; the SDK does not weaken or override
+            them here. Do not pass a handler that disables certificate validation in production.
+            </summary>
+            <param name="handler">The message handler used to send requests.</param>
+            <param name="enableHttp2">Whether outbound requests should request HTTP/2 with HTTP/1.1 fallback.</param>
+        </member>
+        <member name="P:PubnubApi.TransportResponse.NegotiatedProtocolVersion">
+            <summary>
+            The negotiated HTTP protocol version of the response (e.g. 2.0 or 1.1),
+            taken from HttpResponseMessage.Version. Null when no response was received.
+            </summary>
         </member>
         <member name="T:PubnubApi.MD5">
             <summary>
