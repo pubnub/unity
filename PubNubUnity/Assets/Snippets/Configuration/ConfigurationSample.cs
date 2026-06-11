@@ -187,8 +187,8 @@ public class ConfigurationSample
 	    // snippet.http2_yahh
 	    var config = new PNConfiguration(new UserId("h2-user"))
 	    {
-		    PublishKey = "your-key-kere",
-		    SubscribeKey = "your-key-kere",
+		    PublishKey = "your-key-here",
+		    SubscribeKey = "your-key-here",
 		    //HTTP/2 supporting origin, default one only supports HTTP/1.1
 		    Origin = "h2.pubnubapi.com",
 		    //Have to be true (and are by default)
