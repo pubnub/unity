@@ -22,6 +22,7 @@ namespace PubnubApi.Unity.Internal.EditorTools {
 			"MaintainPresenceState",
 			"EnableEventEngine",
 			"EnableWebGLBuildMode",
+			"EnableHttp2",
 			"LogToUnityConsole",
 			"LogVerbosity",
 			"LogLevel"
