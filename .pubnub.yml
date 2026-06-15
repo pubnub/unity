@@ -1,6 +1,11 @@
 --- 
-version: v9.3.0
+version: v9.4.0
 changelog:
+  - date: 2026-06-15
+    version: v9.4.0
+    changes:
+      - type: feature
+        text: "Added HTTP/2 option to config (enabled by default) and updated the Unity specific Pubnub instance creation flow to use the native UnityHttpMessageHandler for Unity 6.5+ and allow injecting custom HTTP/2 enabled handlers earlier versions."
   - date: 2025-11-04
     version: v9.3.0
     changes:
@@ -802,7 +807,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v9.3.0/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v9.4.0/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
@@ -934,7 +939,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v9.3.0/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v9.4.0/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"

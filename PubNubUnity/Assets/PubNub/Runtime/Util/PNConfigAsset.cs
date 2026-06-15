@@ -18,6 +18,7 @@ namespace PubnubApi.Unity {
 		public bool MaintainPresenceState = true;
 		public bool EnableEventEngine = true;
 		public bool EnableWebGLBuildMode;
+		public bool EnabbleHttp2 = true;
 		public bool LogToUnityConsole = true;
 		[Tooltip("Obsolete and used in legacy logging, if you can please use LogLevel instead")]
 		public PNLogVerbosity LogVerbosity;
@@ -37,6 +38,7 @@ namespace PubnubApi.Unity {
 			config.PublishKey = asset.PublishKey;
 			config.SecretKey = asset.SecretKey;
 			config.AuthKey = asset.AuthKey;
+			config.EnableHttp2 = asset.EnabbleHttp2;
 			config.CipherKey = asset.CipherKey;
 			config.NonSubscribeRequestTimeout = asset.NonSubscribeRequestTimeout;
 			config.SubscribeTimeout = asset.SubscribeTimeout;
