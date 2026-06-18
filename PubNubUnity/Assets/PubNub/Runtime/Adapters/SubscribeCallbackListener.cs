@@ -11,6 +11,7 @@ namespace PubnubApi.Unity {
 		public event Action<Pubnub, PNPresenceEventResult> onPresence;
 		public event Action<Pubnub, PNSignalResult<object>> onSignal;
 		public event Action<Pubnub, PNObjectEventResult> onObject;
+		public event Action<Pubnub, PNDataSyncEventResult> onDataSync;
 		public event Action<Pubnub, PNMessageActionEventResult> onMessageAction;
 		public event Action<Pubnub, PNFileEventResult> onFile;
 		public event Action<Pubnub, PNStatus> onStatus;
@@ -29,6 +30,23 @@ namespace PubnubApi.Unity {
 			this.onPresence += presenceCallback;
 			this.onSignal += signalCallback;
 			this.onObject += objectEventCallback;
+			this.onMessageAction += messageActionCallback;
+			this.onFile += fileCallback;
+			this.onStatus += statusCallback;
+		}
+
+		public SubscribeCallbackListener(
+			Action<Pubnub, PNMessageResult<object>> messageCallback,
+			Action<Pubnub, PNPresenceEventResult> presenceCallback,
+			Action<Pubnub, PNSignalResult<object>> signalCallback,
+			Action<Pubnub, PNDataSyncEventResult> dataSyncEventCallback,
+			Action<Pubnub, PNMessageActionEventResult> messageActionCallback,
+			Action<Pubnub, PNFileEventResult> fileCallback,
+			Action<Pubnub, PNStatus> statusCallback) : this() {
+			this.onMessage += messageCallback;
+			this.onPresence += presenceCallback;
+			this.onSignal += signalCallback;
+			this.onDataSync += dataSyncEventCallback;
 			this.onMessageAction += messageActionCallback;
 			this.onFile += fileCallback;
 			this.onStatus += statusCallback;
@@ -64,6 +82,13 @@ namespace PubnubApi.Unity {
 					Debug.Log(objectEventObj.Channel);
 					#endif
 					onObject.Dispatch(pnObj, objectEventObj);
+				},
+				//Data Sync
+				(pnObj, dataSyncEventObj) => {
+					#if PN_DEBUG
+					Debug.Log(dataSyncEventObj.Channel);
+					#endif
+					onDataSync.Dispatch(pnObj, dataSyncEventObj);
 				},
 				// Message actions
 				(pnObj, msgActionEvent) => {
