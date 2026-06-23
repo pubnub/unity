@@ -4,6 +4,13 @@
         <name>PubnubApiUnity</name>
     </assembly>
     <members>
+        <member name="M:PubnubApi.EndPoint.GrantTokenOperation.DataSyncProjections(PubnubApi.PNDataSyncProjections)">
+            <summary>
+            Assigns Data Sync projections to resources/patterns. The projection name
+            per resource is encoded into the token's meta "pn-projections" section.
+            Entity-level Data Sync permissions are set through <see cref="M:PubnubApi.EndPoint.GrantTokenOperation.Resources(PubnubApi.PNTokenResources)"/> / <see cref="M:PubnubApi.EndPoint.GrantTokenOperation.Patterns(PubnubApi.PNTokenPatterns)"/>.
+            </summary>
+        </member>
         <member name="P:PubnubApi.EndPoint.CreateChannelParameters.Id">
             <summary>
             Channel identifier. Optional — if not provided, the server generates one.
@@ -1071,6 +1078,67 @@
             Create a state-invocation pair
             </summary>
         </member>
+        <member name="T:PubnubApi.PNDataSyncProjectionScope">
+            <summary>
+            Per-resource projection assignment for Data Sync.
+            The value is the single projection name the principal is "looking through"
+            for that resource (use "__default__" for the base projection).
+            </summary>
+        </member>
+        <member name="P:PubnubApi.PNDataSyncProjectionScope.Entities">
+            <summary>
+            Entity id -&gt; projection name. Key e.g. "user.A" (resources) or "user.*" (patterns).
+            </summary>
+        </member>
+        <member name="P:PubnubApi.PNDataSyncProjectionScope.Relationships">
+            <summary>
+            Relationship id -&gt; projection name. Key e.g. "user.A:channel.X".
+            </summary>
+        </member>
+        <member name="P:PubnubApi.PNDataSyncProjectionScope.Memberships">
+            <summary>
+            Membership id -&gt; projection name.
+            </summary>
+        </member>
+        <member name="T:PubnubApi.PNDataSyncProjections">
+            <summary>
+            Data Sync projection permissions for grant token requests.
+            Encoded into the "pn-projections" key within the token's meta section.
+            Exact (res) match takes priority over pattern (pat) match.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.PNDataSyncProjections.Resources">
+            <summary>
+            Projection assignments for specific Data Sync resources (by exact id).
+            </summary>
+        </member>
+        <member name="P:PubnubApi.PNDataSyncProjections.Patterns">
+            <summary>
+            Projection assignments matching Data Sync resources by regex pattern.
+            </summary>
+        </member>
+        <member name="T:PubnubApi.PNDataSyncTokenScopes">
+            <summary>
+            Optional DataSync permission scopes. Serialized to the REST keys
+            datasync:entities / datasync:relationships / datasync:memberships
+            inside the grant token resources / patterns sections.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.PNDataSyncTokenScopes.Entities">
+            <summary>
+            Concrete or pattern entity ids, e.g. "order-456" (resources) or "order-*" (patterns).
+            </summary>
+        </member>
+        <member name="P:PubnubApi.PNDataSyncTokenScopes.Relationships">
+            <summary>
+            Composite relationship ids, e.g. "user.A:channel.X".
+            </summary>
+        </member>
+        <member name="P:PubnubApi.PNDataSyncTokenScopes.Memberships">
+            <summary>
+            Composite membership ids, e.g. "user-123:channel-X".
+            </summary>
+        </member>
         <member name="T:PubnubApi.PNPushTypeExtensions">
             <summary>
             Extension methods for PNPushType enum to get url value
@@ -1129,6 +1197,16 @@
         <member name="P:PubnubApi.PNTokenAuthValues.Join">
             <summary>
             Join. Applies to Objects v2
+            </summary>
+        </member>
+        <member name="P:PubnubApi.PNTokenContent.Projections">
+            <summary>
+            Data Sync projection assignments decoded from the token's meta "pn-projections" section.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.PNTokenPermissionMappingBase.DataSync">
+            <summary>
+            Optional DataSync permission scopes (entities, relationships, memberships).
             </summary>
         </member>
         <member name="P:PubnubApi.SubscribeEnvelope.m">
