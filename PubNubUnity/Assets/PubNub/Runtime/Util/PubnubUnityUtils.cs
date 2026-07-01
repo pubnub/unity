@@ -68,8 +68,8 @@ namespace PubnubApi.Unity {
 		/// <returns>A new initialized Pubnub instance.</returns>
 		public static Pubnub NewUnityPubnub(PNConfigAsset configurationAsset, string userId,
 			IPNSDKSource ipnsdkSource = null) {
+			configurationAsset.UserId = userId;
 			var pnConfig = ((PNConfiguration)configurationAsset);
-			pnConfig.UserId = userId;
 			return NewUnityPubnub(pnConfig, configurationAsset.EnableWebGLBuildMode,
 				configurationAsset.LogToUnityConsole, customIpnsdkSource: ipnsdkSource);
 		}

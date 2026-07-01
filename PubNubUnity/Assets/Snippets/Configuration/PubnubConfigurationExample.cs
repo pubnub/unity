@@ -11,6 +11,8 @@ public class PubnubConfigurationExample : MonoBehaviour {
     [SerializeField] private string userId = "myUniqueUserId";
     [SerializeField] private string subscribeKey = "demo"; // Replace with your actual SubscribeKey
     [SerializeField] private string publishKey = "demo"; // Replace with your actual PublishKey if publishing is needed
+    // WARNING: The SecretKey grants full admin access to your keyset and must ONLY be used in secure,
+    // server-side applications. Never ship it in a client app (game build, mobile, browser).
     [SerializeField] private string secretKey = "yourSecretKey"; // Used if Access Manager operations are needed
     [SerializeField] private string authKey = "authKey"; // Used if Access Manager is enabled
     [SerializeField] private string filterExpression = "such=wow";
@@ -25,6 +27,7 @@ public class PubnubConfigurationExample : MonoBehaviour {
         PNConfiguration pnConfiguration = new PNConfiguration(new UserId(userId)) {
             SubscribeKey = subscribeKey,
             PublishKey = publishKey,
+            // WARNING: Setting SecretKey should ONLY happen in secure, server-side applications, never in a client app.
             SecretKey = secretKey,
             AuthKey = authKey,
             Secure = useSSL,
