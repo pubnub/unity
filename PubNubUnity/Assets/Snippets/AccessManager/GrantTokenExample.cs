@@ -39,6 +39,8 @@ public class GrantTokenExample : MonoBehaviour {
 			Manage = true
 		};
 
+		//WARNING: Token granting requires the SecretKey and must ONLY be performed in a secure, server-side
+		//application. Never ship GrantToken logic or the SecretKey in a client app (game build, mobile, browser).
 		//Asynchronously executing a full-access grant operation for the test channel for user ID specified in the config
 		//The $"{testChannelId}{Constants.Pnpres}" addition ensured full access to the channel with PubNub Presence operations
 		var grantResult = await pubnub.GrantToken().TTL(30).AuthorizedUuid(pubnub.PNConfig.UserId).Resources(

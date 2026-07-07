@@ -21,6 +21,8 @@ class AccessManagerSample
         {
 	        SubscribeKey = "YOUR_SUBSCRIBE_KEY",
 	        PublishKey = "YOUR_PUBLISH_KEY",
+	        // WARNING: The SecretKey grants full admin access to your keyset. Set it ONLY in secure,
+	        // server-side applications. Never ship the SecretKey in a client app (game build, mobile, browser).
 	        SecretKey = "YOUR_SECRET_KEY",
         };
         //Create a new PubNub instance
@@ -39,6 +41,7 @@ class AccessManagerSample
     static async Task GrantTokenComplex()
     {
         // snippet.grant_token_complex
+        // WARNING: GrantToken requires the SecretKey and must ONLY be called from a secure, server-side application. Never ship token-granting logic in a client app.
         PNResult<PNAccessManagerTokenResult> grantTokenResponse = await pubnub.GrantToken()
             .TTL(15)
             .AuthorizedUuid("my-authorized-uuid")
@@ -72,6 +75,7 @@ class AccessManagerSample
     static async Task GrantTokenWithRegex()
     {
         // snippet.grant_token_regex
+        // WARNING: GrantToken requires the SecretKey and must ONLY be called from a secure, server-side application. Never ship token-granting logic in a client app.
         PNResult<PNAccessManagerTokenResult> grantTokenResponse = await pubnub.GrantToken()
             .TTL(15)
             .AuthorizedUuid("my-authorized-uuid")
@@ -97,6 +101,7 @@ class AccessManagerSample
     static async Task GrantTokenComplexWithRegex()
     {
         // snippet.grant_token_complex_with_regex
+        // WARNING: GrantToken requires the SecretKey and must ONLY be called from a secure, server-side application. Never ship token-granting logic in a client app.
         PNResult<PNAccessManagerTokenResult> grantTokenResponse = await pubnub.GrantToken()
             .TTL(15)
             .AuthorizedUuid("my-authorized-uuid")
@@ -135,6 +140,7 @@ class AccessManagerSample
     static async Task GrantTokenOldBasicUsage()
     {
         // snippet.basic_usage_old
+        // WARNING: GrantToken requires the SecretKey and must ONLY be called from a secure, server-side application. Never ship token-granting logic in a client app.
         PNResult<PNAccessManagerTokenResult> grantTokenResponse = await pubnub.GrantToken()
             .TTL(15)
             .AuthorizedUserId("my-authorized-userId")
@@ -161,6 +167,7 @@ class AccessManagerSample
     static async Task GrantTokenOldComplex()
     {
         // snippet.grant_token_complex_old
+        // WARNING: GrantToken requires the SecretKey and must ONLY be called from a secure, server-side application. Never ship token-granting logic in a client app.
         PNResult<PNAccessManagerTokenResult> grantTokenResponse = await pubnub.GrantToken()
             .TTL(15)
             .AuthorizedUserId("my-authorized-userId")
@@ -192,6 +199,7 @@ class AccessManagerSample
     static async Task GrantTokenOldWithRegex()
     {
         // snippet.grant_token_old_regex
+        // WARNING: GrantToken requires the SecretKey and must ONLY be called from a secure, server-side application. Never ship token-granting logic in a client app.
         PNResult<PNAccessManagerTokenResult> grantTokenResponse = await pubnub.GrantToken()
             .TTL(15)
             .AuthorizedUserId("my-authorized-userId")
@@ -217,6 +225,7 @@ class AccessManagerSample
     static async Task GrantTokenOldComplexWithRegex()
     {
         // snippet.grant_token_complex_old_with_regex
+        // WARNING: GrantToken requires the SecretKey and must ONLY be called from a secure, server-side application. Never ship token-granting logic in a client app.
         PNResult<PNAccessManagerTokenResult> grantTokenResponse = await pubnub.GrantToken()
             .TTL(15)
             .AuthorizedUserId("my-authorized-userId")

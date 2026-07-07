@@ -305,6 +305,45 @@
             <param name="apns2SupportData"></param>
             <returns></returns>
         </member>
+        <member name="T:PubnubApi.PubnubLogFormatter">
+            <summary>
+            Centralized formatting for structured log blocks (parameters and network traffic),
+            producing the aligned multi-line layout used across PubNub SDKs:
+              key   : value
+              nested:
+                - item
+            </summary>
+        </member>
+        <member name="M:PubnubApi.PubnubLogFormatter.Parameters(System.String,System.Object[])">
+            <summary>
+            Builds a "&lt;name&gt; with parameters:" block from alternating key/value
+            arguments (key1, value1, key2, value2, ...). Pairs with a null value are
+            rendered as "null" (matching cross-SDK behavior).
+            </summary>
+            <remarks>
+            Uses a flat <c>object[]</c> instead of value tuples so the API compiles on
+            targets (e.g. UWP) whose reference assemblies do not provide
+            <c>System.ValueTuple</c>.
+            </remarks>
+        </member>
+        <member name="M:PubnubApi.PubnubLogFormatter.Block(System.String,System.Object[])">
+            <summary>
+            Builds an aligned key/value block under an explicit header line, e.g.
+            "Create with configuration:", from alternating key/value arguments
+            (key1, value1, key2, value2, ...).
+            </summary>
+        </member>
+        <member name="M:PubnubApi.PubnubLogFormatter.HttpRequest(System.String,System.String,System.Collections.Generic.IDictionary{System.String,System.String},System.Int32,System.Boolean)">
+            <summary>
+            Formats an outgoing HTTP request. Headers are only included at Trace level,
+            mirroring the JS SDK behavior.
+            </summary>
+        </member>
+        <member name="M:PubnubApi.PubnubLogFormatter.HttpResponse(System.String,System.Int32,System.Collections.Generic.IDictionary{System.String,System.String},System.Int32,System.Boolean)">
+            <summary>
+            Formats a received HTTP response. Headers are only included at Trace level.
+            </summary>
+        </member>
         <member name="P:PubnubApi.PNTokenAuthValues.Read">
             <summary>
             Read. Applies to Subscribe, History, Presence
@@ -510,6 +549,13 @@
             </summary>
             <param name="handler">The message handler used to send requests.</param>
             <param name="enableHttp2">Whether outbound requests should request HTTP/2 with HTTP/1.1 fallback.</param>
+        </member>
+        <member name="T:PubnubApi.TransportLogger">
+            <summary>
+            Owns all transport-layer log message construction so that logging concerns stay
+            out of <see cref="T:PubnubApi.HttpClientService"/>. All messages share the "HttpClient Service"
+            prefix and route network blocks through <see cref="T:PubnubApi.PubnubLogFormatter"/>.
+            </summary>
         </member>
         <member name="P:PubnubApi.TransportResponse.NegotiatedProtocolVersion">
             <summary>

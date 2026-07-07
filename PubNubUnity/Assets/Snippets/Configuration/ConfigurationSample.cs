@@ -67,6 +67,8 @@ public class ConfigurationSample
         {
             SubscribeKey = "demo", // Required
             PublishKey = "demo",   // Only required if publishing
+            // WARNING: Set SecretKey ONLY in secure, server-side applications. Never ship the SecretKey
+            // in a client app (game build, mobile, browser); it grants full admin access to your keyset.
             SecretKey = "SecretKey", // Only required for access operations
             Secure = true, // Enable SSL
             AuthKey = "authKey", // If Access Manager is utilized
@@ -165,6 +167,8 @@ public class ConfigurationSample
         PNConfiguration pnConfiguration = new PNConfiguration(new UserId("myUniqueUserId"));
         pnConfiguration.PublishKey = "my_pubkey";
         pnConfiguration.SubscribeKey = "my_subkey";
+        // WARNING: The SecretKey must ONLY be used in secure, server-side applications. Never include it
+        // in a client app (game build, mobile, browser); it grants full admin access to your keyset.
         pnConfiguration.SecretKey = "my_secretkey";
         pnConfiguration.Secure = true;
 

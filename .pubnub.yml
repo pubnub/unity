@@ -1,6 +1,11 @@
 --- 
-version: v9.4.0
+version: v9.4.1
 changelog:
+  - date: 2026-07-06
+    version: v9.4.1
+    changes:
+      - type: bug
+        text: "Implemented minor fixes to error handling, logging, and cryptor logic."
   - date: 2026-06-15
     version: v9.4.0
     changes:
@@ -807,7 +812,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v9.4.0/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v9.4.1/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
@@ -939,7 +944,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v9.4.0/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v9.4.1/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"

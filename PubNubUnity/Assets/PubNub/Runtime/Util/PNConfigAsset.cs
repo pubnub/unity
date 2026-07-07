@@ -11,14 +11,14 @@ namespace PubnubApi.Unity {
 		public string SecretKey = "";
 		public string AuthKey;
 		public string CipherKey;
-		public bool Secure;
+		public bool Secure = true;
 		public int NonSubscribeRequestTimeout = 15;
 		public int SubscribeTimeout = 310;
 		public PNReconnectionPolicy ReconnectionPolicy = PNReconnectionPolicy.EXPONENTIAL;
 		public bool MaintainPresenceState = true;
 		public bool EnableEventEngine = true;
 		public bool EnableWebGLBuildMode;
-		public bool EnabbleHttp2 = true;
+		public bool EnableHttp2 = true;
 		public bool LogToUnityConsole = true;
 		[Tooltip("Obsolete and used in legacy logging, if you can please use LogLevel instead")]
 		public PNLogVerbosity LogVerbosity;
@@ -38,7 +38,7 @@ namespace PubnubApi.Unity {
 			config.PublishKey = asset.PublishKey;
 			config.SecretKey = asset.SecretKey;
 			config.AuthKey = asset.AuthKey;
-			config.EnableHttp2 = asset.EnabbleHttp2;
+			config.EnableHttp2 = asset.EnableHttp2;
 			config.CipherKey = asset.CipherKey;
 			config.NonSubscribeRequestTimeout = asset.NonSubscribeRequestTimeout;
 			config.SubscribeTimeout = asset.SubscribeTimeout;
