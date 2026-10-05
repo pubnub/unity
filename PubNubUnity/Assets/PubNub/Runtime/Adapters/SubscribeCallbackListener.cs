@@ -14,6 +14,7 @@ namespace PubnubApi.Unity {
 		public event Action<Pubnub, PNMessageActionEventResult> onMessageAction;
 		public event Action<Pubnub, PNFileEventResult> onFile;
 		public event Action<Pubnub, PNStatus> onStatus;
+		public event Action<Pubnub, PNDataSyncEventResult> onDataSync;
 
 		protected SubscribeCallbackExt listener;
 
@@ -22,6 +23,7 @@ namespace PubnubApi.Unity {
 			Action<Pubnub, PNPresenceEventResult> presenceCallback,
 			Action<Pubnub, PNSignalResult<object>> signalCallback,
 			Action<Pubnub, PNObjectEventResult> objectEventCallback,
+			Action<Pubnub, PNDataSyncEventResult> dataSyncEventCallback,
 			Action<Pubnub, PNMessageActionEventResult> messageActionCallback,
 			Action<Pubnub, PNFileEventResult> fileCallback,
 			Action<Pubnub, PNStatus> statusCallback) : this() {
@@ -30,6 +32,7 @@ namespace PubnubApi.Unity {
 			this.onSignal += signalCallback;
 			this.onObject += objectEventCallback;
 			this.onMessageAction += messageActionCallback;
+			this.onDataSync += dataSyncEventCallback;
 			this.onFile += fileCallback;
 			this.onStatus += statusCallback;
 		}
@@ -64,6 +67,12 @@ namespace PubnubApi.Unity {
 					Debug.Log(objectEventObj.Channel);
 					#endif
 					onObject.Dispatch(pnObj, objectEventObj);
+				},
+				(pnObj, dataSyncEventObj) => {
+					#if PN_DEBUG
+					Debug.Log(dataSyncEventObj.Channel);
+					#endif
+					onDataSync.Dispatch(pnObj, dataSyncEventObj);
 				},
 				// Message actions
 				(pnObj, msgActionEvent) => {

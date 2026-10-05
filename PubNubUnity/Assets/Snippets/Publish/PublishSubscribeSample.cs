@@ -604,6 +604,7 @@ public class PublishSubscribeSample
             delegate(Pubnub pn, PNPresenceEventResult e) { Debug.Log("Presence event"); },
             delegate(Pubnub pn, PNSignalResult<object> e) { Debug.Log("Signal event"); },
             delegate(Pubnub pn, PNObjectEventResult e) { Debug.Log("Object event"); },
+            delegate(Pubnub pn, PNDataSyncEventResult e) { Debug.Log("Data Sync event"); },
             delegate(Pubnub pn, PNMessageActionEventResult e) { Debug.Log("Message Action event"); },
             delegate(Pubnub pn, PNFileEventResult e) { Debug.Log("File event"); },
             delegate(Pubnub pn, PNStatus e) { Debug.Log("Status event"); }
@@ -703,6 +704,33 @@ public class PublishSubscribeSample
                 }
 
                 Debug.Log(pubnub.JsonPluggableLibrary.SerializeToJsonString(objectEventObj));
+            },
+            delegate(Pubnub pnObj, PNDataSyncEventResult dataSyncEventObj)
+            {
+	            var channelName = dataSyncEventObj.Channel; // Channel
+	            var evnt = dataSyncEventObj.Event; // Event
+	            var type = dataSyncEventObj.Type; // Event type
+	            if (type == "user")
+	            {
+		            /* got user related event. */
+	            }
+	            else if (type == "channel")
+	            {
+		            /* got channel related event. */
+	            }
+	            else if (type == "membership")
+	            {
+		            /* got membership related event. */
+	            }
+	            else if (type == "entity")
+	            {
+		            /* got generic entity related event. */
+	            }
+	            else if (type == "relationship")
+	            {
+		            /* got generic relationship related event. */
+	            }
+	            Debug.Log(pubnub.JsonPluggableLibrary.SerializeToJsonString(dataSyncEventObj));
             },
             delegate(Pubnub pnObj, PNMessageActionEventResult msgActionEvent)
             {
