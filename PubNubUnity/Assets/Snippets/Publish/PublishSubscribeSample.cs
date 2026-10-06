@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using UnityEngine;
 using System;
 using System.Linq;
-using PubnubApi.EndPoint;
 using PubnubApi.Unity;
 
 public class PublishSubscribeSample
