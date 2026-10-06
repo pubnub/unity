@@ -1,6 +1,11 @@
 --- 
-version: v9.5.0
+version: v10.0.0
 changelog:
+  - date: 2026-10-06
+    version: v10.0.0
+    changes:
+      - type: feature
+        text: "Added Data Sync feature support."
   - date: 2026-07-21
     version: v9.5.0
     changes:
@@ -852,7 +857,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v9.5.0/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v10.0.0/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
@@ -984,7 +989,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v9.5.0/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v10.0.0/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
