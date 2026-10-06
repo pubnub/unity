@@ -1,6 +1,11 @@
 --- 
-version: v9.5.0
+version: v10.0.0
 changelog:
+  - date: 2026-10-06
+    version: v10.0.0
+    changes:
+      - type: feature
+        text: "Added Data Sync feature support."
   - date: 2026-07-21
     version: v9.5.0
     changes:
@@ -759,6 +764,41 @@ features:
     - OBJECTS-REMOVE-CHANNEL-MEMBERS-V2
     - OBJECTS-MANAGE-MEMBERSHIPS-V2
     - OBJECTS-MANAGE-CHANNEL-MEMBERS-V2
+  data-sync:
+    - DATASYNC-USER-CREATE
+    - DATASYNC-USER-GET
+    - DATASYNC-USER-GET-ALL
+    - DATASYNC-USER-UPDATE
+    - DATASYNC-USER-PATCH
+    - DATASYNC-USER-DELETE
+    - DATASYNC-CHANNEL-CREATE
+    - DATASYNC-CHANNEL-GET
+    - DATASYNC-CHANNEL-GET-ALL
+    - DATASYNC-CHANNEL-UPDATE
+    - DATASYNC-CHANNEL-PATCH
+    - DATASYNC-CHANNEL-DELETE
+    - DATASYNC-MEMBERSHIP-CREATE
+    - DATASYNC-MEMBERSHIP-GET
+    - DATASYNC-MEMBERSHIP-GET-ALL
+    - DATASYNC-MEMBERSHIP-UPDATE
+    - DATASYNC-MEMBERSHIP-PATCH
+    - DATASYNC-MEMBERSHIP-DELETE
+    - DATASYNC-ENTITY-CREATE
+    - DATASYNC-ENTITY-GET
+    - DATASYNC-ENTITY-GET-ALL
+    - DATASYNC-ENTITY-UPDATE
+    - DATASYNC-ENTITY-PATCH
+    - DATASYNC-ENTITY-DELETE
+    - DATASYNC-RELATIONSHIP-CREATE
+    - DATASYNC-RELATIONSHIP-GET
+    - DATASYNC-RELATIONSHIP-GET-ALL
+    - DATASYNC-RELATIONSHIP-UPDATE
+    - DATASYNC-RELATIONSHIP-PATCH
+    - DATASYNC-RELATIONSHIP-DELETE
+    - DATASYNC-FILTERING
+    - DATASYNC-SORTING
+    - DATASYNC-EVENTS-LISTENER
+    - DATASYNC-ACCESS-MANAGER
   files:
     - FILES-SEND-FILE
     - FILES-LIST-FILES
@@ -817,7 +857,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v9.5.0/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v10.0.0/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
@@ -949,7 +989,7 @@ sdks:
             distribution-type: package
             distribution-repository: git release
             package-name: PubNub.unitypackage
-            location: https://github.com/pubnub/unity/releases/download/v9.5.0/PubNub.unitypackage
+            location: https://github.com/pubnub/unity/releases/download/v10.0.0/PubNub.unitypackage
             requires:
               -
                 name: "UnityEditor"
