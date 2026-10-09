@@ -130,4 +130,39 @@ public class MiscSample
             ));
         // snippet.end
     }
+
+    public static void CreatePushPayloadBasicUsage()
+    {
+        // snippet.create_push_payload_basic_usage
+        // APNS2 specific delivery settings
+        Apns2Data apns2Data = new Apns2Data
+        {
+            collapseId = "invitations",
+            targets = new List<PushTarget>
+            {
+                new PushTarget
+                {
+                    topic = "com.meetings.chat.app",
+                    environment = PubnubApi.Environment.Development
+                }
+            }
+        };
+
+        // Extra data for each push type
+        Dictionary<PNPushType, Dictionary<string, object>> customData = new Dictionary<PNPushType, Dictionary<string, object>>
+        {
+            { PNPushType.APNS2, new Dictionary<string, object> { { "score", new int[] { 7, 0 } } } },
+            { PNPushType.FCM, new Dictionary<string, object> { { "score", new int[] { 7, 0 } } } }
+        };
+
+        Dictionary<string, object> payload = new MobilePushHelper()
+            .PushTypeSupport(new PNPushType[] { PNPushType.APNS2, PNPushType.FCM })
+            .Title("Game update 49ers touchdown")
+            .Body("The 49ers scored a touchdown")
+            .Badge(2)
+            .Apns2Data(new List<Apns2Data> { apns2Data })
+            .Custom(customData)
+            .GetPayload();
+        // snippet.end
+    }
 }
