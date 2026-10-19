@@ -4,6 +4,18 @@
         <name>PubnubApiUnity</name>
     </assembly>
     <members>
+        <member name="M:PubnubApi.EndPoint.GrantOperation.Categories(PubnubApi.PNGrantCategory[])">
+            <summary>
+            App Context categories whose metadata the auth keys may list in full.
+            Requires AuthKeys and accepts only the Get permission: Get(true) grants, Get(false) revokes.
+            </summary>
+        </member>
+        <member name="M:PubnubApi.EndPoint.GrantTokenOperation.Categories(PubnubApi.PNTokenCategories)">
+            <summary>
+            Category-level App Context permissions, e.g. listing all channel or uuid metadata.
+            Resource-level or pattern Get permissions do not imply them.
+            </summary>
+        </member>
         <member name="M:PubnubApi.EndPoint.GrantTokenOperation.DataSyncProjections(PubnubApi.PNDataSyncProjections)">
             <summary>
             Assigns Data Sync projections to resources/patterns. The projection name
@@ -73,6 +85,12 @@
             </summary>
             <param name="timetoken"></param>
             <returns></returns>
+        </member>
+        <member name="M:PubnubApi.EndPoint.UnsubscribeAllOperation`1.#ctor(PubnubApi.PNConfiguration,PubnubApi.IJsonPluggableLibrary,PubnubApi.IPubnubUnitTest,PubnubApi.EndPoint.TokenManager,PubnubApi.Pubnub,System.Boolean)">
+            <param name="runLegacyUnsubscribe">
+            When false, the legacy SubscribeManager logic is skipped. Derived types use this to run their own
+            unsubscribe logic, which cannot be done through a virtual call from this constructor.
+            </param>
         </member>
         <member name="M:PubnubApi.EndPoint.AddPushChannelOperation.Environment(PubnubApi.PushEnvironment)">
             <summary>
@@ -1192,6 +1210,21 @@
             Composite membership ids, e.g. "user-123:channel-X".
             </summary>
         </member>
+        <member name="T:PubnubApi.PNGrantCategory">
+            <summary>
+            App Context resource types that a PAMv2 category grant applies to as a whole.
+            </summary>
+        </member>
+        <member name="F:PubnubApi.PNGrantCategory.Channels">
+            <summary>
+            Listing all channel metadata on the subscribe key.
+            </summary>
+        </member>
+        <member name="F:PubnubApi.PNGrantCategory.Uuids">
+            <summary>
+            Listing all uuid metadata on the subscribe key.
+            </summary>
+        </member>
         <member name="T:PubnubApi.PNPushTypeExtensions">
             <summary>
             Extension methods for PNPushType enum to get url value
@@ -1211,6 +1244,11 @@
             </summary>
             <param name="apns2SupportData"></param>
             <returns></returns>
+        </member>
+        <member name="P:PubnubApi.PNAccessManagerGrantResult.Categories">
+            <summary>
+            Category-level permissions keyed by category ("channels", "uuids") and then by auth key.
+            </summary>
         </member>
         <member name="T:PubnubApi.PubnubLogFormatter">
             <summary>
@@ -1289,6 +1327,37 @@
         <member name="P:PubnubApi.PNTokenAuthValues.Join">
             <summary>
             Join. Applies to Objects v2
+            </summary>
+        </member>
+        <member name="T:PubnubApi.PNTokenCategories">
+            <summary>
+            Category-level App Context permissions of a token. A category applies to a resource type
+            as a whole: resource-level or pattern Get permissions do not allow listing all metadata of that type.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.PNTokenCategories.Channels">
+            <summary>
+            Get allows listing all channel metadata on the subscribe key.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.PNTokenCategories.Uuids">
+            <summary>
+            Get allows listing all uuid metadata on the subscribe key.
+            </summary>
+        </member>
+        <member name="T:PubnubApi.PNTokenCategoryPermissions">
+            <summary>
+            Permissions granted on a single App Context category.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.PNTokenCategoryPermissions.Get">
+            <summary>
+            Get. The only permission accepted for categories.
+            </summary>
+        </member>
+        <member name="P:PubnubApi.PNTokenContent.Categories">
+            <summary>
+            Category-level App Context permissions decoded from the token's "cat" section.
             </summary>
         </member>
         <member name="P:PubnubApi.PNTokenContent.Projections">
