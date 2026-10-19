@@ -2,7 +2,7 @@
 
 # PubNub Unity SDK
 
-[![PubNub Unity SDK](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpubnub%2Funity%2Fmaster%2F.pubnub.yml&query=%24.version&label=PubNub%20Unity&color=blue)](https://github.com/pubnub/unity/releases) [![Build Status](https://travis-ci.com/pubnub/unity.svg?branch=master)](https://travis-ci.com/pubnub/unity) [![Build status](https://ci.appveyor.com/api/projects/status/1p3494pnt6rgqdsm/branch/master?svg=true)](https://ci.appveyor.com/project/PubNub/unity)
+[![PubNub Unity SDK](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpubnub%2Funity%2Fmaster%2F.pubnub.yml&query=%24.version&label=PubNub%20Unity&color=blue)](https://github.com/pubnub/unity/releases) [![Build status](https://ci.appveyor.com/api/projects/status/1p3494pnt6rgqdsm/branch/master?svg=true)](https://ci.appveyor.com/project/PubNub/unity)
 
 PubNub provides global infrastructure for real-time, interactive applications.
 
