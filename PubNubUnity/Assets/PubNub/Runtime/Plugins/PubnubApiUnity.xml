@@ -1515,6 +1515,21 @@
             </summary>
             <param name="logger">The logger to use.</param>
         </member>
+        <member name="M:PubnubApi.Security.Crypto.CryptoModule.CreateFromCipherKey(PubnubApi.Security.Crypto.ICryptor,System.String,PubnubApi.PubnubLogModule,PubnubApi.Security.Crypto.ICryptor[])">
+            <summary>
+            Builds the module the SDK uses when only a cipher key is configured. Every decryptor the
+            SDK supports for that key (including the decrypt-only AesGcmCryptor) is registered so data
+            written by newer clients can still be read.
+            </summary>
+        </member>
+        <member name="T:PubnubApi.Security.Crypto.Cryptors.AesGcmCryptor">
+             <summary>
+             AES-256-GCM cryptor (identifier "ACGM").
+            
+             Currently decrypt-only: it can be registered as an additional decryptor in a
+             <see cref="T:PubnubApi.Security.Crypto.CryptoModule"/>, but cannot be used as the default (encrypting) cryptor.
+             </summary>
+        </member>
         <member name="P:PubnubApi.Security.Crypto.ICryptor.Identifier">
              <summary>
              Unique crypto algorithm identifier.
