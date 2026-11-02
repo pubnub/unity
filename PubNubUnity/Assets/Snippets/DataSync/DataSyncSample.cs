@@ -1476,7 +1476,7 @@ public class DataSyncSample
         var listener = new SubscribeCallbackExt(
             (Pubnub pn, PNDataSyncEventResult dataSyncEvent) =>
             {
-                Console.WriteLine($"{dataSyncEvent.Event} on {dataSyncEvent.Channel}");
+                Debug.Log($"{dataSyncEvent.Event} on {dataSyncEvent.Channel}");
             },
             (Pubnub pn, PNStatus status) => { });
 
