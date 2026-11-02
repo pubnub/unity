@@ -17,11 +17,11 @@ namespace PubnubApi.Unity.Tests {
 		private const string PlainText = "\"Hello Unity from AES-GCM!\"";
 
 		// ACGM payload for PlainText, generated outside Unity with System.Security.Cryptography.AesGcm:
-		// "PNED" | 0x01 | "ACGM" | 0x1C | nonce (12) | tag (16) | cipher text, key = SHA256("enigma").
+		// "PNED" | 0x01 | "ACGM" | 0x0C | nonce (12) | cipher text | tag (16), key = SHA256("enigma").
 		private const string AcgmPayload =
-			"UE5FRAFBQ0dNHBEiM0RVZneImaq7zMgfX6w00dhbfdXplqx/4gQwsQv7VgD7QzMrUmRAcfdtHoCVL0ZK0ET03q8=";
+			"UE5FRAFBQ0dNDBEiM0RVZneImaq7zDCxC/tWAPtDMytSZEBx920egJUvRkrQRPTer8gfX6w00dhbfdXplqx/4gQ=";
 
-		private const int CipherTextOffset = 10 + 12 + 16;
+		private const int CipherTextOffset = 10 + 12;
 		private const string BouncyCastleNamespace = "Org.BouncyCastle";
 
 		private static Assembly SdkAssembly => typeof(Pubnub).Assembly;
