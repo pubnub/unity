@@ -62,3 +62,7 @@ Thumbs.db
 unity_installer_cache
 logs
 .vscode
+
+# AI agent personal settings
+CLAUDE.local.md
+.claude/settings.local.json
