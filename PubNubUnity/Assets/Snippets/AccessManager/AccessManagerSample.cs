@@ -137,6 +137,34 @@ class AccessManagerSample
         // snippet.end
     }
 
+    static async Task GrantTokenCategories()
+    {
+        // snippet.grant_token_categories
+        // WARNING: GrantToken requires the SecretKey and must ONLY be called from a secure, server-side application. Never ship token-granting logic in a client app.
+        PNResult<PNAccessManagerTokenResult> grantTokenResponse = await pubnub.GrantToken()
+            .TTL(15)
+            .AuthorizedUuid("my-authorized-uuid")
+            .Categories(new PNTokenCategories()
+            {
+                // allow listing all channel metadata
+                Channels = new PNTokenCategoryPermissions() { Get = true },
+                // allow listing all uuid metadata
+                Uuids = new PNTokenCategoryPermissions() { Get = true }
+            })
+            .ExecuteAsync();
+        PNAccessManagerTokenResult grantTokenResult = grantTokenResponse.Result;
+        PNStatus grantTokenStatus = grantTokenResponse.Status;
+        if (!grantTokenStatus.Error && grantTokenResult != null)
+        {
+            Debug.Log(pubnub.JsonPluggableLibrary.SerializeToJsonString(grantTokenResult));
+        }
+        else
+        {
+            Debug.Log(pubnub.JsonPluggableLibrary.SerializeToJsonString(grantTokenStatus));
+        }
+        // snippet.end
+    }
+
     static async Task GrantTokenOldBasicUsage()
     {
         // snippet.basic_usage_old
@@ -377,6 +405,20 @@ class AccessManagerSample
         }
         // snippet.end
         */
+    }
+
+    static void ParseTokenCategories()
+    {
+        // snippet.parse_token_categories
+        PNTokenContent parsedTokenContent =
+            pubnub.ParseToken(
+                "p0thisAkFl043rhDdHRsCkNyZXisRGNoYW6hanNlY3JldAFDZ3Jwsample3KgQ3NwY6BDcGF0pERjaGFuoENnctokenVzcqBDc3BjoERtZXRhoENzaWdYIGOAeTyWGJI");
+
+        // category permissions are decoded from the "cat" section of the token
+        bool canListChannelMetadata = parsedTokenContent.Categories.Channels.Get;
+        bool canListUuidMetadata = parsedTokenContent.Categories.Uuids.Get;
+        Debug.Log($"Channels get: {canListChannelMetadata}, uuids get: {canListUuidMetadata}");
+        // snippet.end
     }
 
     static async Task GrantTokenDataSync()
