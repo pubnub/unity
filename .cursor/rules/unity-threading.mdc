@@ -1,0 +1,27 @@
+---
+description: Main-thread dispatching (SubscribeCallbackListener, Dispatcher) and async rules in the PubNub Unity layer
+globs: PubNubUnity/Assets/PubNub/Runtime/**/*.cs, PubNubUnity/Assets/PubNub/Samples~/**/*.cs, PubNubUnity/Assets/Example/**/*.cs, PubNubUnity/Assets/Snippets/**/*.cs
+alwaysApply: false
+---
+
+# Unity threading
+
+- **The constraint:** C# SDK callbacks and listener events arrive on thread-pool threads, and Unity APIs only work on the main thread.
+- **`SubscribeCallbackListener`** dispatches every subscribe event to the main thread. When the C# SDK adds an event, add the matching `on...` event, constructor parameter and dispatched handler here.
+- **Dispatching from other code:** use `Dispatcher.Dispatch(() => ...)`, `callback.Dispatch(arg1, arg2)` for `Action<T1, T2>`, or `Dispatcher.DispatchTask(task, callback)`.
+
+```csharp
+// Wrong: touches Unity from a thread-pool thread
+pubnub.AddListener(new SubscribeCallbackExt((pn, msg) => label.text = msg.Message.ToString(), ...));
+
+// Right: SubscribeCallbackListener dispatches to the main thread
+var listener = new SubscribeCallbackListener();
+listener.onMessage += (pn, msg) => label.text = msg.Message.ToString();
+pubnub.AddListener(listener);
+```
+
+- **`await` without `ConfigureAwait(false)`** in code that resumes into user callbacks, such as the `ExecAsyncOperations` `Execute(Action<T, PNStatus>)` extensions. Started on the main thread, such code resumes there through Unity's synchronization context.
+- **`await` with `ConfigureAwait(false)`** in internal code that never touches Unity APIs or user code, such as the `UnityWebGLHttpClientService` transport.
+- **New `Execute(Action<...>)` extensions** follow the existing ones (`var res = await op.ExecuteAsync(); callback?.Invoke(res.Result, res.Status);`). Don't block with `.Result` or `.Wait()` on the main thread, because that freezes the game.
+- **The queue drains in `FixedUpdate`**, so dispatched work waits while `Time.timeScale == 0`. Exceptions in dispatched actions are caught and logged with `Debug.LogError`.
+- **Creating instances:** use `PubnubUnityUtils.NewUnityPubnub()` or `PNManagerBehaviour`, not `new Pubnub(...)`. They set the Unity transport (WebGL, HTTP/2), JSON adapter and logger.

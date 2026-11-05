@@ -1,0 +1,29 @@
+---
+description: Keeping the PNConfigAsset ScriptableObject, its inspector and conversion in sync with the C# PNConfiguration
+globs: PubNubUnity/Assets/PubNub/Runtime/Util/PNConfigAsset.cs, PubNubUnity/Assets/PubNub/Editor/PNConfigAssetEditor.cs, PubNubUnity/Assets/PubNub/Runtime/Util/PubnubUnityUtils.cs, PubNubUnity/Assets/**/*.asset
+alwaysApply: false
+---
+
+# PNConfigAsset
+
+`PNConfigAsset` is the in-editor form of the C# `PNConfiguration`. Any change to `PNConfiguration` in the C# SDK (a new, renamed, removed or obsoleted setting, or a changed default) must update all three places:
+
+1. **Field** in `Runtime/Util/PNConfigAsset.cs`, defaulting to the C# default (exception: the `demo` keys).
+2. **Mapping** in `implicit operator PNConfiguration(PNConfigAsset asset)`: `config.X = asset.X;`.
+3. **Inspector entry** in `propNames` in `Editor/PNConfigAssetEditor.cs`, in the same order as the fields. Unlisted fields are never drawn.
+
+```csharp
+// PNConfigAsset.cs
+public bool SuppressLeaveEvents = false;
+// implicit operator
+config.SuppressLeaveEvents = asset.SuppressLeaveEvents;
+// PNConfigAssetEditor.propNames
+"SuppressLeaveEvents",
+```
+
+- **Verify** with `powershell -ExecutionPolicy Bypass -File .claude/skills/update-csharp-sdk/scripts/Compare-PNConfigAsset.ps1`, adding `-DllPath <new dll>` before an import. It must report no FAIL lines.
+- **Renames:** keep the serialized data with `[FormerlySerializedAs("OldName")]` (`using UnityEngine.Serialization;`).
+- **Obsolete C# settings:** keep the field so existing assets still load, add a `[Tooltip]` pointing to the replacement (as `LogVerbosity` does), and keep mapping it while the C# property exists.
+- **Serializable types only:** primitives, strings and enums. Build complex objects (`RetryConfiguration`, `CryptoModule`, `Proxy`) in the operator from simple fields.
+- **Unity-only fields** (`EnableWebGLBuildMode`, `LogToUnityConsole`) aren't mapped; `PubnubUnityUtils.NewUnityPubnub(PNConfigAsset, userId)` reads them. `UserId` is `[NonSerialized]` and set at runtime.
+- **Committed assets** (`Assets/PNConfigAsset.asset`, `Samples/DemoKeys.asset`, `Samples~/PubNubManagerSample/PNSampleConfigAsset.asset`) keep only empty or `demo` keys. Unity adds new fields to them when they are re-saved.
